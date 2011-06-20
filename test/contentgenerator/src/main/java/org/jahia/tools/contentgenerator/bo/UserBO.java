@@ -5,7 +5,6 @@ import org.jahia.tools.contentgenerator.ContentGeneratorService;
 import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
 import org.jdom.Element;
 
-
 public class UserBO {
 	private String name;
 
@@ -64,31 +63,17 @@ public class UserBO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
 	public String getDirectoryName(int indexDir) {
-		String[] directories = StringUtils.split(this.jcrPath, "/");
-		return directories[indexDir];
+		String dirname = null;
+		if (this.jcrPath != null) {
+			String[] directories = StringUtils.split(this.jcrPath, "/");
+			dirname = directories[indexDir];
+		}
+		return dirname;
 	}
 
 	public Element getJcrXml() {
-		String dir1 = getDirectoryName(1);
-		String dir2 = getDirectoryName(2);
-		String dir3 = getDirectoryName(3);
-		
-		Element root = new Element(dir1);
-		root = ContentGeneratorService.getInstance().addJcrAttributes(root, this.jcrDate);
-		root.setAttribute("primaryType", "jnt:usersFolder");
-
-		Element subElement1 = new Element(dir2);
-		subElement1 = ContentGeneratorService.getInstance().addJcrAttributes(subElement1,this.jcrDate);
-		subElement1.setAttribute("primaryType", "jnt:usersFolder");
-		root.addContent(subElement1);
-
-		Element subElement2 = new Element(dir3);
-		subElement2 = ContentGeneratorService.getInstance().addJcrAttributes(subElement2,this.jcrDate);
-		subElement2.setAttribute("primaryType", "jnt:usersFolder");
-		subElement1.addContent(subElement2);
-
 		Element userElement = new Element(this.name);
 		userElement.setAttribute("email", this.email);
 		userElement.setAttribute("emailNotificationsDisabled", Boolean.FALSE.toString());
@@ -103,7 +88,7 @@ public class UserBO {
 		userElement.setAttribute("organization", "Organization", ContentGeneratorCst.NS_J);
 		userElement.setAttribute("password", this.password, ContentGeneratorCst.NS_J); // W6ph5Mm5Pz8GgiULbPgzG37mj9g
 		// TODO : picture
-		userElement.setAttribute("picture", this.jcrPath + "/files/profile/publisher.png", ContentGeneratorCst.NS_J); // 
+		userElement.setAttribute("picture", this.jcrPath + "/files/profile/publisher.png", ContentGeneratorCst.NS_J); //
 
 		userElement.setAttribute("published", Boolean.TRUE.toString(), ContentGeneratorCst.NS_J);
 		userElement.setAttribute("created", this.jcrDate, ContentGeneratorCst.NS_JCR);
@@ -115,11 +100,33 @@ public class UserBO {
 		userElement.setAttribute("lastModifiedBy", "", ContentGeneratorCst.NS_JCR);
 		userElement.setAttribute("mixinTypes", "jmix:accessControlled", ContentGeneratorCst.NS_JCR);
 		userElement.setAttribute("primaryType", "jnt:user", ContentGeneratorCst.NS_JCR);
-		
+
 		userElement.setAttribute("lastLoginDate", this.jcrDate);
 
 		// userElement.setAttribute("password.history.1242739225417", null);
 		userElement.setAttribute("preferredLanguage", "en");
+
+		if (this.jcrPath == null) {
+			return userElement;
+		}
+		
+		String dir1 = getDirectoryName(1);
+		String dir2 = getDirectoryName(2);
+		String dir3 = getDirectoryName(3);
+
+		Element root = new Element(dir1);
+		root = ContentGeneratorService.getInstance().addJcrAttributes(root, this.jcrDate);
+		root.setAttribute("primaryType", "jnt:usersFolder");
+
+		Element subElement1 = new Element(dir2);
+		subElement1 = ContentGeneratorService.getInstance().addJcrAttributes(subElement1, this.jcrDate);
+		subElement1.setAttribute("primaryType", "jnt:usersFolder");
+		root.addContent(subElement1);
+
+		Element subElement2 = new Element(dir3);
+		subElement2 = ContentGeneratorService.getInstance().addJcrAttributes(subElement2, this.jcrDate);
+		subElement2.setAttribute("primaryType", "jnt:usersFolder");
+		subElement1.addContent(subElement2);
 
 		subElement2.addContent(userElement);
 		return root;

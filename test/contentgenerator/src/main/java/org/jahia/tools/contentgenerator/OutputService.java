@@ -63,7 +63,8 @@ public class OutputService {
 		}
 	}
 
-	public void createSiteArchive(String archiveName, String outputPath, List<File> filesToArchive) {
+	public File createSiteArchive(String archiveName, String outputPath, List<File> filesToArchive) {
+		File newZipArchive = null;
 		try {
 			// Creates the ZIP file
 			ZipOutputStream zipOutput = new ZipOutputStream(new FileOutputStream(outputPath + sep + archiveName));
@@ -74,9 +75,11 @@ public class OutputService {
 				zipFile(f, zipOutput);
 			}
 			zipOutput.close();
+			newZipArchive = new File(outputPath + sep + archiveName);
 		} catch (IOException e) {
 			logger.error("Can not create ZIP file: " + e);
 		}
+		return newZipArchive;
 	}
 
 	/**

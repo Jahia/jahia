@@ -116,7 +116,7 @@ public class ContentGeneratorService {
 	 */
 	public String generateSite(ExportBO export) throws MojoExecutionException, DOMException,
 			ParserConfigurationException {
-		String zipFilePath = null;
+		String globalArchivePath = null;
 		String sep = System.getProperty("file.separator");
 
 		// as we create a full site we will need a home page
@@ -184,25 +184,40 @@ public class ContentGeneratorService {
 			filesToZip.add(repositoryFile);
 
 			String zipFileName = export.getSiteKey() + ".zip";
-			os.createSiteArchive(zipFileName, tempOutputDir.getParentFile().getAbsolutePath(), filesToZip);
-			zipFilePath = tempOutputDir.getParentFile().getAbsolutePath() + System.getProperty("file.separator")
-					+ zipFileName;
+			File siteArchive = os.createSiteArchive(zipFileName, tempOutputDir.getParentFile().getAbsolutePath(), filesToZip);
 
 			// Users archive
+			filesToZip.clear();
+			File tmpUsers = new File(tempOutputDir + sep + "tmpUsers");
+			tmpUsers.mkdir();
+			
 			List<UserBO> users = new ArrayList<UserBO>();
 			for (Iterator<GroupBO> iterator = groups.iterator(); iterator.hasNext();) {
 				GroupBO group = iterator.next();
 				users.addAll(group.getUsers());
 			}
-			File repositoryUsers = new File(tempOutputDir + sep + "users.xml");
+			File repositoryUsers = new File(tmpUsers + sep + "users.xml");
 			Document usersRepositoryDocument = userGroupService.createUsersRepository(users);
 			os.writeJdomDocumentToFile(usersRepositoryDocument, repositoryUsers);
 
+			File contentUsers = userGroupService.createFileTreeForUsers(users, tmpUsers);
+			
+			filesToZip.add(repositoryUsers);
+			filesToZip.add(contentUsers);
+			String usersZipFileName = "users.zip";
+			File usersArchive = os.createSiteArchive(usersZipFileName, tmpUsers.getParentFile().getAbsolutePath(), filesToZip);
+			
 			// Global site archive
+			filesToZip.clear();
+			filesToZip.add(siteArchive);
+			filesToZip.add(usersArchive);
+			File globalArchive = os.createSiteArchive(zipFileName, tempOutputDir.getParentFile().getAbsolutePath(), filesToZip);
+			globalArchivePath = globalArchive.getAbsolutePath();
+			
 		} catch (IOException e) {
 			throw new MojoExecutionException("Exception while creating the website ZIP archive: " + e);
 		}
-		return zipFilePath;
+		return globalArchivePath;
 	}
 
 	/**

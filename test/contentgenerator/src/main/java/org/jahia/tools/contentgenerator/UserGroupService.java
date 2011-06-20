@@ -1,9 +1,12 @@
 package org.jahia.tools.contentgenerator;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.jahia.tools.contentgenerator.bo.GroupBO;
 import org.jahia.tools.contentgenerator.bo.UserBO;
@@ -15,33 +18,49 @@ public class UserGroupService {
 
 	private static final Logger logger = Logger.getLogger(UserGroupService.class.getName());
 
+	private static String sep = System.getProperty("file.separator");;
+
 	public Document createUsersRepository(List<UserBO> users) {
 		String jcrDate = ContentGeneratorService.getInstance().getDateForJcrImport(null);
-		
+
 		Document doc = new Document();
 		Element contentNode = new Element("content");
 		doc.setRootElement(contentNode);
-		
+
 		Element usersNode = new Element("users");
 		ContentGeneratorService.getInstance().addJcrAttributes(usersNode, jcrDate);
 		contentNode.addContent(usersNode);
-		
 
-		// UserBO rootUser = new UserBO("root", hashPassword("root"), jcrDate,
-		// "");
-		// Element rootUserNode = rootUser.getJcrXml();
-		// usersNode.addContent(rootUserNode);
-		
+		UserBO rootUser = new UserBO("root", hashPassword("root"), jcrDate, null);
+		Element rootUserNode = rootUser.getJcrXml();
+		usersNode.addContent(rootUserNode);
+
 		for (Iterator<UserBO> iterator = users.iterator(); iterator.hasNext();) {
 			UserBO userBO = iterator.next();
 			usersNode.addContent(userBO.getJcrXml());
 		}
-		
+
 		return doc;
 	}
-	
-	public Element generateJcrGroups(String siteKey,List<GroupBO> groups) {
-		
+
+	public File createFileTreeForUsers(List<UserBO> users, File tempDirectory) throws IOException {
+		File f = new File(tempDirectory + sep + "content" + sep + "users");
+		FileUtils.forceMkdir(f);
+
+		File dirUser;
+		for (Iterator<UserBO> iterator = users.iterator(); iterator.hasNext();) {
+			UserBO userBO = iterator.next();
+			logger.debug("Creates directories tree for user " + userBO.getName());
+			dirUser = new File(f + sep + userBO.getDirectoryName(1) + sep + userBO.getDirectoryName(2) + sep
+					+ userBO.getDirectoryName(3) + sep + userBO.getName() + sep + "files" + sep + "profiles" + sep
+					+ "publisher.png");
+			FileUtils.forceMkdir(dirUser);
+		}
+		return f;
+	}
+
+	public Element generateJcrGroups(String siteKey, List<GroupBO> groups) {
+
 		String jcrDate = ContentGeneratorService.getInstance().getDateForJcrImport(null);
 
 		logger.info("Users and groups generated, creation of JCR document...");
@@ -69,13 +88,14 @@ public class UserGroupService {
 		sitePrivilegedNode.setAttribute("mixinTypes", "systemNode", ContentGeneratorCst.NS_JMIX);
 		sitePrivilegedNode.setAttribute("primaryType", "jnt:group", ContentGeneratorCst.NS_JNT);
 		groupsNode.addContent(sitePrivilegedNode);
-		
+
 		Element jmembersSitePrivileged = new Element("members", ContentGeneratorCst.NS_J);
 		jmembersSitePrivileged.setAttribute("primaryType", "jnt:member", ContentGeneratorCst.NS_JCR);
 		sitePrivilegedNode.addContent(jmembersSitePrivileged);
-		
+
 		Element siteAdminGroup = new Element("site-administrators___2");
-		siteAdminGroup.setAttribute("member", "/sites/" + siteKey + "/groups/site-administrators", ContentGeneratorCst.NS_J);
+		siteAdminGroup.setAttribute("member", "/sites/" + siteKey + "/groups/site-administrators",
+				ContentGeneratorCst.NS_J);
 		siteAdminGroup.setAttribute("primaryType", "jnt:member", ContentGeneratorCst.NS_JCR);
 		jmembersSitePrivileged.setContent(siteAdminGroup);
 
@@ -102,7 +122,7 @@ public class UserGroupService {
 		Integer nbUsersLastGroup = getNbUsersLastGroup(nbUsers, nbGroups);
 
 		// 3 cptGroup = 1
-		int cptGroups = 1;			
+		int cptGroups = 1;
 		int cptUsersTotal = 1;
 		while (cptGroups <= nbGroups.intValue()) {
 			// is this the last group?

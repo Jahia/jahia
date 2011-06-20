@@ -803,7 +803,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     sb.append("] user=[").append(jcrSessionFactory.getCurrentUser().getUsername());
                 }
                 sb.append("] ip=[").append(req.getRemoteAddr()).append("] sessionID=[")
-                        .append(req.getSession(true).getId()).append("] in [")
+                        .append(req.getSession().getId()).append("] in [")
                         .append(System.currentTimeMillis() - startTime).append("ms]");
                 logger.info(sb.toString());
             }

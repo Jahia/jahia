@@ -142,7 +142,7 @@ public class FindUser extends BaseFindController {
                     sb.append("] user=[").append(user.getUsername());
                 }
                 sb.append("] ip=[").append(request.getRemoteAddr()).append("] sessionID=[")
-                        .append(request.getSession(true).getId()).append("] in [")
+                        .append(request.getSession().getId()).append("] in [")
                         .append(System.currentTimeMillis() - startTime).append("ms]");
                 logger.info(sb.toString());
             }

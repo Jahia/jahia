@@ -41,6 +41,8 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.Jahia;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -54,6 +56,7 @@ import org.jahia.services.render.RenderService;
 import org.jahia.services.render.View;
 
 import javax.jcr.*;
+import java.io.File;
 import java.util.*;
 
 /**
@@ -75,8 +78,8 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
 
         JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
         ExtendedNodeType realNodeType = (ExtendedNodeType) context.get("contextType");
-        String propertyName = context.containsKey("dependentProperties") ? ((List<String>)context.get("dependentProperties")).get(0) : null; 
-        
+        String propertyName = context.containsKey("dependentProperties") ? ((List<String>)context.get("dependentProperties")).get(0) : null;
+
         SortedSet<View> views = new TreeSet<View>();
 
         try {
@@ -109,7 +112,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                     Value[] types = node.getProperty("j:allowedTypes").getValues();
                     for (Value type : types) {
                         nodeTypeList.add(type.getString());
-                    }                    
+                    }
                 } else if (node !=null) {
                     // No restrictions get node type list from already existing nodes
                     NodeIterator nodeIterator = node.getNodes();
@@ -209,7 +212,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                             boolean found = false;
                             for (View view1 : viewsSet) {
                                 if (view1.getKey().equals(view.getKey()) ||
-                                    (StringUtils.isEmpty(param) && view1.getProperties().get("type") != null)) {
+                                        (StringUtils.isEmpty(param) && view1.getProperties().get("type") != null)) {
                                     found = true;
                                     break;
                                 }
@@ -241,8 +244,27 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                 for (Map.Entry<Object, Object> entry : properties.entrySet()) {
                     map.put(entry.getKey().toString(), entry.getValue());
                 }
-                vs.add(new ChoiceListValue(view.getKey(), map,
-                        new ValueImpl(view.getKey(), PropertyType.STRING, false)));
+                JahiaResourceBundle rb = new JahiaResourceBundle(null, locale, view.getModule().getName());
+
+                String displayName = rb.get(declaringPropertyDefinition.getResourceBundleKey() + "." + view.getKey().replace(':', '_'),
+                        view.getKey());
+                ChoiceListValue c =  new ChoiceListValue(displayName, map, new ValueImpl(view.getKey(), PropertyType.STRING, false));
+                try {
+
+                    final File imagePath = new File(
+                            view.getModule().getFilePath() + File.separator + "img" + File.separator + c.getValue().getString() + ".png");
+                    if (imagePath.exists()) {
+                        String s = Jahia.getContextPath();
+                        if (s.equals("/")) {
+                            s = "";
+                        }
+                        c.addProperty("image", s + (view.getModule().getRootFolderPath().startsWith("/")?"":"/")+view.getModule().getRootFolderPath() + "/img/" + c.getValue().getString() + ".png");
+                    }
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+
+                vs.add(c);
             }
         }
         Collections.sort(vs);

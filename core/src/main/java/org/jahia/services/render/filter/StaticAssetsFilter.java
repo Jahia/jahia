@@ -155,7 +155,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         String out = previousOut;
 
         Source source = new Source(previousOut);
-        long t= System.currentTimeMillis();
+
         @SuppressWarnings("unchecked")
         Map<String, Set<String>> assets = LazySortedMap.decorate(
                 TransformedSortedMap.decorate(new TreeMap<String, Set<String>>(ASSET_COMPARATOR), LOW_CASE_TRANSFORMER, NOPTransformer.INSTANCE), new SetFactory());
@@ -207,7 +207,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
         renderContext.getRequest().setAttribute("staticAssets", assets);
         renderContext.getRequest().setAttribute("staticAssetsOptions", assetsOptions);
-//        System.out.println(assets);
+
         OutputDocument outputDocument = new OutputDocument(source);
 
         if (renderContext.isAjaxRequest()) {
@@ -315,7 +315,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         }
 
         out = CLEANUP_RESOURCE_REGEXP.matcher(out).replaceAll("");
-        System.out.println("time="+(System.currentTimeMillis() -t));
         return out.trim();
     }
 

@@ -48,7 +48,6 @@ public class UserGroupService {
 		ClassLoader cl = this.getClass().getClassLoader();
 		OutputService os = new OutputService();
 		
-		InputStream is = cl.getResourceAsStream("publisher.png");
 		File f = new File(tempDirectory + sep + "content" + sep + "users");
 		FileUtils.forceMkdir(f);
 
@@ -62,7 +61,7 @@ public class UserGroupService {
 			FileUtils.forceMkdir(dirUser);
 			
 			File thumbnail = new File(dirUser + sep + "publisher.png");
-			os.writeInputStreamToFile(is, thumbnail);
+			os.writeInputStreamToFile(cl.getResourceAsStream("publisher.png"), thumbnail);
 		}
 		return f;
 	}

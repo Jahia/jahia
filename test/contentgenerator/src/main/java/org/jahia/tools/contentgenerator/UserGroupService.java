@@ -2,6 +2,7 @@ package org.jahia.tools.contentgenerator;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -44,6 +45,10 @@ public class UserGroupService {
 	}
 
 	public File createFileTreeForUsers(List<UserBO> users, File tempDirectory) throws IOException {
+		ClassLoader cl = this.getClass().getClassLoader();
+		OutputService os = new OutputService();
+		
+		InputStream is = cl.getResourceAsStream("publisher.png");
 		File f = new File(tempDirectory + sep + "content" + sep + "users");
 		FileUtils.forceMkdir(f);
 
@@ -55,6 +60,9 @@ public class UserGroupService {
 					+ userBO.getDirectoryName(3) + sep + userBO.getName() + sep + "files" + sep + "profiles" + sep
 					+ "publisher.png");
 			FileUtils.forceMkdir(dirUser);
+			
+			File thumbnail = new File(dirUser + sep + "publisher.png");
+			os.writeInputStreamToFile(is, thumbnail);
 		}
 		return f;
 	}

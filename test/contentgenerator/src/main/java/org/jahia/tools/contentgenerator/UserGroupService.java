@@ -29,7 +29,6 @@ public class UserGroupService {
 		doc.setRootElement(contentNode);
 
 		Element usersNode = new Element("users");
-		ContentGeneratorService.getInstance().addJcrAttributes(usersNode, jcrDate);
 		contentNode.addContent(usersNode);
 
 		UserBO rootUser = new UserBO("root", hashPassword("root"), jcrDate, null);
@@ -72,7 +71,6 @@ public class UserGroupService {
 
 		logger.info("Users and groups generated, creation of JCR document...");
 		Element groupsNode = new Element("groups");
-		groupsNode = ContentGeneratorService.getInstance().addJcrAttributes(groupsNode, jcrDate);
 
 		// site-administrators node
 		Element siteAdminNode = new Element("site-administrators");
@@ -91,7 +89,6 @@ public class UserGroupService {
 
 		// site-privileged node
 		Element sitePrivilegedNode = new Element("site-privileged");
-		sitePrivilegedNode = ContentGeneratorService.getInstance().addJcrAttributes(sitePrivilegedNode, jcrDate);
 		sitePrivilegedNode.setAttribute("mixinTypes", "systemNode", ContentGeneratorCst.NS_JMIX);
 		sitePrivilegedNode.setAttribute("primaryType", "jnt:group", ContentGeneratorCst.NS_JNT);
 		groupsNode.addContent(sitePrivilegedNode);

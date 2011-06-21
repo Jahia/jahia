@@ -270,26 +270,6 @@ public class ContentGeneratorService {
 		return sbNewDate.toString();
 	}
 
-	/**
-	 * Add dates and common attributes to JCR elements: - lastPublished -
-	 * lastPublishedBy - published: true - created - createdBy: "system" -
-	 * lastModified - lastModifiedBy: "root"
-	 * 
-	 * @param element
-	 * @return element with new attribute
-	 */
-	public Element addJcrAttributes(Element element, String jcrDate) {
-		element.setAttribute("lastPublished", jcrDate, ContentGeneratorCst.NS_J);
-		element.setAttribute("lastPublishedBy", "root", ContentGeneratorCst.NS_J);
-		element.setAttribute("published", Boolean.TRUE.toString(), ContentGeneratorCst.NS_J);
-		element.setAttribute("created", jcrDate, ContentGeneratorCst.NS_JCR);
-		element.setAttribute("createdBy", "system", ContentGeneratorCst.NS_JCR);
-		element.setAttribute("lastModified", jcrDate, ContentGeneratorCst.NS_JCR);
-		element.setAttribute("lastModifiedBy", "root", ContentGeneratorCst.NS_JCR);
-
-		return element;
-	}
-
 	// @TODO a supprimer
 	private Document readXmlFile(File xmlFile) {
 		SAXBuilder builder = new SAXBuilder();

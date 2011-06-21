@@ -58,7 +58,6 @@ public class GroupBO {
 	public Element getJcrXml() {
 
 		Element groupNode = new Element(this.name);
-		ContentGeneratorService.getInstance().addJcrAttributes(groupNode, this.dateJcr);
 		groupNode.setAttribute("primaryType", "jnt:group", ContentGeneratorCst.NS_JCR);
 
 		Element users = new Element("members", ContentGeneratorCst.NS_J);

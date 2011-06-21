@@ -169,9 +169,9 @@ public class ContentGeneratorService {
 
 			// Add XML Groups
 			UserGroupService userGroupService = new UserGroupService();
-			// TODO: params nbUsers / nbGroups
-			Integer nbUsers = Integer.valueOf(12);
-			Integer nbGroups = Integer.valueOf(5);
+
+			Integer nbUsers = export.getNumberOfUsers();
+			Integer nbGroups = export.getNumberOfGroups();;
 			List<GroupBO> groups = userGroupService.generateUsersAndGroups(nbUsers, nbGroups);
 			Element groupsNode = userGroupService.generateJcrGroups(export.getSiteKey(), groups);
 

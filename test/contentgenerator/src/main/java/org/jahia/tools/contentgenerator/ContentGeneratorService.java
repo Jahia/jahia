@@ -196,7 +196,7 @@ public class ContentGeneratorService {
 				GroupBO group = iterator.next();
 				users.addAll(group.getUsers());
 			}
-			File repositoryUsers = new File(tmpUsers + sep + "users.xml");
+			File repositoryUsers = new File(tmpUsers + sep + "repository.xml");
 			Document usersRepositoryDocument = userGroupService.createUsersRepository(users);
 			os.writeJdomDocumentToFile(usersRepositoryDocument, repositoryUsers);
 

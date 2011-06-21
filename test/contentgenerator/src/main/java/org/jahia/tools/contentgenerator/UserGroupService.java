@@ -189,8 +189,7 @@ public class UserGroupService {
 	}
 
 	public String hashPassword(String password) {
-		// TODO: make a real hash when method will be know. For now, we return
-		// "guillaume"
-		return "W6ph5Mm5Pz8GgiULbPgzG37mj9g";
+		// hash for "password"
+		return "W6ph5Mm5Pz8GgiULbPgzG37mj9g=";
 	}
 }

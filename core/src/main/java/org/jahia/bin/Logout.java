@@ -76,14 +76,14 @@ import org.springframework.web.servlet.mvc.Controller;
 public class Logout implements Controller {
     private static final String DEFAULT_LOCALE = Locale.ENGLISH.toString();
     private static final transient Logger logger = LoggerFactory.getLogger(Logout.class);
-    
+
     public static String getLogoutServletPath() {
         // TODO move this into configuration
         return "/cms/logout";
     }
-    
+
     protected CookieAuthConfig cookieAuthConfig;
-    
+
     protected URLResolverFactory urlResolverFactory;
 
     protected UrlRewriteService urlRewriteService;
@@ -118,7 +118,7 @@ public class Logout implements Controller {
             redirect = request.getHeader("referer");
             if (StringUtils.isNotEmpty(redirect) && (redirect.startsWith("http://") || redirect.startsWith("https://") && redirect.length() > 8 )) {
                 redirect = redirect.startsWith("http://") ? StringUtils.substringAfter(redirect, "http://") : StringUtils.substringAfter(redirect, "https://");
-                redirect = redirect.contains("/") ? "/" + StringUtils.substringAfter(redirect, "/") : null; 
+                redirect = redirect.contains("/") ? "/" + StringUtils.substringAfter(redirect, "/") : null;
             } else {
                 redirect = null;
             }
@@ -126,51 +126,46 @@ public class Logout implements Controller {
         if (StringUtils.isNotEmpty(redirect)) {
             String prefix = request.getContextPath() + "/cms/";
             if (redirect.startsWith(prefix)) {
-                if (!urlRewriteService.isSeoRulesEnabled()) {
-                    String url = "/" + StringUtils.substringAfter(redirect, prefix);
-                    String hash = StringUtils.substringAfterLast(url, "#");
-                    url = StringUtils.substringBefore(url, ";jsessionid");
-                    url = StringUtils.substringBefore(url, "?");
-                    url = StringUtils.substringBefore(url, "#");
-                    if (hash != null && hash.startsWith("/sites/") && url.contains("/sites/")) {
-                        url = StringUtils.substringBefore(url, "/sites/") + StringUtils.substringBefore(hash, ":") + ".html";
-                    }
-
-                    List<String> urls = new ArrayList<String>();
-                    urls.add(url);
-                    if (url.startsWith("/edit/")) {
-                        url = "/render/" + StringUtils.substringAfter(url,"/edit/");
-                        urls.add(url);
-                    }
-                    if (url.startsWith("/contribute/")) {
-                        url = "/render/" + StringUtils.substringAfter(url,"/contribute/");
-                        urls.add(url);
-                    }
-                    if (url.startsWith("/render/default/")) {
-                        url = "/render/live/" + StringUtils.substringAfter(url,"/render/default/");
-                        urls.add(url);
-                    }
-                    for (String currentUrl : urls) {
-                        try {
-                            URLResolver r = urlResolverFactory.createURLResolver(currentUrl, request.getServerName(), request);
-                            if (r.getPath().startsWith("/sites/")) {
-                                    JCRNodeWrapper n = r.getNode();
-                                    redirect = prefix + r.getServletPart() + "/" + r.getWorkspace() + "/"
-                                            + resolveLanguage(request, n.getResolveSite()) + n.getPath() + ".html";
-                            } else {
-                                redirect = request.getContextPath() + "/";
-                            }
-                            response.sendRedirect(response.encodeRedirectURL(redirect));
-                            return;
-                        } catch (Exception e) {
-                        }
-                    }
-                    response.sendRedirect(response.encodeRedirectURL(prefix + StringUtils.substringAfter(urls.get(0), "/")));
-                    return;
-                } else {
-                    // TODO handle the case when SEO rules are enabled
-                    redirect = null;
+                String url = "/" + StringUtils.substringAfter(redirect, prefix);
+                String hash = StringUtils.substringAfterLast(url, "#");
+                url = StringUtils.substringBefore(url, ";jsessionid");
+                url = StringUtils.substringBefore(url, "?");
+                url = StringUtils.substringBefore(url, "#");
+                if (hash != null && hash.startsWith("/sites/") && url.contains("/sites/")) {
+                    url = StringUtils.substringBefore(url, "/sites/") + StringUtils.substringBefore(hash, ":") + ".html";
                 }
+
+                List<String> urls = new ArrayList<String>();
+                urls.add(url);
+                if (url.startsWith("/edit/")) {
+                    url = "/render/" + StringUtils.substringAfter(url,"/edit/");
+                    urls.add(url);
+                }
+                if (url.startsWith("/contribute/")) {
+                    url = "/render/" + StringUtils.substringAfter(url,"/contribute/");
+                    urls.add(url);
+                }
+                if (url.startsWith("/render/default/")) {
+                    url = "/render/live/" + StringUtils.substringAfter(url,"/render/default/");
+                    urls.add(url);
+                }
+                for (String currentUrl : urls) {
+                    try {
+                        URLResolver r = urlResolverFactory.createURLResolver(currentUrl, request.getServerName(), request);
+                        if (r.getPath().startsWith("/sites/")) {
+                            JCRNodeWrapper n = r.getNode();
+                            redirect = prefix + r.getServletPart() + "/" + r.getWorkspace() + "/"
+                                    + resolveLanguage(request, n.getResolveSite()) + n.getPath() + ".html";
+                        } else {
+                            redirect = request.getContextPath() + "/";
+                        }
+                        response.sendRedirect(response.encodeRedirectURL(redirect));
+                        return;
+                    } catch (Exception e) {
+                    }
+                }
+                response.sendRedirect(response.encodeRedirectURL(prefix + StringUtils.substringAfter(urls.get(0), "/")));
+                return;
             }
         }
 
@@ -209,7 +204,7 @@ public class Logout implements Controller {
         if (redirectActiveStr == null || Boolean.parseBoolean(redirectActiveStr)) {
             doRedirect(request, response);
         }
-        
+
         return null;
     }
 

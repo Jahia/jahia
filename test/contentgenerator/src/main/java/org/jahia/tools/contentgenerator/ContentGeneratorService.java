@@ -184,7 +184,7 @@ public class ContentGeneratorService {
 			filesToZip.add(repositoryFile);
 
 			String zipFileName = export.getSiteKey() + ".zip";
-			File siteArchive = os.createSiteArchive(zipFileName, tempOutputDir.getParentFile().getAbsolutePath(), filesToZip);
+			File siteArchive = os.createSiteArchive(zipFileName, tempOutputDir.getAbsolutePath(), filesToZip);
 
 			// Users archive
 			filesToZip.clear();

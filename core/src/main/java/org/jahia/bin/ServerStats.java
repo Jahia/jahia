@@ -74,7 +74,11 @@ public class ServerStats implements Controller {
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         long startTime = System.currentTimeMillis();
+        String sessionId = null;
         try {
+            if (logger.isInfoEnabled()) {
+                sessionId = request.getSession().getId();
+            }
             if (request.getMethod().equals("GET") || request.getMethod().equals("POST")) {
                 handle(request, response);
             } else if (request.getMethod().equals("OPTIONS")) {
@@ -93,7 +97,7 @@ public class ServerStats implements Controller {
                     sb.append("] user=[").append(user.getUsername());
                 }
                 sb.append("] ip=[").append(request.getRemoteAddr()).append("] sessionID=[").append(
-                        request.getSession().getId()).append("] in [").append(
+                        sessionId).append("] in [").append(
                         System.currentTimeMillis() - startTime).append("ms]");
                 logger.info(sb.toString());
             }

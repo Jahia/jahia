@@ -677,9 +677,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             return null;
         }
         long startTime = System.currentTimeMillis();
-
+        String sessionId = null;
         try {
             final HttpSession session = req.getSession();
+            if (logger.isInfoEnabled()) {
+                sessionId = session.getId();
+            }
             Date date = getVersionDate(req);
             String versionLabel = getVersionLabel(req);
             URLResolver urlResolver = urlResolverFactory.createURLResolver(req.getPathInfo(), req.getServerName(), req);
@@ -803,7 +806,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     sb.append("] user=[").append(jcrSessionFactory.getCurrentUser().getUsername());
                 }
                 sb.append("] ip=[").append(req.getRemoteAddr()).append("] sessionID=[")
-                        .append(req.getSession().getId()).append("] in [")
+                        .append(sessionId).append("] in [")
                         .append(System.currentTimeMillis() - startTime).append("ms]");
                 logger.info(sb.toString());
             }

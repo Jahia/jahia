@@ -132,52 +132,48 @@ public class PageBO {
 		sb.append("	<"
 				+ this.getUniqueName()
 				+ " xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:jnt=\"http://www.jahia.org/jahia/nt/1.0\" xmlns:test=\"http://www.apache.org/jackrabbit/test\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:jmix=\"http://www.jahia.org/jahia/mix/1.0\" xmlns:j=\"http://www.jahia.org/jahia/1.0\" xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:rep=\"internal\" changefreq=\"monthly\" j:templateNode=\"/sites/"
-				+ this.getSiteKey()
-				+ "/templates/base/events\" jcr:created=\"2011-03-29T22:51:16.184+02:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-29T22:51:35.896+02:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"");
+				+ this.getSiteKey() + "/templates/base/events\" jcr:mixinTypes=\"");
 		if (this.getHasVanity()) {
 			sb.append("jmix:vanityUrlMapped ");
 		}
 		sb.append(" jmix:sitemap\" jcr:primaryType=\"jnt:page\" priority=\"0.5\">\n"
-				+ "		<j:translation_fr jcr:language=\"fr\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"mix:title\" jcr:primaryType=\"jnt:translation\" jcr:title=\""
+				+ "		<j:translation_fr jcr:language=\"fr\" jcr:mixinTypes=\"mix:title\" jcr:primaryType=\"jnt:translation\" jcr:title=\""
 				+ this.getTitleFr()
 				+ "\" />\n"
-				+ "		<j:translation_en jcr:language=\"en\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"mix:title\" jcr:primaryType=\"jnt:translation\" jcr:title=\""
-				+ this.getTitleEn()
-				+ "\" />\n"
-				+ "		<listA jcr:created=\"2011-03-28T13:00:41.415-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:contentList\">\n");
+				+ "		<j:translation_en jcr:language=\"en\" jcr:mixinTypes=\"mix:title\" jcr:primaryType=\"jnt:translation\" jcr:title=\""
+				+ this.getTitleEn() + "\" />\n" + "		<listA jcr:primaryType=\"jnt:contentList\">\n");
 		// Big text (content)
 		for (int i = 1; i <= numberBigText.intValue(); i++) {
-			sb.append("			<bigText_" + i + " jcr:created=\"2011-03-28T13:00:41.415-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"jmix:renderable\" jcr:primaryType=\"jnt:bigText\">\n"
-					+ "				<j:translation_fr jcr:language=\"fr\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" text=\""
-					+ this.getContentFr()
-					+ " \" />"
-					+ "				<j:translation_en jcr:language=\"en\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" text=\""
+			sb.append("			<bigText_" + i + " jcr:mixinTypes=\"jmix:renderable\" jcr:primaryType=\"jnt:bigText\">\n"
+					+ "				<j:translation_fr jcr:language=\"fr\" jcr:primaryType=\"jnt:translation\" text=\""
+					+ this.getContentFr() + " \" />"
+					+ "				<j:translation_en jcr:language=\"en\" jcr:primaryType=\"jnt:translation\" text=\""
 					+ this.getContentEn() + " \" />\n");
 			sb.append("			</bigText_" + i + ">\n");
 		}
 		if (this.getFileName() != null) {
-			sb.append(" 		<random-file j:lastPublished=\"2011-05-19T16:59:37.556-04:00\" j:lastPublishedBy=\"root\" j:published=\"true\" jcr:created=\"2011-05-19T16:47:00.851-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-05-19T16:56:26.242-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:fileReference\">"
-					+ " 			<j:translation_en j:lastPublished=\"2011-05-19T16:47:14.923-04:00\" j:lastPublishedBy=\"root\" j:published=\"true\" jcr:language=\"en\" jcr:lastModified=\"2011-05-19T16:47:01.057-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" jcr:title=\"My file\" />"
+			sb.append(" 		<random-file j:published=\"true\" jcr:primaryType=\"jnt:fileReference\">"
+					+ " 			<j:translation_en  j:published=\"true\" jcr:language=\"en\" jcr:lastModified=\"2011-05-19T16:47:01.057-04:00\" jcr:primaryType=\"jnt:translation\" jcr:title=\"My file\" />"
 					+ "			</random-file>");
 
-			sb.append(" 		<publication j:lastPublished=\"2011-05-19T16:59:37.556-04:00\" j:lastPublishedBy=\"root\" j:published=\"true\" jcr:created=\"2011-05-19T16:59:11.177-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-05-19T16:59:11.266-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:publication\">"
+			sb.append(" 		<publication jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:publication\">"
 					+ "				<j:translation_en author=\"Jahia Content Generator\" body=\"&lt;p&gt;  Random publication&lt;/p&gt; \" date=\"01/01/1970\" file=\"/sites/"
 					+ this.getSiteKey()
 					+ "/files/contributed/"
 					+ this.getFileName()
-					+ "\" j:lastPublished=\"2011-05-19T17:09:50.163-04:00\" j:lastPublishedBy=\"root\" j:published=\"true\" jcr:language=\"en\" jcr:lastModified=\"2011-05-19T17:09:35.467-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" jcr:title=\"Random publication\" source=\"Jahia\" />"
+					+ "\" jcr:language=\"en\" jcr:primaryType=\"jnt:translation\" jcr:title=\"Random publication\" source=\"Jahia\" />"
 					+ "			</publication>");
 		}
 
 		sb.append("		</listA>\n");
 
 		if (this.getHasVanity()) {
-			sb.append(" 	<vanityUrlMapping jcr:lastModified=\"2011-03-30T15:13:23.004+02:00\" jcr:lastModifiedBy=\"\" jcr:primaryType=\"jnt:vanityUrls\">"
+			sb.append(" 	<vanityUrlMapping jcr:primaryType=\"jnt:vanityUrls\">"
 					+ "			<_x0025_2F"
 					+ this.getUniqueName()
 					+ " j:active=\"true\" j:default=\"true\" j:url=\"/"
 					+ this.getUniqueName()
-					+ "\" jcr:created=\"2011-03-30T15:13:22.874+02:00\" jcr:createdBy=\" system \" jcr:language=\"en\" jcr:lastModified=\"2011-03-30T15:13:23.004+02:00\" jcr:lastModifiedBy=\"\" jcr:primaryType=\"jnt:vanityUrl\" />"
+					+ "\" jcr:language=\"en\" jcr:lastModified=\"2011-03-30T15:13:23.004+02:00\" jcr:primaryType=\"jnt:vanityUrl\" />"
 					+ "		</vanityUrlMapping>");
 		}
 		return sb.toString();
@@ -194,7 +190,7 @@ public class PageBO {
 
 		if (null != this.subPages) {
 			for (Iterator<PageBO> iterator = subPages.iterator(); iterator.hasNext();) {
-				PageBO subPage = (PageBO) iterator.next();
+				PageBO subPage = iterator.next();
 				sb.append(subPage.toString());
 			}
 		}

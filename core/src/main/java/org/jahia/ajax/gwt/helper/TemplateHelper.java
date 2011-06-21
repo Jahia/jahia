@@ -128,7 +128,7 @@ public class TemplateHelper {
             JCRSiteNode site = node.getResolveSite();
             renderContext.setSite(site);
             String res = renderService.render(r, renderContext);
-            Map<String, Set<String>> map = renderContext.getStaticAssets();
+            Map<String, Set<String>> map = (Map<String, Set<String>>) renderContext.getRequest().getAttribute("staticAssets");
             String constraints = ConstraintsHelper.getConstraints(node);
             if (constraints == null) {
                 constraints = "";

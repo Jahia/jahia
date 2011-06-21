@@ -106,7 +106,6 @@ public class AddResourcesTag extends AbstractJahiaTag {
 
         final Map<String, String> mapping = getStaticAssetMapping();
 
-        final Set<String> links = renderContext.getStaticAssets(type);
         String[] strings = resources.split(",");
 
         List<String> lookupPaths = new LinkedList<String>();
@@ -121,22 +120,11 @@ public class AddResourcesTag extends AbstractJahiaTag {
             if (resource.startsWith("/") || resource.startsWith("http://") || resource.startsWith("https://")) {
                 found = true;
                 resource = mapping.containsKey(resource) ? mapping.get(resource) : resource;
-                if (links == null || !links.contains(resource)) {
-                    renderContext.addStaticAsset(type, resource, insert);
-                    if (title != null) {
-                        renderContext.getStaticAssetOptions().get(resource).put("title", title);
-                    }
-                    writeResourceTag(type, resource, insert, resource, title, null);
-                }
+                writeResourceTag(type, resource, insert, resource, title, null);
             } else {
                 for (String lookupPath : lookupPaths) {
                     String path = lookupPath + resource;
                     String pathWithContext = renderContext.getRequest().getContextPath() + path;
-                    if (links != null && links.contains(pathWithContext)) {
-                        // we have it already
-                        found = true;
-                        break;
-                    }
                     try {
                         if (pageContext.getServletContext().getResource(path) != null) {
                             // we found it
@@ -146,13 +134,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
                                 path = mapping.get(path);
                                 pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ? renderContext.getRequest().getContextPath() + path : path;
                             }
-                            if (links == null || !links.contains(pathWithContext)) {
-                                renderContext.addStaticAsset(type, pathWithContext, insert);
-                                if (title != null) {
-                                    renderContext.getStaticAssetOptions().get(resource).put("title", title);
-                                }
-                                writeResourceTag(type, pathWithContext, insert, resource, title, null);
-                            }
+                            writeResourceTag(type, pathWithContext, insert, resource, title, null);
                             found = true;
                             if (builder.length() > 0) {
                                 builder.append(",");
@@ -192,10 +174,8 @@ public class AddResourcesTag extends AbstractJahiaTag {
             String asset = getBodyContent().getString();
             getBodyContent().clearBody();
             if (key != null) {
-                getRenderContext().addStaticAsset("inline", asset, insert, key);
                 writeResourceTag("inline", asset, insert, null, null, key);
             } else {
-                getRenderContext().addStaticAsset("inline", asset, insert);
                 writeResourceTag("inline", asset, insert, null, null, null);
             }
         }
@@ -218,26 +198,36 @@ public class AddResourcesTag extends AbstractJahiaTag {
     }
 
     private void writeResourceTag(String type, String path, boolean insert, String resource, String title, String key) {
-        if (getRenderContext().isLiveMode()) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("<!-- cache:resource type=\"");
-            builder.append(type != null ? type : "").append("\"");
-            try {
-                builder.append(" path=\"").append(URLEncoder.encode(path != null ? path : "", "UTF-8")).append("\"");
-            } catch (UnsupportedEncodingException e) {
-                logger.error(e.getMessage(), e);
-            }
-            builder.append(" insert=\"").append(insert).append("\"");
-            builder.append(" resource=\"").append(resource != null ? resource : "").append("\"");
-            builder.append(" title=\"").append(title != null ? title : "").append("\"");
-            builder.append(" key=\"").append(key != null ? key : "").append("\"");
-            builder.append(" -->\n");
-            builder.append("\n<!-- /cache:resource -->\n");
-            try {
-                pageContext.getOut().print(builder.toString());
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
+        StringBuilder builder = new StringBuilder();
+        builder.append("<jahia:resource type=\"");
+        builder.append(type != null ? type : "").append("\"");
+        try {
+            builder.append(" path=\"").append(URLEncoder.encode(path != null ? path : "", "UTF-8")).append("\"");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage(), e);
+        }
+        builder.append(" insert=\"").append(insert).append("\"");
+        builder.append(" resource=\"").append(resource != null ? resource : "").append("\"");
+        builder.append(" title=\"").append(title != null ? title : "").append("\"");
+        builder.append(" key=\"").append(key != null ? key : "").append("\"");
+        builder.append(" />\n");
+//        builder.append("<!-- cache:resource type=\"");
+//        builder.append(type != null ? type : "").append("\"");
+//        try {
+//            builder.append(" path=\"").append(URLEncoder.encode(path != null ? path : "", "UTF-8")).append("\"");
+//        } catch (UnsupportedEncodingException e) {
+//            logger.error(e.getMessage(), e);
+//        }
+//        builder.append(" insert=\"").append(insert).append("\"");
+//        builder.append(" resource=\"").append(resource != null ? resource : "").append("\"");
+//        builder.append(" title=\"").append(title != null ? title : "").append("\"");
+//        builder.append(" key=\"").append(key != null ? key : "").append("\"");
+//        builder.append(" -->\n");
+//        builder.append("\n<!-- /cache:resource -->\n");
+        try {
+            pageContext.getOut().print(builder.toString());
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
         }
     }
 

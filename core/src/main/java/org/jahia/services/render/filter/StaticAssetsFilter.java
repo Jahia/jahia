@@ -41,10 +41,19 @@
 package org.jahia.services.render.filter;
 
 import net.htmlparser.jericho.*;
+import org.apache.commons.collections.ComparatorUtils;
+import org.apache.commons.collections.Factory;
+import org.apache.commons.collections.FastHashMap;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.functors.NOPTransformer;
+import org.apache.commons.collections.map.LazyMap;
+import org.apache.commons.collections.map.LazySortedMap;
+import org.apache.commons.collections.map.TransformedSortedMap;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.SetFactory;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.utils.ScriptEngineUtils;
@@ -63,7 +72,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.List;
+import java.net.URLDecoder;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Render filter that "injects" the static assets into the HEAD section of the
@@ -72,6 +83,39 @@ import java.util.List;
  * @author Sergiy Shyrkov
  */
 public class StaticAssetsFilter extends AbstractFilter implements ApplicationListener<ApplicationEvent> {
+
+
+    private static final Transformer LOW_CASE_TRANSFORMER = new Transformer() {
+        public Object transform(Object input) {
+            return input != null ? input.toString().toLowerCase() : null;
+        }
+    };
+
+    private static final FastHashMap RANK;
+    static {
+        RANK = new FastHashMap();
+        RANK.put("css", Integer.valueOf(1));
+        RANK.put("inlinecss", Integer.valueOf(2));
+        RANK.put("javascript", Integer.valueOf(3));
+        RANK.put("inlinejavascript", Integer.valueOf(4));
+        RANK.put("inline", Integer.valueOf(5));
+        RANK.put("unknown", Integer.valueOf(6));
+        RANK.setFast(true);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static final Comparator<String> ASSET_COMPARATOR = ComparatorUtils
+            .transformedComparator(null, new Transformer() {
+                public Object transform(Object input) {
+                    Integer rank = null;
+                    if (input != null) {
+                        rank = (Integer) RANK.get(input.toString());
+                    }
+
+                    return rank != null ? rank : RANK.get("unknown");
+                }
+            });
+
 
     class AssetsScriptContext extends SimpleScriptContext {
         private Writer writer = null;
@@ -101,12 +145,71 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private String template;
     private String templateExtension;
 
+    private static final Pattern CLEANUP_RESOURCE_REGEXP = Pattern.compile(
+            "<jahia:resource (.*)/>\n");
+
+
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
         String out = previousOut;
+
         Source source = new Source(previousOut);
+        long t= System.currentTimeMillis();
+        @SuppressWarnings("unchecked")
+        Map<String, Set<String>> assets = LazySortedMap.decorate(
+                TransformedSortedMap.decorate(new TreeMap<String, Set<String>>(ASSET_COMPARATOR), LOW_CASE_TRANSFORMER, NOPTransformer.INSTANCE), new SetFactory());
+
+        @SuppressWarnings("unchecked")
+        Map<String, Map<String, String>> assetsOptions = LazyMap.decorate(
+                new HashMap<String, Map<String, Object>>(), new Factory() {
+                    public Object create() {
+                        return new HashMap<String, Object>();
+                    }
+                });
+
+        List<StartTag> esiResourceTags = source.getAllStartTags("jahia:resource");
+        for (StartTag esiResourceTag : esiResourceTags) {
+            String type = esiResourceTag.getAttributeValue("type");
+            String path = esiResourceTag.getAttributeValue("path");
+            path = URLDecoder.decode(path, "UTF-8");
+            Boolean insert = Boolean.parseBoolean(esiResourceTag.getAttributeValue("insert"));
+            String resourceS = esiResourceTag.getAttributeValue("resource");
+            String title = esiResourceTag.getAttributeValue("title");
+            String keyS = esiResourceTag.getAttributeValue("key");
+            Set<String> stringSet = assets.get(type);
+            if (stringSet == null) {
+                stringSet = new LinkedHashSet<String>();
+            }
+            if (insert) {
+                LinkedHashSet<String> my = new LinkedHashSet<String>();
+                my.add(path);
+                my.addAll(stringSet);
+                stringSet = my;
+            } else {
+                if (!"".equals(keyS)) {
+                    stringSet.clear();
+                    stringSet.add(path);
+                } else {
+                    stringSet.add(path);
+                }
+            }
+            assets.put(type, stringSet);
+            if (title != null && !"".equals(title.trim())) {
+                Map<String, String> stringMap = assetsOptions.get(resourceS);
+                if (stringMap == null) {
+                    stringMap = new HashMap<String, String>();
+                    assetsOptions.put(resourceS, stringMap);
+                }
+                stringMap.put("title", title);
+            }
+        }
+
+        renderContext.getRequest().setAttribute("staticAssets", assets);
+        renderContext.getRequest().setAttribute("staticAssetsOptions", assetsOptions);
+//        System.out.println(assets);
         OutputDocument outputDocument = new OutputDocument(source);
+
         if (renderContext.isAjaxRequest()) {
             String templateContent = getAjaxResolvedTemplate(); 
             if (templateContent != null) {
@@ -133,13 +236,16 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     }
                 }
             }
-        } else {
-            if (renderContext.isEditMode() && resource.getContextConfiguration().equals("page")) {
+        } else if (resource.getContextConfiguration().equals("page")) {
+            if (renderContext.isEditMode()) {
                 // Add static div for edit mode
                 List<Element> bodyElementList = source.getAllElements(HTMLElementName.BODY);
-
-                renderContext.addStaticAsset("javascript",renderContext.getRequest().getContextPath()+"/modules/assets/javascript/jquery.js");
-                renderContext.addStaticAsset("javascript",renderContext.getRequest().getContextPath()+"/modules/assets/javascript/jquery.Jcrop.js");
+                Set<String> javascript = assets.get("javascript");
+                if (javascript == null) {
+                    assets.put("javascript", (javascript = new HashSet<String>()));
+                }
+                javascript.add(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.js");
+                javascript.add(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.Jcrop.js");
 
                 if (bodyElementList.size() > 0) {
                     Element bodyElement = bodyElementList.get(bodyElementList.size() - 1);
@@ -208,6 +314,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             out = outputDocument.toString();
         }
 
+        out = CLEANUP_RESOURCE_REGEXP.matcher(out).replaceAll("");
+        System.out.println("time="+(System.currentTimeMillis() -t));
         return out.trim();
     }
 

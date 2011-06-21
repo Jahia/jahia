@@ -77,37 +77,6 @@ import org.jahia.utils.LanguageCodeConverters;
  * @author toto
  */
 public class RenderContext {
-    
-    private static final Transformer LOW_CASE_TRANSFORMER = new Transformer() {
-        public Object transform(Object input) {
-            return input != null ? input.toString().toLowerCase() : null;
-        }
-    };
-
-    private static final FastHashMap RANK;
-    static {
-        RANK = new FastHashMap();
-        RANK.put("css", Integer.valueOf(1));
-        RANK.put("inlinecss", Integer.valueOf(2));
-        RANK.put("javascript", Integer.valueOf(3));
-        RANK.put("inlinejavascript", Integer.valueOf(4));
-        RANK.put("inline", Integer.valueOf(5));
-        RANK.put("unknown", Integer.valueOf(6));
-        RANK.setFast(true);
-    }
-    @SuppressWarnings("unchecked")
-    private static final Comparator<String> ASSET_COMPARATOR = ComparatorUtils
-            .transformedComparator(null, new Transformer() {
-                public Object transform(Object input) {
-                    Integer rank = null;
-                    if (input != null) {
-                        rank = (Integer) RANK.get(input.toString());
-                    }
-
-                    return rank != null ? rank : RANK.get("unknown");
-                }
-            });
-
     private HttpServletRequest request;
     private HttpServletResponse response;
     private Resource mainResource;
@@ -127,25 +96,11 @@ public class RenderContext {
     
     private String redirect;
     
-    @SuppressWarnings("unchecked")
-    private Map<String, Set<String>> staticAssets = LazySortedMap.decorate(
-            TransformedSortedMap.decorate(new TreeMap<String, Set<String>>(ASSET_COMPARATOR), LOW_CASE_TRANSFORMER, NOPTransformer.INSTANCE), new SetFactory());
-
-    /** Static asset options (e.g. link title) keyed by asset resource (URL) */
-    @SuppressWarnings("unchecked")
-    private Map<String, Map<String, String>> staticAssetOptions = LazyMap.decorate(
-            new HashMap<String, Map<String, Object>>(), new Factory() {
-                public Object create() {
-                    return new HashMap<String, Object>();
-                }
-            });
-
     private String contentType;
 
     private Map<String,Map <String, Integer>> templatesCacheExpiration = new HashMap<String, Map<String,Integer>>();
     private boolean liveMode = false;
 
-    private Set<String> resourceFileNames = new LinkedHashSet<String>();
     private boolean previewMode = false;
     private boolean ajaxRequest = false;
     private Resource ajaxResource = null;
@@ -227,57 +182,6 @@ public class RenderContext {
 
     public Map<String, Map<String, Integer>> getTemplatesCacheExpiration() {
         return templatesCacheExpiration;
-    }
-
-    public void addStaticAsset(String assetType,String asset) {
-        addStaticAsset(assetType, asset, false);
-    }
-
-    public void addStaticAsset(String assetType,String asset, boolean insert) {
-        addStaticAsset(assetType,asset,insert,"");
-    }
-    public void addStaticAsset(String assetType,String asset, boolean insert, String key) {
-        String type = assetType + key;
-        Set<String> assets = getStaticAssets(type);
-        boolean isInlined = "inline".equalsIgnoreCase(assetType);
-        if (isInlined || !resourceFileNames.contains(asset)) {
-            if (insert) {
-                LinkedHashSet<String> my = new LinkedHashSet<String>();
-                my.add(asset);
-                my.addAll(assets);
-                assets = my;
-            } else {
-                if(!"".equals(key)) {
-                    assets.clear();
-                    assets.add(asset);
-                } else {
-                assets.add(asset);
-                }
-            }
-            staticAssets.put(type, assets);
-            if (!isInlined) {
-                resourceFileNames.add(asset);
-            }
-        }
-    }
-
-    public void addStaticAsset(Map<String, Set<String>> staticAssets) {
-        for (Map.Entry<String, Set<String>> entry : staticAssets.entrySet()) {
-            final Set<String> assets = getStaticAssets(entry.getKey());
-            if(assets!=null) {
-                assets.addAll(entry.getValue());
-            } else {
-                this.staticAssets.put(entry.getKey(),entry.getValue());
-            }
-        }
-    }
-
-    public Set<String> getStaticAssets(String assetType) {
-        return staticAssets.get(assetType);
-    }
-
-    public Map<String, Set<String>> getStaticAssets() {
-        return staticAssets;
     }
 
     public void setMainResource(Resource mainResource) {
@@ -372,17 +276,6 @@ public class RenderContext {
         this.redirect = redirect;
     }
 
-    /**
-     * @return the staticAssetOptions
-     */
-    public Map<String, Map<String, String>> getStaticAssetOptions() {
-        return staticAssetOptions;
-    }
-
-    public void resetStaticAssets() {
-        this.staticAssets.clear();
-    }
-    
     public boolean isEnterpriseEdition() {
         return Jahia.isEnterpriseEdition();
     }

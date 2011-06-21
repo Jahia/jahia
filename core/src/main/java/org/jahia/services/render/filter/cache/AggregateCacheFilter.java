@@ -327,10 +327,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         "</esi:include>");
                 cachedRenderContent = ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll(
                         "<esi:include src=\"$1\">");
-                cachedRenderContent = ESI_RESOURCE_STOPTAG_REGEXP.matcher(cachedRenderContent).replaceAll(
-                        "</esi:resource>");
-                cachedRenderContent = ESI_RESOURCE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll(
-                        "<esi:resource type=\"$1\" path=\"$2\" insert=\"$3\" resource=\"$4\" title=\"$5\" key=\"$6\">");
+
                 if (debugEnabled) {
                     logger.debug("Storing for key: " + key);
                 }
@@ -347,54 +344,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 HashMap<String, Set<String>> assets = new HashMap<String, Set<String>>();
                 HashMap<String, Map<String, String>> assetsOptions = new HashMap<String, Map<String, String>>();
                 source = new Source(output);
-                List<StartTag> esiResourceTags = source.getAllStartTags("esi:resource");
-                for (StartTag esiResourceTag : esiResourceTags) {
-                    String type = esiResourceTag.getAttributeValue("type");
-                    String path = esiResourceTag.getAttributeValue("path");
-                    path = URLDecoder.decode(path, "UTF-8");
-                    Boolean insert = Boolean.parseBoolean(esiResourceTag.getAttributeValue("insert"));
-                    String resourceS = esiResourceTag.getAttributeValue("resource");
-                    String title = esiResourceTag.getAttributeValue("title");
-                    String keyS = esiResourceTag.getAttributeValue("key");
-                    Set<String> stringSet = assets.get(type);
-                    if (stringSet == null) {
-                        stringSet = new LinkedHashSet<String>();
-                    }
-                    if (insert) {
-                        LinkedHashSet<String> my = new LinkedHashSet<String>();
-                        my.add(path);
-                        my.addAll(stringSet);
-                        stringSet = my;
-                    } else {
-                        if (!"".equals(keyS)) {
-                            stringSet.clear();
-                            stringSet.add(path);
-                        } else {
-                            stringSet.add(path);
-                        }
-                    }
-                    assets.put(type, stringSet);
-                    if (title != null && !"".equals(title.trim())) {
-                        Map<String, String> stringMap = assetsOptions.get(resourceS);
-                        if (stringMap == null) {
-                            stringMap = new HashMap<String, String>();
-                            assetsOptions.put(resourceS, stringMap);
-                        }
-                        stringMap.put("title", title);
-                    }
-                }
 
-                outputDocument = emptyEsiResourceTagContainer(esiResourceTags, source);
                 output = outputDocument.toString();
                 cachedRenderContent = surroundWithCacheTag(key, output);
                 CacheEntry<String> cacheEntry = new CacheEntry<String>(cachedRenderContent);
-                if (assets.size() > 0) {
-                    cacheEntry.setProperty(RESOURCES, assets);
-                }
-
-                if (assetsOptions.size() > 0) {
-                    cacheEntry.setProperty(RESOURCES_OPTIONS, assetsOptions);
-                }
 
                 if (resource.getFormInputs() != null) {
                     cacheEntry.setProperty(FORM_TOKEN, resource.getFormInputs());
@@ -559,17 +512,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     private void setResources(RenderContext renderContext, CacheEntry<?> cacheEntry) {
-        if (cacheEntry.getProperty(RESOURCES) != null) {
-            Map<String, Set<String>> map = (Map<String, Set<String>>) cacheEntry.getProperty(RESOURCES);
-            renderContext.addStaticAsset(map);
-        }
-        if (cacheEntry.getProperty(RESOURCES_OPTIONS) != null) {
-            Map<String, Map<String, String>> map = (Map<String, Map<String, String>>) cacheEntry.getProperty(
-                    RESOURCES_OPTIONS);
-            for (String s : map.keySet()) {
-                renderContext.getStaticAssetOptions().get(s).putAll(map.get(s));
-            }
-        }
         Object property = cacheEntry.getProperty(FORM_TOKEN);
         if (property != null) {
             Map<String, Map<String, String>> forms = (Map<String, Map<String, String>>) renderContext.getRequest().getAttribute(
@@ -716,7 +658,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public static String removeEsiTags(String content) {
         if (StringUtils.isNotEmpty(content)) {
             String s = CLEANUP_REGEXP.matcher(content).replaceAll("");
-            s = CLEANUP_RESOURCE_REGEXP.matcher(s).replaceAll("");
             return s;
         } else {
             return content;

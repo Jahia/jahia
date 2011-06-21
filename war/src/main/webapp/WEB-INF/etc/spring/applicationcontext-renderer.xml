@@ -49,7 +49,7 @@
 	</bean>
 	<bean class="org.jahia.services.render.filter.StaticAssetsFilter">
 		<property name="priority" value="0" />
-		<property name="applyOnConfigurations" value="page" />
+		<property name="applyOnConfigurations" value="page,gwt" />
 		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
         <property name="ajaxTemplate" value="/modules/assets/WEB-INF/scripts/ajaxResources.groovy"/>

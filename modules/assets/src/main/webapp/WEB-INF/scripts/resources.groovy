@@ -15,7 +15,7 @@ if (renderContext.mainResource.contextConfiguration == 'page') {
   println "\tvar contextJsParameters={contextPath:\"${contextPath}\",lang:\"${renderContext.mainResourceLocale}\",uilang:\"${renderContext.UILocale}\",siteUuid:\"${renderContext.site.identifier}\",wcag:${renderContext.site.WCAGComplianceCheckEnabled}}";
   println "</script>";
 }
-renderContext.staticAssets.each { resource ->
+renderContext.request.getAttribute("staticAssets").each { resource ->
   resource.each { type ->
     switch ( type.key ) {
       case "css" :

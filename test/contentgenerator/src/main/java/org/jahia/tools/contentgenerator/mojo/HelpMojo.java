@@ -58,7 +58,6 @@ public class HelpMojo extends AbstractMojo {
 
 		getLog().info("* jahia.cg.poolDirectory (required if jahia.cg.addFiles != " + ContentGeneratorCst.VALUE_NONE + ")");
 		getLog().info("* jahia.cg.numberOfFilesToGenerate required for file generation. Files will be generated in poolDirectory path.");
-		getLog().info("* jahia.cg.numberOfFilesToGenerate required for file generation. Files will be generated in poolDirectory path.");
 		getLog().info("* jahia.cg.numberOfBigTextPerPage (optional, default = 1)");
 		getLog().info("* jahia.cg.numberOfUsers: generate user1 to user${numberOfUsers}. Password is \"password\"");
 		getLog().info("* jahia.cg.numberOfGroups: generate group1 to user${numberOfGroups}. First groups contain one more user is some users can not make a full group. ");

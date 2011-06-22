@@ -165,19 +165,18 @@ public class EditLinker implements Linker {
     public void handleNewModuleSelection() {
         syncSelectionContext(LinkerSelectionContext.BOTH);
         toolbar.handleNewLinkerSelection();
-        syncSelectionContext(LinkerSelectionContext.SELECTED_NODE_ONLY);
         mainModule.handleNewModuleSelection(selectedModule);
         sidePanel.handleNewModuleSelection(selectedModule);
     }
 
     public void handleNewMainSelection() {
-        syncSelectionContext(LinkerSelectionContext.SELECTED_NODE_ONLY);
+        syncSelectionContext(LinkerSelectionContext.BOTH);
         mainModule.handleNewMainSelection(mainPath,template, param);
         sidePanel.handleNewMainSelection(mainPath);
     }
 
     public void handleNewMainNodeLoaded() {
-        syncSelectionContext(LinkerSelectionContext.SELECTED_NODE_ONLY);
+        syncSelectionContext(LinkerSelectionContext.BOTH);
         toolbar.handleNewMainNodeLoaded(mainModule.getNode());
         sidePanel.handleNewMainNodeLoaded(mainModule.getNode());
     }

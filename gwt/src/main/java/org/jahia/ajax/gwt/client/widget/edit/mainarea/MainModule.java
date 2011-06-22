@@ -164,7 +164,7 @@ public class MainModule extends Module {
                 public boolean beforeShow() {
                     makeSelected();
 
-                    if (editLinker.getSelectionContext().getSingleSelection() == null) {
+                    if (editLinker.getSelectionContext().getSingleSelection() == editLinker.getSelectionContext().getMainNode()) {
                         return false;
                     }
                     return super.beforeShow();

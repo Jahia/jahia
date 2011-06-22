@@ -260,7 +260,7 @@ public class CreateContentEngine extends AbstractContentEngine {
                             changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
                         }
 
-                        changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
+                        changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(false, lang));
                     }
 
                     if (pe != null) {

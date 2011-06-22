@@ -134,8 +134,10 @@ public class TemplateHelper {
                 constraints = "";
             }
             Map<String, List<String>> m = new HashMap<String, List<String>>();
-            for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
-                m.put(entry.getKey(), new ArrayList<String>(entry.getValue()));
+            if (map != null) {
+                for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
+                    m.put(entry.getKey(), new ArrayList<String>(entry.getValue()));
+                }
             }
             result = new GWTRenderResult(res, m, constraints, node.getDisplayableName());
         } catch (PathNotFoundException e) {
@@ -182,7 +184,7 @@ public class TemplateHelper {
         return templatesPath;
     }
 
-        /**
+    /**
      * Get template set
      *
      * @param node

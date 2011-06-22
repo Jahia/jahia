@@ -104,7 +104,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 JCRNodeWrapper templateNode = (JCRNodeWrapper) iterator.next();
 
                 boolean ok = true;
-                if (templateNode.hasProperty("j:applyOn")) {
+                if (templateNode. hasProperty("j:applyOn")) {
                     ok = false;
                     Value[] types = templateNode.getProperty("j:applyOn").getValues();
                     for (Value value : types) {
@@ -120,9 +120,9 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 if (ok && templateNode.hasProperty("j:hiddenTemplate")) {
                     ok = !templateNode.getProperty("j:hiddenTemplate").getBoolean();
                 }
-
-                ok &= node.hasPermission("template-"+templateNode.getName());
-
+                if ("pageTemplate".equals(type)) {
+                    ok &= node.hasPermission("template-"+templateNode.getName());
+                }
                 if (ok) {
                     vs.add(new ChoiceListValue(templateNode.getName(), null, session.getValueFactory().createValue(templateNode.getIdentifier(),
                             PropertyType.WEAKREFERENCE)));

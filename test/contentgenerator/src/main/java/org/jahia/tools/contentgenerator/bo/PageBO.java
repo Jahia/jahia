@@ -152,11 +152,11 @@ public class PageBO {
 			sb.append("			</bigText_" + i + ">\n");
 		}
 		if (this.getFileName() != null) {
-			sb.append(" 		<random-file j:published=\"true\" jcr:primaryType=\"jnt:fileReference\">"
-					+ " 			<j:translation_en  j:published=\"true\" jcr:language=\"en\" jcr:lastModified=\"2011-05-19T16:47:01.057-04:00\" jcr:primaryType=\"jnt:translation\" jcr:title=\"My file\" />"
+			sb.append(" 		<random-file jcr:primaryType=\"jnt:fileReference\">"
+					+ " 			<j:translation_en  jcr:language=\"en\" jcr:primaryType=\"jnt:translation\" jcr:title=\"My file\" />"
 					+ "			</random-file>");
 
-			sb.append(" 		<publication jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:publication\">"
+			sb.append(" 		<publication jcr:primaryType=\"jnt:publication\">"
 					+ "				<j:translation_en author=\"Jahia Content Generator\" body=\"&lt;p&gt;  Random publication&lt;/p&gt; \" date=\"01/01/1970\" file=\"/sites/"
 					+ this.getSiteKey()
 					+ "/files/contributed/"
@@ -173,7 +173,7 @@ public class PageBO {
 					+ this.getUniqueName()
 					+ " j:active=\"true\" j:default=\"true\" j:url=\"/"
 					+ this.getUniqueName()
-					+ "\" jcr:language=\"en\" jcr:lastModified=\"2011-03-30T15:13:23.004+02:00\" jcr:primaryType=\"jnt:vanityUrl\" />"
+					+ "\" jcr:language=\"en\" jcr:primaryType=\"jnt:vanityUrl\" />"
 					+ "		</vanityUrlMapping>");
 		}
 		return sb.toString();

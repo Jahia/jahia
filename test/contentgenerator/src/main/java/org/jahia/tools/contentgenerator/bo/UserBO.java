@@ -78,7 +78,6 @@ public class UserBO {
 		userElement.setAttribute("email", this.email);
 		userElement.setAttribute("emailNotificationsDisabled", Boolean.FALSE.toString());
 		userElement.setAttribute("accountLocked", Boolean.FALSE.toString(), ContentGeneratorCst.NS_J);
-		userElement.setAttribute("checkinDate", this.jcrDate, ContentGeneratorCst.NS_J);
 		userElement.setAttribute("email", this.email, ContentGeneratorCst.NS_J);
 		userElement.setAttribute("external", Boolean.FALSE.toString(), ContentGeneratorCst.NS_J);
 		userElement.setAttribute("firstName", this.name + " firstname", ContentGeneratorCst.NS_J);
@@ -108,14 +107,14 @@ public class UserBO {
 		String dir3 = getDirectoryName(3);
 
 		Element root = new Element(dir1);
-		root.setAttribute("primaryType", "jnt:usersFolder");
+		root.setAttribute("primaryType", "jnt:usersFolder", ContentGeneratorCst.NS_JCR);
 
 		Element subElement1 = new Element(dir2);
-		subElement1.setAttribute("primaryType", "jnt:usersFolder");
+		subElement1.setAttribute("primaryType", "jnt:usersFolder", ContentGeneratorCst.NS_JCR);
 		root.addContent(subElement1);
 
 		Element subElement2 = new Element(dir3);
-		subElement2.setAttribute("primaryType", "jnt:usersFolder");
+		subElement2.setAttribute("primaryType", "jnt:usersFolder", ContentGeneratorCst.NS_JCR);
 		subElement1.addContent(subElement2);
 
 		subElement2.addContent(userElement);

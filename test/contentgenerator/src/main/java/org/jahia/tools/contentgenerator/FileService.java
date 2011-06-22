@@ -139,14 +139,8 @@ public class FileService {
 		FileUtils.writeStringToFile(tempXmlFile, sep);
 
 		StringBuffer filesXml = new StringBuffer();
-		filesXml.append("\t<files j:lastPublished=\"" + now
-				+ "\" j:lastPublishedBy=\"root\" j:published=\"true\" jcr:created=\"" + now
-				+ "\" jcr:createdBy=\"system\" jcr:lastModified=\"" + now
-				+ "\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:folder\">");
-		filesXml.append("    <contributed j:lastPublished=\"" + now
-				+ "\" j:lastPublishedBy=\"root\" j:published=\"true\" jcr:created=\"" + now
-				+ "\" jcr:createdBy=\"system\" jcr:lastModified=\"" + now
-				+ "\" jcr:lastModifiedBy=\"\" jcr:mixinTypes=\"jmix:accessControlled\" jcr:primaryType=\"jnt:folder\">\n");
+		filesXml.append("\t<files jcr:primaryType=\"jnt:folder\">");
+		filesXml.append("    <contributed jcr:mixinTypes=\"jmix:accessControlled\" jcr:primaryType=\"jnt:folder\">\n");
 		filesXml.append("     <j:acl jcr:primaryType=\"jnt:acl\">\n");
 		filesXml.append("        <GRANT_g_site-privileged j:aceType=\"GRANT\" j:principal=\"g:privileged\" j:protected=\"false\" j:roles=\"contributor\" jcr:primaryType=\"jnt:ace\" />\n");
 		filesXml.append("     </j:acl>\n");
@@ -157,16 +151,10 @@ public class FileService {
 			
 			filesXml.append("          <"
 					+ fileName
-					+ " jcr:created=\""
-					+ now
-					+ "\" jcr:createdBy=\"root\" jcr:lastModified=\""
-					+ now
-					+ "\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:file\" jcr:title=\""
+					+ " jcr:primaryType=\"jnt:file\" jcr:title=\""
                     + fileName
                     + "\">\n");
-			filesXml.append("             <jcr:content jcr:lastModified=\""
-					+ now
-					+ "\" jcr:lastModifiedBy=\"\" jcr:mimeType=\"application/txt\" jcr:primaryType=\"jnt:resource\" />\n");
+			filesXml.append("             <jcr:content jcr:mimeType=\"application/txt\" jcr:primaryType=\"jnt:resource\" />\n");
 			filesXml.append("          </" + fileName + ">\n");
 		}
 

@@ -59,16 +59,16 @@ public class GroupBO {
 
 		Element groupNode = new Element(this.name);
 		groupNode.setAttribute("primaryType", "jnt:group", ContentGeneratorCst.NS_JCR);
-
+        groupNode.setAttribute("hidden","false", ContentGeneratorCst.NS_J);
 		Element users = new Element("members", ContentGeneratorCst.NS_J);
 		users.setAttribute("primaryType", "jnt:members", ContentGeneratorCst.NS_JCR);
-
+        groupNode.addContent(users);
 		for (Iterator<UserBO> iterator = this.users.iterator(); iterator.hasNext();) {
 			UserBO user = iterator.next();
 			Element userNode = new Element(user.getName());
 			userNode.setAttribute("member", user.getPathJcr(), ContentGeneratorCst.NS_J);
 			userNode.setAttribute("primaryType", "jnt:member", ContentGeneratorCst.NS_JCR);
-			groupNode.addContent(userNode);
+			users.addContent(userNode);
 		}
 		return groupNode;
 	}

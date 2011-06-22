@@ -119,7 +119,7 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 	protected Integer numberOfUsers;
 
 	/**
-	 * @parameter expression="${jahia.cg.numberOfGroups}" default-value="1"
+	 * @parameter expression="${jahia.cg.numberOfGroups}" default-value="5"
 	 */
 	protected Integer numberOfGroups;
 
@@ -248,24 +248,9 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 
 		}
 
-		if (numberOfBigTextPerPage == null) {
-			export.setNumberOfBigTextPerPage(Integer.valueOf("1"));
-		} else {
-			export.setNumberOfBigTextPerPage(numberOfBigTextPerPage);
-		}
-
-		if (numberOfUsers == null) {
-			export.setNumberOfUsers(Integer.valueOf(25));
-		} else {
-			export.setNumberOfUsers(numberOfUsers);
-		}
-		
-		if (numberOfGroups == null) {
-			export.setNumberOfGroups(Integer.valueOf(5));
-		} else {
-			export.setNumberOfGroups(numberOfGroups);
-		}
-
+        export.setNumberOfBigTextPerPage(numberOfBigTextPerPage);
+        export.setNumberOfUsers(numberOfUsers);
+        export.setNumberOfGroups(numberOfGroups);
 		export.setNumberOfFilesToGenerate(numberOfFilesToGenerate);
 
 		Integer totalPages = contentGeneratorService.getTotalNumberOfPagesNeeded(nbPagesOnTopLevel, nbSubLevels,

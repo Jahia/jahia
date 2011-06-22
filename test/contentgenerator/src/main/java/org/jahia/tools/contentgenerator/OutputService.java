@@ -37,7 +37,7 @@ public class OutputService {
 
 	public void initOutputFile(File f) throws IOException {
 		// if file already exist, we empty it
-		FileUtils.writeStringToFile(f, "");
+		FileUtils.writeStringToFile(f, "", "UTF-8");
 	}
 
 	public void appendStringToFile(File f, String s) throws IOException {
@@ -136,13 +136,15 @@ public class OutputService {
 
 	public void writeJdomDocumentToFile(Document doc, File file) throws IOException {
 		XMLOutputter out = new XMLOutputter();
-		java.io.FileWriter writer = new java.io.FileWriter(file);
+
+        OutputStreamWriter fwriter = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+        BufferedWriter fOut = new BufferedWriter(fwriter);
 
 		out.setFormat(Format.getPrettyFormat());
 		
-		out.output(doc, writer);
-		writer.flush();
-		writer.close();
+		out.output(doc, fOut);
+		fOut.flush();
+		fOut.close();
 	}
 	
 	public void writeInputStreamToFile(InputStream is, File f) throws IOException {

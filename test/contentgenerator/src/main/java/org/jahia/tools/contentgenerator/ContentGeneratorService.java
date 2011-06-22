@@ -171,7 +171,7 @@ public class ContentGeneratorService {
 			UserGroupService userGroupService = new UserGroupService();
 
 			Integer nbUsers = export.getNumberOfUsers();
-			Integer nbGroups = export.getNumberOfGroups();;
+			Integer nbGroups = export.getNumberOfGroups();
 			List<GroupBO> groups = userGroupService.generateUsersAndGroups(nbUsers, nbGroups);
 			Element groupsNode = userGroupService.generateJcrGroups(export.getSiteKey(), groups);
 
@@ -180,6 +180,7 @@ public class ContentGeneratorService {
 			repositoryDoc = siteService.insertGroupsIntoSiteRepository(repositoryDoc, export.getSiteKey(), groupsNode);
 
 			OutputService os = new OutputService();
+
 			os.writeJdomDocumentToFile(repositoryDoc, repositoryFile);
 			filesToZip.add(repositoryFile);
 

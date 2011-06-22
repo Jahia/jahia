@@ -91,16 +91,18 @@ public class UserGroupService {
 		Element sitePrivilegedNode = new Element("site-privileged");
 		sitePrivilegedNode.setAttribute("mixinTypes", "systemNode", ContentGeneratorCst.NS_JMIX);
 		sitePrivilegedNode.setAttribute("primaryType", "jnt:group", ContentGeneratorCst.NS_JNT);
+        sitePrivilegedNode.setAttribute("hidden","false", ContentGeneratorCst.NS_J);
 		groupsNode.addContent(sitePrivilegedNode);
 
 		Element jmembersSitePrivileged = new Element("members", ContentGeneratorCst.NS_J);
 		jmembersSitePrivileged.setAttribute("primaryType", "jnt:member", ContentGeneratorCst.NS_JCR);
 		sitePrivilegedNode.addContent(jmembersSitePrivileged);
 
-		Element siteAdminGroup = new Element("site-administrators___2");
+		Element siteAdminGroup = new Element("site-administrators");
 		siteAdminGroup.setAttribute("member", "/sites/" + siteKey + "/groups/site-administrators",
 				ContentGeneratorCst.NS_J);
 		siteAdminGroup.setAttribute("primaryType", "jnt:member", ContentGeneratorCst.NS_JCR);
+        siteAdminGroup.setAttribute("hidden","false", ContentGeneratorCst.NS_J);
 		jmembersSitePrivileged.setContent(siteAdminGroup);
 
 		for (Iterator<GroupBO> iterator = groups.iterator(); iterator.hasNext();) {

@@ -162,7 +162,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private boolean dumpErrorsToFiles = true;
     private int fileDumpMaxRegroupingOfPreviousException = 500;
-    private boolean useJstackForThtreadDumps;  
+    private boolean useJstackForThreadDumps;  
     
 
     private ServerDeploymentInterface serverDeployer = null;
@@ -323,7 +323,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             dumpErrorsToFiles = getBoolean("dumpErrorsToFiles", true);
             fileDumpMaxRegroupingOfPreviousException = getInt("fileDumpMaxRegroupingOfPreviousException", 500);
-            useJstackForThtreadDumps = getBoolean("useJstackForThtreadDumps", false);
+            useJstackForThreadDumps = getBoolean("useJstackForThreadDumps", false);
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -887,7 +887,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return distantPublicationServerMode;
     }
 
-    public boolean isUseJstackForThtreadDumps() {
-        return useJstackForThtreadDumps;
+    public boolean isUseJstackForThreadDumps() {
+        return useJstackForThreadDumps;
     }
 }

@@ -294,7 +294,7 @@ public class ThreadMonitor {
     public String getFullThreadInfo() {
         StringBuilder dump = new StringBuilder(65536);
 
-        if (SettingsBean.getInstance().isUseJstackForThtreadDumps()) {
+        if (SettingsBean.getInstance().isUseJstackForThreadDumps()) {
             dumpThreadInfoUsingJstack(dump);
         } else {
             dumpThreadInfo(dump);

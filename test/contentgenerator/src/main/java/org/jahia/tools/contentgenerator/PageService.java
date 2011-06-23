@@ -1,11 +1,9 @@
 package org.jahia.tools.contentgenerator;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
+import com.sun.tools.internal.xjc.generator.bean.MethodWriter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.tools.contentgenerator.bo.ArticleBO;
@@ -17,8 +15,9 @@ public class PageService {
 	private static final Logger logger = Logger.getLogger(PageService.class.getName());
 
 	String sep;
+    private Random random = new Random();
 
-	public PageService() {
+    public PageService() {
 		sep = System.getProperty("file.separator");
 	}
 
@@ -41,25 +40,26 @@ public class PageService {
 
 		logger.info("Creating top pages");
 		PageBO pageTopLevel = null;
-		ArticleBO articleEn = null;
-		ArticleBO articleFr = null;
 
-		articleEn = articleService.getArticle(articles);
-		articleFr = articleService.getArticle(articles);
+        Map<String,ArticleBO> articlesMap = new HashMap<String, ArticleBO>();
+        for (String language : export.getSiteLanguages()) {
+            articlesMap.put(language,articleService.getArticle(articles));
+        }
 
 		String rootPageName = export.getRootPageName();
 
-		PageBO rootPage = createNewPage(export, rootPageName, articleEn, articleFr, export.getNbSubLevels() + 1, null);
+		PageBO rootPage = createNewPage(export, rootPageName, articlesMap, export.getNbSubLevels() + 1, null);
 
 		OutputService outService = new OutputService();
-		outService.initOutputFile(export.getOutputFile());
+        outService.initOutputFile(export.getOutputFile());
 		outService.appendStringToFile(export.getOutputFile(), export.toString());
 		outService.appendStringToFile(export.getOutputFile(), rootPage.getHeader());
 
 		for (int i = 1; i <= export.getNbPagesTopLevel().intValue(); i++) {
-			articleEn = articleService.getArticle(articles);
-			articleFr = articleService.getArticle(articles);
-			pageTopLevel = createNewPage(export, null, articleEn, articleFr, export.getNbSubLevels() + 1,
+            for (String language : export.getSiteLanguages()) {
+                articlesMap.put(language,articleService.getArticle(articles));
+            }
+			pageTopLevel = createNewPage(export, null, articlesMap, export.getNbSubLevels() + 1,
 					createSubPages(export, articles, export.getNbSubLevels(), export.getMaxArticleIndex()));
 			outService.appendPageToFile(export.getOutputFile(), pageTopLevel);
 
@@ -98,17 +98,18 @@ public class PageService {
 	public List<PageBO> createSubPages(ExportBO export, List<ArticleBO> articles, Integer level, Integer maxArticleIndex) {
 		ArticleService articleService = ArticleService.getInstance();
 		List<PageBO> listePages = new ArrayList<PageBO>();
-		ArticleBO articleEn;
-		ArticleBO articleFr;
+		Map<String,ArticleBO> articlesMap;
 
 		int nbPagesPerLevel = export.getNbSubPagesPerPage();
 
 		listePages.clear();
 		if (level.intValue() > 0) {
 			for (int i = 0; i < nbPagesPerLevel; i++) {
-				articleEn = articleService.getArticle(articles);
-				articleFr = articleService.getArticle(articles);
-				PageBO page = createNewPage(export, null, articleEn, articleFr, level,
+                articlesMap = new HashMap<String, ArticleBO>();
+                for (String language : export.getSiteLanguages()) {
+                    articlesMap.put(language,articleService.getArticle(articles));
+                }
+				PageBO page = createNewPage(export, null, articlesMap, level,
 						createSubPages(export, articles, level.intValue() - 1, maxArticleIndex));
 				listePages.add(page);
 			}
@@ -119,27 +120,22 @@ public class PageService {
 	/**
 	 * Create a new page object
 	 * 
-	 * @param export
-	 *            Export BO contains all the parameters chose by the user to
-	 *            configure his/her content generation
-	 * @param pageName
-	 *            Used only for root page, or to specify a page name If null,
-	 *            creates a unique page name from concatenation of page name
-	 *            prefix and unique ID
-	 * @param articleEn
-	 *            English article (language is on the Jahia side, article object
-	 *            can contain different language, as it is from the database)
-	 * @param articleFr
-	 *            French article (language is on the Jahia side, article object
-	 *            can contain different language, as it is from the database)
-	 * @param level
-	 *            Current level in the tree
-	 * @param subPages
-	 *            List of sub pages related
-	 * @return
+	 *
+     * @param export
+     *            Export BO contains all the parameters chose by the user to
+     *            configure his/her content generation
+     * @param pageName
+     *            Used only for root page, or to specify a page name If null,
+     *            creates a unique page name from concatenation of page name
+     *            prefix and unique ID
+     * @param articlesMap
+     *@param level
+     *            Current level in the tree
+     * @param subPages
+*            List of sub pages related   @return
 	 */
-	public PageBO createNewPage(ExportBO export, String pageName, ArticleBO articleEn, ArticleBO articleFr, int level,
-			List<PageBO> subPages) {
+	public PageBO createNewPage(ExportBO export, String pageName, Map<String, ArticleBO> articlesMap, int level,
+                                List<PageBO> subPages) {
 
 		boolean addFile = false;
 		if (export.getAddFilesToPage().equals(ContentGeneratorCst.VALUE_ALL)) {
@@ -156,16 +152,23 @@ public class PageService {
 		}
 
 		logger.debug("		Creating new page level " + level + " - Page " + ContentGeneratorService.currentPageIndex
-				+ " - Article FR " + articleFr.getId() + " - Article EN " + articleEn.getId() + " - file attached "
+				+ " - Articles " + articlesMap + " - file attached "
 				+ fileName);
 
 		if (pageName == null) {
 			pageName = ContentGeneratorCst.PAGE_NAME_PREFIX + ContentGeneratorService.currentPageIndex;
 		}
 
-		PageBO page = new PageBO(pageName, formatForXml(articleEn.getTitle()), formatForXml(articleEn.getContent()),
-				formatForXml(articleFr.getTitle()), formatForXml(articleFr.getContent()), level, subPages,
-				export.getPagesHaveVanity(), export.getSiteKey(), fileName, export.getNumberOfBigTextPerPage());
+        HashMap<String, List<String>> acls = new HashMap<String, List<String>>();
+        if (random.nextFloat() < export.getGroupAclRatio()) {
+            acls.put("g:group"+random.nextInt(export.getNumberOfGroups()), Arrays.asList("editor"));
+        }
+        if (random.nextFloat() < export.getUsersAclRatio()) {
+            acls.put("u:user"+random.nextInt(export.getNumberOfUsers()), Arrays.asList("editor"));
+        }
+
+        PageBO page = new PageBO(pageName, articlesMap, level, subPages,
+				export.getPagesHaveVanity(), export.getSiteKey(), fileName, export.getNumberOfBigTextPerPage(), acls);
 		ContentGeneratorService.currentPageIndex = ContentGeneratorService.currentPageIndex + 1;
 		return page;
 	}
@@ -201,19 +204,4 @@ public class PageService {
 		return siteMap;
 	}
 
-	/**
-	 * Convert & \ < > and ' into they HTML equivalent
-	 * 
-	 * @param s
-	 *            XML string to format
-	 * @return formatted XML string
-	 */
-	public String formatForXml(final String s) {
-		String formattedString = StringUtils.replace(s, "&", "&amp;");
-		formattedString = StringUtils.replace(formattedString, "\"", " &quot;");
-		formattedString = StringUtils.replace(formattedString, "<", "&lt;");
-		formattedString = StringUtils.replace(formattedString, ">", "&gt;");
-		formattedString = StringUtils.replace(formattedString, "'", "&#39;");
-		return formattedString;
-	}
 }

@@ -37,6 +37,8 @@ public class ExportBO {
 
 	private String siteKey;
 
+	private List<String> siteLanguages;
+
 	private String addFilesToPage;
 
 	private File filesDirectory;
@@ -50,6 +52,10 @@ public class ExportBO {
 	private Integer numberOfUsers;
 	
 	private Integer numberOfGroups;	
+
+    private double groupAclRatio;
+
+    private double usersAclRatio;
 
 	public File getOutputFile() {
 		return outputFile;
@@ -155,7 +161,15 @@ public class ExportBO {
 		this.siteKey = siteKey;
 	}
 
-	public String getAddFilesToPage() {
+    public List<String> getSiteLanguages() {
+        return siteLanguages;
+    }
+
+    public void setSiteLanguages(List<String> siteLanguages) {
+        this.siteLanguages = siteLanguages;
+    }
+
+    public String getAddFilesToPage() {
 		return addFilesToPage;
 	}
 
@@ -211,7 +225,23 @@ public class ExportBO {
 		this.numberOfGroups = numberOfGroups;
 	}
 
-	public ExportBO() {
+    public double getGroupAclRatio() {
+        return groupAclRatio;
+    }
+
+    public void setGroupAclRatio(double groupAclRatio) {
+        this.groupAclRatio = groupAclRatio;
+    }
+
+    public double getUsersAclRatio() {
+        return usersAclRatio;
+    }
+
+    public void setUsersAclRatio(double usersAclRatio) {
+        this.usersAclRatio = usersAclRatio;
+    }
+
+    public ExportBO() {
 
 	}
 

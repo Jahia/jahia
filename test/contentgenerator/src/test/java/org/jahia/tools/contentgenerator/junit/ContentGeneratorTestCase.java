@@ -1,6 +1,7 @@
 package org.jahia.tools.contentgenerator.junit;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.jahia.tools.contentgenerator.bo.ArticleBO;
@@ -40,8 +41,11 @@ public abstract class ContentGeneratorTestCase {
 	}
 	
 	private PageBO createPage(int pageID, List<PageBO> subPages) {
-		boolean hasVanity = true;		
-		PageBO page = new PageBO("page" + pageID, "Title " + pageID, "Content " + pageID, "Titre " + pageID, "Contenu " + pageID, 0, subPages, hasVanity, SITE_KEY, null, 2);
+		boolean hasVanity = true;
+        HashMap<String, ArticleBO> articleBOHashMap = new HashMap<String, ArticleBO>();
+        articleBOHashMap.put("en", new ArticleBO(0,"Title " + pageID, "Content " + pageID));
+        articleBOHashMap.put("fr", new ArticleBO(0,"Titre " + pageID, "Contenu " + pageID));
+        PageBO page = new PageBO("page" + pageID, articleBOHashMap, 0, subPages, hasVanity, SITE_KEY, null, 2, new HashMap<String, List<String>>());
 		return page;
 	}
 	

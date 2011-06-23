@@ -4,10 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.tools.contentgenerator.PageService;
+import org.jahia.tools.contentgenerator.bo.ArticleBO;
 import org.jahia.tools.contentgenerator.bo.PageBO;
 import org.junit.After;
 import org.junit.Before;
@@ -46,7 +48,9 @@ public class PageServiceTest extends ContentGeneratorTestCase {
 		Integer totalBigText = Integer.valueOf(5);
 		super.export_default.setNumberOfBigTextPerPage(totalBigText);
 		
-		PageBO newPage = pageService.createNewPage(super.export_default, pageName, articleEn, articleFr, 1, null);
+        HashMap<String, ArticleBO> map = new HashMap<String, ArticleBO>();
+        map.put("en",articleEn);
+		PageBO newPage = pageService.createNewPage(super.export_default, pageName, map, 1, null);
 		assertEquals(pageName, newPage.getUniqueName());
 		String sPage = newPage.toString();
 		assertTrue(StringUtils.contains(sPage, "<bigText_1"));
@@ -61,8 +65,10 @@ public class PageServiceTest extends ContentGeneratorTestCase {
 		String pageName = "myPage";
 		Integer totalBigText = Integer.valueOf(0);
 		super.export_default.setNumberOfBigTextPerPage(totalBigText);
-		
-		PageBO newPage = pageService.createNewPage(super.export_default, pageName, articleEn, articleFr, 1, null);
+
+        HashMap<String, ArticleBO> map = new HashMap<String, ArticleBO>();
+        map.put("en",articleEn);
+        PageBO newPage = pageService.createNewPage(super.export_default, pageName, map, 1, null);
 		assertEquals(pageName, newPage.getUniqueName());
 		String sPage = newPage.toString();
 		assertFalse(StringUtils.contains(sPage, "<bigText"));

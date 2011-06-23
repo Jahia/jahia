@@ -114,7 +114,7 @@ public class SiteService {
 	 *             file
 	 * @throws IOException
 	 */
-	public File createPropertiesFile(String siteKey, File tempOutputDir) throws FileNotFoundException, IOException {
+	public File createPropertiesFile(String siteKey, List<String> languages, File tempOutputDir) throws FileNotFoundException, IOException {
 		Properties siteProp = new Properties();
 
 		siteProp.setProperty("sitetitle", siteKey);
@@ -123,10 +123,12 @@ public class SiteService {
 		siteProp.setProperty("description", ContentGeneratorCst.DESCRIPTION_DEFAULT);
 		siteProp.setProperty("templatePackageName", ContentGeneratorCst.TEMPLATE_SET_DEFAULT);
 		siteProp.setProperty("mixLanguage", Boolean.FALSE.toString());
-		siteProp.setProperty("defaultLanguage", "en");
+		siteProp.setProperty("defaultLanguage", languages.get(0));
 		siteProp.setProperty("installedModules.1", ContentGeneratorCst.TEMPLATE_SET_DEFAULT);
-		siteProp.setProperty("language.en.activated", Boolean.TRUE.toString());
-		siteProp.setProperty("language.en.mandatory", Boolean.TRUE.toString());
+        for (String language : languages) {
+            siteProp.setProperty("language."+language+".activated", Boolean.TRUE.toString());
+            siteProp.setProperty("language."+language+".mandatory", Boolean.FALSE.toString());
+        }
 
 		String sep = System.getProperty("file.separator");
 		File propFile = new File(tempOutputDir + sep + ContentGeneratorCst.SITE_PROPERTIES_FILENAME);

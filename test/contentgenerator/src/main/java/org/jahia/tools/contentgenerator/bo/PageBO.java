@@ -1,14 +1,15 @@
 package org.jahia.tools.contentgenerator.bo;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class PageBO {
 	private String uniqueName;
-	private String titleEn;
-	private String contentEn;
-	private String titleFr;
-	private String contentFr;
+	private Map<String, ArticleBO> articles;
 	private Integer level;
 	private List<PageBO> subPages;
 	private PageBO parentPage;
@@ -16,6 +17,7 @@ public class PageBO {
 	private String siteKey;
 	private String fileName;
 	private Integer numberBigText;
+	private Map<String, List<String>> acls;
 
 	public String getUniqueName() {
 		return uniqueName;
@@ -45,39 +47,15 @@ public class PageBO {
 		this.parentPage = parentPage;
 	}
 
-	public String getTitleEn() {
-		return titleEn;
-	}
+    public Map<String, ArticleBO> getArticles() {
+        return articles;
+    }
 
-	public void setTitleEn(final String titleEn) {
-		this.titleEn = titleEn;
-	}
+    public void setArticles(Map<String, ArticleBO> articles) {
+        this.articles = articles;
+    }
 
-	public String getContentEn() {
-		return contentEn;
-	}
-
-	public void setContentEn(final String contentEn) {
-		this.contentEn = contentEn;
-	}
-
-	public String getTitleFr() {
-		return titleFr;
-	}
-
-	public void setTitleFr(String titleFr) {
-		this.titleFr = titleFr;
-	}
-
-	public String getContentFr() {
-		return contentFr;
-	}
-
-	public void setContentFr(String contentFr) {
-		this.contentFr = contentFr;
-	}
-
-	public Boolean getHasVanity() {
+    public Boolean getHasVanity() {
 		return hasVanity;
 	}
 
@@ -109,13 +87,17 @@ public class PageBO {
 		this.numberBigText = numberBigText;
 	}
 
-	public PageBO(final String pUniqueName, final String pTitleEn, final String pContentEn, final String pTitleFr,
-			final String pContentFr, final int pLevel, final List<PageBO> pSubPages, Boolean pHasVanity,
-			String pSiteKey, String pFileName, Integer pNumberBigText) {
-		this.titleEn = pTitleEn;
-		this.contentEn = pContentEn;
-		this.titleFr = pTitleFr;
-		this.contentFr = pContentFr;
+    public Map<String, List<String>> getAcls() {
+        return acls;
+    }
+
+    public void setAcls(Map<String, List<String>> acls) {
+        this.acls = acls;
+    }
+
+    public PageBO(final String pUniqueName, Map<String, ArticleBO> articles, final int pLevel, final List<PageBO> pSubPages, Boolean pHasVanity,
+			String pSiteKey, String pFileName, Integer pNumberBigText, Map<String, List<String>> acls) {
+		this.articles = articles;
 		this.level = pLevel;
 		this.subPages = pSubPages;
 		this.uniqueName = pUniqueName;
@@ -123,6 +105,7 @@ public class PageBO {
 		this.siteKey = pSiteKey;
 		this.fileName = pFileName;
 		this.numberBigText = pNumberBigText;
+        this.acls = acls;
 	}
 
 	public String getHeader() {
@@ -136,19 +119,31 @@ public class PageBO {
 		if (this.getHasVanity()) {
 			sb.append("jmix:vanityUrlMapped ");
 		}
-		sb.append(" jmix:sitemap\" jcr:primaryType=\"jnt:page\" priority=\"0.5\">\n"
-				+ "		<j:translation_fr jcr:language=\"fr\" jcr:mixinTypes=\"mix:title\" jcr:primaryType=\"jnt:translation\" jcr:title=\""
-				+ this.getTitleFr()
-				+ "\" />\n"
-				+ "		<j:translation_en jcr:language=\"en\" jcr:mixinTypes=\"mix:title\" jcr:primaryType=\"jnt:translation\" jcr:title=\""
-				+ this.getTitleEn() + "\" />\n" + "		<listA jcr:primaryType=\"jnt:contentList\">\n");
+		sb.append(" jmix:sitemap\" jcr:primaryType=\"jnt:page\" priority=\"0.5\">\n");
+        for (Map.Entry<String, ArticleBO> entry : articles.entrySet()) {
+            sb.append("		<j:translation_"+entry.getKey()+" jcr:language=\""+entry.getKey()+"\" jcr:mixinTypes=\"mix:title\" jcr:primaryType=\"jnt:translation\" jcr:title=\""
+				+ formatForXml(entry.getValue().getTitle()) + "\" />\n");
+        }
+
+        if (!acls.isEmpty()) {
+            sb.append("		<j:acl j:inherit=\"true\" jcr:primaryType=\"jnt:acl\">\n");
+            for (Map.Entry<String, List<String>> entry : acls.entrySet()) {
+                String roles = "";
+                for (String s : entry.getValue()) {
+                    roles += s + " ";
+                }
+                sb.append("		    <GRANT_"+entry.getKey().replace(":","_")+" j:aceType=\"GRANT\" j:principal=\""+entry.getKey()+"\" j:protected=\"false\" j:roles=\""+roles.trim()+"\" jcr:primaryType=\"jnt:ace\"/>\n");
+            }
+            sb.append("     </j:acl>\n");
+        }
+        sb.append("		<listA jcr:primaryType=\"jnt:contentList\">\n");
 		// Big text (content)
 		for (int i = 1; i <= numberBigText.intValue(); i++) {
-			sb.append("			<bigText_" + i + " jcr:mixinTypes=\"jmix:renderable\" jcr:primaryType=\"jnt:bigText\">\n"
-					+ "				<j:translation_fr jcr:language=\"fr\" jcr:primaryType=\"jnt:translation\" text=\""
-					+ this.getContentFr() + " \" />"
-					+ "				<j:translation_en jcr:language=\"en\" jcr:primaryType=\"jnt:translation\" text=\""
-					+ this.getContentEn() + " \" />\n");
+			sb.append("			<bigText_" + i + " jcr:mixinTypes=\"jmix:renderable\" jcr:primaryType=\"jnt:bigText\">\n");
+            for (Map.Entry<String, ArticleBO> entry : articles.entrySet()) {
+            sb.append("				<j:translation_"+entry.getKey()+" jcr:language=\""+entry.getKey()+"\" jcr:primaryType=\"jnt:translation\" text=\""
+					+ formatForXml(entry.getValue().getContent()) + " \" />");
+            }
 			sb.append("			</bigText_" + i + ">\n");
 		}
 		if (this.getFileName() != null) {
@@ -199,4 +194,21 @@ public class PageBO {
 
 		return sb.toString();
 	}
+
+    /**
+     * Convert & \ < > and ' into they HTML equivalent
+     *
+     * @param s
+     *            XML string to format
+     * @return formatted XML string
+     */
+    public String formatForXml(final String s) {
+        String formattedString = StringUtils.replace(s, "&", "&amp;");
+        formattedString = StringUtils.replace(formattedString, "\"", " &quot;");
+        formattedString = StringUtils.replace(formattedString, "<", "&lt;");
+        formattedString = StringUtils.replace(formattedString, ">", "&gt;");
+        formattedString = StringUtils.replace(formattedString, "'", "&#39;");
+        return formattedString;
+    }
+
 }

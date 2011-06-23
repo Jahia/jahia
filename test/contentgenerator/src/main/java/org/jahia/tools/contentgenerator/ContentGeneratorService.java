@@ -136,7 +136,7 @@ public class ContentGeneratorService {
 			File tempOutputDir = siteService.createSiteDirectory(export.getSiteKey(), new File(export.getOutputDir()));
 
 			// create properties file
-			File propertiesFile = siteService.createPropertiesFile(export.getSiteKey(), tempOutputDir);
+			File propertiesFile = siteService.createPropertiesFile(export.getSiteKey(), export.getSiteLanguages(), tempOutputDir);
 			filesToZip.add(propertiesFile);
 
 			// create tree dirs for files attachments (if files are not at

@@ -1,6 +1,7 @@
 package org.jahia.tools.contentgenerator.mojo;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -20,7 +21,7 @@ import org.jahia.tools.contentgenerator.properties.DatabaseProperties;
 public abstract class ContentGeneratorMojo extends AbstractMojo {
 
 	/**
-	 * @parameter expression="${jahia.cg.mysql.host}"
+	 * @parameter expression="${jahia.cg.mysql.host}" default-value="localhost"
 	 */
 	protected String mysql_host;
 
@@ -41,22 +42,22 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 	protected String mysql_db;
 
 	/**
-	 * @parameter expression="${jahia.cg.mysql_table}"
+	 * @parameter expression="${jahia.cg.mysql_table}" default-value="articles"
 	 */
 	protected String mysql_table;
 
 	/**
-	 * @parameter expression="${jahia.cg.nbPagesOnTopLevel}"
+	 * @parameter expression="${jahia.cg.nbPagesOnTopLevel}" default-value="1"
 	 */
 	protected Integer nbPagesOnTopLevel;
 
 	/**
-	 * @parameter expression="${jahia.cg.nbSubLevels}"
+	 * @parameter expression="${jahia.cg.nbSubLevels}" default-value="2"
 	 */
 	protected Integer nbSubLevels;
 
 	/**
-	 * @parameter expression="${jahia.cg.nbPagesPerLevel}"
+	 * @parameter expression="${jahia.cg.nbPagesPerLevel}" default-value="3"
 	 */
 	protected Integer nbPagesPerLevel;
 
@@ -73,27 +74,32 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 	protected String outputFileName;
 
 	/**
-	 * @parameter expression="${jahia.cg.createMapYn}"
+	 * @parameter expression="${jahia.cg.createMapYn}" default-value="false"
 	 */
 	protected Boolean createMapYn;
 
 	/**
-	 * @parameter expression=${jahia.cg.ouputMapName}
+	 * @parameter expression="${jahia.cg.ouputMapName}" default-value="jahia-cg.output.csv"
 	 */
 	protected String outputMapName;
 
 	/**
-	 * @parameter expression="${jahia.cg.pagesHaveVanity}"
+	 * @parameter expression="${jahia.cg.pagesHaveVanity}" default-value="true"
 	 */
 	protected Boolean pagesHaveVanity;
 
 	/**
-	 * @parameter expression="${jahia.cg.siteKey}"
+	 * @parameter expression="${jahia.cg.siteKey}" default-value="testSite"
 	 */
 	protected String siteKey;
 
 	/**
-	 * @parameter expression="${jahia.cg.addFiles}"
+	 * @parameter expression="${jahia.cg.siteLanguages}" default-value="en,fr"
+	 */
+	protected String siteLanguages;
+
+	/**
+	 * @parameter expression="${jahia.cg.addFiles}" default-value="none"
 	 */
 	protected String addFiles;
 
@@ -123,7 +129,16 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 	 */
 	protected Integer numberOfGroups;
 
-	@Override
+    /**
+     * @parameter expression="${jahia.cg.groupsAclRatio}" defaule-value="0"
+     */
+    protected double groupAclRatio;
+
+    /**
+     * @parameter expression="${jahia.cg.usersAclRatio}" defaule-value="0"
+     */
+    protected double usersAclRatio;
+
 	public abstract void execute() throws MojoExecutionException, MojoFailureException;
 
 	/**
@@ -138,11 +153,7 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 		/**
 		 * Database
 		 */
-		if (mysql_host == null) {
-			DatabaseProperties.HOSTNAME = ContentGeneratorCst.MYSQL_HOST_DEFAULT;
-		} else {
-			DatabaseProperties.HOSTNAME = mysql_host;
-		}
+        DatabaseProperties.HOSTNAME = mysql_host;
 
 		if (mysql_db == null) {
 			throw new MojoExecutionException("No database name provided");
@@ -167,23 +178,9 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 			DatabaseProperties.TABLE = mysql_table;
 		}
 
-		if (nbPagesOnTopLevel == null) {
-			export.setNbPagesTopLevel(ContentGeneratorCst.NB_PAGES_TOP_LEVEL_DEFAULT);
-		} else {
-			export.setNbPagesTopLevel(nbPagesOnTopLevel);
-		}
-
-		if (nbSubLevels == null) {
-			export.setNbSubLevels(ContentGeneratorCst.NB_SUB_LEVELS_DEFAULT);
-		} else {
-			export.setNbSubLevels(nbSubLevels);
-		}
-
-		if (nbSubLevels == null) {
-			export.setNbSubPagesPerPage(ContentGeneratorCst.NB_SUBPAGES_PER_PAGE_DEFAULT);
-		} else {
-			export.setNbSubPagesPerPage(nbPagesPerLevel);
-		}
+        export.setNbPagesTopLevel(nbPagesOnTopLevel);
+        export.setNbSubLevels(nbSubLevels);
+        export.setNbSubPagesPerPage(nbPagesPerLevel);
 
 		String pathSeparator = System.getProperty("file.separator");
 		if (outputDirectory == null) {
@@ -194,42 +191,18 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 			fOutputDirectory.mkdirs();
 		}
 
-		if (outputFileName == null) {
-			outputFileName = ContentGeneratorCst.OUTPUT_FILE_DEFAULT;
-		}
 		File outputFile = new File(outputDirectory + pathSeparator + outputFileName);
 		export.setOutputFile(outputFile);
 		export.setOutputDir(outputDirectory);
 
-		if (createMapYn == null) {
-			export.setCreateMap(ContentGeneratorCst.CREATE_MAP_DEFAULT);
-		} else {
-			export.setCreateMap(createMapYn);
-		}
+        export.setCreateMap(createMapYn);
 
-		if (outputMapName == null) {
-			outputMapName = ContentGeneratorCst.OUTPUT_MAP_DEFAULT;
-		}
 		File outputMapFile = new File(outputDirectory + pathSeparator + outputMapName);
 		export.setMapFile(outputMapFile);
-
-		if (pagesHaveVanity == null) {
-			export.setPagesHaveVanity(ContentGeneratorCst.HAS_VANITY_DEFAULT);
-		} else {
-			export.setPagesHaveVanity(pagesHaveVanity);
-		}
-
-		if (siteKey == null) {
-			export.setSiteKey(ContentGeneratorCst.SITE_KEY_DEFAULT);
-		} else {
-			export.setSiteKey(siteKey);
-		}
-
-		if (addFiles == null) {
-			export.setAddFilesToPage(ContentGeneratorCst.ADD_FILE_TO_PAGE_DEFAULT);
-		} else {
-			export.setAddFilesToPage(addFiles);
-		}
+        export.setPagesHaveVanity(pagesHaveVanity);
+        export.setSiteKey(siteKey);
+        export.setSiteLanguages(Arrays.asList(siteLanguages.split(",")));
+		export.setAddFilesToPage(addFiles);
 
 		if (ContentGeneratorCst.VALUE_ALL.equals(export.getAddFilesToPage())
 				|| ContentGeneratorCst.VALUE_RANDOM.equals(export.getAddFilesToPage())) {
@@ -252,6 +225,8 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
         export.setNumberOfUsers(numberOfUsers);
         export.setNumberOfGroups(numberOfGroups);
 		export.setNumberOfFilesToGenerate(numberOfFilesToGenerate);
+        export.setGroupAclRatio(groupAclRatio);
+        export.setUsersAclRatio(usersAclRatio);
 
 		Integer totalPages = contentGeneratorService.getTotalNumberOfPagesNeeded(nbPagesOnTopLevel, nbSubLevels,
 				nbPagesPerLevel);

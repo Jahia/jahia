@@ -107,7 +107,7 @@ public class DeleteActionItem extends BaseActionItem {
                     } else {
                         async.getUsages(l, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
                             public void onSuccess(List<GWTJahiaNodeUsage> result) {
-                                String icon = MessageBox.QUESTION;
+                                String icon = MessageBox.WARNING;
                                 String message;
                                 if (l.size() > 1) {
                                     message = Messages.getWithArgs("message.remove.multiple.confirm",

@@ -26,6 +26,8 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 ******************************************************************************/
 .x-window-dlg .ext-mb-delete-page {
     background-image:url(../images/xtheme-jahia-andromeda/default/window/icon-delete-page.png);
+	background-position: left top;
+    background-repeat: no-repeat;
 }
 .x-window-body-delete-page {
 	background-color:#ff9999;

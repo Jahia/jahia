@@ -22,6 +22,16 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
   opacity: .5;
 }
 /******************************************************************************
+* Delete page
+******************************************************************************/
+.x-window-dlg .ext-mb-delete-page {
+    background-image:url(../images/xtheme-jahia-andromeda/default/window/icon-delete-page.png);
+}
+.x-window-body-delete-page {
+	background-color:#ff9999;
+	color:#FFF !important;
+}
+/******************************************************************************
 * Header 
 ******************************************************************************/
 /*Studio Mode*/

@@ -66,7 +66,7 @@ public class ConstraintsHelper {
         for (ExtendedNodeType type : nodeType) {
             Set<String> cons = type.getUnstructuredChildNodeDefinitions().keySet();
             for (String s : cons) {
-                if (!s.equals(Constants.JAHIANT_TRANSLATION)) {
+                if (!s.equals(Constants.JAHIANT_TRANSLATION) && !s.equals(Constants.JAHIANT_REFERENCEINFIELD)) {
                     constraints = (StringUtils.isEmpty(constraints)) ? s : constraints + " " + s;
                 }
             }

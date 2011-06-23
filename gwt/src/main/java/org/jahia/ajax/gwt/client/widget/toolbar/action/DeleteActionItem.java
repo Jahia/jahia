@@ -48,13 +48,13 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
@@ -107,6 +107,7 @@ public class DeleteActionItem extends BaseActionItem {
                     } else {
                         async.getUsages(l, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
                             public void onSuccess(List<GWTJahiaNodeUsage> result) {
+                                String icon = MessageBox.QUESTION;
                                 String message;
                                 if (l.size() > 1) {
                                     message = Messages.getWithArgs("message.remove.multiple.confirm",
@@ -119,6 +120,7 @@ public class DeleteActionItem extends BaseActionItem {
                                                 "message.remove.single.page.confirm",
                                                 "Do you really want to remove the selected PAGE {0}?",
                                                 new String[]{lh.getSingleSelection().getName()});
+                                        icon = "ext-mb-delete-page";
                                     } else {
                                         message = Messages.getWithArgs(
                                                 "message.remove.single.confirm",
@@ -163,7 +165,13 @@ public class DeleteActionItem extends BaseActionItem {
                                     message+="<br/>.<br/>.<br/>.";
                                 }
                                 message+=Messages.get("message.remove.warning","<br/><span style=\"font-style:bold;color:red;\">Warning: this will erase the content definitively from the repository<br/>So it will not be displayed anymore anywere</span>");
-                                MessageBox.confirm(Messages.get("label.information", "Information"), message, new Listener<MessageBoxEvent>() {
+
+                                MessageBox box = new MessageBox();
+                                box.setTitle(Messages.get("label.information", "Information"));
+                                box.setMessage(message);
+                                box.setButtons(MessageBox.YESNO);
+                                box.setIcon(icon);
+                                box.addCallback(new Listener<MessageBoxEvent>() {
                                     public void handleEvent(MessageBoxEvent be) {
                                         if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
                                             async.deletePaths(l, new BaseAsyncCallback<Object>() {
@@ -191,6 +199,7 @@ public class DeleteActionItem extends BaseActionItem {
                                         }
                                     }
                                 });
+                                box.show();
 
                             }
 
@@ -208,13 +217,14 @@ public class DeleteActionItem extends BaseActionItem {
         LinkerSelectionContext lh = linker.getSelectionContext();
         List<GWTJahiaNode> selection = lh.getMultipleSelection();
         if (selection != null && selection.size() > 0) {
-            for (GWTJahiaNode n : selection) {
-                if (n.getInheritedNodeTypes().contains("jmix:nodeReference")) {
-                     updateTitle(Messages.get(referenceTitleKey,referenceTitleKey));
+            if (selection.size() == 1) {
+                if (selection.get(0).getInheritedNodeTypes().contains("jmix:nodeReference")) {
+                    updateTitle(Messages.get(referenceTitleKey,referenceTitleKey));
                 } else {
-                    updateTitle(getGwtToolbarItem().getTitle());
-                    break;
+                    updateTitle(getGwtToolbarItem().getTitle() + " : " + selection.get(0).getDisplayName());
                 }
+            } else {
+                updateTitle(getGwtToolbarItem().getTitle() + " : " + selection.get(0).getDisplayName());
             }
         }
         setEnabled(lh.getMultipleSelection() != null

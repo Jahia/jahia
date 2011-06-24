@@ -82,6 +82,11 @@ public abstract class AbstractView extends TopRightComponent {
                 Log.debug("retrieving children with type " + configuration.getNodeTypes() + " of " +
                         root.getPath());
                 try {
+                    if (config instanceof ListLoadConfig) {
+                        ListLoadConfig listLoadConfig = (ListLoadConfig) config;
+                        listLoadConfig.setSortField(store.getSortField());
+                        listLoadConfig.setSortDir(store.getSortDir());
+                    }
                     JahiaContentManagementService.App.getInstance().lsLoad(root,
                             configuration.getAllNodeTypes(),
                             configuration.getMimeTypes(), configuration.getFilters(), configuration.getTableColumnKeys(),

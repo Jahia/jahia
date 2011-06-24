@@ -51,9 +51,12 @@ import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
+import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.content.CronField;
 import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
@@ -81,7 +84,7 @@ public class FormFieldCreator {
      * @return
      */
     public static Field<?> createField(GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property,
-                                       List<GWTJahiaValueDisplayBean> initializerValues, boolean displayHiddenProperty) {
+                                       List<GWTJahiaValueDisplayBean> initializerValues, boolean displayHiddenProperty, GWTBitSet permissions) {
         Field<?> field = null;
         if (definition.isHidden() && !displayHiddenProperty) {
             return null;
@@ -112,7 +115,15 @@ public class FormFieldCreator {
                     field = new TextArea();
                     break;
                 case GWTJahiaNodeSelectorType.RICHTEXT:
-                    field = new CKEditorField();
+                    CKEditorConfig config = new CKEditorConfig();
+                    if (PermissionsUtils.isPermitted("full",permissions) || PermissionsUtils.isPermitted("studioModeAccess",permissions)) {
+                        config.setToolbarSet("Full");
+                    } else if (PermissionsUtils.isPermitted("basic",permissions)) {
+                        config.setToolbarSet("Basic");
+                    } else {
+                        config.setToolbarSet("Light");
+                    }
+                    field = new CKEditorField(config);
                     field.setAutoWidth(false);
                     field.setAutoHeight(false);
                     field.setHeight(300);

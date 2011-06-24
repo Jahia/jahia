@@ -56,6 +56,7 @@ import com.google.gwt.user.client.DeferredCommand;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
+import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
@@ -88,6 +89,11 @@ public class PropertiesEditor extends FormPanel {
     private Set<String> removedTypes = new HashSet<String>();
     private Set<String> externalMixin = new HashSet<String>();
     private String locale = "";
+    private GWTBitSet permissions;
+
+    public void setPermissions(GWTBitSet permissions) {
+        this.permissions = permissions;
+    }
 
     public boolean isDisplayHiddenProperties() {
         return displayHiddenProperties;
@@ -237,7 +243,7 @@ public class PropertiesEditor extends FormPanel {
             final GWTJahiaNodeProperty gwtJahiaNodeProperty = currentProperties.get(definition.getName());
             GWTJahiaFieldInitializer fieldInitializer = initializersValues != null ?
                     initializersValues.get(definition.getOverrideDeclaringNodeType() + "." + definition.getName()) : null;
-            Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, fieldInitializer != null ? fieldInitializer.getDisplayValues() : null, displayHiddenProperties);
+            Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, fieldInitializer != null ? fieldInitializer.getDisplayValues() : null, displayHiddenProperties, permissions);
             propertyDefinitions.put(gwtJahiaNodeProperty.getName(), definition);
             if (field != null) {
                 if (fieldSet == null || fieldSetGrouping &&

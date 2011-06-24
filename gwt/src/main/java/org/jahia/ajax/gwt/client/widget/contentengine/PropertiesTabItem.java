@@ -180,6 +180,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 propertiesEditor.setExcludedTypes(excludedTypes);
                 propertiesEditor.setMultipleEdit(engine.isMultipleSelection());
                 propertiesEditor.setDisplayHiddenProperties(engine.getLinker().isDisplayHiddenProperties());
+                propertiesEditor.setPermissions(engine.getNode().getPermissions());
                 propertiesEditor.renderNewFormPanel();
                 for (final Field field : propertiesEditor.getFields()) {
                     if (field instanceof ContentPickerField) {

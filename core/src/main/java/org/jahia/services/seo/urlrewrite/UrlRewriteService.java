@@ -217,13 +217,17 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     public boolean prepareInbound(HttpServletRequest request, HttpServletResponse response) {
         if ("/cms".equals(request.getServletPath())) {
             String path = request.getPathInfo() != null ? request.getPathInfo() : "";
-            List<SimpleUrlHandlerMapping> mappings = getRenderMapping();
-            for (SimpleUrlHandlerMapping mapping : mappings) {
-                for (String registeredPattern : mapping.getUrlMap().keySet()) {
-                    if (mapping.getPathMatcher().match(registeredPattern, path)) {
-                        return false;
+            try{
+                List<SimpleUrlHandlerMapping> mappings = getRenderMapping();
+                for (SimpleUrlHandlerMapping mapping : mappings) {
+                    for (String registeredPattern : mapping.getUrlMap().keySet()) {
+                        if (mapping.getPathMatcher().match(registeredPattern, path)) {
+                            return false;
+                        }
                     }
                 }
+            }catch(Exception ex) {
+                logger.warn("Unable to load the SimpleUrlHandlerMapping", ex);
             }
             String targetSiteKey = ServerNameToSiteMapper.getSiteKeyByServerName(request);
             request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY, targetSiteKey);

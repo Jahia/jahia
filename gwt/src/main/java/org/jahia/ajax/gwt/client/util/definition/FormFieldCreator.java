@@ -261,6 +261,10 @@ public class FormFieldCreator {
             TextField<?> tField = (TextField<?>) field;
             tField.setAllowBlank(!definition.isMandatory());
         }
+        if (field instanceof CKEditorField) {
+            CKEditorField tField = (CKEditorField) field;
+            tField.setAllowBlank(!definition.isMandatory());
+        }
 
         if (field instanceof CheckBox) {
             field.setHideLabel(true);

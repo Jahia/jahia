@@ -44,11 +44,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.Render;
+import org.jahia.services.render.URLResolver;
+import org.jahia.services.render.URLResolverFactory;
+import org.jahia.services.seo.VanityUrl;
+import org.jahia.services.seo.jcr.VanityUrlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -64,6 +71,18 @@ import org.tuckey.web.filters.urlrewrite.UrlRewriter;
 class UrlRewriteEngine extends UrlRewriter {
 
     private static final Logger logger = LoggerFactory.getLogger(UrlRewriteEngine.class);
+
+    private URLResolverFactory urlResolverFactory;
+
+    private VanityUrlService vanityUrlService;
+
+    public void setUrlResolverFactory(URLResolverFactory urlResolverFactory) {
+        this.urlResolverFactory = urlResolverFactory;
+    }
+
+    public void setVanityUrlService(VanityUrlService vanityUrlService) {
+        this.vanityUrlService = vanityUrlService;
+    }
 
     private static Configuration getConfiguration(ServletContext context, Resource[] confLocations) {
         Configuration cfg = null;
@@ -128,4 +147,32 @@ class UrlRewriteEngine extends UrlRewriter {
 
     }
 
+    @Override
+    protected RewrittenOutboundUrl processEncodeURL(HttpServletResponse hsResponse, HttpServletRequest hsRequest, boolean encodeUrlHasBeenRun, String outboundUrl) {
+        try {
+            if (outboundUrl.startsWith(hsRequest.getContextPath()+ Render.getRenderServletPath())) {
+                String url = StringUtils.substringAfter(outboundUrl,hsRequest.getContextPath()+"/cms");
+                URLResolver urlResolver = urlResolverFactory.createURLResolver(url, hsRequest.getServerName() ,hsRequest);
+                if (urlResolver.isMapped()) {
+                    try {
+                        VanityUrl vanityUrl = vanityUrlService
+                                .getVanityUrlForWorkspaceAndLocale(
+                                        urlResolver.getNode(),
+                                        urlResolver.getWorkspace(),
+                                        urlResolver.getLocale());
+                        if (vanityUrl != null) {
+                            outboundUrl = outboundUrl.replace("/" + urlResolver.getLocale()
+                                    + urlResolver.getPath(), vanityUrl.getUrl());
+                        }
+                    } catch (RepositoryException e) {
+                        logger.debug("Error when trying to obtain vanity url", e);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Cannot parse url for rewriting : "+outboundUrl , e);
+        }
+
+        return super.processEncodeURL(hsResponse, hsRequest, encodeUrlHasBeenRun, outboundUrl);
+    }
 }

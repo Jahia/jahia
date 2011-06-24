@@ -56,6 +56,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
@@ -103,7 +104,9 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     private UrlRewriteEngine urlRewriteEngine;
     
     private VanityUrlService vanityUrlService;
-    
+
+    private URLResolverFactory urlResolverFactory;
+
     public void afterPropertiesSet() throws Exception {
         long timer = System.currentTimeMillis();
         Log.setLevel("SLF4J");
@@ -156,6 +159,8 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                     urlRewriteEngine.destroy();
                 }
                 urlRewriteEngine = new UrlRewriteEngine(servletContext, configurationResources);
+                urlRewriteEngine.setUrlResolverFactory(urlResolverFactory);
+                urlRewriteEngine.setVanityUrlService(vanityUrlService);
             }
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
@@ -288,6 +293,10 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     public void setVanityUrlService(VanityUrlService vanityUrlService) {
         this.vanityUrlService = vanityUrlService;
+    }
+
+    public void setUrlResolverFactory(URLResolverFactory urlResolverFactory) {
+        this.urlResolverFactory = urlResolverFactory;
     }
 
 }

@@ -634,7 +634,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if (!StringUtils.isEmpty(stayOnPage)) {
             renderedURL = stayOnPage + (!StringUtils.isEmpty(outputFormat) ? "." + outputFormat : "");
         } else if (!StringUtils.isEmpty(url)) {
-            String requestedURL = req.getRequestURL().toString();
+            String requestedURL = req.getRequestURI();
 //            String encodedPath = URLEncoder.encode(path, "UTF-8").replace("%2F", "/").replace("+", "%20");
             String decodedURL = URLDecoder.decode(requestedURL, "UTF-8");
 
@@ -651,9 +651,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         }
         if (!StringUtils.isEmpty(renderedURL)) {
             if (StringUtils.isEmpty(stayOnPage)) {
-                resp.setHeader("Location", renderedURL);
+                resp.setHeader("Location", resp.encodeRedirectURL(renderedURL));
             } else if (responseCode == HttpServletResponse.SC_SEE_OTHER) {
-                resp.setHeader("Location", renderedURL);
+                resp.setHeader("Location", resp.encodeRedirectURL(renderedURL));
             }
             if (responseCode == HttpServletResponse.SC_FOUND) {
                 resp.sendRedirect(resp.encodeRedirectURL(renderedURL));

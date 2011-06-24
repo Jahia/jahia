@@ -715,6 +715,12 @@ public class ContentManagerHelper {
                         aces.add(ace);
                         ace.setPrincipalType(principal.charAt(0));
                         ace.setPrincipal(principal.substring(2));
+                        if (ace.getPrincipalType() == 'g') {
+                            JahiaGroup g = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(ace.getPrincipal());
+                            if (g != null) {
+                                ace.setHidden(g.isHidden());
+                            }
+                        }
                         ace.setPermissions(new HashMap<String, Boolean>());
                     }
                     Map<String, Boolean> inheritedPerms = new HashMap<String, Boolean>();

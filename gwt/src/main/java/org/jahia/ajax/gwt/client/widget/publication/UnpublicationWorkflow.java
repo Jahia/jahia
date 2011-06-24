@@ -152,19 +152,21 @@ public class UnpublicationWorkflow implements CustomWorkflow {
                         nodeProperties = dialog.getPropertiesEditor().getProperties();
                     }
                     dialog.getContainer().closeEngine();
-                    final String status = Messages.get("label.publication.task", "Publishing content");
+                    final String status = Messages.get("label.publication.unpublished.task", "Unpublishing content");
                     Info.display(status, status);
                     WorkInProgressActionItem.setStatus(status);
                     JahiaContentManagementService.App.getInstance().unpublish(getAllUuids(),
                             new BaseAsyncCallback() {
                                 public void onApplicationFailure(Throwable caught) {
                                     WorkInProgressActionItem.removeStatus(status);
-                                    Info.display("Cannot publish", "Cannot publish");
-                                    com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
+                                    Info.display("Cannot unpublish", "Cannot unpublish");
+                                    com.google.gwt.user.client.Window.alert("Cannot unpublish " + caught.getMessage());
                                 }
 
                                 public void onSuccess(Object result) {
                                     WorkInProgressActionItem.removeStatus(status);
+                                    Info.display(Messages.get("label.content.unpublished"), Messages.get(
+                                            "label.content.unpublished"));
                                 }
                             });
                 }

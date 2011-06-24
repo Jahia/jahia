@@ -55,6 +55,7 @@ import org.jahia.services.render.*;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
@@ -89,7 +90,7 @@ public class TemplateHelper {
      * @param currentUserSession
      */
     public GWTRenderResult getRenderedContent(String path, String template, String configuration,
-                                              Map<String, String> contextParams, boolean editMode, String configName,
+                                              final Map<String, String> contextParams, boolean editMode, String configName,
                                               HttpServletRequest request, HttpServletResponse response,
                                               JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         GWTRenderResult result = null;
@@ -98,6 +99,17 @@ public class TemplateHelper {
 
             Resource r = new Resource(node, "html", template, configuration);
             request.setAttribute("mode", "edit");
+
+            request = new HttpServletRequestWrapper(request) {
+                @Override
+                public String getParameter(String name) {
+                    if (contextParams != null && contextParams.containsKey(name)) {
+                        return contextParams.get(name);
+                    }
+                    return super.getParameter(name);
+                }
+            };
+
             RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
             renderContext.setEditMode(editMode);
             renderContext.setEditModeConfigName(configName);

@@ -55,6 +55,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.cache.Cache;
+import org.jahia.services.sites.JahiaSite;
 import org.slf4j.Logger;
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
@@ -150,7 +151,7 @@ public class URLResolver {
             if (!URLGenerator.isLocalhost(serverName) && isMappable()
                     && SettingsBean.getInstance().isPermanentMoveForVanityURL()) {
                 try {
-                    if (siteKeyByServerName == null || siteKeyByServerName.equals(getNode().getResolveSite().getSiteKey()) ) {
+                    if (siteKeyByServerName != null && siteKeyByServerName.equals(getNode().getResolveSite().getSiteKey()) ) {
                         VanityUrl defaultVanityUrl = getVanityUrlService()
                                 .getVanityUrlForWorkspaceAndLocale(getNode(),
                                         workspace, locale);
@@ -230,8 +231,10 @@ public class URLResolver {
         boolean mappingResolved = false;
 
         try {
-            siteKeyByServerName = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByServerName(
-                    serverName).getSiteKey();
+            JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByServerName(serverName);
+            if (site != null) {
+                siteKeyByServerName = site.getSiteKey();
+            }
         } catch (JahiaException e) {
             logger.warn("Error finding site via servername: " + serverName, e);
         }

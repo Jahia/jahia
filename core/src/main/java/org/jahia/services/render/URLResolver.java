@@ -71,7 +71,6 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -107,6 +106,7 @@ public class URLResolver {
     private Locale locale;
     private String path = "";
     private String siteKey;
+    private String siteKeyByServerName;
     private boolean mappable = false;
 
     private String redirectUrl;
@@ -150,14 +150,16 @@ public class URLResolver {
             if (!URLGenerator.isLocalhost(serverName) && isMappable()
                     && SettingsBean.getInstance().isPermanentMoveForVanityURL()) {
                 try {
-                    VanityUrl defaultVanityUrl = getVanityUrlService()
-                            .getVanityUrlForWorkspaceAndLocale(getNode(),
-                                    workspace, locale);
-                    if (defaultVanityUrl != null && defaultVanityUrl.isActive()) {
-                        if (request == null || StringUtils.isEmpty(request.getQueryString())) {
-                            setRedirectUrl(defaultVanityUrl.getUrl());
-                        } else {
-                            setRedirectUrl(defaultVanityUrl.getUrl() + "?" + request.getQueryString());
+                    if (siteKeyByServerName == null || siteKeyByServerName.equals(getNode().getResolveSite().getSiteKey()) ) {
+                        VanityUrl defaultVanityUrl = getVanityUrlService()
+                                .getVanityUrlForWorkspaceAndLocale(getNode(),
+                                        workspace, locale);
+                        if (defaultVanityUrl != null && defaultVanityUrl.isActive()) {
+                            if (request == null || StringUtils.isEmpty(request.getQueryString())) {
+                                setRedirectUrl(defaultVanityUrl.getUrl());
+                            } else {
+                                setRedirectUrl(defaultVanityUrl.getUrl() + "?" + request.getQueryString());
+                            }
                         }
                     }
                 } catch (PathNotFoundException e) {
@@ -226,19 +228,21 @@ public class URLResolver {
 
     protected boolean resolveUrlMapping(String serverName) {
         boolean mappingResolved = false;
+
+        try {
+            siteKeyByServerName = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByServerName(
+                    serverName).getSiteKey();
+        } catch (JahiaException e) {
+            logger.warn("Error finding site via servername: " + serverName, e);
+        }
+
         if (getSiteKey() == null) {
             String siteKeyInPath = StringUtils.substringBetween(getPath(), "/sites/", "/");
             if (!StringUtils.isEmpty(siteKeyInPath)) {
                 setSiteKey(siteKeyInPath);
             } else if (!URLGenerator.isLocalhost(serverName)) {
-                try {
-                    JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByServerName(
-                            serverName);
-                    if (site != null) {
-                        setSiteKey(site.getSiteKey());
-                    }
-                } catch (JahiaException e) {
-                    logger.warn("Error finding site via servername: " + serverName, e);
+                if (siteKeyByServerName != null) {
+                    setSiteKey(siteKeyByServerName);
                 }
             }
         }

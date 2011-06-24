@@ -183,14 +183,7 @@
                                 <span class="dex-PushButton">
                                     <span class="first-child">
                                         <a class="sort"
-                                           href="javascript:sortSelectBox(document.mainForm.selectMember, false, /.{2}/);"
-                                           title="<fmt:message key='label.sortByProvider'/>"><fmt:message key="label.sortByProvider"/></a>
-                                    </span>
-                                </span>
-                                <span class="dex-PushButton">
-                                    <span class="first-child">
-                                        <a class="sort"
-                                           href="javascript:sortSelectBox(document.mainForm.selectMember, false, /.{8}/);"
+                                           href="javascript:sortSelectBox(document.mainForm.selectMember, false, /.{0}/);"
                                            title="<fmt:message key='org.jahia.admin.users.ManageGroups.altSortByIdentifier.label'/>"><fmt:message key="org.jahia.admin.users.ManageGroups.altSortByIdentifier.label"/></a>
                                     </span>
                                 </span>

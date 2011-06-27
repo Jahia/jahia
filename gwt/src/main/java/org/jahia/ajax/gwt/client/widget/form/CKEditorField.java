@@ -47,7 +47,6 @@ import java.util.Map;
 
 import com.extjs.gxt.ui.client.event.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGViolation;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -110,7 +109,6 @@ public class CKEditorField extends Field<String> {
     private boolean ignoreWcagWarnings;
     private String lastValidatedContent;
     private boolean allowBlank = true;
-    private GWTJahiaNode node;
     /**
      * Creates a new adapter field.
      */

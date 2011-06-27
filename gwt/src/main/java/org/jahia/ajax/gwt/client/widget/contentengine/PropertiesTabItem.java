@@ -180,7 +180,11 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 propertiesEditor.setExcludedTypes(excludedTypes);
                 propertiesEditor.setMultipleEdit(engine.isMultipleSelection());
                 propertiesEditor.setDisplayHiddenProperties(engine.getLinker().isDisplayHiddenProperties());
-                propertiesEditor.setPermissions(engine.getNode().getPermissions());
+                if (engine.getNode() != null) {
+                    propertiesEditor.setPermissions(engine.getNode().getPermissions());
+                } else if (engine.getTargetNode() != null ) {
+                    propertiesEditor.setPermissions(engine.getTargetNode().getPermissions());
+                }
                 propertiesEditor.renderNewFormPanel();
                 for (final Field field : propertiesEditor.getFields()) {
                     if (field instanceof ContentPickerField) {

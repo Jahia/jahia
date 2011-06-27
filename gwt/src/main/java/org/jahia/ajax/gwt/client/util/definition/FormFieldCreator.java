@@ -196,6 +196,7 @@ public class FormFieldCreator {
                     } else {
                         ComboBox<GWTJahiaValueDisplayBean> combo = new ComboBox<GWTJahiaValueDisplayBean>();
                         combo.setStore(store);
+                        combo.setEmptyText(""); // todo: allow to set the default value
                         combo.setDisplayField("display");
                         combo.setTypeAhead(true);
                         combo.setTriggerAction(TriggerAction.ALL);

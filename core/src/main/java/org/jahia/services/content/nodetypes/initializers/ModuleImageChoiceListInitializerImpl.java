@@ -92,6 +92,10 @@ public class ModuleImageChoiceListInitializerImpl implements ChoiceListInitializ
                             s = "";
                         }
                         value.addProperty("image", s + (template.getRootFolderPath().startsWith("/")?"":"/")+template.getRootFolderPath() + "/img/" + value.getValue().getString() + "." + param);
+                    } else {
+                        logger.debug("ModuleImageChoiceListInitializerImpl : unable to find image " + template.getFilePath() + File.separator + "img" + File.separator + value.getValue().getString() + "."  + param
+                                + " for property " + epd.getName()
+                                + " for type " + epd.getDeclaringNodeType().getName() );
                     }
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);

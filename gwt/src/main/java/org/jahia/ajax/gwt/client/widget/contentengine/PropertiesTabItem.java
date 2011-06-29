@@ -65,10 +65,10 @@ import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Jan 6, 2010
- * Time: 6:34:40 PM
+ *
+ * Tab item that contains properties
+ * @version 6.5
+ * @author toto
  * 
  */
 public class PropertiesTabItem extends EditEngineTabItem {
@@ -237,7 +237,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 Map<String, Field<?>> fieldsMap = propertiesEditor.getFieldsMap();
                 for (GWTJahiaNodeProperty property : previousNon18nProperties) {
                     if (fieldsMap.containsKey(property.getName()))  {
-                        FormFieldCreator.fillValue(fieldsMap.get(property.getName()), propertiesEditor.getGWTJahiaItemDefinition(property), property);
+                        FormFieldCreator.fillValue(fieldsMap.get(property.getName()), propertiesEditor.getGWTJahiaItemDefinition(property), property, null);
                     }
                 }
             }

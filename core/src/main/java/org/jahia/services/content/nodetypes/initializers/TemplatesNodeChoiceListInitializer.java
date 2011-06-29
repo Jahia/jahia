@@ -47,10 +47,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
-import javax.jcr.NodeIterator;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
@@ -60,11 +57,20 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: Jul 1, 2010
- * Time: 3:37:11 PM
- *
+ * This initializer get templates depending of the type asked, if no parameter, type returns content templates (contentTemplate), in
+ * page context it returns page templates (pageTemplate)
+ * The query is :
+ * <code>
+ *     "select * from [jnt:" + type + "] as n where isdescendantnode(n,['" +site.getPath()+"'])"
+ * </code>
+ * usage :
+ * <code>
+ *     - j:templateNode (weakreference,choicelist[templatesNode]) mandatory < jnt:template
+ *     - j:templateNode (weakreference,choicelist[templatesNode=pageTemplate]) mandatory < jnt:template
+ * </code>
+ * @version 6.5
+ * @author toto
+ * @since Jul 1, 2010
  */
 public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatesNodeChoiceListInitializer.class);
@@ -99,7 +105,14 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
 
             QueryResult result = queryManager.createQuery(
                     "select * from [jnt:" + type + "] as n where isdescendantnode(n,['" +site.getPath()+"'])", Query.JCR_SQL2).execute();
-            final NodeIterator iterator = result.getNodes();
+            // get default template
+            JCRNodeWrapper  defaultTemplate = null;
+            try {
+                defaultTemplate = site.hasProperty("j:defaultTemplate")? (JCRNodeWrapper) site.getProperty("j:defaultTemplate").getNode():null;
+            } catch (ItemNotFoundException e) {
+                logger.warn("A default template has been set on site '" + site.getName() + "' but the template has been deleted");
+            }
+                final NodeIterator iterator = result.getNodes();
             while (iterator.hasNext()) {
                 JCRNodeWrapper templateNode = (JCRNodeWrapper) iterator.next();
 
@@ -123,9 +136,14 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 if ("pageTemplate".equals(type)) {
                     ok &= node.hasPermission("template-"+templateNode.getName());
                 }
+
                 if (ok) {
-                    vs.add(new ChoiceListValue(templateNode.getName(), null, session.getValueFactory().createValue(templateNode.getIdentifier(),
-                            PropertyType.WEAKREFERENCE)));
+                    ChoiceListValue v = new ChoiceListValue(templateNode.getName(), null, session.getValueFactory().createValue(templateNode.getIdentifier(),
+                            PropertyType.WEAKREFERENCE));
+                    if (defaultTemplate !=  null && templateNode.getPath().equals(defaultTemplate.getPath())) {
+                        v.addProperty("defaultProperty",true);
+                    }
+                    vs.add(v);
                 }
             }
         } catch (RepositoryException e) {

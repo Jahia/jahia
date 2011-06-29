@@ -72,10 +72,8 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: ktlili
- * Date: Jan 20, 2010
- * Time: 2:07:06 PM
+ *
+ * editor for multi languages properties
  * 
  */
 public class LangPropertiesEditor extends LayoutContainer {
@@ -204,7 +202,7 @@ public class LangPropertiesEditor extends LayoutContainer {
                 Map<String, Field<?>> fieldsMap = langPropertiesEditor.getFieldsMap();
                 for (GWTJahiaNodeProperty property : previousNon18nProperties) {
                     FormFieldCreator.fillValue(fieldsMap.get(property.getName()),
-                            langPropertiesEditor.getGWTJahiaItemDefinition(property), property);
+                            langPropertiesEditor.getGWTJahiaItemDefinition(property), property, null);
                 }
             }
 

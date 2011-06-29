@@ -47,6 +47,12 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.StringUtils;
+import org.apache.derby.iapi.store.raw.PageKey;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRObservationManager;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.slf4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.importexport.ImportExportService;
@@ -70,6 +76,13 @@ import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 
+import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
 import javax.servlet.ServletContext;
 
 /**
@@ -407,32 +420,44 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         }
     }
 
-    private void performInitialImport(JahiaTemplatesPackage pack) {
+    private void performInitialImport(final JahiaTemplatesPackage pack) {
         logger.info("Starting import for the template package '" + pack.getName() + "' including: "
                 + pack.getInitialImports());
-        
-        for (String imp : pack.getInitialImports()) {
-            String targetPath = "/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
-            File importFile = new File(pack.getFilePath(), imp);
-            logger.info("... importing " + importFile + " into " + targetPath);
-            try {
-                if (imp.toLowerCase().endsWith(".xml")) {
-                    InputStream is = null;
-                    try {
-                        is = new BufferedInputStream(new FileInputStream(importFile));
-                        importExportService.importXML(targetPath, is, true);
-                    } finally {
-                        IOUtils.closeQuietly(is);
-                    }
-                } else {
-                    importExportService.importZip(targetPath, importFile, true);
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        cleanTemplates(pack.getRootFolder(), session);
+                        for (String imp : pack.getInitialImports()) {
+                            String targetPath = "/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
+                            File importFile = new File(pack.getFilePath(), imp);
+                            logger.info("... importing " + importFile + " into " + targetPath);
+                            try {
+                                if (imp.toLowerCase().endsWith(".xml")) {
+                                    InputStream is = null;
+                                    try {
+                                        is = new BufferedInputStream(new FileInputStream(importFile));
+                                        session.importXML(targetPath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                                    } finally {
+                                        IOUtils.closeQuietly(is);
+                                    }
+                                } else {
+                                    importExportService.importZip(targetPath, importFile, true,session);
+                                }
+                                session.save(JCRObservationManager.IMPORT);
+                            } catch (Exception e) {
+                                logger.error("Unable to import content for package '" + pack.getName() + "' from file " + imp
+                                        + ". Cause: " + e.getMessage(), e);
+                            }
                 }
-            } catch (Exception e) {
-                logger.error("Unable to import content for package '" + pack.getName() + "' from file " + imp
-                        + ". Cause: " + e.getMessage(), e);
-            }
+                    return null;
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error("Unable to import content for package '" + pack.getName()
+                    + "'. Cause: " + e.getMessage(), e);
         }
-        
+
+
         logger.info("... finished initial import for template package '" + pack.getName() + "'.");
         
     }
@@ -441,6 +466,30 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         if (!initialImports.isEmpty()) {
             while (!initialImports.isEmpty()) {
                 performInitialImport(initialImports.remove(0));
+            }
+        }
+    }
+
+    private void cleanTemplates(String moduleName, JCRSessionWrapper session) throws RepositoryException {
+        final QueryManager queryManager = session.getWorkspace().getQueryManager();
+        QueryResult result = queryManager.createQuery(
+                "select * from [jnt:virtualsite] as n where isdescendantnode(n,['/templateSets']) and n.[j:installedModules] = '" + moduleName + "'", Query.JCR_SQL2).execute();
+        final NodeIterator iterator = result.getNodes();
+        while (iterator.hasNext()) {
+            Node n = iterator.nextNode();
+            removeTemplates(n.getNode("templates"));
+        }
+    }
+    private void removeTemplates(Node n)  throws RepositoryException {
+        NodeIterator c = n.getNodes();
+        while(c.hasNext()) {
+            Node nn = (c.nextNode());
+            if (!nn.isNodeType("jnt:template")) {
+                nn.remove();
+            } else {
+                if (nn.hasNodes()) {
+                    removeTemplates(nn);
+                }
             }
         }
     }

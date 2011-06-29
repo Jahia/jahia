@@ -1096,7 +1096,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
     }
 
-    private void importZip(String parentNodePath, File file, boolean noRoot, JCRSessionWrapper session)
+    public void importZip(String parentNodePath, File file, boolean noRoot, JCRSessionWrapper session)
             throws IOException, RepositoryException, JahiaException {
         Map<String, Long> sizes = new HashMap<String, Long>();
         List<String> fileList = new ArrayList<String>();

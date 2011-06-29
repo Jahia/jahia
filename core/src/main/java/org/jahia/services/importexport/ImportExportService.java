@@ -44,6 +44,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jdom.JDOMException;
 import org.xml.sax.SAXException;
@@ -168,6 +169,22 @@ public interface ImportExportService {
      */
     void importZip(String parentNodePath, File file, boolean noRoot) throws IOException, RepositoryException,
             JahiaException;
+
+    /**
+     * Performs an import of the ZIP file. The format of XML files will be detected, as if they were imported with
+     * importXML(String, InputStream) method. Binary content will be
+     *
+     * @param parentNodePath
+     * @param file
+     * @param noRoot Ignore root xml element - can be used to import multiple nodes in the same node, using one single
+     *          import
+     * @throws IOException
+     * @throws RepositoryException
+     * @throws JahiaException
+     */
+    void importZip(String parentNodePath, File file, boolean noRoot, JCRSessionWrapper session) throws IOException, RepositoryException,
+            JahiaException;
+
 
     /**
      * Import a full site zip into a newly created site.

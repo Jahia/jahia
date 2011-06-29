@@ -247,7 +247,7 @@
     <table width="100%" class="evenOddTable full tBorder" border="0" cellspacing="0" cellpadding="5">
         <thead>
             <tr>
-                <th colspan="2">Ehcache Statistics (<a href="?do=status&amp;sub=display&amp;enableEhcacheStats=true&amp;timestamp=${timestamp}">Enable all statistics</a> / <a href="?do=status&amp;sub=display&amp;enableEhcacheStats=false&amp;timestamp=${timestamp}">Disable all statistics</a>)</th>
+                <th colspan="2"><fmt:message key='org.jahia.admin.status.ManageStatus.statistics.ehcache'/> (<a href="?do=status&amp;sub=display&amp;enableEhcacheStats=true&amp;timestamp=${timestamp}"><fmt:message key='org.jahia.admin.status.ManageStatus.statistics.all.enable'/></a> / <a href="?do=status&amp;sub=display&amp;enableEhcacheStats=false&amp;timestamp=${timestamp}"><fmt:message key='org.jahia.admin.status.ManageStatus.statistics.all.disable'/></a>)</th>
             </tr>
         </thead>
         <tbody>

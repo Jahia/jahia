@@ -299,18 +299,11 @@ public final class JCRContentUtils {
         do {
             try {
                 dest.getNode(name);
-                name = basename + "-" + (i++) + ext;
+                String newSuffix = "-" + (i++) + ext;
+                name = basename + newSuffix;
                 //name has a sizelimit of 32 chars
                 if(name.length() > 32) {
-                    if(basename.length() < (basename.length() - name.length() + 32)) { //cut basename
-                        name = basename.substring(0, basename.length() - name.length() + 32)  + "-" + (i) + ext;
-                    }else{
-                        if(ext.length() >= (ext.length() - name.length() + 32)) { // cut ext
-                            name = basename  + "-" + (i) + ext.substring(0, ext.length() - name.length() + 32);
-                        } else { //cut basename + ext
-                            name = "-" + (i) + ext.substring(0, ext.length() - name.length() + 32 + basename.length());
-                        }
-                    }
+                    name = basename.substring(0,(basename.length()<=32?basename.length():32)-newSuffix.length())+newSuffix;
                 }
             } catch (RepositoryException e) {
                 break;

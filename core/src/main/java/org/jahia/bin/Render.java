@@ -854,7 +854,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 Map<String, List<String>> values = new HashMap<String, List<String>>(m);
 
                 // Validate form token
-                String formAction = values.remove("form-action").get(0);
+                List<String> stringList1 = values.remove("form-action");
+                String formAction = stringList1.isEmpty()?null:stringList1.get(0);
                 String characterEncoding = SettingsBean.getInstance().getCharacterEncoding();
                 if (formAction == null ||
                         (!URLDecoder.decode(req.getRequestURI(), characterEncoding).equals(URLDecoder.decode(formAction, characterEncoding)) &&
@@ -891,7 +892,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         throw new AccessDeniedException();
                     }
                 }
-
+                m.put("form-action", Collections.<String>emptyList());
                 final Action originalAction = action;
                 action = new SystemAction() {
                     @Override

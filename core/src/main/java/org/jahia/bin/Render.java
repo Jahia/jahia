@@ -122,7 +122,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String VERSION = "jcrVersion";
     public static final String SUBMIT = "jcrSubmit";
     public static final String AUTO_ASSIGN_ROLE = "jcrAutoAssignRole";
-    public static final String ALIAS_USER = "jcrAlias";
+    public static final String ALIAS_USER = "alias";
     public static final String PARENT_TYPE = "jcrParentType";
     public static final String RETURN_CONTENTTYPE = "jcrReturnContentType";
     public static final String RESOURCE_ID = "jcrResourceID";

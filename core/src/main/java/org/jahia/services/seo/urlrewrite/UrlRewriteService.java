@@ -75,7 +75,7 @@ import org.tuckey.web.filters.urlrewrite.utils.Log;
 
 /**
  * URL rewriter service.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class UrlRewriteService implements InitializingBean, DisposableBean, ServletContextAware {
@@ -83,7 +83,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     private static final Logger logger = LoggerFactory.getLogger(UrlRewriteService.class);
 
     private Resource[] configurationResources;
-    
+
     /**
      * A user defined setting that says how often to check the configuration has changed. <b>0</b> means check on each call.
      */
@@ -98,11 +98,11 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     private Resource[] seoConfigurationResources;
 
     private boolean seoRulesEnabled;
-    
-    private ServletContext servletContext; 
+
+    private ServletContext servletContext;
 
     private UrlRewriteEngine urlRewriteEngine;
-    
+
     private VanityUrlService vanityUrlService;
 
     private URLResolverFactory urlResolverFactory;
@@ -148,7 +148,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param configs
      *            the URL rewriter configuration resource location
      */
@@ -169,7 +169,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         return urlRewriteEngine;
     }
 
-    protected List<SimpleUrlHandlerMapping> getRenderMapping() {
+    synchronized protected List<SimpleUrlHandlerMapping> getRenderMapping() {
         if (renderMapping == null) {
             renderMapping = new LinkedList<SimpleUrlHandlerMapping>();
             ApplicationContext ctx = (ApplicationContext) servletContext.getAttribute(

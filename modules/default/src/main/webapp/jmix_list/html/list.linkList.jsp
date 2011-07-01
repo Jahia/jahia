@@ -25,6 +25,11 @@
                         <a href="<c:url value='${url.files}${subchild.path}'/>"><c:out
                                 value="${not empty title && not empty title.string ? title.string : subchild.name}"/></a>
                     </c:when>
+                    <c:when test='${jcr:isNodeType(subchild, "jmix:nodeReference")}'>
+                        <jcr:nodeProperty node="${subchild.properties['j:node'].node}" name="jcr:title" var="title"/>
+                        <a href="<c:url value='${url.base}${subchild.properties["j:node"].node.path}.html'/>"><c:out
+                                value="${not empty title && not empty title.string ? title.string : subchild.properties['j:node'].node.name}"/></a>
+                    </c:when>
                     <c:otherwise>
                         <a href="<c:url value='${url.base}${subchild.path}.html'/>"><c:out
                                 value="${not empty title && not empty title.string ? title.string : subchild.name}"/></a>
@@ -38,7 +43,4 @@
     </ul>
 </c:if>
 <div class="clear"></div>
-<c:if test="${moduleMap.editable and renderContext.editMode}">
-    <template:module path="*"/>
-</c:if>
 <template:include view="hidden.footer"/>

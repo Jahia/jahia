@@ -13,7 +13,11 @@ jQuery(function($){
 		dayNames: ['svētdiena','pirmdiena','otrdiena','trešdiena','ceturtdiena','piektdiena','sestdiena'],
 		dayNamesShort: ['svt','prm','otr','tre','ctr','pkt','sst'],
 		dayNamesMin: ['Sv','Pr','Ot','Tr','Ct','Pk','Ss'],
-		dateFormat: 'dd-mm-yy', firstDay: 1,
-		isRTL: false};
+		weekHeader: 'Nav',
+		dateFormat: 'dd-mm-yy',
+		firstDay: 1,
+		isRTL: false,
+		showMonthAfterYear: false,
+		yearSuffix: ''};
 	$.datepicker.setDefaults($.datepicker.regional['lv']);
 });

@@ -1,4 +1,4 @@
-﻿/* Albanian initialisation for the jQuery UI date picker plugin. */
+/* Albanian initialisation for the jQuery UI date picker plugin. */
 /* Written by Flakron Bytyqi (flakron@gmail.com). */
 jQuery(function($){
 	$.datepicker.regional['sq'] = {
@@ -13,7 +13,11 @@ jQuery(function($){
 		dayNames: ['E Diel','E Hënë','E Martë','E Mërkurë','E Enjte','E Premte','E Shtune'],
 		dayNamesShort: ['Di','Hë','Ma','Më','En','Pr','Sh'],
 		dayNamesMin: ['Di','Hë','Ma','Më','En','Pr','Sh'],
-		dateFormat: 'dd.mm.yy', firstDay: 1,
-		isRTL: false};
+		weekHeader: 'Ja',
+		dateFormat: 'dd.mm.yy',
+		firstDay: 1,
+		isRTL: false,
+		showMonthAfterYear: false,
+		yearSuffix: ''};
 	$.datepicker.setDefaults($.datepicker.regional['sq']);
 });

@@ -1,4 +1,4 @@
-﻿/* Chinese initialisation for the jQuery UI date picker plugin. */
+/* Chinese initialisation for the jQuery UI date picker plugin. */
 /* Written by Ressol (ressol@gmail.com). */
 jQuery(function($){
 	$.datepicker.regional['zh-TW'] = {
@@ -13,7 +13,11 @@ jQuery(function($){
 		dayNames: ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],
 		dayNamesShort: ['周日','周一','周二','周三','周四','周五','周六'],
 		dayNamesMin: ['日','一','二','三','四','五','六'],
-		dateFormat: 'yy/mm/dd', firstDay: 1,
-		isRTL: false};
+		weekHeader: '周',
+		dateFormat: 'yy/mm/dd',
+		firstDay: 1,
+		isRTL: false,
+		showMonthAfterYear: true,
+		yearSuffix: '年'};
 	$.datepicker.setDefaults($.datepicker.regional['zh-TW']);
 });

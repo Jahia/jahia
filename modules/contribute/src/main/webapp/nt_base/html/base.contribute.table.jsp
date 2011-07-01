@@ -23,7 +23,7 @@
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
-<template:addResources type="javascript" resources="datepicker.js,jquery.jeditable.datepicker.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.datepicker.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
 <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.UILocale}.js"/>
 <template:addResources type="javascript" resources="animatedcollapse.js"/>

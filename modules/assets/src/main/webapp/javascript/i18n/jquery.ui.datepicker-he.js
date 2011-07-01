@@ -1,4 +1,4 @@
-﻿/* Hebrew initialisation for the UI Datepicker extension. */
+/* Hebrew initialisation for the UI Datepicker extension. */
 /* Written by Amir Hardon (ahardon at gmail dot com). */
 jQuery(function($){
 	$.datepicker.regional['he'] = {
@@ -13,7 +13,11 @@ jQuery(function($){
 		dayNames: ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'],
 		dayNamesShort: ['א\'','ב\'','ג\'','ד\'','ה\'','ו\'','שבת'],
 		dayNamesMin: ['א\'','ב\'','ג\'','ד\'','ה\'','ו\'','שבת'],
-		dateFormat: 'dd/mm/yy', firstDay: 0,
-		isRTL: true};
+		weekHeader: 'Wk',
+		dateFormat: 'dd/mm/yy',
+		firstDay: 0,
+		isRTL: true,
+		showMonthAfterYear: false,
+		yearSuffix: ''};
 	$.datepicker.setDefaults($.datepicker.regional['he']);
 });

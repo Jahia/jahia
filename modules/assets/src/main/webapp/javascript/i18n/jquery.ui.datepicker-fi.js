@@ -13,7 +13,11 @@ jQuery(function($){
 		dayNamesShort: ['Su','Ma','Ti','Ke','To','Pe','Su'],
 		dayNames: ['Sunnuntai','Maanantai','Tiistai','Keskiviikko','Torstai','Perjantai','Lauantai'],
 		dayNamesMin: ['Su','Ma','Ti','Ke','To','Pe','La'],
-        dateFormat: 'dd.mm.yy', firstDay: 1,
-		isRTL: false};
+		weekHeader: 'Vk',
+        dateFormat: 'dd.mm.yy',
+		firstDay: 1,
+		isRTL: false,
+		showMonthAfterYear: false,
+		yearSuffix: ''};
     $.datepicker.setDefaults($.datepicker.regional['fi']);
 });

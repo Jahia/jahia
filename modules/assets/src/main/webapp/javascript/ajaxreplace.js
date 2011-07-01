@@ -8,6 +8,10 @@
  *
  *  @example $('SPAN').identify();
  */
+
+/**
+ * This code has been modified by Jahia from its original source.
+ */
 (function($){
 
     $.fn.identify = function(options) {

@@ -1,4 +1,4 @@
-﻿/* Swedish initialisation for the jQuery UI date picker plugin. */
+/* Swedish initialisation for the jQuery UI date picker plugin. */
 /* Written by Anders Ekdahl ( anders@nomadiz.se). */
 jQuery(function($){
     $.datepicker.regional['sv'] = {
@@ -13,7 +13,11 @@ jQuery(function($){
 		dayNamesShort: ['Sön','Mån','Tis','Ons','Tor','Fre','Lör'],
 		dayNames: ['Söndag','Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag'],
 		dayNamesMin: ['Sö','Må','Ti','On','To','Fr','Lö'],
-        dateFormat: 'yy-mm-dd', firstDay: 1,
-		isRTL: false};
+		weekHeader: 'Ve',
+        dateFormat: 'yy-mm-dd',
+		firstDay: 1,
+		isRTL: false,
+		showMonthAfterYear: false,
+		yearSuffix: ''};
     $.datepicker.setDefaults($.datepicker.regional['sv']);
 });

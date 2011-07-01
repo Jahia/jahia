@@ -1,4 +1,4 @@
-﻿/* Japanese initialisation for the jQuery UI date picker plugin. */
+/* Japanese initialisation for the jQuery UI date picker plugin. */
 /* Written by Kentaro SATO (kentaro@ranvis.com). */
 jQuery(function($){
 	$.datepicker.regional['ja'] = {
@@ -13,8 +13,11 @@ jQuery(function($){
 		dayNames: ['日曜日','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'],
 		dayNamesShort: ['日','月','火','水','木','金','土'],
 		dayNamesMin: ['日','月','火','水','木','金','土'],
-		dateFormat: 'yy/mm/dd', firstDay: 0,
+		weekHeader: '週',
+		dateFormat: 'yy/mm/dd',
+		firstDay: 0,
 		isRTL: false,
-		showMonthAfterYear: true};
+		showMonthAfterYear: true,
+		yearSuffix: '年'};
 	$.datepicker.setDefaults($.datepicker.regional['ja']);
 });

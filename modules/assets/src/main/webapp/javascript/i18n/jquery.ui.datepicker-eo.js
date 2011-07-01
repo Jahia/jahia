@@ -1,4 +1,4 @@
-﻿/* Esperanto initialisation for the jQuery UI date picker plugin. */
+/* Esperanto initialisation for the jQuery UI date picker plugin. */
 /* Written by Olivier M. (olivierweb@ifrance.com). */
 jQuery(function($){
 	$.datepicker.regional['eo'] = {
@@ -13,7 +13,11 @@ jQuery(function($){
 		dayNames: ['Dimanĉo','Lundo','Mardo','Merkredo','Ĵaŭdo','Vendredo','Sabato'],
 		dayNamesShort: ['Dim','Lun','Mar','Mer','Ĵaŭ','Ven','Sab'],
 		dayNamesMin: ['Di','Lu','Ma','Me','Ĵa','Ve','Sa'],
-		dateFormat: 'dd/mm/yy', firstDay: 0,
-		isRTL: false};
+		weekHeader: 'Sb',
+		dateFormat: 'dd/mm/yy',
+		firstDay: 0,
+		isRTL: false,
+		showMonthAfterYear: false,
+		yearSuffix: ''};
 	$.datepicker.setDefaults($.datepicker.regional['eo']);
 });

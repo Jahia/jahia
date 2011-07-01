@@ -1,4 +1,4 @@
-﻿/* Serbian i18n for the jQuery UI date picker plugin. */
+/* Serbian i18n for the jQuery UI date picker plugin. */
 /* Written by Dejan Dimić. */
 jQuery(function($){
 	$.datepicker.regional['sr-SR'] = {
@@ -13,7 +13,11 @@ jQuery(function($){
 		dayNames: ['Nedelja','Ponedeljak','Utorak','Sreda','Četvrtak','Petak','Subota'],
 		dayNamesShort: ['Ned','Pon','Uto','Sre','Čet','Pet','Sub'],
 		dayNamesMin: ['Ne','Po','Ut','Sr','Če','Pe','Su'],
-		dateFormat: 'dd/mm/yy', firstDay: 1,
-		isRTL: false};
+		weekHeader: 'Sed',
+		dateFormat: 'dd/mm/yy',
+		firstDay: 1,
+		isRTL: false,
+		showMonthAfterYear: false,
+		yearSuffix: ''};
 	$.datepicker.setDefaults($.datepicker.regional['sr-SR']);
 });

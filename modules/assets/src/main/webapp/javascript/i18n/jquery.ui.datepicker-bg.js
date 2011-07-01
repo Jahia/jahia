@@ -1,4 +1,4 @@
-﻿/* Bulgarian initialisation for the jQuery UI date picker plugin. */
+/* Bulgarian initialisation for the jQuery UI date picker plugin. */
 /* Written by Stoyan Kyosev (http://svest.org). */
 jQuery(function($){
     $.datepicker.regional['bg'] = {
@@ -14,7 +14,11 @@ jQuery(function($){
         dayNames: ['Неделя','Понеделник','Вторник','Сряда','Четвъртък','Петък','Събота'],
         dayNamesShort: ['Нед','Пон','Вто','Сря','Чет','Пет','Съб'],
         dayNamesMin: ['Не','По','Вт','Ср','Че','Пе','Съ'],
-        dateFormat: 'dd.mm.yy', firstDay: 1,
-        isRTL: false};
+		weekHeader: 'Wk',
+        dateFormat: 'dd.mm.yy',
+		firstDay: 1,
+        isRTL: false,
+		showMonthAfterYear: false,
+		yearSuffix: ''};
     $.datepicker.setDefaults($.datepicker.regional['bg']);
 });

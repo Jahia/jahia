@@ -40,14 +40,10 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import java.util.List;
-
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
@@ -69,26 +65,17 @@ public class SiteLanguageSwitcherActionItem extends LanguageSwitcherActionItem {
             events = false;
             mainComponent.getStore().removeAll();
             mainComponent.reset();
-			JahiaContentManagementService.App.getInstance().getSiteLanguages(
-			        new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
-				        public void onSuccess(List<GWTJahiaLanguage> langs) {
-					        languages = langs;
-					        mainComponent.getStore().add(langs);
+            mainComponent.getStore().add(JahiaGWTParameters.getSiteLanguages());
 
-                            if (mainComponent.getSelection().isEmpty()) {
-                                for (GWTJahiaLanguage language : langs) {
-                                    if (language.getLanguage().equals(JahiaGWTParameters.getLanguage())) {
-                                        mainComponent.select(language);
-                                    }
-                                }
-                            }
-                            events = true;
-				        }
-				        public void onApplicationFailure(Throwable throwable) {
-					        mainComponent.getStore().removeAll();
-				        }
-			        });
-		}
+            if (mainComponent.getSelection().isEmpty()) {
+                for (GWTJahiaLanguage language : JahiaGWTParameters.getSiteLanguages()) {
+                    if (language.getLanguage().equals(JahiaGWTParameters.getLanguage())) {
+                        mainComponent.select(language);
+                    }
+                }
+            }
+            events = true;
+        }
 
 	}
 

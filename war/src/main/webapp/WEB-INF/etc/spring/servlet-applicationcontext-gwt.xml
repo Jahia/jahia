@@ -7,7 +7,6 @@
     <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="mappings">
             <value>
-                /**/contentDefinition.gwt=contentDefinitionServiceController
                 /**/contentManager.gwt=contentManagerServiceController
                 /**/subscription.gwt=subscriptionServiceController
                 /**/toolbar.gwt=toolbarServiceController
@@ -20,13 +19,6 @@
         <property name="sessionExpiryTime" value="30" />
         <property name="allowPostMethodOnly" value="true"/>
         <property name="requireAuthenticatedUser" value="true"/>
-    </bean>
-
-    <bean name="contentDefinitionServiceController" parent="abstractServiceController">
-        <property name="remoteServiceName" value="gwtJahiaContentDefinitionService"/>
-    </bean>
-    <bean name="gwtJahiaContentDefinitionService" class="org.jahia.ajax.gwt.definitions.server.JahiaContentDefinitionServiceImpl" scope="prototype">
-        <property name="contentDefinition" ref="ContentDefinitionHelper"/>
     </bean>
 
     <bean name="contentManagerServiceController" parent="abstractServiceController">

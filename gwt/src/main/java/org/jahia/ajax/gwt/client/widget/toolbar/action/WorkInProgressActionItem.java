@@ -49,6 +49,7 @@ import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.Poller;
 import org.jahia.ajax.gwt.client.widget.job.JobListWindow;
 
 import java.util.ArrayList;
@@ -59,15 +60,13 @@ import java.util.List;
  * Date: Aug 30, 2010
  * Time: 8:16:07 PM
  */
-public class WorkInProgressActionItem extends BaseActionItem {
+public class WorkInProgressActionItem extends BaseActionItem implements Poller.PollListener{
 
     private static WorkInProgressActionItem instance;
 
     private List<String> statuses = new ArrayList<String>();
     private List<GWTJahiaJobDetail> processes = new ArrayList<GWTJahiaJobDetail>();
 
-    private transient Timer timer;
-    
     private boolean adminMode = true;
 
     @Override
@@ -76,26 +75,17 @@ public class WorkInProgressActionItem extends BaseActionItem {
         instance = this;
         refreshStatus();
 
-        timer = new Timer() {
-            public void run() {
-                JahiaContentManagementService.App.getInstance().getActiveJobs(new AsyncCallback<List<GWTJahiaJobDetail>>() {
-                    public void onSuccess(List<GWTJahiaJobDetail> result) {
-                        if (!processes.equals(result)) {
-                            final ArrayList<GWTJahiaJobDetail> deleted = new ArrayList<GWTJahiaJobDetail>(processes);
-                            deleted.removeAll(result);
-                            processes = result;
-                            refreshStatus(deleted);
-                        }
-                        schedule(5000);
-                    }
+        Poller.getInstance().registerListener(this, "activeJobs");
+    }
 
-                    public void onFailure(Throwable caught) {
-                        Log.error("Cannot get jobs", caught);
-                    }
-                });
-            }
-        };
-        timer.run();
+    public void handlePollingResult(String key, Object result) {
+        List<GWTJahiaJobDetail> jobs = (List<GWTJahiaJobDetail>) result;
+        if (!processes.equals(jobs)) {
+            final ArrayList<GWTJahiaJobDetail> deleted = new ArrayList<GWTJahiaJobDetail>(processes);
+            deleted.removeAll(jobs);
+            processes = jobs;
+            refreshStatus(deleted);
+        }
     }
 
     public static void removeStatus(String status) {

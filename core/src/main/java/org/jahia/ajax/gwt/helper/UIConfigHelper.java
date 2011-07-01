@@ -506,7 +506,6 @@ public class UIConfigHelper {
 
         ActionItem actionItem = item.getActionItem();
         if (actionItem instanceof LanguageAware) {
-            ((LanguageAware) actionItem).setLanguages(languages.getLanguages(site, jahiaUser, locale));
             ((LanguageAware) actionItem).setSelectedLang(languages.getCurrentLang(locale));
         }
 

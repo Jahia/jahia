@@ -57,7 +57,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
@@ -158,7 +157,7 @@ public class EditModeDNDListener extends DNDListener {
             if (referenceType != null) {
                 status.setData(OPERATION_CALLED, "true");
                 final GWTJahiaNode selectedNode = sourceNodes.get(0);
-                JahiaContentDefinitionService.App.getInstance()
+                JahiaContentManagementService.App.getInstance()
                         .getNodeTypes(referenceType, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
                             public void onApplicationFailure(Throwable caught) {
                                 Window.alert("Cannot retrieve node type. Cause: " + caught.getLocalizedMessage());
@@ -231,7 +230,7 @@ public class EditModeDNDListener extends DNDListener {
             if (referenceType != null) {
                 status.setData(OPERATION_CALLED, "true");
                 final GWTJahiaNode selectedNode = sourceNodes.get(0);
-                JahiaContentDefinitionService.App.getInstance()
+                JahiaContentManagementService.App.getInstance()
                         .getNodeTypes(referenceType, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
                             public void onApplicationFailure(Throwable caught) {
                                 Window.alert("Cannot retrieve node type. Cause: " + caught.getLocalizedMessage());

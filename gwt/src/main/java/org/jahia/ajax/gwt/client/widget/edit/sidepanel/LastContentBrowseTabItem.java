@@ -176,7 +176,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
 
     @Override
     public void refresh(int flag) {
-        if ((flag & Linker.REFRESH_PAGES) != 0) {
+        if ((flag & Linker.REFRESH_LAST_CONTENT) != 0) {
             fillStore();
         }
 

@@ -41,6 +41,7 @@
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
@@ -49,7 +50,6 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 
 import java.util.*;
 
@@ -60,7 +60,7 @@ import java.util.*;
  */
 public class ModuleHelper {
     public final static String JAHIA_TYPE = "jahiatype";
-    
+
     private static List<Module> modules;
     private static Map<String, List<Module>> modulesByPath;
     private static Map<String, Module> modulesById;
@@ -149,7 +149,6 @@ public class ModuleHelper {
                 linkedContentInfoType.put(node, type);
             }
         }
-        setNodeTypes(allNodetypes);
 
         ArrayList<String> list = new ArrayList<String>();
         for (String s : modulesByPath.keySet()) {
@@ -161,10 +160,21 @@ public class ModuleHelper {
             Log.debug("all pathes " + list);
         }
         JahiaContentManagementService.App.getInstance()
-                .getNodes(list, Arrays.asList(GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.WORKFLOW_INFO),
-                        new BaseAsyncCallback<List<GWTJahiaNode>>() {
-                            public void onSuccess(List<GWTJahiaNode> result) {
-                                for (GWTJahiaNode gwtJahiaNode : result) {
+                .getNodesAndTypes(list, Arrays.asList(GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.WORKFLOW_INFO), new ArrayList<String>(allNodetypes),
+                        new BaseAsyncCallback<Map<String, List<? extends ModelData>>>() {
+                            public void onSuccess(Map<String, List<? extends ModelData>> result) {
+                                List<GWTJahiaNodeType> types = (List<GWTJahiaNodeType>) result.get("types");
+                                for (GWTJahiaNodeType type : types) {
+                                    if (type != null) {
+                                        ModuleHelper.nodeTypes.put(type.getName(), type);
+                                    }
+                                }
+                                for (Module module : modules) {
+                                    module.onNodeTypesLoaded();
+                                }
+
+                                List<GWTJahiaNode> nodes = (List<GWTJahiaNode>) result.get("nodes");
+                                for (GWTJahiaNode gwtJahiaNode : nodes) {
                                     final List<Module> moduleList = modulesByPath.get(gwtJahiaNode.getPath());
                                     if (moduleList != null) {
                                         for (Module module : moduleList) {
@@ -281,7 +291,7 @@ public class ModuleHelper {
                 if (path.indexOf('.') > -1) {
                     path = path.substring(0, path.indexOf('.'));
                 }
-                DOM.setElementAttribute(element, "href", "#"+path+":"+(template != null?template:"")+":"+params);
+                DOM.setElementAttribute(element, "href", "#" + path + ":" + (template != null ? template : "") + ":" + params);
                 if (template == null) {
                     DOM.setElementAttribute(element, "onclick", "window.goTo('" + path + "',null,'" + params + "')");
                 } else {
@@ -319,24 +329,5 @@ public class ModuleHelper {
 
     public static GWTJahiaNodeType getNodeType(String nodeType) {
         return nodeTypes.get(nodeType);
-    }
-
-    public static void setNodeTypes(Set<String> allNodetypes) {
-        JahiaContentDefinitionService.App.getInstance().getNodeTypes(new ArrayList<String>(allNodetypes), new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
-            public void onSuccess(List<GWTJahiaNodeType> result) {
-                for (GWTJahiaNodeType type : result) {
-                    if (type != null) {
-                        ModuleHelper.nodeTypes.put(type.getName(), type);
-                    }
-                }
-                for (Module module : modules) {
-                    module.onNodeTypesLoaded();
-                }
-            }
-
-            public void onApplicationFailure(Throwable caught) {
-                Log.error("Unable to get nodetypes :",caught);
-            }
-        });
     }
 }

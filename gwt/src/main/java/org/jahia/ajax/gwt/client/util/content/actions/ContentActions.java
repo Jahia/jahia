@@ -52,7 +52,6 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -270,7 +269,7 @@ public class ContentActions {
 
     public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, boolean includeSubTypes, final boolean displayStudioElement) {
         if (parent != null && !parent.isFile()) {
-            JahiaContentDefinitionService.App.getInstance().getSubNodetypes(nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, includeSubTypes, displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+            JahiaContentManagementService.App.getInstance().getSubNodetypes(nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, includeSubTypes, displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
                 public void onApplicationFailure(Throwable caught) {
                     MessageBox.alert(Messages.get("label.error", "Error"),
                             "Unable to load content definitions for base type '" + nodeTypes + "'. Cause: " + caught.getLocalizedMessage(),

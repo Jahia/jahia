@@ -49,9 +49,15 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.*;
-import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.layout.*;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -61,18 +67,15 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
-import org.jahia.ajax.gwt.client.widget.edit.EditModeDragSource;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -239,13 +242,9 @@ class SearchTabItem extends SidePanelTabItem {
         combo.setTypeAhead(true);
         combo.setTriggerAction(ComboBox.TriggerAction.ALL);
         combo.setForceSelection(true);
-        JahiaContentManagementService.App.getInstance().getSiteLanguages(new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
-            public void onSuccess(List<GWTJahiaLanguage> gwtJahiaLanguages) {
-                combo.getStore().removeAll();
-                combo.getStore().add(gwtJahiaLanguages);
-            }
+        combo.getStore().removeAll();
+        combo.getStore().add(JahiaGWTParameters.getSiteLanguages());
 
-        });
         return combo;
     }
 
@@ -266,7 +265,7 @@ class SearchTabItem extends SidePanelTabItem {
         combo.setForceSelection(true);
         ArrayList<String> list = new ArrayList<String>();
         list.add("nt:base");
-        JahiaContentDefinitionService.App.getInstance().getSubNodetypes(Arrays.asList("jmix:editorialContent"), true, false, new BaseAsyncCallback<Map<GWTJahiaNodeType,List<GWTJahiaNodeType>>>() {
+        JahiaContentManagementService.App.getInstance().getSubNodetypes(Arrays.asList("jmix:editorialContent"), true, false, new BaseAsyncCallback<Map<GWTJahiaNodeType,List<GWTJahiaNodeType>>>() {
                     public void onSuccess(Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> result) {
                         for (GWTJahiaNodeType key : result.keySet()) {
                             combo.getStore().add(result.get(key));

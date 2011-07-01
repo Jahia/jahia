@@ -46,14 +46,16 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
-import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DualListField;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
-
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
@@ -70,8 +72,6 @@ import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
@@ -92,7 +92,6 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     public static final int BUTTON_HEIGHT = 24;
 
     protected static JahiaContentManagementServiceAsync contentService;
-    protected static JahiaContentDefinitionServiceAsync definitionService;
     protected List<GWTEngineTab> config;
     protected Linker linker = null;
     protected List<GWTJahiaNodeType> nodeTypes;
@@ -132,7 +131,6 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         this.linker = linker;
         this.parentPath = parentPath;
         contentService = JahiaContentManagementService.App.getInstance();
-        definitionService = JahiaContentDefinitionService.App.getInstance();
     }
 
     protected void init(EngineContainer container) {

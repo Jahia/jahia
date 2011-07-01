@@ -41,7 +41,9 @@
 package org.jahia.ajax.gwt.content.server;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
@@ -375,6 +377,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         return list;
 
+    }
+
+    public Map<String,List<? extends ModelData>> getNodesAndTypes(List<String> paths, List<String> fields, List<String> types) throws GWTJahiaServiceException {
+        Map<String,List<? extends ModelData>> m = new HashMap<String,List<? extends ModelData>>();
+        m.put("nodes",getNodes(paths, fields));
+        m.put("types", getNodeTypes(types));
+        return m;
     }
 
     /**
@@ -1143,16 +1152,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     /**
-     * Get site languages
-     *
-     * @return
-     * @throws GWTJahiaServiceException
-     */
-    public List<GWTJahiaLanguage> getSiteLanguages() throws GWTJahiaServiceException {
-        return languages.getLanguages(getSite(), getRemoteJahiaUser(), getLocale());
-    }
-
-    /**
      * Gwt Highlighted
      *
      * @param original
@@ -1682,8 +1681,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public List<GWTJahiaJobDetail> getActiveJobs() throws GWTJahiaServiceException {
-        return schedulerHelper.getActiveJobs(getLocale());
+    public Map<String,Object> getPollData(Set<String> keys) throws GWTJahiaServiceException {
+        Map<String,Object> result = new HashMap<String, Object>();
+        if (keys.contains("activeJobs")) {
+            result.put("activeJobs",schedulerHelper.getActiveJobs(getLocale()));
+        }
+        if (keys.contains("numberOfTasks")) {
+            result.put("numberOfTasks",workflow.getNumberOfTasksForUser(getUser(), getLocale()));
+        }
+        return result;
     }
 
     public BasePagingLoadResult<GWTJahiaJobDetail> getJobs(int offset, int limit, String sortField, String sortDir,
@@ -1941,5 +1947,42 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throw new GWTJahiaServiceException(e);
         }
     }
+
+    public GWTJahiaNodeType getNodeType(String name) throws GWTJahiaServiceException {
+        return contentDefinition.getNodeType(name, getUILocale());
+    }
+
+    public List<GWTJahiaNodeType> getNodeTypes(List<String> names) throws GWTJahiaServiceException {
+        return contentDefinition.getNodeTypes(names, getUILocale());
+    }
+
+    /**
+     * Returns a list of node types with name and label populated that are the
+     * sub-types of the specified base type.
+     *
+     *
+     * @param baseTypes
+     *            the node type name to find sub-types
+     * @param displayStudioElement
+     * @return a list of node types with name and label populated that are the
+     *         sub-types of the specified base type
+     */
+    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement) throws GWTJahiaServiceException {
+        return contentDefinition.getSubNodetypes(baseTypes, new HashMap<String, Object>(), getUILocale(), includeSubTypes, displayStudioElement);
+    }
+
+    public GWTJahiaNodeType getWFFormForNodeAndNodeType(String formResourceName)
+            throws GWTJahiaServiceException {
+//        try {
+//            JCRNodeWrapper nodeWrapper = retrieveCurrentSession().getNode(node.getPath());
+//            Map<String,Object> context = new HashMap<String,Object>();
+//            context.put("contextNode", nodeWrapper);
+            return contentDefinition.getNodeType(formResourceName, getUILocale());
+//        } catch (RepositoryException e) {
+//            logger.error("Cannot get node", e);
+//            throw new GWTJahiaServiceException(e.toString());
+//        }
+    }
+
 
 }

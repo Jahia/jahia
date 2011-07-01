@@ -51,8 +51,5 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
  */
 public interface LanguageAware {
 
-    void setLanguages(List<GWTJahiaLanguage> gwtJahiaLanguages);
-
-
     void setSelectedLang(GWTJahiaLanguage selectedLang);
 }

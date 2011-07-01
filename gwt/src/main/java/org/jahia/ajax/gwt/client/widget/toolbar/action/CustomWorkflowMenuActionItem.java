@@ -82,43 +82,32 @@ public class CustomWorkflowMenuActionItem extends BaseActionItem {
         final GWTJahiaNode singleSelection = lh.getSingleSelection();
         setEnabled(false);
         if (singleSelection != null) {
-            JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList(singleSelection.getPath()),
-                    Arrays.asList(GWTJahiaNode.WORKFLOW_INFOS), new BaseAsyncCallback<List<GWTJahiaNode>>() {
-                        public void onSuccess(List<GWTJahiaNode> result) {
-                            Map<String, GWTJahiaWorkflowInfo> workflowInfos = result.get(0).getWorkflowInfos();
-                            if (workflowInfos != null && workflowInfos.keySet().size() > 0) {
-                                Set<String> workflowTypes = workflowInfos.keySet();
-                                final Menu menu = new Menu();
-                                for (String locale : workflowTypes) {
-                                    if (locale.equals(JahiaGWTParameters.getLanguage())) {
-                                        GWTJahiaWorkflowInfo workflowInfo = workflowInfos.get(locale);
-                                        Map<GWTJahiaWorkflowType, GWTJahiaWorkflowDefinition> possibleWorkflows = workflowInfo.getPossibleWorkflows();
-                                        for (Map.Entry<GWTJahiaWorkflowType, GWTJahiaWorkflowDefinition> entry : possibleWorkflows.entrySet()) {
-                                            if (!entry.getKey().getName().toLowerCase().endsWith("publish")) {
-                                                final GWTJahiaWorkflowDefinition value = entry.getValue();
-                                                MenuItem item = new MenuItem(value.getDisplayName());
-                                                item.addSelectionListener(new SelectionListener<MenuEvent>() {
-                                                    @Override
-                                                    public void componentSelected(MenuEvent ce) {
-                                                        EngineContainer container = new EnginePanel();
-                                                        EngineContainer cards = new EngineCards(container, linker);
-                                                        new WorkflowActionDialog(singleSelection.getPath(),
-                                                                value.getDisplayName(), value, linker, null, cards);
-                                                        cards.showEngine();
-                                                    }
-                                                });
-                                                menu.add(item);
-                                            }
-                                        }
-                                    }
-                                }
-                                if (menu.getItemCount() > 0) {
-                                    setSubMenu(menu);
-                                    setEnabled(true);
-                                }
-                            }
+
+            GWTJahiaWorkflowInfo workflowInfo = singleSelection.getWorkflowInfo();
+            Map<GWTJahiaWorkflowType, GWTJahiaWorkflowDefinition> possibleWorkflows = workflowInfo.getPossibleWorkflows();
+
+            final Menu menu = new Menu();
+            for (Map.Entry<GWTJahiaWorkflowType, GWTJahiaWorkflowDefinition> entry : possibleWorkflows.entrySet()) {
+                if (!entry.getKey().getName().toLowerCase().endsWith("publish")) {
+                    final GWTJahiaWorkflowDefinition value = entry.getValue();
+                    MenuItem item = new MenuItem(value.getDisplayName());
+                    item.addSelectionListener(new SelectionListener<MenuEvent>() {
+                        @Override
+                        public void componentSelected(MenuEvent ce) {
+                            EngineContainer container = new EnginePanel();
+                            EngineContainer cards = new EngineCards(container, linker);
+                            new WorkflowActionDialog(singleSelection.getPath(),
+                                    value.getDisplayName(), value, linker, null, cards);
+                            cards.showEngine();
                         }
                     });
+                    menu.add(item);
+                }
+            }
+            if (menu.getItemCount() > 0) {
+                setSubMenu(menu);
+                setEnabled(true);
+            }
         }
     }
 }

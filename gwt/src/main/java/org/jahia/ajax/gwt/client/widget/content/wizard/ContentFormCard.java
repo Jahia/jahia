@@ -50,7 +50,6 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow.ContentWizardCard;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
@@ -82,7 +81,7 @@ public class ContentFormCard extends ContentWizardCard {
 
     @Override
     public void createUI() {
-        JahiaContentDefinitionService.App.getInstance()
+        JahiaContentManagementService.App.getInstance()
                 .getNodeType(getWizardData().getNodeType().getName(), new BaseAsyncCallback<GWTJahiaNodeType>() {
                     public void onSuccess(GWTJahiaNodeType result) {
                         List<GWTJahiaNodeType> types = new ArrayList<GWTJahiaNodeType>();

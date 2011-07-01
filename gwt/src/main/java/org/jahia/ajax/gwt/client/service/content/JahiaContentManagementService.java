@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.client.service.content;
 
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -50,6 +51,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -94,6 +96,8 @@ public interface JahiaContentManagementService extends RemoteService {
     public List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex) throws GWTJahiaServiceException;
 
     public List<GWTJahiaNode> getNodes(List<String> path, List<String> fields) throws GWTJahiaServiceException;
+
+    public Map<String,List<? extends ModelData>> getNodesAndTypes(List<String> paths, List<String> fields, List<String> types) throws GWTJahiaServiceException;
 
     public GWTJahiaNode getTagNode(String tagName, boolean create) throws GWTJahiaServiceException;
 
@@ -236,9 +240,6 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public String getHighlighted(String original, String amendment) throws GWTJahiaServiceException;
 
-
-    public List<GWTJahiaLanguage> getSiteLanguages() throws GWTJahiaServiceException;
-
     /**
      * Retrieves a list of URL mapping objects for current node and locale.
      *
@@ -291,7 +292,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void flushAll() throws GWTJahiaServiceException;
 
-    List<GWTJahiaJobDetail> getActiveJobs() throws GWTJahiaServiceException;
+    Map<String,Object> getPollData(Set<String> keys) throws GWTJahiaServiceException;
 
     /**
      * Retrieve job list using pagination and sorting if supported. Also can take an optional groupName list for
@@ -375,6 +376,25 @@ public interface JahiaContentManagementService extends RemoteService {
                                   String workspace, String locale) throws GWTJahiaServiceException;
 
     void flushSite(String siteUUID) throws GWTJahiaServiceException;
+
+    GWTJahiaNodeType getNodeType(String names) throws GWTJahiaServiceException;
+
+    List<GWTJahiaNodeType> getNodeTypes(List<String> names) throws GWTJahiaServiceException;
+
+    /**
+     * Returns a list of node types with name and label populated that are the
+     * sub-types of the specified base type.
+     *
+     *
+     * @param baseTypes   the node type name to find sub-types
+     * @param displayStudioElement
+     * @return a list of node types with name and label populated that are the
+     *         sub-types of the specified base type
+     */
+    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement) throws GWTJahiaServiceException;
+
+    GWTJahiaNodeType getWFFormForNodeAndNodeType(String formResourceName)
+            throws GWTJahiaServiceException;
 
     // -------------------------- INNER CLASSES --------------------------
 

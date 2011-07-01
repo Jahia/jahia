@@ -58,8 +58,6 @@ import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
@@ -79,7 +77,6 @@ public class WorkflowActionDialog extends LayoutContainer {
 // ------------------------------ FIELDS ------------------------------
 
     private JahiaContentManagementServiceAsync contentManagement;
-    private JahiaContentDefinitionServiceAsync contentDefinition;
     private WorkflowDashboardEngine workflowDashboard;
     private TabPanel tabPanel;
     private TabItem actionTab;
@@ -117,7 +114,6 @@ public class WorkflowActionDialog extends LayoutContainer {
     private WorkflowActionDialog(Linker linker, CustomWorkflow custom, EngineContainer container, String title) {
         super();
         contentManagement = JahiaContentManagementService.App.getInstance();
-        contentDefinition = JahiaContentDefinitionService.App.getInstance();
         this.linker = linker;
         this.custom = custom;
         this.title = title;
@@ -210,7 +206,7 @@ public class WorkflowActionDialog extends LayoutContainer {
         actionTab = new TabItem(Messages.get("label.action", "Action"));
         actionTab.setLayout(new FitLayout());
         if (formResourceName != null && !"".equals(formResourceName)) {
-            contentDefinition.getWFFormForNodeAndNodeType(formResourceName, new BaseAsyncCallback<GWTJahiaNodeType>() {
+            contentManagement.getWFFormForNodeAndNodeType(formResourceName, new BaseAsyncCallback<GWTJahiaNodeType>() {
                 public void onSuccess(final GWTJahiaNodeType result) {
                     final Map<String, GWTJahiaNodeProperty> variables;
                     if (workflow != null) {

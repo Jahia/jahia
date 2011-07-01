@@ -59,6 +59,7 @@ import java.util.*;
  */
 public class GWTJahiaNode extends BaseTreeModel implements Serializable, Comparable<GWTJahiaNode>, ListLoadConfig {
     public static final String TAGS = "tags";
+    public static final String SITE_LANGUAGES = "siteLanguages";
     public static final String NAME = "name";
     public static final String PATH = "path";
     public static final String ICON = "icon";
@@ -101,7 +102,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String HOMEPAGE_PATH = "homepage-path";
 
     public static final List<String> DEFAULT_SITE_FIELDS =
-            Arrays.asList("j:siteType", "j:installedModules", "j:templatesSet", "j:dependencies","j:languages", "j:defaultLanguage", HOMEPAGE_PATH);
+            Arrays.asList("j:siteType", "j:installedModules", "j:templatesSet", "j:dependencies","j:languages", "j:defaultLanguage", HOMEPAGE_PATH, SITE_LANGUAGES);
 
     public static final List<String> RESERVED_FIELDS =
             Arrays.asList(TAGS, NAME, PATH, ICON, LOCKED, LOCKABLE, PERMISSIONS, DELETEABLE, UUID, DISPLAY_NAME, FILE,

@@ -206,6 +206,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 properties = result.getProperties();
                 currentLanguageBean = result.getCurrentLocale();
                 defaultLanguageCode = result.getDefaultLanguageCode();
+                langCodeGWTJahiaGetPropertiesResultMap.put(currentLanguageBean.getLanguage(), result);
                 acl = result.getAcl();
                 referencesWarnings = result.getReferencesWarnings();
                 if(!PermissionsUtils.isPermitted("jcr:modifyProperties", node)) {

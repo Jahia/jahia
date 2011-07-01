@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.client.service.content;
 
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -50,6 +51,7 @@ import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -88,6 +90,8 @@ public interface JahiaContentManagementServiceAsync {
     void getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, AsyncCallback<List<GWTJahiaNode>> async);
 
     void getNodes(List<String> paths, List<String> fields, AsyncCallback<List<GWTJahiaNode>> async);
+
+    void getNodesAndTypes(List<String> paths, List<String> fields, List<String> types, AsyncCallback<Map<String,List<? extends ModelData>>> async);
 
     void getTagNode(String tagName, boolean create, AsyncCallback<GWTJahiaNode> async);
 
@@ -236,14 +240,6 @@ public interface JahiaContentManagementServiceAsync {
      */
     void getHighlighted(String original, String amendment, AsyncCallback<String> async);
 
-
-    /**
-     * Get site languages
-     *
-     * @param async
-     */
-    void getSiteLanguages(AsyncCallback<List<GWTJahiaLanguage>> async);
-
     /**
      * Retrieves list of URL mapping objects for current node and locale.
      *
@@ -294,7 +290,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void flushAll(AsyncCallback<Void> asyncCallback);
 
-    void getActiveJobs(AsyncCallback<List<GWTJahiaJobDetail>> async);
+    void getPollData(Set<String> keys, AsyncCallback<Map<String,Object>> async);
 
     void getJobs(int offset, int limit, String sortField, String sortDir, List<String> groupNames, AsyncCallback<PagingLoadResult<GWTJahiaJobDetail>> async);
 
@@ -325,4 +321,13 @@ public interface JahiaContentManagementServiceAsync {
                                         AsyncCallback<Void> async);
 
     void flushSite(String siteUUID, AsyncCallback<Void> asyncCallback);
+
+    void getNodeType(String names, AsyncCallback<GWTJahiaNodeType> async);
+
+    void getNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
+
+    void getSubNodetypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement, AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>> async);
+
+    void getWFFormForNodeAndNodeType(String formResourceName,
+                                     AsyncCallback<GWTJahiaNodeType> asyncCallback);
 }

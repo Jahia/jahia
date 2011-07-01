@@ -1061,6 +1061,14 @@ public class NavigationHelper {
             }
         }
 
+        if (fields.contains(GWTJahiaNode.SITE_LANGUAGES)) {
+            try {
+                n.set(GWTJahiaNode.SITE_LANGUAGES, languages.getLanguages(node.getResolveSite(), node.getSession().getUser(), node.getSession().getLocale()));
+            } catch (RepositoryException e) {
+                logger.error("Cannot get sites languages");
+            }
+        }
+
         // reference types
         try {
             String cons = ConstraintsHelper.getConstraints(node);

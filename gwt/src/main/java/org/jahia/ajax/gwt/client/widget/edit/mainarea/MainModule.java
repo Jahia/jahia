@@ -216,7 +216,6 @@ public class MainModule extends Module {
                                 list.add(path);
                                 editLinker.getMainModule().unmask();
                                 editLinker.onModuleSelection(MainModule.this);
-                                editLinker.getSidePanel().refresh(Linker.REFRESH_WORKFLOW);
                                 switchStaticAssets(result.getStaticAssets());
                             }
 

@@ -44,6 +44,9 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.Poller;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,10 +54,22 @@ import org.jahia.ajax.gwt.client.widget.Linker;
  * Date: Jan 20, 2010
  * Time: 1:51:18 PM
  */
-public class NumberOfTasksWorkflowMenuActionItem extends BaseActionItem {
+public class NumberOfTasksWorkflowMenuActionItem extends BaseActionItem implements Poller.PollListener {
 
     public void init(final GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
+
+        Poller.getInstance().registerListener(this, "numberOfTasks");
+
+    }
+
+    public void handlePollingResult(String key, Object result) {
+        Integer nb = (Integer) result;
+        if (nb == 0) {
+            updateTitle(getGwtToolbarItem().getProperties().get("noTasks").getValue());
+        } else {
+            updateTitle(getGwtToolbarItem().getTitle() + " (" + nb + ")");
+        }
     }
 
     /**
@@ -63,19 +78,5 @@ public class NumberOfTasksWorkflowMenuActionItem extends BaseActionItem {
     @Override
     public void handleNewLinkerSelection() {
         setEnabled(false);
-        JahiaContentManagementService.App.getInstance().getNumberOfTasksForUser(new BaseAsyncCallback<Integer>() {
-            /**
-             * Called when an asynchronous call completes successfully.
-             *
-             * @param result the return value of the remote produced call
-             */
-            public void onSuccess(Integer result) {
-                if (result == 0) {
-                    updateTitle(getGwtToolbarItem().getProperties().get("noTasks").getValue());
-                } else {
-                    updateTitle(getGwtToolbarItem().getTitle() + " (" + result + ")");
-                }
-            }
-        });
     }
 }

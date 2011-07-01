@@ -66,9 +66,11 @@ import java.util.List;
  * Time: 1:51:18 PM
  */
 public class SaveAsReferencesMenuActionItem extends BaseActionItem {
-    private List<GWTJahiaNode> pages;
     private GWTJahiaProperty targetName;
-    private String siteKey;
+
+    private static String siteKey;
+    private static List<GWTJahiaNode> pages;
+
     private GWTJahiaProperty allowedNodeType;
     private boolean menuItemsCount;
 
@@ -77,53 +79,61 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
         setEnabled(false);
         targetName = gwtToolbarItem.getProperties().get("targetName");
         allowedNodeType = gwtToolbarItem.getProperties().get("allowedNodeType");
-        siteKey = JahiaGWTParameters.getSiteKey();
-        initMenu(linker);
+        if (siteKey == null) {
+            siteKey = JahiaGWTParameters.getSiteKey();
+            loadNodes(linker);
+        } else {
+            initMenu(linker);
+        }
     }
 
-    private void initMenu(final Linker linker) {
+    private void loadNodes(final Linker linker) {
         JahiaContentManagementService.App.getInstance().getPortalNodes(targetName.getValue(),
                 new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> result) {
                         pages = result;
-                        final Menu menu = new Menu();
-
-                        menu.removeAll();
-                        boolean displayMenu = false;
-                        if (pages != null) {
-                            if (pages.size() > 1) {
-                                for (final GWTJahiaNode page : pages) {
-                                    if (PermissionsUtils.isPermitted("jcr:write", page.getPermissions())) {
-                                        MenuItem item = new MenuItem(page.getDisplayName());
-                                        addSelectionListener(page, item, linker);
-                                        menu.add(item);
-                                        displayMenu = true;
-                                    }
-                                }
-                            } else if (pages.size() == 1) {
-                                GWTJahiaNode page = pages.get(0);
-                                if (PermissionsUtils.isPermitted("jcr:write", page.getPermissions())) {
-                                    addSelectionListener(page, getContextMenuItem(), linker);
-                                    displayMenu = true;
-                                }
-                            }
-                        }
-                        if (displayMenu) {
-                            if (menu.getItemCount() > 0) {
-                                setSubMenu(menu);
-                            }
-                            setEnabled(true);
-                            menuItemsCount = true;
-                        } else {
-                            setEnabled(false);
-                            menuItemsCount = false;
-                        }
+                        initMenu(linker);
                     }
 
                     public void onApplicationFailure(Throwable caught) {
 
                     }
                 });
+    }
+
+    private void initMenu(final Linker linker) {
+        final Menu menu = new Menu();
+
+        menu.removeAll();
+        boolean displayMenu = false;
+        if (pages != null) {
+            if (pages.size() > 1) {
+                for (final GWTJahiaNode page : pages) {
+                    if (PermissionsUtils.isPermitted("jcr:write", page.getPermissions())) {
+                        MenuItem item = new MenuItem(page.getDisplayName());
+                        addSelectionListener(page, item, linker);
+                        menu.add(item);
+                        displayMenu = true;
+                    }
+                }
+            } else if (pages.size() == 1) {
+                GWTJahiaNode page = pages.get(0);
+                if (PermissionsUtils.isPermitted("jcr:write", page.getPermissions())) {
+                    addSelectionListener(page, getContextMenuItem(), linker);
+                    displayMenu = true;
+                }
+            }
+        }
+        if (displayMenu) {
+            if (menu.getItemCount() > 0) {
+                setSubMenu(menu);
+            }
+            setEnabled(true);
+            menuItemsCount = true;
+        } else {
+            setEnabled(false);
+            menuItemsCount = false;
+        }
     }
 
     private void addSelectionListener(final GWTJahiaNode page, MenuItem item, final Linker linker) {
@@ -156,10 +166,6 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
         LinkerSelectionContext lh = linker.getSelectionContext();
         setEnabled(lh.getSingleSelection() != null && !lh.isSecondarySelection() && lh.getSingleSelection().getInheritedNodeTypes().contains(
                 allowedNodeType.getValue()) && menuItemsCount);
-        if(!JahiaGWTParameters.getSiteKey().equals(siteKey)){
-            siteKey=JahiaGWTParameters.getSiteKey();
-            initMenu(linker);
-        }
     }
 }
 

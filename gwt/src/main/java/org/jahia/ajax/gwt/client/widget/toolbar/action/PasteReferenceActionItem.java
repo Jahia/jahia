@@ -48,7 +48,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
@@ -72,7 +72,7 @@ public class PasteReferenceActionItem extends BaseActionItem  {
 
     public void onComponentSelection() {
         if (CopyPasteEngine.getInstance().getCopiedPaths().size() == 1) {
-        JahiaContentDefinitionService.App.getInstance().getNodeTypes(allowedRefs, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
+        JahiaContentManagementService.App.getInstance().getNodeTypes(allowedRefs, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
             public void onApplicationFailure(Throwable caught) {
                 Window.alert("Cannot retrieve node type "+allowedRefs+". Cause: " + caught.getLocalizedMessage());
                 Log.error("Cannot retrieve node type "+allowedRefs+". Cause: " + caught.getLocalizedMessage(), caught);

@@ -57,6 +57,7 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
@@ -178,8 +179,10 @@ abstract class BrowseTabItem extends SidePanelTabItem {
     }
 
     @Override public void refresh(int flag) {
-        factory.getStore().removeAll();
-        factory.getLoader().load();
+        if ((flag & Linker.REFRESH_FOLDERS) != 0) {
+            factory.getStore().removeAll();
+            factory.getLoader().load();
+        }
     }
 
     protected abstract boolean acceptNode(GWTJahiaNode node);

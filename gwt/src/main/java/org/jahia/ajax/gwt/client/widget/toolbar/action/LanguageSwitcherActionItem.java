@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -75,7 +76,7 @@ public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
     private void initMainComponent() {
         mainComponent = new ComboBox<GWTJahiaLanguage>();
         mainComponent.setStore(new ListStore<GWTJahiaLanguage>());
-        mainComponent.getStore().add(languages);
+        mainComponent.getStore().add(JahiaGWTParameters.getSiteLanguages());
         mainComponent.setDisplayField("displayName");
         mainComponent.setTemplate(getLangSwitchingTemplate());
         mainComponent.setTypeAhead(true);

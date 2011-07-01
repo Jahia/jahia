@@ -301,12 +301,9 @@ public class ContentSearchForm extends ContentPanel {
         combo.setTypeAhead(true);
         combo.setTriggerAction(ComboBox.TriggerAction.ALL);
         combo.setForceSelection(true);
-        JahiaContentManagementService.App.getInstance().getSiteLanguages(new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
-            public void onSuccess(List<GWTJahiaLanguage> gwtJahiaLanguages) {
-                combo.getStore().removeAll();
-                combo.getStore().add(gwtJahiaLanguages);
-            }
-        });
+        combo.getStore().removeAll();
+        combo.getStore().add(JahiaGWTParameters.getSiteLanguages());
+
         return combo;
     }
 

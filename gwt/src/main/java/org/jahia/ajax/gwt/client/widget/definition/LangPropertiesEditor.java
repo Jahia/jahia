@@ -64,8 +64,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 
@@ -78,8 +76,6 @@ import java.util.*;
  */
 public class LangPropertiesEditor extends LayoutContainer {
     private static JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
-    private static JahiaContentDefinitionServiceAsync definitionService =
-            JahiaContentDefinitionService.App.getInstance();
 
     // ui vars
     private PropertiesEditor displayedPropertiesEditor;

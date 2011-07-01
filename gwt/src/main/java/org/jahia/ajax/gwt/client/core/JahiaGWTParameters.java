@@ -166,7 +166,7 @@ public class JahiaGWTParameters {
         return siteUUID;
     }
 
-    public static void setSiteUUID(String newSiteUUID) {
+    private static void setSiteUUID(String newSiteUUID) {
         siteUUID = newSiteUUID;
         for (UrlUpdater urlUpdater : updaters) {
             urlUpdater.updateEntryPointUrl();
@@ -189,7 +189,7 @@ public class JahiaGWTParameters {
         return siteKey;
     }
 
-    public static void setSiteKey(String newSiteKey) {
+    private static void setSiteKey(String newSiteKey) {
         siteKey = newSiteKey;
         setNativeSiteKey(newSiteKey);
     }
@@ -207,6 +207,10 @@ public class JahiaGWTParameters {
 
         setSiteUUID(siteNode.getSiteUUID());
         setSiteKey(siteNode.getSiteKey());
+    }
+
+    public static List<GWTJahiaLanguage> getSiteLanguages() {
+        return (List<GWTJahiaLanguage>) getSiteNode().get(GWTJahiaNode.SITE_LANGUAGES);
     }
 
 

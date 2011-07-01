@@ -109,7 +109,7 @@ public class TestNewsletterActionItem extends BaseLanguageAwareActionItem {
 
             final ComboBox<GWTJahiaLanguage> locale = new ComboBox<GWTJahiaLanguage>();
             locale.setStore(new ListStore<GWTJahiaLanguage>());
-            locale.getStore().add(languages);
+            locale.getStore().add(JahiaGWTParameters.getSiteLanguages());
             locale.setDisplayField("displayName");
             locale.setTypeAhead(true);
             locale.setTriggerAction(ComboBox.TriggerAction.ALL);

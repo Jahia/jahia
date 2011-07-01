@@ -53,12 +53,7 @@ public abstract class BaseLanguageAwareActionItem extends BaseActionItem impleme
 
     private static final long serialVersionUID = 9189616667259247896L;
 
-    protected List<GWTJahiaLanguage> languages;
     protected GWTJahiaLanguage selectedLang;
-
-    public void setLanguages(List<GWTJahiaLanguage> gwtJahiaLanguages) {
-        languages = gwtJahiaLanguages;
-    }
 
     public void setSelectedLang(GWTJahiaLanguage selectedLang) {
         this.selectedLang = selectedLang;

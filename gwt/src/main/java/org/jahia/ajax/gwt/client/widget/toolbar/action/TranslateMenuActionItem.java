@@ -64,40 +64,19 @@ import java.util.List;
  * 
  */
 public class TranslateMenuActionItem extends BaseActionItem {
-    private List<GWTJahiaLanguage> languages;
-    private String siteKey;
     private transient Menu menu;
 
     public void init(GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
         setEnabled(false);
-        siteKey = JahiaGWTParameters.getSiteKey();
         menu = new Menu();
-        loadLanguages(linker);
-    }
-
-    private void loadLanguages(final Linker linker) {
-        JahiaContentManagementService.App.getInstance().getSiteLanguages(
-                new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
-                    public void onSuccess(List<GWTJahiaLanguage> result) {
-                        languages = result;
-
-                        if (languages != null) {
-                            initMenu(linker);
-                        }
-                    }
-
-                    public void onApplicationFailure(Throwable caught) {
-
-                    }
-                });
     }
 
     private void initMenu(final Linker linker) {
         boolean notEmpty = false;
         final String currentLanguage = JahiaGWTParameters.getLanguage();
-        for (final GWTJahiaLanguage sourceLang : languages) {
-            for (final GWTJahiaLanguage destLang : languages) {
+        for (final GWTJahiaLanguage sourceLang : JahiaGWTParameters.getSiteLanguages()) {
+            for (final GWTJahiaLanguage destLang : JahiaGWTParameters.getSiteLanguages()) {
                 if (!destLang.getDisplayName().equals(sourceLang.getDisplayName()) &&
                     (destLang.getLanguage().equals(currentLanguage) ||
                      sourceLang.getLanguage().equals(currentLanguage))) {
@@ -132,12 +111,7 @@ public class TranslateMenuActionItem extends BaseActionItem {
         LinkerSelectionContext lh = linker.getSelectionContext();
         setEnabled(lh.getSingleSelection() != null);
         menu.removeAll();
-        if(!JahiaGWTParameters.getSiteKey().equals(siteKey)){
-            siteKey=JahiaGWTParameters.getSiteKey();
-            loadLanguages(linker);
-        } else {
-            initMenu(linker);
-        }
+        initMenu(linker);
     }
 }
 

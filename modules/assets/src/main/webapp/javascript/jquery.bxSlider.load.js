@@ -22,9 +22,9 @@ $(document).ready(function(){
 				pause: 5000,
 				auto: true,
 				controls: true,
-				auto_direction: 'right',
-				next_text: 'next image',
-				prev_text: 'previous image',
+				autoDirection: 'right',
+				nextText: 'next image',
+				prevText: 'previous image',
 				width: 307,
 				wrapper_class: 'example3_container'
 			});

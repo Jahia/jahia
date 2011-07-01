@@ -3229,16 +3229,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
 
     public String getDisplayableName() {
-        String title = getPropertyAsString(Constants.JCR_TITLE);
-        //Search for primary field if present
-        if (title == null) {
+        String title = null;
+        try {
+            title = getProperty(Constants.JCR_TITLE).getValue().getString();
+        } catch (RepositoryException e) {
+            //Search for primary field if present
             try {
                 String itemName = getPrimaryNodeType().getPrimaryItemName();
                 if (itemName != null) {
-                    String s = getPropertyAsString(itemName);
+                    String s = getProperty(itemName).getValue().getString();
                     title = new TextExtractor(new Source(s != null ? s : getName())).toString();
                 }
-            } catch (RepositoryException e) {
+            } catch (RepositoryException e1) {
                 title = null;
             }
         }

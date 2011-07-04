@@ -24,7 +24,6 @@
                     <xsl:when test="name()='j:mixLanguage'"/>
                     <xsl:when test="name()='j:serverName'"/>
                     <xsl:when test="name()='j:templatesSet'"/>
-                    <xsl:when test="name()='j:title'"/>
                     <xsl:otherwise>
                         <xsl:copy/>
                     </xsl:otherwise>

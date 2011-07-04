@@ -5,7 +5,7 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
-<template:addResources type="javascript" resources="jquery.js, textsizer.js"/>
+<template:addResources type="javascript" resources="jquery.min.js, textsizer.js"/>
 
 <!-- shortcuts -->
 <script type="text/javascript">

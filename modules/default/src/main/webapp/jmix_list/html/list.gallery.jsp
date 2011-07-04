@@ -13,7 +13,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:if test="${not renderContext.editMode}">
-    <template:addResources type="javascript" resources="jquery.js,jquery.fancybox.js,jquery.fancybox.load.js"/>
+    <template:addResources type="javascript" resources="jquery.min.js,jquery.fancybox.js,jquery.fancybox.load.js"/>
     <template:addResources type="css" resources="jquery.fancybox.css"/>
 </c:if>
 <template:include view="hidden.header"/>

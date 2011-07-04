@@ -15,7 +15,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="commentable.css"/>
-<template:addResources type="javascript" resources="jquery.js,jquery.validate.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.validate.js"/>
 <template:addResources type="inlinejavascript">
     <script type="text/javascript">
         $(document).ready(function() {

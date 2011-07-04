@@ -16,7 +16,7 @@
 
 <template:include view="hidden.header"/>
 <c:if test="${not renderContext.editMode}">
-    <template:addResources type="javascript" resources="jquery.js,jquery.bxSlider.js,jquery.bxSlider.load.js"/>
+    <template:addResources type="javascript" resources="jquery.min.js,jquery.bxSlider.js,jquery.bxSlider.load.js"/>
     <template:addResources type="css" resources="jquery.bxSlider.css"/>
 </c:if>
 <c:if test="${empty editable}">

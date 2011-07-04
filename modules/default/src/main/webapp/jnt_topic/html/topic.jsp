@@ -14,7 +14,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<template:addResources type="javascript" resources="jquery.js,jquery.cuteTime.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js"/>
 <script>
     function initCuteTime() {
         $('.timestamp').cuteTime({ refresh: 60000 });

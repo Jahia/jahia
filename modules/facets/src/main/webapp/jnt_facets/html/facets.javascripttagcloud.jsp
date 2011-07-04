@@ -18,7 +18,7 @@
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="facets.css"/>
 <template:addResources type="css" resources="jqcloud.css"/>
-<template:addResources type="javascript" resources="jquery.js,jqcloud.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jqcloud.js"/>
 <c:set var="bindedComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <template:addCacheDependency node="${bindedComponent}"/>

@@ -13,7 +13,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="jquery.treeview.css"/>
-<template:addResources type="javascript" resources="jquery.js,jquery.treeview.min.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.treeview.min.js"/>
 <script type="text/javascript">
     $(document).ready(function() {
         $("#tree${currentNode.identifier}").treeview();

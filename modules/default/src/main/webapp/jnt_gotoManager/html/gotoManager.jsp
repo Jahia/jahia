@@ -8,7 +8,7 @@
 <c:if test="${!renderContext.settings.distantPublicationServerMode}">
 <c:if test="${gotoType != 'roles' || renderContext.enterpriseEdition}">
     <c:if test="${currentResource.workspace eq 'live'}">
-        <template:addResources type="javascript" resources="jquery.js"/>
+        <template:addResources type="javascript" resources="jquery.min.js"/>
         <template:addResources type="css" resources="goto-links.css"/>
         <div id="gotoManager${currentNode.identifier}"/>
         <script type="text/javascript">

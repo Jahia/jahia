@@ -19,7 +19,7 @@
 <template:addResources type="css" resources="tasks.css"/>
 <template:addResources type="css" resources="contentlist.css"/>
 
-<template:addResources type="javascript" resources="jquery.js"/>
+<template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
 <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>

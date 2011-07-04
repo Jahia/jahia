@@ -12,52 +12,54 @@
 /**
  * This code has been modified by Jahia from its original source.
  */
-(function($){
+(function($) {
 
     $.fn.identify = function(options) {
-        var opts = $.extend(true,{}, $.fn.identify.defaults, options);
+        var opts = $.extend(true, {}, $.fn.identify.defaults, options);
 
         return this.each(function() {
-                var $this = $(this);
-                var o = ($.meta ? $.extend(true,{},opts,$this.data) : opts);
+            var $this = $(this);
+            var o = ($.meta ? $.extend(true, {}, opts, $this.data) : opts);
 
-                var id=$this.attr('id');
+            var id = $this.attr('id');
 
-                if(id){
-                    if(o.unique == false || $('[id='+id+']').length<=1){
-                        return;
-                    }
+            if (id) {
+                if (o.unique == false || $('[id=' + id + ']').length <= 1) {
+                    return;
                 }
+            }
 
-                do {
-                    id = o.prefix + o.separator + o.guid(o.guidSeparator);
-                } while($('#' + id).length > 0);
+            do {
+                id = o.prefix + o.separator + o.guid(o.guidSeparator);
+            } while ($('#' + id).length > 0);
 
-                $this.attr('id', id);
-            });
+            $this.attr('id', id);
+        });
     };
 
     /**
      *  @description Object of identify plugin options
      **/
     $.fn.identify.defaults = {
-         prefix : 'id'  // prefix used for the generated id
+        prefix : 'id'  // prefix used for the generated id
         /**
          * @description inspired from the exelent article http://note19.com/2007/05/27/javascript-guid-generator/
          * @param string sep, the separator use to return de generated guid (default = "-")
          */
-        ,guid : function(sep){
-              /**
-               * @description Internal function that returns a hexadecimal number
-               * @return an random hexa décimal value between 0000 and FFFF
-               */
-              function S4() {
-               return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+        ,guid : function(sep) {
+            /**
+             * @description Internal function that returns a hexadecimal number
+             * @return an random hexa décimal value between 0000 and FFFF
+             */
+            function S4() {
+                return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
             }
 
-            if(typeof sep == "undefined") sep ="-"
+            if (typeof sep == "undefined") {
+                sep = "-";
+            }
 
-            return (S4()+S4()+sep+S4()+sep+S4()+sep+S4()+sep+S4()+S4()+S4());
+            return (S4() + S4() + sep + S4() + sep + S4() + sep + S4() + sep + S4() + S4() + S4());
         }
         ,unique : false             // If an id is found, test if it's unique or assign a new one
         ,separator : '_'            // Separator used between prefix and guid
@@ -65,8 +67,6 @@
 
     }
 })(jQuery);
-
-
 
 
 /**
@@ -82,81 +82,58 @@
  *  $('script[src$=debug.js]').reload();
  */
 
-(function($){
-    $.fn.reloadCSS = function (options,originalId){
-        var opts = $.extend(true,{}, $.fn.reloadCSS.defaults, options);
+(function($) {
+    $.fn.reloadCSS = function (options, originalId) {
+        var opts = $.extend(true, {}, $.fn.reloadCSS.defaults, options);
         var _this = this;
         var origId = originalId;
 
-        function getVoidUrl(url){
-
-            if(opts.preventCache=="false")
-                return url;
-
-            if(opts.cacheVoidArg==null || opts.cacheVoidArg=="") opts.cacheVoidArg="void";
-
-            if (url.indexOf('?')==-1)
-                url = url+'?'+opts.cacheVoidArg+'='+(Date.parse(new Date()));
-            else
-                url = url+'&'+opts.cacheVoidArg+'='+(Date.parse(new Date()));
-
-            return(url);
-        }
-
-        function _reload(obj){
-            obj.each(function(){
+        function _reload(obj) {
+            obj.each(function() {
                 var $this = $(this);
 
                 var id = $this.identify().attr('id');
                 var href = $this.attr('href');
                 var media = $this.attr('media');
-                if($this.attr('tagName')=='LINK'){
-					if ($('head:first link[href="'+href+'"]').length == 0) {
-                        $('head:first link:first').before('<link id="staticAssetcss'+$('link').length+'" href="'+href+'" type="text/css" rel="stylesheet" media="'+media+'"/>');
+                if ($this.attr('tagName') == 'LINK') {
+                    if ($('head:first link[href="' + href + '"]').length == 0) {
+                        $('head:first link:first').before('<link id="staticAssetcss' + $('link').length + '" href="' +
+                                                          href + '" type="text/css" rel="stylesheet" media="' + media +
+                                                          '"/>');
                     }
-                    $('#'+origId+' link[href="'+href+'"]').remove();
-					/*
-                    $.get(getVoidUrl($this.attr('href')),[],function(css){
-                        // IE needs remove and insert, no simple ajax load in container
-                        id_span = 'debugStyleReloader_'+id;
-                        $('#'+id_span).remove();
-
-                    });*/
+                    $('#' + origId + ' link[href="' + href + '"]').remove();
                 }
-/*
-                if($this.attr('tagName')=='SCRIPT'){
-                    $.getScript(getVoidUrl($this.attr('src')),function(){
-                    });
-                }
-*/
             });
-         }
+        }
 
-        if(opts.interval==0)
+        if (opts.interval == 0) {
             _reload(_this);
-        else
-            setInterval(function(){_reload(_this)}, opts.interval);
+        } else {
+            setInterval(function() {
+                _reload(_this)
+            }, opts.interval);
+        }
 
         return _this;
-    }
+    };
 
- $.fn.reloadCSS.defaults = {
-      interval : 0              // Set the interval for automatique refresh
-      ,preventCache: true       // Try to prevent cache
-      ,cacheVoidArg: 'void'     // Void argument passed to try to avoid cache
- }
+    $.fn.reloadCSS.defaults = {
+        interval : 0              // Set the interval for automatique refresh
+        ,preventCache: true       // Try to prevent cache
+        ,cacheVoidArg: 'void'     // Void argument passed to try to avoid cache
+    }
 })(jQuery);
 
 
 function replace(id, url, callback) {
     var http = false;
-    if(navigator.appName == "Microsoft Internet Explorer") {
+    if (navigator.appName == "Microsoft Internet Explorer") {
         http = new ActiveXObject("Microsoft.XMLHTTP");
     } else {
         http = new XMLHttpRequest();
     }
     http.open("GET", url, true);
-    http.onreadystatechange=function() {
+    http.onreadystatechange = function() {
         var result;
         if (http.readyState == 4) {
             result = http.responseText;
@@ -167,15 +144,15 @@ function replace(id, url, callback) {
     http.send(null);
 }
 
-function jreplace(id,url,params,callback,replaceIdContent) {
-    $.get(url,params,function(data){
-        if(replaceIdContent != 'undefined' && replaceIdContent) {
-            $("#"+id).replaceWith(data);
+function jreplace(id, url, params, callback, replaceIdContent) {
+    $.get(url, params, function(data) {
+        if (replaceIdContent != 'undefined' && replaceIdContent) {
+            $("#" + id).replaceWith(data);
         } else {
-            $("#"+id).html(data);
+            $("#" + id).html(data);
         }
-        var links = $("#"+id+ " link");
-        links.reloadCSS({preventCache:false},id);
+        var links = $("#" + id + " link");
+        links.reloadCSS({preventCache:false}, id);
         if (typeof callback != 'undefined') {
             eval(callback);
         }

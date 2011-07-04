@@ -22,43 +22,52 @@
 <div id="${currentNode.UUID}">
 
 
-    <template:addResources type="javascript" resources="ajaxreplace.js" />
+    <template:addResources type="javascript" resources="ajaxreplace.js"/>
 
 
-
-<jcr:node var="category" path="${jcr:getSystemSitePath()}/categories"/>
-<form id="filter">
-    Category : <select name="categorykey" onchange="javascript:replace('${currentNode.UUID}','<c:url value="${url.current}.ajax"/>?categorykey='+document.forms.filter.categorykey.value)"/>
-    <c:if test="${empty param.categorykey}"><option selected value="">All</option></c:if>
-    <c:if test="${not empty param.categorykey}"><option value="">All</option></c:if>
-    <c:forEach items="${category.nodes}" var="cat">
-        <c:if test="${jcr:isNodeType(cat, 'jnt:category')}">
-            <jcr:nodeProperty node="${cat}" name="jcr:title" var="catTitle" />
-            <c:if test="${cat.name eq param.categorykey}"> <option selected value="${cat.name}">${catTitle.string}</option> </c:if>
-            <c:if test="${cat.name ne param.categorykey}"> <option value="${cat.name}">${catTitle.string}</option> </c:if>
-        </c:if>
-    </c:forEach>
-    </select>
-</form>
-<c:forEach items="${moduleMap.currentList}" var="subchild">
-    <p>
+    <jcr:node var="category" path="${jcr:getSystemSitePath()}/categories"/>
+    <form id="filter">
+        Category : <select name="categorykey"
+                           onchange="javascript:jreplace('${currentNode.UUID}','<c:url value="${url.current}.ajax"/>?categorykey='+document.forms.filter.categorykey.value,null,null,true)">
         <c:if test="${empty param.categorykey}">
-            <template:module node="${subchild}" view="${moduleMap.subNodesView}" editable="${moduleMap.editable}" />
+            <option selected value="">All</option>
         </c:if>
-
         <c:if test="${not empty param.categorykey}">
-            <jcr:nodeProperty node="${subchild}" name="j:defaultCategory" var="category" />
-
-            <c:set var="contains" value="false" />
-            <c:forEach items="${category}" var="val">
-                <c:if test="${val.node.name == param.categorykey}">
-                    <c:set var="contains" value="true" />
-                </c:if>
-            </c:forEach>
-            <c:if test="${contains eq true}">
-                <template:module node="${subchild}" view="${moduleMap.subNodesView}"  editable="${moduleMap.editable}"/>
-            </c:if>
+            <option value="">All</option>
         </c:if>
-    </p>
-</c:forEach>
+        <c:forEach items="${category.nodes}" var="cat">
+            <c:if test="${jcr:isNodeType(cat, 'jnt:category')}">
+                <jcr:nodeProperty node="${cat}" name="jcr:title" var="catTitle"/>
+                <c:if test="${cat.name eq param.categorykey}">
+                    <option selected value="${cat.name}">${catTitle.string}</option>
+                </c:if>
+                <c:if test="${cat.name ne param.categorykey}">
+                    <option value="${cat.name}">${catTitle.string}</option>
+                </c:if>
+            </c:if>
+        </c:forEach>
+    </select>
+    </form>
+    <c:forEach items="${moduleMap.currentList}" var="subchild">
+        <p>
+            <c:if test="${empty param.categorykey}">
+                <template:module node="${subchild}" view="${moduleMap.subNodesView}" editable="${moduleMap.editable}"/>
+            </c:if>
+
+            <c:if test="${not empty param.categorykey}">
+                <jcr:nodeProperty node="${subchild}" name="j:defaultCategory" var="category"/>
+
+                <c:set var="contains" value="false"/>
+                <c:forEach items="${category}" var="val">
+                    <c:if test="${val.node.name == param.categorykey}">
+                        <c:set var="contains" value="true"/>
+                    </c:if>
+                </c:forEach>
+                <c:if test="${contains eq true}">
+                    <template:module node="${subchild}" view="${moduleMap.subNodesView}"
+                                     editable="${moduleMap.editable}"/>
+                </c:if>
+            </c:if>
+        </p>
+    </c:forEach>
 </div>

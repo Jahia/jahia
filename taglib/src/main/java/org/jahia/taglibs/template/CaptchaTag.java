@@ -52,11 +52,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: 1/14/11
- * Time: 16:05
- * To change this template use File | Settings | File Templates.
+ * Captcha tag
+ * generate an image tag
+ * <code><img src="captchaUrl" alt="captcha"/></code>
+ * for catpcha validation
  */
 public class CaptchaTag extends TagSupport {
 
@@ -67,7 +66,7 @@ public class CaptchaTag extends TagSupport {
         try {
             String id = (String) pageContext.findAttribute("currentFormId");
 
-            out.print("<img src=\"");
+            out.print("<img alt=\"captcha\" src=\"");
             out.print(((URLGenerator)pageContext.findAttribute("url")).getContext());
             out.print(((URLGenerator)pageContext.findAttribute("url")).getCaptcha());
             out.print("?token=##formtoken("+id+")##\" />" );

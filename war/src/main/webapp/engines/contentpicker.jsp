@@ -17,7 +17,7 @@
 		<internal:gwtImport module="org.jahia.ajax.gwt.module.contentpicker.ContentPicker" />
         <c:if test="${config == 'filepicker' || config == 'imagepicker'}">
             <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/modules/assets/css/jquery.Jcrop.css"/>
-            <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.js'/>"></script>
+            <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.min.js'/>"></script>
             <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.Jcrop.js'/>"></script>
         </c:if>
 	</head>

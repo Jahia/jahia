@@ -244,7 +244,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 if (javascript == null) {
                     assets.put("javascript", (javascript = new HashSet<String>()));
                 }
-                javascript.add(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.js");
+                javascript.add(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.min.js");
                 javascript.add(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.Jcrop.js");
 
                 if (bodyElementList.size() > 0) {

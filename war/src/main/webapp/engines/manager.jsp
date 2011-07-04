@@ -22,7 +22,7 @@
     <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>
     <c:if test="${cfg == 'filemanager' || cfg == 'repositoryexplorer' || cfg == 'editorialcontentmanager'}">
         <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/modules/assets/css/jquery.Jcrop.css"/>
-        <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.js'/>"></script>
+        <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.min.js'/>"></script>
         <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.Jcrop.js'/>"></script>
     </c:if>
 </head>

@@ -302,3 +302,7 @@ jahia.jackrabbit.onWorkspaceInconsistency = log
 # Disable the directory listing for /repository servlet.
 # (WebDAV client access won't work in such a case)
 repositoryDirectoryListingDisabled = false
+
+# Disable the jsessionid parameter added by application server to track session when no cookie is present
+disableJsessionIdParameter = true
+jsessionIdParameterName = jsessionid

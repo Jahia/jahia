@@ -177,6 +177,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private List<String> licenseFileLocations;
 
+    private boolean disableJsessionIdParameter = true;
+    private String jsessionIdParameterName = "jsessionid";
+
     /**
      * Default constructor.
      *
@@ -324,6 +327,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             dumpErrorsToFiles = getBoolean("dumpErrorsToFiles", true);
             fileDumpMaxRegroupingOfPreviousException = getInt("fileDumpMaxRegroupingOfPreviousException", 500);
             useJstackForThreadDumps = getBoolean("useJstackForThreadDumps", false);
+
+            disableJsessionIdParameter = getBoolean("disableJsessionIdParameter", true);
+            jsessionIdParameterName = getString("jsessionIdParameterName", "jsessionid");
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -796,6 +802,22 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 	public boolean isMaintenanceMode() {
 		return maintenanceMode;
 	}
+
+    public boolean isDisableJsessionIdParameter() {
+        return disableJsessionIdParameter;
+    }
+
+    public void setDisableJsessionIdParameter(boolean disableJsessionIdParameter) {
+        this.disableJsessionIdParameter = disableJsessionIdParameter;
+    }
+
+    public String getJsessionIdParameterName() {
+        return jsessionIdParameterName;
+    }
+
+    public void setJsessionIdParameterName(String jsessionIdParameterName) {
+        this.jsessionIdParameterName = jsessionIdParameterName;
+    }
 
     /**
      * Convert a String starting with the word "$context" into a real filesystem

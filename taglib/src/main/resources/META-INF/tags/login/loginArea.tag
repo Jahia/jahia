@@ -15,7 +15,7 @@
     <form ${functions:attributes(attributes)}>
         <c:set var="redirectTo" value="${functions:default(attributes.redirectTo, requestScope['javax.servlet.error.request_uri'])}"/>
         <c:if test="${not empty redirectTo}">
-            <input type="hidden" name="redirect" value="${redirectTo}"/>
+            <input type="hidden" name="redirect" value="<c:url value='${redirectTo}'/>"/>
         </c:if>
         <c:if test="${empty redirectTo}">
             <input type="hidden" name="redirect" value="<c:url value='${url.base}${renderContext.mainResource.node.path}.html'/>"/>

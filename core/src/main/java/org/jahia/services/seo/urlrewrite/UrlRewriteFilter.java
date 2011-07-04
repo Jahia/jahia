@@ -52,6 +52,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tuckey.web.filters.urlrewrite.Status;
@@ -96,9 +97,13 @@ public class UrlRewriteFilter implements Filter {
         UrlRewriter urlRewriter = urlRewriteService.getEngine();
 
         final HttpServletRequest hsRequest = (HttpServletRequest) request;
-        final HttpServletResponse hsResponse = outboundRulesEnabled ? new UrlRewriteWrappedResponse(
+        HttpServletResponse hsResponse = outboundRulesEnabled ? new UrlRewriteWrappedResponse(
                 (HttpServletResponse) response, hsRequest, urlRewriter)
                 : (HttpServletResponse) response;
+
+        if (SettingsBean.getInstance().isDisableJsessionIdParameter()) {
+            hsResponse = new SessionidRemovalResponseWrapper(hsResponse);
+        }
 
         // check for status request
         String uri = hsRequest.getRequestURI();

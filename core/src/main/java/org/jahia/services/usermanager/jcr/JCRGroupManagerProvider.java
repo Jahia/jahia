@@ -593,24 +593,32 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
             final String trueGroupKey = name + ":" + siteID;
             if (getCache().containsKey(trueGroupKey)) {
                 JCRGroup group = getCache().get(trueGroupKey);
-                return !allowExternal && group != null && group.isExternal() ? null : group;
+                if (group == null) {
+                    return null;
+                }
+                return !allowExternal && group.isExternal() ? null : group;
             }
             final int siteID1 = siteID;
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRGroup>() {
                 public JCRGroup doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         Node groupNode;
-                        if (siteID1 <= 0) {
-                            groupNode = session.getNode("/groups/" + name.trim());
-                        } else {
-                            JahiaSite site = sitesService.getSite(siteID1);
-                            if (site == null) {
-                                // This can happen if this method is called during the creation of the site !
-                                logger.warn("Site " + siteID1 + " is not available, maybe it's being created ?");
-                                return null;
+                        try {
+                            if (siteID1 <= 0) {
+                                groupNode = session.getNode("/groups/" + name.trim());
+                            } else {
+                                JahiaSite site = sitesService.getSite(siteID1);
+                                if (site == null) {
+                                    // This can happen if this method is called during the creation of the site !
+                                    logger.warn("Site " + siteID1 + " is not available, maybe it's being created ?");
+                                    return null;
+                                }
+                                String siteName = site.getSiteKey();
+                                groupNode = session.getNode("/sites/" + siteName + "/groups/" + name.trim());
                             }
-                            String siteName = site.getSiteKey();
-                            groupNode = session.getNode("/sites/" + siteName + "/groups/" + name.trim());
+                        } catch (PathNotFoundException e) {
+                            getCache().put(trueGroupKey, null);
+                            return null;
                         }
                         JCRGroup group = null;
                         boolean external = groupNode.getProperty(JCRGroup.J_EXTERNAL).getBoolean();

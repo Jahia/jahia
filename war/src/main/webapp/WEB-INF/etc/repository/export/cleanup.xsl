@@ -13,7 +13,23 @@
             <xsl:when test="name()='j:fullpath'"/>
             <xsl:when test="name()='j:movedFrom'"/>
             <xsl:when test="name()='j:siteId'"/>
-            <xsl:when test="../@jcr:primaryType='jnt:virtualsite'"/>
+            <xsl:when test="../@jcr:primaryType='jnt:virtualsite'">
+                <xsl:choose>
+                    <xsl:when test="name()='j:title'"/>
+                    <xsl:when test="name()='j:defaultLanguage'"/>
+                    <xsl:when test="name()='j:description'"/>
+                    <xsl:when test="name()='j:installedModules'"/>
+                    <xsl:when test="name()='j:languages'"/>
+                    <xsl:when test="name()='j:mandatoryLanguages'"/>
+                    <xsl:when test="name()='j:mixLanguage'"/>
+                    <xsl:when test="name()='j:serverName'"/>
+                    <xsl:when test="name()='j:templatesSet'"/>
+                    <xsl:when test="name()='j:title'"/>
+                    <xsl:otherwise>
+                        <xsl:copy/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:when>
             <xsl:otherwise>
                 <xsl:copy/>
             </xsl:otherwise>

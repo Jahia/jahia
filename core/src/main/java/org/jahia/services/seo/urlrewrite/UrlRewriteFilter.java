@@ -101,9 +101,7 @@ public class UrlRewriteFilter implements Filter {
                 (HttpServletResponse) response, hsRequest, urlRewriter)
                 : (HttpServletResponse) response;
 
-        if (SettingsBean.getInstance().isDisableJsessionIdParameter()) {
-            hsResponse = new SessionidRemovalResponseWrapper(hsResponse);
-        }
+        hsResponse = new SessionidRemovalResponseWrapper(hsRequest, hsResponse);
 
         // check for status request
         String uri = hsRequest.getRequestURI();

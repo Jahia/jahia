@@ -70,8 +70,8 @@ public class Login implements Controller {
     }
     
     protected String getRedirectUrl(HttpServletRequest request, HttpServletResponse response) {
-        return StringUtils.defaultIfEmpty(request.getParameter("redirect"),
-                request.getContextPath() + "/welcome");
+        return response.encodeRedirectURL(StringUtils.defaultIfEmpty(request.getParameter("redirect"),
+                request.getContextPath() + "/welcome"));
     }
 
     /**

@@ -62,6 +62,7 @@ import org.jahia.services.workflow.*;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import java.util.*;
@@ -369,6 +370,8 @@ public class WorkflowHelper {
                     JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(null,locale).getNodeByIdentifier(
                             gwtWfHistory.getNodeId());
                     gwtWfHistory.set("nodeWrapper", ((NavigationHelper)SpringContextSingleton.getInstance().getContext().getBeansOfType(NavigationHelper.class).values().iterator().next()).getGWTJahiaNode(nodeWrapper));
+                } catch (ItemNotFoundException e) {
+                    continue;
                 } catch (RepositoryException e) {
                     logger.warn(e.getMessage(), e);
                     continue;
@@ -543,6 +546,8 @@ public class WorkflowHelper {
             try {
                 JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(null,
                         locale).getNodeByIdentifier(gwtWfHistory.getNodeId());
+            } catch (ItemNotFoundException e) {
+                continue;
             } catch (RepositoryException e) {
                 logger.warn(e.getMessage(), e);
                 continue;

@@ -318,9 +318,9 @@ public class PublicationHelper {
                 }
 //                references.addAll(sub.getReferences());
                 for (PublicationInfo pi : sub.getReferences()) {
-                    if (!refUuids.contains(pi.getRoot().getUuid())) {
-                        refUuids.add(pi.getRoot().getUuid());
-                        all.putAll(convert(pi, pi.getRoot(), mainPaths, currentUserSession, language));
+                    if (!refUuids.contains(pi.getRoot().getUuid()) && !all.containsKey(pi.getRoot().getUuid())) {
+                        refUuids.add(pi.getRoot().getUuid() );
+                        all.putAll(convert(pi, pi.getRoot(), mainPaths, currentUserSession, language, all));
                     }
                 }
 
@@ -331,8 +331,8 @@ public class PublicationHelper {
         for (PublicationInfo pi : node.getReferences()) {
             if (!refUuids.contains(pi.getRoot().getUuid())) {
                 refUuids.add(pi.getRoot().getUuid());
-                if (!mainPaths.contains(pi.getRoot().getPath())) {
-                    all.putAll(convert(pi, pi.getRoot(), mainPaths, currentUserSession, language));
+                if (!mainPaths.contains(pi.getRoot().getPath()) && !all.containsKey(pi.getRoot().getUuid())) {
+                    all.putAll(convert(pi, pi.getRoot(), mainPaths, currentUserSession, language, all));
                 }
             }
         }

@@ -422,7 +422,11 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
                 public void onSuccess(Object o) {
                     Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
-                    linker.refreshTable();
+                    if (getNodes().contains(linker.getSelectionContext().getMainNode())) {
+                        linker.refreshAll();
+                    } else {
+                        linker.refreshTable();
+                    }
                 }
             };
 

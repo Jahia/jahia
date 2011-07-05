@@ -871,7 +871,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             } else if (firstKey.equals("defaultLanguage")) {
                 defaultLanguage = value;
             } else if (firstKey.equals("mixLanguage")) {
-                site.setMixLanguagesActive(Boolean.getBoolean(value));
+                site.setMixLanguagesActive(Boolean.parseBoolean(value));
+            } else if (firstKey.equals("description")) {
+                site.setDescr(value);
             } else if (firstKey.startsWith("defaultSite") && "true".equals(
                     value) && sitesService.getDefaultSite() == null) {
                 sitesService.setDefaultSite(site);

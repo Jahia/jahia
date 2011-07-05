@@ -50,6 +50,7 @@ import org.jahia.services.render.URLResolver;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.tools.files.FileUpload;
 import org.json.JSONObject;
+import sun.font.TrueTypeFont;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -89,22 +90,42 @@ public class DefaultPostAction extends Action {
         String[] subPaths = urlResolver.getPath().split("/");
         String lastPath = subPaths[subPaths.length - 1];
         JCRNodeWrapper node = null;
-        StringBuffer realPath = new StringBuffer();
+        StringBuilder realPath = new StringBuilder();
+        String startPath = "";
         for (String subPath : subPaths) {
             if (StringUtils.isNotBlank(subPath) && !"*".equals(subPath) && !subPath.equals(lastPath)) {
                 realPath.append("/").append(subPath);
                 try {
-                    node = session.getNode(realPath.toString());
+                    session.getNode(realPath.toString());
+                    startPath = "";
+
                 } catch (PathNotFoundException e) {
-                    if (node != null) {
-                        if (!node.isCheckedOut()) {
-                            node.checkout();
+                    if ("".equals(startPath)) {
+                        startPath = realPath.substring(0,realPath.lastIndexOf("/"));
+                    }
+                }
+            }
+        }
+        startPath = "".equals(startPath)?realPath.toString():startPath;
+        realPath = realPath.delete(0,realPath.length());
+        for (String subPath : subPaths) {
+
+            if (StringUtils.isNotBlank(subPath) && !"*".equals(subPath) && !subPath.equals(lastPath)) {
+                realPath.append("/").append(subPath);
+                if (realPath.toString().contains(startPath)) {
+                    try {
+                        node = session.getNode(realPath.toString());
+                    } catch (PathNotFoundException e) {
+                        if (node != null) {
+                            if (!node.isCheckedOut()) {
+                                node.checkout();
+                            }
+                            String parentType = "jnt:contentList";
+                            if (parameters.containsKey(Render.PARENT_TYPE)) {
+                                parentType = parameters.get(Render.PARENT_TYPE).get(0);
+                            }
+                            node = node.addNode(subPath, parentType);
                         }
-                         String parentType = "jnt:contentList";
-                        if (parameters.containsKey(Render.PARENT_TYPE)) {
-                            parentType = parameters.get(Render.PARENT_TYPE).get(0);
-                        }
-                        node = node.addNode(subPath, parentType);
                     }
                 }
             }

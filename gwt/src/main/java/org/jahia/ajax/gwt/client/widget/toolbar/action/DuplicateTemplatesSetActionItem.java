@@ -55,8 +55,8 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 public class DuplicateTemplatesSetActionItem extends BaseActionItem {
     @Override public void onComponentSelection() {
         String name = Window.prompt(Messages.get("newPackageName.label"), "New package name");
-        linker.loading("Duplicating template set...");
         if (name != null) {
+            linker.loading("Duplicating template set...");
             JahiaContentManagementService.App.getInstance().createTemplateSet(name, JahiaGWTParameters.getSiteKey(), null, new BaseAsyncCallback<GWTJahiaNode>() {
                 public void onSuccess(GWTJahiaNode result) {
                     linker.loaded();

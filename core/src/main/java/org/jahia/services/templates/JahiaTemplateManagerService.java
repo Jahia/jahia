@@ -40,6 +40,7 @@
 
 package org.jahia.services.templates;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Action;
@@ -399,30 +400,70 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     }
                 }
             }
+            createManifest(moduleName, tmplRootFolder);
+            templatePackageRegistry.register(templatePackageDeployer.getPackage(tmplRootFolder));
+            logger.info("Package '" + moduleName + "' successfully created");
+        }
+    }
+
+    public void duplicateModule(String moduleName, final String sourceModule) {
+        File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), moduleName);
+        if (tmplRootFolder.exists()) {
+            return;
+        }
+        if (!tmplRootFolder.exists()) {
+            logger.info("Start duplicating template package '" + sourceModule + "' to moduleName + '"+moduleName+"'");
+
             try {
-                File manifest = new File(tmplRootFolder + "/META-INF/MANIFEST.MF");
-
-
-                BufferedWriter writer = new BufferedWriter(new FileWriter(manifest));
-                writer.write("Manifest-Version: 1.0");
-                writer.newLine();
-                writer.write("Created-By: Jahia");
-                writer.newLine();
-                writer.write("Built-By: " + JCRSessionFactory.getInstance().getCurrentUser().getName());
-                writer.newLine();
-//                writer.write("Build-Jdk: 1.6.0_20");
-                writer.write("depends: Default Jahia Templates");
-                writer.newLine();
-                writer.write("package-name: " + moduleName);
-                writer.newLine();
-                writer.write("root-folder: " + moduleName);
-                writer.newLine();
-                writer.close();
+                final List<File> files = new ArrayList<File>();
+                FileUtils.copyDirectory(new File(settingsBean.getJahiaTemplatesDiskPath(), sourceModule), tmplRootFolder, new FileFilter() {
+                    public boolean accept(File pathname) {
+                        if (pathname.toString().endsWith("."+sourceModule+".jsp")) {
+                            files.add(pathname);
+                        }
+                        return true;
+                    }
+                });
+                for (File file : files) {
+                    FileUtils.moveFile(file, new File(file.getPath().replace("."+sourceModule+".jsp", "."+moduleName+".jsp")));
+                }
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             }
+
+            new File(tmplRootFolder, "META-INF").mkdirs();
+            new File(tmplRootFolder, "WEB-INF").mkdirs();
+            new File(tmplRootFolder, "resources").mkdirs();
+            new File(tmplRootFolder, "css").mkdirs();
+
+            createManifest(moduleName, tmplRootFolder);
             templatePackageRegistry.register(templatePackageDeployer.getPackage(tmplRootFolder));
             logger.info("Package '" + moduleName + "' successfully created");
+        }
+    }
+
+    private void createManifest(String moduleName, File tmplRootFolder) {
+        try {
+            File manifest = new File(tmplRootFolder + "/META-INF/MANIFEST.MF");
+
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(manifest));
+            writer.write("Manifest-Version: 1.0");
+            writer.newLine();
+            writer.write("Created-By: Jahia");
+            writer.newLine();
+            writer.write("Built-By: " + JCRSessionFactory.getInstance().getCurrentUser().getName());
+            writer.newLine();
+//                writer.write("Build-Jdk: 1.6.0_20");
+            writer.write("depends: Default Jahia Templates");
+            writer.newLine();
+            writer.write("package-name: " + moduleName);
+            writer.newLine();
+            writer.write("root-folder: " + moduleName);
+            writer.newLine();
+            writer.close();
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
         }
     }
 

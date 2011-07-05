@@ -117,9 +117,9 @@ public class FormFieldCreator {
                     break;
                 case GWTJahiaNodeSelectorType.RICHTEXT:
                     CKEditorConfig config = new CKEditorConfig();
-                    if (PermissionsUtils.isPermitted("full",permissions) || PermissionsUtils.isPermitted("studioModeAccess",permissions)) {
+                    if (PermissionsUtils.isPermitted("view-full-wysiwyg-editor",permissions) || PermissionsUtils.isPermitted("studioModeAccess",permissions)) {
                         config.setToolbarSet("Full");
-                    } else if (PermissionsUtils.isPermitted("basic",permissions)) {
+                    } else if (PermissionsUtils.isPermitted("view-basic-wysiwyg-editor" ,permissions)) {
                         config.setToolbarSet("Basic");
                     } else {
                         config.setToolbarSet("Light");

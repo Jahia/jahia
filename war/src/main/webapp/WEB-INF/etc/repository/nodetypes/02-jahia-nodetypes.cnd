@@ -422,7 +422,7 @@
  - j:virtualsitesFolderSkeleton (string) nofulltext
  + * (jnt:virtualsite)
 
-[jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:autoPublish, jmix:observable, jmix:htmlSettings
+[jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:publication, jmix:autoPublish, jmix:observable, jmix:htmlSettings, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable, jmix:versionInfo, jmix:workflow
  - j:defaultTemplate (weakreference,choicelist[templatesNode=pageTemplate]) nofulltext
  - j:title (string) protected nofulltext primary
  - j:serverName (string) protected nofulltext
@@ -432,7 +432,7 @@
  - j:languages (string) multiple protected nofulltext
  - j:mandatoryLanguages (string) multiple nofulltext protected
  - j:defaultLanguage (string) protected nofulltext
- - j:mixLanguage (boolean) = false
+ - j:mixLanguage (boolean) = false protected
  - j:templatesSet (string) protected
  - j:siteType (string) protected
  - j:dependencies (string) multiple protected nofulltext

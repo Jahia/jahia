@@ -169,6 +169,7 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     public void setFolderTypes(List<String> folderTypes) {
         this.folderTypes = folderTypes;
+        allTypes = null;
     }
 
     public List<String> getNodeTypes() {
@@ -177,6 +178,7 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     public void setNodeTypes(List<String> nodeTypes) {
         this.nodeTypes = nodeTypes;
+        allTypes = null;
     }
 
     public List<String> getAllNodeTypes() {

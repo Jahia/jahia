@@ -74,7 +74,9 @@ public class ContentPicker extends TriPanelBrowserLayout {
 
         //setWidth("714px");
         setHeight("700px");
-
+        if (types != null && types.size() > 0) {
+            config.setNodeTypes(types);
+        }
         if (mimeTypes != null && mimeTypes.size() > 0) {
             config.getMimeTypes().addAll(mimeTypes);
         }

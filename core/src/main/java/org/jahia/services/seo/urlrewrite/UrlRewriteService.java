@@ -169,14 +169,15 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         return urlRewriteEngine;
     }
 
-    synchronized protected List<SimpleUrlHandlerMapping> getRenderMapping() {
+    protected List<SimpleUrlHandlerMapping> getRenderMapping() {
         if (renderMapping == null) {
-            renderMapping = new LinkedList<SimpleUrlHandlerMapping>();
+            LinkedList<SimpleUrlHandlerMapping> mapping = new LinkedList<SimpleUrlHandlerMapping>();
             ApplicationContext ctx = (ApplicationContext) servletContext.getAttribute(
                     "org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet");
-            renderMapping.addAll(ctx.getBeansOfType(SimpleUrlHandlerMapping.class).values());
-            renderMapping.addAll(ctx.getParent().getBeansOfType(SimpleUrlHandlerMapping.class)
+            mapping.addAll(ctx.getBeansOfType(SimpleUrlHandlerMapping.class).values());
+            mapping.addAll(ctx.getParent().getBeansOfType(SimpleUrlHandlerMapping.class)
                     .values());
+            renderMapping = mapping;
         }
 
         return renderMapping;

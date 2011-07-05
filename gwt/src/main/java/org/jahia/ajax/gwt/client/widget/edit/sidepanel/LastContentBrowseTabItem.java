@@ -41,8 +41,7 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
@@ -85,6 +84,13 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
 
     public TabItem create(final GWTSidePanelTab config) {
         super.create(config);
+
+        tab.addListener(Events.Select, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+                fillStore();
+                tab.removeListener(Events.Select,this);
+            }
+        });
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         tab.setLayout(l);

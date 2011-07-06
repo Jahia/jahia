@@ -31,10 +31,10 @@
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.datepicker.js"/>
 <template:addResources type="javascript"
-                       resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.js"/>
+                       resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.js,jquery.colorbox.js"/>
 <template:addResources type="javascript" resources="jquery.defer.js"/>
 <template:addResources type="javascript" resources="treeselector.js"/>
-<template:addResources type="css" resources="timepicker.css,datepicker.css,jquery.treeview.css,jquery.fancybox.css,contentlist.css,formcontribute.css"/>
+<template:addResources type="css" resources="timepicker.css,datepicker.css,jquery.treeview.css,jquery.fancybox.css,jquery.colorbox.css,contentlist.css,formcontribute.css"/>
 <template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
 <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.UILocale}.js"/>

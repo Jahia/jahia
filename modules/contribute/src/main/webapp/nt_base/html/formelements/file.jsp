@@ -30,30 +30,10 @@
             $('#display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}').html('<img src="${previewPath}'+path+'"/>');
             return false;
         }</c:set>
-<c:set var="onClose">$.defer( 200, function() {
-            $.fancybox({
-                'content':$('.FormContribute'),
-                'height':600,
-                'width':600,
-                'autoScale':false,
-                'autoDimensions':false,
-                'onComplete':function() {
-                    $("#treepreview").remove();
-                    $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}").each(function() { $(this).ckeditor(); $(this).data('ckeditorInstance').checkWCAGCompliance=wcagCompliant; })
-                },
-
-                'onCleanup':function() {
-                    $("#treepreview").remove();
-                    $(".newContentCketempditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}").each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
-                }
-             }
-            );
-        })</c:set>
+<c:set var="onClose">function(){$("#treepreview").empty().hide();}</c:set>
 <c:set var="fancyboxOptions">{
-            onStart: function() {
-                $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}").each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
-                $('#addNewContent').append($('.FormContribute'))
-            }
+            height:600,
+    width:600
         }</c:set>
 <c:if test="${propertyDefinition.selectorOptions.type == 'image'}">
 <ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"

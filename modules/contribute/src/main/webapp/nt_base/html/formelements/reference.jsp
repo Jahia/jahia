@@ -25,4 +25,4 @@
 <fmt:message key="label.select.content" var="contentLabel"/>
 <ui:treeItemSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
                      nodeTypes="jnt:content,jnt:page,jnt:virtualsite" selectableNodeTypes="jnt:content,jnt:page" displayIncludeChildren="false"
-        label="${contentLabel}"/>
+        label="${contentLabel}" fancyboxOptions="{height:600,width:600}"/>

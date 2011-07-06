@@ -56,11 +56,9 @@
     <script type="text/javascript">
         $(document).ready(function() {
             <c:forEach items="${types}" var="nodeType" varStatus="status">
-                $("#addButton${currentNode.identifier}-${status.index}").fancybox({
+                $("#addButton${currentNode.identifier}-${status.index}").colorbox({
                     'height':600,
                     'width':600,
-                    'autoScale':false,
-                    'autoDimensions':false,
                     'onComplete':function() {
                         $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor(function(){}, contributeCKEditorToolbar); $(this).data('ckeditorInstance').checkWCAGCompliance=wcagCompliant;});
 

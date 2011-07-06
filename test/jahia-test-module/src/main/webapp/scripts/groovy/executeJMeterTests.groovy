@@ -20,10 +20,10 @@ new File(project.properties['jahia.test.jmeter.path']+"/bin/testPlan").eachDir {
                 project.properties.each() { key, value -> params += " -J${key}=\"${value}\""}
 
                 if (jmeterPath.toString().count("/") != 0) {
-                    jmeterPath = project.properties['path'] + "/bin/jmeter.sh -n -t "
+                    jmeterPath = project.properties['jahia.test.jmeter.path'] + "/bin/jmeter.sh -n -t "
                 } else {
                     // if windows
-                    jmeterPath = project.properties['path'] + "\\bin\\jmeter.bat -n -t "
+                    jmeterPath = project.properties['jahia.test.jmeter.path'] + "\\bin\\jmeter.bat -n -t "
                 }
                 if (file.exists()) jmeterExe = jmeterPath + f + " " + evaluate(file) else
                     jmeterExe = jmeterPath + f + params

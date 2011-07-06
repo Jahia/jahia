@@ -12,8 +12,8 @@ import org.xml.sax.helpers.DefaultHandler
  * To change this template use File | Settings | File Templates.
  */
 
-def sql = Sql.newInstance("jdbc:mysql://" + project.properties['db-ip'] + ":3306/" + project.properties['db-name'],
-                          project.properties['db-login'], project.properties['db-pwd'], "com.mysql.jdbc.Driver")
+def sql = Sql.newInstance("jdbc:mysql://" + project.properties['jahia.test.jmeter.dbip'] + ":3306/" + project.properties['jahia.test.jmeter.dbname'],
+                          project.properties['jahia.test.jmeter.username'], project.properties['jahia.test.jmeter.password'] == null ? "" : project.properties['jahia.test.jmeter.password'], "com.mysql.jdbc.Driver")
 
 // delete table if previously created
 try {
@@ -78,7 +78,7 @@ reader.setContentHandler(handler)
 
 
 def p = ~/.*\.jtl/
-new File(project.properties['results-path']).eachFileMatch(p) {
+new File(project.properties['pom.basedir']+"/target/jmeterResults").eachFileMatch(p) {
     f ->
     if (sql.rows("select * from filenames where filename like '" + f + "'").size() == 0) {
         println 'Parsing file ' + f

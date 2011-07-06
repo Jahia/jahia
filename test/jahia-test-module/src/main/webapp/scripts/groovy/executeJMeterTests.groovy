@@ -2,7 +2,7 @@ def test = project.properties['test']
 
 def p = ~/.*\.jmx/
 
-new File(project.properties['testsPath']).eachDir {
+new File(project.properties['jahia.test.jmeter.path']+"/bin/testPlan").eachDir {
     moduleDir ->
     new File(moduleDir,"scripts/jmeter").eachDir {
         d ->
@@ -13,7 +13,7 @@ new File(project.properties['testsPath']).eachDir {
                 def jmeterExe;
                 def jmeterPath;
                 //if not windows
-                jmeterPath = project.properties['path'];
+                jmeterPath = project.properties['jahia.test.jmeter.path'];
 
                 def params = "";
 

@@ -14,6 +14,11 @@ new File(project.properties['testsPath']).eachDir {
                 def jmeterPath;
                 //if not windows
                 jmeterPath = project.properties['path'];
+
+                def params = "";
+
+                project.properties.each() { key, value -> params += " -J${key}=\"${value}\""}
+
                 if (jmeterPath.toString().count("/") != 0) {
                     jmeterPath = project.properties['path'] + "/bin/jmeter.sh -n -t "
                 } else {
@@ -21,7 +26,7 @@ new File(project.properties['testsPath']).eachDir {
                     jmeterPath = project.properties['path'] + "\\bin\\jmeter.bat -n -t "
                 }
                 if (file.exists()) jmeterExe = jmeterPath + f + " " + evaluate(file) else
-                    jmeterExe = jmeterPath + f
+                    jmeterExe = jmeterPath + f + params
                 println "Executing test : " + jmeterExe
                 def proc = jmeterExe.execute()
                 proc.waitFor()

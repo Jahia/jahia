@@ -42,19 +42,19 @@
                 <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
                 <c:if test="${not empty picture}">
                     <div class='image'>
-                        <div class='itemImage itemImageLeft floatright'> <img src="${picture.node.thumbnailUrls['avatar_120']}" alt="${fn:escapeXml(person)}"/> </div>
+                        <div class='itemImage itemImageLeft floatright'> <img class="userProfileImage" src="${picture.node.thumbnailUrls['avatar_120']}" alt="${fn:escapeXml(person)}"/> </div>
                     </div>
                 </c:if>
                 <c:if test="${empty picture}">
                     <div class='image'>
-                        <div class='itemImage itemImageLeft floatright'> <img src="<c:url value='${url.currentModule}/img/userbig.png'/>" alt="" border="0"/> </div>
+                        <div class='itemImage itemImageLeft floatright'> <img class="userProfileImage" src="<c:url value='${url.currentModule}/img/userbig.png'/>" alt="" border="0"/> </div>
                     </div>
                  </c:if>
             </div>
             </c:when>
             <c:otherwise>
                 <div class='image'>
-                        <div class='itemImage itemImageLeft floatright'> <img src="<c:url value='${url.currentModule}/img/userbig.png'/>" alt="" border="0"/> </div>
+                        <div class='itemImage itemImageLeft floatright'> <img class="userProfileImage" src="<c:url value='${url.currentModule}/img/userbig.png'/>" alt="" border="0"/> </div>
                     </div>
             </c:otherwise>
         </c:choose>

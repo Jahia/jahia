@@ -12,6 +12,7 @@
 <template:addResources type="css" resources="userProfile.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.jeditable.js"/>
+<template:addResources type="javascript" resources="ajaxreplace.js"/>
 <template:addResources type="javascript" resources="ckeditor/ckeditor.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
@@ -71,7 +72,7 @@
                 var callableUrl = $(original).attr('jcr:url');
                 datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];
                 $.post($(original).attr('jcr:url'), datas, function(result) {
-                    jreplace(".image", callableUrl+".html.ajax",null, null);
+                    $(".userProfileImage").attr("src", result.j_picture+"?t=avatar_120");
                 }, "json");
             }
         });
@@ -104,18 +105,24 @@
             <span class="label"><fmt:message key='jnt_user.j_picture'/></span>
 
             <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
-
-            <c:if test="${empty picture}">
-            <div class='image'>
-                <div class='itemImage itemImageLeft'>
-                    <img src="<c:url value='${url.currentModule}/img/userbig.png'/>" alt="" border="0"/> </div>
-             </div><div class="clear"></div>
-            </c:if>
-            <c:if test="${not empty picture}">
-                <div class='image'>
-          <div class='itemImage itemImageLeft'> <img src="${picture.node.thumbnailUrls['avatar_120']}" alt="${fn:escapeXml(person)}"/> </div>
-        </div><div class="clear"></div>
-            </c:if>
+            <c:choose>
+                <c:when test="${empty picture}">
+                    <div class='image'>
+                        <div class='itemImage itemImageLeft'>
+                            <img class="userProfileImage" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
+                                 alt="" border="0"/></div>
+                    </div>
+                    <div class="clear"></div>
+                </c:when>
+                <c:otherwise>
+                    <div class='image'>
+                        <div class='itemImage itemImageLeft'><img class="userProfileImage"
+                                                                  src="${picture.node.thumbnailUrls['avatar_120']}"
+                                                                  alt="${fn:escapeXml(person)}"/></div>
+                    </div>
+                    <div class="clear"></div>
+                </c:otherwise>
+            </c:choose>
 
             <div class="userPicture${currentNode.identifier}" jcr:id="j:picture"
                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>" jcr:fileUrl="<c:url value='${url.basePreview}${user.path}/files/profile/*'/>">

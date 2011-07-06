@@ -21,7 +21,7 @@
         <jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
         <c:if test="${not empty picture}">
             <div class='image'>
-          <div class='itemImage itemImageLeft'><img src="${picture.node.thumbnailUrls['avatar_120']}" alt="${title} ${firstname} ${lastname}" width="60"
+          <div class='itemImage itemImageLeft'><img class="userProfileImage" src="${picture.node.thumbnailUrls['avatar_120']}" alt="${title} ${firstname} ${lastname}" width="60"
                  height="60"/></div>
         </div><div class="clear"></div>
         </c:if>

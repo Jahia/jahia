@@ -1,17 +1,23 @@
 /*!
  * jQCloud Plugin for jQuery
  *
- * Version 0.1.3
+ * Version 0.1.8
  *
  * Copyright 2011, Luca Ongaro
  * Licensed under the MIT license.
  *
- * Date: Wed Feb 16 11:41:32 2011 +0100
- */
+ * Date: Fri Apr 8 10:24:15 +0100 2011
+ */ 
+ 
 (function( $ ){
   $.fn.jQCloud = function(word_array, callback_function) {
     // Reference to the container element
     var $this = this;
+    // Reference to the ID of the container element
+    var container_id = $this.attr('id');
+
+    // Add the "jqcloud" class to the container for easy CSS styling
+    $this.addClass("jqcloud");
 
     var drawWordCloud = function() {
       // Helper function to test if an element overlaps others
@@ -35,6 +41,11 @@
         return false;
       };
 
+      // Make sure every weight is a number before sorting
+      for (i = 0; i < word_array.length; i++) {
+        word_array[i].weight = parseFloat(word_array[i].weight, 10);
+      }
+      
       // Sort word_array from the word with the highest weight to the one with the lowest
       word_array.sort(function(a, b) { if (a.weight < b.weight) {return 1;} else if (a.weight > b.weight) {return -1;} else {return 0;} });
 
@@ -46,33 +57,39 @@
 
       // Move each word in spiral until it finds a suitable empty place
       $.each(word_array, function(index, word) {
+
+        // Define the ID attribute of the span that will wrap the word, and the associated jQuery selector string
+        var word_id = container_id + "_word_" + index;
+        var word_selector = "#" + word_id;
+
         var angle = 6.28 * Math.random();
         var radius = 0.0;
+
         // Linearly map the original weight to a discrete scale from 1 to 10
         var weight = Math.round((word.weight - word_array[word_array.length - 1].weight)/(word_array[0].weight - word_array[word_array.length - 1].weight) * 9.0) + 1;
 
-        var inner_html = word.url !== undefined ? "<a href='" + word.url + "'>" + word.text + "</a></span>" : word.text;
-        $this.append("<span id='word_" + index + "' class='w" + weight + "' title='" + (word.title || "") + "'>" + inner_html + "</span>");
+        var inner_html = word.url !== undefined ? "<a href='" + encodeURI(word.url).replace(/'/g, "%27") + "'>" + word.text + "</a>" : word.text;
+        $this.append("<span id='" + word_id + "' class='w" + weight + "' title='" + (word.title || "") + "'>" + inner_html + "</span>");
 
-        var width = $("#word_" + index).width();
-        var height = $("#word_" + index).height();
+        var width = $(word_selector).width();
+        var height = $(word_selector).height();
         var left = origin_x - width / 2.0;
         var top = origin_y - height / 2.0;
-        $('#word_'+index).css("position", "absolute");
-        $('#word_'+index).css("left", left + "px");
-        $('#word_'+index).css("top", top + "px");
+        $(word_selector).css("position", "absolute");
+        $(word_selector).css("left", left + "px");
+        $(word_selector).css("top", top + "px");
 
-        while(hitTest(document.getElementById("word_"+index), already_placed_words)) {
+        while(hitTest(document.getElementById(word_id), already_placed_words)) {
           radius += step;
           angle += (index % 2 === 0 ? 1 : -1)*step;
 
-          left = origin_x + (radius*Math.cos(angle) - (width / 2.0)) * aspect_ratio;
+          left = origin_x - (width / 2.0) + (radius*Math.cos(angle)) * aspect_ratio;
           top = origin_y + radius*Math.sin(angle) - (height / 2.0);
 
-          $('#word_' + index).css('left', left + "px");
-          $('#word_' + index).css('top', top + "px");
+          $(word_selector).css('left', left + "px");
+          $(word_selector).css('top', top + "px");
         }
-        already_placed_words.push(document.getElementById("word_"+index));
+        already_placed_words.push(document.getElementById(word_id));
       });
 
       if (typeof callback_function === 'function') {

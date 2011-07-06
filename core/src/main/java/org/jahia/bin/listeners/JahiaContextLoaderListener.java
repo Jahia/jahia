@@ -112,28 +112,21 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         }
         Jahia.initContextData(servletContext);
         writePID(servletContext);
-        
+
         try {
-            boolean configExists = event.getServletContext().getResource(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null;
-            if (configExists) {
-                super.contextInitialized(event);
-                try {
-                    ((TemplatePackageApplicationContextLoader)ContextLoader.getCurrentWebApplicationContext().getBean("TemplatePackageApplicationContextLoader")).start();
-                } catch (Exception e) {
-                    logger.error("Error initializing Jahia modules Spring application context. Cause: " + e.getMessage(), e);
-                }
-                if (Jahia.isEnterpriseEdition()) {
-                    requireLicense();
-                }
-                // register listeners after the portal is started
-                ApplicationsManagerServiceImpl.getInstance().registerListeners();
-            } else {
-                logger.warn("Configuration file could not be found at location " + SettingsBean.JAHIA_PROPERTIES_FILE_PATH + ", Jahia will not start !");
+            super.contextInitialized(event);
+            try {
+                ((TemplatePackageApplicationContextLoader) ContextLoader.getCurrentWebApplicationContext().getBean("TemplatePackageApplicationContextLoader")).start();
+            } catch (Exception e) {
+                logger.error("Error initializing Jahia modules Spring application context. Cause: " + e.getMessage(), e);
             }
-            Config.set(servletContext, Config.FMT_FALLBACK_LOCALE, configExists ? SettingsBean
+            if (Jahia.isEnterpriseEdition()) {
+                requireLicense();
+            }
+            // register listeners after the portal is started
+            ApplicationsManagerServiceImpl.getInstance().registerListeners();
+            Config.set(servletContext, Config.FMT_FALLBACK_LOCALE, (SettingsBean.getInstance().getDefaultLanguageCode() != null) ? SettingsBean
                     .getInstance().getDefaultLanguageCode() : Locale.ENGLISH.getLanguage());
-        } catch (MalformedURLException e) {
-            logger.error(e.getMessage(), e);
         } finally {
             JCRSessionFactory.getInstance().closeAllSessions();
         }

@@ -263,15 +263,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 	        jahiaBaseFilesPath = context.getRealPath("/WEB-INF/var");
 	        jahiaTemplatesScriptsPath = jahiaBaseFilesPath + File.separator +
 	                                    "templates";
-	
-	        // check if there is a jahia.properties file...
-	        boolean jahiaPropertiesExists = SettingsBean.getInstance() != null && context.getResourceAsStream(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null;
-	
-	        if (!jahiaPropertiesExists) {
-	        	logger.error("Cannot find settings file under " + SettingsBean.JAHIA_PROPERTIES_FILE_PATH);
-	            throw new JahiaInitializationException("Cannot find settings file under " + SettingsBean.JAHIA_PROPERTIES_FILE_PATH);
-	        }
-	        
+
 	        Jahia.setMaintenance(SettingsBean.getInstance().isMaintenanceMode());
 	        
 	        try {

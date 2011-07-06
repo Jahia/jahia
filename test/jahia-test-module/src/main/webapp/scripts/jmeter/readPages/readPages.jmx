@@ -85,7 +85,7 @@
           </collectionProp>
           <collectionProp name="UserParameters.thread_values">
             <collectionProp name="-241703791">
-              <stringProp name="291785730">${_StringFromFile(sitemap.txt)}</stringProp>
+              <stringProp name="291785730">${_StringFromFile(pageurls.txt)}</stringProp>
               <stringProp name="286088405">${_StringFromFile(users.txt)}</stringProp>
               <stringProp name="709731209">${__split(${LANG},LANG,\,)}</stringProp>
             </collectionProp>

@@ -295,7 +295,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                 "\n" + AggregateCacheFilter.removeEsiTags(staticsAsset) + "\n<");
                     }
                 }
-                if (renderContext.getRequest().getHeader("user-agent").contains("MSIE")) {
+                String header = renderContext.getRequest().getHeader("user-agent");
+                if (header!=null && header.contains("MSIE")) {
                     int idx = element.getBegin() + element.toString().indexOf(">");
                     String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=8\">";
                     outputDocument.replace(idx,idx + 1,str);

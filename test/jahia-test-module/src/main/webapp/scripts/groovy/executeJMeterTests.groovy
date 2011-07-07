@@ -17,7 +17,7 @@ new File(project.properties['jahia.test.jmeter.path']+"/bin/testPlan").eachDir {
 
                 def params = "";
 
-                project.properties.each() { key, value -> params += " -J${key}=\"${value}\""}
+                project.properties.each() { key, value -> params += " -J${key}=${value}"}
 
                 if (jmeterPath.toString().count("/") != 0) {
                     jmeterPath = project.properties['jahia.test.jmeter.path'] + "/bin/jmeter.sh -n -t "

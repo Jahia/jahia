@@ -45,17 +45,15 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 /**
- * Created by IntelliJ IDEA.
- * User: david
+ * Action item for cleaning all the locks on the node and if specified on its children.
+ * @author david
  * Date: 4/28/11
  * Time: 3:10 PM
- * To change this template use File | Settings | File Templates.
  */
 
 
@@ -68,7 +66,6 @@ public class ClearAllLocksActionItem extends BaseActionItem {
     }
 
     public void onComponentSelection() {
-        ContentActions.lock(false, linker);
         String selectedPaths = linker.getSelectionContext().getSingleSelection().getPath();
         JahiaContentManagementService.App.getInstance().clearAllLocks(selectedPaths, doSubNodes, new BaseAsyncCallback() {
             public void onApplicationFailure(Throwable throwable) {

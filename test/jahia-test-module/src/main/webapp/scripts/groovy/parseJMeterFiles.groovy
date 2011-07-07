@@ -78,7 +78,7 @@ reader.setContentHandler(handler)
 
 
 def p = ~/.*\.jtl/
-new File(project.properties['pom.basedir']+"/target/jmeterResults").eachFileMatch(p) {
+new File("target/jmeterResults").eachFileMatch(p) {
     f ->
     if (sql.rows("select * from filenames where filename like '" + f + "'").size() == 0) {
         println 'Parsing file ' + f

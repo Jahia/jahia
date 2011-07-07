@@ -84,9 +84,9 @@
             <stringProp name="3314158">lang</stringProp>
           </collectionProp>
           <collectionProp name="UserParameters.thread_values">
-            <collectionProp name="-241703791">
-              <stringProp name="291785730">${_StringFromFile(pageurls.txt)}</stringProp>
-              <stringProp name="286088405">${_StringFromFile(users.txt)}</stringProp>
+            <collectionProp name="-2020897244">
+              <stringProp name="1772960254">${_StringFromFile(target/pageurls.txt)}</stringProp>
+              <stringProp name="302112969">${_StringFromFile(target/users.txt)}</stringProp>
               <stringProp name="709731209">${__split(${LANG},LANG,\,)}</stringProp>
             </collectionProp>
           </collectionProp>
@@ -115,7 +115,7 @@
           <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Page Hit Live Authenticated" enabled="true"/>
           <hashTree>
             <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller" enabled="true">
-              <stringProp name="IfController.condition">${user}</stringProp>
+              <stringProp name="IfController.condition">&quot;${user}&quot; != &quot;**ERR**&quot;</stringProp>
               <boolProp name="IfController.evaluateAll">false</boolProp>
             </IfController>
             <hashTree>
@@ -164,6 +164,9 @@
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
                 <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
                 <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
+                <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
+                <stringProp name="HTTPSampler.mimetype"></stringProp>
                 <boolProp name="HTTPSampler.monitor">false</boolProp>
                 <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
               </HTTPSampler>
@@ -175,7 +178,7 @@
                 <hashTree/>
               </hashTree>
             </hashTree>
-            <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Page Hit Live Authenticated ${pageUrl} with user ${__javaScript(&quot;${user}&quot; != &quot;**ERR**&quot;?&quot;${user}&quot;:&quot;guest&quot;)}" enabled="true">
+            <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Page Hit Live Authenticated ${pageUrl} with user ${__javaScript(&quot;${user}&quot; != &quot;**ERR**&quot;?&quot;${user}&quot;:&quot;guest&quot;)}" enabled="false">
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
                 <collectionProp name="Arguments.arguments"/>
               </elementProp>
@@ -191,6 +194,9 @@
               <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
               <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
               <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+              <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
+              <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
+              <stringProp name="HTTPSampler.mimetype"></stringProp>
               <boolProp name="HTTPSampler.monitor">false</boolProp>
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSampler>

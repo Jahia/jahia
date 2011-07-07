@@ -41,8 +41,8 @@
 package org.jahia.taglibs.jcr.node;
 
 import org.slf4j.Logger;
+import org.apache.commons.lang.*;
 import org.apache.taglibs.standard.tag.common.core.Util;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.Resource;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
@@ -97,7 +97,10 @@ public class JCRNodeTag extends AbstractJCRTag {
                 if (path.startsWith("/")) {
                     node = getJCRSession().getNode(path);
                 } else {
-                    node = currentResource.getNode().getNode(path);
+                    node = currentResource.getNode();
+                    if (!StringUtils.isEmpty(path)) {
+                        node = node.getNode(path);
+                    }
                 }
             }
             pageContext.setAttribute(var, node, scope);

@@ -81,11 +81,13 @@
           <collectionProp name="UserParameters.names">
             <stringProp name="3599307">user</stringProp>
             <stringProp name="3314158">lang</stringProp>
+            <stringProp name="-1595703404">pagefilenumber</stringProp>
           </collectionProp>
           <collectionProp name="UserParameters.thread_values">
-            <collectionProp name="2122856388">
+            <collectionProp name="1382650498">
               <stringProp name="302112969">${_StringFromFile(target/users.txt)}</stringProp>
               <stringProp name="709731209">${__split(${LANG},LANG,\,)}</stringProp>
+              <stringProp name="1482419176">${__jexl(${__threadNum} % 5)}</stringProp>
             </collectionProp>
           </collectionProp>
           <boolProp name="UserParameters.per_iteration">true</boolProp>
@@ -186,8 +188,8 @@
                   <stringProp name="-803558304">pageUrl</stringProp>
                 </collectionProp>
                 <collectionProp name="UserParameters.thread_values">
-                  <collectionProp name="-1666879903">
-                    <stringProp name="1772960254">${_StringFromFile(target/pageurls.txt)}</stringProp>
+                  <collectionProp name="-1833384659">
+                    <stringProp name="535261216">${_StringFromFile(target/pageurls${pagefilenumber}.txt)}</stringProp>
                   </collectionProp>
                 </collectionProp>
                 <boolProp name="UserParameters.per_iteration">true</boolProp>

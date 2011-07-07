@@ -48,10 +48,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.jcr.RepositoryException;
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.SimpleBindings;
+import javax.script.*;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
@@ -109,15 +106,20 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
             String macroName = matcher.group(1);
             String[] macro = getMarco(macroName);
             if (macro != null) {
-                // execute macro
-                ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(macro[1]);
-                ScriptContext scriptContext = scriptEngine.getContext();
-                scriptContext.setWriter(new StringWriter());
-                scriptContext.setErrorWriter(new StringWriter());
-                scriptEngine.eval(macro[0],
-                        getBindings(renderContext, resource, scriptContext, matcher));
-                String scriptResult = scriptContext.getWriter().toString().trim();
-                previousOut = matcher.replaceFirst(scriptResult);
+                try {
+                    // execute macro
+                    ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(macro[1]);
+                    ScriptContext scriptContext = scriptEngine.getContext();
+                    scriptContext.setWriter(new StringWriter());
+                    scriptContext.setErrorWriter(new StringWriter());
+                    scriptEngine.eval(macro[0],
+                            getBindings(renderContext, resource, scriptContext, matcher));
+                    String scriptResult = scriptContext.getWriter().toString().trim();
+                    previousOut = matcher.replaceFirst(scriptResult);
+                } catch (ScriptException e) {
+                    logger.warn("Error during execution of macro "+macroName+" with message "+ e.getMessage(), e);
+                    previousOut = matcher.replaceFirst(macroName);
+                }
             } else {
                 previousOut = matcher.replaceFirst("macro " + macroName + " not found");
                 logger.warn("Unknonwn macro '{}'", macroName);

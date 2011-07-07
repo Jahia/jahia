@@ -49,7 +49,7 @@
           </elementProp>
           <elementProp name="MODE" elementType="Argument">
             <stringProp name="Argument.name">MODE</stringProp>
-            <stringProp name="Argument.value">${__P(jahia.test.mode,render)}</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.mode,render)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>

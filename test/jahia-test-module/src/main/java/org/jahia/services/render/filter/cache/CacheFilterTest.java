@@ -42,6 +42,9 @@ package org.jahia.services.render.filter.cache;
 
 import junit.framework.TestCase;
 import net.sf.ehcache.Element;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,23 +52,35 @@ import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.notification.HttpClientService;
+import org.jahia.services.query.IndexOptionsTest;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.BaseAttributesFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.filter.RenderFilter;
+import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.TestHelper;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
+
+import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.RepositoryException;
+
 import static org.junit.Assert.*;
 /**
  * Created by IntelliJ IDEA.
@@ -100,7 +115,15 @@ public class CacheFilterTest {
 
             session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
             this.site = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
-
+            
+            String templatesFolder = "/sites/"+site.getSiteKey() + "/templates";
+            InputStream importStream = IndexOptionsTest.class.getClassLoader()
+                    .getResourceAsStream("imports/importTemplatesForCacheTest.xml");
+            session.importXML(templatesFolder + "/base", importStream,
+                    ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
+            importStream.close();
+            session.save();   
+            
             JCRNodeWrapper shared = this.site.getNode("home");
             if (shared.hasNode("testContent")) {
                 shared.getNode("testContent").remove();
@@ -108,13 +131,23 @@ public class CacheFilterTest {
             if(shared.isVersioned()) session.checkout(shared);
             node = shared.addNode("testContent", "jnt:page");
             node.setProperty("jcr:title", "English test page");
+            node.setProperty("j:templateNode", session.getNode(
+                    templatesFolder + "/base/pagetemplate/subpagetemplate"));            
             node.addNode("testType2", "jnt:mainContent");
             session.save();
             final JCRPublicationService service = JCRPublicationService.getInstance();
-            final List<PublicationInfo> infoList = service.getPublicationInfo(
+            
+            List<PublicationInfo> infoList = service.getPublicationInfo(
+                    session.getNode(
+                            templatesFolder + "/base/pagetemplate").getIdentifier(), new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH.toString())),
+                    true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+            service.publishByInfoList(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,Collections.<String>emptyList());
+            
+            infoList = service.getPublicationInfo(
                     shared.getIdentifier(), new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH.toString())),
                     true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
             service.publishByInfoList(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,Collections.<String>emptyList());
+            
             session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
             node = session.getNode("/sites/"+site.getSiteKey()+"/home/testContent");
         } catch (Exception e) {
@@ -172,7 +205,88 @@ public class CacheFilterTest {
         assertNotNull("Html Cache does not contains our html rendering", element);
         assertTrue("Content Cache and rendering are not equals",((String)((CacheEntry)element.getValue()).getObject()).contains(result));
     }
+    
+    @Test
+    public void testFixForEmptyCacheBug() throws Exception {
+        String firstResponse = null;
+        HttpClient client = new HttpClient();
+        GetMethod nodeGet = new GetMethod(
+            "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" +
+            node.getPath() + ".html");
+        try {
+            int responseCode = client.executeMethod(nodeGet);
+            assertEquals("Response code " + responseCode, 200, responseCode);
+            firstResponse = nodeGet.getResponseBodyAsString();
+            logger.info("Response body=[" + firstResponse + "]");
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+        
+        JCRTemplate.getInstance().doExecuteWithSystemSession(
+                JahiaUserManagerService.GUEST_USERNAME,
+                Constants.LIVE_WORKSPACE, Locale.ENGLISH, new JCRCallback<String>() {
+                    public String doInJCR(JCRSessionWrapper session)
+                            throws RepositoryException {
+                        RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), session.getUser());
+                        context.setSite(site);
+                        context.setLiveMode(true);                        
+                        JCRNodeWrapper pageContentNode = session
+                                .getNode("/sites/"
+                                        + site.getSiteKey()
+                                        + "/templates/base/pagetemplate/subpagetemplate/pagecontent");
+                        Resource resource = new Resource(pageContentNode,
+                                "html", null,
+                                Resource.CONFIGURATION_WRAPPEDCONTENT);
+                        context.setMainResource(resource);
+                        try {
+                            context.getRequest().setAttribute(
+                                    "script",
+                                    RenderService.getInstance().resolveScript(
+                                            resource, context));
+                        } catch (TemplateNotFoundException e) {
+                        }
 
+                        ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton
+                                .getInstance().getContext()
+                                .getBean("ModuleCacheProvider");
+                        CacheKeyGenerator generator = moduleCacheProvider
+                                .getKeyGenerator();
+                        String key = (String) generator.generate(resource,
+                                context);
+                        String resourceId = StringUtils.substringAfterLast(key,
+                                "#");
+                        String firstpart = StringUtils.substringBeforeLast(key,
+                                "#");
+                        firstpart = StringUtils.substringBeforeLast(firstpart,
+                                "#");
+                        for (Object existingKey : moduleCacheProvider
+                                .getCache().getKeys()) {
+                            String existingKeyAsString = (String) existingKey;
+                            if (existingKeyAsString.startsWith(firstpart)
+                                    && existingKeyAsString.endsWith(resourceId)) {
+                                moduleCacheProvider.getCache().remove(
+                                        existingKey);
+                            }
+                        }
+
+                        return key;
+                    }
+                });
+
+        try {
+            int responseCode = client.executeMethod(nodeGet);
+            assertEquals("Response code " + responseCode, 200, responseCode);
+            String responseBody = nodeGet.getResponseBodyAsString();
+            logger.info("Response body=[" + responseBody + "]");
+            assertTrue(
+                    "First and second response are not equal",
+                    responseBody.replaceAll("(?m)^[ \t]*\r?\n", "").replaceAll("(?m)^[ \t]+", "").equals(
+                            firstResponse.replaceAll("(?m)^[ \t]*\r?\n", "").replaceAll("(?m)^[ \t]+", "")));
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }    
+    
     @Test
     public void testDependencies() throws Exception {
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);

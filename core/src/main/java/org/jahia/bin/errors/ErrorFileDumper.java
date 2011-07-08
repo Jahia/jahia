@@ -45,6 +45,7 @@ import net.sf.ehcache.Statistics;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -362,7 +363,10 @@ public class ErrorFileDumper {
                     } else {
                         curPropertyValue = curEntry.getValue().toString();
                     }
-                    if (curPropertyName.toLowerCase().indexOf("password") == -1) {
+                    if (curPropertyName.toLowerCase().indexOf("password") == -1
+                            && (!"mail_server".equals(curPropertyName)
+                                    || !StringUtils.contains(curPropertyValue, "&password=") && !StringUtils
+                                        .contains(curPropertyValue, "?password="))) {
                         strOut.println("   " + curPropertyName + " = " + curPropertyValue);
                     }
                 }

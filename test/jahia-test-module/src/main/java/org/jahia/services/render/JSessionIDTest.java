@@ -50,7 +50,7 @@ public class JSessionIDTest extends TestCase {
 //        SettingsBean.getInstance().setJsessionIdParameterName(jsessionid);
 //        httpClient.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
 //
-//        GetMethod displayLoginMethod = new GetMethod("http://localhost:8085"+ Jahia.getContextPath()+"/administration");
+//        GetMethod displayLoginMethod = new GetMethod("http://localhost:8080"+ Jahia.getContextPath()+"/administration");
 //        int result = httpClient.executeMethod(displayLoginMethod);
 //        String responseBodyAsString = displayLoginMethod.getResponseBodyAsString();
 //
@@ -65,7 +65,7 @@ public class JSessionIDTest extends TestCase {
 //        assertTrue (m.find());
 //
 //        String redirect = m.group(1);
-//        PostMethod login = new PostMethod("http://localhost:8085" + url);
+//        PostMethod login = new PostMethod("http://localhost:8080" + url);
 //        login.setParameter("username","root");
 //        login.setParameter("password","root1234");
 //        login.setParameter("doLogin","true");
@@ -75,7 +75,7 @@ public class JSessionIDTest extends TestCase {
 //        String sessionid = StringUtils.substringAfter(login.getURI().toString(), ";"+jsessionid);
 //        assertNotNull("Session id is not in the url !",sessionid);
 //
-//        GetMethod home = new GetMethod("http://localhost:8085"+ Jahia.getContextPath()+"/cms/render/live/en/users/root.user-home.html;"+jsessionid+sessionid);
+//        GetMethod home = new GetMethod("http://localhost:8080"+ Jahia.getContextPath()+"/cms/render/live/en/users/root.user-home.html;"+jsessionid+sessionid);
 //        result = httpClient.executeMethod(home);
 //        System.out.println(home.getResponseBodyAsString());
 //        System.out.println("ok");
@@ -85,7 +85,7 @@ public class JSessionIDTest extends TestCase {
         SettingsBean.getInstance().setDisableJsessionIdParameter(removeJsessionId);
         SettingsBean.getInstance().setJsessionIdParameterName(jsessionid);
 
-        GetMethod displayLoginMethod = new GetMethod("http://localhost:8085"+ Jahia.getContextPath()+"/administration");
+        GetMethod displayLoginMethod = new GetMethod("http://localhost:8080"+ Jahia.getContextPath()+"/administration");
         httpClient.executeMethod(displayLoginMethod);
         String responseBodyAsString = displayLoginMethod.getResponseBodyAsString();
 

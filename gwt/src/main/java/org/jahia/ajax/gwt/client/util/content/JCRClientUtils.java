@@ -62,6 +62,7 @@ public final class JCRClientUtils {
     public static final List<String> PAGE_NODETYPES =  Arrays.asList("jnt:page");
     public static final List<String> TAG_NODETYPES =  Arrays.asList("jnt:tag");
     public static final List<String> CONTENT_NODETYPES =  Arrays.asList("jnt:content");
+    public static final List<String> MANUALLY_ORDERABLE_NODETYPES =  Arrays.asList("jnt:content", "jmix:manuallyOrderable");
 
     public final static String MY_REPOSITORY = "myRepository";
     public final static String USERS_REPOSITORY = "usersRepository";

@@ -24,6 +24,12 @@
 [jmix:observable] mixin
 
 //---------------------------------------------------------
+// Sorting
+//---------------------------------------------------------
+
+[jmix:manuallyOrderable] mixin
+
+//---------------------------------------------------------
 // Default metadata
 //---------------------------------------------------------
 
@@ -159,7 +165,7 @@
 // Query
 //---------------------------------------------------------
 
-[jnt:query] > nt:query, mix:title, jmix:publication, jmix:list, jmix:queryContent,  jmix:renderableList, jmix:basemetadata
+[jnt:query] > nt:query, mix:title, jmix:publication, jmix:list, jmix:queryContent,  jmix:renderableList, jmix:basemetadata, jmix:manuallyOrderable
  - maxItems (long) = 10 indexed=no
 
 //---------------------------------------------------------

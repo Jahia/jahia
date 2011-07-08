@@ -12,6 +12,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<c:set var="resourceReadOnly" value="${currentResource.moduleParams.readOnly}"/>
 <template:include view="hidden.header"/>
 <c:set var="isEmpty" value="true"/>
 <c:choose>
@@ -31,11 +32,11 @@
     </c:when>
     <c:otherwise>
         <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
-            <template:module node="${subchild}" view="${moduleMap.subNodesView}" editable="${moduleMap.editable}"/>
+            <template:module node="${subchild}" view="${moduleMap.subNodesView}" editable="${moduleMap.editable && !resourceReadOnly}"/>
             <c:set var="isEmpty" value="false"/>
         </c:forEach>
         <c:if test="${not omitFormatting}"><div class="clear"></div></c:if>
-        <c:if test="${moduleMap.editable and renderContext.editMode}">
+        <c:if test="${moduleMap.editable and renderContext.editMode && !resourceReadOnly}">
             <template:module path="*"/>
         </c:if>
         <c:if test="${not empty moduleMap.emptyListMessage and renderContext.editMode and isEmpty}">

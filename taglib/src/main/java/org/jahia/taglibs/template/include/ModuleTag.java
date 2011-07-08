@@ -272,6 +272,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         currentResource.getDependencies().addAll(resource.getDependencies());
                         printModuleEnd();
                     } else {
+                        resource.getModuleParams().put("readOnly", Boolean.TRUE);
                         render(renderContext, resource);
                         //Copy dependencies to parent Resource
                         currentResource.getRegexpDependencies().addAll(resource.getRegexpDependencies());

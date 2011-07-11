@@ -6,7 +6,7 @@
        
     <bean id="DocumentConverterService" class="org.jahia.services.transform.DocumentConverterService" init-method="start" destroy-method="stop">
     	<!-- set this to true to enable the service -->
-        <property name="enabled" value="false"/>
+        <property name="enabled" value="${documentConverter.enabled}"/>
         <!-- contains the name of the bean that provides configured OfficeManager instance (not the reference to the bean itself) -->
         <property name="officeManagerBeanName" value="localOfficeManagerFactory"/>
         <!-- 
@@ -15,14 +15,7 @@
     </bean>
 
     <bean name="localOfficeManagerFactory" class="org.jahia.services.transform.LocalOfficeManagerFactory" lazy-init="true">
-        <!-- Linux -->
-        <property name="officeHome" value="/usr/lib/openoffice"/>
-        <!-- Windows 
-        <property name="officeHome" value="c:/Program Files (x86)/OpenOffice.org 3"/>
-        -->
-        <!-- Mac OSX 
-        <property name="officeHome" value="/Applications/OpenOffice.org.app/Contents"/>
-        -->
+        <property name="officeHome" value="${documentConverter.officeHome}"/>
     </bean>
 
     <bean name="remoteOfficeManagerFactory" class="org.jahia.services.transform.RemoteOfficeManagerFactory" lazy-init="true">

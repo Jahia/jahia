@@ -85,6 +85,10 @@ urlRewriteSeoRulesEnabled                              = false
 # front-end machines.
 siteURLPortOverride                                    = 0
 
+# Disable the jsessionid parameter added by application server to track session when no cookie is present
+disableJsessionIdParameter = true
+jsessionIdParameterName = jsessionid
+
 ######################################################################
 ### Mail Service Configuration #######################################
 ######################################################################
@@ -303,6 +307,13 @@ jahia.jackrabbit.onWorkspaceInconsistency = log
 # (WebDAV client access won't work in such a case)
 repositoryDirectoryListingDisabled = false
 
-# Disable the jsessionid parameter added by application server to track session when no cookie is present
-disableJsessionIdParameter = true
-jsessionIdParameterName = jsessionid
+######################################################################
+### Document Converter Service #######################################
+######################################################################
+# Set this to true to enable the document conversion service
+documentConverter.enabled = false
+# The fiesystem path to the OpenOffice
+# Usually for Linux it is: /usr/lib/openoffice
+# for Windows: c:/Program Files (x86)/OpenOffice.org 3
+# and for Mac OS X: /Applications/OpenOffice.org.app/Contents
+documentConverter.officeHome = /usr/lib/openoffice

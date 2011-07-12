@@ -16,7 +16,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.fancybox.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.fancybox.js,animatedcollapse.js"/>
 <template:addResources type="css" resources="contribute-toolbar.css,jquery.fancybox.css"/>
 <fmt:message key="label.noSelection" var="i18nNoSelection"/>
 <c:set var="i18nNoSelection" value="${functions:escapeJavaScript(i18nNoSelection)}"/>
@@ -29,11 +29,11 @@
             },
             cache:false
         })
-        /*
+        <%--
          $("#delete-${currentNode.identifier}").button();
          $("#copy-${currentNode.identifier}").button();
          $("#paste-${currentNode.identifier}").button();
-         */
+         --%>
         function getUuids() {
             var uuids = new Array();
             var i = 0;

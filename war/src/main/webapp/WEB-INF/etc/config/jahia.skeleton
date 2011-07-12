@@ -254,10 +254,10 @@ fileDumpMaxRegroupingOfPreviousException = 500
 # If set to true a call to an external jstack tool (from Oracle Java Platform SE package)
 # will be done by Jahia in order to generate thread dump.
 # This allows to generate more accurate thread dumps (although the generation process is slower).
-# But it is guaranteeed that in this case a dump can be read by any
+# But it is guaranteed that in this case a dump can be read by any
 # thread dump analyzer tool, available on the market.
-# Ensure "jstack" is avilable on your PATH before activating this option.
-useJstackForThtreadDumps = false
+# Ensure "jstack" is available on your PATH before activating this option.
+useJstackForThreadDumps = false
 ######################################################################
 ### Concurrent processing options ####################################
 ######################################################################

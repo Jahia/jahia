@@ -15,4 +15,5 @@
     ${fn:escapeXml(not empty refTitle ? refTitle : not empty title.string ? title.string : currentNode.name)}
 </a>
 - ${displayDate}
-- ${currentNode.fileContent.contentType} ${currentNode.fileContent.contentLength} bytes
+- ${currentNode.fileContent.contentType}
+&nbsp;${currentNode.fileContent.contentLength}&nbsp;bytes

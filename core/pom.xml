@@ -1258,6 +1258,8 @@
                 <includes>
                     <include>**/*.txt</include>
                     <include>**/*.xsl</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.properties</include>
                 </includes>
             </resource>
         </resources>

@@ -443,7 +443,7 @@
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>WEB-INF/etc/spring/servlet-applicationcontext-gwt*.xml</param-value>
+            <param-value>WEB-INF/etc/spring/servlet-applicationcontext-gwt*.xml,classpath*:org/jahia/defaults/config/**/servlet-applicationcontext-gwt*.xml</param-value>
         </init-param>
         <init-param>
             <param-name>publishEvents</param-name>
@@ -456,7 +456,7 @@
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>WEB-INF/etc/spring/servlet-applicationcontext-renderer.xml</param-value>
+            <param-value>WEB-INF/etc/spring/servlet-applicationcontext-renderer.xml,classpath*:org/jahia/defaults/config/**/servlet-applicationcontext-renderer.xml</param-value>
         </init-param>
         <init-param>
             <param-name>publishEvents</param-name>

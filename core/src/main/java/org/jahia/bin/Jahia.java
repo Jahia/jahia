@@ -49,7 +49,7 @@
 //  10.02.2001  AK  pseudo-bypass the login by forwarding request attributes.
 //  27.03.2001  AK  javadoc and change the access to JahiaPrivateSettings.load().
 //  28.03.2001  AK  add some jahia path variables.
-//  29.03.2001  AK  rename jahia.basic file in jahia.skeleton.
+//  29.03.2001  AK  rename jahia.basic file in jahia.properties.
 //  20.04.2001  AK  bugfix request uri.
 //  17.05.2001  AK  tomcat users check during init.
 //  23.05.2001  NK  bug two same parameter in url resolved by removing pathinfo data from request uri

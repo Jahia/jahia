@@ -18,7 +18,7 @@
             of the web application
         </description>
         <param-name>contextConfigLocation</param-name>
-        <param-value>WEB-INF/etc/spring/**/applicationcontext-*.xml,classpath*:org/jahia/config/**/applicationcontext-*.xml</param-value>
+        <param-value>WEB-INF/etc/spring/**/applicationcontext-*.xml,classpath*:org/jahia/defaults/config/**/applicationcontext-*.xml,classpath*:org/jahia/config/**/applicationcontext-*.xml</param-value>
     </context-param>
 
     <context-param>

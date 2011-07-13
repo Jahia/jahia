@@ -84,8 +84,8 @@
             <stringProp name="-1595703404">pagefilenumber</stringProp>
           </collectionProp>
           <collectionProp name="UserParameters.thread_values">
-            <collectionProp name="1382650498">
-              <stringProp name="302112969">${_StringFromFile(target/users.txt)}</stringProp>
+            <collectionProp name="73793985">
+              <stringProp name="1104451116">${_StringFromFile(/home/david/sources/jahia_dev/target/users.txt)}</stringProp>
               <stringProp name="709731209">${__split(${LANG},LANG,\,)}</stringProp>
               <stringProp name="1482419176">${__jexl(${__threadNum} % 5)}</stringProp>
             </collectionProp>
@@ -119,7 +119,7 @@
               <boolProp name="IfController.evaluateAll">false</boolProp>
             </IfController>
             <hashTree>
-              <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Login" enabled="true">
+              <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Login ${user}" enabled="true">
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
                   <collectionProp name="Arguments.arguments">
                     <elementProp name="username" elementType="HTTPArgument">
@@ -164,9 +164,6 @@
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
                 <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
                 <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
-                <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
-                <stringProp name="HTTPSampler.mimetype"></stringProp>
                 <boolProp name="HTTPSampler.monitor">false</boolProp>
                 <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
               </HTTPSampler>
@@ -188,14 +185,14 @@
                   <stringProp name="-803558304">pageUrl</stringProp>
                 </collectionProp>
                 <collectionProp name="UserParameters.thread_values">
-                  <collectionProp name="-1833384659">
-                    <stringProp name="535261216">${_StringFromFile(target/pageurls${pagefilenumber}.txt)}</stringProp>
+                  <collectionProp name="1796305527">
+                    <stringProp name="930387459">${_StringFromFile(/home/david/sources/jahia_dev/target/pageurls${pagefilenumber}.txt)}</stringProp>
                   </collectionProp>
                 </collectionProp>
                 <boolProp name="UserParameters.per_iteration">true</boolProp>
               </UserParameters>
               <hashTree/>
-              <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Page Hit ${WORKSPACE} with user ${__javaScript(&quot;${user}&quot; != &quot;**ERR**&quot;?&quot;authenticated&quot;:&quot;guest&quot;)}" enabled="true">
+              <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Page Hit ${pageUrl} with user ${__javaScript(&quot;${user}&quot; != &quot;**ERR**&quot;?&quot;authenticated&quot;:&quot;guest&quot;)}" enabled="true">
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
                   <collectionProp name="Arguments.arguments"/>
                 </elementProp>
@@ -211,9 +208,6 @@
                 <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
                 <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
                 <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
-                <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
-                <stringProp name="HTTPSampler.mimetype"></stringProp>
                 <boolProp name="HTTPSampler.monitor">false</boolProp>
                 <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
               </HTTPSampler>

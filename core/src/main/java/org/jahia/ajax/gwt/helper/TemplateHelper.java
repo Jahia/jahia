@@ -153,10 +153,10 @@ public class TemplateHelper {
             }
             result = new GWTRenderResult(res, m, constraints, node.getDisplayableName());
         } catch (PathNotFoundException e) {
-            throw new GWTJahiaServiceException("Not found");
+            throw new GWTJahiaServiceException(path + " not found for user " + currentUserSession.getUser().getName());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Repository exception");
+            throw new GWTJahiaServiceException("Repository exception on path " + path);
         } catch (RenderException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Render exception "+e.getMessage());

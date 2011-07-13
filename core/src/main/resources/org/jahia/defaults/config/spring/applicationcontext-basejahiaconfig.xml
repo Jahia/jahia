@@ -8,6 +8,7 @@
   	<property name="ignoreResourceNotFound" value="true"/>
   	<property name="locations">
   		<list>
+            <value>classpath:org/jahia/defaults/config/properties/jahia*.properties</value>
   			<value>/WEB-INF/etc/config/jahia.properties</value>
   			<value>/WEB-INF/etc/config/jahia.advanced.properties</value>
   			<value>/WEB-INF/etc/config/jahia.custom.properties</value>

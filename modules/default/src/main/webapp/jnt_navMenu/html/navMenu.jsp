@@ -72,7 +72,14 @@
     <ul class="navmenu level_${navMenuLevel - startLevelValue}">
         <c:forEach items="${items}" var="menuItem" varStatus="menuStatus">
             <c:set var="inpath" value="${fn:startsWith(renderContext.mainResource.node.path, menuItem.path)}"/>
-            <c:set var="selected" value="${renderContext.mainResource.node.path eq menuItem.path}"/>
+            <c:choose>
+                <c:when test="${jcr:isNodeType(menuItem, 'jmix:link')}">
+                    <c:set var="selected" value="${renderContext.mainResource.node.path eq menuItem.properties['j:node'].node.path}"/>
+                </c:when>
+                <c:otherwise>
+                    <c:set var="selected" value="${renderContext.mainResource.node.path eq menuItem.path}"/>
+                </c:otherwise>
+            </c:choose>
             <c:set var="correctType" value="true"/>
             <c:if test="${!empty menuItem.properties['j:displayInMenu']}">
                 <c:set var="correctType" value="false"/>

@@ -426,8 +426,10 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 }
 
                 if (!importProtectedProperties && propDef.isProtected()) {
-                    logger.info("Skipping protected property [{}].[{}]", propDef
-                            .getDeclaringNodeType().getName(), propDef.getName());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Skipping protected property [{}].[{}]", propDef
+                                .getDeclaringNodeType().getName(), propDef.getName());
+                    }
                     continue;
                 }
 

@@ -59,6 +59,7 @@
 </div>
 <div id="display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">
 </div>
+<fmt:message key="add.file" var="i18nAddFile"/>
 <template:addResources>
 <script>
     $(document).ready(function() {
@@ -73,7 +74,7 @@
                 var id = $(original).attr('jcr:id');
                 $("#"+id).val(data.uuids[0]);
                 $("#display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").html("<img src='"+data.urls[0]+"'/>");
-                $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").html('<span><fmt:message key="add.file"/></span>');
+                $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").html('<span>${functions:escapeJavaScript(i18nAddFile)}</span>');
             }
         });
     });

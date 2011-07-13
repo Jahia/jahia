@@ -9,12 +9,12 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="offTime" elementType="Argument">
             <stringProp name="Argument.name">offTime</stringProp>
-            <stringProp name="Argument.value">450</stringProp>
+            <stringProp name="Argument.value">45000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="varTime" elementType="Argument">
             <stringProp name="Argument.name">varTime</stringProp>
-            <stringProp name="Argument.value">50</stringProp>
+            <stringProp name="Argument.value">5000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="pathPrefix" elementType="Argument">
@@ -29,7 +29,7 @@
           </elementProp>
           <elementProp name="totalPages" elementType="Argument">
             <stringProp name="Argument.name">totalPages</stringProp>
-            <stringProp name="Argument.value">936</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.totalPages,936)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="rampUp" elementType="Argument">
@@ -39,7 +39,7 @@
           </elementProp>
           <elementProp name="nbUsers" elementType="Argument">
             <stringProp name="Argument.name">nbUsers</stringProp>
-            <stringProp name="Argument.value">200</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.nbUsersGuest,3000)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="nbPagesToBrowse" elementType="Argument">
@@ -59,12 +59,12 @@
           </elementProp>
           <elementProp name="serverIP1" elementType="Argument">
             <stringProp name="Argument.name">serverIP1</stringProp>
-            <stringProp name="Argument.value">10.8.31.21</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.serverIP1,10.8.31.21)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="serverIP2" elementType="Argument">
             <stringProp name="Argument.name">serverIP2</stringProp>
-            <stringProp name="Argument.value">10.8.31.21</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.serverIP2,10.8.31.21)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>

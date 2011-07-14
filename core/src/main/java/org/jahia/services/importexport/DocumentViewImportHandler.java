@@ -71,7 +71,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by IntelliJ IDEA.
+ * SAX handler that performs import of the JCR content, provided in a document format.
  * User: toto
  * Date: 11 févr. 2008
  * Time: 16:38:38
@@ -146,7 +146,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
             throws SAXException {
         try {
             NamespaceRegistry nsRegistry = session.getWorkspace().getNamespaceRegistry();
-            Set<String> prefixes = ImmutableSet.of(nsRegistry.getPrefixes());
+            Set<String> prefixes = ImmutableSet.copyOf(nsRegistry.getPrefixes());
             if (!prefixes.contains(prefix)) {
                 nsRegistry.registerNamespace(prefix, uri);
                 session.setNamespacePrefix(prefix, uri);
@@ -248,7 +248,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     }
 
                     String uuid = atts.getValue("jcr:uuid");
-                    String share = atts.getValue("j:share");
+//                    String share = atts.getValue("j:share");
 //                    if (!StringUtils.isEmpty(uuid) && uuidMapping.containsKey(uuid)) {
 //                        child = nodes.peek().clone(session.getNodeByUUID(uuidMapping.get(uuid)), decodedQName);
 //                    } else if (!StringUtils.isEmpty(share)) {

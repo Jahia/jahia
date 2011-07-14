@@ -50,13 +50,14 @@ import javax.servlet.http.HttpSession;
 
 import net.sf.ehcache.CacheManager;
 
+import org.jahia.admin.AbstractAdministrationModule;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.Cache;
+import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
-import org.jahia.admin.AbstractAdministrationModule;
 
 
 /**
@@ -144,33 +145,12 @@ public class ManageStatus extends AbstractAdministrationModule {
         CacheManager ehcacheManager = ((EhCacheProvider) SpringContextSingleton.getBean("ehCacheProvider")).getCacheManager();
         
         if (request.getParameter ("flushAllCaches") != null) {
-            logger.info("Flushing all caches");
-            ServicesRegistry.getInstance().getCacheService().flushAllCaches();
-            for (String cacheName : ehcacheManager.getCacheNames()) {
-                net.sf.ehcache.Cache cache = ehcacheManager.getCache(cacheName);
-                if (cache != null) {
-                    // flush without notifying the other cluster nodes
-                    cache.removeAll(true);
-                    // reset statistics
-                    cache.clearStatistics();
-                }
-            }
+            CacheHelper.flushAllCaches();
         } else if (request.getParameter ("flushOutputCaches") != null) {
-            logger.info("Flushing all HTML output caches");
-            for (String cacheName : ehcacheManager.getCacheNames()) {
-                if (!cacheName.startsWith("HTML")) {
-                    continue;
-                }
-                net.sf.ehcache.Cache cache = ehcacheManager.getCache(cacheName);
-                if (cache != null) {
-                    // flush without notifying the other cluster nodes
-                    cache.removeAll(true);
-                    // reset statistics
-                    cache.clearStatistics();
-                    logger.info("...done flushing {}", cacheName);
-                }
-            }
-        } 
+            CacheHelper.flushOutputCaches();
+        } else if (request.getParameter ("flushHibernateCaches") != null) {
+            CacheHelper.flushHibernateCaches();
+        }
 
         // get the cache factory instance
         CacheService cacheFactory = ServicesRegistry.getInstance().getCacheService();
@@ -188,7 +168,7 @@ public class ManageStatus extends AbstractAdministrationModule {
                 Cache cache = ServicesRegistry.getInstance().getCacheService().getCache (curCacheName);
                 if (cache != null) {
                     logger.info("Flushing cache: " + curCacheName);
-                    cache.flush();
+                    cache.flush(false);
                 }
             }
         }

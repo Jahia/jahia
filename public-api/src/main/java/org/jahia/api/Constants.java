@@ -44,11 +44,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Commmon Jahia constants.
  * User: toto
  * Date: 6 juil. 2007
  * Time: 18:54:16
- * To change this template use File | Settings | File Templates.
  */
 public class Constants {
     public static final String JCR_ACTIVITY = "jcr:activity";

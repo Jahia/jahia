@@ -111,8 +111,6 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     private List<String> noSubNodesImport = Arrays.asList("jnt:importDropBox", "jnt:referencesKeeper");
     private List<String> noUpdateTypes = Arrays.asList("jnt:virtualsitesFolder", "jnt:usersFolder", "jnt:groupsFolder");
-    
-    private boolean importProtectedProperties;
 
     public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, String siteKey) throws IOException {
         this(session, rootPath, null, null, siteKey);
@@ -419,19 +417,17 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     child.addMixin(Constants.JAHIAMIX_CATEGORIZED);
                 }
                 ExtendedPropertyDefinition propDef;
+//                    if (lang != null && attrName.endsWith("_" + lang)) {
+//                        propDef = nodes.peek().getApplicablePropertyDefinition(StringUtils.substringBeforeLast(attrName, "_" + lang));
+//                    } else if (!"jcr:language".equals(attrName) && child.isNodeType("jnt:translation")) {
+//                        propDef = nodes.peek().getApplicablePropertyDefinition(attrName);
+//                    } else {
                 propDef = child.getApplicablePropertyDefinition(attrName);
                 if (propDef == null) {
                     logger.error("Couldn't find definition for property " + attrName);
                     continue;
                 }
-
-                if (!importProtectedProperties && propDef.isProtected()) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Skipping protected property [{}].[{}]", propDef
-                                .getDeclaringNodeType().getName(), propDef.getName());
-                    }
-                    continue;
-                }
+//                    }
 
                 if (propDef.getRequiredType() == PropertyType.REFERENCE || propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
                     if (attrValue.length() > 0) {
@@ -599,9 +595,5 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     public void setReplacements(Map<String, String> replacements) {
         this.replacements = replacements;
-    }
-
-    public void setImportProtectedProperties(boolean importProtectedProperties) {
-        this.importProtectedProperties = importProtectedProperties;
     }
 }

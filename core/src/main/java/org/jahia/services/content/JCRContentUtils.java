@@ -843,7 +843,7 @@ public final class JCRContentUtils {
     public static void importSkeletons(String skeletonLocations, String targetPath,
                                        JCRSessionWrapper session) throws IOException, InvalidSerializedDataException,
             RepositoryException {
-        importSkeletons(skeletonLocations, targetPath, session, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, new HashMap<String,String>());
+        importSkeletons(skeletonLocations, targetPath, session, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, null);
     }
 
     

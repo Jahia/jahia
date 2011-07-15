@@ -431,7 +431,7 @@ public class JCRSessionWrapper implements Session {
 
     public void importXML(String path, InputStream inputStream, int uuidBehavior, boolean noRoot)
             throws IOException, InvalidSerializedDataException, RepositoryException {
-        importXML(path, inputStream, uuidBehavior, noRoot, new HashMap<String,String>());
+        importXML(path, inputStream, uuidBehavior, noRoot, null);
     }
 
     public void importXML(String path, InputStream inputStream, int uuidBehavior, boolean noRoot, Map<String,String> replacements)

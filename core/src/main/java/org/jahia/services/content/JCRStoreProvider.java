@@ -89,7 +89,7 @@ import java.rmi.RemoteException;
 import java.util.*;
 
 /**
- * A store provider to handle different backend stores within a site. There are multiple
+ * A store provider to handle different back-end stores within a site. There are multiple
  * subclasses for the different repository vendors.
  * <p/>
  * The main and default repository in Jahia is based on the {@link JackrabbitStoreProvider},
@@ -420,7 +420,7 @@ public class JCRStoreProvider {
                 if (!rootNode.hasNode("sites")) {
                     rootNode.addMixin("mix:referenceable");
                     
-                    JCRContentUtils.importSkeletons("WEB-INF/etc/repository/root.xml,WEB-INF/etc/repository/root-*.xml", "/", session, ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW, new HashMap<String,String>());
+                    JCRContentUtils.importSkeletons("WEB-INF/etc/repository/root.xml,WEB-INF/etc/repository/root-*.xml", "/", session, ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW, null);
 
                     JahiaPrivilegeRegistry.init(session);
 

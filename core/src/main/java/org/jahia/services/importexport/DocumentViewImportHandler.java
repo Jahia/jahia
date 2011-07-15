@@ -44,8 +44,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -77,7 +79,7 @@ import java.util.regex.Pattern;
  * Time: 16:38:38
  */
 public class DocumentViewImportHandler extends DefaultHandler {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentViewImportHandler.class);
+    private static Logger logger = LoggerFactory.getLogger(DocumentViewImportHandler.class);
 
     private String siteKey;
 
@@ -93,7 +95,9 @@ public class DocumentViewImportHandler extends DefaultHandler {
     private Map<String, String> pathMapping;
     private Map<String, List<String>> references = new HashMap<String, List<String>>();
 
-    private Map<String, String> replacements = new HashMap<String,String>();
+    private Map<Pattern, String> replacements = Collections.emptyMap();
+    
+    private Set<String> propertiesToSkip = Collections.emptySet();
 
     private String currentFilePath = null;
 
@@ -116,6 +120,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
         this(session, rootPath, null, null, siteKey);
     }
 
+    @SuppressWarnings("unchecked")
     public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, File archive, List<String> fileList, String siteKey) throws IOException {
         JCRNodeWrapper node = null;
         try {
@@ -140,6 +145,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
         this.archive = archive;
         this.fileList = fileList;
         this.siteKey = siteKey;
+        setPropertiesToSkip((Set<String>) SpringContextSingleton.getBean("DocumentViewImportHandler.propertiesToSkip"));
     }
 
     public void startPrefixMapping(String prefix, String uri)
@@ -164,9 +170,8 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
         String decodedLocalName = ISO9075.decode(localName);
 
-        for (Map.Entry<String, String> entry : replacements.entrySet()) {
-            Pattern p = Pattern.compile(entry.getKey());
-            decodedLocalName = p.matcher(decodedLocalName).replaceAll(entry.getValue());
+        for (Map.Entry<Pattern, String> entry : replacements.entrySet()) {
+            decodedLocalName = entry.getKey().matcher(decodedLocalName).replaceAll(entry.getValue());
         }
 
         String decodedQName = qName.replace(localName, decodedLocalName);
@@ -383,24 +388,16 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 }
             }
 
-            if (attrName.equals(Constants.JCR_PRIMARYTYPE)) {
-                // nodeType = attrValue; // ?
-            } else if (attrName.equals("j:share")) {
-            } else if (attrName.equals(Constants.JCR_MIXINTYPES)) {
-            } else if (attrName.equals(Constants.SITEID)) {
+            if (propertiesToSkip.contains(attrName)) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Skipping property {}", attrName);
+                }
             } else if (attrName.equals(Constants.JCR_UUID)) {
                 uuidMapping.put(attrValue, child.getIdentifier());
-            } else if (attrName.equals(Constants.LASTPUBLISHED)) {
-            } else if (attrName.equals(Constants.LASTPUBLISHEDBY)) {
-            } else if (attrName.equals(Constants.PUBLISHED)) {
-            } else if (attrName.equals(Constants.JCR_CREATED)) {
-            } else if (attrName.equals(Constants.JCR_CREATEDBY)) {
             } else if (attrName.equals("j:password") && child.hasProperty("j:password")) {
-            } else if (attrName.equals(Constants.JCR_MIMETYPE)) {
             } else {
-                for (Map.Entry<String, String> entry : replacements.entrySet()) {
-                    Pattern p = Pattern.compile(entry.getKey());
-                    attrValue = p.matcher(attrValue).replaceAll(entry.getValue());
+                for (Map.Entry<Pattern, String> entry : replacements.entrySet()) {
+                    attrValue = entry.getKey().matcher(attrValue).replaceAll(entry.getValue());
                 }
 
                 if (attrName.equals("j:privileges") && child.isNodeType("jnt:ace")) {
@@ -417,17 +414,11 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     child.addMixin(Constants.JAHIAMIX_CATEGORIZED);
                 }
                 ExtendedPropertyDefinition propDef;
-//                    if (lang != null && attrName.endsWith("_" + lang)) {
-//                        propDef = nodes.peek().getApplicablePropertyDefinition(StringUtils.substringBeforeLast(attrName, "_" + lang));
-//                    } else if (!"jcr:language".equals(attrName) && child.isNodeType("jnt:translation")) {
-//                        propDef = nodes.peek().getApplicablePropertyDefinition(attrName);
-//                    } else {
                 propDef = child.getApplicablePropertyDefinition(attrName);
                 if (propDef == null) {
                     logger.error("Couldn't find definition for property " + attrName);
                     continue;
                 }
-//                    }
 
                 if (propDef.getRequiredType() == PropertyType.REFERENCE || propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
                     if (attrValue.length() > 0) {
@@ -589,11 +580,22 @@ public class DocumentViewImportHandler extends DefaultHandler {
         this.noUpdateTypes = noUpdateTypes;
     }
 
-    public Map<String, String> getReplacements() {
-        return replacements;
+    public void setReplacements(Map<String, String> replacements) {
+        if (replacements == null || replacements.isEmpty()) {
+            this.replacements = Collections.emptyMap();
+        } else {
+            this.replacements = new HashMap<Pattern, String>(replacements.size());
+            for (Map.Entry<String, String> repl : replacements.entrySet()) {
+               this.replacements.put(Pattern.compile(repl.getKey()), repl.getValue());
+            }
+        }
     }
 
-    public void setReplacements(Map<String, String> replacements) {
-        this.replacements = replacements;
+    public void setPropertiesToSkip(Set<String> propertiesToSkip) {
+        if (propertiesToSkip == null || propertiesToSkip.isEmpty()) {
+            this.propertiesToSkip = Collections.emptySet();
+        } else {
+            this.propertiesToSkip = propertiesToSkip;
+        }
     }
 }

@@ -2,7 +2,9 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
     <bean id="AbstractJCRStoreProvider" class="org.jahia.services.content.JCRStoreProvider" abstract="true"
           init-method="start" destroy-method="stop">
@@ -309,4 +311,21 @@
         <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>
 
+    <util:set id="DocumentViewImportHandler.propertiesToSkip">
+        <value>jcr:primaryType</value>
+        <value>j:share</value>
+        <value>jcr:mixinTypes</value>
+        <value>j:siteId</value>
+        <value>j:lastPublished</value>
+        <value>j:lastPublishedBy</value>
+        <value>j:published</value>
+        <value>jcr:created</value>
+        <value>jcr:createdBy</value>
+        <value>jcr:mimeType</value>
+        <value>jcr:lockOwner</value>
+        <value>jcr:lockIsDeep</value>
+        <value>j:locktoken</value>
+        <value>j:lockTypes</value>
+        <value>j:processId</value>
+    </util:set>
 </beans>

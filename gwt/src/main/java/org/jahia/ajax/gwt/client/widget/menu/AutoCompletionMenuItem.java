@@ -46,7 +46,7 @@ import com.extjs.gxt.ui.client.widget.DataList;
 import com.google.gwt.user.client.Element;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: hollis
  * Date: 17 juil. 2008
  * Time: 14:02:05

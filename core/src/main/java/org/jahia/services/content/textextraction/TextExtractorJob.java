@@ -49,7 +49,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 29 janv. 2008
  * Time: 13:58:32

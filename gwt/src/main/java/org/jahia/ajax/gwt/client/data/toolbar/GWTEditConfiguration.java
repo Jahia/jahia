@@ -44,7 +44,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Mar 29, 2010
  * Time: 4:38:09 PM

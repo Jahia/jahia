@@ -51,10 +51,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 18 juin 2010
  */
 public class JahiaBusinessCalendar implements BusinessCalendar {

@@ -49,10 +49,10 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 15 juil. 2010
  */
 public class AddCacheDependencyTag extends TagSupport {

@@ -62,7 +62,7 @@ import java.util.*;
  * Jahia service for managing content workflow.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 2 févr. 2010
  */
 public class WorkflowService {

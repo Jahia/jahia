@@ -58,7 +58,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Sep 27, 2010
  * Time: 6:27:01 PM

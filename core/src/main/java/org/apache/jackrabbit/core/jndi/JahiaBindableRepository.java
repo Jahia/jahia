@@ -43,7 +43,6 @@ package org.apache.jackrabbit.core.jndi;
 import org.apache.jackrabbit.api.JackrabbitRepository;
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
-import org.apache.jackrabbit.core.RepositoryImpl;
 
 import javax.naming.Reference;
 import javax.jcr.RepositoryException;
@@ -51,7 +50,7 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Jan 19, 2009
  * Time: 4:09:38 PM

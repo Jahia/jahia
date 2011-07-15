@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: Serge Huber
  * Date: 30 juil. 2008
  * Time: 12:30:09

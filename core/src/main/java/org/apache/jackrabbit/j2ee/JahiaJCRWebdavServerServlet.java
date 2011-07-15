@@ -57,7 +57,7 @@ import org.apache.jackrabbit.webdav.WebdavRequest;
 import org.apache.jackrabbit.webdav.WebdavResponse;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 27 déc. 2007
  * Time: 18:44:08

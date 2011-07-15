@@ -69,7 +69,7 @@ import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Sep 12, 2008
  * Time: 11:24:32 AM

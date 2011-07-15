@@ -57,11 +57,9 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: 1/13/11
  * Time: 15:11
- * To change this template use File | Settings | File Templates.
  */
 
 public class TokenizedFormTag extends BodyTagSupport {

@@ -44,7 +44,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Oct 6, 2010
  * Time: 11:37:02 AM

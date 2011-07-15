@@ -57,7 +57,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Aug 19, 2009
  * Time: 12:03:48 PM

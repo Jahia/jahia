@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 27 déc. 2007
  * Time: 18:44:34

@@ -51,7 +51,7 @@ import java.util.Map;
  * Defines the renderer for a choice list.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 18 nov. 2009
  */
 public interface ChoiceListRenderer {

@@ -46,7 +46,7 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Aug 2, 2010
  * Time: 4:06:57 PM

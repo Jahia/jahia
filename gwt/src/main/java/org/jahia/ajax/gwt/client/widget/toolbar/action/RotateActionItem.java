@@ -48,7 +48,7 @@ import org.jahia.ajax.gwt.client.widget.content.ImageRotate;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
 * User: toto
 * Date: Sep 25, 2009
 * Time: 6:59:18 PM

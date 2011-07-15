@@ -47,7 +47,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Sep 3, 2009
  * Time: 3:06:51 PM

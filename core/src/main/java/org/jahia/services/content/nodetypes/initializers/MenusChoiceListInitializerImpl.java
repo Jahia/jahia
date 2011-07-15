@@ -59,11 +59,9 @@ import javax.jcr.query.QueryResult;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: david
  * Date: Dec 7, 2010
  * Time: 9:49:38 AM
- * To change this template use File | Settings | File Templates.
  */
 public class MenusChoiceListInitializerImpl implements ChoiceListInitializer{
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(MenusChoiceListInitializerImpl.class);

@@ -48,7 +48,7 @@ import com.extjs.gxt.ui.client.dnd.StatusProxy;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Aug 24, 2009
  * Time: 11:12:43 AM

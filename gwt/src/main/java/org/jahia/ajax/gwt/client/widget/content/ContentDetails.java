@@ -74,7 +74,7 @@ import java.util.*;
 
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author rfelden
  * @version 23 juin 2008 - 16:15:46

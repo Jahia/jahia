@@ -49,7 +49,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 import javax.jcr.RepositoryException;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Dec 3, 2009
  * Time: 7:11:50 PM

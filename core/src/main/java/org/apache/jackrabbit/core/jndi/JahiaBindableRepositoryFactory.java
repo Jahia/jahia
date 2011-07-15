@@ -49,8 +49,6 @@ import javax.naming.Reference;
 import javax.naming.spi.ObjectFactory;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 /**
  * <code>JahiaBindableRepositoryFactory</code> is an object factory that when given

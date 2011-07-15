@@ -56,7 +56,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Feb 1, 2010
  * Time: 5:58:37 PM

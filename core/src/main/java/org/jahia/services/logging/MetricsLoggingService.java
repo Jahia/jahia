@@ -48,7 +48,7 @@ import org.slf4j.profiler.Profiler;
  * Or to profile some operations.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 24 nov. 2009
  */
 public interface MetricsLoggingService {

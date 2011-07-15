@@ -74,7 +74,7 @@ import java.util.*;
  * retrieves users from a JCR backend.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 7 juil. 2009
  */
 public class JCRUserManagerProvider extends JahiaUserManagerProvider implements ServletContextAware, ApplicationListener<ApplicationEvent> {

@@ -63,10 +63,10 @@ import java.util.ArrayList;
 
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 24 août 2009
  */
 public class EditLinker implements Linker {

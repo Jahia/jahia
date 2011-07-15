@@ -49,7 +49,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 15 janv. 2008
  * Time: 19:57:37

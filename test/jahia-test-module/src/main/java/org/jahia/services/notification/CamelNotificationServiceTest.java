@@ -51,10 +51,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 28 juin 2010
  */
 public class CamelNotificationServiceTest  extends TestCase {

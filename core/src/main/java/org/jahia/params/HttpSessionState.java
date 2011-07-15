@@ -50,7 +50,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.collections.iterators.EnumerationIterator;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: loom
  * Date: Mar 6, 2005
  * Time: 3:59:01 PM

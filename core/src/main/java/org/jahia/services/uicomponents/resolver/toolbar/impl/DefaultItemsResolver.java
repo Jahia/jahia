@@ -47,7 +47,7 @@ import org.jahia.services.uicomponents.bean.toolbar.Property;
 import org.jahia.services.uicomponents.resolver.toolbar.ItemsResolver;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Sep 25, 2009
  * Time: 12:22:08 PM

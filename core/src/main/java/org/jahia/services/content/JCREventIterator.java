@@ -45,7 +45,7 @@ import javax.jcr.observation.EventIterator;
 import java.util.Iterator;
 
 /**
-* Created by IntelliJ IDEA.
+* 
 * User: toto
 * Date: Jan 25, 2010
 * Time: 1:59:57 PM

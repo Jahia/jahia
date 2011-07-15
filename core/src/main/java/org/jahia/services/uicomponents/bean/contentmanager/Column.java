@@ -45,7 +45,7 @@ import org.jahia.services.uicomponents.bean.Visibility;
 import java.io.Serializable;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Apr 12, 2010
  * Time: 3:03:45 PM

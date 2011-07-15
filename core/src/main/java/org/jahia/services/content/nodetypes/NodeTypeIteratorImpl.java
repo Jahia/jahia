@@ -48,7 +48,7 @@ import javax.jcr.Node;
 import java.util.Iterator;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Sep 21, 2009
  * Time: 5:32:24 PM

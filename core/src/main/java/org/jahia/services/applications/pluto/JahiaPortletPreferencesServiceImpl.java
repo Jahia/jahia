@@ -55,7 +55,7 @@ import javax.jcr.RepositoryException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: loom
  * Date: Nov 18, 2008
  * Time: 2:24:14 PM

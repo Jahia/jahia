@@ -56,11 +56,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: 3/1/11
  * Time: 14:25
- * To change this template use File | Settings | File Templates.
  */
 public class JCRNodeIconTag extends AbstractJCRTag {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRNodeTypeTag.class);

@@ -66,7 +66,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: Serge Huber
  * Date: 15 juil. 2008
  * Time: 15:15:36

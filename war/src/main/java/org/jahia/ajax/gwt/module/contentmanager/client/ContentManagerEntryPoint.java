@@ -58,7 +58,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author rfelden
  * @version 10 juil. 2008 - 16:58:16

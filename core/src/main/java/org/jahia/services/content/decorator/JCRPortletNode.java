@@ -53,7 +53,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Dec 3, 2008
  * Time: 5:55:00 PM

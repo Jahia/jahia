@@ -44,7 +44,7 @@ package org.jahia.services.workflow;
  * Workflow action item.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 2 févr. 2010
  */
 public class WorkflowAction extends WorkflowBase {

@@ -49,10 +49,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 12 oct. 2010
  */
 public class ModuleGeneratorQueue implements InitializingBean {

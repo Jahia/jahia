@@ -43,7 +43,7 @@ package org.jahia.ajax.gwt.client.widget.content.util;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Aug 21, 2009
  * Time: 2:03:39 PM

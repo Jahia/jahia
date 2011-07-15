@@ -46,7 +46,7 @@ import java.util.Map;
  * Service implementation for managing different renderer implementations.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 17 nov. 2009
  */
 public class ChoiceListRendererService {

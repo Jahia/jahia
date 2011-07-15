@@ -51,7 +51,7 @@ import java.io.IOException;
 import org.apache.taglibs.standard.tag.common.core.Util;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Dec 4, 2009
  * Time: 11:32:03 AM

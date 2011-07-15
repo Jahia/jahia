@@ -47,7 +47,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: loom
  * Date: Nov 20, 2008
  * Time: 3:56:47 PM

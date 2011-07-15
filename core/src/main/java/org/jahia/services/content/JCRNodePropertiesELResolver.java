@@ -53,10 +53,10 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 13 nov. 2009
  */
 public class JCRNodePropertiesELResolver extends ELResolver {

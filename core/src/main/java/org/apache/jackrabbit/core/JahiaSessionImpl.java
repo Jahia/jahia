@@ -41,7 +41,6 @@
 package org.apache.jackrabbit.core;
 
 import org.apache.jackrabbit.core.config.WorkspaceConfig;
-import org.apache.jackrabbit.core.security.AccessManager;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.authentication.AuthContext;
 

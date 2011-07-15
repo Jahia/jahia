@@ -60,7 +60,7 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: May 11, 2010
  * Time: 12:08:34 PM

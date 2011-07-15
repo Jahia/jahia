@@ -43,7 +43,7 @@ package org.jahia.hibernate.dialect;
 import java.sql.Types;
 
 /**
- * Created by IntelliJ IDEA. User: rincevent Date: 6 juil. 2007 Time: 17:42:31 To change this template use File |
+ *  User: rincevent Date: 6 juil. 2007 Time: 17:42:31 To change this template use File |
  * Settings | File Templates.
  */
 public class SQLServerDialect extends org.hibernate.dialect.SQLServerDialect {

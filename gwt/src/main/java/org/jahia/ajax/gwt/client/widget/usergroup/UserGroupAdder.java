@@ -46,7 +46,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Nov 5, 2008
  * Time: 2:41:30 PM

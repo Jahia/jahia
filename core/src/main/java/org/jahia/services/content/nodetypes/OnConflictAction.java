@@ -41,7 +41,7 @@
 package org.jahia.services.content.nodetypes;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Feb 4, 2010
  * Time: 8:24:09 PM

@@ -54,7 +54,7 @@ import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 import java.util.Date;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: May 10, 2010
  * Time: 7:39:18 PM

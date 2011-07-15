@@ -45,11 +45,9 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import java.io.Serializable;
 
 /**
-* Created by IntelliJ IDEA.
 * User: toto
 * Date: 3/30/11
 * Time: 20:35
-* To change this template use File | Settings | File Templates.
 */
 public class SiteInfo implements Serializable {
 

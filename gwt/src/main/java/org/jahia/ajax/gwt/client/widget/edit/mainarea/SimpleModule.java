@@ -59,7 +59,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Aug 19, 2009
  * Time: 12:25:19 PM

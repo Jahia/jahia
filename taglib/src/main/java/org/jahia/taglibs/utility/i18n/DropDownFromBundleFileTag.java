@@ -52,7 +52,7 @@ import java.util.TreeSet;
 import java.io.IOException;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: rincevent
  * Date: 19 févr. 2009
  * Time: 17:46:51

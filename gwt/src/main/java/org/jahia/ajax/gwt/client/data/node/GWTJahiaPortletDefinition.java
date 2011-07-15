@@ -44,7 +44,7 @@ import com.extjs.gxt.ui.client.data.BaseModel;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Nov 28, 2008
  * Time: 6:14:28 PM

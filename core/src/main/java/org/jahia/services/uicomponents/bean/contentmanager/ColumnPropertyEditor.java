@@ -47,7 +47,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditorSupport;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: May 10, 2010
  * Time: 3:15:24 PM

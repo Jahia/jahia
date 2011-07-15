@@ -66,7 +66,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Sep 29, 2010
  * Time: 11:46:57 AM

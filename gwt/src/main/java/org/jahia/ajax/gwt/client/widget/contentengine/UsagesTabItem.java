@@ -60,7 +60,7 @@ import org.jahia.ajax.gwt.client.widget.content.NodeUsagesGrid;
 import java.util.Arrays;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Jan 6, 2010
  * Time: 7:44:45 PM

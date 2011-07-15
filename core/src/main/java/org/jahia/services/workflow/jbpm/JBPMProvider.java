@@ -82,7 +82,7 @@ import java.util.*;
  * Implementation of the {@link WorkflowProvider} that uses JBoss jBPM engine.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 2 févr. 2010
  */
 public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEventGeneratorInterceptor.JBPMEventListener {

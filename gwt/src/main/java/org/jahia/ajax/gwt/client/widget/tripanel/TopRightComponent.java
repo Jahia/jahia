@@ -45,7 +45,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author rfelden
  * @version 19 juin 2008 - 10:43:58

@@ -58,7 +58,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Nov 26, 2008
  * Time: 2:23:02 PM

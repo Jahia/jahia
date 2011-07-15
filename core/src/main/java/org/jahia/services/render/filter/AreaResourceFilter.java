@@ -47,11 +47,9 @@ import org.jahia.services.render.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Created by IntelliJ IDEA.
  * User: david
  * Date: 1/17/11
  * Time: 4:47 PM
- * To change this template use File | Settings | File Templates.
  */
 public class AreaResourceFilter extends AbstractFilter {
 

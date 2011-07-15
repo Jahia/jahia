@@ -52,7 +52,7 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Feb 24, 2010
  * Time: 5:09:39 PM

@@ -51,7 +51,7 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Dec 21, 2009
  * Time: 11:12:37 AM

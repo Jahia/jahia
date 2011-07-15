@@ -66,7 +66,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author rfelden
  * @version 19 juin 2008 - 15:57:08

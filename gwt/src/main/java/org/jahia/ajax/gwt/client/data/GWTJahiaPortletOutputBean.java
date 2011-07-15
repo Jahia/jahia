@@ -45,7 +45,7 @@ import java.util.ArrayList;
 import java.io.Serializable;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: loom
  * Date: Dec 8, 2008
  * Time: 2:31:45 PM

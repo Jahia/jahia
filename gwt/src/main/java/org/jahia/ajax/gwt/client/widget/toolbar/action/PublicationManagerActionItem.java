@@ -51,7 +51,7 @@ import org.jahia.ajax.gwt.client.widget.publication.PublicationManagerEngine;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Apr 29, 2010
  * Time: 9:41:53 AM

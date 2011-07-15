@@ -48,7 +48,7 @@ import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.webdav.DavResource;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 12 juil. 2007
  * Time: 20:38:16

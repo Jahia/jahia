@@ -48,7 +48,7 @@ import javax.jcr.Node;
 import java.util.Arrays;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Jul 24, 2008
  * Time: 4:03:31 PM

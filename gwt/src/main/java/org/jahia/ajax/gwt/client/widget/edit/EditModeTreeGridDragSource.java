@@ -48,7 +48,7 @@ import com.extjs.gxt.ui.client.event.DragListener;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Aug 24, 2009
  * Time: 11:12:43 AM

@@ -56,10 +56,10 @@ import javax.jcr.Value;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 11 mai 2010
  */
 public class ComponentLinkerChoiceListInitializer implements ChoiceListInitializer {

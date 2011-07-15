@@ -41,10 +41,10 @@
 package org.jahia.services.content.rules;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 28 oct. 2009
  */
 public class JobRuleExecution {

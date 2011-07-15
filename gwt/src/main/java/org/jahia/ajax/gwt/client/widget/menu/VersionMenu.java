@@ -45,7 +45,7 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.google.gwt.user.client.Element;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: hollis
  * Date: 27 ao�t 2008
  * Time: 11:44:37

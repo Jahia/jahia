@@ -43,7 +43,7 @@
 import java.io.Serializable;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: Rincevent
  * Date: 25 avr. 2005
  * Time: 16:47:40

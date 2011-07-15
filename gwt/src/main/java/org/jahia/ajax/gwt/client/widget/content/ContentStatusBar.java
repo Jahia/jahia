@@ -45,7 +45,7 @@ import org.jahia.ajax.gwt.client.widget.tripanel.MyStatusBar;
 import com.extjs.gxt.ui.client.widget.Component;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author rfelden
  * @version 23 juin 2008 - 17:35:03

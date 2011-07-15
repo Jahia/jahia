@@ -43,7 +43,7 @@ package org.jahia.data.applications;
 import org.jahia.content.ObjectKey;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: 26 janv. 2007
  * Time: 16:26:42

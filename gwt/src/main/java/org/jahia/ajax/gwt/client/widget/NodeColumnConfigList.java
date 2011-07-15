@@ -71,7 +71,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Apr 22, 2010
  * Time: 2:54:17 PM

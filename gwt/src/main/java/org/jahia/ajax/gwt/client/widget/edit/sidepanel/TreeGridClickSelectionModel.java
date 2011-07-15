@@ -52,7 +52,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import java.util.List;
 
 /**
-* Created by IntelliJ IDEA.
+* 
 * User: toto
 * Date: Oct 27, 2010
 * Time: 2:09:55 PM

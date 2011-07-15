@@ -54,7 +54,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: May 26, 2008
  * Time: 10:59:42 AM

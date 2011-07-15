@@ -49,7 +49,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaPortletOutputBean;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: loom
  * Date: Dec 4, 2008
  * Time: 3:09:02 PM

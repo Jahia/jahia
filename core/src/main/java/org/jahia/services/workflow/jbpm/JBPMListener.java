@@ -49,7 +49,7 @@ import javax.jcr.RepositoryException;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Feb 4, 2010
  * Time: 8:04:51 PM

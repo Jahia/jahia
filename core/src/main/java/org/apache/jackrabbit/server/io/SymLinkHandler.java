@@ -48,7 +48,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 14 janv. 2008
  * Time: 17:59:02

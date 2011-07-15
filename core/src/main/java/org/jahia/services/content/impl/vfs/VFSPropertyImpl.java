@@ -56,7 +56,7 @@ import java.util.Calendar;
 import java.math.BigDecimal;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Apr 23, 2008
  * Time: 11:46:28 AM

@@ -53,11 +53,9 @@ import javax.jcr.RepositoryException;
 import java.util.Collection;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: 3/30/11
  * Time: 18:01
- * To change this template use File | Settings | File Templates.
  */
 public class JahiaRepositoryConfig extends RepositoryConfig {
     private RepositoryConfig config;

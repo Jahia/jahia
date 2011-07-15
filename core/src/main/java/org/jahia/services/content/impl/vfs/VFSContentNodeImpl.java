@@ -68,7 +68,7 @@ import java.util.List;
 import java.math.BigDecimal;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Jul 24, 2008
  * Time: 3:54:17 PM

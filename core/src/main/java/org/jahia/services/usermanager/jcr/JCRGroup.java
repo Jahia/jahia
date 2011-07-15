@@ -61,7 +61,7 @@ import java.util.*;
  * Implementation of the JahiaGroup interface that uses the JCR API for storage
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 8 juil. 2009
  */
 public class JCRGroup extends JahiaGroup implements JCRPrincipal {

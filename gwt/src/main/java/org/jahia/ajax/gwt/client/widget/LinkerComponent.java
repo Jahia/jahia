@@ -41,7 +41,7 @@
 package org.jahia.ajax.gwt.client.widget;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Feb 4, 2010
  * Time: 1:01:36 PM

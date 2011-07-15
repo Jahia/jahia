@@ -49,7 +49,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
 * User: toto
 * Date: Sep 25, 2009
 * Time: 6:58:45 PM

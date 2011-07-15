@@ -55,7 +55,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 5 juin 2006
  * Time: 17:57:36

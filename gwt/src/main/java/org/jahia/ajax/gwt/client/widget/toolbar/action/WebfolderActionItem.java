@@ -53,7 +53,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
 * User: toto
 * Date: Sep 25, 2009
 * Time: 6:56:52 PM

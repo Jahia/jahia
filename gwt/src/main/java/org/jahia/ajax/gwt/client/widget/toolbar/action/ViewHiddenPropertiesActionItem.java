@@ -45,11 +45,9 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 
 /**
- * Created by IntelliJ IDEA.
  * User: David
  * Date: 25/04/11
  * Time: 16:03
- * To change this template use File | Settings | File Templates.
  */
 public class ViewHiddenPropertiesActionItem extends BaseActionItem {
 

@@ -43,7 +43,7 @@ package org.apache.jackrabbit.j2ee;
 import org.apache.jackrabbit.webdav.AbstractLocatorFactory;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 19 févr. 2008
  * Time: 16:47:37

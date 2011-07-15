@@ -52,7 +52,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Dec 31, 2009
  * Time: 11:46:21 AM

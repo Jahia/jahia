@@ -58,10 +58,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 27 oct. 2009
  */
 public class OptionTag extends BodyTagSupport implements ParamParent {

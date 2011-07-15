@@ -48,7 +48,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Aug 21, 2009
  * Time: 11:31:37 AM

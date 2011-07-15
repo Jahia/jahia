@@ -46,7 +46,7 @@ import java.util.Date;
  * Task comment item.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 29 avr. 2010
  */
 public class WorkflowTaskComment {

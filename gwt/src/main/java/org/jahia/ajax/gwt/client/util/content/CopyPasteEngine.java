@@ -46,7 +46,7 @@ import org.jahia.ajax.gwt.client.widget.toolbar.action.ClipboardActionItem;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author rfelden
  * @version 8 juil. 2008 - 17:13:07

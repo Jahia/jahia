@@ -54,10 +54,10 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 9 févr. 2010
  */
 public abstract class ViewStatusActionItem extends BaseActionItem {

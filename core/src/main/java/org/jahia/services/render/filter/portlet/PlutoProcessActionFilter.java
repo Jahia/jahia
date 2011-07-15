@@ -66,7 +66,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Dec 21, 2009
  * Time: 3:37:12 PM

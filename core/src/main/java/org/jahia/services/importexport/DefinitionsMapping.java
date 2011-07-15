@@ -54,7 +54,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by IntelliJ IDEA. User: toto Date: Oct 29, 2009 Time: 7:09:03 PM 
+ *  User: toto Date: Oct 29, 2009 Time: 7:09:03 PM 
  */
 public class DefinitionsMapping {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(LegacyImportHandler.class);

@@ -54,7 +54,7 @@ import javax.jcr.version.Version;
 import java.util.Calendar;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Mar 16, 2009
  * Time: 3:51:32 PM

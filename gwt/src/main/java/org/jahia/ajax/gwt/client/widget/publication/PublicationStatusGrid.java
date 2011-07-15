@@ -60,7 +60,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Aug 4, 2010
  * Time: 6:30:03 PM

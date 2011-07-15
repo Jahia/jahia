@@ -44,7 +44,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
 * User: toto
 * Date: Sep 25, 2009
 * Time: 6:58:25 PM

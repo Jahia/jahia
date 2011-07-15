@@ -45,7 +45,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import javax.jcr.RepositoryException;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Dec 3, 2008
  * Time: 5:55:11 PM

@@ -57,7 +57,7 @@
 //
 //
 ///**
-// * Created by IntelliJ IDEA.
+// * 
 // * User: toto
 // * Date: Feb 11, 2009
 // * Time: 3:07:28 PM

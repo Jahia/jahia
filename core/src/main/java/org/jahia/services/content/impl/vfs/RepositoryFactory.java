@@ -47,7 +47,7 @@ import javax.naming.Context;
 import java.util.Hashtable;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Apr 23, 2008
  * Time: 11:46:12 AM

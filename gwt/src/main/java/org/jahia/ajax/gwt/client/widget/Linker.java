@@ -47,10 +47,10 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 23 sept. 2009
  */
 public interface Linker {

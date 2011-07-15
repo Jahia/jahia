@@ -63,7 +63,7 @@ import java.util.*;
  * Choice list initializer ro provide a selection of available templates.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 17 nov. 2009
  */
 public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer {

@@ -49,10 +49,10 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 6 juil. 2009
  */
 public class JCRFrozenNode extends JCRNodeDecorator {

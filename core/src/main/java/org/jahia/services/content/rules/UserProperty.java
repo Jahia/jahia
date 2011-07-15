@@ -41,7 +41,7 @@
 package org.jahia.services.content.rules;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 14 janv. 2008
  * Time: 19:56:21

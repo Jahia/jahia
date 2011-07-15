@@ -43,7 +43,7 @@ package org.jahia.ajax.gwt.client.widget.form;
 import com.extjs.gxt.ui.client.store.ListStore;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: hollis
  * Date: 23 juil. 2008
  * Time: 11:31:18

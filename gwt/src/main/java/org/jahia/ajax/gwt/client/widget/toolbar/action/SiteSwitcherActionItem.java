@@ -61,7 +61,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Feb 4, 2010
  * Time: 4:19:51 PM

@@ -47,7 +47,7 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Apr 23, 2008
  * Time: 11:46:46 AM

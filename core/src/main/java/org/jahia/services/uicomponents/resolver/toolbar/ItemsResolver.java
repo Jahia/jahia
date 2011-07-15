@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Sep 25, 2009
  * Time: 11:52:01 AM

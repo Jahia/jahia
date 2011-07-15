@@ -56,7 +56,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 4 janv. 2008
  * Time: 14:02:49

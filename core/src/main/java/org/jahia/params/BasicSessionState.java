@@ -47,7 +47,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: loom
  * Date: Mar 6, 2005
  * Time: 3:53:33 PM

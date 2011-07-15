@@ -56,7 +56,7 @@ import java.util.Collection;
  * Mail session used in the jBPM processes.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 14 sept. 2010
  */
 public class JBPMMailSession implements MailSession, DisposableBean {

@@ -47,7 +47,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Sep 17, 2010
  * Time: 2:13:35 PM

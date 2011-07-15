@@ -66,7 +66,7 @@ import java.util.*;
  * JCR-based implementation of the Group manager provider interface
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 8 juil. 2009
  */
 public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {

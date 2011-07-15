@@ -49,7 +49,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Jul 16, 2009
  * Time: 3:19:26 PM

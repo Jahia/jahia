@@ -47,7 +47,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Mar 11, 2010
  * Time: 5:32:56 PM

@@ -46,7 +46,7 @@ import org.jahia.services.content.decorator.JCRNodeDecorator;
 import javax.jcr.RepositoryException;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: jahia
  * Date: 21 ao�t 2008
  * Time: 10:30:57

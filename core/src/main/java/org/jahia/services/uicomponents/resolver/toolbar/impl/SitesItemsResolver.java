@@ -53,7 +53,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Sep 25, 2009
  * Time: 12:12:47 PM

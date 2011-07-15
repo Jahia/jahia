@@ -47,7 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 4 janv. 2008
  * Time: 14:08:56

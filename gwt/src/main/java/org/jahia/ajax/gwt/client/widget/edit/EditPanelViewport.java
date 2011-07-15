@@ -45,7 +45,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Sep 7, 2009
  * Time: 12:22:07 PM

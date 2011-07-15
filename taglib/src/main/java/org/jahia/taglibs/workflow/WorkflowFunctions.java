@@ -45,10 +45,10 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.workflow.WorkflowService;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 21 mai 2010
  */
 public class WorkflowFunctions {

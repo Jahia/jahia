@@ -44,7 +44,7 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: Serge Huber
  * Date: Jul 12, 2005
  * Time: 3:31:00 PM

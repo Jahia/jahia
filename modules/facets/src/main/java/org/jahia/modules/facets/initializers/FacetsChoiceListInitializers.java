@@ -54,11 +54,9 @@ import javax.jcr.nodetype.PropertyDefinition;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: david
  * Date: Apr 19, 2010
  * Time: 3:03:45 PM
- * To change this template use File | Settings | File Templates.
  */
 public class FacetsChoiceListInitializers implements ModuleChoiceListInitializer {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(FacetsChoiceListInitializers.class);

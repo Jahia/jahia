@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Jun 14, 2010
  * Time: 7:17:52 PM

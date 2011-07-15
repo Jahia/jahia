@@ -80,7 +80,7 @@ import java.util.regex.Pattern;
  * Module content caching filter.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 8 janv. 2010
  */
 public class AggregateCacheFilter extends AbstractFilter implements ApplicationListener<ApplicationEvent> {

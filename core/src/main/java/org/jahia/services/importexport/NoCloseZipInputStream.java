@@ -46,7 +46,7 @@ import java.io.InputStream;
 import java.io.IOException;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 15 févr. 2008
  * Time: 14:54:08

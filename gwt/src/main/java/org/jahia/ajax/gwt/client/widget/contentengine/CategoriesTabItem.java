@@ -75,7 +75,7 @@ import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Jan 6, 2010
  * Time: 7:44:45 PM

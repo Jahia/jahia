@@ -44,7 +44,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Apr 29, 2010
  * Time: 9:41:53 AM

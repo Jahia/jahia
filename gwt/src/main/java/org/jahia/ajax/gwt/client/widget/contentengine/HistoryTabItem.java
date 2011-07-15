@@ -44,7 +44,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: loom
  * Date: Oct 5, 2010
  * Time: 5:41:37 PM

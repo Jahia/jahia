@@ -43,10 +43,10 @@ package org.jahia.services.content;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 5/4/11
  */
 public interface NameGenerationHelper {

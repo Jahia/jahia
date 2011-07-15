@@ -57,7 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Mar 18, 2009
  * Time: 4:26:42 PM

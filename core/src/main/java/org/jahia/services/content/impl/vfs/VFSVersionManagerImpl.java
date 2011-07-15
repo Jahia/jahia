@@ -49,7 +49,7 @@ import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: loom
  * Date: Aug 12, 2010
  * Time: 5:26:34 PM

@@ -50,7 +50,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: hollis
  * Date: 27 oct. 2005
  * Time: 15:21:14

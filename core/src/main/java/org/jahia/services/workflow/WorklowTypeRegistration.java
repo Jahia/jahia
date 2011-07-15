@@ -45,10 +45,10 @@ import org.apache.log4j.Logger;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 22/12/10
  */
 public class WorklowTypeRegistration {

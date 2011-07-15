@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: david
  * Date: May 14, 2010
  * Time: 3:13:55 PM

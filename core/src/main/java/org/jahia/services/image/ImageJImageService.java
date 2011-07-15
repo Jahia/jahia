@@ -54,11 +54,9 @@ import javax.jcr.RepositoryException;
 import java.io.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: 3/11/11
  * Time: 11:33
- * To change this template use File | Settings | File Templates.
  */
 public class ImageJImageService  implements JahiaImageService {
     private static ImageJImageService instance;

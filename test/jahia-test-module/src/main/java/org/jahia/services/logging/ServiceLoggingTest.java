@@ -64,10 +64,10 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * 
  * @author : rincevent
- * @since : JAHIA 6.1 Created : 27 nov. 2009
+ * @since JAHIA 6.5 Created : 27 nov. 2009
  */
 public class ServiceLoggingTest {
     private static transient Logger logger = Logger.getLogger(ServiceLoggingTest.class);

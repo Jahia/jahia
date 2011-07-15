@@ -63,7 +63,7 @@ import com.google.gwt.user.client.Element;
 import java.util.Arrays;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Aug 18, 2009
  * Time: 7:25:48 PM

@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Mar 25, 2010
  * Time: 8:35:48 PM

@@ -55,7 +55,7 @@ import java.util.LinkedHashMap;
  * Represents a single item in the choice list.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 17 nov. 2009
  */
 public class ChoiceListValue implements Comparable<ChoiceListValue> {

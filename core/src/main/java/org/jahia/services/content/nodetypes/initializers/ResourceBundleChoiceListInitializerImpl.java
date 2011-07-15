@@ -58,7 +58,7 @@ import java.util.*;
  * Choice list initializer, based on the resource bundle values lookup.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 17 nov. 2009
  */
 public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListRenderer implements ChoiceListInitializer {

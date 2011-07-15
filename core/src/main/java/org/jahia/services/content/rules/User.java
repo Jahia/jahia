@@ -52,7 +52,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 14 janv. 2008
  * Time: 19:55:10

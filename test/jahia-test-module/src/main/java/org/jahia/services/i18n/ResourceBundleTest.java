@@ -46,7 +46,7 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Jan 25, 2010
  * Time: 12:35:43 PM

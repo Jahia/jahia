@@ -50,7 +50,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Dec 31, 2008
  * Time: 3:24:55 PM

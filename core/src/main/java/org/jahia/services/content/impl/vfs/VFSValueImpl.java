@@ -46,7 +46,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: loom
  * Date: Aug 12, 2010
  * Time: 3:04:33 PM

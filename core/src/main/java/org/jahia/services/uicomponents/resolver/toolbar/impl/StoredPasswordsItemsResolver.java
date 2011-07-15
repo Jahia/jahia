@@ -52,7 +52,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Sep 25, 2009
  * Time: 11:49:24 AM

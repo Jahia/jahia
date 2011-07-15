@@ -45,7 +45,7 @@ import java.io.Serializable;
 
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Feb 3, 2010
  * Time: 2:20:07 PM

@@ -63,7 +63,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author rfelden
  * @version 7 juil. 2008 - 14:45:03

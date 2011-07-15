@@ -48,7 +48,7 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Jan 6, 2010
  * Time: 7:30:49 PM

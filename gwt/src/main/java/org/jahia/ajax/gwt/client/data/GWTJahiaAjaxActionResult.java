@@ -47,7 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: hollis
  * Date: 20 ao�t 2008
  * Time: 12:26:53

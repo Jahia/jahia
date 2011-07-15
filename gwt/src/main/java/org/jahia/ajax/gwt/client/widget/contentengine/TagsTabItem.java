@@ -79,7 +79,7 @@ import org.jahia.ajax.gwt.client.widget.form.AutoCompleteComboBox;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: david
  * Date: Jun 30, 2010
  * Time: 10:04:47 AM

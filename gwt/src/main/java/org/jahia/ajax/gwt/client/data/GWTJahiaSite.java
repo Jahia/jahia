@@ -46,7 +46,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: rincevent
  * Date: 8 janv. 2009
  * Time: 16:43:36

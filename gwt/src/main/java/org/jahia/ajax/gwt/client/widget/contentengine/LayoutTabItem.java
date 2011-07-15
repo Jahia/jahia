@@ -65,7 +65,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Jan 6, 2010
  * Time: 7:52:00 PM

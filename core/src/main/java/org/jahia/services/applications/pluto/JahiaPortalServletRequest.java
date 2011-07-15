@@ -48,7 +48,7 @@ import org.jahia.data.applications.EntryPointInstance;
 import org.apache.pluto.container.PortletWindow;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: Serge Huber
  * Date: 30 juil. 2008
  * Time: 12:27:46

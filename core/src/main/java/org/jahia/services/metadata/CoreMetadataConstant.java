@@ -44,7 +44,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: hollis
  * Date: 26 oct. 2005
  * Time: 12:43:45

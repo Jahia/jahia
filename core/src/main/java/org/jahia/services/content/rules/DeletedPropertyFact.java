@@ -45,7 +45,7 @@ import org.drools.spi.KnowledgeHelper;
 import javax.jcr.RepositoryException;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 17 janv. 2008
  * Time: 15:20:31

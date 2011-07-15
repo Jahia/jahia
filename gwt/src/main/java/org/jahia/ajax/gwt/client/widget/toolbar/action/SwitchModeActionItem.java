@@ -47,7 +47,7 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Jan 8, 2010
  * Time: 2:09:40 PM

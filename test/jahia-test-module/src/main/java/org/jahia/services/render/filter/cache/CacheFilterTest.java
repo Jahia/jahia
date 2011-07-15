@@ -83,10 +83,10 @@ import javax.jcr.RepositoryException;
 
 import static org.junit.Assert.*;
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 12 janv. 2010
  */
 public class CacheFilterTest {

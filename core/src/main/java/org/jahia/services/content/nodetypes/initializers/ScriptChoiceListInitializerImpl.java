@@ -64,7 +64,7 @@ import java.util.Map;
  * Evaluates the specified script to get the list of values.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 17 nov. 2009
  */
 public class ScriptChoiceListInitializerImpl implements ChoiceListInitializer {

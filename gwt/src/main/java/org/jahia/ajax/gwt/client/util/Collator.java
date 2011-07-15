@@ -41,10 +41,10 @@
 package org.jahia.ajax.gwt.client.util;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 19 oct. 2010
  */
 public class Collator {

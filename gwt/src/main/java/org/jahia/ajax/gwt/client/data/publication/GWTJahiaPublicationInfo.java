@@ -49,7 +49,7 @@ import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Sep 4, 2009
  * Time: 12:00:28 PM

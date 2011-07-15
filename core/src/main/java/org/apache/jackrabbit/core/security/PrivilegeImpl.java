@@ -45,11 +45,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
-* Created by IntelliJ IDEA.
 * User: toto
 * Date: 1/6/11
 * Time: 13:39
-* To change this template use File | Settings | File Templates.
 */
 public class PrivilegeImpl implements Privilege {
     private String prefixedName;

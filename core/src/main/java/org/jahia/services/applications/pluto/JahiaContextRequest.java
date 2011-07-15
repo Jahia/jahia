@@ -53,7 +53,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import java.security.Principal;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: Serge Huber
  * Date: 29 juil. 2008
  * Time: 14:48:33

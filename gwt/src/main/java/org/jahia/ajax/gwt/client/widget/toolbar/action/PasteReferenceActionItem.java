@@ -61,7 +61,7 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
 * User: toto
 * Date: Sep 25, 2009
 * Time: 6:57:42 PM

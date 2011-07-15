@@ -67,7 +67,7 @@ import org.jahia.ajax.gwt.client.widget.toolbar.action.PublishAllActionItem;
 import java.util.Date;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Mar 2, 2010
  * Time: 9:32:54 AM

@@ -57,7 +57,7 @@ import java.util.*;
  * Choice list initializer to provide a selection of all users
  *
  * @author : toto
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 17 nov. 2009
  */
 public class UsersChoiceListInitializerImpl implements ChoiceListInitializer {

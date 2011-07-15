@@ -50,7 +50,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Jun 14, 2010
  * Time: 7:17:44 PM

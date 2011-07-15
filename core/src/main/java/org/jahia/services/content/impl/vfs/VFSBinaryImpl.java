@@ -49,7 +49,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: loom
  * Date: Aug 12, 2010
  * Time: 3:21:58 PM

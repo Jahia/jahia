@@ -50,7 +50,7 @@ import java.util.*;
 import java.security.Principal;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 13 mars 2006
  * Time: 16:44:20

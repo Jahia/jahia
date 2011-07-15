@@ -51,7 +51,7 @@ import java.util.Date;
  * Represents single workflow variable.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 29 avr. 2010
  */
 public class WorkflowVariable implements Serializable {

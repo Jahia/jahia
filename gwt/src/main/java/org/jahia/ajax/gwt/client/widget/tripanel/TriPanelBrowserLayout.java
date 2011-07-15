@@ -51,7 +51,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: rfelden
  * Date: 28 ao�t 2008
  * Time: 11:54:43

@@ -45,7 +45,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 14 mars 2008
  * Time: 18:43:40

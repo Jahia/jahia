@@ -70,7 +70,7 @@ import java.util.*;
  * Represent the workflow action dialog widget.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 28 avr. 2010
  */
 public class WorkflowActionDialog extends LayoutContainer {

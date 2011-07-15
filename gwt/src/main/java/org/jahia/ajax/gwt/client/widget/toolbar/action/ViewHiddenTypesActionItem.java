@@ -51,11 +51,9 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: David
  * Date: 25/04/11
  * Time: 16:03
- * To change this template use File | Settings | File Templates.
  */
 public class ViewHiddenTypesActionItem extends BaseActionItem {
 

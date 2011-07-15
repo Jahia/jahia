@@ -47,11 +47,9 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: 3/30/11
  * Time: 21:02
- * To change this template use File | Settings | File Templates.
  */
 public class PrivilegesListener  extends DefaultEventListener implements ExternalEventListener {
     private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PrivilegesListener.class);

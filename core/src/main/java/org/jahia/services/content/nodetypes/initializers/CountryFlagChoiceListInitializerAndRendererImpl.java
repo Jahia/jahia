@@ -56,7 +56,7 @@ import java.util.*;
  * An implementation for choice list initializer and renderer that displays a list of available flags for countries.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 18 nov. 2009
  */
 public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceListInitializer, ChoiceListRenderer {

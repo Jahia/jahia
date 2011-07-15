@@ -47,7 +47,7 @@ import javax.servlet.ServletOutputStream;
 import java.io.IOException;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: jahia
  * Date: 19 juin 2009
  * Time: 19:12:06

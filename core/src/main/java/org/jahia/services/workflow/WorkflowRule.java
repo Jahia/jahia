@@ -43,7 +43,7 @@ package org.jahia.services.workflow;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Sep 16, 2010
  * Time: 5:37:18 PM
@@ -113,7 +113,7 @@ public class WorkflowRule {
     }
 
 //    /**
-//     * Created by IntelliJ IDEA.
+//     * 
 //     * User: toto
 //     * Date: Sep 16, 2010
 //     * Time: 5:38:18 PM

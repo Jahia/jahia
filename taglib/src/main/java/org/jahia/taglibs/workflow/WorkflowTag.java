@@ -56,11 +56,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: 3/1/11
  * Time: 17:17
- * To change this template use File | Settings | File Templates.
  */
 public class WorkflowTag extends AbstractJahiaTag {
     private String provider;

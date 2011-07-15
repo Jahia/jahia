@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Aug 18, 2009
  * Time: 7:25:48 PM

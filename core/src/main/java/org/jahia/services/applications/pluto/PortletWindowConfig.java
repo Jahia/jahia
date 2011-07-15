@@ -46,7 +46,7 @@ import org.jahia.services.content.decorator.JCRPortletNode;
 import javax.jcr.RepositoryException;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: jahia
  * Date: 9 avr. 2009
  * Time: 17:34:03

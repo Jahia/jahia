@@ -53,7 +53,7 @@ import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 import java.util.Date;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Mar 2, 2010
  * Time: 9:27:04 AM

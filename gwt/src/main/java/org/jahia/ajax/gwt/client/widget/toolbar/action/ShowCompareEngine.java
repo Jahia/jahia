@@ -47,7 +47,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Mar 2, 2010
  * Time: 10:12:21 AM

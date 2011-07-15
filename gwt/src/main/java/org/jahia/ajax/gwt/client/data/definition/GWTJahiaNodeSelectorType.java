@@ -41,7 +41,7 @@
 package org.jahia.ajax.gwt.client.data.definition;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Oct 28, 2008
  * Time: 11:21:49 AM

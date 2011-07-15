@@ -43,10 +43,10 @@ package org.jahia.services;
 import org.jahia.exceptions.JahiaInitializationException;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 22 nov. 2010
  */
 public interface JahiaAfterInitializationService {

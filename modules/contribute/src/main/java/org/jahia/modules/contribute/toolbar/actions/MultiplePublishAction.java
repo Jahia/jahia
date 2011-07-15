@@ -57,10 +57,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 24 nov. 2010
  */
 public class MultiplePublishAction extends Action {

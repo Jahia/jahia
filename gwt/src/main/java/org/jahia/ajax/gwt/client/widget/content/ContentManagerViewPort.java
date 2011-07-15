@@ -48,7 +48,7 @@ import java.util.List;
 
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author rfelden
  * @version 19 juin 2008 - 15:22:43

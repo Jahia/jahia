@@ -52,10 +52,10 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 14 oct. 2010
  */
 public class JCRUserPropertyModificationListener extends DefaultEventListener {

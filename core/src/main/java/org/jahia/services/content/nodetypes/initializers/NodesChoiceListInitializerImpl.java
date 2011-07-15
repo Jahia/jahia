@@ -64,7 +64,7 @@ import java.util.*;
  * filtering them out by the specified type, if any is provided.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 17 nov. 2009
  */
 public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {

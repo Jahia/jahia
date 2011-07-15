@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 27 déc. 2007
  * Time: 19:30:31

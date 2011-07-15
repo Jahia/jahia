@@ -67,7 +67,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Jan 20, 2010
  * Time: 1:53:30 PM

@@ -46,7 +46,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: loom
  * Date: Oct 5, 2010
  * Time: 3:29:38 PM

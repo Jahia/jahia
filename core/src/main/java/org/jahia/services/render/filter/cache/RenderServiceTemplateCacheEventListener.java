@@ -53,7 +53,7 @@ import javax.jcr.observation.EventIterator;
  * Output cache invalidation listener.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 12 janv. 2010
  */
 public class RenderServiceTemplateCacheEventListener extends DefaultEventListener {

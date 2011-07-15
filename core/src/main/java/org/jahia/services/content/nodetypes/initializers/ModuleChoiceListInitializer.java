@@ -41,7 +41,7 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: david
  * Date: Feb 9, 2010
  * Time: 3:21:32 PM

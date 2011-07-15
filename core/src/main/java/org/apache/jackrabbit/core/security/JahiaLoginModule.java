@@ -60,7 +60,7 @@ import java.security.Principal;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 27 févr. 2006
  * Time: 12:00:21

@@ -52,7 +52,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Dec 11, 2008
  * Time: 5:27:32 PM

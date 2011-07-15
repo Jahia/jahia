@@ -44,7 +44,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: rincevent
  * Date: 7 nov. 2008
  * Time: 16:30:09

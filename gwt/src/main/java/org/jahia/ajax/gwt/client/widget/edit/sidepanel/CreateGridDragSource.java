@@ -48,7 +48,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeGridDragSource;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Aug 21, 2009
  * Time: 4:22:02 PM

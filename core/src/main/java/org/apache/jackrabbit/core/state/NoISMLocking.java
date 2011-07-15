@@ -43,11 +43,9 @@ package org.apache.jackrabbit.core.state;
 import org.apache.jackrabbit.core.id.ItemId;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: 3/16/11
  * Time: 17:21
- * To change this template use File | Settings | File Templates.
  */
 public class NoISMLocking implements ISMLocking {
     private final ReadLock readLock = new ReadLock() {

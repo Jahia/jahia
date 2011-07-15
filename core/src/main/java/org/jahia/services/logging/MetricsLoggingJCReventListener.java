@@ -53,7 +53,7 @@ import java.util.List;
  * JCR listener that logs repository events to the metrics logging service.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 24 nov. 2009
  */
 public class MetricsLoggingJCReventListener extends DefaultEventListener {

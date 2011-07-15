@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import java.io.Serializable;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: rfelden
  * Date: 8 sept. 2008
  * Time: 16:01:21

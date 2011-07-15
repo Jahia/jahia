@@ -75,7 +75,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: 6 juil. 2005
  * Time: 17:31:05

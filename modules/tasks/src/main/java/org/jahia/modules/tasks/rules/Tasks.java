@@ -50,10 +50,10 @@ import javax.jcr.RepositoryException;
 import java.util.Date;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 5 janv. 2010
  */
 public class Tasks {

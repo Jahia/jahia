@@ -69,10 +69,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 6 sept. 2010
  */
 public class VersioningTabItem extends EditEngineTabItem {

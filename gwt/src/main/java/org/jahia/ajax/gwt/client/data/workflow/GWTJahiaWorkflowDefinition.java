@@ -45,7 +45,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import java.io.Serializable;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Feb 4, 2010
  * Time: 4:07:30 PM

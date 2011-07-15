@@ -70,7 +70,7 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: loom
  * Date: Mar 14, 2010
  * Time: 1:40:10 PM

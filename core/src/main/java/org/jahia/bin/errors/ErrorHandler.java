@@ -46,7 +46,7 @@ import javax.servlet.ServletException;
 import java.io.IOException;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Dec 2, 2009
  * Time: 4:05:52 PM

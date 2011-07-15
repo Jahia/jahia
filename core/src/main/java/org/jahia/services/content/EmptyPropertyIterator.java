@@ -45,7 +45,7 @@ import javax.jcr.PropertyIterator;
 import java.util.NoSuchElementException;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Feb 8, 2010
  * Time: 5:53:46 PM

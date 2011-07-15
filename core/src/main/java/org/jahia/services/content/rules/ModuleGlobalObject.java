@@ -47,7 +47,7 @@ import java.util.Map;
  * Spring object use for registering global classes for usage in rules files
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 5 janv. 2010
  */
 public class ModuleGlobalObject {

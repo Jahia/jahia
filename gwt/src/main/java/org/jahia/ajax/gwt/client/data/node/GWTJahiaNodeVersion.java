@@ -45,7 +45,7 @@ import com.extjs.gxt.ui.client.data.BaseModel;
 import java.util.Date;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Mar 16, 2009
  * Time: 5:16:40 PM

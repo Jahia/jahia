@@ -46,7 +46,7 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Aug 26, 2008
  * Time: 7:36:01 PM

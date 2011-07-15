@@ -64,10 +64,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 21 déc. 2009
  */
 public class ContentTypeTree extends LayoutContainer {

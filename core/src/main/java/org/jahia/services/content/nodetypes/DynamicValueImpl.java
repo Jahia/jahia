@@ -54,7 +54,7 @@ import org.slf4j.Logger;
 import org.jahia.services.content.nodetypes.initializers.ValueInitializer;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Apr 3, 2008
  * Time: 12:26:22 PM

@@ -43,7 +43,7 @@ package org.jahia.ajax.gwt.client.data;
 import java.io.Serializable;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: hollis
  * Date: 20 ao�t 2008
  * Time: 12:37:59

@@ -49,11 +49,9 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: 1/12/11
  * Time: 19:29
- * To change this template use File | Settings | File Templates.
  */
 public class FormTokenFilter extends AbstractFilter {
     public static final String RANDOMTOKEN = "$$$formtoken$$$";

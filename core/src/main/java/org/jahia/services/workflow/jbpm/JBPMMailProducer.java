@@ -71,10 +71,10 @@ import java.security.Principal;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 14 sept. 2010
  */
 public class JBPMMailProducer extends MailProducerImpl {

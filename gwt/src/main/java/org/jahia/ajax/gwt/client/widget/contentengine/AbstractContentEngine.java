@@ -82,7 +82,7 @@ import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Jan 7, 2010
  * Time: 1:57:03 PM

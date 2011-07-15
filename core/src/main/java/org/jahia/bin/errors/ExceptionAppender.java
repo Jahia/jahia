@@ -48,7 +48,7 @@ import java.io.IOException;
 
 /**
  * A Log4J appender that will log exceptions through the ErrorFileDumper system.
- * Created by IntelliJ IDEA.
+ * 
  * User: loom
  * Date: Jul 16, 2010
  * Time: 3:40:31 PM

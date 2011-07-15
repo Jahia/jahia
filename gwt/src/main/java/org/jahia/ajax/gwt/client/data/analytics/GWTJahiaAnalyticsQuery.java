@@ -46,7 +46,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Mar 24, 2010
  * Time: 1:36:27 PM

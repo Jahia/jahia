@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: jahia
  * Date: 9 juin 2009
  * Time: 16:25:27

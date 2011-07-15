@@ -43,11 +43,9 @@ package org.jahia.services.image;
 import ij.ImagePlus;
 
 /**
-* Created by IntelliJ IDEA.
 * User: toto
 * Date: 3/11/11
 * Time: 14:41
-* To change this template use File | Settings | File Templates.
 */
 public class ImageJImage implements Image {
     private String path;

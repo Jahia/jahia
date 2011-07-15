@@ -52,11 +52,9 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 /**
- * Created by IntelliJ IDEA.
  * User: david
  * Date: 1/19/11
  * Time: 3:01 PM
- * To change this template use File | Settings | File Templates.
  */
 public class Url {
 

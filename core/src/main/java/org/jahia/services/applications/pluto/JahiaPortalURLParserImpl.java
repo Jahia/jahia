@@ -60,7 +60,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: Serge Huber
  * Date: 28 juil. 2008
  * Time: 15:13:28

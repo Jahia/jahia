@@ -49,7 +49,7 @@ import org.jahia.ajax.gwt.client.widget.Poller;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: ktlili
  * Date: Jan 20, 2010
  * Time: 1:51:18 PM

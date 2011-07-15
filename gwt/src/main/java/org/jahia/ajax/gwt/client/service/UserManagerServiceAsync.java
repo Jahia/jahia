@@ -49,7 +49,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: hollis
  * Date: 25 juil. 2008
  * Time: 12:39:05

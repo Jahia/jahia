@@ -49,7 +49,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: loom
  * Date: Aug 12, 2010
  * Time: 3:03:58 PM

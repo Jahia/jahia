@@ -43,7 +43,7 @@ package org.jahia.ajax.gwt.client.data;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: rincevent
  * Date: 4 mars 2009
  * Time: 15:59:05

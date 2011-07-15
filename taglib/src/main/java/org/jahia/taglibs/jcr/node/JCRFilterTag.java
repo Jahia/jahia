@@ -58,7 +58,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Mar 25, 2010
  * Time: 8:35:48 PM

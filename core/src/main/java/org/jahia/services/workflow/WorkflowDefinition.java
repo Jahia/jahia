@@ -46,7 +46,7 @@ import java.util.Set;
  * Workflow process definition.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since JAHIA 6.5
  *        Created : 4 févr. 2010
  */
 public class WorkflowDefinition extends WorkflowBase {

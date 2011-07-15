@@ -41,7 +41,7 @@
 package org.jahia.ajax.gwt.client.widget.tripanel;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  *
  * @author rfelden
  * @version 19 juin 2008 - 10:43:50

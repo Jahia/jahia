@@ -69,7 +69,7 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * 
  * User: toto
  * Date: Apr 19, 2010
  * Time: 5:03:27 PM

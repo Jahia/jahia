@@ -55,6 +55,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
@@ -190,13 +191,14 @@ public class ContentActions {
             String newFolder = Window.prompt(Messages.get("newDirName.label"), "untitled");
             if (newFolder != null && newFolder.length() > 0) {
                 linker.loading(Messages.get("statusbar.newfoldering.label"));
-                JahiaContentManagementService.App.getInstance().createFolder(parent.getPath(), newFolder, new BaseAsyncCallback() {
+                JahiaContentManagementService.App.getInstance().createFolder(parent.getPath(), newFolder, new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onApplicationFailure(Throwable throwable) {
                         Window.alert(Messages.get("failure.newDir.label") + "\n" + throwable.getLocalizedMessage());
                         linker.loaded();
                     }
 
-                    public void onSuccess(Object o) {
+                    public void onSuccess(GWTJahiaNode o) {
+                        linker.setSelectPathAfterDataUpdate(o.getPath());
                         linker.loaded();
                         linker.refresh(Linker.REFRESH_FOLDERS);
                     }
@@ -225,6 +227,7 @@ public class ContentActions {
                 linker.loading(Messages.get("statusbar.newfoldering.label"));
                 JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, nodeType, null, null, null, null, new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode o) {
+                        linker.setSelectPathAfterDataUpdate(o.getPath());
                         linker.loaded();
                         linker.refresh(EditLinker.REFRESH_ALL);
                     }

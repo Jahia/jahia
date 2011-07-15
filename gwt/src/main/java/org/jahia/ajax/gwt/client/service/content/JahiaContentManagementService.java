@@ -149,7 +149,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public GWTJahiaNode createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties) throws GWTJahiaServiceException;
 
-    public void createFolder(String parentPath, String name) throws GWTJahiaServiceException;
+    public GWTJahiaNode createFolder(String parentPath, String name) throws GWTJahiaServiceException;
 
     public GWTJahiaNode createPortletInstance(String path, GWTJahiaNewPortletInstance wiz) throws GWTJahiaServiceException;
 

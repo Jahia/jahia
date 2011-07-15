@@ -811,8 +811,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param name
      * @throws GWTJahiaServiceException
      */
-    public void createFolder(String parentPath, String name) throws GWTJahiaServiceException {
-        contentManager.createFolder(parentPath, name, retrieveCurrentSession());
+    public GWTJahiaNode createFolder(String parentPath, String name) throws GWTJahiaServiceException {
+        return contentManager.createFolder(parentPath, name, retrieveCurrentSession());
     }
 
     public GWTJahiaNode createPortletInstance(String path, GWTJahiaNewPortletInstance wiz)

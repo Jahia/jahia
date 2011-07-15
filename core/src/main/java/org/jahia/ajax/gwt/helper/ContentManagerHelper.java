@@ -210,20 +210,22 @@ public class ContentManagerHelper {
 
 // -------------------------- OTHER METHODS --------------------------
 
-    public void createFolder(String parentPath, String name, JCRSessionWrapper currentUserSession)
+    public GWTJahiaNode createFolder(String parentPath, String name, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         JCRNodeWrapper parentNode;
+        GWTJahiaNode newNode = null;
         final JCRSessionWrapper jcrSessionWrapper;
         try {
             jcrSessionWrapper = currentUserSession;
             parentNode = jcrSessionWrapper.getNode(parentPath);
-            createNode(parentPath, name, parentNode.isNodeType("jnt:folder") ? "jnt:folder" : "jnt:contentList", null, null, currentUserSession);
+            newNode = createNode(parentPath, name, parentNode.isNodeType("jnt:folder") ? "jnt:folder" : "jnt:contentList", null, null, currentUserSession);
             currentUserSession.save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(
                     new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
         }
+        return newNode;
     }
 
     public String findAvailableName(JCRNodeWrapper dest, String name)

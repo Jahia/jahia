@@ -143,7 +143,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, AsyncCallback<GWTJahiaNode> asyncCallback);
 
-    void createFolder(String parentPath, String name, AsyncCallback async);
+    void createFolder(String parentPath, String name, AsyncCallback<GWTJahiaNode> async);
 
     void createPortletInstance(String path, GWTJahiaNewPortletInstance wiz, AsyncCallback<GWTJahiaNode> async);
 

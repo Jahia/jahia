@@ -280,8 +280,8 @@ public class CacheFilterTest {
             logger.info("Response body=[" + responseBody + "]");
             assertTrue(
                     "First and second response are not equal",
-                    responseBody.replaceAll("(?m)^[ \t]*\r?\n", "").replaceAll("(?m)^[ \t]+", "").equals(
-                            firstResponse.replaceAll("(?m)^[ \t]*\r?\n", "").replaceAll("(?m)^[ \t]+", "")));
+                    responseBody.replaceAll("(?m)^[ \t]*\r?\n", "").replaceAll("(?m)^[ \t]+", "").replaceAll("\r\n", "\n").equals(
+                            firstResponse.replaceAll("(?m)^[ \t]*\r?\n", "").replaceAll("(?m)^[ \t]+", "").replaceAll("\r\n", "\n")));
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }

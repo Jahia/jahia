@@ -146,7 +146,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private String templateExtension;
 
     private static final Pattern CLEANUP_RESOURCE_REGEXP = Pattern.compile(
-            "<jahia:resource (.*)/>\n");
+            "<jahia:resource .*/>");
 
 
     @Override

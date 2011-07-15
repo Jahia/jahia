@@ -97,7 +97,7 @@ public class ScriptEngineUtils implements InitializingBean {
             if (scriptEngine == null) {
                 throw new ScriptException("Script engine not found for name :" + name);
             }
-            scriptEngineByExtensionCache.put(name, scriptEngine);
+            scriptEngineByNameCache.put(name, scriptEngine);
         }
         return scriptEngine;
     }

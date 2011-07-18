@@ -29,7 +29,7 @@
           </elementProp>
           <elementProp name="URL" elementType="Argument">
             <stringProp name="Argument.name">URL</stringProp>
-            <stringProp name="Argument.value">${__P(jahia.test.url,http://localhost:8080/jahia/cms)}</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.url,http://albator:8080/jahia/cms)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="WORKSPACE" elementType="Argument">
@@ -54,7 +54,7 @@
           </elementProp>
           <elementProp name="JahiaContentManagementServiceFile" elementType="Argument">
             <stringProp name="Argument.name">JahiaContentManagementServiceFile</stringProp>
-            <stringProp name="Argument.value">${_StringFromFile(JahiaContentManagementService.txt)}</stringProp>
+            <stringProp name="Argument.value">${_StringFromFile(target/JahiaContentManagementService.txt)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -100,7 +100,7 @@
             <stringProp name="675204994">siteUUID</stringProp>
           </collectionProp>
           <collectionProp name="UserParameters.thread_values">
-            <collectionProp name="-144736017">
+            <collectionProp name="-1443282093">
               <stringProp name="302112969">${_StringFromFile(target/users.txt)}</stringProp>
               <stringProp name="709731209">${__split(${LANG},LANG,\,)}</stringProp>
               <stringProp name="1482419176">${__jexl(${__threadNum} % 5)}</stringProp>
@@ -264,7 +264,7 @@
                       </elementProp>
                       <elementProp name="Referer" elementType="Header">
                         <stringProp name="Header.name">Referer</stringProp>
-                        <stringProp name="Header.value">${URL}/edit/default/en/${pageUrl}.html</stringProp>
+                        <stringProp name="Header.value">/start</stringProp>
                       </elementProp>
                     </collectionProp>
                   </HeaderManager>
@@ -275,7 +275,7 @@
                     <collectionProp name="Arguments.arguments">
                       <elementProp name="" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                        <stringProp name="Argument.value">7|0|7|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getEditConfiguration|java.lang.String/2004016611|${pageUrl}|editmode|1|2|3|4|2|5|5|6|7|</stringProp>
+                        <stringProp name="Argument.value">7|0|7|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getEditConfiguration|java.lang.String/2004016611|/sites/testSite/home|editmode|1|2|3|4|2|5|5|6|7|</stringProp>
                         <stringProp name="Argument.metadata">=</stringProp>
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
                       </elementProp>
@@ -341,7 +341,7 @@
                       </elementProp>
                       <elementProp name="Referer" elementType="Header">
                         <stringProp name="Header.name">Referer</stringProp>
-                        <stringProp name="Header.value">${URL}/edit/default/en/${pageUrl}.html</stringProp>
+                        <stringProp name="Header.value">/start</stringProp>
                       </elementProp>
                     </collectionProp>
                   </HeaderManager>
@@ -418,7 +418,7 @@
                       </elementProp>
                       <elementProp name="Referer" elementType="Header">
                         <stringProp name="Header.name">Referer</stringProp>
-                        <stringProp name="Header.value">${URL}/edit/default/en/${pageUrl}.html</stringProp>
+                        <stringProp name="Header.value">/start</stringProp>
                       </elementProp>
                     </collectionProp>
                   </HeaderManager>
@@ -495,7 +495,7 @@
                       </elementProp>
                       <elementProp name="Referer" elementType="Header">
                         <stringProp name="Header.name">Referer</stringProp>
-                        <stringProp name="Header.value">${URL}/edit/default/en/${pageUrl}.html</stringProp>
+                        <stringProp name="Header.value">/start</stringProp>
                       </elementProp>
                     </collectionProp>
                   </HeaderManager>
@@ -572,7 +572,7 @@
                       </elementProp>
                       <elementProp name="Referer" elementType="Header">
                         <stringProp name="Header.name">Referer</stringProp>
-                        <stringProp name="Header.value">${URL}/edit/default/en/${pageUrl}.html</stringProp>
+                        <stringProp name="Header.value">/start</stringProp>
                       </elementProp>
                     </collectionProp>
                   </HeaderManager>
@@ -583,7 +583,7 @@
                     <collectionProp name="Arguments.arguments">
                       <elementProp name="" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                        <stringProp name="Argument.value">7|0|36|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getNodesAndTypes|java.util.List|java.util.ArrayList/3821976829|java.lang.String/2004016611|${pageUrl}|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/header-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/Header-right|${__regexFunction((.*)/.*,$1$,1,,,,pageUrl)}/illustration|${pageUrl}/listA|${pageUrl}/listA/bigText_1|${pageUrl}/listA/bigText_2|${pageUrl}/listA/bigText_3|${pageUrl}/listA/bigText_4|${pageUrl}/listA/bigText_5|${pageUrl}/listA/random-file|${pageUrl}/listA/publication|${pageUrl}/events|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter1|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter2|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter3|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter4|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-right|java.util.Arrays$ArrayList/1243019747|[Ljava.lang.String;/2600011424|publicationInfo|workflowInfo|nt:base|jmix:navMenuItem|jmix:droppableContent||jnt:imageReference|jnt:event|1|2|3|4|3|5|5|5|6|19|7|8|7|9|7|10|7|11|7|12|7|13|7|14|7|15|7|16|7|17|7|18|7|19|7|20|7|21|7|22|7|23|7|24|7|25|7|26|27|28|2|29|30|6|6|7|31|7|32|7|33|7|34|7|35|7|36|</stringProp>
+                        <stringProp name="Argument.value">7|0|36|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getNodesAndTypes|java.util.List|java.util.ArrayList/3821976829|java.lang.String/2004016611|${pageUrl}|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/header-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/Header-right|${__regexFunction((.*)/.*,$1$,1,,,,pageUrl)}/illustration|${pageUrl}/listA|${pageUrl}/listA/bigText_1|${pageUrl}/listA/bigText_2|${pageUrl}/listA/bigText_3|${pageUrl}/listA/bigText_4|${pageUrl}/listA/bigText_5|${pageUrl}/listA/bigText_1|${pageUrl}/listA/publication|${pageUrl}/events|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter1|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter2|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter3|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter4|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-right|java.util.Arrays$ArrayList/1243019747|[Ljava.lang.String;/2600011424|publicationInfo|workflowInfo|nt:base|jmix:navMenuItem|jmix:droppableContent||jnt:imageReference|jnt:event|1|2|3|4|3|5|5|5|6|19|7|8|7|9|7|10|7|11|7|12|7|13|7|14|7|15|7|16|7|17|7|18|7|19|7|20|7|21|7|22|7|23|7|24|7|25|7|26|27|28|2|29|30|6|6|7|31|7|32|7|33|7|34|7|35|7|36|</stringProp>
                         <stringProp name="Argument.metadata">=</stringProp>
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
                       </elementProp>
@@ -649,7 +649,7 @@
                       </elementProp>
                       <elementProp name="Referer" elementType="Header">
                         <stringProp name="Header.name">Referer</stringProp>
-                        <stringProp name="Header.value">${URL}/edit/default/en/${pageUrl}.html</stringProp>
+                        <stringProp name="Header.value">/start</stringProp>
                       </elementProp>
                     </collectionProp>
                   </HeaderManager>
@@ -726,7 +726,7 @@
                       </elementProp>
                       <elementProp name="Referer" elementType="Header">
                         <stringProp name="Header.name">Referer</stringProp>
-                        <stringProp name="Header.value">${URL}/edit/default/en/${pageUrl}.html</stringProp>
+                        <stringProp name="Header.value">/start</stringProp>
                       </elementProp>
                     </collectionProp>
                   </HeaderManager>
@@ -803,7 +803,7 @@
                       </elementProp>
                       <elementProp name="Referer" elementType="Header">
                         <stringProp name="Header.name">Referer</stringProp>
-                        <stringProp name="Header.value">${URL}/edit/default/en/${pageUrl}.html</stringProp>
+                        <stringProp name="Header.value">/start</stringProp>
                       </elementProp>
                     </collectionProp>
                   </HeaderManager>
@@ -910,7 +910,7 @@
                   <collectionProp name="Arguments.arguments">
                     <elementProp name="" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                      <stringProp name="Argument.value">7|0|36|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getNodesAndTypes|java.util.List|java.util.ArrayList/3821976829|java.lang.String/2004016611|${pageUrl}|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/header-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/Header-right|${__regexFunction((.*)/.*,$1$,1,,,,pageUrl)}/illustration|${pageUrl}/listA|${pageUrl}/listA/bigText_1|${pageUrl}/listA/bigText_2|${pageUrl}/listA/bigText_3|${pageUrl}/listA/bigText_4|${pageUrl}/listA/bigText_5|${pageUrl}/listA/random-file|${pageUrl}/listA/publication|${pageUrl}/events|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter1|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter2|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter3|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter4|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-right|java.util.Arrays$ArrayList/1243019747|[Ljava.lang.String;/2600011424|publicationInfo|workflowInfo|nt:base|jmix:navMenuItem|jmix:droppableContent||jnt:imageReference|jnt:event|1|2|3|4|3|5|5|5|6|19|7|8|7|9|7|10|7|11|7|12|7|13|7|14|7|15|7|16|7|17|7|18|7|19|7|20|7|21|7|22|7|23|7|24|7|25|7|26|27|28|2|29|30|6|6|7|31|7|32|7|33|7|34|7|35|7|36|</stringProp>
+                      <stringProp name="Argument.value">7|0|36|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getNodesAndTypes|java.util.List|java.util.ArrayList/3821976829|java.lang.String/2004016611|${pageUrl}|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/header-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/Header-right|${__regexFunction((.*)/.*,$1$,1,,,,pageUrl)}/illustration|${pageUrl}/listA|${pageUrl}/listA/bigText_1|${pageUrl}/listA/bigText_2|${pageUrl}/listA/bigText_3|${pageUrl}/listA/bigText_4|${pageUrl}/listA/bigText_5|${pageUrl}/listA/bigText_1|${pageUrl}/listA/publication|${pageUrl}/events|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter1|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter2|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter3|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter4|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-right|java.util.Arrays$ArrayList/1243019747|[Ljava.lang.String;/2600011424|publicationInfo|workflowInfo|nt:base|jmix:navMenuItem|jmix:droppableContent||jnt:imageReference|jnt:event|1|2|3|4|3|5|5|5|6|19|7|8|7|9|7|10|7|11|7|12|7|13|7|14|7|15|7|16|7|17|7|18|7|19|7|20|7|21|7|22|7|23|7|24|7|25|7|26|27|28|2|29|30|6|6|7|31|7|32|7|33|7|34|7|35|7|36|</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     </elementProp>

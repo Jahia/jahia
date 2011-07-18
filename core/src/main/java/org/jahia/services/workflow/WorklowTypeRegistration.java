@@ -40,19 +40,15 @@
 
 package org.jahia.services.workflow;
 
-import org.apache.log4j.Logger;
-
 import java.util.Map;
 
 /**
- * 
- *
+ * Helper bean to allow auto-registration of the workflow types.
  * @author : rincevent
  * @since JAHIA 6.5
- *        Created : 22/12/10
+ * Created : 22/12/10
  */
 public class WorklowTypeRegistration {
-    private transient static Logger logger = Logger.getLogger(WorklowTypeRegistration.class);
     private String type;
     private String definition;
     private Map<String, String> permissions;

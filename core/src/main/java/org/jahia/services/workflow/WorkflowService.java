@@ -53,7 +53,9 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 
 import javax.jcr.*;
 import java.util.*;
@@ -65,8 +67,8 @@ import java.util.*;
  * @since JAHIA 6.5
  *        Created : 2 févr. 2010
  */
-public class WorkflowService {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowService.class);
+public class WorkflowService implements BeanPostProcessor {
+    private transient static Logger logger = LoggerFactory.getLogger(WorkflowService.class);
 
 
     private Map<String, WorkflowProvider> providers = new HashMap<String, WorkflowProvider>();
@@ -241,7 +243,8 @@ public class WorkflowService {
                                     if (w != null) {
                                         for (Map.Entry<String, Object> entry : w.getVariables().entrySet()) {
                                             if (entry.getValue() instanceof List) {
-                                                List variable = (List) entry.getValue();
+                                                @SuppressWarnings("unchecked")
+                                                List<Object> variable = (List<Object>) entry.getValue();
                                                 for (Object workflowVariable : variable) {
                                                     if (workflowVariable instanceof WorkflowVariable) {
                                                         String v = ((WorkflowVariable) workflowVariable).getValue();
@@ -758,6 +761,23 @@ public class WorkflowService {
 
     public void deleteProcess(String processId, String provider) {
         providers.get(provider).deleteProcess(processId);
+    }
+
+    public Object postProcessBeforeInitialization(Object bean, String beanName)
+            throws BeansException {
+        return bean;
+    }
+
+    public Object postProcessAfterInitialization(Object bean, String beanName)
+            throws BeansException {
+        if(bean instanceof WorklowTypeRegistration) {
+            WorklowTypeRegistration registration = (WorklowTypeRegistration) bean;
+            registerWorkflowType(registration.getType(), registration.getDefinition(), registration.getPermissions());
+            logger.info("Registering workflow type \"" + registration.getType()
+                    + "\" with definition \"" + registration.getDefinition()
+                    + "\" and permissions: " + registration.getPermissions());
+        }
+        return bean;
     }
 
 }

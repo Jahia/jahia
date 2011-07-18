@@ -40,6 +40,7 @@
 
 package org.jahia.services.usermanager.jcr;
 
+import org.jahia.services.content.*;
 import org.slf4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
@@ -47,10 +48,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
@@ -180,9 +177,13 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                 } catch (ItemNotFoundException e) {
                     return true;
                 }
-                if (node.isNodeType(Constants.JAHIAMIX_SYSTEMNODE)) {
-                    return false;
+
+                PropertyIterator pi = node.getWeakReferences("j:member");
+                while (pi.hasNext()) {
+                    JCRPropertyWrapper member = (JCRPropertyWrapper) pi.next();
+                    member.getParent().remove();
                 }
+
                 session.checkout(node.getParent());
                 session.checkout(node);
                 node.remove();

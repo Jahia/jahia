@@ -249,7 +249,7 @@
                 />
 
         <editor-in-chief jcr:primaryType="jnt:role"
-                j:permissions="/permissions/workflow-tasks /permissions/repository-permissions/jcr:all_default /permissions/repository-permissions/jcr:all_live /permissions/repository-permissions/publish /permissions/managers/categoryManager /permissions/managers/editorialContentManager /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/managers/tagManager /permissions/jobs /permissions/editMode /permissions/wysiwyg-editor-toolbar/view-light-wysiwyg-editor /permissions/templates"
+                j:permissions="/permissions/workflow-tasks /permissions/repository-permissions/jcr:all_default /permissions/repository-permissions/publish /permissions/managers/categoryManager /permissions/managers/editorialContentManager /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/managers/tagManager /permissions/jobs /permissions/editMode /permissions/wysiwyg-editor-toolbar/view-light-wysiwyg-editor /permissions/templates"
                 j:privilegedAccess="true"
                 />
 

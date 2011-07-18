@@ -332,7 +332,8 @@ public class JCRVersionService extends JahiaService {
                 JCRNodeWrapper node = destinationNodes.remove(child.getIdentifier());
                 synchronizeNode(child, node, session, allSubTree);
             } else if (child.getRealNode().getParent().isNodeType(Constants.NT_FROZENNODE)) {
-                System.out.println("lost node " + child.getName());
+                JCRNodeWrapper node = destinationNode.addNode(child.getName(), child.getPrimaryNodeType().getName());
+                synchronizeNode(child, node, session, allSubTree);
             } else {
                 VersionHistory history;
                 try {
@@ -373,7 +374,9 @@ public class JCRVersionService extends JahiaService {
                 previous = name;
             }
         }
-        destinationNode.setProperty(Constants.JCR_LASTMODIFIED,GregorianCalendar.getInstance());
+        if (destinationNode.isNodeType(Constants.MIX_LAST_MODIFIED)) {
+            destinationNode.setProperty(Constants.JCR_LASTMODIFIED,GregorianCalendar.getInstance());
+        }
     }
 
     public static Version findVersionByLabel(VersionHistory vh, String label) throws RepositoryException {

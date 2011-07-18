@@ -85,7 +85,7 @@
           </collectionProp>
           <collectionProp name="UserParameters.thread_values">
             <collectionProp name="73793985">
-              <stringProp name="1104451116">${_StringFromFile(/home/david/sources/jahia_dev/target/users.txt)}</stringProp>
+              <stringProp name="1104451116">${_StringFromFile(target/users.txt)}</stringProp>
               <stringProp name="709731209">${__split(${LANG},LANG,\,)}</stringProp>
               <stringProp name="1482419176">${__jexl(${__threadNum} % 5)}</stringProp>
             </collectionProp>
@@ -186,13 +186,13 @@
                 </collectionProp>
                 <collectionProp name="UserParameters.thread_values">
                   <collectionProp name="1796305527">
-                    <stringProp name="930387459">${_StringFromFile(/home/david/sources/jahia_dev/target/pageurls${pagefilenumber}.txt)}</stringProp>
+                    <stringProp name="930387459">${_StringFromFile(target/pageurls${pagefilenumber}.txt)}</stringProp>
                   </collectionProp>
                 </collectionProp>
                 <boolProp name="UserParameters.per_iteration">true</boolProp>
               </UserParameters>
               <hashTree/>
-              <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Page Hit ${pageUrl} with user ${__javaScript(&quot;${user}&quot; != &quot;**ERR**&quot;?&quot;authenticated&quot;:&quot;guest&quot;)}" enabled="true">
+              <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Page Hit" enabled="true">
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
                   <collectionProp name="Arguments.arguments"/>
                 </elementProp>

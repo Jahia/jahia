@@ -169,6 +169,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 });
 
         List<StartTag> esiResourceTags = source.getAllStartTags("jahia:resource");
+        Set<String> keys = new HashSet<String>();
         for (StartTag esiResourceTag : esiResourceTags) {
             String type = esiResourceTag.getAttributeValue("type");
             String path = esiResourceTag.getAttributeValue("path");
@@ -176,7 +177,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             Boolean insert = Boolean.parseBoolean(esiResourceTag.getAttributeValue("insert"));
             String resourceS = esiResourceTag.getAttributeValue("resource");
             String title = esiResourceTag.getAttributeValue("title");
-            String keyS = esiResourceTag.getAttributeValue("key");
+            String key = esiResourceTag.getAttributeValue("key");
             Set<String> stringSet = assets.get(type);
             if (stringSet == null) {
                 stringSet = new LinkedHashSet<String>();
@@ -187,11 +188,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 my.addAll(stringSet);
                 stringSet = my;
             } else {
-                if (!"".equals(keyS)) {
-                    stringSet.clear();
+                if ("".equals(key) || !keys.contains(key)) {
                     stringSet.add(path);
-                } else {
-                    stringSet.add(path);
+                    keys.add(key);
                 }
             }
             assets.put(type, stringSet);

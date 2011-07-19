@@ -348,7 +348,6 @@ public class CKEditorField extends Field<String> {
         wcagPanel.add(getWarningGrid(wcagResult));
 
         parent.insert(wcagPanel, parent.indexOf(this));
-        parent.layout();
     }
 
     private static Widget getWarningGrid(WCAGValidationResult wcagResult) {

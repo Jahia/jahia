@@ -601,6 +601,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
             if (firstErrorField != null) {
                 firstErrorField.focus();
             }
+            firstErrorTab.layout();
             unmask();
             setButtonsEnabled(true);
             return false;

@@ -832,7 +832,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             @SuppressWarnings("unchecked")
             Map<String, Map<String, List<String>>> toks = (Map<String, Map<String, List<String>>>) req.getSession().getAttribute("form-tokens");
             if (toks != null && toks.containsKey(token)) {
-                Map<String, List<String>> m = toks.get(token);
+                Map<String, List<String>> m = toks.remove(token);
                 if (m == null) {
                     Map<String, String[]> formDatas = new HashMap<String, String[]>();
                     Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
@@ -892,7 +892,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         throw new AccessDeniedException();
                     }
                 }
-                m.put("form-action", Collections.<String>emptyList());
+
                 final Action originalAction = action;
                 action = new SystemAction() {
                     @Override

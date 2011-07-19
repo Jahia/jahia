@@ -42,11 +42,13 @@ package org.jahia.utils;
 
 import org.springframework.beans.factory.InitializingBean;
 
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * ScriptEngine provider class.
@@ -57,51 +59,8 @@ import java.util.Map;
  */
 public class ScriptEngineUtils implements InitializingBean {
 
-    private ScriptEngineManager scriptEngineManager;
-    private Map<String, ScriptEngine> scriptEngineByExtensionCache;
-    private Map<String, ScriptEngine> scriptEngineByNameCache;
     private static ScriptEngineUtils instance;
-
-    /**
-     * Invoked by a BeanFactory after it has set all bean properties supplied
-     * (and satisfied BeanFactoryAware and ApplicationContextAware).
-     * <p>This method allows the bean instance to perform initialization only
-     * possible when all bean properties have been set and to throw an
-     * exception in the event of misconfiguration.
-     *
-     * @throws Exception in the event of misconfiguration (such
-     *                   as failure to set an essential property) or if initialization fails.
-     */
-    public void afterPropertiesSet() throws Exception {
-        scriptEngineManager = new ScriptEngineManager();
-        scriptEngineByExtensionCache = new LinkedHashMap<String, ScriptEngine>(3);
-        scriptEngineByNameCache = new LinkedHashMap<String, ScriptEngine>(3);
-    }
-
-    public ScriptEngine scriptEngine(String extension) throws ScriptException {
-        ScriptEngine scriptEngine = scriptEngineByExtensionCache.get(extension);
-        if (scriptEngine == null) {
-            scriptEngine = scriptEngineManager.getEngineByExtension(extension);
-            if (scriptEngine == null) {
-                throw new ScriptException("Script engine not found for extension:" + extension);
-            }
-            scriptEngineByExtensionCache.put(extension, scriptEngine);
-        }
-        return scriptEngine;
-    }
-
-    public ScriptEngine getEngineByName(String name) throws ScriptException {
-        ScriptEngine scriptEngine = scriptEngineByNameCache.get(name);
-        if (scriptEngine == null) {
-            scriptEngine = scriptEngineManager.getEngineByName(name);
-            if (scriptEngine == null) {
-                throw new ScriptException("Script engine not found for name :" + name);
-            }
-            scriptEngineByNameCache.put(name, scriptEngine);
-        }
-        return scriptEngine;
-    }
-
+    
     public static ScriptEngineUtils getInstance() {
         if (instance == null) {
             synchronized (ScriptEngineUtils.class) {
@@ -111,5 +70,62 @@ public class ScriptEngineUtils implements InitializingBean {
             }
         }
         return instance;
+    }
+    
+    private Map<String, ScriptEngine> scriptEngineByExtensionCache;
+    private Map<String, ScriptEngine> scriptEngineByNameCache;
+
+    private ScriptEngineManager scriptEngineManager;
+
+    public void afterPropertiesSet() throws Exception {
+        scriptEngineManager = new ScriptEngineManager();
+        scriptEngineByExtensionCache = new LinkedHashMap<String, ScriptEngine>(3);
+        scriptEngineByNameCache = new LinkedHashMap<String, ScriptEngine>(3);
+    }
+
+    /**
+     * Returns an instance of a {@link ScriptEngine} by its name.
+     * @param name the name of the script engine to look for
+     * @return an instance of a {@link ScriptEngine} by its name
+     * @throws ScriptException in case of a script engine initialization error
+     */
+    public ScriptEngine getEngineByName(String name) throws ScriptException {
+        ScriptEngine scriptEngine = scriptEngineByNameCache.get(name);
+        if (scriptEngine == null) {
+            scriptEngine = scriptEngineManager.getEngineByName(name);
+            if (scriptEngine == null) {
+                throw new ScriptException("Script engine not found for name :" + name);
+            }
+            initEngine(scriptEngine);
+            scriptEngineByNameCache.put(name, scriptEngine);
+        }
+        return scriptEngine;
+    }
+
+    private void initEngine(ScriptEngine engine) {
+        if (engine.getFactory().getNames().contains("velocity")) {
+            Properties velocityProperties = new Properties();
+            velocityProperties.setProperty("runtime.log.logsystem.log4j.logger", "velocity");
+            engine.getContext().setAttribute("com.sun.script.velocity.properties", velocityProperties, ScriptContext.GLOBAL_SCOPE);
+        }
+    }
+    
+    /**
+     * Returns an instance of a {@link ScriptEngine} by its file extension.
+     * @param extension the extension of the script engine to look for
+     * @return an instance of a {@link ScriptEngine} by its name
+     * @throws ScriptException in case of a script engine initialization error
+     */
+    public ScriptEngine scriptEngine(String extension) throws ScriptException {
+        ScriptEngine scriptEngine = scriptEngineByExtensionCache.get(extension);
+        if (scriptEngine == null) {
+            scriptEngine = scriptEngineManager.getEngineByExtension(extension);
+            if (scriptEngine == null) {
+                throw new ScriptException("Script engine not found for extension:" + extension);
+            }
+            initEngine(scriptEngine);
+            scriptEngineByExtensionCache.put(extension, scriptEngine);
+        }
+        return scriptEngine;
     }
 }

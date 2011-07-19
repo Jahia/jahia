@@ -47,7 +47,7 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
-
+import com.google.gwt.user.client.Timer;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -195,7 +195,18 @@ public class FormFieldCreator {
                         to.setStore(tostore);
                         field = lists;
                     } else {
-                        ComboBox<GWTJahiaValueDisplayBean> combo = new ComboBox<GWTJahiaValueDisplayBean>();
+                        ComboBox<GWTJahiaValueDisplayBean> combo = new ComboBox<GWTJahiaValueDisplayBean>() {
+                            @Override
+                            public void expand() {
+                                super.expand();
+                                Timer t = new Timer() {
+                                    public void run() {
+                                        restrict();
+                                    }
+                                };
+                                t.schedule(500);
+                            }
+                        };
                         combo.setStore(store);
                         combo.setEmptyText(""); // todo: allow to set the default value
                         combo.setDisplayField("display");

@@ -90,7 +90,7 @@
             -->
             <!-- direct:logs is an URI where the log4j appender is writing messages -->
             <from uri="direct:logs"/>
-            <to uri="seda:logMsgs?size=10000&amp;concurrentConsumers=5&amp;multipleConsumers=true"/>
+            <to uri="seda:logMsgs?size=1000000&amp;concurrentConsumers=5&amp;multipleConsumers=true"/>
         </route>
     </camelContext>
 

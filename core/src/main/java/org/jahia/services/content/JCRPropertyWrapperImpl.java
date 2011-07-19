@@ -436,4 +436,11 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         }
         return wrappedValues;
     }
+
+    public String getLocale() throws RepositoryException {
+        if (def.isInternationalized()) {
+            return StringUtils.substringAfter(property.getParent().getName(), "j:translation_");
+        }
+        return null;
+    }
 }

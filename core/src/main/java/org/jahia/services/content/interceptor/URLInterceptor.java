@@ -287,13 +287,7 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
         String name = definition.getName();
         JCRNodeWrapper parent = property.getParent();
         if (definition.isInternationalized()) {
-            Locale locale = property.getSession().getLocale();
-            if(locale==null) {
-                // This might happen under publication
-                name += "_" + parent.getProperty("jcr:language").getString();
-            } else {
-                name += "_" + locale;
-            }
+            name += "_" + property.getLocale();
         }
 
         if (parent.isNodeType(Constants.JAHIANT_TRANSLATION)) {

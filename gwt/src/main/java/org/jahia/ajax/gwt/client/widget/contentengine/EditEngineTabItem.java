@@ -86,6 +86,9 @@ public abstract class EditEngineTabItem implements Serializable {
      */
     public abstract void init(NodeHolder engine, AsyncTabItem tab, String language);
 
+    public void onLanguageChange(String language) {
+    }
+
     public void setProcessed(boolean processed) {
     }
 

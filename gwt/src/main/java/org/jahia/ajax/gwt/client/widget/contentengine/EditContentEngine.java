@@ -296,6 +296,9 @@ public class EditContentEngine extends AbstractContentEngine {
                     PropertiesTabItem propertiesTabItem = (PropertiesTabItem) itemData;
                     changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
                 }
+                if (itemData instanceof EditEngineTabItem) {
+                    ((EditEngineTabItem)itemData).onLanguageChange(getSelectedLanguage());
+                }
             }
         }
         GWTJahiaGetPropertiesResult result = langCodeGWTJahiaGetPropertiesResultMap.get(getSelectedLanguage());

@@ -680,7 +680,11 @@ public class JCRStoreProvider {
             JCRTemplate.getInstance().doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
                     session.getWorkspace().getName(), session.getLocale(), new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            return session.getNodeByUUID(objectNode.getIdentifier());
+                            try {
+                                return session.getNodeByUUID(objectNode.getIdentifier());
+                            } catch (ItemNotFoundException e) {
+                                throw new PathNotFoundException();
+                            }
                         }
                     });
         }
@@ -698,7 +702,11 @@ public class JCRStoreProvider {
             JCRTemplate.getInstance().doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
                     session.getWorkspace().getName(), session.getLocale(), new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            return session.getNodeByUUID(objectNode.getIdentifier());
+                            try {
+                                return session.getNodeByUUID(objectNode.getIdentifier());
+                            } catch (ItemNotFoundException e) {
+                                throw new PathNotFoundException();
+                            }
                         }
                     });
         }

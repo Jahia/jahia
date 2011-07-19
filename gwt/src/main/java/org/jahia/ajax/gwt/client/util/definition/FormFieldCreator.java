@@ -269,7 +269,14 @@ public class FormFieldCreator {
         if(!"".equals(definition.getTooltip())) {
             field.setToolTip(definition.getTooltip());
         }
-        field.setReadOnly(field.isReadOnly() || definition.isProtected());
+        if (field.isReadOnly() || definition.isProtected()) {
+            field.setReadOnly(true);
+            if (field instanceof TriggerField) {
+                ((TriggerField) field).setHideTrigger(true);
+            }
+        } else {
+            field.setReadOnly(false);
+        }
         if (field instanceof TextField) {
             TextField<?> tField = (TextField<?>) field;
             tField.setAllowBlank(!definition.isMandatory());

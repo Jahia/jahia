@@ -257,6 +257,9 @@ public class PropertiesEditor extends FormPanel {
                 }
                 if (!isWriteable || (!isNonI18NWriteable && !definition.isNode() && !((GWTJahiaPropertyDefinition)definition).isInternationalized())) {
                     field.setReadOnly(true);
+                    if (field instanceof TriggerField) {
+                        ((TriggerField) field).setHideTrigger(true);
+                    }
                 } else if (isMultipleEdit && !definition.isProtected()) {
                     field.setEnabled(false);
                     final CheckBox checkbox = new CheckBox();

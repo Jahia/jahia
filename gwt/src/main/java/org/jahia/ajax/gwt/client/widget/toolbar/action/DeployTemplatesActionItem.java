@@ -150,21 +150,22 @@ public class DeployTemplatesActionItem extends BaseActionItem {
         item.addSelectionListener(new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
-                Info.display(Messages.get("label.templatesDeploy", "Deploy Templates"), Messages.get("org.jahia.admin.site.ManageTemplates.deploymentInProgress", "Your templates are being deployed..."));
                 GWTJahiaNode node = linker.getSelectionContext().getMainNode();
                 String nodePath = node.getPath();
 
                 final String[] parts = nodePath.split("/");
                 nodePath = "/" + parts[1] + "/" + parts[2];
-
+                linker.loading(Messages.get("org.jahia.admin.site.ManageTemplates.deploymentInProgress", "Your templates are being deployed..."));
                 JahiaContentManagementService.App.getInstance()
                         .deployTemplates(nodePath, destinationPath, new BaseAsyncCallback() {
                             public void onApplicationFailure(Throwable caught) {
+                                linker.loaded();
                                 getSites(linker);
                                 Info.display(Messages.get("label.templatesDeploy", "Deploy Templates"), Messages.get("org.jahia.admin.site.ManageTemplates.deploymentError", "Error during your templates deployment"));
                             }
 
                             public void onSuccess(Object result) {
+                                linker.loaded();
                                 GWTJahiaSite site = item.getData("site");
                                 if (!site.getInstalledModules().contains(parts[2])) {
                                     site.getInstalledModules().add(parts[2]);

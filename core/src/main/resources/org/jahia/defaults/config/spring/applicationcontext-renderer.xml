@@ -103,7 +103,7 @@
 	<bean class="org.jahia.services.render.filter.URLFilter">
 		<constructor-arg ref="org.jahia.services.render.filter.URLTraverser" />
 		<property name="priority" value="21" />
-		<property name="applyOnConfigurations" value="page,gwt,module" />
+		<property name="applyOnConfigurations" value="page,gwt,module,wrappedcontent" />
 		<property name="handlers">
 			<list>
 				<bean class="org.jahia.services.render.filter.ContextPlaceholdersReplacer" />

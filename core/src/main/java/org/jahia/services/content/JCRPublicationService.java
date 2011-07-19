@@ -360,6 +360,8 @@ public class JCRPublicationService extends JahiaService {
                     node.remove();
                 } catch (ItemNotFoundException e) {
                     logger.warn("Already deleted : "+s);
+                } catch (InvalidItemStateException e) {
+                    logger.warn("Already deleted : "+s);
                 }
             }
             sourceSession.save();

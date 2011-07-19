@@ -71,8 +71,9 @@
     </c:if>
     <ul class="navmenu level_${navMenuLevel - startLevelValue}">
         <c:forEach items="${items}" var="menuItem" varStatus="menuStatus">
-            <c:set var="inpath" value="${fn:startsWith(renderContext.mainResource.node.path, menuItem.path)}"/>
-            <c:choose>
+			<c:set var="itemPath" value="${menuItem.path}/"/>
+            <c:set var="inpath" value="${renderContext.mainResource.node.path eq menuItem.path || fn:startsWith(renderContext.mainResource.node.path, itemPath)}"/>
+			<c:choose>
                 <c:when test="${jcr:isNodeType(menuItem, 'jmix:link')}">
                     <c:set var="selected" value="${renderContext.mainResource.node.path eq menuItem.properties['j:node'].node.path}"/>
                 </c:when>

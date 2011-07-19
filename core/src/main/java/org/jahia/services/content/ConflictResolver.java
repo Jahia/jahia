@@ -153,9 +153,9 @@ public class ConflictResolver {
                 sourceVersion = null;
             }                
         }
-        logger.info("compare "+sourceNode.getPath()+" version : "+baseSourceVersion.getName()+" with (source) "+sourceNode.getBaseVersion().getName());
+        logger.debug("compare "+sourceNode.getPath()+" version : "+baseSourceVersion.getName()+" with (source) "+sourceNode.getBaseVersion().getName());
         List<Diff> sourceDiff = compare(baseSourceVersion.getFrozenNode(), sourceNode, "");
-        logger.info("compare "+targetNode.getPath()+" version : "+baseTargetVersion.getName()+" with (target) "+targetNode.getBaseVersion().getName());
+        logger.debug("compare "+targetNode.getPath()+" version : "+baseTargetVersion.getName()+" with (target) "+targetNode.getBaseVersion().getName());
         List<Diff> targetDiff = compare(baseTargetVersion.getFrozenNode(), targetNode, "");
 
         sourceDiff.removeAll(targetDiff);

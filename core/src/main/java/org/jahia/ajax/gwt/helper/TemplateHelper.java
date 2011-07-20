@@ -112,8 +112,10 @@ public class TemplateHelper {
                 @Override
                 public Map getParameterMap() {
                     Map r = new HashMap(super.getParameterMap());
-                    for (Map.Entry<String, List<String>> entry : contextParams.entrySet()) {
-                        r.put(entry.getKey(), entry.getValue().toArray(new String[entry.getValue().size()]));
+                    if (contextParams != null) {
+                        for (Map.Entry<String, List<String>> entry : contextParams.entrySet()) {
+                            r.put(entry.getKey(), entry.getValue().toArray(new String[entry.getValue().size()]));
+                        }
                     }
                     return r;
                 }

@@ -63,6 +63,7 @@ import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Row;
 import javax.jcr.query.qom.*;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -269,6 +270,19 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
 
     public void setJcrSession(JCRSessionWrapper jcrSession) {
         this.jcrSession = jcrSession;
+    }
+
+    @Override
+    protected Query getComparisonQuery(DynamicOperand left, int transform,
+            String operator, StaticOperand rigth,
+            Map<String, NodeType> selectorMap) throws RepositoryException {
+        if (left instanceof PropertyValue) {
+            PropertyValue pv = (PropertyValue) left;
+            if (pv.getPropertyName().equals("_PARENT")) {
+                return new JackrabbitTermQuery(new Term(FieldNames.PARENT, getValueString(evaluator.getValue(rigth), PropertyType.REFERENCE)));
+            }
+        } 
+        return super.getComparisonQuery(left, transform, operator, rigth, selectorMap);
     }
 
 

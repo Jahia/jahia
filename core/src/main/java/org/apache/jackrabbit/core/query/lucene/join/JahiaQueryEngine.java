@@ -38,29 +38,46 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.apache.jackrabbit.core.query;
+package org.apache.jackrabbit.core.query.lucene.join;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
-import org.apache.jackrabbit.core.query.lucene.FacetRow;
-import org.apache.jackrabbit.core.query.lucene.LuceneQueryFactory;
-import org.apache.jackrabbit.core.query.lucene.join.QueryEngine;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
-import javax.jcr.query.qom.*;
+import javax.jcr.query.qom.And;
+import javax.jcr.query.qom.Column;
+import javax.jcr.query.qom.Comparison;
+import javax.jcr.query.qom.Constraint;
+import javax.jcr.query.qom.DynamicOperand;
+import javax.jcr.query.qom.EquiJoinCondition;
+import javax.jcr.query.qom.Join;
+import javax.jcr.query.qom.LowerCase;
+import javax.jcr.query.qom.Not;
+import javax.jcr.query.qom.Or;
+import javax.jcr.query.qom.Ordering;
+import javax.jcr.query.qom.PropertyValue;
+import javax.jcr.query.qom.Selector;
+import javax.jcr.query.qom.Source;
+import javax.jcr.query.qom.UpperCase;
 
-import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.commons.JcrUtils;
+import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
+import org.apache.jackrabbit.core.query.FacetedQueryResult;
+import org.apache.jackrabbit.core.query.JahiaSimpleQueryResult;
+import org.apache.jackrabbit.core.query.lucene.FacetRow;
+import org.apache.jackrabbit.core.query.lucene.LuceneQueryFactory;
+import org.jahia.api.Constants;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 
 /**
  * Override QueryEngine :
@@ -120,12 +137,117 @@ public class JahiaQueryEngine extends QueryEngine {
 
     @Override
     protected QueryResult execute(Column[] columns, Join join, Constraint constraint, Ordering[] orderings, long offset, long limit) throws RepositoryException {
-        QueryResult result = super.execute(columns, join, constraint, orderings, offset, limit);
+        QueryResult result = isEquiJoinWithUuid(join, constraint) ? executeEquiJoin(
+                columns, join, constraint, orderings, offset, limit) : super
+                .execute(columns, join, constraint, orderings, offset, limit);
         if (!(result instanceof JahiaSimpleQueryResult)) {
             result = new JahiaSimpleQueryResult(result.getColumnNames(), result.getSelectorNames(),
                     result.getRows());
         }
         return result;
+    }
+    
+    protected boolean isEquiJoinWithUuid(Join join, Constraint constraint) {
+        boolean result = false;
+        if (join.getJoinCondition() instanceof EquiJoinCondition) {
+            EquiJoinCondition condition = (EquiJoinCondition)join.getJoinCondition();
+            if (condition.getProperty2Name().equals(Constants.JCR_UUID)) {
+                result = true;
+            }
+        }
+        return result;
+    }
+    
+    protected boolean hasLanguageConstraint(Constraint constraint) {
+        boolean languageConstraint = false;
+        if (constraint instanceof And) {
+            And and = (And) constraint;
+            languageConstraint = hasLanguageConstraint(and.getConstraint1());
+            languageConstraint = languageConstraint || hasLanguageConstraint(and.getConstraint2());
+        } else if (constraint instanceof Or) {
+            Or or = (Or) constraint;
+            languageConstraint = hasLanguageConstraint(or.getConstraint1());
+            languageConstraint = languageConstraint || hasLanguageConstraint(or.getConstraint2());
+        } else if (constraint instanceof Not) {
+            Not not = (Not) constraint;
+            languageConstraint = hasLanguageConstraint(not.getConstraint());
+        } else if (constraint instanceof Comparison) {
+            Comparison c = (Comparison) constraint;
+            languageConstraint = hasLanguageConstraint(c.getOperand1());
+        }
+        return languageConstraint;
+    }
+    
+    private boolean hasLanguageConstraint(DynamicOperand operand) {
+        boolean languageConstraint = false;        
+        if (operand instanceof LowerCase) {
+            LowerCase lower = (LowerCase) operand;
+            return hasLanguageConstraint(lower.getOperand());
+        } else if (operand instanceof PropertyValue) {
+            PropertyValue value = (PropertyValue) operand;
+            return value.getPropertyName().equals(Constants.JCR_LANGUAGE);
+        } else if (operand instanceof UpperCase) {
+            UpperCase upper = (UpperCase) operand;
+            return hasLanguageConstraint(upper.getOperand());
+        }
+        return languageConstraint;        
+    }
+    
+    protected QueryResult executeEquiJoin(
+            Column[] columns, Join join, Constraint constraint,
+            Ordering[] orderings, long offset, long limit)
+            throws RepositoryException {
+        JahiaEquiJoinMerger merger = new JahiaEquiJoinMerger(
+                join, getColumnMap(columns, getSelectorNames(join)), evaluator, qomFactory,
+                (EquiJoinCondition) join.getJoinCondition());
+        ConstraintSplitter splitter = new ConstraintSplitter(
+                constraint, qomFactory,
+                merger.getLeftSelectors(), merger.getRightSelectors());
+
+        Source left = join.getLeft();
+        Constraint leftConstraint = splitter.getLeftConstraint();
+        QueryResult leftResult =
+            execute(null, left, leftConstraint, null, 0, -1);
+        List<Row> leftRows = new ArrayList<Row>();
+        for (Row row : JcrUtils.getRows(leftResult)) {
+            leftRows.add(row);
+        }
+
+        if (hasLanguageConstraint(splitter.getRightConstraint())) {
+            merger.setIncludeTranslationNode(true);
+        }
+        
+        RowIterator rightRows;
+        Source right = join.getRight();
+        List<Constraint> rightConstraints =
+            merger.getRightJoinConstraints(leftRows);
+        if (rightConstraints.size() < 500) {
+            Constraint rightConstraint = Constraints.and(
+                    qomFactory,
+                    Constraints.or(qomFactory, rightConstraints),
+                    splitter.getRightConstraint());
+            rightRows =
+                execute(null, right, rightConstraint, null, 0, -1).getRows();
+        } else {
+            List<Row> list = new ArrayList<Row>();
+            for (int i = 0; i < rightConstraints.size(); i += 500) {
+                Constraint rightConstraint = Constraints.and(
+                        qomFactory,
+                        Constraints.or(qomFactory, rightConstraints.subList(
+                                i, Math.min(i + 500, rightConstraints.size()))),
+                        splitter.getRightConstraint());
+                QueryResult rigthResult =
+                    execute(null, right, rightConstraint, null, 0, -1);
+                for (Row row : JcrUtils.getRows(rigthResult)) {
+                    list.add(row);
+                }
+            }
+            rightRows = new RowIteratorAdapter(list);
+        }
+
+        QueryResult result =
+            merger.merge(new RowIteratorAdapter(leftRows), rightRows);
+        return sort(result, orderings, offset, limit);
     }
 
     @Override

@@ -306,9 +306,14 @@ public class QueryServiceImpl extends QueryService {
             Constraint newConstraint = null;
             if (constraint != null) {
                 newConstraint = (Constraint) ((ConstraintImpl) constraint).accept(visitor, null);
-                for (Constraint constraintToAdd : info.getNewConstraints()) {
-                    newConstraint = info.getQueryObjectModelFactory().and(newConstraint,
-                            constraintToAdd);
+            }
+            
+            for (Constraint constraintToAdd : info.getNewConstraints()) {
+                if (newConstraint == null) {
+                    newConstraint = constraintToAdd;
+                } else {
+                    newConstraint = info.getQueryObjectModelFactory().and(
+                            newConstraint, constraintToAdd);
                 }
             }
 

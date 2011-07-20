@@ -56,16 +56,20 @@ import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 /**
+ * Handles last modified date property considering translation sub-nodes.
  * @author toto
  * Date: Aug 5, 2010
  * Time: 6:08:37 PM
  */
 public class LastModifiedInterceptor extends BaseInterceptor {
+    
+    @Override
     public boolean canApplyOnProperty(JCRNodeWrapper node, ExtendedPropertyDefinition definition)
             throws RepositoryException {
         return node.getSession().getLocale() != null && definition.getDeclaringNodeType().getName().equals(MIX_LAST_MODIFIED);
     }
 
+    @Override
     public Value afterGetValue(JCRPropertyWrapper property, Value storedValue)
             throws ValueFormatException, RepositoryException {
         try {

@@ -608,7 +608,7 @@
                 </profile-page-items>
             </contents>
             <portlets jcr:primaryType="jnt:portletFolder" />
-            <home changefreq="monthly" j:isHomePage="true" j:templateNode="/templateSets/templates-system/templates/base/home" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
+            <home j:isHomePage="true" j:templateNode="/templateSets/templates-system/templates/base/home" jcr:primaryType="jnt:page" >
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Home" />
                 <j:translation_de jcr:language="de" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Start" />
             </home>

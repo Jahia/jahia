@@ -299,8 +299,16 @@ public class DocumentViewImportHandler extends DefaultHandler {
                         }
                     }
                     nodes.peek().checkout();
-                    child = nodes.peek().addNode(decodedQName, pt, uuid, created, createdBy, lastModified, lastModifiedBy);
-
+                    try {
+                        child = nodes.peek().addNode(decodedQName, pt, uuid, created, createdBy, lastModified, lastModifiedBy);
+                    } catch (ConstraintViolationException e) {
+                        if (pathes.size() <= 2 && nodes.peek().getName().equals(decodedQName) && nodes.peek().getPrimaryNodeTypeName().equals(pt)) {
+                            session.getPathMapping().put("/" + decodedQName, nodes.peek().getPath().equals("/") ? "" : nodes.peek().getPath());
+                            return;
+                        } else {
+                            throw e;
+                        }
+                    }
                     addMixins(child, atts);
 
                     boolean contentFound = findContent();

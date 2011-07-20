@@ -52,6 +52,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Render;
+import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
@@ -151,21 +152,23 @@ class UrlRewriteEngine extends UrlRewriter {
     protected RewrittenOutboundUrl processEncodeURL(HttpServletResponse hsResponse, HttpServletRequest hsRequest, boolean encodeUrlHasBeenRun, String outboundUrl) {
         try {
             if (outboundUrl.startsWith(hsRequest.getContextPath()+ Render.getRenderServletPath())) {
-                String url = StringUtils.substringAfter(outboundUrl,hsRequest.getContextPath()+"/cms");
-                URLResolver urlResolver = urlResolverFactory.createURLResolver(url, hsRequest.getServerName() ,hsRequest);
-                if (urlResolver.isMapped()) {
-                    try {
-                        VanityUrl vanityUrl = vanityUrlService
-                                .getVanityUrlForWorkspaceAndLocale(
-                                        urlResolver.getNode(),
-                                        urlResolver.getWorkspace(),
-                                        urlResolver.getLocale());
-                        if (vanityUrl != null) {
-                            outboundUrl = outboundUrl.replace("/" + urlResolver.getLocale()
-                                    + urlResolver.getPath(), vanityUrl.getUrl());
+                if (StringUtils.isNotEmpty(outboundUrl) && !URLGenerator.isLocalhost(hsRequest.getServerName())) {
+                    String url = StringUtils.substringAfter(outboundUrl,hsRequest.getContextPath()+"/cms");
+                    URLResolver urlResolver = urlResolverFactory.createURLResolver(url, hsRequest.getServerName() ,hsRequest);
+                    if (urlResolver.isMapped()) {
+                        try {
+                            VanityUrl vanityUrl = vanityUrlService
+                                    .getVanityUrlForWorkspaceAndLocale(
+                                            urlResolver.getNode(),
+                                            urlResolver.getWorkspace(),
+                                            urlResolver.getLocale());
+                            if (vanityUrl != null) {
+                                outboundUrl = outboundUrl.replace("/" + urlResolver.getLocale()
+                                        + urlResolver.getPath(), vanityUrl.getUrl());
+                            }
+                        } catch (RepositoryException e) {
+                            logger.debug("Error when trying to obtain vanity url", e);
                         }
-                    } catch (RepositoryException e) {
-                        logger.debug("Error when trying to obtain vanity url", e);
                     }
                 }
             }

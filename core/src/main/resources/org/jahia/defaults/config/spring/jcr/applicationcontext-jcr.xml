@@ -188,6 +188,10 @@
         <property name="selectors" value="RichText"/>
     </bean>
 
+    <bean id="propertyInterceptorRegistrator" class="org.jahia.services.content.interceptor.PropertyInterceptorRegistrator" abstract="true">
+        <property name="jcrStoreService" ref="JCRStoreService"/>
+    </bean>
+    
     <bean id="jcrVersionService" class="org.jahia.services.content.JCRVersionService" factory-method="getInstance">
     </bean>
 

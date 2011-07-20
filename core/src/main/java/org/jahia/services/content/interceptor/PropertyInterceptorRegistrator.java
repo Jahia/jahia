@@ -1,0 +1,123 @@
+/**
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2011 Jahia Solutions Group SA. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ *
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+
+package org.jahia.services.content.interceptor;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.jcr.PropertyType;
+
+import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.nodetypes.SelectorType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+
+/**
+ * Helper bean for registering {@link PropertyInterceptor} instances within {@link JCRStoreService}.
+ * 
+ * @author Sergiy Shyrkov
+ */
+public class PropertyInterceptorRegistrator implements InitializingBean, DisposableBean {
+
+    private static final Logger logger = LoggerFactory
+            .getLogger(PropertyInterceptorRegistrator.class);
+
+    private JCRStoreService jcrStoreService;
+
+    private int position;
+
+    private PropertyInterceptor propertyInterceptor;
+
+    public void afterPropertiesSet() throws Exception {
+        if (propertyInterceptor != null) {
+            if (propertyInterceptor instanceof BaseInterceptor) {
+                Set<String> requiredTypes = new HashSet<String>();
+                for (Integer type : ((BaseInterceptor) propertyInterceptor).getRequiredTypes()) {
+                    requiredTypes.add(PropertyType.nameFromValue(type));
+                }
+                Set<String> selectors = new HashSet<String>();
+                for (Integer selector : ((BaseInterceptor) propertyInterceptor).getSelectors()) {
+                    selectors.add(SelectorType.nameFromValue(selector));
+                }
+
+                logger.info("Registering property interceptor "
+                        + propertyInterceptor.getClass().getName() + " for types " + requiredTypes
+                        + " and selectors " + selectors);
+
+            } else {
+                logger.info("Registering property interceptor {}", propertyInterceptor.getClass()
+                        .getName());
+            }
+
+            jcrStoreService.removeInterceptor(propertyInterceptor);
+
+            if (position != -1) {
+                jcrStoreService.addInterceptor(position, propertyInterceptor);
+            } else {
+                jcrStoreService.addInterceptor(propertyInterceptor);
+            }
+        }
+    }
+
+    public void destroy() throws Exception {
+        if (jcrStoreService != null && propertyInterceptor != null) {
+            if (propertyInterceptor instanceof BaseInterceptor) {
+                logger.info("Unregistering property interceptor "
+                        + propertyInterceptor.getClass().getName() + " for types "
+                        + ((BaseInterceptor) propertyInterceptor).getRequiredTypes()
+                        + " and selectors "
+                        + ((BaseInterceptor) propertyInterceptor).getSelectors());
+
+            } else {
+                logger.info("Unregistering property interceptor {}", propertyInterceptor.getClass()
+                        .getName());
+            }
+
+            jcrStoreService.removeInterceptor(propertyInterceptor);
+        }
+    }
+
+    public void setJcrStoreService(JCRStoreService jcrStoreService) {
+        this.jcrStoreService = jcrStoreService;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public void setPropertyInterceptor(PropertyInterceptor propertyInterceptor) {
+        this.propertyInterceptor = propertyInterceptor;
+    }
+}

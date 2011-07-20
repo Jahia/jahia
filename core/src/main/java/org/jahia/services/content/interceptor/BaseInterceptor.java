@@ -51,6 +51,8 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -107,12 +109,34 @@ public abstract class BaseInterceptor implements PropertyInterceptor {
                         .contains(definition.getSelector()));
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+
+        if (obj == null || obj.getClass() != getClass()) {
+            return false;
+        }
+
+        BaseInterceptor rhs = (BaseInterceptor) obj;
+        return new EqualsBuilder().appendSuper(super.equals(obj))
+                .append(getRequiredTypes(), rhs.getRequiredTypes())
+                .append(getSelectors(), rhs.getSelectors()).isEquals();
+    }
+
     protected Set<Integer> getRequiredTypes() {
         return requiredTypes;
     }
 
     protected Set<Integer> getSelectors() {
         return selectors;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(19, 37).append(getRequiredTypes()).append(getSelectors())
+                .toHashCode();
     }
 
     public void setRequiredTypes(Set<String> requiredTypes) {
@@ -132,5 +156,4 @@ public abstract class BaseInterceptor implements PropertyInterceptor {
             }
         }
     }
-
 }

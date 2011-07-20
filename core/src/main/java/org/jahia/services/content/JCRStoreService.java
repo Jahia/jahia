@@ -62,6 +62,7 @@ import javax.jcr.Workspace;
 import javax.jcr.observation.ObservationManager;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,19 +75,9 @@ import java.util.Set;
  */
 public class JCRStoreService extends JahiaService implements JahiaAfterInitializationService {
     
-    private static Logger logger = LoggerFactory.getLogger(JCRStoreService.class);
-
-    private Map<String, String> decorators = new HashMap<String, String>();
-
-    private InterceptorChain interceptorChain;
-
     static private JCRStoreService instance = null;
-    private JCRSessionFactory sessionFactory;
 
-    private Map<String,List<DefaultEventListener>> listeners;
-
-    protected JCRStoreService() {
-    }
+    private static Logger logger = LoggerFactory.getLogger(JCRStoreService.class);
 
     public static JCRStoreService getInstance() {
         if (instance == null) {
@@ -99,111 +90,38 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         return instance;
     }
 
-    public void setSessionFactory(JCRSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    private Map<String, String> decorators = new HashMap<String, String>();
+    private InterceptorChain interceptorChain;
+
+    private List<PropertyInterceptor> interceptors = new LinkedList<PropertyInterceptor>();
+
+    private Map<String,List<DefaultEventListener>> listeners;
+
+    private JCRSessionFactory sessionFactory;
+
+    protected JCRStoreService() {
+        super();
     }
 
-    public JCRSessionFactory getSessionFactory() {
-        return sessionFactory;
+    /**
+     * Adds an interceptor to the chain.
+     * 
+     * @param index index at which the specified element is to be inserted.
+     * @param interceptor the interceptor instance
+     */
+    public void addInterceptor(int index, PropertyInterceptor interceptor) {
+        this.interceptors.add(index, interceptor);
+        interceptorChain = null;
     }
 
-    public void start() throws JahiaInitializationException {
-        try {
-            NamespaceRegistry nsRegistry = sessionFactory.getNamespaceRegistry();
-            NodeTypeRegistry ntRegistry = NodeTypeRegistry.getInstance();
-            Set<String> prefixes = ImmutableSet.copyOf(nsRegistry.getPrefixes());
-            for (Map.Entry<String, String> namespaceEntry : ntRegistry.getNamespaces().entrySet()) {
-                if (!prefixes.contains(namespaceEntry.getKey())) {
-                    nsRegistry
-                            .registerNamespace(namespaceEntry.getKey(), namespaceEntry.getValue());
-                }
-            }
-
-            initObservers(listeners);
-        } catch (Exception e) {
-            logger.error("Repository init error", e);
-        }
-    }
-
-    public Map<String, String> getDecorators() {
-        return decorators;
-    }
-
-    public void setDecorators(Map<String, String> decorators) {
-        this.decorators = decorators;
-    }
-
-    public void setListeners(Map<String, List<DefaultEventListener>> listeners) {
-        this.listeners = listeners;
-    }
-
-    public void setInterceptors(List<PropertyInterceptor> interceptors) {
-        interceptorChain = new InterceptorChain();
-        interceptorChain.setInterceptors(interceptors);
-    }
-
-    public InterceptorChain getInterceptorChain() {
-        return interceptorChain;
-    }
-
-    public Map<String, List<DefaultEventListener>> getListeners() {
-        return listeners;
-    }
-
-    private void initObservers(Map<String, List<DefaultEventListener>> listeners) throws RepositoryException {
-        if (listeners != null) {
-            for (String ws : listeners.keySet()) {
-                List<DefaultEventListener> l = listeners.get(ws);
-
-                // This session must not be released
-                final Session session = getSessionFactory().getSystemSession(null,ws);
-                final Workspace workspace = session.getWorkspace();
-
-                ObservationManager observationManager = workspace.getObservationManager();
-                for (DefaultEventListener listener : l) {
-                	if (listener.getEventTypes() > 0) {
-	                    listener.setWorkspace(ws);
-	                    observationManager.addEventListener(listener, listener.getEventTypes(), listener.getPath(), listener.isDeep(), listener.getUuids(), listener.getNodeTypes(), false);
-                	} else {
-						logger.info("Skipping listener {} as it has no event types configured.",
-						        listener.getClass().getName());
-                	}
-                }
-            }
-        }
-    }
-
-    public void stop() throws JahiaException {
-    }
-
-    public void deployDefinitions(String systemId) {
-        for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
-            if (provider.canRegisterCustomNodeTypes()) {
-                provider.deployDefinitions(systemId);
-            }
-        }
-    }
-
-    public void deployExternalUser(JahiaUser jahiaUser) throws RepositoryException {
-        JCRStoreProvider provider = sessionFactory.getMountPoints().get("/");
-        provider.deployExternalUser(jahiaUser);
-        ServicesRegistry.getInstance().getJahiaUserManagerService().updateCache(jahiaUser);
-    }
-
-    public JCRNodeWrapper getUserFolder(JahiaUser user) throws RepositoryException {
-        return sessionFactory.getMountPoints().get("/").getUserFolder(user);
-    }
-
-    public List<JCRNodeWrapper> getImportDropBoxes(String site, JahiaUser user) {
-        List<JCRNodeWrapper> r = new ArrayList<JCRNodeWrapper>();
-        for (JCRStoreProvider storeProvider : sessionFactory.getMountPoints().values()) {
-            try {
-                r.addAll(storeProvider.getImportDropBoxes(site, user));
-            } catch (RepositoryException e) {
-                logger.warn("Error when querying repository", e);
-            }
-        }
-        return r;
+    /**
+     * Adds an interceptor to the chain.
+     * 
+     * @param interceptor the interceptor instance
+     */
+    public void addInterceptor(PropertyInterceptor interceptor) {
+        this.interceptors.add(interceptor);
+        interceptorChain = null;
     }
 
     public JCRNodeWrapper decorate(JCRNodeWrapper w) {
@@ -224,6 +142,57 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         return w;
     }
 
+    public void deployDefinitions(String systemId) {
+        for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
+            if (provider.canRegisterCustomNodeTypes()) {
+                provider.deployDefinitions(systemId);
+            }
+        }
+    }
+
+    public void deployExternalUser(JahiaUser jahiaUser) throws RepositoryException {
+        JCRStoreProvider provider = sessionFactory.getMountPoints().get("/");
+        provider.deployExternalUser(jahiaUser);
+        ServicesRegistry.getInstance().getJahiaUserManagerService().updateCache(jahiaUser);
+    }
+
+    public Map<String, String> getDecorators() {
+        return decorators;
+    }
+
+    public List<JCRNodeWrapper> getImportDropBoxes(String site, JahiaUser user) {
+        List<JCRNodeWrapper> r = new ArrayList<JCRNodeWrapper>();
+        for (JCRStoreProvider storeProvider : sessionFactory.getMountPoints().values()) {
+            try {
+                r.addAll(storeProvider.getImportDropBoxes(site, user));
+            } catch (RepositoryException e) {
+                logger.warn("Error when querying repository", e);
+            }
+        }
+        return r;
+    }
+
+    public InterceptorChain getInterceptorChain() {
+        if (interceptorChain == null) {
+            interceptorChain = new InterceptorChain();
+            interceptorChain.setInterceptors(interceptors);
+        }
+        
+        return interceptorChain;
+    }
+    
+    public Map<String, List<DefaultEventListener>> getListeners() {
+        return listeners;
+    }
+    
+    public JCRSessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
+    public JCRNodeWrapper getUserFolder(JahiaUser user) throws RepositoryException {
+        return sessionFactory.getMountPoints().get("/").getUserFolder(user);
+    }
+
     public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
@@ -235,5 +204,81 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         } catch (RepositoryException e) {
             throw new JahiaInitializationException("Cannot register permissions",e);
         }
+    }
+
+    private void initObservers(Map<String, List<DefaultEventListener>> listeners)
+            throws RepositoryException {
+        if (listeners != null) {
+            for (String ws : listeners.keySet()) {
+                List<DefaultEventListener> l = listeners.get(ws);
+
+                // This session must not be released
+                final Session session = getSessionFactory().getSystemSession(null, ws);
+                final Workspace workspace = session.getWorkspace();
+
+                ObservationManager observationManager = workspace.getObservationManager();
+                for (DefaultEventListener listener : l) {
+                    if (listener.getEventTypes() > 0) {
+                        listener.setWorkspace(ws);
+                        observationManager.addEventListener(listener, listener.getEventTypes(),
+                                listener.getPath(), listener.isDeep(), listener.getUuids(),
+                                listener.getNodeTypes(), false);
+                    } else {
+                        logger.info("Skipping listener {} as it has no event types configured.",
+                                listener.getClass().getName());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Removes the specififed interceptor from the chain.
+     * 
+     * @param interceptor
+     *            the interceptor instance
+     */
+    public void removeInterceptor(PropertyInterceptor interceptor) {
+        if (this.interceptors.remove(interceptor)) {
+            interceptorChain = null;
+        }
+    }
+
+    public void setDecorators(Map<String, String> decorators) {
+        this.decorators = decorators;
+    }
+
+    public void setInterceptors(List<PropertyInterceptor> interceptors) {
+        this.interceptors.addAll(interceptors);
+        interceptorChain = null;
+    }
+
+    public void setListeners(Map<String, List<DefaultEventListener>> listeners) {
+        this.listeners = listeners;
+    }
+
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public void start() throws JahiaInitializationException {
+        try {
+            NamespaceRegistry nsRegistry = sessionFactory.getNamespaceRegistry();
+            NodeTypeRegistry ntRegistry = NodeTypeRegistry.getInstance();
+            Set<String> prefixes = ImmutableSet.copyOf(nsRegistry.getPrefixes());
+            for (Map.Entry<String, String> namespaceEntry : ntRegistry.getNamespaces().entrySet()) {
+                if (!prefixes.contains(namespaceEntry.getKey())) {
+                    nsRegistry
+                            .registerNamespace(namespaceEntry.getKey(), namespaceEntry.getValue());
+                }
+            }
+
+            initObservers(listeners);
+        } catch (Exception e) {
+            logger.error("Repository init error", e);
+        }
+    }
+
+    public void stop() throws JahiaException {
     }
 }

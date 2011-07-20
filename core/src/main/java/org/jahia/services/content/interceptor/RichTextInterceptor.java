@@ -40,24 +40,32 @@
 
 package org.jahia.services.content.interceptor;
 
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
+import java.util.Set;
 
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import javax.jcr.PropertyType;
+
 import org.jahia.services.content.nodetypes.SelectorType;
 
+import com.google.common.collect.ImmutableSet;
+
 /**
- * Property interceptor that is applied on rich text properties. Needs to be
- * subclassed to perform value modifications.
+ * Property interceptor that is applied on rich text properties. Needs to be subclassed to perform value modifications.
  * 
  * @author Sergiy Shyrkov
  */
 public class RichTextInterceptor extends BaseInterceptor {
 
-	public boolean canApplyOnProperty(JCRNodeWrapper node, ExtendedPropertyDefinition definition)
-	        throws RepositoryException {
-		return definition.getRequiredType() == PropertyType.STRING
-		        && definition.getSelector() == SelectorType.RICHTEXT;
-	}
+    private static final Set<Integer> SELECTORS = ImmutableSet.of(SelectorType.RICHTEXT);
+
+    private static final Set<Integer> TYPES = ImmutableSet.of(PropertyType.STRING);
+
+    @Override
+    protected Set<Integer> getRequiredTypes() {
+        return TYPES;
+    }
+
+    @Override
+    protected Set<Integer> getSelectors() {
+        return SELECTORS;
+    }
 }

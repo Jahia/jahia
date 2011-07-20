@@ -171,14 +171,21 @@
         <property name="interceptors">
             <list>
                 <bean class="org.jahia.services.content.interceptor.LastModifiedInterceptor"/>
-                <bean class="org.jahia.services.content.interceptor.HtmlFilteringInterceptor">
+                <bean class="org.jahia.services.content.interceptor.HtmlFilteringInterceptor" parent="abstractRichTextPropertyInterceptor">
                     <property name="considerSiteSettingsForFiltering" value="true"/>
+                    <!-- if removeContentBetweenTags is set to true also the content between the filtereed tags will be removed -->
+                    <property name="removeContentBetweenTags" value="false"/>
                 </bean>
-                <bean class="org.jahia.services.content.interceptor.URLInterceptor">
+                <bean class="org.jahia.services.content.interceptor.URLInterceptor" parent="abstractRichTextPropertyInterceptor">
                     <constructor-arg ref="org.jahia.services.render.filter.URLTraverser"/>
                 </bean>
             </list>
         </property>
+    </bean>
+    
+    <bean id="abstractRichTextPropertyInterceptor" class="org.jahia.services.content.interceptor.BaseInterceptor" abstract="true">
+        <property name="requiredTypes" value="String"/>
+        <property name="selectors" value="RichText"/>
     </bean>
 
     <bean id="jcrVersionService" class="org.jahia.services.content.JCRVersionService" factory-method="getInstance">

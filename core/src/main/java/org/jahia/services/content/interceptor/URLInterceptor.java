@@ -75,7 +75,7 @@ import java.util.regex.Pattern;
  * jmix:referenceInField child nodes.
  *
  */
-public class URLInterceptor extends RichTextInterceptor implements InitializingBean {
+public class URLInterceptor extends BaseInterceptor implements InitializingBean {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(URLInterceptor.class);
 

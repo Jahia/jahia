@@ -51,6 +51,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
+import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.EndTag;
 import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Source;
@@ -65,145 +66,13 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.sites.SitesSettings;
 
 /**
- * Filters out unwanted HTML elements from the rich text property values before
- * saving.
+ * Filters out unwanted HTML elements from the rich text property values before saving.
  * 
  * @author Sergiy Shyrkov
  */
-public class HtmlFilteringInterceptor extends RichTextInterceptor {
+public class HtmlFilteringInterceptor extends BaseInterceptor {
 
-	private static Logger logger = LoggerFactory.getLogger(HtmlFilteringInterceptor.class);
-
-	/**
-	 * Filters out configured "unwanted" HTML tags and returns the modified
-	 * content. If no modifications needs to be done, returns the original
-	 * content.
-	 * 
-	 * @param content
-	 *            the content to be modified
-	 * @param filteredTags
-	 *            the set of tags to be filtered out
-	 * @return filtered out content or the original one if no modifications
-	 *         needs to be done
-	 */
-	protected static String filterTags(String content, Set<String> filteredTags) {
-		if (filteredTags.isEmpty()) {
-			return content;
-		}
-
-		long timer = System.currentTimeMillis();
-		boolean modified = false;
-
-		Source src = new Source(content);
-		OutputDocument out = new OutputDocument(src);
-		for (String filteredTagName : filteredTags) {
-			for (StartTag startTag : src.getAllStartTags(filteredTagName)) {
-				if (startTag.getTagType() == StartTagType.NORMAL) {
-					EndTag endTag = startTag.getElement().getEndTag();
-					out.remove(startTag);
-					if (endTag != null) {
-						out.remove(endTag);
-					}
-					modified = true;
-				}
-			}
-		}
-		String result = modified ? out.toString() : content;
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("Filter HTML tags took " + (System.currentTimeMillis() - timer) + " ms");
-		}
-
-		return result;
-	}
-
-	private Set<String> filteredTags = Collections.emptySet();
-	
-	private boolean considerSiteSettingsForFiltering;
-
-	@Override
-	public Value beforeSetValue(JCRNodeWrapper node, String name,
-	        ExtendedPropertyDefinition definition, Value originalValue)
-	        throws ValueFormatException, VersionException, LockException,
-	        ConstraintViolationException, RepositoryException {
-	    
-        String content = originalValue.getString();
-        if (StringUtils.isEmpty(content) || !content.contains("<")) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("The value does not contain any HTML tags. Skip filtering.");
-            }
-            return originalValue;
-        }
-
-	    Set<String> tags = filteredTags;
-	    boolean doFiltering = false;
-	    if (considerSiteSettingsForFiltering) {
-	        if (node.getResolveSite().hasProperty(SitesSettings.HTML_MARKUP_FILTERING_ENABLED)) {
-                tags = convertToTagSet(node.getResolveSite().hasProperty(
-                        SitesSettings.HTML_MARKUP_FILTERING_TAGS) ? node.getResolveSite()
-                        .getProperty(SitesSettings.HTML_MARKUP_FILTERING_TAGS).getString() : null);
-                if (tags != null && !tags.isEmpty()) {
-                    doFiltering = true;
-                }
-	        }
-	    } else if (filteredTags != null && !filteredTags.isEmpty()) {
-	        doFiltering = true;
-	    }
-	    
-		if (!doFiltering) {
-			return originalValue;
-		}
-
-		Value modifiedValue = originalValue;
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("Performing HTML tag filtering for " + node.getPath() + "/" + name);
-			if (logger.isTraceEnabled()) {
-				logger.trace("Original value: " + content);
-			}
-		}
-
-        String result = filterTags(content, tags);
-        if (result != content && !result.equals(content)) {
-            modifiedValue = node.getSession().getValueFactory().createValue(result);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Done filtering of \"unwanted\" HTML tags.");
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Modified value: " + result);
-                }
-            }
-        } else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("The value does not contain HTML tags that needs to be removed. The content remains unchanged.");
-            }
-        }
-
-		return modifiedValue;
-	}
-
-	@Override
-	public Value[] beforeSetValues(JCRNodeWrapper node, String name,
-	        ExtendedPropertyDefinition definition, Value[] originalValues)
-	        throws ValueFormatException, VersionException, LockException,
-	        ConstraintViolationException, RepositoryException {
-		Value[] res = new Value[originalValues.length];
-
-		for (int i = 0; i < originalValues.length; i++) {
-			Value originalValue = originalValues[i];
-			res[i] = beforeSetValue(node, name, definition, originalValue);
-		}
-		return res;
-	}
-
-    public void setFilteredTags(String tagsToFilter) {
-        this.filteredTags = convertToTagSet(tagsToFilter);
-
-        if (this.filteredTags == null || this.filteredTags.isEmpty()) {
-            logger.info("No HTML tag filtering configured. Interceptor will be disabled.");
-        } else {
-            logger.info("HTML tag filtering configured fo tags: " + tagsToFilter);
-        }
-    }
+    private static Logger logger = LoggerFactory.getLogger(HtmlFilteringInterceptor.class);
 
     private static Set<String> convertToTagSet(String tags) {
         if (StringUtils.isEmpty(tags)) {
@@ -221,8 +90,173 @@ public class HtmlFilteringInterceptor extends RichTextInterceptor {
         return tagSet;
     }
 
+    /**
+     * Filters out configured "unwanted" HTML tags and returns the modified content. If no modifications needs to be done, returns the
+     * original content.
+     * 
+     * @param content
+     *            the content to be modified
+     * @param filteredTags
+     *            the set of tags to be filtered out
+     * @return filtered out content or the original one if no modifications needs to be done
+     * @deprecated since 6.5 SP1 use the {@link #filterTags(String, Set, boolean)} instead 
+     * @Deprecated
+     */
+    protected static String filterTags(String content, Set<String> filteredTags) {
+        return filterTags(content, filteredTags, false);
+    }
+
+    /**
+     * Filters out configured "unwanted" HTML tags and returns the modified content. If no modifications needs to be done, returns the
+     * original content.
+     * 
+     * @param content
+     *            the content to be modified
+     * @param filteredTags
+     *            the set of tags to be filtered out
+     * @param removeContentBetweenTags
+     *            if set to <code>true</code> the content between the start and end tag elements will be also removed from the output;
+     *            otherwise only start and end tags themselves are removed.
+     * @return filtered out content or the original one if no modifications needs to be done
+     */
+    protected static String filterTags(String content, Set<String> filteredTags, boolean removeContentBetweenTags) {
+        if (filteredTags.isEmpty()) {
+            return content;
+        }
+
+        long timer = System.currentTimeMillis();
+        boolean modified = false;
+
+        Source src = new Source(content);
+        OutputDocument out = new OutputDocument(src);
+        for (String filteredTagName : filteredTags) {
+            for (StartTag startTag : src.getAllStartTags(filteredTagName)) {
+                if (startTag.getTagType() == StartTagType.NORMAL) {
+                    Element element = startTag.getElement();
+                    EndTag endTag = element.getEndTag();
+                    if (removeContentBetweenTags && endTag != null) {
+                        out.remove(element);
+                    } else {
+                        out.remove(startTag);
+                        if (endTag != null) {
+                            out.remove(endTag);
+                        }
+                    }
+                    modified = true;
+                }
+            }
+        }
+        String result = modified ? out.toString() : content;
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Filter HTML tags took " + (System.currentTimeMillis() - timer) + " ms");
+        }
+
+        return result;
+    }
+    private boolean considerSiteSettingsForFiltering;
+
+    private Set<String> filteredTags = Collections.emptySet();
+
+    private boolean removeContentBetweenTags;
+
+    @Override
+    public Value beforeSetValue(JCRNodeWrapper node, String name,
+            ExtendedPropertyDefinition definition, Value originalValue)
+            throws ValueFormatException, VersionException, LockException,
+            ConstraintViolationException, RepositoryException {
+
+        String content = originalValue.getString();
+        if (StringUtils.isEmpty(content) || !content.contains("<")) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("The value does not contain any HTML tags. Skip filtering.");
+            }
+            return originalValue;
+        }
+
+        Set<String> tags = filteredTags;
+        boolean doFiltering = false;
+        if (considerSiteSettingsForFiltering) {
+            if (node.getResolveSite().hasProperty(SitesSettings.HTML_MARKUP_FILTERING_ENABLED)) {
+                tags = convertToTagSet(node.getResolveSite().hasProperty(
+                        SitesSettings.HTML_MARKUP_FILTERING_TAGS) ? node.getResolveSite()
+                        .getProperty(SitesSettings.HTML_MARKUP_FILTERING_TAGS).getString() : null);
+                if (tags != null && !tags.isEmpty()) {
+                    doFiltering = true;
+                }
+            }
+        } else if (filteredTags != null && !filteredTags.isEmpty()) {
+            doFiltering = true;
+        }
+
+        if (!doFiltering) {
+            return originalValue;
+        }
+
+        Value modifiedValue = originalValue;
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Performing HTML tag filtering for " + node.getPath() + "/" + name);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Original value: " + content);
+            }
+        }
+
+        String result = filterTags(content, tags, removeContentBetweenTags);
+        if (result != content && !result.equals(content)) {
+            modifiedValue = node.getSession().getValueFactory().createValue(result);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Done filtering of \"unwanted\" HTML tags.");
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Modified value: " + result);
+                }
+            }
+        } else {
+            if (logger.isDebugEnabled()) {
+                logger.debug("The value does not contain HTML tags that needs to be removed. The content remains unchanged.");
+            }
+        }
+
+        return modifiedValue;
+    }
+
+    @Override
+    public Value[] beforeSetValues(JCRNodeWrapper node, String name,
+            ExtendedPropertyDefinition definition, Value[] originalValues)
+            throws ValueFormatException, VersionException, LockException,
+            ConstraintViolationException, RepositoryException {
+        Value[] res = new Value[originalValues.length];
+
+        for (int i = 0; i < originalValues.length; i++) {
+            Value originalValue = originalValues[i];
+            res[i] = beforeSetValue(node, name, definition, originalValue);
+        }
+        return res;
+    }
+
     public void setConsiderSiteSettingsForFiltering(boolean considerSiteSettingsForFiltering) {
         this.considerSiteSettingsForFiltering = considerSiteSettingsForFiltering;
+    }
+
+    public void setFilteredTags(String tagsToFilter) {
+        this.filteredTags = convertToTagSet(tagsToFilter);
+
+        if (this.filteredTags == null || this.filteredTags.isEmpty()) {
+            logger.info("No HTML tag filtering configured. Interceptor will be disabled.");
+        } else {
+            logger.info("HTML tag filtering configured fo tags: " + tagsToFilter);
+        }
+    }
+
+    /**
+     * if set to <code>true</code> the content between the start and end tag elements will be also removed from the output; otherwise only
+     * start and end tags themselves are removed.
+     * 
+     * @param removeContentBetweenTags
+     *            do we remove the content between tag elements?
+     */
+    public void setRemoveContentBetweenTags(boolean removeContentBetweenTags) {
+        this.removeContentBetweenTags = removeContentBetweenTags;
     }
 
 }

@@ -62,6 +62,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -101,12 +102,12 @@ public class LayoutTabItem extends PropertiesTabItem {
             final ComboBox<GWTJahiaValueDisplayBean> subNodesViewField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:subNodesView");
             listener = new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
                 public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> se) {
-                    Map<String, String> contextParams = new HashMap<String, String>();
+                    Map<String, List<String>> contextParams = new HashMap<String, List<String>>();
                     if (skinField != null && skinField.getValue() != null) {
-                        contextParams.put("forcedSkin", skinField.getValue().getValue());
+                        contextParams.put("forcedSkin", Arrays.asList(skinField.getValue().getValue()));
                     }
                     if (subNodesViewField != null && subNodesViewField.getValue() != null) {
-                        contextParams.put("forcedSubNodesTemplate", subNodesViewField.getValue().getValue());
+                        contextParams.put("forcedSubNodesTemplate", Arrays.asList(subNodesViewField.getValue().getValue()));
                     }
                     String template = (templateField != null && templateField.getValue() != null) ? templateField.getValue().getValue() : null;
                     if (engine.getNode() != null) {

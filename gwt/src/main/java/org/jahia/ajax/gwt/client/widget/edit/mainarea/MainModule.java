@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
@@ -73,6 +74,7 @@ import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem;
 
+import java.net.URLDecoder;
 import java.util.*;
 
 /**
@@ -474,12 +476,16 @@ public class MainModule extends Module {
     }
 
     public void handleNewMainSelection(String path, String template, String param) {
-        Map<String,String> params = null;
+        Map<String,List<String>> params = null;
         if (param != null && param.length() > 0) {
-            params = new HashMap<String,String>();
+            params = new HashMap<String,List<String>>();
             for (String s : param.split("&")) {
                 final String[] key = s.split("=");
-                params.put(key[0], key[1]);
+                String decodedKey = URL.decode(key[0]);
+                if (!params.containsKey(decodedKey)) {
+                    params.put(decodedKey, new ArrayList<String>());
+                }
+                params.get(decodedKey).add(URL.decode(key[1]));
             }
         }
 

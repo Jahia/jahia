@@ -90,7 +90,7 @@ public class TemplateHelper {
      * @param currentUserSession
      */
     public GWTRenderResult getRenderedContent(String path, String template, String configuration,
-                                              final Map<String, String> contextParams, boolean editMode, String configName,
+                                              final Map<String, List<String>> contextParams, boolean editMode, String configName,
                                               HttpServletRequest request, HttpServletResponse response,
                                               JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         GWTRenderResult result = null;
@@ -104,9 +104,32 @@ public class TemplateHelper {
                 @Override
                 public String getParameter(String name) {
                     if (contextParams != null && contextParams.containsKey(name)) {
-                        return contextParams.get(name);
+                        return contextParams.get(name).get(0);
                     }
                     return super.getParameter(name);
+                }
+
+                @Override
+                public Map getParameterMap() {
+                    Map r = new HashMap(super.getParameterMap());
+                    for (Map.Entry<String, List<String>> entry : contextParams.entrySet()) {
+                        r.put(entry.getKey(), entry.getValue().toArray(new String[entry.getValue().size()]));
+                    }
+                    return r;
+                }
+
+                @Override
+                public Enumeration getParameterNames() {
+                    return new Vector(getParameterMap().keySet()).elements();
+                }
+
+                @Override
+                public String[] getParameterValues(String name) {
+                    if (contextParams != null && contextParams.containsKey(name)) {
+                        List<String> list = contextParams.get(name);
+                        return list.toArray(new String[list.size()]);
+                    }
+                    return super.getParameterValues(name);
                 }
             };
 
@@ -132,8 +155,8 @@ public class TemplateHelper {
             }
 
             if (contextParams != null) {
-                for (Map.Entry<String, String> entry : contextParams.entrySet()) {
-                    r.getModuleParams().put(entry.getKey(), entry.getValue());
+                for (Map.Entry<String, List<String>> entry : contextParams.entrySet()) {
+                    r.getModuleParams().put(entry.getKey(), entry.getValue().get(0));
                 }
             }
 

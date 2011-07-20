@@ -1009,7 +1009,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template,
-                                              String configuration, Map<String, String> contextParams, boolean editMode,
+                                              String configuration, Map<String, List<String>> contextParams, boolean editMode,
                                               String configName) throws GWTJahiaServiceException {
         Locale localValue = getLocale();
         if (locale != null) {

@@ -277,16 +277,16 @@ public class ModuleHelper {
             String link = DOM.getElementAttribute(element, "href");
             if (link.startsWith(baseUrl)) {
                 String path = link.substring(baseUrl.length());
+                String params = "";
+                if (path.indexOf('?') > 0) {
+                    params = path.substring(path.indexOf('?') + 1);
+                    path = path.substring(0, path.indexOf('?'));
+                }
                 String template = path.substring(path.indexOf('.') + 1);
                 if (template.contains(".")) {
                     template = template.substring(0, template.lastIndexOf('.'));
                 } else {
                     template = null;
-                }
-                String params = "";
-                if (path.indexOf('?') > 0) {
-                    params = path.substring(path.indexOf('?') + 1);
-                    path = path.substring(0, path.indexOf('?'));
                 }
                 if (path.indexOf('.') > -1) {
                     path = path.substring(0, path.indexOf('.'));

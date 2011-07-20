@@ -65,3 +65,82 @@ Others scripts
 There are other tests in the scripts/jmeter directory that focus on specific topics, so feel free to look at them. Some
 of them may have some requirements such as creating an ACME site first, so make sure you look at the test first to
 understand what the assumptions are.
+
+Volumetry tests
+---------------
+
+we use both content generator and jmeter scripts to make volumetry test.
+you have to set a new profile in your maven configuration :
+
+1 / generate an import :
+
+        <profile>
+            <id>generate-1000pages</id>
+            <properties>
+                <jahia.cg.outputDirectory>10groups</jahia.cg.outputDirectory>
+                <jahia.cg.mysql.host>host</jahia.cg.mysql.host>
+                <jahia.cg.mysql.login>root</jahia.cg.mysql.login>
+                <jahia.cg.mysql.password>pass</jahia.cg.mysql.password>
+                <jahia.cg.mysql_db>wikipedia_articles</jahia.cg.mysql_db>
+                <jahia.cg.mysql_table>articles_light</jahia.cg.mysql_table>
+                <jahia.cg.nbPagesOnTopLevel>9</jahia.cg.nbPagesOnTopLevel>
+                <jahia.cg.nbSubLevels>2</jahia.cg.nbSubLevels>
+                <jahia.cg.nbPagesPerLevel>10</jahia.cg.nbPagesPerLevel>
+                <jahia.cg.numberOfBigTextPerPage>3</jahia.cg.numberOfBigTextPerPage>
+                <jahia.cg.addFiles>all</jahia.cg.addFiles>
+                <jahia.cg.numberOfFilesToGenerate>100</jahia.cg.numberOfFilesToGenerate>
+                <jahia.cg.numberOfUsers>1000</jahia.cg.numberOfUsers>
+                <jahia.cg.numberOfGroups>10</jahia.cg.numberOfGroups>
+                <jahia.cg.numberOfUsersPerGroup>100</jahia.cg.numberOfUsersPerGroup>
+                <jahia.cg.groupsAclRatio>0.1</jahia.cg.groupsAclRatio>
+                <jahia.cg.usersAclRatio>0.1</jahia.cg.usersAclRatio>
+                <jahia.cg.numberOfSites>1</jahia.cg.numberOfSites>
+
+                <jahia.test.jmeter.sitemap>10groups/sitemap.txt</jahia.test.jmeter.sitemap>
+                <jahia.test.jmeter.users>10groups/users.txt</jahia.test.jmeter.users>
+            </properties>
+        </profile>
+
+    generate the import and files needed for test (sitemap.txt and users.txt) :
+    mvn -Pgenerate-1000pages jahia:generate-site
+    this will generate an import.zip, a sitemap.txt and users.txt in specified folder
+
+2 / use the import and configure the server.
+
+put import.zip in the WEB-INF/var/imports folder of your jahia server and wait to the site to be imported
+publish it
+you have to set privileged rigth to users group in order to perform test on default workspace (within the interfaces of
+jahia in edit mode, edit site node, roles tab)
+
+
+3 / execute test :
+
+this is some profiles examples to run the tests :
+
+        <profile>
+            <id>testconfig</id>
+            <properties>
+                <jahia.test.jmeter.username>root</jahia.test.jmeter.username>
+                <jahia.test.jmeter.password>jahia</jahia.test.jmeter.password>
+                <jahia.test.jmeter.context>/jahia</jahia.test.jmeter.context>
+                <jahia.test.jmeter.path>/home/david/tools/jakarta-jmeter-2.4</jahia.test.jmeter.path>
+                <jahia.test.jmeter.dbip>localhost</jahia.test.jmeter.dbip>
+                <jahia.test.jmeter.dbname>jmeter</jahia.test.jmeter.dbname>
+            </properties>
+        </profile>
+        <profile>
+            <id>live-browsing</id>
+            <properties>
+                <jahia.test.jmeter.loops>50</jahia.test.jmeter.loops>
+                <jahia.test.jmeter.threads>50</jahia.test.jmeter.threads>
+                <jahia.test.jmeter.workspace>live</jahia.test.jmeter.workspace>
+                <jahia.test.jmeter.mode>render</jahia.test.jmeter.mode>
+            </properties>
+        </profile>
+
+    maven commands :
+
+mvn -Dtest=readPages -Plive-browsing,generate-0users,testconfig install to run readPages script in live workspace
+mvn -Dtest=editContent -Pdefault-browsing,generate-0users,testconfig install to run editContent script in default workspace
+
+

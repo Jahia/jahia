@@ -86,10 +86,10 @@ public class PublicationInfo implements Serializable {
     }
 
     public List<String> getAllUuids() {
-        return getAllUuids(true);
+        return getAllUuids(true, true);
     }
 
-    public List<String> getAllUuids(boolean includeDeleted) {
+    public List<String> getAllUuids(boolean includeDeleted, boolean includePublished) {
         if (allUuids != null) {
             return allUuids;
         }
@@ -103,7 +103,7 @@ public class PublicationInfo implements Serializable {
                     nodes.add(infoNode);
                 }
             }
-            if (includeDeleted || node.getStatus() != DELETED) {
+            if ((includeDeleted || node.getStatus() != DELETED) && (includePublished || node.getStatus() != PUBLISHED)) {
                 allUuids.add(node.getUuid());
             }
         }

@@ -371,6 +371,17 @@ public final class JCRContentUtils {
         return StringUtils.isNotEmpty(nodeName) ? nodeName : "untitled";
     }
 
+    /**
+     * Returns a list of child nodes of the provided node, matching the specified node type (multiple node types can be specified, separated
+     * by a comma).
+     * 
+     * @param node
+     *            the parent node to retrieve children from
+     * @param type
+     *            the node type to be matched by a retrieved child. Multiple node types can be specified, separated by a comma.
+     * @return a list of child nodes of the provided node, matching the specified node type (multiple node types can be specified, separated
+     *         by a comma).
+     */
     public static List<JCRNodeWrapper> getChildrenOfType(JCRNodeWrapper node, String type) {
         List<JCRNodeWrapper> children = null;
         if (node == null) {
@@ -413,7 +424,7 @@ public final class JCRContentUtils {
             throws RepositoryException {
         return node.getName();
     }
-    
+
     /**
      * Returns a node path, composed using only content object keys, i.e.
      * 
@@ -449,7 +460,7 @@ public final class JCRContentUtils {
         }
         
         return path.toString();
-    }    
+    }
 
     public static NodeIterator getDescendantNodes(JCRNodeWrapper node, String type) {
         try {
@@ -539,7 +550,7 @@ public final class JCRContentUtils {
             }
         }
         return null;
-    }
+    }    
 
     public static String getIcon(JCRNodeWrapper f) throws RepositoryException {
         String folder = JCRContentUtils.getIconsFolder(f.getPrimaryNodeType());
@@ -562,7 +573,7 @@ public final class JCRContentUtils {
             return icon;
         }
     }
-
+    
     public static String getIconsFolder(final ExtendedNodeType primaryNodeType) throws RepositoryException {
         String folder = primaryNodeType.getSystemId();
         if (folder.startsWith("system-")) {
@@ -604,15 +615,15 @@ public final class JCRContentUtils {
             NodeIterator ni = node.getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
-                if (child.isNodeType(type)) {
+                if (StringUtils.isEmpty(type) || child.isNodeType(type)) {
                     res.add(child);
                 }
             }
             return res;
 //            return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where ischildnode(sel,['"+node.getPath()+"'])",
 //                                                                                  Query.JCR_SQL2).execute().getNodes();
-        } catch (InvalidQueryException e) {
-            logger.error("Error while retrieving nodes", e);
+//        } catch (InvalidQueryException e) {
+//            logger.error("Error while retrieving nodes", e);
         } catch (RepositoryException e) {
             logger.error("Error while retrieving nodes", e);
         }
@@ -706,7 +717,7 @@ public final class JCRContentUtils {
         }
         return result;
     }
-    
+
     private static ExtendedPropertyDefinition getPropertyDefExtension(
             PropertyDefinition propDef) {
         try {
@@ -733,7 +744,7 @@ public final class JCRContentUtils {
 
         return foundDefintion;
     }
-
+    
     public static PropertyDefinition getPropertyDefinition(String nodeType,
             String property) throws RepositoryException {
         return getPropertyDefinition(NodeTypeRegistry.getInstance().getNodeType(
@@ -846,7 +857,6 @@ public final class JCRContentUtils {
         importSkeletons(skeletonLocations, targetPath, session, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, null);
     }
 
-    
     /**
      * Performs import of JCR data using provided skeleton locations. This method is used when a new virtual site or a new user is created.
      * 
@@ -882,7 +892,7 @@ public final class JCRContentUtils {
             }
         }
     }
-    
+
     /**
      * Performs import of JCR data using provided skeleton locations. This method is used when a new virtual site or a new user is created.
      *
@@ -906,6 +916,67 @@ public final class JCRContentUtils {
                                        JCRSessionWrapper session, Map<String, String> replacements) throws IOException, InvalidSerializedDataException,
             RepositoryException {
         importSkeletons(skeletonLocations, targetPath, session, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, replacements);
+    }
+
+    
+    /**
+     * Returns <code>true</code> if the provided node matches the specified node type (multiple node types can be specified, separated by a
+     * comma).
+     * 
+     * @param node
+     *            the node to be tested
+     * @param type
+     *            the node type to be matched. Multiple node types can be specified, separated by a comma.
+     * @return <code>true</code> if the provided node matches the specified node type (multiple node types can be specified, separated by a
+     *         comma).
+     * @throws RepositoryException
+     *             in case of a JCR error
+     */
+    public static boolean isNodeType(JCRNodeWrapper node, String type) throws RepositoryException {
+        if (node == null || StringUtils.isEmpty(type)) {
+            return false;
+        }
+        boolean matches = false;
+        if (type.contains(",")) {
+            String[] types = type.split(",");
+            for (String matchType : types) {
+                if (node.isNodeType(matchType)) {
+                    matches = true;
+                    break;
+                }
+            }
+        } else {
+            matches = node.isNodeType(type);
+        }
+
+        return matches;
+    }
+
+    /**
+     * Returns <code>true</code> if the provided node matches one of the specified node types.
+     * 
+     * @param node
+     *            the node to be tested
+     * @param types
+     *            an array of node types to be matched.
+     * @return <code>true</code> if the provided node matches one of the specified node types
+     * @throws RepositoryException
+     *             in case of a JCR error
+     */
+    public static boolean isNodeType(JCRNodeWrapper node, Iterable<String> types)
+            throws RepositoryException {
+        if (node == null || types == null) {
+            return false;
+        }
+        boolean matches = false;
+        for (String matchType : types) {
+            if (node.isNodeType(matchType)) {
+                matches = true;
+                break;
+            }
+        }
+
+        return matches;
     }
 
     /**

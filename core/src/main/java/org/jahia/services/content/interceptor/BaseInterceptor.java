@@ -53,6 +53,7 @@ import javax.jcr.version.VersionException;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -64,6 +65,8 @@ import org.jahia.services.content.nodetypes.SelectorType;
  * @author Sergiy Shyrkov
  */
 public abstract class BaseInterceptor implements PropertyInterceptor {
+
+    private Set<String> nodeTypes;
 
     private Set<Integer> requiredTypes;
 
@@ -102,11 +105,19 @@ public abstract class BaseInterceptor implements PropertyInterceptor {
     public boolean canApplyOnProperty(JCRNodeWrapper node, ExtendedPropertyDefinition definition)
             throws RepositoryException {
 
-        // enforce constraints on the required type and selector type if they were specified
-        return (getRequiredTypes() == null || getRequiredTypes().size() == 0 || getRequiredTypes()
-                .contains(definition.getRequiredType()))
-                && (getSelectors() == null || getSelectors().size() == 0 || getSelectors()
-                        .contains(definition.getSelector()));
+        // enforce constraints on the node type, required property type and selector type if they were specified
+        
+        boolean nodeTypeCondition = getNodeTypes() == null || getNodeTypes().size() == 0
+                || JCRContentUtils.isNodeType(node, getNodeTypes());
+        
+        boolean propertyTypeCondition = getRequiredTypes() == null
+                || getRequiredTypes().size() == 0
+                || getRequiredTypes().contains(definition.getRequiredType());
+        
+        boolean selectorCondition = getSelectors() == null || getSelectors().size() == 0
+                || getSelectors().contains(definition.getSelector());
+
+        return nodeTypeCondition && propertyTypeCondition && selectorCondition;
     }
 
     @Override
@@ -121,8 +132,13 @@ public abstract class BaseInterceptor implements PropertyInterceptor {
 
         BaseInterceptor rhs = (BaseInterceptor) obj;
         return new EqualsBuilder().appendSuper(super.equals(obj))
+                .append(getNodeTypes(), rhs.getNodeTypes())
                 .append(getRequiredTypes(), rhs.getRequiredTypes())
                 .append(getSelectors(), rhs.getSelectors()).isEquals();
+    }
+
+    protected Set<String> getNodeTypes() {
+        return nodeTypes;
     }
 
     protected Set<Integer> getRequiredTypes() {
@@ -137,6 +153,10 @@ public abstract class BaseInterceptor implements PropertyInterceptor {
     public int hashCode() {
         return new HashCodeBuilder(19, 37).append(getRequiredTypes()).append(getSelectors())
                 .toHashCode();
+    }
+
+    public void setNodeTypes(Set<String> nodeTypes) {
+        this.nodeTypes = nodeTypes;
     }
 
     public void setRequiredTypes(Set<String> requiredTypes) {

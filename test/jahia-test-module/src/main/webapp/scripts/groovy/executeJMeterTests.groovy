@@ -1,4 +1,5 @@
 def test = project.properties['test']
+def gui = project.properties['gui']
 
 def p = ~/.*\.jmx/
 
@@ -19,11 +20,14 @@ new File(project.properties['jahia.test.jmeter.path']+"/bin/testPlan").eachDir {
 
                 project.properties.each() { key, value -> params += " -J${key}=${value}"}
 
+                def guiparam = "-n "
+                if (gui != null) guiparam = ""
+
                 if (jmeterPath.toString().count("/") != 0) {
-                    jmeterPath = project.properties['jahia.test.jmeter.path'] + "/bin/jmeter.sh -n -t "
+                    jmeterPath = project.properties['jahia.test.jmeter.path'] + "/bin/jmeter.sh " + guiparam + " -t "
                 } else {
                     // if windows
-                    jmeterPath = project.properties['jahia.test.jmeter.path'] + "\\bin\\jmeter.bat -n -t "
+                    jmeterPath = project.properties['jahia.test.jmeter.path'] + "\\bin\\jmeter.bat " + guiparam  + " -t "
                 }
                 if (file.exists()) jmeterExe = jmeterPath + f + " " + evaluate(file) else
                     jmeterExe = jmeterPath + f + params

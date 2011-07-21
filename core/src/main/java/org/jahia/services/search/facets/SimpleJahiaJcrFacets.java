@@ -295,7 +295,9 @@ public class SimpleJahiaJcrFacets {
                 }
                 values = sortedValues;
             } catch (RepositoryException e) {
-                logger.warn("Repository exception while sorting", e);
+                logger.warn("Repository exception while sorting label rendered facet values, fallback to default sorting", e);
+            } catch (UnsupportedOperationException e) {
+                logger.warn("Unsupported operation exception while sorting label rendered facet values, fallback to default sorting", e);                
             }
         }
         return values;

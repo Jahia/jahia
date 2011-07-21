@@ -133,4 +133,16 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
         return "<img src=\"" + context.getRequest().getContextPath() + flagPath + "\">&nbsp;<span>"
                 + displayName + "</span>";
     }
+
+    public Map<String, Object> getObjectRendering(Locale locale,
+            ExtendedPropertyDefinition propDef, Object propertyValue)
+            throws RepositoryException {
+        throw new UnsupportedOperationException("This renderer does not work without RenderContext");
+    }
+
+    public String getStringRendering(Locale locale,
+            ExtendedPropertyDefinition propDef, Object propertyValue)
+            throws RepositoryException {
+        throw new UnsupportedOperationException("This renderer does not work without RenderContext");
+    }
 }

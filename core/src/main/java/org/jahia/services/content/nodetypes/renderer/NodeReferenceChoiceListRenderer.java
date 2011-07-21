@@ -42,6 +42,7 @@ package org.jahia.services.content.nodetypes.renderer;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -86,7 +87,7 @@ public class NodeReferenceChoiceListRenderer extends AbstractChoiceListRenderer 
         return StringUtils.join(displayValues, ", ");
     }
 
-    public String getStringRendering(RenderContext context, ExtendedPropertyDefinition propDef,
+    public String getStringRendering(Locale locale, ExtendedPropertyDefinition propDef,
             Object propertyValue) throws RepositoryException {
         String displayValue = "";
         JCRNodeWrapper node = (JCRNodeWrapper) propertyValue;

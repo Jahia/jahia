@@ -45,6 +45,8 @@ import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 import javax.jcr.RepositoryException;
+
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -59,4 +61,6 @@ public interface ChoiceListRenderer {
     String getStringRendering(RenderContext context, JCRPropertyWrapper propertyWrapper) throws RepositoryException;
     Map<String,Object> getObjectRendering(RenderContext context, ExtendedPropertyDefinition propDef, Object propertyValue) throws RepositoryException;
     String getStringRendering(RenderContext context, ExtendedPropertyDefinition propDef, Object propertyValue) throws RepositoryException;    
+    Map<String,Object> getObjectRendering(Locale locale, ExtendedPropertyDefinition propDef, Object propertyValue) throws RepositoryException;
+    String getStringRendering(Locale locale, ExtendedPropertyDefinition propDef, Object propertyValue) throws RepositoryException;    
 }

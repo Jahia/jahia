@@ -94,13 +94,12 @@ public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListR
                         .getValue().getString());
     }
     
-    public String getStringRendering(RenderContext context, ExtendedPropertyDefinition propDef,
+    public String getStringRendering(Locale locale, ExtendedPropertyDefinition propDef,
             Object propertyValue) throws RepositoryException {
 
         String propValue = propertyValue.toString();
 
-        JahiaResourceBundle rb = new JahiaResourceBundle(null, context.getMainResource()
-                .getLocale(), getTemplatePackageName(propDef));
+        JahiaResourceBundle rb = new JahiaResourceBundle(null, locale, getTemplatePackageName(propDef));
 
         return rb
                 .get(propDef.getResourceBundleKey() + "." + propValue.replace(':', '_'), propValue);

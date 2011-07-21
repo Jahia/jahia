@@ -41,6 +41,7 @@
 package org.jahia.services.content.nodetypes.renderer;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.jcr.RepositoryException;
@@ -75,4 +76,22 @@ public abstract class AbstractChoiceListRenderer implements ChoiceListRenderer {
         map.put("displayName", getStringRendering(context, propDef, propertyValue));
         return map;
     }
+
+    /* (non-Javadoc)
+     * @see org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer#getObjectRendering(java.util.Locale, org.jahia.services.content.nodetypes.ExtendedPropertyDefinition, java.lang.Object)
+     */    
+    public Map<String, Object> getObjectRendering(Locale locale, ExtendedPropertyDefinition propDef, Object propertyValue)
+            throws RepositoryException {
+        Map<String, Object> map = new HashMap<String, Object>(1);
+        map.put("displayName", getStringRendering(locale, propDef, propertyValue));
+        return map;
+    }    
+    
+    /* (non-Javadoc)
+     * @see org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer#getStringRendering(org.jahia.services.render.RenderContext, org.jahia.services.content.nodetypes.ExtendedPropertyDefinition, java.lang.Object)
+     */    
+    public String getStringRendering(RenderContext context, ExtendedPropertyDefinition propDef, Object propertyValue)
+            throws RepositoryException {
+        return getStringRendering(context.getMainResourceLocale(), propDef, propertyValue);
+    }    
 }

@@ -83,9 +83,8 @@ public class CountryChoiceListInitializerAndRendererImpl extends AbstractChoiceL
         return rendering;
     }
     
-    public String getStringRendering(RenderContext context, ExtendedPropertyDefinition propDef, Object propertyValue) throws RepositoryException {
-        String rendering = new Locale("en", propertyValue.toString()).getDisplayCountry(
-                context.getMainResource().getLocale());
-        return rendering;
-    }    
+    public String getStringRendering(Locale locale, ExtendedPropertyDefinition propDef, Object propertyValue) throws RepositoryException {
+        return new Locale("en", propertyValue.toString()).getDisplayCountry(
+                locale);
+    }  
 }

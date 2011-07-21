@@ -73,6 +73,9 @@ import org.apache.solr.util.DateMathParser;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer;
+import org.jahia.services.content.nodetypes.renderer.ChoiceListRendererService;
+import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,8 +86,11 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.EnumSet;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.jcr.PropertyType;
@@ -257,13 +263,42 @@ public class SimpleJahiaJcrFacets {
                     String fieldNameInIndex = getFieldNameInIndex(fieldName, epd, locale);
                     res.add(StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR)
                             + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex,
-                            getTermCounts(f, epd, fieldNameInIndex, locale));
+                            ensureSorting(params.getFieldParam(f, "facet.sort"), getTermCounts(f, epd, fieldNameInIndex, locale), epd, params.getFieldParam(f, "facet.labelRenderer"), LanguageCodeConverters.getLocaleFromCode(locale)));
                 } catch (RepositoryException e) {
                     logger.error("Cant display facets for: " + f, e);
                 }
             }
         }
         return res;
+    }
+    
+    private NamedList<Object> ensureSorting(String fieldSort,
+            NamedList<Object> values, ExtendedPropertyDefinition fieldPropertyType,
+            String facetValueRenderer, Locale locale) {
+        ChoiceListRenderer renderer = !StringUtils.isEmpty(facetValueRenderer) ? ChoiceListRendererService
+                .getInstance().getRenderers().get(facetValueRenderer)
+                : null;
+        if (values.size() > 1
+                && (fieldSort != null && (fieldSort.equals("false") || fieldSort.equals("index")))
+                && renderer != null) {
+            try {
+                SortedMap<String, Integer> sortedLabels = new TreeMap<String, Integer>();
+                int i = 0;
+
+                for (Map.Entry<String, Object> facetValue : values) {
+                    sortedLabels.put(renderer.getStringRendering(locale,
+                            fieldPropertyType, facetValue.getKey()), i++);
+                }
+                NamedList<Object> sortedValues = new NamedList<Object>();
+                for (Integer index : sortedLabels.values()) {
+                    sortedValues.add(values.getName(index), values.getVal(index));
+                }
+                values = sortedValues;
+            } catch (RepositoryException e) {
+                logger.warn("Repository exception while sorting", e);
+            }
+        }
+        return values;
     }
 
     /**

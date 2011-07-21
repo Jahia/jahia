@@ -82,6 +82,9 @@
                     <c:if test="${not empty currentField and not facet:isFacetApplied(facetPropertyName, activeFacetsVars[activeFacetMapVarName], facetNodeType.propertyDefinitionsAsMap[facetPropertyName])}">
                         <c:set var="facetQuery" value="nodetype=${facetNodeTypeName}&key=${facetPropertyName}${minCountParam}"/>
                         <c:set var="facetPrefix" value="${jcr:isNodeType(facet, 'jnt:dateFacet') ? 'date.' : ''}"/>
+                        <c:if test="${not empty currentFacetValueRenderer.string}">
+                            <c:set var="facetQuery" value="${facetQuery}&${facetPrefix}labelRenderer=${currentFacetValueRenderer.string}"/>
+                        </c:if>    
                         <c:forEach items="${facet.primaryNodeType.declaredPropertyDefinitions}" var="propertyDefinition">
                             <jcr:nodeProperty node="${facet}" name="${propertyDefinition.name}" var="facetPropValue"/>
                             <c:choose>

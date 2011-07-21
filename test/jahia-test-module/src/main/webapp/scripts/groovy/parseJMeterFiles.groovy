@@ -13,7 +13,7 @@ import org.xml.sax.helpers.DefaultHandler
  */
 
 def sql = Sql.newInstance("jdbc:mysql://" + project.properties['jahia.test.jmeter.dbip'] + ":3306/" + project.properties['jahia.test.jmeter.dbname'],
-                          project.properties['jahia.test.jmeter.username'], project.properties['jahia.test.jmeter.password'] == null ? "" : project.properties['jahia.test.jmeter.password'], "com.mysql.jdbc.Driver")
+                          project.properties['jahia.test.jmeter.dbusername'], project.properties['jahia.test.jmeter.dbpassword'] == null ? "" : project.properties['jahia.test.jmeter.password'], "com.mysql.jdbc.Driver")
 
 // delete table if previously created
 try {

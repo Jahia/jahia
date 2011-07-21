@@ -65,6 +65,8 @@ Jahia Test Package
 <jahia.test.jmeter.context>/jahia</jahia.test.jmeter.context>
 <jahia.test.jmeter.loops>3</jahia.test.jmeter.loops>
 <jahia.test.jmeter.threads>1</jahia.test.jmeter.threads>
+<jahia.test.jmeter.dbusername>root</jahia.test.jmeter.username>
+<jahia.test.jmeter.dbpassword></jahia.test.jmeter.password>
 ---------------------------
 
  The maven script take care of copying all the files found inside src/main/scripts/jmeter to your jmeter installation

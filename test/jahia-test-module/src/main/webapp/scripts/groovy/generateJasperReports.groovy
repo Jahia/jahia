@@ -4,7 +4,7 @@ import groovy.sql.Sql
 import net.sf.jasperreports.engine.query.JRJdbcQueryExecuterFactory
 
 def sql = Sql.newInstance("jdbc:mysql://" + project.properties['jahia.test.jmeter.dbip'] + ":3306/" + project.properties['jahia.test.jmeter.dbname'],
-                          project.properties['jahia.test.jmeter.username'], project.properties['jahia.test.jmeter.password'] == null ? "" : project.properties['jahia.test.jmeter.password'], "com.mysql.jdbc.Driver")
+                          project.properties['jahia.test.jmeter.dbusername'], project.properties['jahia.test.jmeter.dbpassword'] == null ? "" : project.properties['jahia.test.jmeter.password'], "com.mysql.jdbc.Driver")
 def path = project.build.directory
 final def dayVar = new Date().format('dd')
 println "generating report for day = "+dayVar

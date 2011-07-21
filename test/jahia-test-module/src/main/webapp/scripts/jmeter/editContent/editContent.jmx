@@ -275,7 +275,7 @@
                     <collectionProp name="Arguments.arguments">
                       <elementProp name="" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                        <stringProp name="Argument.value">7|0|7|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getEditConfiguration|java.lang.String/2004016611|/sites/testSite/home|editmode|1|2|3|4|2|5|5|6|7|</stringProp>
+                        <stringProp name="Argument.value">7|0|7|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getEditConfiguration|java.lang.String/2004016611|/sites/${__P(jahia.test.jmeter.sitekey,testSite)}/home|editmode|1|2|3|4|2|5|5|6|7|</stringProp>
                         <stringProp name="Argument.metadata">=</stringProp>
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
                       </elementProp>

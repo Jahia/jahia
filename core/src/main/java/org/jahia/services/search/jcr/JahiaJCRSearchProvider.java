@@ -518,8 +518,12 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     StringBuilder propertyConstraints = new StringBuilder(64);
                     for (String value : property.getValues()) {
                         if (property.isConstrained()) {
+                            String matchType = "=";
+                            if(property.getMatch()==MatchType.WITHOUT_WORDS) {
+                                matchType = "!=";
+                            }
                             addConstraint(propertyConstraints, "or", "@"
-                                    + property.getName() + "="
+                                    + property.getName() + matchType
                                     + stringToJCRSearchExp(value));
                         } else {
                             addConstraint(propertyConstraints, "or",

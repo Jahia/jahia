@@ -76,7 +76,11 @@ public class TemplateNodeFilter extends AbstractFilter {
                     template = previousTemplate.next;
                     if (logger.isDebugEnabled()) {
                         logger.debug("Using Previous Template : " + previousTemplate.serialize() + " for resource " + resource);
-                        logger.debug("Setting Template to use to : " + template.serialize() + " for resource " + resource);
+                        if (template != null) {
+                            logger.debug("Setting Template to use to : " + template.serialize() + " for resource " + resource);
+                        } else {
+                            logger.debug("Template has been set to null for resource " + resource);
+                        }
                     }
                 }
 

@@ -224,13 +224,12 @@ public class JCRPublicationService extends JahiaService {
 
     public void publish(final List<String> uuids, final String sourceWorkspace,
                         final String destinationWorkspace, final List<String> comments) throws RepositoryException {
-        final String username;
+        if (uuids.isEmpty())
+            return;
+
         final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
-        if (user != null) {
-            username = user.getUsername();
-        } else {
-            username = null;
-        }
+        final String username = user != null ? user.getUsername() : null;
+
         JCRTemplate.getInstance().doExecute(true, username, sourceWorkspace, null, new JCRCallback<Object>() {
             public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
                 JCRTemplate.getInstance().doExecute(true, username, destinationWorkspace, new JCRCallback<Object>() {

@@ -139,7 +139,7 @@ public class ImageHelper {
             }
             Image image = imageService.getImage(node);
             File f = File.createTempFile("image", null);
-            imageService.rotateImage(image, f, true);
+            imageService.rotateImage(image, f, clockwise);
 
             InputStream fis = new BufferedInputStream(new FileInputStream(f));
             try {

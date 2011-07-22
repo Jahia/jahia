@@ -81,6 +81,9 @@ import java.util.regex.Pattern;
 public class DocumentViewImportHandler extends DefaultHandler {
     private static Logger logger = LoggerFactory.getLogger(DocumentViewImportHandler.class);
 
+    private int maxBatch = 5000;
+    private int batchCount = 0;
+
     private String siteKey;
 
     private File archive;
@@ -166,6 +169,17 @@ public class DocumentViewImportHandler extends DefaultHandler {
         if (error > 0) {
             error++;
             return;
+        }
+
+        batchCount ++;
+
+        if (batchCount > maxBatch) {
+            try {
+                session.save();
+                batchCount = 0;
+            } catch (RepositoryException e) {
+                throw new SAXException("Cannot save batch",e);
+            }
         }
 
         String decodedLocalName = ISO9075.decode(localName);

@@ -46,6 +46,7 @@ import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.xml.sax.SAXException;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -62,13 +63,25 @@ import java.util.Map;
  * 
  */
 public class ReferencesHelper {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(LegacyImportHandler.class);    
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(LegacyImportHandler.class);
+
+    public static int maxBatch = 5000;
 
     public static void resolveCrossReferences(JCRSessionWrapper session, Map<String, List<String>> references) throws RepositoryException {
+        int batchCount = 0;
+
         Map<String, String> uuidMapping = session.getUuidMapping();
         JCRNodeWrapper refRoot = session.getNode("/referencesKeeper");
         NodeIterator ni = refRoot.getNodes();
         while (ni.hasNext()) {
+
+            batchCount ++;
+
+            if (batchCount > maxBatch) {
+                session.save();
+                batchCount = 0;
+            }
+
             Node refNode = ni.nextNode();
             String uuid = refNode.getProperty("j:originalUuid").getString();
             if (uuidMapping.containsKey(uuid)) {

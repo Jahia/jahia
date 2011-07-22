@@ -186,6 +186,9 @@ public class LangPropertiesEditor extends LayoutContainer {
                 langPropertiesEditor.setWriteable(editable);
                 langPropertiesEditor.setFieldSetGrouping(true);
                 langPropertiesEditor.setExcludedTypes(excludedTypes);
+                if (node != null) {
+                    langPropertiesEditor.setPermissions(node.getPermissions());
+                }
                 langPropertiesEditor.renderNewFormPanel();
                 setPropertiesEditorByLang(langPropertiesEditor, locale);
                 mainPanel.add(langPropertiesEditor);

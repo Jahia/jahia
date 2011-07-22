@@ -51,10 +51,7 @@ import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This initializer get templates depending of the type asked, if no parameter, type returns content templates (contentTemplate), in
@@ -150,7 +147,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
             logger.error("Cannot get template",e);
         }
 
-
+        Collections.sort(vs);
         return vs;
     }
 }

@@ -49,22 +49,33 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.TextArea;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.definition.LangPropertiesEditor;
+import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
+import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -121,6 +132,48 @@ public class TranslateContentEngine extends Window {
 
         sourceLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), false, srcLanguage);
         targetLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), true, destLanguage);
+
+        Button widget = new Button(Messages.get("label.translate.copy", "Copy to other language"));
+        sourceLangPropertiesEditor.getTopBar().add(widget);
+        widget.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                List<GWTJahiaNodeProperty> props = sourceLangPropertiesEditor.getPropertiesEditorByLang(sourceLangPropertiesEditor.getDisplayedLocale().getLanguage()).getProperties();
+                Map<String,Field<?>> fieldsMap = targetLangPropertiesEditor.getPropertiesEditorByLang(targetLangPropertiesEditor.getDisplayedLocale().getLanguage()).getFieldsMap();
+                for (final GWTJahiaNodeProperty prop : props) {
+                    final Field<?> f = fieldsMap.get(prop.getName());
+                    if (f instanceof NumberField) {
+                        ((NumberField)f).setValue(prop.getValues().get(0).getLong());
+                    } else if (f instanceof CKEditorField) {
+                        ((CKEditorField)f).setValue(prop.getValues().get(0).getString());
+                        // Do it a second time later for some browsers .. ?
+                        Timer togglebuttonTimer = new Timer() {
+                            public void run() {
+                                ((CKEditorField)f).setValue(prop.getValues().get(0).getString());
+                            }
+                        };
+
+                        togglebuttonTimer.schedule(100);
+                    } else if (f instanceof CalendarField) {
+                        ((CalendarField)f).setValue(prop.getValues().get(0).getDate());
+                    } else if (f instanceof DateField) {
+                        ((DateField)f).setValue(prop.getValues().get(0).getDate());
+                    } else if (f instanceof CheckBox) {
+                        ((CheckBox)f).setValue(prop.getValues().get(0).getBoolean());
+                    } else if (f instanceof ContentPickerField) {
+                        List<GWTJahiaNode> values = new ArrayList<GWTJahiaNode>();
+                        for (GWTJahiaNodePropertyValue value : prop.getValues()) {
+                            values.add(value.getNode());
+                        }
+                        ((ContentPickerField)f).setValue(values);
+                    } else if (f instanceof ComboBox) {
+                        // ?
+                    } else if (f instanceof TextField) {
+                        ((TextField<String>)f).setValue(prop.getValues().get(0).getString());
+                    }
+                }
+            }
+        });
 
         panel.add(sourceLangPropertiesEditor, new BorderLayoutData(Style.LayoutRegion.WEST, windowWidth/2));
         panel.add(targetLangPropertiesEditor, new BorderLayoutData(Style.LayoutRegion.EAST, windowWidth/2));

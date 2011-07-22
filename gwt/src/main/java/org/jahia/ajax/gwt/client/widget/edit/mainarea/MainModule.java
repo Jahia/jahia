@@ -45,7 +45,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
-import com.extjs.gxt.ui.client.widget.layout.*;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.DOM;
@@ -66,16 +66,17 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem;
 
-import java.net.URLDecoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * First module of any rendered element.

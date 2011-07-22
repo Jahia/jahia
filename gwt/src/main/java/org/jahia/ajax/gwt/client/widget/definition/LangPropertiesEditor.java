@@ -45,14 +45,12 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FlowData;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
@@ -93,6 +91,7 @@ public class LangPropertiesEditor extends LayoutContainer {
     private LayoutContainer mainPanel;
     private boolean editable = true;
     private GWTJahiaLanguage displayedLocale = null;
+    private LayoutContainer topBar;
 
     public LangPropertiesEditor(GWTJahiaNode node, List<String> dataType, boolean editable,
                                 GWTJahiaLanguage displayedLanguage) {
@@ -106,11 +105,13 @@ public class LangPropertiesEditor extends LayoutContainer {
         setLayout(new BorderLayout());
 
         LayoutContainer top = new LayoutContainer(new FlowLayout());
+        topBar = new HorizontalPanel();
 
         // add switching form
         languageSwitcher = createLanguageSwitcher();
-        top.add(languageSwitcher,new FlowData(5));
+        topBar.add(languageSwitcher);
 
+        top.add(topBar, new FlowData(5));
         add(top, new BorderLayoutData(Style.LayoutRegion.NORTH, 25));
 
         // update node info
@@ -121,6 +122,13 @@ public class LangPropertiesEditor extends LayoutContainer {
         add(mainPanel, new BorderLayoutData(Style.LayoutRegion.CENTER));
     }
 
+    public LayoutContainer getTopBar() {
+        return topBar;
+    }
+
+    public GWTJahiaLanguage getDisplayedLocale() {
+        return displayedLocale;
+    }
 
     /**
      * Get properties editor by langCode

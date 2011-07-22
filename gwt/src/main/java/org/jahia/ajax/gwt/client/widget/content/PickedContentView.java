@@ -53,6 +53,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
@@ -99,7 +100,7 @@ public class PickedContentView extends BottomRightComponent {
             public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                 String url;
                 if (gwtJahiaNode.getPreview() != null) {
-                    url = gwtJahiaNode.getPreview();
+                    url = URL.appendTimestamp(gwtJahiaNode.getPreview());
                 } else {
                     url = ContentModelIconProvider.getInstance().getIcon(gwtJahiaNode, true).createImage().getUrl();
                 }

@@ -47,6 +47,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.DOM;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.util.URL;
 
 /**
  * User: rfelden
@@ -71,7 +72,7 @@ public class ImagePopup extends Window {
         }
 
         //setLayout(new FitLayout()) ;
-        final HTML img = new HTML("<img src=\"" + n.getUrl() + "\" width=\"" + w +
+        final HTML img = new HTML("<img src=\"" + URL.appendTimestamp(n.getUrl()) + "\" width=\"" + w +
                 "\" height=\"" + h + "\" alt=\"" + n.getName() + "\" />") ;
         img.setSize(String.valueOf(w) + "px", String.valueOf(h) + "px");
 

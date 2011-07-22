@@ -47,6 +47,7 @@ import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Formatter;
+import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
 import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
@@ -80,7 +81,7 @@ public class InfoTabItem extends EditEngineTabItem {
 
                 String preview = selectedNode.getPreview();
                 if (preview != null) {
-                    g.setWidget(0, 0, new Image(preview));
+                    g.setWidget(0, 0, new Image(URL.appendTimestamp(preview)));
                 }
                 String name = selectedNode.getName();
                 if (name != null) {

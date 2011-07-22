@@ -45,11 +45,10 @@ import com.google.gwt.user.client.Window;
 
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
- * Created by Jahia.
- * User: ktlili
+ * URL related utility functions.
+ * @author ktlili
  * Date: 5 nov. 2007
  * Time: 09:02:11
  */
@@ -211,5 +210,20 @@ public class URL {
             value = value.replace("$location-hash", com.google.gwt.http.client.URL.encodeQueryString(Window.Location.getHash()));
         }
         return value;
+    }
+    
+    /**
+     * Appends a dummy parameter with a current timestamp to the provided URL. Used when rendering images to force server side reload.
+     * 
+     * @param url
+     *            the URL of the image to be modified
+     * @return an adjusted URL of the image with timestamp parameter added
+     */
+    public static String appendTimestamp(String url) {
+        if (url == null || url.length() == 0) {
+            return url;
+        }
+
+        return url + (url.contains("?") ? "&refresh=" : "?refresh=") + System.currentTimeMillis();
     }
 }

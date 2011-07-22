@@ -46,9 +46,8 @@ import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-
-import java.util.List;
 
 /**
  * 
@@ -83,14 +82,14 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
         String width = model.get("j:width");
         if (width != null) {
             if (Integer.parseInt(width) < 80) {
-                model.set("nodeImg", "<img src=\"" + model.getUrl() + "\" title=\"" + model.getName() + "\">");
+                model.set("nodeImg", "<img src=\"" + URL.appendTimestamp(model.getUrl()) + "\" title=\"" + model.getName() + "\">");
             } else {
-                model.set("nodeImg", "<img src=\"" + model.getPreview() + "\" title=\"" + model.getName() + "\">");
+                model.set("nodeImg", "<img src=\"" + URL.appendTimestamp(model.getPreview()) + "\" title=\"" + model.getName() + "\">");
             }
             model.set("widthHTML", "<div><b>" + Messages.get("width.label", "Width") + " </b>" + model.get("j:width") + " px</div>");
             model.set("heightHTML", "<div><b>" + Messages.get("height.label", "Height") + " </b>" + model.get("j:height") + " px</div>");
         } else if (model.getPreview() != null) {
-            model.set("nodeImg", "<img src=\"" + model.getPreview() + "\" title=\"" + model.getName() + "\">");
+            model.set("nodeImg", "<img src=\"" + URL.appendTimestamp(model.getPreview()) + "\" title=\"" + model.getName() + "\">");
         } else {
             model.set("nodeImg", ContentModelIconProvider.getInstance().getIcon(model, true).getHTML());
         }

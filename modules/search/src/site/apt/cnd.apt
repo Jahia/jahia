@@ -31,30 +31,24 @@ Indexing options in Compact Node Type Definition files
   
   * <<<indexed>>> - with the following possible values:
   
-    * <<<tokenized>>> (the default value) - the property is indexed and its value is passed through corresponding analyzer
-
-    * <<<untokenized>>> - the property value is indexed "as is"
-    
     * <<<no>>> - the property is not indexed at all
 
     []
-  
-  * <<<analyzer>>> option - specifies the name of the analyzer to used for value processing, e.g. <<<keyword>>>.
   
   * <<<scoreboost>>> - allows specifying the boost factor ("weight") for the property value in the total full text search context.
   					   The default value is <<<1.0>>>.  
 
   []
 
-  The following example shows the usage of the <<<indexed>>>, <<<analyzer>>> and <<<scoreboost>>> options:
+  The following example shows the usage of the <<<indexed>>> and <<<scoreboost>>> options:
 
 +------------------------
 [jnt:publication] > jnt:content, jmix:editorialContent, mix:title, jmix:structuredContent
 ...
  - jcr:title (string) mandatory scoreboost=2.0
- - author (string) i18n analyzer='simple'
+ - author (string) i18n
  - source (string) i18n
- - date (string) i18n indexed=untokenized nofulltext
+ - date (string) i18n indexed=no
 ...
 +------------------------
 

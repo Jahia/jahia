@@ -64,6 +64,10 @@ Facet types and their parameters
     
     *  <<<false>>> - to return the constraints sorted in their index order (lexicographic by indexed term). For terms in the ascii range, this will be 
     alphabetically sorted.  
+	
+  Notice that in the engine we already provide mapped text descriptions instead of <<true>> and <<false>>. But when using the
+  API or setting up facet queries yourself, you need to use <<true>> or <<false>> until we upgrade to a newer Solr version,
+  where this has been changed.
 
 ** prefix
 

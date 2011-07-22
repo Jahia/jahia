@@ -76,3 +76,31 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
 
 <span class="jobtxt">${fn:escapeXml(values.town)},&nbsp;<img src="${country.flag}"/>&nbsp;${country.displayName}</span>    
 +----------------------------------
+
+  In order to be able to use the renderers to render single values out of the list and also to use the renderer in the
+  backend, where the RenderContext - which is not available in backend code - is replaced by the Locale, you also need
+  to implement methods passing a propertyValue, at minimum one like this example from the CountryChoiceListInitializerAndRendererImpl:
+  
++----------------------------------  
+public String getStringRendering(Locale locale, ExtendedPropertyDefinition propDef, Object propertyValue) throws RepositoryException {
+    return new Locale("en", propertyValue.toString()).getDisplayCountry(
+            locale);
+}  
++----------------------------------  
+
+  If a property renderer requires more attributes from the RenderContext - not just the Locale - then you have to throw an
+  UnsupportedOperationException, like in this example from the CountryFlagChoiceListInitializerAndRendererImpl:
+  
++----------------------------------    
+public Map<String, Object> getObjectRendering(Locale locale,
+        ExtendedPropertyDefinition propDef, Object propertyValue)
+        throws RepositoryException {
+    throw new UnsupportedOperationException("This renderer does not work without RenderContext");
+}
+
+public String getStringRendering(Locale locale,
+        ExtendedPropertyDefinition propDef, Object propertyValue)
+        throws RepositoryException {
+    throw new UnsupportedOperationException("This renderer does not work without RenderContext");
+}  
++----------------------------------  	

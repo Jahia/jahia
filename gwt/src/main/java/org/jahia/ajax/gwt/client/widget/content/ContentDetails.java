@@ -290,7 +290,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
     }
 
     public GWTJahiaNode getNode() {
-        return selectedNodes.get(0);
+        return selectedNodes != null ? selectedNodes.get(0) : null;
     }
 
     public List<GWTJahiaNode> getNodes() {

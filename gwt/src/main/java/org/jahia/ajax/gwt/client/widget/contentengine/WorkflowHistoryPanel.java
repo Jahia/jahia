@@ -213,21 +213,21 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                  int rowIndex, int colIndex,
                                  ListStore<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemListStore,
                                  Grid<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemGrid) {
-                GWTJahiaNode wrapper = (GWTJahiaNode) model.getProperties().get("nodeWrapper");
+                final GWTJahiaNode wrapper = (GWTJahiaNode) model.getProperties().get("nodeWrapper");
 
                 if (wrapper != null) {
                     return new Label(wrapper.getDisplayName() + " (" + wrapper.getPath() + ")");
                 }
                 List<GWTJahiaWorkflowHistoryItem> models = gwtJahiaWorkflowHistoryItemListStore.getModels();
                 for (final GWTJahiaWorkflowHistoryItem historyItem : models) {
-                    if (historyItem.getProcessId().equals(model.getProcessId()) &&
+                    final GWTJahiaNode nodewrapper = (GWTJahiaNode) historyItem.getProperties().get("nodeWrapper");
+                    if (nodewrapper!=null && historyItem.getProcessId().equals(model.getProcessId()) &&
                         historyItem instanceof GWTJahiaWorkflowHistoryProcess) {
                         Button button = new Button(Messages.get("label.preview"));
                         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                             @Override
                             public void componentSelected(ButtonEvent ce) {
-                                GWTJahiaNode wrapper = (GWTJahiaNode) historyItem.getProperties().get("nodeWrapper");
-                                String path = wrapper.getPath();
+                                String path = nodewrapper.getPath();
                                 String locale = JahiaGWTParameters.getLanguage();
                                 JahiaContentManagementService.App.getInstance().getNodeURL("render", path, null, null,
                                         "default", locale, new BaseAsyncCallback<String>() {

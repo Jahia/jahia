@@ -46,7 +46,7 @@
     
     <!-- Client-side caching -->
     <rule>
-        <name>Set not cache headers</name>
+        <name>Set no cache headers</name>
         <note>Resources that should not be cached</note>
         <from>^/(welcome.*|start|validateTicket|administration.*|cms/.*|engines/.*\.jsp(\?.*)?|tools/.*|gwt/org\.(.*)/.*\.nocache\..*)$</from>
         <set type="response-header" name="Expires">Wed, 09 May 1979 05:30:00 GMT</set> 
@@ -58,7 +58,7 @@
         <name>JCR files</name>
         <note>Do not set any cache expiration for JCR files</note>
         <from>^/(files|repository)/.*$</from>
-        <set type="response-header" name="Cache-Control">public, must-revalidate, max-age=1</set> 
+        <set type="response-header" name="Cache-Control">public, must-revalidate, max-age=1</set>
         <set type="request" name="jahiaCacheControlSet">done</set>         
     </rule>
     <rule>

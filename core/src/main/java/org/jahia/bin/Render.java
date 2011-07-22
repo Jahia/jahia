@@ -243,7 +243,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     protected void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
                          Resource resource, long startTime) throws RepositoryException, RenderException, IOException {
         loggingService.startProfiler("MAIN");
-//        resp.setCharacterEncoding("UTF-8");
+        resp.setCharacterEncoding(settingsBean.getCharacterEncoding());
         String out = renderService.render(resource, renderContext).trim();
         if (renderContext.getRedirect() != null && !resp.isCommitted()) {
             resp.sendRedirect(renderContext.getRedirect());
@@ -868,7 +868,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 }
                 for (Map.Entry<String, List<String>> entry : values.entrySet()) {
                     List<String> stringList = entry.getValue();
-                    List parameterValues = parameters.get(entry.getKey());
+                    List<String> parameterValues = parameters.get(entry.getKey());
                     if (!CollectionUtils.isEqualCollection(stringList, parameterValues)) {
                         if (entry.getKey().equals("jcrCaptcha")) {
                             Map<String, String[]> formDatas = new HashMap<String, String[]>();

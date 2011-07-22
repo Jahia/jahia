@@ -89,6 +89,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Utility class for accessing and manipulation JCR properties.
@@ -97,7 +98,7 @@ import java.util.*;
  */
 public final class JCRContentUtils {
     
-    private  static Map<String, Boolean> iconsPresence = new HashMap<String, Boolean>();
+    private  static final Map<String, Boolean> iconsPresence = new ConcurrentHashMap<String, Boolean>(512,0.8f,32);
     private static JCRContentUtils instance;
 
     private static final Logger logger = LoggerFactory.getLogger(JCRContentUtils.class);
@@ -110,6 +111,7 @@ public final class JCRContentUtils {
                 iconsPresence.put(icon, present);
             } catch (MalformedURLException e) {
                 logger.warn(e.getMessage(), e);
+                present = Boolean.FALSE;
             }
         }
         return present;

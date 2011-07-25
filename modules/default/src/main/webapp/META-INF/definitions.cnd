@@ -18,7 +18,7 @@
 [jmix:listOrdered] > jmix:templateMixin mixin
  extends = jmix:list,jnt:area
  itemtype = layout
-- j:className (string, choicelist[resourceBundle]) < '','simple','filesList'
+- j:className (string, choicelist[resourceBundle]) indexed=no < '','simple','filesList'
 
 [jmix:columns] > jmix:templateMixin mixin
  extends = jmix:list, jnt:area
@@ -113,14 +113,14 @@
  - typeOfDisplay (string,choicelist[resourceBundle]) = isoLocaleCountryCode mandatory indexed=no < isoLocaleCountryCode,languageCode,doubleLetter,letter,nameInLocale,nameCurrentLocale,flag,flagPlain,flagShadow
 
 [jnt:tree] > jnt:content, jmix:siteComponent
- - nodeType (string, choicelist[subnodetypes = 'jnt:page,jnt:contentList,jnt:folder',resourceBundle]) mandatory
- - templateForLink (string, choicelist[templates,resourceBundle]) mandatory
+ - nodeType (string, choicelist[subnodetypes = 'jnt:page,jnt:contentList,jnt:folder',resourceBundle]) mandatory indexed=no
+ - templateForLink (string, choicelist[templates,resourceBundle]) mandatory indexed=no
 
 [jnt:pageFormCreation] > jnt:content, jmix:formContent, mix:title
  - templateNode (weakreference,choicelist[templatesNode='pageTemplate']) mandatory < jnt:template
- - buttonLabel (string) i18n
+ - buttonLabel (string) i18n nofulltext
  - useDescription (boolean) = false
- - class (string)
+ - class (string) indexed=no
  - stayOnPage (boolean) = false
  - i18npages (boolean) = true
 
@@ -131,7 +131,7 @@
 [jnt:backToParentPage] > jnt:content, jmix:siteComponent, mix:title
 
 [jnt:addContent] > jnt:content, mix:title, jmix:siteComponent, jmix:bindedComponent, jmix:studioOnly
- - j:type (string, choicelist[nodetypes=jmix:editorialContent,resourceBundle]) multiple
+ - j:type (string, choicelist[nodetypes=jmix:editorialContent,resourceBundle]) multiple indexed=no
 
 [jnt:introduction] > jnt:bigText, jmix:structuredContent, jmix:editorialContent
 
@@ -163,14 +163,14 @@
 [jnt:gotoAdmin] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
 
 [jnt:gotoManager] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
- - type (string, choicelist[resourceBundle]) = content < content,document,unitedContent,roles
+ - type (string, choicelist[resourceBundle]) = content indexed=no < content,document,unitedContent,roles
 
 [jnt:listSites] > jnt:content, mix:title, jmix:siteComponent, jmix:list, jmix:studioOnly
  - edit (boolean)
  - contribute (boolean)
  - preview (boolean)
  - live (boolean)
- - typeOfContent (string,choicelist[resourceBundle]) = website < website,contents,files
+ - typeOfContent (string,choicelist[resourceBundle]) = website indexed=no < website,contents,files
  - numberOfSitesPerPage (long) = 10 mandatory
  - numberMaxOfSitesDisplayed (long)
 
@@ -186,9 +186,9 @@
  - categories (boolean)
 
 [jnt:componentLink] > jnt:content, mix:title, jmix:siteComponent, jmix:bindedComponent, jmix:studioOnly
- - targetTemplate (string)
- - aClass (string)
- - divClass (string)
+ - targetTemplate (string) indexed=no
+ - aClass (string) indexed=no
+ - divClass (string) indexed=no
 
 [jnt:fileUpload] > jnt:content, jmix:siteComponent, jmix:bindedComponent, jmix:studioOnly
  - target (weakreference)

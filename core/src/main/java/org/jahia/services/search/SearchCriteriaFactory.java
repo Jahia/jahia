@@ -58,6 +58,8 @@ import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.PropertyUtilsBean;
+import org.apache.commons.beanutils.converters.ArrayConverter;
+import org.apache.commons.beanutils.converters.StringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRContentUtils;
@@ -100,6 +102,10 @@ public class SearchCriteriaFactory {
         CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER,
                 NodeProperty.Type.class);
         CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, Term.MatchType.class);
+        
+        ArrayConverter converter = new ArrayConverter(String[].class, new StringConverter());
+        converter.setAllowedChars(new char[] {'.', '-', '_'});
+        CONVERTER_UTILS_BEAN.register(converter, String[].class);
     }
 
     /**
@@ -129,6 +135,7 @@ public class SearchCriteriaFactory {
                                 PARAM_NAME_PREFIX.length()), ctx.getRequest().getParameter(param));
                     }
                 }
+                
                 new BeanUtilsBean(CONVERTER_UTILS_BEAN, new PropertyUtilsBean())
                         .populate(searchParams, properties);
 

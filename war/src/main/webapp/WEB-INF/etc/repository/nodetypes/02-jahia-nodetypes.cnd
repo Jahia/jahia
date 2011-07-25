@@ -60,7 +60,7 @@
   - j:originWS (string) protected nofulltext hidden
 
 [jmix:deletedChildren] mixin
-  - j:deletedChildren (string) multiple hidden
+  - j:deletedChildren (string) multiple hidden indexed=no
 
 [jmix:tagged] mixin
  extends = nt:hierarchyNode, jnt:content, jnt:page
@@ -347,8 +347,8 @@
 
 [jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:requiredPermissions, jmix:renderable, jmix:observable
  - j:hiddenTemplate (boolean)
- - j:moduleTemplate (string) hidden
- - j:sourceTemplate (weakreference) hidden
+ - j:moduleTemplate (string) hidden nofulltext
+ - j:sourceTemplate (weakreference) hidden nofulltext
  - j:view (string, choicelist[templates,resourceBundle]) nofulltext
  + * (jnt:template)
  + * (jnt:content)
@@ -439,8 +439,8 @@
  - j:mandatoryLanguages (string) multiple nofulltext protected
  - j:defaultLanguage (string) protected nofulltext
  - j:mixLanguage (boolean) = false protected
- - j:templatesSet (string) protected
- - j:siteType (string) protected
+ - j:templatesSet (string) protected nofulltext
+ - j:siteType (string) protected nofulltext
  - j:dependencies (string) multiple protected nofulltext
  + * (nt:base)
 
@@ -553,8 +553,8 @@
  - j:bindedComponent (weakreference) hidden
 
 [jmix:externalReference] mixin
-- j:referenceNodeIdentifiers (string) multiple i18n
-- j:referencePropertyNames (string) multiple i18n
+- j:referenceNodeIdentifiers (string) multiple i18n nofulltext
+- j:referencePropertyNames (string) multiple i18n nofulltext
 
 //---------------------------------------------------------
 // Caches
@@ -620,8 +620,8 @@ extends = jnt:content
  + * (jnt:folder)
 
 [jmix:autoSplitFolders] mixin extends = jnt:contentList
- - j:splitConfig (string) mandatory
- - j:splitNodeType (string) mandatory
+ - j:splitConfig (string) mandatory nofulltext
+ - j:splitNodeType (string) mandatory nofulltext
 
 // an item will be displayed in the Pages tab of the selector
 [jmix:visibleInPagesTree] mixin
@@ -635,10 +635,10 @@ extends = jnt:content
  - j:editableInContribution (boolean)
  - j:canOrderInContribution (boolean)
  - j:canDeleteInContribution (boolean)
- - j:contributeTypes (string, choicelist[subnodetypes = 'jmix:editorialContent,jnt:file,jnt:folder,jnt:contentFolder']) multiple
+ - j:contributeTypes (string, choicelist[subnodetypes = 'jmix:editorialContent,jnt:file,jnt:folder,jnt:contentFolder']) multiple nofulltext
 
 [jmix:listRestrictions] mixin
- - j:allowedTypes (string, choicelist[subnodetypes = 'jmix:droppableContent,jnt:file,jnt:folder']) multiple
+ - j:allowedTypes (string, choicelist[subnodetypes = 'jmix:droppableContent,jnt:file,jnt:folder']) multiple nofulltext
  - j:numberOfItems (long)
 
 //---------------------------------------------------------

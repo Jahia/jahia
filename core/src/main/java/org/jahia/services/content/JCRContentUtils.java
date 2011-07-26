@@ -243,6 +243,7 @@ public final class JCRContentUtils {
     }
     
     public static String escapeLocalNodeName(String name) {
+        name = name.trim();
         StringBuilder buffer = new StringBuilder(name.length() * 2);
         for (int i = 0; i < name.length(); i++) {
             char ch = name.charAt(i);

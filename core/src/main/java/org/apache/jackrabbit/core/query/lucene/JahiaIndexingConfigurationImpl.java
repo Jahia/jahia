@@ -44,7 +44,11 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.jcr.NamespaceException;
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.NamespaceRegistryImpl;
 import org.apache.jackrabbit.core.nodetype.xml.AdditionalNamespaceResolver;
 import org.apache.jackrabbit.core.query.QueryHandlerContext;
 import org.apache.jackrabbit.spi.Name;
@@ -63,22 +67,65 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * Jahia specific {@link IndexingConfiguration} implementation. 
+ */
 public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
+    
+    private static final String FACET_EXPRESSION = ":" + JahiaNodeIndexer.FACET_PREFIX;    
+    
     /**
      * The logger instance for this class.
      */
-    private static final Logger logger = LoggerFactory.getLogger(JahiaIndexingConfigurationImpl.class);    
+    private static final Logger logger = LoggerFactory.getLogger(JahiaIndexingConfigurationImpl.class);
+    
+    /**
+     * @param node a node.
+     * @return the text content of the <code>node</code>.
+     */
+    private static String getTextContent(Node node) {
+        StringBuffer content = new StringBuffer();
+        NodeList nodes = node.getChildNodes();
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node n = nodes.item(i);
+            if (n.getNodeType() == Node.TEXT_NODE) {
+                content.append(((CharacterData) n).getData());
+            }
+        }
+        return content.toString();
+    }
     
     private Set<Name> excludesFromI18NCopy = new HashSet<Name>();
+    
+    private final Analyzer facetAnalyzer = new KeywordAnalyzer();
     
     public JahiaIndexingConfigurationImpl() {
         super();
     }
-    
-    private final Analyzer facetAnalyzer = new KeywordAnalyzer();
-    
-    private static final String FACET_EXPRESSION = ":" + JahiaNodeIndexer.FACET_PREFIX;
-    
+
+    public Set<Name> getExcludesFromI18NCopy() {
+        return excludesFromI18NCopy;
+    }
+
+    /**
+     * Returns the namespaces declared on the <code>node</code>.
+     *
+     * @param node a DOM node.
+     * @return the namespaces
+     */
+    private Properties getNamespaces(Node node) {
+        Properties namespaces = new Properties();
+        NamedNodeMap attributes = node.getAttributes();
+        for (int i = 0; i < attributes.getLength(); i++) {
+            Attr attribute = (Attr) attributes.item(i);
+            if (attribute.getName().startsWith("xmlns:")) {
+                namespaces.setProperty(
+                        attribute.getName().substring(6), attribute.getValue());
+            }
+        }
+        return namespaces;
+    }
+
     /**
      * Returns the analyzer configured for the property with this fieldName
      * (the string representation ,JCR-style name, of the given <code>Name</code>
@@ -99,8 +146,10 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
 
     @Override
     public void init(Element config, QueryHandlerContext context, NamespaceMappings nsMappings) throws Exception {
+        Properties customNamespaces = getNamespaces(config);
+        registerCustomNamespaces(context.getNamespaceRegistry(), customNamespaces);
         super.init(config, context, nsMappings);
-        NamespaceResolver nsResolver = new AdditionalNamespaceResolver(getNamespaces(config));        
+        NamespaceResolver nsResolver = new AdditionalNamespaceResolver(customNamespaces);        
         NameResolver resolver = new ParsingNameResolver(NameFactoryImpl.getInstance(), nsResolver);
         
         NodeList indexingConfigs = config.getChildNodes();
@@ -123,43 +172,24 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
             }
         }
     }
-
-    public Set<Name> getExcludesFromI18NCopy() {
-        return excludesFromI18NCopy;
-    }
-
-    /**
-     * @param node a node.
-     * @return the text content of the <code>node</code>.
-     */
-    private static String getTextContent(Node node) {
-        StringBuffer content = new StringBuffer();
-        NodeList nodes = node.getChildNodes();
-        for (int i = 0; i < nodes.getLength(); i++) {
-            Node n = nodes.item(i);
-            if (n.getNodeType() == Node.TEXT_NODE) {
-                content.append(((CharacterData) n).getData());
-            }
-        }
-        return content.toString();
-    }
     
-    /**
-     * Returns the namespaces declared on the <code>node</code>.
-     *
-     * @param node a DOM node.
-     * @return the namespaces
-     */
-    private Properties getNamespaces(Node node) {
-        Properties namespaces = new Properties();
-        NamedNodeMap attributes = node.getAttributes();
-        for (int i = 0; i < attributes.getLength(); i++) {
-            Attr attribute = (Attr) attributes.item(i);
-            if (attribute.getName().startsWith("xmlns:")) {
-                namespaces.setProperty(
-                        attribute.getName().substring(6), attribute.getValue());
+    private void registerCustomNamespaces(NamespaceRegistryImpl namespaceRegistry,
+            Properties customNamespaces) {
+        for (Object key : customNamespaces.keySet()) {
+            String prefix = (String) key;
+            try {
+                namespaceRegistry.getURI(prefix);
+            } catch (NamespaceException e) {
+                String uri = customNamespaces.getProperty(prefix);
+                try {
+                    namespaceRegistry.registerNamespace(prefix, uri);
+                    logger.info("Registered custom namespace with prefix '{}' and URI '{}'",
+                            prefix, uri);
+                } catch (RepositoryException e1) {
+                    logger.warn("Unable to register custom namespace with prefix '" + prefix
+                            + "' and URI '" + uri + "'");
+                }
             }
         }
-        return namespaces;
     }    
 }

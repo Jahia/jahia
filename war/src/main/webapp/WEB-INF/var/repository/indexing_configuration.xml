@@ -23,6 +23,7 @@ The following example creates an index aggregate on jnt:file that includes the c
         <exclude-property>j:lastPublishedBy</exclude-property>        
         <exclude-property>j:published</exclude-property>        
     </i18ncopy>
+    <!--
     <analyzers> 
         <analyzer class="org.apache.lucene.analysis.KeywordAnalyzer">
             <property>jcr:primaryType</property>
@@ -180,5 +181,6 @@ The following example creates an index aggregate on jnt:file that includes the c
             <property>changefreq</property>
             <property>priority</property>
         </analyzer>
-    </analyzers>            
+    </analyzers>
+    -->
 </configuration>

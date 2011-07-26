@@ -166,7 +166,7 @@
     <bean id="gwtCssStyles" class="org.springframework.beans.factory.config.ListFactoryBean">
         <property name="sourceList">
             <list>
-                <value>/gwt/resources/css/gwt.css</value>
+                <value>/gwt/resources/css/gwt.min.css</value>
             </list>
             <!-- comment out gwt.css and uncomment the following CSS if you are in dev mode and are working on modifying those CSSs
             <list>

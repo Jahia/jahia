@@ -45,6 +45,8 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -539,7 +541,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     "workspace"), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
                     renderContext.getFallbackLocale());
             final JCRNodeWrapper node = currentUserSession.getNode(keyAttrbs.get("path"));
-
+            if(logger.isDebugEnabled()) {
+                logger.debug("Calling render service for generating content for key " + cacheKey + " with attributes : " +
+                             new ToStringBuilder(keyAttrbs,ToStringStyle.MULTI_LINE_STYLE)+ "\nmodule params : " +
+                             ToStringBuilder.reflectionToString(moduleParams,ToStringStyle.MULTI_LINE_STYLE)+
+                " areaIdentifier "+ areaIdentifier);
+            }
             renderContext.getRequest().removeAttribute(
                     "areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
             Template oldOne = (Template) renderContext.getRequest().getAttribute("previousTemplate");
@@ -556,10 +563,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 restoreOldOneIfNeeded = true;
             }
 
-            if (context.equals("wrappedcontent")){
-                renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
-            }
+            renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
 
+            String inArea = keyAttrbs.get("inArea");
+            if (inArea == null || "".equals(inArea)) {
+                renderContext.getRequest().removeAttribute("inArea");
+            } else {
+                renderContext.getRequest().setAttribute("inArea", inArea);
+            }
             if(areaIdentifier!=null) {
                 renderContext.getRequest().setAttribute("areaListResource",currentUserSession.getNodeByIdentifier(areaIdentifier));
             }
@@ -664,7 +675,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain chain) {
         LinkedList<String> userKeysLinkedList = userKeys.get();
-        if (userKeysLinkedList != null) {
+        if (userKeysLinkedList != null && userKeysLinkedList.size()>0) {
 
             String perUserKey = userKeysLinkedList.remove(0);
             if (perUserKey.equals(acquiredSemaphore.get())) {

@@ -268,6 +268,12 @@ public class AreaTag extends ModuleTag implements ParamParent {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
+
+        if (node == null && logger.isDebugEnabled()) {
+            logger.debug("Can not find the area node for path " + path + " with templates " + templateNode +
+                         "rendercontext " + renderContext + " main resource " + resource +
+                         " current resource " + currentResource);
+        }
     }
 
     @Override public int doEndTag() throws JspException {

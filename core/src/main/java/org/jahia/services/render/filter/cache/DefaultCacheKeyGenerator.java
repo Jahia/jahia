@@ -87,13 +87,13 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     private static final Set<String> KNOWN_FIELDS = new LinkedHashSet<String>(Arrays.asList("workspace", "language",
             "path", "template", "templateType", "acls", "context", "wrapped", "custom", "queryString",
-            "templateNodes","resourceID"));
+            "templateNodes","resourceID","inArea"));
     private static final String CACHE_NAME = "HTMLNodeUsersACLs";
     private static final String PROPERTY_CACHE_NAME = "HTMLRequiredPermissionsCache";
     public static final String PER_USER = "_perUser_";
     private List<String> fields = new LinkedList<String>(KNOWN_FIELDS);
 
-    private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}#{6}#{7}#{8}#{9}#{10}#{11}");
+    private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}#{6}#{7}#{8}#{9}#{10}#{11}#{12}");
 
     private JahiaGroupManagerService groupManagerService;
     private JahiaUserManagerService userManagerService;
@@ -174,6 +174,9 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
+            } else if ("inArea".equals(field)) {
+                Object inArea = renderContext.getRequest().getAttribute("inArea");
+                args.add(inArea != null ? inArea.toString() : "");
             }
         }
         return args.toArray(new String[KNOWN_FIELDS.size()]);

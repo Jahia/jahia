@@ -17,7 +17,10 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.fancybox.js,animatedcollapse.js"/>
+<%--
 <template:addResources type="css" resources="contribute-toolbar.css,jquery.fancybox.css"/>
+--%>
+<template:addResources type="css" resources="contribute.min.css"/>
 <fmt:message key="label.noSelection" var="i18nNoSelection"/>
 <c:set var="i18nNoSelection" value="${functions:escapeJavaScript(i18nNoSelection)}"/>
 <template:addResources>

@@ -17,9 +17,12 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="selectorType" type="org.jahia.services.content.nodetypes.SelectorType"--%>
+<%--
 <template:addResources type="css" resources="formbuilder.css"/>
 <template:addResources type="css" resources="ui.slider.css"/>
 <template:addResources type="css" resources="datepicker.css"/>
+--%>
+<template:addResources type="css" resources="contribute.min.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <c:set var="dateTimePicker" value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER}"/>
 <c:if test="${not empty workflowTaskFormTask}">

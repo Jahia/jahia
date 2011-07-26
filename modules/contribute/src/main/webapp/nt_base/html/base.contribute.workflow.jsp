@@ -16,8 +16,11 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<%--
 <template:addResources type="css" resources="contentlist.css"/>
 <template:addResources type="css" resources="formcontribute.css"/>
+--%>
+<template:addResources type="css" resources="contribute.min.css"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
 <utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType"
                       scope="application"/>

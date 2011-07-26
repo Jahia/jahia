@@ -92,6 +92,27 @@
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.samaxes.maven</groupId>
+                <artifactId>maven-minify-plugin</artifactId>
+                <version>1.3.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>minify</goal>
+                        </goals>
+                        <configuration>
+                            <cssSourceFiles>
+                                <cssSourceFile>960-fluid.css</cssSourceFile>
+                                <cssSourceFile>01web.css</cssSourceFile>
+                                <cssSourceFile>navigation.css</cssSourceFile>
+                                <cssSourceFile>navigationN2-1.css</cssSourceFile>
+                            </cssSourceFiles>
+                            <cssFinalFile>${project.artifactId}.css</cssFinalFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

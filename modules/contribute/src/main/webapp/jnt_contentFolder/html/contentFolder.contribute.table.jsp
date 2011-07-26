@@ -15,7 +15,6 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="css" resources="contentlist.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="javascript" resources="timepicker.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
@@ -30,7 +29,11 @@
                        resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.colorbox.js,jquery.fancybox.js"/>
 <template:addResources type="javascript" resources="jquery.defer.js"/>
 <template:addResources type="javascript" resources="treeselector.js"/>
+<%--
+<template:addResources type="css" resources="contentlist.css"/>
 <template:addResources type="css" resources="timepicker.css,datepicker.css,jquery.treeview.css,jquery.fancybox.css,contentlist.css,formcontribute.css,jquery.colorbox.css,jquery.fancybox.css"/>
+--%>
+<template:addResources type="css" resources="contribute.min.css"/>
 <template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
 <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.UILocale}.js"/>

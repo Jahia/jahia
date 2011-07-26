@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    
+    <bean class="org.jahia.services.render.StaticAssetMapping">
+        <property name="mapping">
+            <map>
+                <entry key="/modules/templates-system/css/960-fluid.css"
+                    value="/modules/templates-system/css/templates-system.min.css"/>
+                <entry key="/modules/templates-system/css/01web.css"
+                    value="/modules/templates-system/css/templates-system.min.css"/>
+                <entry key="/modules/templates-system/css/navigation.css"
+                    value="/modules/templates-system/css/templates-system.min.css"/>
+                <entry key="/modules/templates-system/css/navigationN2-1.css"
+                    value="/modules/templates-system/css/templates-system.min.css"/>
+            </map>
+        </property>
+    </bean>
+
+</beans>

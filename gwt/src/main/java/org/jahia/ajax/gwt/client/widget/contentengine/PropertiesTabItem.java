@@ -51,6 +51,7 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
@@ -69,7 +70,7 @@ import java.util.*;
  * Tab item that contains properties
  * @version 6.5
  * @author toto
- * 
+ *
  */
 public class PropertiesTabItem extends EditEngineTabItem {
     protected List<String> dataType;
@@ -78,12 +79,14 @@ public class PropertiesTabItem extends EditEngineTabItem {
     protected transient String language;
     protected transient PropertiesEditor propertiesEditor;
     protected transient Map<String, PropertiesEditor> langPropertiesEditorMap;
+    protected transient Map<String, Map<String,GWTJahiaNodeProperty>> changedProperties;
     protected transient boolean multiLang = false;
 
     @Override
     public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
         AsyncTabItem tab = super.create(engineTab, engine);
         langPropertiesEditorMap = new HashMap<String, PropertiesEditor>();
+        changedProperties = new HashMap<String, Map<String,GWTJahiaNodeProperty>>();
         tab.setLayout(new FitLayout());
         tab.setScrollMode(Style.Scroll.AUTO);
         return tab;
@@ -170,7 +173,29 @@ public class PropertiesTabItem extends EditEngineTabItem {
                     }
                 }
 
-                propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), engine.getProperties(), dataType);
+                Map<String, GWTJahiaNodeProperty> properties = engine.getProperties();
+                if (changedProperties.containsKey(language)) {
+                    properties.putAll(changedProperties.get(language));
+                }
+                propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), properties, dataType) {
+                    @Override
+                    public void copyToAllLanguages(GWTJahiaNodeProperty prop) {
+                        for (GWTJahiaLanguage jahiaLanguage : JahiaGWTParameters.getSiteLanguages()) {
+                            String l = jahiaLanguage.getLanguage();
+                            if (!l.equals(PropertiesTabItem.this.language)) {
+                                if (langPropertiesEditorMap.containsKey(l)) {
+                                    Field<?> f = langPropertiesEditorMap.get(l).getFieldsMap().get(prop.getName()).getField();
+                                    FormFieldCreator.copyValue(prop, f);
+                                } else {
+                                    if (!changedProperties.containsKey(l)) {
+                                        changedProperties.put(l, new HashMap<String,GWTJahiaNodeProperty>());
+                                    }
+                                    changedProperties.get(l).put(prop.getName(), prop.cloneObject());
+                                }
+                            }
+                        }
+                    }
+                };
                 propertiesEditor.setLocale(language);
                 propertiesEditor.setMixin(engine.getMixin());
                 propertiesEditor.setInitializersValues(engine.getInitializersValues());
@@ -178,6 +203,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 propertiesEditor.setWriteable(!engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:modifyProperties", engine.getNode()) && !engine.getNode().isLocked()));
                 propertiesEditor.setFieldSetGrouping(true);
                 propertiesEditor.setExcludedTypes(excludedTypes);
+                propertiesEditor.setViewCopyToAllLangs(true);
                 propertiesEditor.setMultipleEdit(engine.isMultipleSelection());
                 propertiesEditor.setDisplayHiddenProperties(engine.getLinker().isDisplayHiddenProperties());
                 if (engine.getNode() != null) {
@@ -217,7 +243,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                                 } else {
                                     if (labelSep != null) {
                                         field.setLabelSeparator(labelSep);
-                                    }    
+                                    }
                                     field.setFieldLabel(field.getFieldLabel());
                                 }
                             }
@@ -225,6 +251,13 @@ public class PropertiesTabItem extends EditEngineTabItem {
                     }
                 }
                 setPropertiesEditorByLang(language);
+
+                if (changedProperties.containsKey(language)) {
+                    for (Map.Entry<String, GWTJahiaNodeProperty> entry : changedProperties.get(language).entrySet()) {
+                        propertiesEditor.getFieldsMap().get(entry.getKey()).setDirty(true);
+                    }
+                }
+
                 attachPropertiesEditor(engine, tab);
                 if (propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
                     Field title = propertiesEditor.getFieldsMap().get("jcr:title");
@@ -234,10 +267,10 @@ public class PropertiesTabItem extends EditEngineTabItem {
 
             // synch non18n properties
             if (previousNon18nProperties != null && !previousNon18nProperties.isEmpty()) {
-                Map<String, Field<?>> fieldsMap = propertiesEditor.getFieldsMap();
+                Map<String, PropertiesEditor.PropertyAdapterField> fieldsMap = propertiesEditor.getFieldsMap();
                 for (GWTJahiaNodeProperty property : previousNon18nProperties) {
                     if (fieldsMap.containsKey(property.getName()))  {
-                        FormFieldCreator.fillValue(fieldsMap.get(property.getName()), propertiesEditor.getGWTJahiaItemDefinition(property), property, null);
+                        FormFieldCreator.fillValue(fieldsMap.get(property.getName()).getField(), propertiesEditor.getGWTJahiaItemDefinition(property), property, null);
                     }
                 }
             }
@@ -291,7 +324,10 @@ public class PropertiesTabItem extends EditEngineTabItem {
     public List<GWTJahiaNodeProperty> getLanguageProperties(boolean modifiedOnly, String language) {
         if (langPropertiesEditorMap.containsKey(language)) {
             return langPropertiesEditorMap.get(language).getProperties(true, false, modifiedOnly);
+        } else if (changedProperties.containsKey(language)) {
+            return new ArrayList<GWTJahiaNodeProperty>(changedProperties.get(language).values());
         }
+
         return new ArrayList<GWTJahiaNodeProperty>();
     }
 
@@ -313,5 +349,45 @@ public class PropertiesTabItem extends EditEngineTabItem {
 
     public void setExcludedTypes(List<String> excludedTypes) {
         this.excludedTypes = excludedTypes;
+    }
+
+    @Override
+    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes) {
+        PropertiesTabItem propertiesTabItem = this;
+        PropertiesEditor pe = propertiesTabItem.getPropertiesEditor();
+//        if (pe != null && node != null) {
+//            //properties.addAll(pe.getProperties());
+//            node.getNodeTypes().removeAll(pe.getRemovedTypes());
+//            node.getNodeTypes().addAll(pe.getAddedTypes());
+//            node.getNodeTypes().addAll(pe.getExternalMixin());
+//        }
+        if (pe != null) {
+            addedTypes.addAll(pe.getAddedTypes());
+            addedTypes.addAll(pe.getExternalMixin());
+        }
+
+        if (isMultiLang()) {
+            // for now only contentTabItem  has multilang. properties
+            Set<String> set = new HashSet<String>(langPropertiesEditorMap.keySet());
+            set.addAll(this.changedProperties.keySet());
+            for (String lang : set) {
+                if (!changedI18NProperties.containsKey(lang)) {
+                    changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
+                }
+                changedI18NProperties.get(lang).addAll(getLanguageProperties(true, lang));
+            }
+            if (propertiesEditor != null) {
+                changedProperties.addAll(propertiesEditor.getProperties(false, true, true));
+            }
+        } else {
+            if (propertiesEditor != null) {
+                changedProperties.addAll(propertiesEditor.getProperties(true, true, true));
+            }
+        }
+
+        if (pe != null) {
+            removedTypes.addAll(pe.getRemovedTypes());
+        }
+
     }
 }

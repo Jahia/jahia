@@ -58,6 +58,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.Arrays;
@@ -97,19 +98,19 @@ public class LayoutTabItem extends PropertiesTabItem {
     @Override
     public void attachPropertiesEditor(final NodeHolder engine, final AsyncTabItem tab) {
         if (engine.getNode() != null && engine.getLinker() instanceof EditLinker) {
-            final ComboBox<GWTJahiaValueDisplayBean> templateField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:view");
-            final ComboBox<GWTJahiaValueDisplayBean> skinField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:skin");
-            final ComboBox<GWTJahiaValueDisplayBean> subNodesViewField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:subNodesView");
+            final PropertiesEditor.PropertyAdapterField templateField =  propertiesEditor.getFieldsMap().get("j:view");
+            final PropertiesEditor.PropertyAdapterField skinField =  propertiesEditor.getFieldsMap().get("j:skin");
+            final PropertiesEditor.PropertyAdapterField subNodesViewField = propertiesEditor.getFieldsMap().get("j:subNodesView");
             listener = new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
                 public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> se) {
                     Map<String, List<String>> contextParams = new HashMap<String, List<String>>();
                     if (skinField != null && skinField.getValue() != null) {
-                        contextParams.put("forcedSkin", Arrays.asList(skinField.getValue().getValue()));
+                        contextParams.put("forcedSkin", Arrays.asList(((ComboBox<GWTJahiaValueDisplayBean>)skinField.getField()).getValue().getValue()));
                     }
                     if (subNodesViewField != null && subNodesViewField.getValue() != null) {
-                        contextParams.put("forcedSubNodesTemplate", Arrays.asList(subNodesViewField.getValue().getValue()));
+                        contextParams.put("forcedSubNodesTemplate", Arrays.asList(((ComboBox<GWTJahiaValueDisplayBean>)subNodesViewField.getField()).getValue().getValue()));
                     }
-                    String template = (templateField != null && templateField.getValue() != null) ? templateField.getValue().getValue() : null;
+                    String template = (templateField != null && templateField.getValue() != null) ? ((ComboBox<GWTJahiaValueDisplayBean>)templateField.getField()).getValue().getValue() : null;
                     if (engine.getNode() != null) {
                         JahiaContentManagementService
                                 .App.getInstance().getRenderedContent(engine.getNode().getPath(), null, LayoutTabItem.this.language,
@@ -127,13 +128,13 @@ public class LayoutTabItem extends PropertiesTabItem {
                 }
             };
             if (templateField != null) {
-                templateField.addSelectionChangedListener(listener);
+                ((ComboBox<GWTJahiaValueDisplayBean>)templateField.getField()).addSelectionChangedListener(listener);
             }
             if (skinField != null) {
-                skinField.addSelectionChangedListener(listener);
+                ((ComboBox<GWTJahiaValueDisplayBean>)skinField.getField()).addSelectionChangedListener(listener);
             }
             if (subNodesViewField != null) {
-                subNodesViewField.addSelectionChangedListener(listener);
+                ((ComboBox<GWTJahiaValueDisplayBean>)subNodesViewField.getField()).addSelectionChangedListener(listener);
             }
 
             tab.setLayout(new FillLayout());

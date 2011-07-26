@@ -40,10 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.extjs.gxt.ui.client.widget.form.Field;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -58,7 +55,6 @@ import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -292,10 +288,6 @@ public class EditContentEngine extends AbstractContentEngine {
                     changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
                 }
                 Object itemData = item.getData("item");
-                if (itemData instanceof PropertiesTabItem) {
-                    PropertiesTabItem propertiesTabItem = (PropertiesTabItem) itemData;
-                    changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
-                }
                 if (itemData instanceof EditEngineTabItem) {
                     ((EditEngineTabItem)itemData).onLanguageChange(getSelectedLanguage());
                 }
@@ -325,72 +317,38 @@ public class EditContentEngine extends AbstractContentEngine {
 
         for (TabItem tab : tabs.getItems()) {
             EditEngineTabItem item = tab.getData("item");
-            if (item instanceof PropertiesTabItem) {
-                PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
-                PropertiesEditor pe = propertiesTabItem.getPropertiesEditor();
-                if (pe != null) {
-                    //properties.addAll(pe.getProperties());
-                    node.getNodeTypes().removeAll(pe.getRemovedTypes());
-                    node.getNodeTypes().addAll(pe.getAddedTypes());
-                    node.getNodeTypes().addAll(pe.getExternalMixin());
-                }
-
-                // handle multilang
-                if (propertiesTabItem.isMultiLang()) {
-                    // for now only contentTabItem  has multilang. properties
-                    if (getSelectedLanguage() != null) {
-                        final String lang = getSelectedLanguage();
-                        if (!changedI18NProperties.containsKey(lang)) {
-                            changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
-                        }
-
-                        changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
-                    }
-                    if (pe != null) {
-                        changedProperties.addAll(pe.getProperties(false, true, true));
-                    }
-                } else {
-                    if (pe != null) {
-                        changedProperties.addAll(pe.getProperties(true, true, true));
-                    }
-                }
-                if (pe != null) {
-                    removedTypes.addAll(pe.getRemovedTypes());
-                }
-                // case of contentTabItem
-                if (item instanceof ContentTabItem) {
-                    if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
-                        Field<String> name = ((ContentTabItem) item).getName();
-                        if(!name.isValid()) {
-                            com.google.gwt.user.client.Window.alert(Messages.get(
+            // case of contentTabItem
+            if (item instanceof ContentTabItem) {
+                if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
+                    Field<String> name = ((ContentTabItem) item).getName();
+                    if(!name.isValid()) {
+                        com.google.gwt.user.client.Window.alert(Messages.get(
                                 "label.error.system.name.mandatory", "System name is mandatory and could not be empty"));
-                            unmask();
-                            ok.setEnabled(true);
-                            return;
-                        }
-                        nodeName = name.getValue();
-                        node.setName(nodeName);
+                        unmask();
+                        ok.setEnabled(true);
+                        return;
                     }
+                    nodeName = name.getValue();
+                    node.setName(nodeName);
                 }
-
-                if (item instanceof ListOrderingContentTabItem) {
-
-                    // if the manual ranking was activated update new ranking
-                    orderedChildrenNodes = ((ListOrderingContentTabItem) item).getNewManualOrderedChildrenList();
-                }
-
-
             }
+
+            if (item instanceof ListOrderingContentTabItem) {
+                // if the manual ranking was activated update new ranking
+                orderedChildrenNodes = ((ListOrderingContentTabItem) item).getNewManualOrderedChildrenList();
+            }
+
             // case of right tab
-            else if (item instanceof RolesTabItem) {
+            if (item instanceof RolesTabItem) {
                 AclEditor acl = ((RolesTabItem) item).getRightsEditor();
                 if (acl != null) {
                     newNodeACL = acl.getAcl();
                 }
             } else {
-                item.doSave(node, changedProperties, changedI18NProperties);
-                removedTypes.addAll(item.getRemovedTypes());
-                item.getRemovedTypes().clear();
+                HashSet<String> addedTypes = new HashSet<String>();
+                item.doSave(node, changedProperties, changedI18NProperties, addedTypes, removedTypes);
+                node.getNodeTypes().removeAll(removedTypes);
+                node.getNodeTypes().addAll(addedTypes);
             }
         }
         

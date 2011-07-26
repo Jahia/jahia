@@ -262,10 +262,11 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                     .entrySet()) {
                 if (initializer.getValue().getDependentProperties() != null) {
                     for (String dependentProperty : initializer.getValue().getDependentProperties()) {
-
-                        final Field<?> dependentField = pe.getFieldsMap().get(dependentProperty);
-                        if (dependentField != null) {
-                            initDynamicInitializer(dependentField, initializer.getKey(), pe, initializer.getValue().getDependentProperties());
+                        if (pe.getFieldsMap().containsKey(dependentProperty)) {
+                            final Field<?> dependentField = pe.getFieldsMap().get(dependentProperty).getField();
+                            if (dependentField != null) {
+                                initDynamicInitializer(dependentField, initializer.getKey(), pe, initializer.getValue().getDependentProperties());
+                            }
                         }
                     }
                 }
@@ -448,8 +449,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                 Map<String, PropertiesEditor> langPropertiesEditorMap = ((PropertiesTabItem) item).getLangPropertiesEditorMap();
                 for (PropertiesEditor pe : langPropertiesEditorMap.values()) {
                     if (pe != null) {
-                        for (Field<?> field : pe.getFields()) {
-                            if ((field instanceof CKEditorField) && field.isEnabled() && !field.isReadOnly() && ((FieldSet)field.getParent()).isExpanded()) {
+                        for (PropertiesEditor.PropertyAdapterField adapterField : pe.getFieldsMap().values()) {
+                            Field<?> field = adapterField.getField();
+                            if ((field instanceof CKEditorField) && field.isEnabled() && !field.isReadOnly() && ((FieldSet)adapterField.getParent()).isExpanded()) {
                             	CKEditorField ckfield = (CKEditorField) field;
                             	if (ckfield.isIgnoreWcagWarnings()) {
                             		continue;
@@ -535,8 +537,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                 PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
                 PropertiesEditor pe = ((PropertiesTabItem) item).getPropertiesEditor();
                 if (pe != null) {
-                    for (Field<?> field : pe.getFields()) {
-                        if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet)field.getParent()).isExpanded()) {
+                    for (PropertiesEditor.PropertyAdapterField adapterField : pe.getFieldsMap().values()) {
+                        Field<?> field = adapterField.getField();
+                        if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet)adapterField.getParent()).isExpanded()) {
                             if (allValid || tab.equals(tabs.getSelectedItem())
                                     && !tab.equals(firstErrorTab)) {
                                 firstErrorTab = tab;
@@ -559,8 +562,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                             if (!lang.equals(language)) {
                                 PropertiesEditor lpe = propertiesTabItem.getPropertiesEditorByLang(language);
                                 if (lpe != null) {
-                                    for (Field<?> field : lpe.getFields()) {
-                                        if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet)field.getParent()).isExpanded() && ((GWTJahiaPropertyDefinition) lpe.getGWTJahiaItemDefinition(field.getName())).isInternationalized()) {
+                                    for (PropertiesEditor.PropertyAdapterField adapterField : lpe.getFieldsMap().values()) {
+                                        Field<?> field = adapterField.getField();
+                                        if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet)adapterField.getParent()).isExpanded() && adapterField.getDefinition().isInternationalized()) {
                                             if (allValid || tab.equals(tabs.getSelectedItem())
                                                     && !tab.equals(firstErrorTab)) {
                                                 firstErrorTab = tab;

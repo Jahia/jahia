@@ -113,7 +113,7 @@ public class SeoTabItem extends EditEngineTabItem {
         return editor;
     }
     
-    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties) {
+    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes) {
         Set<String> langs = new HashSet<String>(editorsByLanguage.keySet());
         if (langs.isEmpty()) {
             return;

@@ -46,11 +46,10 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
-import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
@@ -58,6 +57,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 
@@ -73,12 +73,13 @@ public class PropertiesEditor extends FormPanel {
     private Map<String, GWTJahiaFieldInitializer> initializersValues;
     private Map<String, GWTJahiaNodeProperty> currentProperties = null;
     private Map<String, GWTJahiaNodeProperty> originalProperties = null;
-    private Map<String, Field<?>> fields;
+    private Map<String, PropertyAdapterField> fields;
     private Map<String, FieldSet> fieldSets;
     private List<FieldSet> orderingListFieldSet = new ArrayList<FieldSet>();
     private Map<String, GWTJahiaItemDefinition> propertyDefinitions = new HashMap<String, GWTJahiaItemDefinition>();
     private boolean isMultipleEdit = false;
     private boolean viewInheritedItems = true;
+    private boolean viewCopyToAllLangs = false;
     private List<String> excludedItems;
     private List<String> excludedTypes;
     private List<String> dataType;
@@ -134,6 +135,10 @@ public class PropertiesEditor extends FormPanel {
         this.viewInheritedItems = viewInheritedItems;
     }
 
+    public void setViewCopyToAllLangs(boolean viewCopyToAllLangs) {
+        this.viewCopyToAllLangs = viewCopyToAllLangs;
+    }
+
     public void setExcludedItems(List<String> excludedItems) {
         this.excludedItems = excludedItems;
     }
@@ -167,7 +172,7 @@ public class PropertiesEditor extends FormPanel {
         setScrollMode(Style.Scroll.AUTO);
         setButtonAlign(Style.HorizontalAlignment.CENTER);
         removeAll();
-        fields = new HashMap<String, Field<?>>();
+        fields = new HashMap<String, PropertyAdapterField>();
         fieldSets = new HashMap<String, FieldSet>();
         List<String> supertypes = new ArrayList<String>();
         for (GWTJahiaNodeType nodeType : nodeTypes) {
@@ -260,70 +265,27 @@ public class PropertiesEditor extends FormPanel {
                     if (field instanceof TriggerField) {
                         ((TriggerField) field).setHideTrigger(true);
                     }
-                } else if (isMultipleEdit && !definition.isProtected()) {
-                    field.setEnabled(false);
-                    final CheckBox checkbox = new CheckBox();
-
-                    final Field f = field;
-                    checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
-                        public void handleEvent(ComponentEvent event) {
-                            if (checkbox.getValue()) {
-                                Log.debug("add ");
-                                f.setEnabled(true);
-                            } else {
-                                Log.debug("remove ");
-                                f.setEnabled(false);
-                            }
-                        }
-
-                    });
-                    checkbox.setHideLabel(true);
-                    add(checkbox);
-                    final HBoxLayout hBoxLayout = new HBoxLayout();
-                    hBoxLayout.setHBoxLayoutAlign(HBoxLayout.HBoxLayoutAlign.MIDDLE);
-                    final LayoutContainer panel = new LayoutContainer(hBoxLayout);
-                    panel.add(checkbox, new HBoxLayoutData());
-                    final HBoxLayoutData data = new HBoxLayoutData();
-                    panel.add(field, data);
-                    field = new AdapterField(panel) {
-                        public Object getValue() {
-                            return f.getValue();
-                        }
-
-                        public boolean isDirty() {
-                            return f.isDirty() && checkbox.getValue();
-                        }
-
-                        public void setVisible(boolean visible) {
-                            super.setVisible(visible);
-                            f.setVisible(visible);
-                        }
-
-                        public void setEnabled(boolean enabled) {
-                            super.setEnabled(enabled);
-                            f.setEnabled(enabled);
-                        }
-                    };
-                    field.setName(f.getName());
-                    field.setFieldLabel(f.getFieldLabel());
                 }
-                field.setId(nodeType.getName().replace(":","-") + "_" + field.getName().replace(":","-") + locale + (isWriteable?"-true":"-false"));
-                field.setWidth("98%");
-                field.setStyleAttribute("padding-left", "0");
-                fields.put(field.getName(), field);
+
+                final PropertyAdapterField adapterField = new PropertyAdapterField(field, (GWTJahiaPropertyDefinition) definition, gwtJahiaNodeProperty);
+
+                adapterField.setId(nodeType.getName().replace(":","-") + "_" + field.getName().replace(":","-") + locale + (isWriteable?"-true":"-false"));
+                adapterField.setWidth("98%");
+                adapterField.setStyleAttribute("padding-left", "0");
+                fields.put(field.getName(), adapterField);
                 FormData fd = new FormData("98%");
                 fd.setMargins(new Margins(0));
                 if (remoteField != null) {
                     int i = 1;
                     for (Component component : fieldSet.getItems()) {
                         if (component.equals(remoteField)) {
-                            fieldSet.insert(field, i, fd);
+                            fieldSet.insert(adapterField, i, fd);
                             break;
                         }
                         i++;
                     }
                 }   else {
-                    fieldSet.add(field, fd);
+                    fieldSet.add(adapterField, fd);
                 }
                 fieldSet.layout();
                 if (optional) {
@@ -343,8 +305,11 @@ public class PropertiesEditor extends FormPanel {
                                     addedTypes.remove(definition.getDeclaringNodeType());
                                     final FieldSet  fs = (FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent();
                                     for (Component component : fs.getItems()) {
-                                        if (component instanceof ComboBox) {
-                                            removeExternalMixin(((ComboBox) component).getSelection(),(ComboBox) component);
+                                        if (component instanceof PropertyAdapterField) {
+                                            PropertyAdapterField adapterField = (PropertyAdapterField) component;
+                                            if (adapterField.getField() instanceof ComboBox) {
+                                                removeExternalMixin(((ComboBox) adapterField.getField()).getSelection(),adapterField);
+                                            }
                                         }
                                         component.setData("addedField", null);
                                     }
@@ -385,8 +350,8 @@ public class PropertiesEditor extends FormPanel {
                     final List<GWTJahiaValueDisplayBean> oldSelection = c.getSelection();
                     c.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
                         public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> event) {
-                            removeExternalMixin(oldSelection, c);
-                            setExternalMixin(c, true);
+                            removeExternalMixin(oldSelection, adapterField);
+                            setExternalMixin(adapterField, true);
                             if (oldSelection.size() > 0) {
                                 oldSelection.remove(0);
                             }
@@ -395,7 +360,7 @@ public class PropertiesEditor extends FormPanel {
                         }
                     });
                     if (c.getValue() != null) {
-                        setExternalMixin(c, false);
+                        setExternalMixin(adapterField, false);
                     }
                 }
             }
@@ -406,10 +371,10 @@ public class PropertiesEditor extends FormPanel {
      * Set template
      *
      */
-    private void setExternalMixin(ComboBox<GWTJahiaValueDisplayBean> c, boolean b) {
+    private void setExternalMixin(PropertyAdapterField c, boolean b) {
         String addMixin = null;
         if (c.getValue() != null) {
-            addMixin = c.getValue().get("addMixin");
+            addMixin = ((ComboBox<GWTJahiaValueDisplayBean>)c.getField()).getValue().get("addMixin");
         }
         if (addMixin != null && mixin != null) {
             for (GWTJahiaNodeType mix : mixin) {
@@ -423,7 +388,7 @@ public class PropertiesEditor extends FormPanel {
         }
     }
 
-    private void removeExternalMixin(List<GWTJahiaValueDisplayBean> oldSelection, ComboBox<GWTJahiaValueDisplayBean> c) {
+    private void removeExternalMixin(List<GWTJahiaValueDisplayBean> oldSelection, PropertyAdapterField c) {
         if (oldSelection != null && oldSelection.size() > 0 && oldSelection.get(0).getValue() != null) {
             String removeMixin = oldSelection.get(0).get("addMixin");
             if (externalMixin.contains(removeMixin)) {
@@ -512,8 +477,6 @@ public class PropertiesEditor extends FormPanel {
                                 Log.debug("Set value for " + prop.getName());
                                 prop.setValues(getPropertyValues(f, definition));
                                 newProps.add(prop);
-//                            } else {
-//                                newProps.add(prop);
                             }
                         }
                     }
@@ -617,12 +580,16 @@ public class PropertiesEditor extends FormPanel {
         return new GWTJahiaNodePropertyValue(propValueString, requiredType);
     }
 
+    public void copyToAllLanguages(GWTJahiaNodeProperty prop) {
+
+    }
+
     /**
      * Get fields map
      *
      * @return
      */
-    public Map<String, Field<?>> getFieldsMap() {
+    public Map<String, PropertyAdapterField> getFieldsMap() {
         return fields;
     }
 
@@ -655,5 +622,113 @@ public class PropertiesEditor extends FormPanel {
 
     public void setLocale(String locale) {
         this.locale = locale;
+    }
+
+    public class PropertyAdapterField extends AdapterField {
+        private Field field;
+        private boolean dirty = false;
+        private GWTJahiaPropertyDefinition definition;
+        private LayoutContainer panel;
+
+        public PropertyAdapterField(final Field field, final GWTJahiaPropertyDefinition definition, final GWTJahiaNodeProperty property) {
+            super(new LayoutContainer());
+
+            panel = (LayoutContainer) getWidget();
+
+            if (isMultipleEdit && !definition.isProtected()) {
+                field.setEnabled(false);
+                final CheckBox checkbox = new CheckBox();
+
+                final Field f = field;
+                checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
+                    public void handleEvent(ComponentEvent event) {
+                        if (checkbox.getValue()) {
+                            Log.debug("add ");
+                            f.setEnabled(true);
+                        } else {
+                            Log.debug("remove ");
+                            f.setEnabled(false);
+                        }
+                    }
+
+                });
+                checkbox.setHideLabel(true);
+                final HBoxLayout hBoxLayout = new HBoxLayout();
+                hBoxLayout.setHBoxLayoutAlign(HBoxLayout.HBoxLayoutAlign.MIDDLE);
+                panel.setLayout(hBoxLayout);
+                panel.add(checkbox, new HBoxLayoutData());
+                panel.add(field, new HBoxLayoutData());
+            } else {
+                panel.addStyleName("mypanel");
+                final FlowLayout hBoxLayout = new FlowLayout();
+                panel.setLayout(hBoxLayout);
+                panel.add(field);
+                field.setWidth("98%");
+                if (viewCopyToAllLangs && (definition.isInternationalized())) {
+                    final Button button = new Button(Messages.get("label.translate.copyall","Copy to all languages"));
+                    button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        @Override
+                        public void componentSelected(ButtonEvent ce) {
+                            GWTJahiaNodeProperty prop = currentProperties.get(definition.getName()).cloneObject();
+                            prop.setValues(getPropertyValues(field, definition));
+                            copyToAllLanguages(prop);
+                            MessageBox.info(Messages.get("label.translate.copyall", "Copy to all languages"),
+                                    Messages.get("label.translate.copyall.done",
+                                            "Content has been copied to other languages"),
+                                    null);
+
+                        }
+                    });
+                    panel.add(button);
+                }
+            }
+
+            this.field = field;
+            this.definition = definition;
+            setName(field.getName());
+            setFieldLabel(field.getFieldLabel());
+            setLabelSeparator(field.getLabelSeparator());
+        }
+
+        public Field getField() {
+            return field;
+        }
+
+        public GWTJahiaPropertyDefinition getDefinition() {
+            return definition;
+        }
+
+        public Object getValue() {
+            return field.getValue();
+        }
+
+        public boolean isDirty() {
+            return dirty || field.isDirty();
+        }
+
+        public void setDirty(boolean dirty) {
+            this.dirty = dirty;
+        }
+
+        public void setVisible(boolean visible) {
+            super.setVisible(visible);
+            field.setVisible(visible);
+        }
+
+        public void setEnabled(boolean enabled) {
+            super.setEnabled(enabled);
+            field.setEnabled(enabled);
+        }
+
+        @Override
+        public void setWidth(final String width) {
+            super.setWidth(width);
+            DeferredCommand.addCommand(new Command() {
+                public void execute() {
+                    field.setWidth(width);
+                }
+            });
+        }
+
     }
 }

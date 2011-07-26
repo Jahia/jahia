@@ -254,7 +254,7 @@ public class TagsTabItem extends EditEngineTabItem {
         }
     }
 
-    public void updateI18NProperties(Map<String,List<GWTJahiaNodeProperty>> list, List<String> mixin) {
+    public void updateI18NProperties(Map<String,List<GWTJahiaNodeProperty>> list, Set<String> addedTypes, Set<String> removedTypes) {
         boolean noTag = true;
         if (newValues != null) {
             for (Map.Entry<String, GWTJahiaNodeProperty> entry : newValues.entrySet()) {
@@ -281,23 +281,24 @@ public class TagsTabItem extends EditEngineTabItem {
             }
         }
         if (noTag) {
-            mixin.remove("jmix:tagged");
-        } else if (!mixin.contains("jmix:tagged")) {
-            mixin.add("jmix:tagged");
+            removedTypes.add("jmix:tagged");
+            addedTypes.remove("jmix:tagged");
+        } else if (!addedTypes.contains("jmix:tagged")) {
+            addedTypes.add("jmix:tagged");
         }
     }
 
     @Override
-    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties) {
+    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes) {
         if (isTagAreI15d()) {
-            updateI18NProperties(changedI18NProperties, node.getNodeTypes());
+            updateI18NProperties(changedI18NProperties, addedTypes, removedTypes);
         } else {
-            updateProperties(changedProperties, node.getNodeTypes());
+            updateProperties(changedProperties, addedTypes, removedTypes);
         }
 
     }
 
-    public void updateProperties(List<GWTJahiaNodeProperty> list, List<String> mixin) {
+    public void updateProperties(List<GWTJahiaNodeProperty> list, Set<String> addedTypes, Set<String> removedTypes) {
         boolean noTag = true;
         if (newValues != null) {
             for (Map.Entry<String, GWTJahiaNodeProperty> entry : newValues.entrySet()) {
@@ -309,9 +310,6 @@ public class TagsTabItem extends EditEngineTabItem {
                         // Add new tags
                         noTag = false;
                         list.add(newTag);
-                    } else if (mixin.contains("jmix:tagged")) {
-                        // Remove all existing tags
-                        list.add(newTag);
                     }
                 } else if (oldTag != null) {
                     if (!oldTag.getValues().isEmpty()) {
@@ -320,8 +318,11 @@ public class TagsTabItem extends EditEngineTabItem {
                 }
             }
         }
-        if (!noTag && !mixin.contains("jmix:tagged")) {
-            mixin.add("jmix:tagged");
+        if (noTag) {
+            removedTypes.add("jmix:tagged");
+            addedTypes.remove("jmix:tagged");
+        } else if (!addedTypes.contains("jmix:tagged")) {
+            addedTypes.add("jmix:tagged");
         }
     }
 

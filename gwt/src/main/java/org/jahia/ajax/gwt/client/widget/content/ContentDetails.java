@@ -49,7 +49,6 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -64,9 +63,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
-import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
-import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.contentengine.*;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 
@@ -74,7 +71,7 @@ import java.util.*;
 
 
 /**
- * 
+ *
  *
  * @author rfelden
  * @version 23 juin 2008 - 16:15:46
@@ -354,58 +351,31 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
             for (TabItem tab : tabs.getItems()) {
                 EditEngineTabItem item = (EditEngineTabItem) tab.getData("item");
-                if (item instanceof PropertiesTabItem) {
-                    PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
-                    PropertiesEditor pe = propertiesTabItem.getPropertiesEditor();
-                    if (pe != null) {
-                        //properties.addAll(pe.getProperties());
-                        for (GWTJahiaNode node : getNodes()) {
-                            node.getNodeTypes().removeAll(pe.getRemovedTypes());
-                            node.getNodeTypes().addAll(pe.getAddedTypes());
-                            node.getNodeTypes().addAll(pe.getExternalMixin());
-                        }
+                // case of contentTabItem
+                if (item instanceof ContentTabItem) {
+                    if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
+                        String nodeName = ((ContentTabItem) item).getName().getValue();
+                        getNode().setName(nodeName);
                     }
+                }
 
-                    // handle multilang
-                    if (propertiesTabItem.isMultiLang()) {
-                        // for now only contentTabItem  has multilang. properties
-                        changedI18NProperties.put(JahiaGWTParameters.getLanguage(), propertiesTabItem.getLanguageProperties(true, JahiaGWTParameters.getLanguage()));
-                        if (pe != null) {
-                            changedProperties.addAll(pe.getProperties(false, true, true));
-                        }
-                    } else {
-                        if (pe != null) {
-                            changedProperties.addAll(pe.getProperties(true, true, true));
-                        }
-                    }
-                    if (pe != null) {
-                        removedTypes.addAll(pe.getRemovedTypes());
-                    }
-                    // case of contentTabItem
-                    if (item instanceof ContentTabItem) {
-                        if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
-                            String nodeName = ((ContentTabItem) item).getName().getValue();
-                            getNode().setName(nodeName);
-                        }
-                    }
+                if (item instanceof ListOrderingContentTabItem) {
 
-                    if (item instanceof ListOrderingContentTabItem) {
+                    // if the manual ranking was activated update new ranking
+                    orderedChildrenNodes = ((ListOrderingContentTabItem) item).getNewManualOrderedChildrenList();
+                }
 
-                        // if the manual ranking was activated update new ranking
-                        orderedChildrenNodes = ((ListOrderingContentTabItem) item).getNewManualOrderedChildrenList();
-                    }
-
-
-                } else if (item instanceof RolesTabItem) {
+                if (item instanceof RolesTabItem) {
                     // case of right tab
                     AclEditor acl = ((RolesTabItem) item).getRightsEditor();
                     if (acl != null) {
                         newNodeACL = acl.getAcl();
                     }
                 } else {
-                    item.doSave(getNode(), changedProperties, changedI18NProperties);
-                    removedTypes.addAll(item.getRemovedTypes());
-                    item.getRemovedTypes().clear();
+                    HashSet<String> addedTypes = new HashSet<String>();
+                    item.doSave(getNode(), changedProperties, changedI18NProperties, addedTypes, removedTypes);
+                    getNode().getNodeTypes().removeAll(removedTypes);
+                    getNode().getNodeTypes().addAll(addedTypes);
                 }
             }
             // Ajax call to update values

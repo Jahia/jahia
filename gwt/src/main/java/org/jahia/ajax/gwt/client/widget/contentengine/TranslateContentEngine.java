@@ -65,10 +65,12 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.definition.LangPropertiesEditor;
+import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 
@@ -139,38 +141,10 @@ public class TranslateContentEngine extends Window {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 List<GWTJahiaNodeProperty> props = sourceLangPropertiesEditor.getPropertiesEditorByLang(sourceLangPropertiesEditor.getDisplayedLocale().getLanguage()).getProperties();
-                Map<String,Field<?>> fieldsMap = targetLangPropertiesEditor.getPropertiesEditorByLang(targetLangPropertiesEditor.getDisplayedLocale().getLanguage()).getFieldsMap();
+                Map<String,PropertiesEditor.PropertyAdapterField> fieldsMap = targetLangPropertiesEditor.getPropertiesEditorByLang(targetLangPropertiesEditor.getDisplayedLocale().getLanguage()).getFieldsMap();
                 for (final GWTJahiaNodeProperty prop : props) {
-                    final Field<?> f = fieldsMap.get(prop.getName());
-                    if (f instanceof NumberField) {
-                        ((NumberField)f).setValue(prop.getValues().get(0).getLong());
-                    } else if (f instanceof CKEditorField) {
-                        ((CKEditorField)f).setValue(prop.getValues().get(0).getString());
-                        // Do it a second time later for some browsers .. ?
-                        Timer togglebuttonTimer = new Timer() {
-                            public void run() {
-                                ((CKEditorField)f).setValue(prop.getValues().get(0).getString());
-                            }
-                        };
-
-                        togglebuttonTimer.schedule(100);
-                    } else if (f instanceof CalendarField) {
-                        ((CalendarField)f).setValue(prop.getValues().get(0).getDate());
-                    } else if (f instanceof DateField) {
-                        ((DateField)f).setValue(prop.getValues().get(0).getDate());
-                    } else if (f instanceof CheckBox) {
-                        ((CheckBox)f).setValue(prop.getValues().get(0).getBoolean());
-                    } else if (f instanceof ContentPickerField) {
-                        List<GWTJahiaNode> values = new ArrayList<GWTJahiaNode>();
-                        for (GWTJahiaNodePropertyValue value : prop.getValues()) {
-                            values.add(value.getNode());
-                        }
-                        ((ContentPickerField)f).setValue(values);
-                    } else if (f instanceof ComboBox) {
-                        // ?
-                    } else if (f instanceof TextField) {
-                        ((TextField<String>)f).setValue(prop.getValues().get(0).getString());
-                    }
+                    final Field<?> f = fieldsMap.get(prop.getName()).getField();
+                    FormFieldCreator.copyValue(prop, f);
                 }
             }
         });

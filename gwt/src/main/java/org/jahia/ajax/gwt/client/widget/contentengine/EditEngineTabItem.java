@@ -60,7 +60,6 @@ public abstract class EditEngineTabItem implements Serializable {
     protected boolean handleCreate = true;
     private List<String> showForTypes = new ArrayList<String>();
     private List<String> hideForTypes = new ArrayList<String>();
-    private Set<String> removedTypes = new HashSet<String>();
 
     protected EditEngineTabItem() {
     }
@@ -120,15 +119,7 @@ public abstract class EditEngineTabItem implements Serializable {
         this.hideForTypes = hideForTypes;
     }
 
-    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties) {
+    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes) {
 
-    }
-
-    public Set<String> getRemovedTypes() {
-        return removedTypes;
-    }
-
-    public void setRemovedTypes(Set<String> removedTypes) {
-        this.removedTypes = removedTypes;
     }
 }

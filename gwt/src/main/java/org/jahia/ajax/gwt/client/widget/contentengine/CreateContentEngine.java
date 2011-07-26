@@ -40,10 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
@@ -58,7 +55,6 @@ import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -69,7 +65,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -179,9 +174,8 @@ public class CreateContentEngine extends AbstractContentEngine {
                     changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
                 }
                 Object itemData = item.getData("item");
-                if (itemData instanceof PropertiesTabItem) {
-                    PropertiesTabItem propertiesTabItem = (PropertiesTabItem) itemData;
-                    changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
+                if (itemData instanceof EditEngineTabItem) {
+                    ((EditEngineTabItem)itemData).onLanguageChange(getSelectedLanguage());
                 }
             }
         }
@@ -239,44 +233,15 @@ public class CreateContentEngine extends AbstractContentEngine {
 
     protected void prepareAndSave(final boolean closeAfterSave) {
         String nodeName = targetName;
-        final List<String> mixinNames = new ArrayList<String>();
+        final Set<String> mixinNames = new HashSet<String>();
         for (TabItem tab : tabs.getItems()) {
             EditEngineTabItem item = tab.getData("item");
-            if (item instanceof PropertiesTabItem) {
-                PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
-                PropertiesEditor pe = ((PropertiesTabItem) item).getPropertiesEditor();
-                if (pe != null) {                    
-                    // props.addAll(pe.getProperties());
-                    mixinNames.addAll(pe.getAddedTypes());
-                    mixinNames.addAll(pe.getExternalMixin());
+            if (item instanceof ContentTabItem) {
+                if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
+                    nodeName = ((ContentTabItem) item).getName().getValue();
                 }
-
-                // handle multilang
-                if (propertiesTabItem.isMultiLang()) {
-                    // for now only contentTabItem  has multilang. properties
-                    if (getSelectedLanguage() != null) {
-                        final String lang = getSelectedLanguage();
-                        if (!changedI18NProperties.containsKey(lang)) {
-                            changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
-                        }
-
-                        changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(false, lang));
-                    }
-
-                    if (pe != null) {
-                        changedProperties.addAll(pe.getProperties(false, true, false));
-                    }
-                } else {
-                    if (pe != null) {
-                        changedProperties.addAll(pe.getProperties());
-                    }
-                }
-                if (item instanceof ContentTabItem) {
-                    if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
-                        nodeName = ((ContentTabItem) item).getName().getValue();
-                    }
-                }
-            } else if (item instanceof RolesTabItem) {
+            }
+            if (item instanceof RolesTabItem) {
                 AclEditor acl = ((RolesTabItem) item).getRightsEditor();
                 if (acl != null) {
                     newNodeACL = acl.getAcl();
@@ -284,19 +249,12 @@ public class CreateContentEngine extends AbstractContentEngine {
                         mixinNames.add("jmix:accessControlled");
                     }
                 }
-            } else if (item instanceof CategoriesTabItem) {
-                ((CategoriesTabItem) item).updateProperties(changedProperties, mixinNames);
-            } else if (item instanceof TagsTabItem) {
-                final TagsTabItem tabItem = (TagsTabItem) item;
-                if(tabItem.isTagAreI15d()) {
-                    tabItem.updateI18NProperties(changedI18NProperties, mixinNames);
-                } else {
-                    tabItem.updateProperties(changedProperties, mixinNames);
-                }
+            } else {
+                item.doSave(node, changedProperties, changedI18NProperties, mixinNames, removedTypes);
             }
         }
         
-		doSave(nodeName, changedProperties, changedI18NProperties, mixinNames, newNodeACL,
+		doSave(nodeName, changedProperties, changedI18NProperties, new ArrayList<String>(mixinNames), newNodeACL,
 		        closeAfterSave);
     }
     

@@ -60,6 +60,7 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.content.CronField;
+import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import org.jahia.ajax.gwt.client.widget.form.FileUploadField;
@@ -471,6 +472,45 @@ public class FormFieldCreator {
 
         return str.toString();
     }
+
+    public static void copyValue(final GWTJahiaNodeProperty sourceProperty, final Field<?> f) {
+        final Field<?> targetField;
+        if (f instanceof PropertiesEditor.PropertyAdapterField) {
+            targetField = ((PropertiesEditor.PropertyAdapterField)f).getField();
+        } else {
+            targetField = f;
+        }
+        if (targetField instanceof NumberField) {
+            ((NumberField) targetField).setValue(sourceProperty.getValues().get(0).getLong());
+        } else if (targetField instanceof CKEditorField) {
+            ((CKEditorField) targetField).setValue(sourceProperty.getValues().get(0).getString());
+            // Do it a second time later for some browsers .. ?
+            Timer togglebuttonTimer = new Timer() {
+                public void run() {
+                    ((CKEditorField) targetField).setValue(sourceProperty.getValues().get(0).getString());
+                }
+            };
+
+            togglebuttonTimer.schedule(100);
+        } else if (targetField instanceof CalendarField) {
+            ((CalendarField) targetField).setValue(sourceProperty.getValues().get(0).getDate());
+        } else if (targetField instanceof DateField) {
+            ((DateField) targetField).setValue(sourceProperty.getValues().get(0).getDate());
+        } else if (targetField instanceof CheckBox) {
+            ((CheckBox) targetField).setValue(sourceProperty.getValues().get(0).getBoolean());
+        } else if (targetField instanceof ContentPickerField) {
+            List<GWTJahiaNode> values = new ArrayList<GWTJahiaNode>();
+            for (GWTJahiaNodePropertyValue value : sourceProperty.getValues()) {
+                values.add(value.getNode());
+            }
+            ((ContentPickerField) targetField).setValue(values);
+        } else if (targetField instanceof ComboBox) {
+            // ?
+        } else if (targetField instanceof TextField) {
+            ((TextField<String>) targetField).setValue(sourceProperty.getValues().get(0).getString());
+        }
+    }
+
 
 
     private static native String getComboTemplate()  /*-{

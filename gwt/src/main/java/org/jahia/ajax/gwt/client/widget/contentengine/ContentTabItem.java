@@ -54,6 +54,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import java.util.Arrays;
 
@@ -95,11 +96,14 @@ public class ContentTabItem extends PropertiesTabItem {
         super.init(engine, tab, language);
 
         if (engine.getMixin() != null) {
-            final Field titleField = propertiesEditor.getFieldsMap().get("jcr:title");
-            if (titleField != null) {
-                ((FieldSet) titleField.getParent()).insert(name, 0);
+            final Field<?> titleField;
+            PropertiesEditor.PropertyAdapterField adapterField = propertiesEditor.getFieldsMap().get("jcr:title");
+            if (adapterField != null) {
+                ((FieldSet) adapterField.getParent()).insert(name, 0);
+                titleField = adapterField.getField();
             } else {
                 propertiesEditor.insert(nameFieldSet, 0);
+                titleField = null;
             }
 
             if (nameEditable && !engine.isMultipleSelection()) {
@@ -191,7 +195,7 @@ public class ContentTabItem extends PropertiesTabItem {
             final FormLayout fl = new FormLayout();
             fl.setLabelWidth(0);
 
-            final Field titleField = propertiesEditor.getFieldsMap().get("jcr:title");
+            PropertiesEditor.PropertyAdapterField titleField = propertiesEditor.getFieldsMap().get("jcr:title");
 
             if (nameText == null) {
                 nameFieldSet = new FieldSet();
@@ -242,7 +246,7 @@ public class ContentTabItem extends PropertiesTabItem {
             if (nodeName == null || !nodeName.equals(engine.getNodeName())) {
                 tab.setData("NodeName", engine.getNodeName());
                 if (titleField != null) {
-                    titleField.removeAllListeners();
+                    titleField.getField().removeAllListeners();
                 }
                 nameText.setValue(engine.getNodeName());
                 if (autoUpdateName != null) {

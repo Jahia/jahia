@@ -230,11 +230,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties) {
-        updateProperties(changedProperties, node.getNodeTypes());
-    }
-
-    public void updateProperties(List<GWTJahiaNodeProperty> newProperties, List<String> mixin) {
+    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes) {
         if (catStore == null) {
             return;
         }
@@ -250,16 +246,15 @@ public class CategoriesTabItem extends EditEngineTabItem {
         gwtJahiaNodeProperty.setName("j:defaultCategory");
         if (this.categoryProperty != null) {
             if (values.isEmpty()) {
-                mixin.remove("jmix:categorized");
-                getRemovedTypes().add("jmix:categorized");
-
+                addedTypes.remove("jmix:categorized");
+                removedTypes.add("jmix:categorized");
             } else {
-                newProperties.add(gwtJahiaNodeProperty);
+                changedProperties.add(gwtJahiaNodeProperty);
             }
         } else {
             if (!values.isEmpty()) {
-                mixin.add("jmix:categorized");
-                newProperties.add(gwtJahiaNodeProperty);
+                addedTypes.add("jmix:categorized");
+                changedProperties.add(gwtJahiaNodeProperty);
             }
         }
     }

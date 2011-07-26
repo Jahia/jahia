@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGViolation;
@@ -61,14 +62,7 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.core.Template;
 import com.extjs.gxt.ui.client.fx.FxConfig;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.ComponentHelper;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -79,7 +73,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
@@ -326,8 +319,8 @@ public class CKEditorField extends Field<String> {
     }
 
     protected void showWarnings(WCAGValidationResult wcagResult, final boolean userTriggered) {
-        FieldSet parent = (FieldSet) getParent();
-        el().getParent().addStyleName(invalidStyle);
+        LayoutContainer parent = (LayoutContainer) getParent();
+        parent.addStyleName(invalidStyle);
         if (wcagPanel != null) {
             parent.remove(wcagPanel);
         }
@@ -348,6 +341,7 @@ public class CKEditorField extends Field<String> {
         wcagPanel.add(getWarningGrid(wcagResult));
 
         parent.insert(wcagPanel, parent.indexOf(this));
+        parent.layout();
     }
 
     private static Widget getWarningGrid(WCAGValidationResult wcagResult) {
@@ -489,7 +483,7 @@ public class CKEditorField extends Field<String> {
     public void checkWCAGCompliance() {
         if (wcagPanel != null) {
             el().getParent().removeStyleName(invalidStyle);
-            ((FieldSet) getParent()).remove(wcagPanel);
+            ((LayoutContainer) getParent()).remove(wcagPanel);
             wcagPanel = null;
         }
 

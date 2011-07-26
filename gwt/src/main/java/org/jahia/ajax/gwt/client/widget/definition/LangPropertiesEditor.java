@@ -206,9 +206,9 @@ public class LangPropertiesEditor extends LayoutContainer {
 
             // synch non18n properties
             if (previousNon18nProperties != null && !previousNon18nProperties.isEmpty()) {
-                Map<String, Field<?>> fieldsMap = langPropertiesEditor.getFieldsMap();
+                Map<String, PropertiesEditor.PropertyAdapterField> fieldsMap = langPropertiesEditor.getFieldsMap();
                 for (GWTJahiaNodeProperty property : previousNon18nProperties) {
-                    FormFieldCreator.fillValue(fieldsMap.get(property.getName()),
+                    FormFieldCreator.fillValue(fieldsMap.get(property.getName()).getField(),
                             langPropertiesEditor.getGWTJahiaItemDefinition(property), property, null);
                 }
             }

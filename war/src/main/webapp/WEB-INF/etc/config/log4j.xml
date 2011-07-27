@@ -16,7 +16,7 @@
     -->
 
     <appender name="ROLL" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="jahia.log"/>
+        <param name="File" value="${jahia.log.dir}jahia.log"/>
         <param name="Threshold" value="debug"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d: %-5p [%t] %C{1}, %c: %m%n"/>
@@ -39,7 +39,7 @@
     </appender>
 
     <appender name="profilerLogs" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="jahia_profiler.log"/>
+        <param name="File" value="${jahia.log.dir}jahia_profiler.log"/>
         <param name="Threshold" value="debug"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d %m%n"/>
@@ -53,7 +53,7 @@
     </appender>
 
     <appender name="hitAccess" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="jahia_access.log"/>
+        <param name="File" value="${jahia.log.dir}jahia_access.log"/>
         <param name="Threshold" value="trace"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d %m%n"/>

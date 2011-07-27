@@ -46,8 +46,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- *
- *
  * User: toto
  * Date: Sep 11, 2008 - 4:08:23 PM
  */
@@ -55,6 +53,7 @@ public class GWTJahiaNodeACL implements Serializable {
     private List<GWTJahiaNodeACE> ace;
     private Map<String,List<String>> availablePermissions;
     private Map<String,String> permissionLabels;
+    private Map<String,String> permissionTooltips;
     private Map<String,List<String>> permissionsDependencies;
     private boolean breakAllInheritance = false;
     public GWTJahiaNodeACL() {
@@ -86,6 +85,10 @@ public class GWTJahiaNodeACL implements Serializable {
 
     public void setPermissionLabels(Map<String, String> permissionLabels) {
         this.permissionLabels = permissionLabels;
+    }
+
+    public void setPermissionTooltips(Map<String, String> permissionTooltips) {
+        this.permissionTooltips = permissionTooltips;
     }
 
     public Map<String,List<String>> getPermissionsDependencies() {
@@ -122,6 +125,7 @@ public class GWTJahiaNodeACL implements Serializable {
         List<GWTJahiaNodeACE> aceClone = new ArrayList<GWTJahiaNodeACE>();
         clone.setAvailablePermissions(getAvailablePermissions());
         clone.setPermissionLabels(getPermissionLabels());
+        clone.setPermissionTooltips(getPermissionTooltips());
         clone.setPermissionsDependencies(getPermissionsDependencies());
         for (GWTJahiaNodeACE nodeACE : ace) {
             aceClone.add(nodeACE.cloneObject());
@@ -129,5 +133,9 @@ public class GWTJahiaNodeACL implements Serializable {
         clone.setAce(aceClone);
         clone.setBreakAllInheritance(isBreakAllInheritance());
         return clone;
+    }
+
+    public Map<String, String> getPermissionTooltips() {
+        return permissionTooltips;
     }
 }

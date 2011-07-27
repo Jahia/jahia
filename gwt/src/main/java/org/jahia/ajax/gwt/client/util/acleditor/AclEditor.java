@@ -204,14 +204,20 @@ public class AclEditor {
         // add a column per available permission
         for (String s : available) {
             final int i = columns.size();
-            Map<String, String> permissionLabels = acl.getPermissionLabels();
             final String columnName;
-            if (permissionLabels != null) {
+            if (acl.getPermissionLabels() != null) {
                 columnName = acl.getPermissionLabels().get(s);
             } else {
                 columnName = s;
             }
             col = new ColumnConfig(s, columnName, 80);
+            
+            if (acl.getPermissionTooltips() != null) {
+                String tooltip = acl.getPermissionTooltips().get(s);
+                if (tooltip != null && tooltip.length() > 0) {
+                    col.setToolTip(tooltip);
+                }
+            }
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             col.setSortable(false);
             col.setRenderer(new GridCellRenderer() {

@@ -636,16 +636,21 @@ public class ContentManagerHelper {
             Map<String, List<String>> availablePermissions = new HashMap<String, List<String>>();
             Set<String> allAvailablePermissions = new HashSet<String>();
             Map<String, String> labels = new HashMap<String, String>();
+            Map<String, String> tooltips = new HashMap<String, String>();
 
             for (Map.Entry<String, List<JCRNodeWrapper>> entry : roles.entrySet()) {
                 availablePermissions.put(entry.getKey(), new ArrayList<String>());
                 for (JCRNodeWrapper nodeWrapper : entry.getValue()) {
-                    allAvailablePermissions.add(nodeWrapper.getName());
-                    availablePermissions.get(entry.getKey()).add(nodeWrapper.getName());
+                    String nodeName = nodeWrapper.getName();
+                    allAvailablePermissions.add(nodeName);
+                    availablePermissions.get(entry.getKey()).add(nodeName);
                     if (nodeWrapper.hasProperty("jcr:title")) {
-                        labels.put(nodeWrapper.getName(), nodeWrapper.getProperty("jcr:title").getString());
+                        labels.put(nodeName, nodeWrapper.getProperty("jcr:title").getString());
                     } else {
-                        labels.put(nodeWrapper.getName(), nodeWrapper.getName());
+                        labels.put(nodeName, nodeName);
+                    }
+                    if (nodeWrapper.hasProperty("jcr:description")) {
+                        tooltips.put(nodeName, nodeWrapper.getProperty("jcr:description").getString());
                     }
                     List<String> d = new ArrayList<String>();
                     if (nodeWrapper.hasProperty("j:dependencies")) {
@@ -653,11 +658,12 @@ public class ContentManagerHelper {
                             d.add(((JCRValueWrapper) value).getNode().getName());
                         }
                     }
-                    dependencies.put(nodeWrapper.getName(), d);
+                    dependencies.put(nodeName, d);
                 }
             }
             acl.setAvailablePermissions(availablePermissions);
             acl.setPermissionLabels(labels);
+            acl.setPermissionTooltips(tooltips);
             acl.setPermissionsDependencies(dependencies);
 
             List<GWTJahiaNodeACE> aces = new ArrayList<GWTJahiaNodeACE>();

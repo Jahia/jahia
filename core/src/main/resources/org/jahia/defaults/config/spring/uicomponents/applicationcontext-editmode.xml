@@ -234,7 +234,8 @@
                 <ref bean="Engine.Tab.Tags"/>
                 <ref bean="Engine.Tab.Categories"/>
                 <ref bean="Engine.Tab.Options"/>
-                <ref bean="Engine.Tab.Roles"/>
+                <ref bean="Engine.Tab.LiveRoles"/>
+                <ref bean="Engine.Tab.EditRoles"/>
                 <ref bean="Engine.Tab.Usages"/>
                 <ref bean="Engine.Tab.History"/>
                 <ref bean="Engine.Tab.Versioning"/>
@@ -807,6 +808,38 @@
         <property name="requiredPermission" value="viewRolesTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.RolesTabItem"/>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.LiveRoles" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="liveroles"/>
+        <property name="titleKey" value="label.engineTab.liveroles"/>
+        <property name="requiredPermission" value="viewLiveRolesTab"/>
+        <property name="tabItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.RolesTabItem">
+                <property name="roleGroups">
+                    <set>
+                        <value>live-role</value>
+                    </set>
+                </property>
+                <property name="canBreakInheritance"><value>false</value></property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.EditRoles" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="editroles"/>
+        <property name="titleKey" value="label.engineTab.editroles"/>
+        <property name="requiredPermission" value="viewEditRolesTab"/>
+        <property name="tabItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.RolesTabItem">
+                <property name="roleGroups">
+                    <set>
+                        <value>edit-role</value>
+                    </set>
+                </property>
+                <property name="canBreakInheritance"><value>true</value></property>
+            </bean>
         </property>
     </bean>
 

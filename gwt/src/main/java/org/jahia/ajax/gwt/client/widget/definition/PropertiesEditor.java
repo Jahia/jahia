@@ -668,7 +668,7 @@ public class PropertiesEditor extends FormPanel {
                 panel.setLayout(hBoxLayout);
                 panel.add(field);
                 field.setWidth("98%");
-                if (viewCopyToAllLangs && (definition.isInternationalized())) {
+                if (isWriteable && viewCopyToAllLangs && definition.isInternationalized()) {
                     final Button button = new Button(Messages.get("label.translate.copyall","Copy to all languages"));
                     button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                         @Override

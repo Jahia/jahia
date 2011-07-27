@@ -21,7 +21,7 @@
                 var path = this.path || "";
                 var current = $("<li/>").attr("id", "id-" + this.id).attr("rel",
                         path).html("<span class='treepreview' src='"+previewPath + path + "'>" + this.text +
-                                   "</span>").appendTo(parent);
+                        "</span>").appendTo(parent);
                 if (this.classes) {
                     current.children("span").addClass(this.classes);
                     if (this.classes.indexOf("selectable") != -1) {
@@ -57,7 +57,7 @@
             $.each(response, createNode, [child]);
             $(container).treeview({add: child});
             if(preview)
-            imagePreview();
+                imagePreview();
         });
     }
 
@@ -70,20 +70,20 @@
         load(settings.urlStartWith, settings.callback, this, container,settings.preview,settings.previewPath);
         var userToggle = settings.toggle;
         return jQueryTreeViewProxied.call(this, $.extend({}, settings, {
-            collapsed: true,
-            toggle: function() {
-                var $this = $(this);
-                if ($this.hasClass("hasChildren")) {
-                    var childList = $this.removeClass("hasChildren").find("ul");
-                    childList.empty();
-                    load(settings.urlBase + this.getAttribute('rel') + settings.urlExtension, settings.callback,
-                            childList, container,settings.preview,settings.previewPath);
-                }
-                if (userToggle) {
-                    userToggle.apply(this, arguments);
-                }                
-            }
-        }));
+                    collapsed: true,
+                    toggle: function() {
+                        var $this = $(this);
+                        if ($this.hasClass("hasChildren")) {
+                            var childList = $this.removeClass("hasChildren").find("ul");
+                            childList.empty();
+                            load(settings.urlBase + this.getAttribute('rel') + settings.urlExtension, settings.callback,
+                                    childList, container,settings.preview,settings.previewPath);
+                        }
+                        if (userToggle) {
+                            userToggle.apply(this, arguments);
+                        }
+                    }
+                }));
     };
     // starting the script on page load
     function imagePreview() {
@@ -95,15 +95,18 @@
 
         /* END CONFIG */
         $(".treepreview.selectable").hover(function(e) {
-            this.t = this.title;
-            this.title = "";
-            var c = (this.t != "") ? "<br/>" + this.t : "";
-            $("body").append("<p id='treepreview'><img src='" + $(this).attr("src") + "' alt='Image preview' />" + c + "</p>");
-            $("#treepreview").css("top", (e.pageY - xOffset) + "px").css("left", (e.pageX + yOffset) + "px").fadeIn("fast");
-        }, function() {
-            this.title = this.t;
-            $("#treepreview").remove();
-        });
+                    var extension = $(this).attr("src").substr( ($(this).attr("src").lastIndexOf('.') +1) );
+                    if (extension == "png" || extension == "jpg" || extension == "gif") {
+                        this.t = this.title;
+                        this.title = "";
+                        var c = (this.t != "") ? "<br/>" + this.t : "";
+                        $("body").append("<p id='treepreview'><img src='" + $(this).attr("src") + "' alt='Image preview' />" + c + "</p>");
+                        $("#treepreview").css("top", (e.pageY - xOffset) + "px").css("left", (e.pageX + yOffset) + "px").fadeIn("fast");
+                    }
+                }, function() {
+                    this.title = this.t;
+                    $("#treepreview").remove();
+                });
         $(".treepreview.selectable").mousemove(function(e) {
             $("#treepreview").css("top", (e.pageY - xOffset) + "px").css("left", (e.pageX + yOffset) + "px");
         });

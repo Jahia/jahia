@@ -71,7 +71,6 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 
  * User: ktlili
  * Date: Apr 22, 2010
  * Time: 2:54:17 PM
@@ -233,6 +232,8 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 col.setRenderer(LOCKED_RENDERER);
             } else if ("path".equals(column.getKey())) {
                 col.setHidden(true);
+            } else if ("pathVisible".equals(column.getKey())) {
+                col.setId("path");
             } else if ("size".equals(column.getKey())) {
                 col.setRenderer(SIZE_RENDERER);
             } else if ("publicationInfo".equals(column.getKey())) {

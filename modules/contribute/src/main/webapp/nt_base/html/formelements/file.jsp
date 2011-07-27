@@ -21,75 +21,102 @@
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery.defer.js"/>
+<template:addResources type="css" resources="files.css"/>
 <label for="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
 <input type="hidden" name="${propertyDefinition.name}" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
 <fmt:message key="label.select.file" var="fileLabel"/>
 <fmt:message key="label.select.folder" var="folderLabel"/>
+<fmt:message key="label.selected" var="selected"/>
 <c:url value="${url.files}" var="previewPath"/>
+
+
 <c:set var="onSelect">function(uuid, path, title) {
-            $('#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}').val(uuid);
-            $('#display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}').html('<img src="${previewPath}'+path+'"/>');
-            return false;
-        }</c:set>
+    $('#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}').val(uuid);
+    <c:choose>
+        <c:when test="${propertyDefinition.selectorOptions.type == 'image'}">
+            $('#display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}').html('${selected} <img src="${previewPath}'+path+'"/>');
+        </c:when>
+        <c:otherwise>
+            var filePath = '${previewPath}'+path;
+            var filename=filePath.substring(filePath.lastIndexOf("/") + 1,filePath.length);
+            var fileType=filePath.substring(filePath.lastIndexOf(".") + 1,filePath.length);
+            $('#display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}').html('<strong>${selected}</strong> <a class="icon '+fileType+'" href="'+filePath+'">'+filename+'</a>');
+        </c:otherwise>
+    </c:choose>
+    return false;
+    }</c:set>
 <c:set var="onClose">function(){$("#treepreview").empty().hide();}</c:set>
 <c:set var="fancyboxOptions">{
-            height:600,
+    height:600,
     width:600
-        }</c:set>
-<c:choose>
-<c:when test="${propertyDefinition.selectorOptions.type == 'image'}">
-<ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
-                 displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
-        label="${fileLabel}"
-        nodeTypes="nt:folder,jmix:image,jnt:virtualsite"
-        selectableNodeTypes="jmix:image"
-        onSelect="${onSelect}"
-        onClose="${onClose}"
-        fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:true,previewPath:'${previewPath}'}"/>
-</c:when>
-<c:when test="${propertyDefinition.selectorOptions.type == 'folder'}">
-<ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
-                 displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
-        label="${folderLabel}"
-        nodeTypes="nt:folder,jnt:virtualsite"
-        selectableNodeTypes="jnt:folder"
-        onSelect="${onSelect}"
-        onClose="${onClose}"
-        fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:false,previewPath:'${previewPath}'}"/>
-</c:when>
-<c:otherwise>
-<ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
-                 displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
-        label="${fileLabel}"
-        onSelect="${onSelect}"
-        onClose="${onClose}"
-        fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:true,previewPath:'${previewPath}'}"/>
-</c:otherwise>
-</c:choose>
-<span><fmt:message key="label.or"/></span>
-<div id="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">
-    <span><fmt:message key="add.file"/></span>
-</div>
-<div id="display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">
-</div>
-<fmt:message key="add.file" var="i18nAddFile"/>
+    }</c:set>
+<fieldset>
+    <c:choose>
+        <c:when test="${propertyDefinition.selectorOptions.type == 'image'}">
+            <ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
+                             displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
+                             label="${fileLabel}"
+                             nodeTypes="nt:folder,jmix:image,jnt:virtualsite"
+                             selectableNodeTypes="jmix:image"
+                             onSelect="${onSelect}"
+                             onClose="${onClose}"
+                             fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:true,previewPath:'${previewPath}'}"/>
+        </c:when>
+        <c:when test="${propertyDefinition.selectorOptions.type == 'folder'}">
+            <ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
+                             displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
+                             label="${folderLabel}"
+                             nodeTypes="nt:folder,jnt:virtualsite"
+                             selectableNodeTypes="jnt:folder"
+                             onSelect="${onSelect}"
+                             onClose="${onClose}"
+                             fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:false,previewPath:'${previewPath}'}"/>
+        </c:when>
+        <c:otherwise>
+            <ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
+                             displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
+                             label="${fileLabel}"
+                             onSelect="${onSelect}"
+                             onClose="${onClose}"
+                             fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:true,previewPath:'${previewPath}'}"/>
+        </c:otherwise>
+    </c:choose>
+    <c:if test="${propertyDefinition.selectorOptions.type != 'folder'}">
+        <strong><fmt:message key="label.or"/></strong>
+        <div id="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">
+            <span><fmt:message key="add.file"/></span>
+        </div>
+    </c:if>
+    <div id="display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">
+    </div>
+    <fmt:message key="add.file" var="i18nAddFile"/>
+</fieldset>
 <template:addResources>
-<script>
-    $(document).ready(function() {
-        $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").editable('<c:url value="${url.base}${param['path'] == null ? renderContext.mainResource.node.path : param['path']}"><c:param name="jcrContributePost" value="true"/></c:url>', {
-            type : 'ajaxupload',
-            onblur : 'ignore',
-            submit : 'OK',
-            cancel : 'Cancel',
-            submitdata : {'jcrContributePost':'true'},
-            tooltip : 'Click to edit',
-            callback : function (data, status,original) {
-                var id = $(original).attr('jcr:id');
-                $("#"+id).val(data.uuids[0]);
-                $("#display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").html("<img src='"+data.urls[0]+"'/>");
-                $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").html('<span>${functions:escapeJavaScript(i18nAddFile)}</span>');
-            }
+    <script>
+        $(document).ready(function() {
+            $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").editable('<c:url value="${url.base}${param['path'] == null ? renderContext.mainResource.node.path : param['path']}"><c:param name="jcrContributePost" value="true"/></c:url>', {
+                type : 'ajaxupload',
+                onblur : 'ignore',
+                submit : 'OK',
+                cancel : 'Cancel',
+                submitdata : {'jcrContributePost':'true'},
+                tooltip : 'Click to edit',
+                callback : function (data, status,original) {
+                    var id = $(original).attr('jcr:id');
+                    $("#"+id).val(data.uuids[0]);
+                    <c:choose>
+                    <c:when test="${propertyDefinition.selectorOptions.type == 'image'}">
+                    $("#display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").html("${selected} <img src='"+data.urls[0]+"'/>");
+                    </c:when>
+                    <c:otherwise>
+                    var fileType=data.urls[0].substring(data.urls[0].lastIndexOf(".") + 1,data.urls[0].length);
+                    var filename=data.urls[0].substring(data.urls[0].lastIndexOf("/") + 1,data.urls[0].length);
+                    $("#display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").html("<strong>${selected}</strong> <a class='icon "+fileType+"' href='"+data.urls[0]+"'>"+filename+"</a>");
+                    </c:otherwise>
+                    </c:choose>
+                    $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").html('<span>${functions:escapeJavaScript(i18nAddFile)}</span>');
+                }
+            });
         });
-    });
-</script>
+    </script>
 </template:addResources>

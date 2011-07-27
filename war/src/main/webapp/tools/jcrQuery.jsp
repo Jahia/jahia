@@ -45,22 +45,23 @@
 <c:set var="offset" value="${functions:default(fn:escapeXml(param.offset), '0')}"/>
 <%
 Locale currentLocale = LanguageCodeConverters.languageCodeToLocale((String) pageContext.getAttribute("locale"));
-pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(currentLocale));
+pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(Locale.ENGLISH));
 %>
 <body>
 <c:set var="switchToWorkspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
 <fieldset>
     <legend>
         <strong>${workspace}</strong>&nbsp;workspace&nbsp;(<a href="#switchWorkspace" onclick="document.getElementById('workspace').value='${switchToWorkspace}'; document.getElementById('navigateForm').submit(); return false;">switch to ${switchToWorkspace}</a>)
-        <select name="localeSelector">
+        <select name="localeSelector" onchange="document.getElementById('locale').value=this.value;">
             <c:forEach items="${locales}" var="loc">
-                <% pageContext.setAttribute("localeLabel", ((Locale) pageContext.getAttribute("loc")).getDisplayName(currentLocale)); %>
+                <% pageContext.setAttribute("localeLabel", ((Locale) pageContext.getAttribute("loc")).getDisplayName(Locale.ENGLISH)); %>
                 <option value="${loc}"${loc == locale ? 'selected="selected"' : ''}>${fn:escapeXml(localeLabel)}</option>
             </c:forEach>
         </select>
     </legend>
     <form id="navigateForm" action="?" method="get">
         <input type="hidden" name="workspace" id="workspace" value="${workspace}"/>
+        <input type="hidden" name="locale" id="locale" value="${locale}"/>
         <textarea rows="3" cols="75" name="query" id="query"
             onkeypress="if ((event || window.event).keyCode == 13 && (event || window.event).ctrlKey) document.getElementById('navigateForm').submit();"
         >${not empty param.query ? param.query : 'SELECT * FROM [nt:file]'}</textarea>

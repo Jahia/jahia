@@ -30,7 +30,7 @@ $.editable.addInputType('ajaxupload', {
     plugin : function(settings, original) {
         var form = this;
         form.attr("enctype", "multipart/form-data");
-        $("button:submit", form).bind('click', function() {
+        $("button[type='submit']", form).bind('click', function() {
             //$(".message").show();
             var target = settings.target;
             if($.isFunction(settings.target)) {

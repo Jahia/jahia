@@ -42,7 +42,7 @@ function initEditFields(id) {
         type    : 'text',
         onblur : 'ignore',
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
-        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
+        cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit']
     });
 
@@ -56,7 +56,7 @@ function initEditFields(id) {
         type : 'ckeditor',
         onblur : 'ignore',
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
-        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
+        cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
         ckeditorToolbar : $(".ckeditorEdit" + id).attr('jcr:ckeditorToolbar'),
         onreset: function (settings, original) {
@@ -79,7 +79,7 @@ function initEditFields(id) {
         type : 'datepicker',
         onblur : 'ignore',
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
-        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
+        cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
         loaddata : {defaultValue:$(".dateEdit" + id).attr('jcr:value')}
     });
@@ -95,7 +95,7 @@ function initEditFields(id) {
         type : 'datetimepicker',
         onblur : 'ignore',
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
-        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
+        cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
         loaddata : {defaultValue:$(".dateTimeEdit" + id).attr('jcr:value')}
     });
@@ -113,7 +113,7 @@ function initEditFields(id) {
         },
         onblur : 'ignore',
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
-        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
+        cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit']
     });
 
@@ -122,7 +122,7 @@ function initEditFields(id) {
         onblur : 'ignore',
         submitdata : {'jcrContributePost':'true'},
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
-        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
+        cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
         target:$(".file" + id).attr('jcr:url')+"?jcrContributePost=true",
         callback : function (data, status,original) {
@@ -149,7 +149,7 @@ function initEditFields(id) {
         type    : 'treeItemSelector',
         onblur : 'ignore',
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
-        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
+        cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
         nodeTypes : $(".fileSelector" + id).attr('jeditabletreeselector:nodetypes'),
         selectableNodeTypes : $(".fileSelector" + id).attr('jeditabletreeselector:selectablenodetypes'),

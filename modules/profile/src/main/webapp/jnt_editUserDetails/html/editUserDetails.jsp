@@ -64,7 +64,7 @@
             type : 'ajaxupload',
             onblur : 'ignore',
             submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
-            cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
+            cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
             tooltip : contributionI18n['edit'],
             target:$(".userPicture${currentNode.identifier}").attr('jcr:fileUrl'),
             callback : function (data, status,original) {

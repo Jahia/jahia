@@ -62,10 +62,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.RenderService;
-import org.jahia.services.render.Resource;
-import org.jahia.services.render.TemplateNotFoundException;
+import org.jahia.services.render.*;
 import org.jahia.services.sites.SitesSettings;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -1354,16 +1351,17 @@ public class NavigationHelper {
         }
         url +=  "/" + workspace + "/" + locale;
 
-        try {
-            Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
-            RenderContext renderContext = new RenderContext(null, null, node.getSession().getUser());
-            renderContext.setMainResource(resource);
-            RenderService.getInstance().resolveTemplate(resource, renderContext);
 
+        Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
+        RenderContext renderContext = new RenderContext(null, null, node.getSession().getUser());
+        renderContext.setMainResource(resource);
+        Template template = RenderService.getInstance().resolveTemplate(resource, renderContext);
+        if (template != null) {
             url += node.getPath() + ".html";
-        } catch (TemplateNotFoundException e) {
+        } else {
             url += node.getPath() + ".content-template.html";
         }
+
 
         if (versionDate != null) {
             url += "?v=" + (versionDate.getTime()) ;

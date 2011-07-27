@@ -322,12 +322,8 @@ public final class JCRContentUtils {
         JCRNodeWrapper currentNode = node;
         try {
             while (template == null && currentNode != null) {
-                try {
-                    template = RenderService.getInstance().resolveTemplate(
-                            new org.jahia.services.render.Resource(currentNode, "html", null, org.jahia.services.render.Resource.CONFIGURATION_PAGE), context);
-                } catch (Exception e) {
-                    // template cannot be resolved, so try on the parent
-                }
+                template = RenderService.getInstance().resolveTemplate(new org.jahia.services.render.Resource(
+                        currentNode, "html", null, org.jahia.services.render.Resource.CONFIGURATION_PAGE), context);
                 if (template == null) {
                     currentNode = currentNode.getParent();
                 }

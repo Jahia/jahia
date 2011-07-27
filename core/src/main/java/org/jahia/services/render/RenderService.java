@@ -231,7 +231,7 @@ public class RenderService {
         return set;
     }
     
-    public org.jahia.services.render.Template resolveTemplate(Resource resource, RenderContext renderContext) throws AccessDeniedException, TemplateNotFoundException {
+    public org.jahia.services.render.Template resolveTemplate(Resource resource, RenderContext renderContext) throws AccessDeniedException {
         final JCRNodeWrapper node = resource.getNode();
         String templateName = resource.getTemplate();
         if ("default".equals(templateName)) {
@@ -299,7 +299,7 @@ public class RenderService {
                         templateNode = templateNode.getParent();
                     }
                 } else {
-                    throw new TemplateNotFoundException(resource.getTemplate());
+                    return null;
                 }
             }
             if (template != null) {
@@ -357,7 +357,9 @@ public class RenderService {
                 isNotDefaultTemplate ? resource.getTemplate() : "default").toString() +
                      resource.getNode().getPrimaryNodeTypeName()+cacheKeyGenerator.appendAcls(resource, renderContext);
 
-        if (!templatesCache.containsKey(key)) {
+        Template template = templatesCache.get(key);
+
+        if (template == null) {
             String query =
                     "select * from [jnt:" + type + "] as w where isdescendantnode(w, ['" + templateNode.getPath() +
                     "'])";
@@ -384,8 +386,7 @@ public class RenderService {
                 return templates.get(0);
             }
         } else {
-            Template template = templatesCache.get(key);
-            return template.getClass().getName().equals(EmptyTemplate.class.getName())?null:template;
+            return template.getClass().getName().equals(EmptyTemplate.class.getName()) ? null : template;
         }
     }
 

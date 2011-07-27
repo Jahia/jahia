@@ -60,6 +60,9 @@ public class TemplateNodeFilter extends AbstractFilter {
             Template previousTemplate = null;
             if (renderContext.getRequest().getAttribute("templateSet") == null) {
                 template = service.resolveTemplate(resource, renderContext);
+                if(template==null) {
+                    throw new TemplateNotFoundException(resource.getTemplate());
+                }
                 renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
                 if (logger.isDebugEnabled()) {
                     logger.debug("Template set to : " + template.serialize() + " for resource " + resource);

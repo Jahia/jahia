@@ -36,11 +36,12 @@
                 if (tagContainer.find("span:contains('" + newTag.value + "')").length == 0) {
                     jQuery.post(tagForm.action, jQuery(tagForm).serialize(), function (data) {
                         var tagToAdds = newTag.value.split(',');
-                        for (i =0; i< tagToAdds.length; i++){
-                            if(tagToAdds[i].trim() != "" && tagToAdds[i] != null){
-                                var tagDiv = $('<div></div>').attr('id', 'tag-' + tagToAdds[i].trim().replace(regExp, "-")).attr('style', 'display:inline');
-                                var tagDisplay = jQuery('<span class="taggeditem">' + tagToAdds[i].trim() + '</span>');
-                                var tagLinkDelete = $('<a></a>').attr('onclick', 'deleteTag(\'' + tagToAdds[i].trim() + '\')').attr('class', 'delete').attr('href', '#');
+                        for (i =0; i< tagToAdds.length; i++) {
+                        	var theTag = tagToAdds[i] != null ? jQuery.trim(tagToAdds[i]) : null;
+                            if(theTag != null && theTag.length > 0){
+                                var tagDiv = $('<div></div>').attr('id', 'tag-' + theTag.replace(regExp, "-")).attr('style', 'display:inline');
+                                var tagDisplay = jQuery('<span class="taggeditem">' + theTag + '</span>');
+                                var tagLinkDelete = $('<a></a>').attr('onclick', 'deleteTag(\'' + theTag + '\')').attr('class', 'delete').attr('href', '#');
                                 tagContainer.append(tagDiv);
                                 if (separator.length > 0) {
                                     tagDiv.append(separator);

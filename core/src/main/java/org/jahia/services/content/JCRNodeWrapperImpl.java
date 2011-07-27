@@ -243,27 +243,40 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public Map<String, List<JCRNodeWrapper>> getAvailableRoles() throws RepositoryException {
         JCRNodeWrapper roles = session.getNode("/roles");
-        List<JCRNodeWrapper> res = new ArrayList<JCRNodeWrapper>();
+        Map<String,List<JCRNodeWrapper>> res = new HashMap<String,List<JCRNodeWrapper>>();
         NodeIterator ni = roles.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper role = (JCRNodeWrapper) ni.nextNode();
             if (role.isNodeType("jnt:role")) {
+                boolean add = false;
                 if (role.hasProperty("j:hidden") && role.getProperty("j:hidden").getBoolean()) {
                     // skip
                 } else if (role.hasProperty("j:nodeTypes")) {
                     Value[] values = role.getProperty("j:nodeTypes").getValues();
                     for (Value value : values) {
                         if (isNodeType(value.getString())) {
-                            res.add(role);
+                            add = true;
                             break;
                         }
                     }
                 } else {
-                    res.add(role);
+                    add = true;
+                }
+                if (add) {
+                    String roleGroup;
+                    if (role.hasProperty("j:roleGroup")) {
+                        roleGroup = role.getProperty("j:roleGroup").getString();
+                    } else {
+                        roleGroup = "default";
+                    }
+                    if (!res.containsKey(roleGroup)) {
+                        res.put(roleGroup, new ArrayList<JCRNodeWrapper>());
+                    }
+                    res.get(roleGroup).add(role);
                 }
             }
         }
-        return Collections.singletonMap("default", res);
+        return res;
     }
 
     /**
@@ -3087,8 +3100,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         return false;
                     }
                     for (String mandatoryLanguage : mandatoryLanguages) {
-                        locale = LanguageCodeConverters.getLocaleFromCode(mandatoryLanguage);
-                        if (!checkI18nAndMandatoryPropertiesForLocale(locale)) {
+                        if (!checkI18nAndMandatoryPropertiesForLocale(LanguageCodeConverters.getLocaleFromCode(mandatoryLanguage))) {
                             return false;
                         }
                     }
@@ -3100,8 +3112,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return b;
             } else if (languages != null) {
                 for (String language : languages) {
-                    locale = LanguageCodeConverters.getLocaleFromCode(language);
-                    if (checkI18nAndMandatoryPropertiesForLocale(locale)) {
+                    if (checkI18nAndMandatoryPropertiesForLocale(LanguageCodeConverters.getLocaleFromCode(language))) {
                         JCRSiteNode siteNode = getResolveSite();
                         if (siteNode != null) {
                             Set<String> mandatoryLanguages = siteNode.getMandatoryLanguages();
@@ -3109,8 +3120,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                                 return true;
                             }
                             for (String mandatoryLanguage : mandatoryLanguages) {
-                                locale = LanguageCodeConverters.getLocaleFromCode(mandatoryLanguage);
-                                if (!checkI18nAndMandatoryPropertiesForLocale(locale)) {
+                                if (!checkI18nAndMandatoryPropertiesForLocale(LanguageCodeConverters.getLocaleFromCode(mandatoryLanguage))) {
                                     return false;
                                 }
                             }

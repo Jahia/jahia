@@ -672,15 +672,26 @@ public class ContentManagerHelper {
             for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext();) {
                 String principal = iterator.next();
                 GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
-                map.put(principal, ace);
                 ace.setPrincipalType(principal.charAt(0));
                 ace.setPrincipal(principal.substring(2));
                 if (ace.getPrincipalType() == 'g') {
                     JahiaGroup g = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(ace.getPrincipal());
                     if (g != null) {
                         ace.setHidden(g.isHidden());
+                        ace.setPrincipalKey(g.getGroupKey());
+                    } else {
+                        continue;
+                    }
+                } else {
+                    JahiaUser u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal());
+                    if (u != null) {
+                        ace.setPrincipalKey(u.getUserKey());
+                    } else {
+                        continue;
                     }
                 }
+
+                map.put(principal, ace);
 
                 List<String[]> st = m.get(principal);
                 Map<String, Boolean> perms = new HashMap<String, Boolean>();

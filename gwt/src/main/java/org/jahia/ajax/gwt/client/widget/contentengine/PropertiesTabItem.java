@@ -52,6 +52,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
@@ -352,7 +353,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes) {
+    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, GWTJahiaNodeACL acl) {
         PropertiesTabItem propertiesTabItem = this;
         PropertiesEditor pe = propertiesTabItem.getPropertiesEditor();
 //        if (pe != null && node != null) {

@@ -41,6 +41,7 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
@@ -119,7 +120,7 @@ public abstract class EditEngineTabItem implements Serializable {
         this.hideForTypes = hideForTypes;
     }
 
-    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes) {
+    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, GWTJahiaNodeACL acl) {
 
     }
 }

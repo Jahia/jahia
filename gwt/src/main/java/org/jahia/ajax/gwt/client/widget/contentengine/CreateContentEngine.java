@@ -45,6 +45,7 @@ import java.util.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -233,7 +234,10 @@ public class CreateContentEngine extends AbstractContentEngine {
 
     protected void prepareAndSave(final boolean closeAfterSave) {
         String nodeName = targetName;
-        final Set<String> mixinNames = new HashSet<String>();
+        GWTJahiaNodeACL newNodeACL = new GWTJahiaNodeACL();
+        newNodeACL.setAce(new ArrayList<GWTJahiaNodeACE>());
+
+        final Set<String> addedTypes = new HashSet<String>();
         for (TabItem tab : tabs.getItems()) {
             EditEngineTabItem item = tab.getData("item");
             if (item instanceof ContentTabItem) {
@@ -241,20 +245,11 @@ public class CreateContentEngine extends AbstractContentEngine {
                     nodeName = ((ContentTabItem) item).getName().getValue();
                 }
             }
-            if (item instanceof RolesTabItem) {
-                AclEditor acl = ((RolesTabItem) item).getRightsEditor();
-                if (acl != null) {
-                    newNodeACL = acl.getAcl();
-                    if (newNodeACL.isInheritanceBroken()) {
-                        mixinNames.add("jmix:accessControlled");
-                    }
-                }
-            } else {
-                item.doSave(node, changedProperties, changedI18NProperties, mixinNames, removedTypes);
-            }
+
+            item.doSave(node, changedProperties, changedI18NProperties, addedTypes, new HashSet<String>(), newNodeACL);
         }
         
-		doSave(nodeName, changedProperties, changedI18NProperties, new ArrayList<String>(mixinNames), newNodeACL,
+		doSave(nodeName, changedProperties, changedI18NProperties, new ArrayList<String>(addedTypes), newNodeACL,
 		        closeAfterSave);
     }
     

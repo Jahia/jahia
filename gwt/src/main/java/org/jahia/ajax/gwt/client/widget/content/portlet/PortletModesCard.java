@@ -49,8 +49,8 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import com.google.gwt.user.client.ui.Label;
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.widget.button.Button;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -78,7 +78,7 @@ public class PortletModesCard extends PortletWizardCard {
         super.createUI();
         // update
         final GWTJahiaNodeACL acl = getPortletWizardWindow().getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getBaseAcl().cloneObject();
-        List<String> permissions = acl.getAvailablePermissions().get(JCRClientUtils.MODES_ACL);
+        List<String> permissions = acl.getAvailablePermissions().get(JCRClientUtils.PORTLET_MODES_ROLES);
         acl.setBreakAllInheritance(true);
         if (permissions != null && permissions.size() > 0) {
             JahiaContentManagementService.App.getInstance().createDefaultUsersGroupACE(permissions, true, new BaseAsyncCallback<GWTJahiaNodeACE>() {
@@ -106,8 +106,7 @@ public class PortletModesCard extends PortletWizardCard {
     }
 
     private void initModeMappingEditor(GWTJahiaNodeACL acl) {
-        modeMappingEditor = new AclEditor(acl, getPortletWizardWindow().getParentNode().getAclContext());
-        modeMappingEditor.setAclGroup(JCRClientUtils.MODES_ACL);
+        modeMappingEditor = new AclEditor(acl, getPortletWizardWindow().getParentNode().getAclContext(), Collections.singleton(JCRClientUtils.PORTLET_MODES_ROLES));
         modeMappingEditor.setAddUsersLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.modes.adduser.label", "Add mode-user permission"));
         modeMappingEditor.setAddGroupsLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.modes.addgroup.label", "Add mode-group permission"));
     }

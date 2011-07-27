@@ -51,6 +51,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
@@ -259,7 +260,7 @@ public class RolePermissionsTabItem extends EditEngineTabItem {
         tab.layout();
     }
 
-    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes) {
+    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, GWTJahiaNodeACL acl) {
         if (selection != null) {
             List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>(selection.size());
             for (GWTJahiaNode gwtJahiaNode : selection) {

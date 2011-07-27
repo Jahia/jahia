@@ -265,7 +265,7 @@ public class PortletHelper {
                 modeAces = new ArrayList<GWTJahiaNodeACE>();
             }
             if (acl != null && acl.getAvailablePermissions() != null) {
-                List<String> modesPermissions = acl.getAvailablePermissions().get(JCRClientUtils.MODES_ACL);
+                List<String> modesPermissions = acl.getAvailablePermissions().get(JCRClientUtils.PORTLET_MODES_ROLES);
                 modeAces.add(this.acl.createUsersGroupACE(modesPermissions, true, site));
             }
             modes.setAce(modeAces);
@@ -281,7 +281,7 @@ public class PortletHelper {
                 roleAces = new ArrayList<GWTJahiaNodeACE>();
             }
             if (acl != null && acl.getAvailablePermissions() != null) {
-                List<String> rolesPermissions = acl.getAvailablePermissions().get(JCRClientUtils.ROLES_ACL);
+                List<String> rolesPermissions = acl.getAvailablePermissions().get(JCRClientUtils.PORTLET_ROLES);
                 roleAces.add(this.acl.createUsersGroupACE(rolesPermissions, true, site));
             }
             roles.setAce(roleAces);

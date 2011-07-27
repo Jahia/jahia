@@ -337,14 +337,11 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
             // general properties
             final List<GWTJahiaNodeProperty> changedProperties = new ArrayList<GWTJahiaNodeProperty>();
+            final Set<String> addedTypes = new HashSet<String>();
             final Set<String> removedTypes = new HashSet<String>();
             // general properties
             final Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties =
                     new HashMap<String, List<GWTJahiaNodeProperty>>();
-
-            // new acl
-            GWTJahiaNodeACL newNodeACL = null;
-
 
             // node
             List<GWTJahiaNode> orderedChildrenNodes = null;
@@ -365,19 +362,12 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                     orderedChildrenNodes = ((ListOrderingContentTabItem) item).getNewManualOrderedChildrenList();
                 }
 
-                if (item instanceof RolesTabItem) {
-                    // case of right tab
-                    AclEditor acl = ((RolesTabItem) item).getRightsEditor();
-                    if (acl != null) {
-                        newNodeACL = acl.getAcl();
-                    }
-                } else {
-                    HashSet<String> addedTypes = new HashSet<String>();
-                    item.doSave(getNode(), changedProperties, changedI18NProperties, addedTypes, removedTypes);
-                    getNode().getNodeTypes().removeAll(removedTypes);
-                    getNode().getNodeTypes().addAll(addedTypes);
-                }
+                item.doSave(getNode(), changedProperties, changedI18NProperties, addedTypes, removedTypes, acl);
             }
+
+            getNode().getNodeTypes().removeAll(removedTypes);
+            getNode().getNodeTypes().addAll(addedTypes);
+
             // Ajax call to update values
             AsyncCallback callback = new BaseAsyncCallback() {
                 public void onApplicationFailure(Throwable throwable) {
@@ -405,7 +395,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
             } else {
                 JahiaContentManagementService.App.getInstance()
-                        .saveNode(getNode(), orderedChildrenNodes, newNodeACL, changedI18NProperties, changedProperties,
+                        .saveNode(getNode(), orderedChildrenNodes, acl, changedI18NProperties, changedProperties,
                                 removedTypes, callback);
             }
         }

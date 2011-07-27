@@ -46,6 +46,7 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -315,6 +316,9 @@ public class EditContentEngine extends AbstractContentEngine {
         // node
         List<GWTJahiaNode> orderedChildrenNodes = null;
 
+        final Set<String> addedTypes = new HashSet<String>();
+        final Set<String> removedTypes = new HashSet<String>();
+
         for (TabItem tab : tabs.getItems()) {
             EditEngineTabItem item = tab.getData("item");
             // case of contentTabItem
@@ -339,21 +343,14 @@ public class EditContentEngine extends AbstractContentEngine {
             }
 
             // case of right tab
-            if (item instanceof RolesTabItem) {
-                AclEditor acl = ((RolesTabItem) item).getRightsEditor();
-                if (acl != null) {
-                    newNodeACL = acl.getAcl();
-                }
-            } else {
-                HashSet<String> addedTypes = new HashSet<String>();
-                item.doSave(node, changedProperties, changedI18NProperties, addedTypes, removedTypes);
-                node.getNodeTypes().removeAll(removedTypes);
-                node.getNodeTypes().addAll(addedTypes);
-            }
+            item.doSave(node, changedProperties, changedI18NProperties, addedTypes, removedTypes, acl);
         }
-        
+
+        node.getNodeTypes().removeAll(removedTypes);
+        node.getNodeTypes().addAll(addedTypes);
+
         contentService.saveNode(node,
-                orderedChildrenNodes, newNodeACL, changedI18NProperties, changedProperties,
+                orderedChildrenNodes, acl, changedI18NProperties, changedProperties,
                 removedTypes, new BaseAsyncCallback<Object>() {
                     public void onApplicationFailure(Throwable throwable) {
                         String message = throwable.getMessage();

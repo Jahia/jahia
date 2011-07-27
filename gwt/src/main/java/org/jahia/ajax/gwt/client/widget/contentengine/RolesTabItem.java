@@ -41,21 +41,31 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
-import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
- * 
+ *
  * User: toto
  * Date: Jan 6, 2010
  * Time: 7:30:49 PM
- * 
+ *
  */
 public class RolesTabItem extends EditEngineTabItem {
-    private transient AclEditor rightsEditor;
+    private transient AclEditor rolesEditor;
+
+    private Set<String> roleGroups;
+    private boolean canBreakInheritance = false;
 
     @Override
     public void init(NodeHolder engine, AsyncTabItem tab, String locale) {
@@ -69,50 +79,71 @@ public class RolesTabItem extends EditEngineTabItem {
                 node = engine.getTargetNode();
             }
 
-            rightsEditor = new AclEditor(engine.getAcl(), node.getAclContext());
-            rightsEditor.setAclGroup(JCRClientUtils.AUTHORIZATIONS_ACL); //todo parameterize
-            rightsEditor.setCanBreakInheritance(true);
+            rolesEditor = new AclEditor(engine.getAcl(), node.getAclContext(), roleGroups);
+            rolesEditor.setCanBreakInheritance(canBreakInheritance);
             if (!(node.getProviderKey().equals("default") || node.getProviderKey().equals("jahia"))) {
-                rightsEditor.setReadOnly(true);
+                rolesEditor.setReadOnly(true);
             } else {
-                rightsEditor.setReadOnly(!PermissionsUtils.isPermitted("jcr:modifyAccessControl", node) || node.isLocked());
+                rolesEditor.setReadOnly(!PermissionsUtils.isPermitted("jcr:modifyAccessControl", node) || node.isLocked());
             }
 
             tab.setLayout(new FitLayout());
-            rightsEditor.addNewAclPanel(tab);
+            rolesEditor.addNewAclPanel(tab);
         }
-    }
-
-//    private void getACL(final GWTJahiaNode node) {
-//        mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
-//        JahiaContentManagementService.App.getInstance().getACL(node.getPath(), new BaseAsyncCallback<GWTJahiaNodeACL>() {
-//            /**
-//             * onsuccess
-//             * @param gwtJahiaNodeACL
-//             */
-//            public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
-//                unmask();
-//                // auth. editor
-//                layout();
-//            }
-//
-//            /**
-//             * On failure
-//             * @param throwable
-//             */
-//            public void onApplicationFailure(Throwable throwable) {
-//                Log.debug("Cannot retrieve acl", throwable);
-//            }
-//        });
-//    }
-
-    public AclEditor getRightsEditor() {
-        return rightsEditor;
     }
 
     public void setProcessed(boolean processed) {
         if (!processed) {
-            rightsEditor = null;
+            rolesEditor = null;
+        }
+    }
+
+    public Set<String> getRoleGroups() {
+        return roleGroups;
+    }
+
+    public void setRoleGroups(Set<String> roleGroups) {
+        this.roleGroups = roleGroups;
+    }
+
+    public boolean isCanBreakInheritance() {
+        return canBreakInheritance;
+    }
+
+    public void setCanBreakInheritance(boolean canBreakInheritance) {
+        this.canBreakInheritance = canBreakInheritance;
+    }
+
+    @Override
+    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, GWTJahiaNodeACL acl) {
+        if (rolesEditor == null) {
+            return;
+        }
+        Map<String, GWTJahiaNodeACE> aceMap = new HashMap<String, GWTJahiaNodeACE>();
+
+        for (GWTJahiaNodeACE ace : acl.getAce()) {
+            aceMap.put(ace.getPrincipalType() + ace.getPrincipalKey(), ace);
+        }
+
+        if (acl.getAvailablePermissions() == null)  {
+            acl.setAvailablePermissions(new HashMap<String, List<String>>());
+        }
+
+        GWTJahiaNodeACL modifiedAcl  = rolesEditor.getAcl();
+        acl.setBreakAllInheritance(modifiedAcl.isBreakAllInheritance());
+        acl.getAvailablePermissions().putAll(modifiedAcl.getAvailablePermissions());
+
+        for (GWTJahiaNodeACE modifiedAce : modifiedAcl.getAce()) {
+            if (!aceMap.containsKey(modifiedAce.getPrincipalType() + modifiedAce.getPrincipalKey())) {
+                aceMap.put(modifiedAce.getPrincipalType() + modifiedAce.getPrincipalKey(), modifiedAce);
+                acl.getAce().add(modifiedAce);
+            } else {
+                GWTJahiaNodeACE mergedAce = aceMap.get(modifiedAce.getPrincipalType() + modifiedAce.getPrincipalKey());
+                mergedAce.getPermissions().keySet().removeAll(rolesEditor.getDisplayedRoles());
+                mergedAce.getPermissions().putAll(modifiedAce.getPermissions());
+                mergedAce.getInheritedPermissions().keySet().removeAll(rolesEditor.getDisplayedRoles());
+                mergedAce.getInheritedPermissions().putAll(modifiedAce.getInheritedPermissions());
+            }
         }
     }
 }

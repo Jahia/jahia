@@ -69,7 +69,6 @@ import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
 import java.util.*;
 
 /**
- * 
  * User: toto
  * Date: Sep 12, 2008
  * Time: 11:24:32 AM
@@ -84,20 +83,38 @@ public class AclEditor {
     private RestoreButton restoreButton;
     private Grid<ModelData> grid;
     private ListStore<ModelData> store;
-    private boolean saved = false;
     private boolean canBreakInheritance = false;
     private Button breakinheritanceItem;
-    private String aclGroup;
+    private Set<String> roleGroups;
     private boolean readOnly = false;
-    private List<String> available;
+    private List<String> displayedRoles;
     private boolean displayInheritanceColumn = true;
     private String addUsersLabel = getResource("newUsers.label");
     private String addGroupsLabel = getResource("newGroups.label");
 
-    public AclEditor(GWTJahiaNodeACL acl, String aclContext) {
+    public AclEditor(GWTJahiaNodeACL acl, String aclContext, Set<String> roleGroups) {
         this.originalAcl = acl;
         this.context = aclContext;
-        this.acl = originalAcl.cloneObject();
+        this.roleGroups = roleGroups;
+        final Map<String, List<String>> map = acl.getAvailablePermissions();
+        if (this.roleGroups == null || this.roleGroups.isEmpty()) {
+            displayedRoles = new ArrayList<String>();
+            if (map != null && !map.isEmpty()) {
+                for (List<String> l : map.values()) {
+                    displayedRoles.addAll(l);
+                }
+            }
+        } else {
+            displayedRoles = new ArrayList<String>();
+            if (map != null && !map.isEmpty()) {
+                for (String group : this.roleGroups) {
+                    if (map.containsKey(group)) {
+                        displayedRoles.addAll(map.get(group));
+                    }
+                }
+            }
+        }
+
         restoreButton = new RestoreButton();
         reinitAcl();
     }
@@ -110,8 +127,8 @@ public class AclEditor {
         this.readOnly = readOnly;
     }
 
-    public void setAclGroup(String aclGroup) {
-        this.aclGroup = aclGroup;
+    public void setRoleGroups(Set<String> roleGroups) {
+        this.roleGroups = roleGroups;
     }
 
     public String getAddUsersLabel() {
@@ -146,11 +163,13 @@ public class AclEditor {
 
         // im. representing the principal
         ColumnConfig col = new ColumnConfig("icon", 30);
+        col.setSortable(false);
+        col.setFixed(true);
         col.setRenderer(new GridCellRenderer() {
             public Object render(final ModelData model, final String perm, ColumnData config, final int rowIndex, final int colIndex,
                                  ListStore listStore, final Grid grid) {
                 GWTJahiaNodeACE ace = model.get("ace");
-                Image html ;
+                Image html;
                 if (ace.getPrincipalType() == 'u') {
                     html = StandardIconsProvider.STANDARD_ICONS.user().createImage();
                 } else {
@@ -161,20 +180,8 @@ public class AclEditor {
         });
         columns.add(col);
 
-        final Map<String, List<String>> map = acl.getAvailablePermissions();
-        if (aclGroup == null) {
-            available = new ArrayList<String>();
-            if(map != null && !map.isEmpty()) {
-                for (List<String> l : map.values()) {
-                    available.addAll(l);
-                }
-            }
-        } else {
-            available = map.get(aclGroup);
-        }
-
         // name of the princial
-        col = new ColumnConfig("principal",getResource("label.user"), 200);
+        col = new ColumnConfig("principal", getResource("label.user"), 200);
         columns.add(col);
         // column break in heritance
         if (displayInheritanceColumn) {
@@ -202,7 +209,7 @@ public class AclEditor {
             columns.add(col);
         }
         // add a column per available permission
-        for (String s : available) {
+        for (String s : displayedRoles) {
             final int i = columns.size();
             final String columnName;
             if (acl.getPermissionLabels() != null) {
@@ -211,7 +218,7 @@ public class AclEditor {
                 columnName = s;
             }
             col = new ColumnConfig(s, columnName, 80);
-            
+
             if (acl.getPermissionTooltips() != null) {
                 String tooltip = acl.getPermissionTooltips().get(s);
                 if (tooltip != null && tooltip.length() > 0) {
@@ -233,16 +240,16 @@ public class AclEditor {
                     chb.addClickHandler(new ClickHandler() {
                         public void onClick(ClickEvent sender) {
                             setDirty();
-                            boolean checked = ((CheckBox) sender.getSource()).getValue()!=null?((CheckBox) sender.getSource()).getValue():false;
+                            boolean checked = ((CheckBox) sender.getSource()).getValue() != null ? ((CheckBox) sender.getSource()).getValue() : false;
                             ace.getPermissions().put(perm, checked ? Boolean.TRUE : Boolean.FALSE);
                             if (checked) {
                                 grid.getView().getRow(rowIndex);
                                 List<String> toCheck = acl.getPermissionsDependencies().get(perm);
                                 if (toCheck != null) {
                                     for (String s1 : toCheck) {
-                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex,2);
-                                        if (checkBox!=null && !checkBox.getValue()) {
-                                            checkBox.setValue(true,true);
+                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex, displayedRoles.indexOf(s1) + 2);
+                                        if (checkBox != null && !checkBox.getValue()) {
+                                            checkBox.setValue(true, true);
                                         }
                                     }
                                 }
@@ -250,9 +257,9 @@ public class AclEditor {
                                 Set<String> toCheck = acl.getPermissionsDependencies().keySet();
                                 for (String s1 : toCheck) {
                                     if (acl.getPermissionsDependencies().get(s1).contains(perm)) {
-                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex,2);
+                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex, displayedRoles.indexOf(s1) + 2);
                                         if (checkBox != null && checkBox.getValue()) {
-                                            checkBox.setValue(false,true);
+                                            checkBox.setValue(false, true);
                                         }
                                     }
                                 }
@@ -261,7 +268,7 @@ public class AclEditor {
                             if (!ace.getInheritedPermissions().isEmpty()) {
                                 if (ace.getPermissions().equals(ace.getInheritedPermissions()) && !acl.isBreakAllInheritance()) {
                                     if (displayInheritanceColumn) {
-                                        LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(rowIndex,2);
+                                        LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(rowIndex, 2);
                                         ctn.removeAll();
                                         ctn.add(buildInheritanceLabel(ace));
                                         ctn.layout();
@@ -270,7 +277,7 @@ public class AclEditor {
                                 } else {
                                     if (ace.isInherited()) {
                                         if (displayInheritanceColumn) {
-                                            LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(rowIndex,2);
+                                            LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(rowIndex, 2);
                                             ctn.removeAll();
                                             ctn.add(buildLocalRestoreInheritanceButton(model, ace));
                                             ctn.layout();
@@ -291,10 +298,12 @@ public class AclEditor {
 
         // create the table
         store = new ListStore<ModelData>();
-        grid = new Grid<ModelData>(store, new ColumnModel(columns));
+        ColumnModel cm = new ColumnModel(columns);
+        grid = new Grid<ModelData>(store, cm);
         final BufferView bufferView = new BufferView();
         bufferView.setRowHeight(28);
-        grid.setAutoExpandColumn("inheritance");        
+        grid.setAutoExpandColumn("inheritance");
+        grid.setAutoExpandMax(300);
         grid.setView(bufferView);
 //        aclTable.setBulkRender(false);
         store.sort("name", Style.SortDir.ASC);
@@ -304,7 +313,7 @@ public class AclEditor {
 
         // populate table
         for (GWTJahiaNodeACE ace : l) {
-            addTableItem(store, ace, available);
+            addTableItem(store, ace, displayedRoles);
             aceMap.put(ace.getPrincipalType() + ace.getPrincipalKey(), ace);
         }
 
@@ -317,7 +326,7 @@ public class AclEditor {
                 aceMap.clear();
                 List<GWTJahiaNodeACE> l = acl.getAce();
                 for (GWTJahiaNodeACE ace : l) {
-                    addTableItem(store, ace, available);
+                    addTableItem(store, ace, displayedRoles);
                     aceMap.put(ace.getPrincipalType() + ace.getPrincipalKey(), ace);
                 }
                 setBreakInheritanceLabel();
@@ -345,11 +354,6 @@ public class AclEditor {
                         ace.setPrincipal(user.getUsername());
                         ace.setPrincipalKey(user.getUserKey());
                         ace.setPermissions(new HashMap<String, Boolean>());
-//                        boolean first = true;
-//                        for (String s : available) {
-//                            ace.getPermissions().put(s, first ? Boolean.TRUE : Boolean.FALSE);
-//                            first = false;
-//                        }
                         ace.setInheritedPermissions(new HashMap<String, Boolean>());
                         ace.setInherited(false);
                         acl.getAce().add(ace);
@@ -359,8 +363,13 @@ public class AclEditor {
                             ace.setInherited(false);
                         }
                     }
+                    boolean first = true;
+                    for (String s : displayedRoles) {
+                        ace.getPermissions().put(s, first ? Boolean.TRUE : Boolean.FALSE);
+                        first = false;
+                    }
                     setDirty();
-                    addTableItem(store, ace, available);
+                    addTableItem(store, ace, displayedRoles);
                 }
             }
 
@@ -373,11 +382,6 @@ public class AclEditor {
                         ace.setPrincipal(group.getGroupname());
                         ace.setPrincipalKey(group.getGroupKey());
                         ace.setPermissions(new HashMap<String, Boolean>());
-//                        boolean first = true;
-//                        for (String s : available) {
-//                            ace.getPermissions().put(s, first ? Boolean.TRUE : Boolean.FALSE);
-//                            first = false;
-//                        }
                         ace.setInheritedPermissions(new HashMap<String, Boolean>());
                         ace.setInherited(false);
                         acl.getAce().add(ace);
@@ -387,8 +391,13 @@ public class AclEditor {
                             ace.setInherited(false);
                         }
                     }
+                    boolean first = true;
+                    for (String s : displayedRoles) {
+                        ace.getPermissions().put(s, first ? Boolean.TRUE : Boolean.FALSE);
+                        first = false;
+                    }
                     setDirty();
-                    addTableItem(store, ace, available);
+                    addTableItem(store, ace, displayedRoles);
                 }
             }
 
@@ -434,7 +443,7 @@ public class AclEditor {
                                 ace.setInherited(true);
                             }
                         }
-                        addTableItem(store, ace, available);
+                        addTableItem(store, ace, displayedRoles);
                     }
                 }
             });
@@ -463,17 +472,23 @@ public class AclEditor {
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 setDirty();
-                String o = ace.getPrincipalType() + ace.getPrincipal();
+                String o = ace.getPrincipalType() + ace.getPrincipalKey();
                 items.remove(o);
                 store.remove(item);
-                if (ace.getInheritedPermissions().isEmpty()) {
-                    aceMap.remove(ace.getPrincipalType() + ace.getPrincipalKey());
-                    acl.getAce().remove(ace);
-                } else {
-                    ace.getPermissions().clear();
-//                    ace.getPermissions().putAll(ace.getInheritedPermissions());
-                    ace.setInherited(true);
-                }
+
+                ace.getPermissions().clear();
+                ace.setInherited(true);
+//                for (String role : displayedRoles) {
+//                    ace.getPermissions().put(role, false);
+//                }
+
+//                if (ace.getInheritedPermissions().isEmpty()) {
+//                    aceMap.remove(ace.getPrincipalType() + ace.getPrincipalKey());
+//                    acl.getAce().remove(ace);
+//                } else {
+//                    ace.getPermissions().clear();
+//                    ace.setInherited(true);
+//                }
             }
         });
         return button;
@@ -516,14 +531,14 @@ public class AclEditor {
                 ace.getPermissions().clear();
 //                ace.getPermissions().putAll(ace.getInheritedPermissions());
                 int row = store.indexOf(item);
-                for (int i = 3; i < available.size() + 3; i++) {
-                    CheckBox chb = (CheckBox) grid.getView().getWidget(row,i);
+                for (int i = 3; i < displayedRoles.size() + 3; i++) {
+                    CheckBox chb = (CheckBox) grid.getView().getWidget(row, i);
                     String perm = grid.getColumnModel().getColumn(i).getId();
                     Boolean v = ace.getInheritedPermissions().get(perm);
                     chb.setChecked(Boolean.TRUE.equals(v));
                 }
                 ace.setInherited(true);
-                LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(row,2);
+                LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(row, 2);
                 ctn.removeAll();
                 ctn.add(buildInheritanceLabel(ace));
                 ctn.layout();
@@ -547,43 +562,34 @@ public class AclEditor {
      * init acl
      */
     private void reinitAcl() {
-        this.saved = true;
         restoreButton.setEnabled(false);
-
         acl = originalAcl.cloneObject();
-        for (GWTJahiaNodeACE ace : acl.getAce()) {
-//            if (ace.isInherited()) {
-//                ace.getPermissions().putAll(ace.getInheritedPermissions());
-//            }
-        }
-    }
 
-    /**
-     * Update save flag
-     */
-    public void setSaved() {
-        this.originalAcl = acl.cloneObject();
-        reinitAcl();
-        store.removeAll();
-        items.clear();
-        aceMap.clear();
-        List<GWTJahiaNodeACE> l = acl.getAce();
-        for (GWTJahiaNodeACE ace : l) {
-            addTableItem(store, ace, available);
-            aceMap.put(ace.getPrincipalType() + ace.getPrincipalKey(), ace);
+        // Clean ACL from roles that are not displayed here
+        List<GWTJahiaNodeACE> aces = new ArrayList<GWTJahiaNodeACE>(acl.getAce());
+        for (GWTJahiaNodeACE ace : aces) {
+            ace.getPermissions().keySet().retainAll(displayedRoles);
+            ace.getInheritedPermissions().keySet().retainAll(displayedRoles);
+            if (ace.getPermissions().isEmpty()) {
+                if (ace.getInheritedPermissions().isEmpty()) {
+                    acl.getAce().remove(ace);
+                } else {
+                    ace.setInherited(true);
+                }
+            }
         }
-        setBreakInheritanceLabel();
-        
     }
 
     /**
      * Set dirty
      */
     public void setDirty() {
-        this.saved = false;
         restoreButton.setEnabled(true);
     }
 
+    public List<String> getDisplayedRoles() {
+        return displayedRoles;
+    }
 
     /**
      * Add ace to acl table
@@ -596,16 +602,19 @@ public class AclEditor {
         if (ace.getPermissions().isEmpty() && !ace.getInheritedPermissions().isEmpty() && acl.isBreakAllInheritance()) {
             return;
         }
+        if (ace.getPermissions().isEmpty() && ace.getInheritedPermissions().isEmpty()) {
+            return;
+        }
         if (ace.isHidden()) {
             return;
         }
         BaseModelData value = new BaseModelData();//Object[3 + available.size()];
         value.set("principal", ace.getPrincipal());
 
-        String o = ace.getPrincipalType() + ace.getPrincipal();
+        String o = ace.getPrincipalType() + ace.getPrincipalKey();
         if (!items.contains(o)) {
             items.add(o);
-            value.set("ace",ace);
+            value.set("ace", ace);
 
             store.add(value);
             store.sort("principal", Style.SortDir.ASC);
@@ -623,10 +632,11 @@ public class AclEditor {
 
     /**
      * return true if ACL permissions are empty
+     *
      * @return
      */
-    public boolean isEmpty(){
-       return getAcl() == null || getAcl().getAvailablePermissions() == null || getAcl().getAvailablePermissions().isEmpty();
+    public boolean isEmpty() {
+        return getAcl() == null || getAcl().getAvailablePermissions() == null || getAcl().getAvailablePermissions().isEmpty();
     }
 
     /**

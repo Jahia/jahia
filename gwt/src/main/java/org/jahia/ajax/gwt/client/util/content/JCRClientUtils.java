@@ -88,9 +88,8 @@ public final class JCRClientUtils {
 
     public final static String TEMPLATES_REPOSITORY = "templatesRepository";
 
-    public final static String AUTHORIZATIONS_ACL = "default";
-    public final static String MODES_ACL = "modes";
-    public final static String ROLES_ACL = "roles";
+    public final static String PORTLET_MODES_ROLES = "modes";
+    public final static String PORTLET_ROLES = "roles";
 
     public final static String ALL_MASHUPS = "portlets";
 

@@ -510,8 +510,12 @@ public class PropertiesEditor extends FormPanel {
      * @param itemDef the definition of the corresponding node/property
      * @return a list with property values, populated from the field value depending on its type
      */
-    public static List<GWTJahiaNodePropertyValue> getPropertyValues(Field<?> fld, GWTJahiaItemDefinition itemDef) {
+    public static List<GWTJahiaNodePropertyValue> getPropertyValues(Field<?> field, GWTJahiaItemDefinition itemDef) {
         List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>();
+        Field<?> fld = field;
+        if(field instanceof PropertyAdapterField) {
+            fld = ((PropertyAdapterField)field).getField();
+        }
         if (itemDef.isNode()) {
             // case of a new link node
             if (fld instanceof ContentPickerField) {

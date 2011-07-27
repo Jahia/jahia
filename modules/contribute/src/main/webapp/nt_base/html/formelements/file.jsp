@@ -24,6 +24,7 @@
 <label for="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
 <input type="hidden" name="${propertyDefinition.name}" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
 <fmt:message key="label.select.file" var="fileLabel"/>
+<fmt:message key="label.select.folder" var="folderLabel"/>
 <c:url value="${url.files}" var="previewPath"/>
 <c:set var="onSelect">function(uuid, path, title) {
             $('#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}').val(uuid);
@@ -35,7 +36,8 @@
             height:600,
     width:600
         }</c:set>
-<c:if test="${propertyDefinition.selectorOptions.type == 'image'}">
+<c:choose>
+<c:when test="${propertyDefinition.selectorOptions.type == 'image'}">
 <ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                  displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
         label="${fileLabel}"
@@ -44,15 +46,26 @@
         onSelect="${onSelect}"
         onClose="${onClose}"
         fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:true,previewPath:'${previewPath}'}"/>
-</c:if>
-<c:if test="${propertyDefinition.selectorOptions.type != 'image'}">
+</c:when>
+<c:when test="${propertyDefinition.selectorOptions.type == 'folder'}">
+<ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
+                 displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
+        label="${folderLabel}"
+        nodeTypes="nt:folder,jnt:virtualsite"
+        selectableNodeTypes="jnt:folder"
+        onSelect="${onSelect}"
+        onClose="${onClose}"
+        fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:false,previewPath:'${previewPath}'}"/>
+</c:when>
+<c:otherwise>
 <ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                  displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
         label="${fileLabel}"
         onSelect="${onSelect}"
         onClose="${onClose}"
         fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:true,previewPath:'${previewPath}'}"/>
-</c:if>
+</c:otherwise>
+</c:choose>
 <span><fmt:message key="label.or"/></span>
 <div id="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">
     <span><fmt:message key="add.file"/></span>

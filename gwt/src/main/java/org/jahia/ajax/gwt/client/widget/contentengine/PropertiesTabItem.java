@@ -178,6 +178,9 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 if (changedProperties.containsKey(language)) {
                     properties.putAll(changedProperties.get(language));
                 }
+                if (!engine.getPresetProperties().isEmpty()) {
+                    properties.putAll(engine.getPresetProperties());
+                }
                 propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), properties, dataType) {
                     @Override
                     public void copyToAllLanguages(GWTJahiaNodeProperty prop) {
@@ -256,6 +259,13 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 if (changedProperties.containsKey(language)) {
                     for (Map.Entry<String, GWTJahiaNodeProperty> entry : changedProperties.get(language).entrySet()) {
                         propertiesEditor.getFieldsMap().get(entry.getKey()).setDirty(true);
+                    }
+                }
+                if (!engine.getPresetProperties().isEmpty()) {
+                    for (String k : engine.getPresetProperties().keySet()) {
+                        if (propertiesEditor.getFieldsMap().containsKey(k))  {
+                            propertiesEditor.getFieldsMap().get(k).setDirty(true);
+                        }
                     }
                 }
 

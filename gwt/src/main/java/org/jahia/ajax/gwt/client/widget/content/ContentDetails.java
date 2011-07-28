@@ -326,6 +326,10 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
         return properties;
     }
 
+    public Map<String, GWTJahiaNodeProperty> getPresetProperties() {
+        return new HashMap<String, GWTJahiaNodeProperty>();
+    }
+
     /**
      * Save selection listener
      */

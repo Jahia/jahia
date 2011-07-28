@@ -86,6 +86,8 @@ public interface NodeHolder {
 
     Map<String, GWTJahiaNodeProperty> getProperties();
 
+    Map<String, GWTJahiaNodeProperty> getPresetProperties();
+
     Linker getLinker();
 
     void close();

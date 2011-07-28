@@ -98,6 +98,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected List<GWTJahiaNodeType> mixin;
     protected Map<String, GWTJahiaFieldInitializer> initializersValues;
     protected Map<String, GWTJahiaNodeProperty> properties;
+    protected Map<String, GWTJahiaNodeProperty> presetProperties;
     protected TabPanel tabs;
     protected boolean existingNode = true;
     protected GWTJahiaNode node;
@@ -385,6 +386,10 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
     public Map<String, GWTJahiaNodeProperty> getProperties() {
         return properties;
+    }
+
+    public Map<String, GWTJahiaNodeProperty> getPresetProperties() {
+        return presetProperties;
     }
 
     public GWTJahiaNode getNode() {

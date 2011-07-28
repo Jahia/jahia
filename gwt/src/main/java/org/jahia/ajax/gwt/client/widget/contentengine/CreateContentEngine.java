@@ -103,7 +103,8 @@ public class CreateContentEngine extends AbstractContentEngine {
 
         nodeTypes = new ArrayList<GWTJahiaNodeType>(1);
         nodeTypes.add(type);
-        properties = new HashMap<String, GWTJahiaNodeProperty>(props);
+        properties = new HashMap<String, GWTJahiaNodeProperty>();
+        presetProperties = new HashMap<String, GWTJahiaNodeProperty>(props);
         heading = Messages.get("label.add", "Add") + ": " + type.getLabel();
         init(engineContainer);
         loadEngine();

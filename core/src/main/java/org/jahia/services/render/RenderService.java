@@ -61,10 +61,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
@@ -257,8 +254,11 @@ public class RenderService {
                 site = node.getResolveSite();
             }
             JCRNodeWrapper templatesNode = null;
-            if (site != null && site.hasNode("templates")) {
-                templatesNode = site.getNode("templates");
+            if (site != null) {
+                try {
+                    templatesNode = site.getNode("templates");
+                } catch (PathNotFoundException e) {
+                }
             }
 
             if (current.isNodeType("jnt:template")) {
@@ -355,7 +355,7 @@ public class RenderService {
 
         String key = new StringBuffer(templateNode.getPath()).append(type).append(
                 isNotDefaultTemplate ? resource.getTemplate() : "default").toString() +
-                     resource.getNode().getPrimaryNodeTypeName()+cacheKeyGenerator.appendAcls(resource, renderContext);
+                     resource.getNode().getPrimaryNodeTypeName()+cacheKeyGenerator.appendAcls(resource, renderContext, false);
 
         Template template = templatesCache.get(key);
 

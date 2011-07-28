@@ -440,7 +440,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
                         String[] split = keyAttrbs.get("acls").split("_p_");
                         String nodePath = "/"+StringUtils.substringAfter(split[1],"/");
-                        String acls = defaultCacheKeyGenerator.getAclsKeyPart(renderContext, Boolean.parseBoolean(StringUtils.substringBefore(split[1],"/")), nodePath);
+                        String acls = defaultCacheKeyGenerator.getAclsKeyPart(renderContext, Boolean.parseBoolean(StringUtils.substringBefore(split[1],"/")), nodePath, true);
                         cacheKey = keyGenerator.replaceField(cacheKey, "acls", acls);
                         if (renderContext.getRequest().getParameter("ec") != null &&
                             renderContext.getRequest().getParameter("ec").equals(keyAttrbs.get("resourceID"))) {

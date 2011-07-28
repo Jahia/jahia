@@ -48,7 +48,7 @@ import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.jahia.api.Constants;
-import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -158,7 +158,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                     args.add(queryString != null ? queryString : "");
                 }
             } else if ("acls".equals(field)) {
-                args.add(appendAcls(resource, renderContext));
+                args.add(appendAcls(resource, renderContext, true));
             } else if ("wrapped".equals(field)) {
                 args.add(String.valueOf(resource.hasWrapper()));
             } else if ("context".equals(field)) {
@@ -182,7 +182,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         return args.toArray(new String[KNOWN_FIELDS.size()]);
     }
 
-    public String appendAcls(Resource resource, RenderContext renderContext) {
+    public String appendAcls(Resource resource, RenderContext renderContext, boolean appendNodePath) {
         try {
             if (renderContext.getRequest() != null && Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.perUser"))) {
                 return PER_USER;
@@ -204,7 +204,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 }
             }
             String nodePath = node.getPath();
-            return getAclsKeyPart(renderContext, checkRootPath, nodePath);
+            return getAclsKeyPart(renderContext, checkRootPath, nodePath, appendNodePath);
 
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -212,7 +212,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         return "";
     }
 
-    public String getAclsKeyPart(RenderContext renderContext, boolean checkRootPath, String nodePath)
+    public String getAclsKeyPart(RenderContext renderContext, boolean checkRootPath, String nodePath, boolean appendNodePath)
             throws RepositoryException {
         // Search for user specific acl
         JahiaUser principal = renderContext.getUser();
@@ -230,7 +230,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 }
             }
             if (map.containsKey(path)) {
-                return (String) map.get(path)+"_p_"+checkRootPath+nodePath;
+                return (String) map.get(path)+"_p_"+checkRootPath + (appendNodePath ? nodePath : "");
             }
         }
         synchronized (aclGroups) {
@@ -303,7 +303,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             element = new Element(userName, map);
             element.setEternal(true);
             cache.put(element);
-            return value + "_p_" + checkRootPath + nodePath;
+            return value + "_p_" + checkRootPath + (appendNodePath ? nodePath : "");
         }
     }
 

@@ -233,6 +233,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                         "default", locale, new BaseAsyncCallback<String>() {
                                             public void onSuccess(String url) {
                                                 Window window = new Window();
+                                                window.setMaximizable(true);
                                                 window.setSize(800,600);
                                                 window.setUrl(url);
                                                 window.setPosition(engine.getPosition(true).x+50,engine.getPosition(true).y+50);

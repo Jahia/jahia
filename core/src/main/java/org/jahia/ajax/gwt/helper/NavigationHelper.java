@@ -807,18 +807,7 @@ public class NavigationHelper {
         }
         try {
             String username = node.getSession().getUser().getUsername();
-            boolean isLocked = node.isLocked() && (node.getLockOwner() == null || !node.getLockOwner().equals(
-                    username));
-            if(!isLocked && node.hasProperty(Constants.JAHIA_LOCKTYPES)) {
-                Value[] values = node.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
-                for (Value value : values) {
-                    if(!value.getString().startsWith(username)) {
-                        isLocked = true;
-                        break;
-                    }
-                }
-            }
-            n.setLocked(isLocked);
+            n.setLocked(JCRContentUtils.isLockedAndCannotBeEdited(node));
             Map<String, List<String>> infos = node.getLockInfos();
             n.setLockInfos(infos);
             if (node.getSession().getLocale() != null) {

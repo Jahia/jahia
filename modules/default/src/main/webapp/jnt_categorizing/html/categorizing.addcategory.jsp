@@ -17,7 +17,7 @@
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <c:set var="bindedComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<c:if test="${not empty bindedComponent}">
+<c:if test="${not empty bindedComponent && !jcr:isLockedAndCannotBeEdited(bindedComponent)}">
     <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ' ,')}"/>
     <template:addResources type="javascript" resources="jquery.min.js"/>
     <template:addResources type="css" resources="jquery.autocomplete.css"/>

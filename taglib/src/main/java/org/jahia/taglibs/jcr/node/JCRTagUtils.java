@@ -415,7 +415,7 @@ public class JCRTagUtils {
         List<ExtendedNodeType> finaltypes = new ArrayList<ExtendedNodeType>();
         for (ExtendedNodeType type : types) {
             for (String s : constraints) {
-                if (type.isNodeType(s) && !finaltypes.contains(type)) {
+                if (!finaltypes.contains(type) && type.isNodeType(s)) {
                     finaltypes.add(type);
                 }
             }

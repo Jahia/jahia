@@ -917,7 +917,36 @@ public final class JCRContentUtils {
         importSkeletons(skeletonLocations, targetPath, session, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, replacements);
     }
 
-    
+    /**
+     * Returns <code>true</code> if the node is locked and cannot be edited by current user.
+     * 
+     * @param node
+     *            the node to be tested
+     * @return <code>true</code> if the node is locked and cannot be edited by current user
+     * @throws RepositoryException
+     *             in case of a JCR error
+     */
+    public static boolean isLockedAndCannotBeEdited(JCRNodeWrapper node) throws RepositoryException {
+        if (node == null) {
+            return false;
+        }
+
+        String username = node.getSession().getUser().getUsername();
+        String lockOwner = node.getLockOwner();
+        boolean isLocked = node.isLocked() && (lockOwner == null || !lockOwner.equals(username));
+        if (!isLocked && node.hasProperty(Constants.JAHIA_LOCKTYPES)) {
+            Value[] values = node.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
+            for (Value value : values) {
+                if (!value.getString().startsWith(username)) {
+                    isLocked = true;
+                    break;
+                }
+            }
+        }
+
+        return isLocked;
+    }
+
     /**
      * Returns <code>true</code> if the provided node matches the specified node type (multiple node types can be specified, separated by a
      * comma).

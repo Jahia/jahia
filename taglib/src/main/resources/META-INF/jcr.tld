@@ -687,4 +687,10 @@
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
         <function-signature>boolean isAllowedChildNodeType(org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
     </function>
+    <function>
+        <description>Evaluates to true if the node is locked and cannot be edited by current user.</description>
+        <name>isLockedAndCannotBeEdited</name>
+        <function-class>org.jahia.services.content.JCRContentUtils</function-class>
+        <function-signature>boolean isLockedAndCannotBeEdited(org.jahia.services.content.JCRNodeWrapper)</function-signature>
+    </function>
 </taglib>

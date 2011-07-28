@@ -45,7 +45,8 @@
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
                       scope="application"/>
 <utility:setBundle basename="JahiaContributeMode" useUILocale="true" templateName="Jahia Contribute Mode"/>
-<c:if test="${!renderContext.ajaxRequest}">
+<c:set var="nodeLocked" value="${jcr:isLockedAndCannotBeEdited(currentNode)}"/>
+<c:if test="${!nodeLocked && !renderContext.ajaxRequest}">
 <template:addResources>
     <script>
         $(document).ready(function() {
@@ -95,7 +96,7 @@
         </c:if>
     </c:forEach>
     <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
-        <c:set var="readonly" value="${propertyDefinition.protected}"/>
+        <c:set var="readonly" value="${nodeLocked || propertyDefinition.protected}"/>
         <c:if test="${!propertyDefinition.multiple and propertyDefinition.itemType eq contentType and not propertyDefinition.hidden and !(propertyDefinition.name eq 'jcr:title') and !(propertyDefinition.name eq '*')}">
             <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
             <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>

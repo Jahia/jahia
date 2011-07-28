@@ -19,10 +19,12 @@
 <c:set var="bindedComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty bindedComponent}">
+    <c:set var="nodeLocked" value="${jcr:isLockedAndCannotBeEdited(bindedComponent)}"/>
     <div id="tagThisPage${bindedComponent.identifier}" class="tagthispage">
 
         <jcr:nodeProperty node="${bindedComponent}" name="j:tags" var="assignedTags"/>
         <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ', ')}"/>
+        <c:if test="${not nodeLocked}">
         <c:url var="postUrl" value="${url.base}${bindedComponent.path}"/>
         <script type="text/javascript">
             function deleteTag(tag) {
@@ -38,6 +40,7 @@
                 return false;
             }
         </script>
+        </c:if>
         <jsp:useBean id="filteredTags" class="java.util.LinkedHashMap"/>
         <c:forEach items="${assignedTags}" var="tag" varStatus="status">
             <c:if test="${not empty tag.node}">
@@ -52,8 +55,10 @@
                         <c:forEach items="${filteredTags}" var="tag" varStatus="status">
                             <div id="tag-${fn:replace(tag.value,' ','-')}" style="display:inline;">
                                 <span class="taggeditem">${fn:escapeXml(tag.value)}</span>
+                                <c:if test="${not nodeLocked}">
                                 <a class="delete" onclick="deleteTag('${tag.value}')"
                                    href="#"></a>${!status.last ? separator : ''}
+                                </c:if>
                             </div>
                         </c:forEach>
                     </c:when>

@@ -18,9 +18,11 @@
 <c:set var="bindedComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty bindedComponent}">
+    <c:set var="nodeLocked" value="${jcr:isLockedAndCannotBeEdited(bindedComponent)}"/>
     <div class="categorythispage">
         <jcr:nodeProperty node="${bindedComponent}" name="j:defaultCategory" var="assignedCategories"/>
         <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ' ,')}"/>
+        <c:if test="${not nodeLocked}">
         <c:url var="postUrl" value="${url.base}${bindedComponent.path}"/>
         <script type="text/javascript">
             var uuidCategories = "${bindedComponent.identifier}";
@@ -57,6 +59,7 @@
             }
 
         </script>
+        </c:if>
         <jsp:useBean id="filteredCategories" class="java.util.LinkedHashMap"/>
         <c:forEach items="${assignedCategories}" var="category" varStatus="status">
             <c:if test="${not empty category.node}">
@@ -73,7 +76,9 @@
                             <div id="category${category.key}" style="display:inline">
                                     ${!status.first ? separator : ''}<span
                                     class="categorizeditem">${fn:escapeXml(category.value)}</span>
+                                <c:if test="${not nodeLocked}">
                                 <a class="delete" onclick="deleteCategory('${category.key}')" href="#"></a>
+                                </c:if>
                             </div>
                         </c:forEach>
                     </c:when>

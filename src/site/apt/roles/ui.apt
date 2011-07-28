@@ -22,9 +22,9 @@ Jahia 6.5 - Roles/permissions management UI
   
 [../images/roles/ui-permissions.png]
   
-* Roles {engine} tab
+* Roles {engine} tabs
 
-  Roles can be granted in the <Roles> engine tab on a specific node.
+  Roles can be granted in the different <Roles> engine tabs on a specific node. There's one tab per role group.
 
   The <Roles> engine tab is a table with one line per user / group, and one column per role. A role can be assigned to
   a user or a group by checking the corresponding checkbox.

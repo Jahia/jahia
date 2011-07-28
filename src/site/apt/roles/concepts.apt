@@ -44,6 +44,9 @@ Jahia 6.5 - Authorization system concepts
 
     Roles are stored as a flat list of <<<jnt:role>>> nodes under <<</roles>>>
 
+    Roles can be assigned a role group, which will be edited in different places. Roles provided by jahia are split between
+    two groups : edit roles and live roles.
+
 * {Access Control Lists}
 
     An ACL (access control list) defines which roles are granted to a user or group on a specific node. It defines the

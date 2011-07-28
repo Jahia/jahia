@@ -8,7 +8,7 @@
 <title>Jahia Tools</title>
 </head>
 <body>
-<h1>Jahia Tools Area</h1>
+<h1>Jahia Tools Area (<%= org.jahia.bin.Jahia.getFullProductVersion() %>)</h1>
 <fieldset>
     <legend>System</legend>
     <ul>
@@ -49,5 +49,6 @@
         <li><a href="wcagChecker.jsp">WCAG checker</a></li>
     </ul>
 </fieldset>
+<p>&copy; Copyright 2002-2011 Jahia Solutions Group SA - All rights reserved.</p> 
 </body>
 </html>

@@ -86,7 +86,7 @@ public class ThreadMonitor {
             this.targetFile = targetFile;
             this.timer = timer;
             this.toSystemOut = toSystemOut;
-            out("Starting thread dump task for " + numberOfExecutions + " executions");
+            out("Starting thread dump task for " + numberOfExecutions + " executions into a file " + targetFile);
         }
 
         @Override
@@ -116,7 +116,7 @@ public class ThreadMonitor {
                 }
                 if (executionCount >= numberOfExecutions) {
                     timer.cancel();
-                    out("Stopping thread dump task after " + executionCount + " executions");
+                    out("Stopping thread dump task after " + executionCount + " executions into a file " + targetFile);
                 }
             }
         }

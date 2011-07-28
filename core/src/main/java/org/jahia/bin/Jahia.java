@@ -717,4 +717,19 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         return "EE".equals(getEdition());
     }
 
+    /**
+     * Returns full product version string.
+     * 
+     * @return full product version string
+     */
+    public static String getFullProductVersion() {
+        StringBuilder version = new StringBuilder(32);
+
+        version.append("Jahia ").append(Jahia.VERSION).append(" r").append(Jahia.getBuildNumber());
+        if (isEnterpriseEdition()) {
+            version.append(".").append(Jahia.getEEBuildNumber());
+        }
+
+        return version.toString();
+    }
 }

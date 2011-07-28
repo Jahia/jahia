@@ -47,6 +47,7 @@ import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.FastDateFormat;
+import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -347,7 +348,8 @@ public class ErrorFileDumper {
             strOut.println();
     
             if (SettingsBean.getInstance() != null) {
-                strOut.println("Server configuration:");
+                strOut.append("Server configuration (").append(Jahia.getFullProductVersion()).append("):");
+                strOut.println();
                 strOut.println("---------------------");
                 SettingsBean settings = SettingsBean.getInstance();
                 Map jahiaOrderedProperties = new TreeMap(settings.getPropertiesFile());

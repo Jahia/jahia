@@ -220,7 +220,7 @@ public class Service extends JahiaService {
                 cacheService.flushAllCaches();
             }
 
-        } else if (type.endsWith("zip")) {
+        } else if (name.endsWith(".zip")) {
             try {
                 processFileImport(prepareFileImports(node, node.getName()), user.getJahiaUser());
             } catch (IOException e) {
@@ -228,6 +228,14 @@ public class Service extends JahiaService {
             } catch (ServletException e) {
                 logger.error(e.getMessage(), e);
             } catch (JahiaException e) {
+                logger.error(e.getMessage(), e);
+            }
+        } else if (name.endsWith(".xml")) {
+            JCRSessionWrapper session = node.getNode().getSession();
+            try {
+                session.importXML("/", node.getNode().getFileContent().downloadFile(), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                session.save();
+            } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             }
         }

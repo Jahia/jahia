@@ -693,4 +693,10 @@
         <function-class>org.jahia.services.content.JCRContentUtils</function-class>
         <function-signature>boolean isLockedAndCannotBeEdited(org.jahia.services.content.JCRNodeWrapper)</function-signature>
     </function>
+    <function>
+        <description>Return list of nodes having the asked permission and of the asked type.</description>
+        <name>findAllowedNodesForPermission</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>java.util.List findAllowedNodesForPermission(java.lang.String,org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
+    </function>
 </taglib>

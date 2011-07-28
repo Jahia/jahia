@@ -43,6 +43,7 @@ package org.jahia.taglibs.jcr.node;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.render.RenderContext;
 import org.slf4j.Logger;
@@ -57,12 +58,10 @@ import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * JCR content related utilities.
@@ -434,5 +433,28 @@ public class JCRTagUtils {
         } catch (ConstraintViolationException e) {
             return false;
         }
+    }
+
+    public static List<JCRNodeWrapper> findAllowedNodesForPermission(String permission, JCRNodeWrapper parentNode,
+                                                                     String nodeType) {
+        final List<JCRNodeWrapper> results = new LinkedList<JCRNodeWrapper>();
+        try {
+            JCRSessionWrapper session = parentNode.getSession();
+            Query groupQuery = session.getWorkspace().getQueryManager().createQuery(
+                    "select * from [jnt:acl] as u where isdescendantnode(u,'" + parentNode.getPath() + "')",
+                    Query.JCR_SQL2);
+            QueryResult groupQueryResult = groupQuery.execute();
+            final NodeIterator nodeIterator = groupQueryResult.getNodes();
+            while (nodeIterator.hasNext()) {
+                JCRNodeWrapper node = (JCRNodeWrapper) nodeIterator.next();
+                JCRNodeWrapper contentNode = node.getParent();
+                if (contentNode.isNodeType(nodeType) && hasPermission(contentNode, permission)) {
+                    results.add(contentNode);
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return results;
     }
 }

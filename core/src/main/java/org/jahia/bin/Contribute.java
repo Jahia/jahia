@@ -40,11 +40,13 @@
 
 package org.jahia.bin;
 
+import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -76,6 +78,14 @@ public class Contribute extends Render {
     protected boolean hasAccess(JCRNodeWrapper node) {
         if (node == null) {
             logger.error("Site key is null.");
+            return false;
+        }
+        try {
+            if(Constants.LIVE_WORKSPACE.equals(node.getSession().getWorkspace().getName())) {
+                logger.error("Someone have tried to access the live repository in contribute mode");
+                return false;
+            }
+        } catch (RepositoryException e) {
             return false;
         }
         return node.hasPermission("contributeModeAccess");

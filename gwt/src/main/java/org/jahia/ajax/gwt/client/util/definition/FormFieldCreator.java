@@ -220,7 +220,7 @@ public class FormFieldCreator {
 
                     // if there is no values, the field is hidden
                     if (store.getModels().isEmpty()) {
-                        field.setVisible(false);
+                        field.setEmptyText(Messages.get("label.no.values"));
                     }
 
                     break;

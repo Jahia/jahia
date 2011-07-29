@@ -178,7 +178,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 if (changedProperties.containsKey(language)) {
                     properties.putAll(changedProperties.get(language));
                 }
-                if (!engine.getPresetProperties().isEmpty()) {
+                if (engine.getPresetProperties() != null && !engine.getPresetProperties().isEmpty()) {
                     properties.putAll(engine.getPresetProperties());
                 }
                 propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), properties, dataType) {
@@ -261,7 +261,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                         propertiesEditor.getFieldsMap().get(entry.getKey()).setDirty(true);
                     }
                 }
-                if (!engine.getPresetProperties().isEmpty()) {
+                if (engine.getPresetProperties() != null && !engine.getPresetProperties().isEmpty()) {
                     for (String k : engine.getPresetProperties().keySet()) {
                         if (propertiesEditor.getFieldsMap().containsKey(k))  {
                             propertiesEditor.getFieldsMap().get(k).setDirty(true);

@@ -923,6 +923,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                 Value[] values = perms.toArray(new Value[] {});
 
                 translator.setProperty("j:permissions", values);
+                translator.setProperty("j:roleGroup", "edit-role");
                 translator.setProperty("j:privilegedAccess", true);
             }
         }

@@ -78,6 +78,7 @@ import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.AreaModule;
 import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
 
 import java.util.*;
 
@@ -97,8 +98,8 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected List<GWTJahiaNodeType> nodeTypes;
     protected List<GWTJahiaNodeType> mixin;
     protected Map<String, GWTJahiaFieldInitializer> initializersValues;
-    protected Map<String, GWTJahiaNodeProperty> properties;
-    protected Map<String, GWTJahiaNodeProperty> presetProperties;
+    protected Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>();
+    protected Map<String, GWTJahiaNodeProperty> presetProperties = new HashMap<String, GWTJahiaNodeProperty>();
     protected TabPanel tabs;
     protected boolean existingNode = true;
     protected GWTJahiaNode node;
@@ -172,7 +173,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                 onLanguageChange(previous);
             }
         });
-        languageSwitcher.setTemplate(getLangSwitchingTemplate());
+        languageSwitcher.setTemplate(LanguageSwitcherActionItem.getLangSwitchingTemplate());
         languageSwitcher.setTypeAhead(true);
         languageSwitcher.setTriggerAction(ComboBox.TriggerAction.ALL);
         languageSwitcher.setForceSelection(true);
@@ -617,16 +618,5 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
 	protected abstract void setButtonsEnabled(boolean doEnable);
 
-	/**
-     * LangSwithcing template
-     *
-     * @return
-     */
-    private static native String getLangSwitchingTemplate()  /*-{
-    return  [
-    '<tpl for=".">',
-    '<div class="x-combo-list-item"><img src="{image}"/> {displayName}</div>',
-    '</tpl>'
-    ].join("");
-  }-*/;
+
 }

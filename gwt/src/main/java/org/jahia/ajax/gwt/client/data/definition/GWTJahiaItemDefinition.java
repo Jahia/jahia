@@ -180,4 +180,8 @@ public class GWTJahiaItemDefinition implements Serializable {
     public String getTooltip() {
         return tooltip;
     }
+
+    public boolean isInternationalized() {
+        return false;
+    }
 }

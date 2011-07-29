@@ -64,6 +64,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
 
 import java.util.*;
 
@@ -234,7 +235,7 @@ public class LangPropertiesEditor extends LayoutContainer {
         languageSwitcher.setStore(new ListStore<GWTJahiaLanguage>());
         languageSwitcher.setDisplayField("displayName");
         languageSwitcher.setVisible(false);
-        languageSwitcher.setTemplate(getLangSwitchingTemplate());
+        languageSwitcher.setTemplate(LanguageSwitcherActionItem.getLangSwitchingTemplate());
         languageSwitcher.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaLanguage>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaLanguage> event) {
@@ -350,18 +351,5 @@ public class LangPropertiesEditor extends LayoutContainer {
         }
         return mapProperties;
     }
-
-    /**
-     * LangSwithcing template
-     *
-     * @return
-     */
-    private static native String getLangSwitchingTemplate()  /*-{
-    return  [
-    '<tpl for=".">',
-    '<div class="x-combo-list-item"><img src="{image}"/> {displayName}</div>',
-    '</tpl>'
-    ].join("");
-  }-*/;
 
 }

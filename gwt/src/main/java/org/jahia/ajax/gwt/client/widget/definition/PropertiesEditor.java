@@ -267,7 +267,7 @@ public class PropertiesEditor extends FormPanel {
                     }
                 }
 
-                final PropertyAdapterField adapterField = new PropertyAdapterField(field, (GWTJahiaPropertyDefinition) definition, gwtJahiaNodeProperty);
+                final PropertyAdapterField adapterField = new PropertyAdapterField(field, definition, gwtJahiaNodeProperty);
 
                 adapterField.setId(nodeType.getName().replace(":","-") + "_" + field.getName().replace(":","-") + locale + (isWriteable?"-true":"-false"));
                 adapterField.setWidth("98%");
@@ -631,10 +631,10 @@ public class PropertiesEditor extends FormPanel {
     public class PropertyAdapterField extends AdapterField {
         private Field field;
         private boolean dirty = false;
-        private GWTJahiaPropertyDefinition definition;
+        private GWTJahiaItemDefinition definition;
         private LayoutContainer panel;
 
-        public PropertyAdapterField(final Field field, final GWTJahiaPropertyDefinition definition, final GWTJahiaNodeProperty property) {
+        public PropertyAdapterField(final Field field, final GWTJahiaItemDefinition definition, final GWTJahiaNodeProperty property) {
             super(new LayoutContainer());
 
             panel = (LayoutContainer) getWidget();
@@ -698,7 +698,7 @@ public class PropertiesEditor extends FormPanel {
             return field;
         }
 
-        public GWTJahiaPropertyDefinition getDefinition() {
+        public GWTJahiaItemDefinition getDefinition() {
             return definition;
         }
 

@@ -801,7 +801,12 @@ public class NavigationHelper {
 
         n.setLockable(node.isLockable());
         try {
-            n.setHasAcl(node.hasNode("j:acl"));
+            boolean hasAcl = node.hasNode("j:acl");
+            if(hasAcl && node.getNode("j:acl").hasNodes()) {
+                n.setHasAcl(hasAcl);
+            } else {
+                n.setHasAcl(false);
+            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

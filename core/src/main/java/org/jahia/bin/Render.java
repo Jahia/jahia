@@ -688,6 +688,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             URLResolver urlResolver = urlResolverFactory.createURLResolver(req.getPathInfo(), req.getServerName(), req);
             urlResolver.setVersionDate(date);
             urlResolver.setVersionLabel(versionLabel);
+
+            req.setAttribute("urlResolver", urlResolver);
+
             // check permission
             try {
                 if (!hasAccess(urlResolver.getNode())) {

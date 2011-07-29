@@ -50,6 +50,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.URLResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -124,15 +128,17 @@ public class ErrorServlet extends HttpServlet {
 
         if (null == path) {
 
-            JahiaSite site = null;
+            String siteKey = null;
             SettingsBean settings = SettingsBean.getInstance();
             String jspPath = "/";
 
             if (settings.getSiteErrorEnabled()) {
                 // site information available?
                 try {
-                    site = (JahiaSite) request.getSession().getAttribute(
-                            "org.jahia.services.sites.jahiasite");
+                    URLResolver urlResolver = ((URLResolver) request.getAttribute("urlResolver"));
+                    if (urlResolver != null) {
+                        siteKey = urlResolver.getSiteKey();
+                    }
                 } catch (Exception e) {
                     // ignore
                 }
@@ -140,32 +146,36 @@ public class ErrorServlet extends HttpServlet {
 
             // relative page path specified
             // site information available?
-            if (site != null) {
+            if (siteKey != null) {
                 // check site-specific page
-                String pathToCheck = jspPath + "errors/sites/" + site.getSiteKey() + "/" + page;
+                String pathToCheck = jspPath + "errors/sites/" + siteKey + "/" + page;
                 if (getServletContext().getResource(pathToCheck) != null) {
                     path = pathToCheck;
                 } else {
-                    pathToCheck = jspPath + "errors/sites/" + site.getSiteKey() + "/error.jsp";
+                    pathToCheck = jspPath + "errors/sites/" + siteKey + "/error.jsp";
                     path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
                             : null;
                 }
-
-                if (null == path && site.getTemplatePackageName() != null) {
-                    // try template set error page considering inheritance
-                    JahiaTemplateManagerService templateService = ServicesRegistry.getInstance()
-                            .getJahiaTemplateManagerService();
-                    JahiaTemplatesPackage pkg = templateService.getTemplatePackage(site
-                            .getTemplatePackageName());
-                    if (pkg != null) {
-                        pathToCheck = pkg.getRootFolderPath() + "errors/" + page;
-                        path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
-                                : null;
-                        if (null == path) {
-                            pathToCheck = pkg.getRootFolderPath() + "/errors/error.jsp";
+                if (null == path) {
+                    try {
+                        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteKey);
+                        // try template set error page considering inheritance
+                        JahiaTemplateManagerService templateService = ServicesRegistry.getInstance()
+                                .getJahiaTemplateManagerService();
+                        JahiaTemplatesPackage pkg = templateService.getTemplatePackage(site
+                                .getTemplatePackageName());
+                        if (pkg != null) {
+                            pathToCheck = pkg.getRootFolderPath() + "/errors/" + page;
                             path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
                                     : null;
+                            if (null == path) {
+                                pathToCheck = pkg.getRootFolderPath() + "/errors/error.jsp";
+                                path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
+                                        : null;
+                            }
                         }
+                    } catch (JahiaException e) {
+                        logger.debug("Cannot find site",e);
                     }
                 }
             }

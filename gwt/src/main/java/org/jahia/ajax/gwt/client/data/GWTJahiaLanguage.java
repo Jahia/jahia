@@ -86,4 +86,21 @@ public class GWTJahiaLanguage extends BaseModelData {
     public void setCurrent(Boolean current) {
         set("current", current);
     }
+
+    public Boolean isActive() {
+        return get("active");
+    }
+
+    public void setActive(Boolean active) {
+        set("active", active);
+    }
+
+    public Boolean isMandatory() {
+        return get("mandatory");
+    }
+
+    public void setMandatory(Boolean mandatory) {
+        set("mandatory", mandatory);
+    }
+
 }

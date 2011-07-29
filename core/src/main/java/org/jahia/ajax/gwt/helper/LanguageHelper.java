@@ -76,18 +76,20 @@ public class LanguageHelper {
         try {
             if (site != null && site.getLanguages() != null && site.getLanguages().size()>0)  {
                 final Set<String> languageSettings = site.getLanguages();
+                final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
+                final Set<String> activeLanguages = site.getActiveLanguages();
                 if (languageSettings != null && languageSettings.size() > 0) {
                     final TreeSet<String> orderedLangs = new TreeSet<String>();
                     orderedLangs.addAll(languageSettings);
                     for (String langCode : orderedLangs) {
-//                        if (user.isPermitted(new PermissionIdentity(langCode))) {
-                            GWTJahiaLanguage item = new GWTJahiaLanguage();
-                            item.setLanguage(langCode);
-                            item.setDisplayName(getDisplayName(langCode));
-                            item.setImage(getLangIcon(Jahia.getContextPath(), langCode));
-                            item.setCurrent(langCode.equalsIgnoreCase(currentLocale.toString()));
-                            items.add(item);
-//                        }
+                        GWTJahiaLanguage item = new GWTJahiaLanguage();
+                        item.setLanguage(langCode);
+                        item.setDisplayName(getDisplayName(langCode));
+                        item.setImage(getLangIcon(Jahia.getContextPath(), langCode));
+                        item.setCurrent(langCode.equalsIgnoreCase(currentLocale.toString()));
+                        item.setActive(activeLanguages.contains(langCode));
+                        item.setMandatory(mandatoryLanguages.contains(langCode));
+                        items.add(item);
                     }
                 }
             } else {

@@ -116,10 +116,15 @@ public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
      *
      * @return
      */
-    private static native String getLangSwitchingTemplate()  /*-{
+    public static native String getLangSwitchingTemplate()  /*-{
     return  [
     '<tpl for=".">',
-    '<div class="x-combo-list-item"><img src="{image}"/> {displayName}</div>',
+    '<tpl if="active">',
+        '<div class="x-combo-list-item"><img src="{image}"/> {displayName}</div>',
+    '</tpl>',
+    '<tpl if="!active">',
+        '<div class="x-combo-list-item" style="color:#BBBBBB"><img src="{image}"/> {displayName}</div>',
+    '</tpl>',
     '</tpl>'
     ].join("");
   }-*/;

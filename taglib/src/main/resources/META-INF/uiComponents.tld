@@ -236,6 +236,13 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>If set to true only site languages marked 'active' will be displayed. Default value is false.</description>
+            <name>activeLanguagesOnly</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
     </tag>
 
     <tag>

@@ -43,7 +43,6 @@ package org.jahia.taglibs.uicomponents.i18n;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.comparator.LanguageCodesComparator;
@@ -59,29 +58,27 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class InitLangBarAttributes extends AbstractJahiaTag {
 
-    private static final transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(
-            InitLangBarAttributes.class);
+    public static final String CURRENT_LANGUAGES_CODES = "languageCodes";
 
 
-    // onLanguageSwitch attribute authorized values
-    public static final String STAY_ON_CURRENT_PAGE = "stayOnCurrentPage";
     public static final String GO_TO_HOME_PAGE = "goToHomePage";
-
     // order attribute authorized values 
     public static final String JAHIA_ADMIN_RANKING = "<jahia_admin_ranking>";
-    public static final String CURRENT_LANGUAGES_CODES = "languageCodes";
+
+    private static final LanguageCodesComparator languageCodesComparator = new LanguageCodesComparator();
+    private static final transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(
+            InitLangBarAttributes.class);
 
 
     // Default Jahia CSS class name when mode "goToHomePage" is activated
     public static final String REDIRECT_DEFAULT_STYLE = "redirectJahiaStyle";
 
-    private static final LanguageCodesComparator languageCodesComparator = new LanguageCodesComparator();
+    // onLanguageSwitch attribute authorized values
+    public static final String STAY_ON_CURRENT_PAGE = "stayOnCurrentPage";
+    
+    private boolean activeLanguagesOnly;
+    
     private String order;
-
-    public void setOrder(String order) {
-        this.order = order;
-    }
-
 
     public int doEndTag() throws JspException {
         final ServletRequest request = pageContext.getRequest();
@@ -89,7 +86,7 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
 
         final RenderContext renderContext = (RenderContext) request.getAttribute("renderContext");
         final JCRSiteNode currentSite = renderContext.getSite();
-        final Set<String> languageSettings = currentSite.getLanguages();
+        final Set<String> languageSettings = activeLanguagesOnly ? currentSite.getActiveLanguages() : currentSite.getLanguages();
 
         if (languageSettings.size() < 2) {
             return EVAL_PAGE;
@@ -124,9 +121,10 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
         }
 
         request.setAttribute(CURRENT_LANGUAGES_CODES, currentCodes);
-        order = null;
+        resetState();
         return EVAL_PAGE;
     }
+
 
     /**
      * Return true if the current node is published in the specified languageCode
@@ -156,6 +154,22 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
         // not in live or preview mode
         return true;
     }
+
+    @Override
+    protected void resetState() {
+        order = null;
+        activeLanguagesOnly = false;
+        super.resetState();
+    }
+
+    public void setActiveLanguagesOnly(boolean activeLanguagesOnly) {
+        this.activeLanguagesOnly = activeLanguagesOnly;
+    }
+    
+    public void setOrder(String order) {
+        this.order = order;
+    }
+
 
     protected List<String> toListOfTokens(final String value, final String separator) {
         final StringTokenizer tokenizer = new StringTokenizer(value, separator);

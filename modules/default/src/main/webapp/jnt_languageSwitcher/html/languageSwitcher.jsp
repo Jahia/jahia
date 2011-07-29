@@ -14,22 +14,21 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="languageSwitchingLinks.css" />
-<c:set var="languageCodes" value="${renderContext.site.languagesAsLocales}" scope="request"/>
 <c:set var="linkKind" value="${currentNode.properties.typeOfDisplay.string}"/>
 <c:choose>
     <c:when test="${linkKind eq 'flag'}">
-        <ui:langBar display="horizontal" linkDisplay="flag"/>
+        <ui:langBar display="horizontal" linkDisplay="flag" activeLanguagesOnly="${renderContext.liveMode}"/>
     </c:when>
     <c:when test="${linkKind eq 'flagPlain'}">
-        <ui:langBar display="horizontal" linkDisplay="flag" flagType="plain"/>
+        <ui:langBar display="horizontal" linkDisplay="flag" flagType="plain" activeLanguagesOnly="${renderContext.liveMode}"/>
     </c:when>
     <c:when test="${linkKind eq 'flagShadow'}">
-        <ui:langBar display="horizontal" linkDisplay="flag" flagType="shadow"/>
+        <ui:langBar display="horizontal" linkDisplay="flag" flagType="shadow" activeLanguagesOnly="${renderContext.liveMode}"/>
     </c:when>
     <c:otherwise>
         <div id="languages">
             <ul>
-                <c:forEach items="${languageCodes}" var="language">
+                <c:forEach items="${renderContext.liveMode ? renderContext.site.activeLanguagesAsLocales : renderContext.site.languagesAsLocales}" var="language">
                     <ui:displayLanguageSwitchLink languageCode="${language}" display="false" urlVar="switchUrl"
                                                   var="renderedLanguage"
                                                   linkKind="${currentNode.properties.typeOfDisplay.string}"/>

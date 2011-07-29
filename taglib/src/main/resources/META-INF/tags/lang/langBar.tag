@@ -7,13 +7,13 @@
 <%@ attribute name="onLanguageSwitch" required="false" rtexprvalue="true" %>
 <%@ attribute name="redirectToHomePageStyle" required="false" rtexprvalue="true" %>
 <%@ attribute name="order" required="false" rtexprvalue="true" %>
-<%@ attribute name="activeLanguagesOnly" required="false" rtexprvalue="true" %>
+<%@ attribute name="activeLanguagesOnly" required="false" rtexprvalue="true" type="java.lang.Boolean" %>
 <%@ attribute name="cssClassName" required="false" rtexprvalue="true" %>
 <%@ attribute name="redirectCssClassName" required="false" rtexprvalue="true" %>
 <%@ attribute name="rootPage" type="org.jahia.services.content.JCRNodeWrapper" required="false" rtexprvalue="true" %>
 
 
-<uiComponents:initLangBarAttributes order="${order}"/>
+<uiComponents:initLangBarAttributes order="${order}" activeLanguagesOnly="${not empty activeLanguagesOnly ? activeLanguagesOnly : false}"/>
 
 <c:if test='${display != null}'>
     <c:if test='${fn:toLowerCase(display) == "comboBox"}'>

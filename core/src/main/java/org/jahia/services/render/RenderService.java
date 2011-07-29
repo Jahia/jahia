@@ -316,7 +316,10 @@ public class RenderService {
                     JCRNodeWrapper parent = node.getSession().getNodeByUUID(template.getNode()).getParent();
                     template = addContextualTemplates(node, templateName, template, parent);
                 }
+            } else {
+                template = new Template(null,null,null);
             }
+
         } catch (AccessDeniedException e) {
             throw e;
         } catch (RepositoryException e) {

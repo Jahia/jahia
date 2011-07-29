@@ -89,7 +89,7 @@ public class TemplateNodeFilter extends AbstractFilter {
 
             }
 
-            if (template != null) {
+            if (template != null && template.node != null) {
                 try {
                     JCRNodeWrapper templateNode = resource.getNode().getSession().getNodeByIdentifier(template.node);
                     renderContext.getRequest().setAttribute("previousTemplate", template);

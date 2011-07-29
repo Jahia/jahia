@@ -2,6 +2,7 @@
 <%@include file="/admin/include/header.inc" %>
 <%
     Set<String> languageSet = (Set<String>) request.getAttribute("languageSet");
+    Set<String> inactiveLanguageSet = (Set<String>) request.getAttribute("inactiveLanguageSet");
     Set<String> mandatoryLanguageSet = (Set<String>) request.getAttribute("mandatoryLanguageSet");
     Boolean mixLanguages = (Boolean) request.getAttribute("mixLanguages");
     String defaultLanguage = (String) request.getAttribute("defaultLanguage");
@@ -46,12 +47,6 @@
                                             key="org.jahia.admin.languages.ManageSiteLanguages.configuredLanguages.label"/>&nbsp;
                                 </div>
                             </div>
-                            <div class="content-body">
-                                <div id="operationMenu">
-                                    * = <fmt:message
-                                        key="org.jahia.admin.languages.ManageSiteLanguages.languagesUsedByHomePage.label"/>&nbsp;
-                                </div>
-                            </div>
                             <form name="mainForm"
                                   action='<%=JahiaAdministration.composeActionURL(request,response,"siteLanguages","&sub=commit")%>'
                                   method="post">
@@ -68,10 +63,13 @@
                                                     key="org.jahia.admin.languages.ManageSiteLanguages.mandatory.label"/>
                                         </th>
                                         <th style="text-align:center">
+                                            <fmt:message key="label.active"/>
+                                        </th>
+                                        <th style="text-align:center">
                                             <fmt:message
                                                     key="org.jahia.admin.languages.ManageSiteLanguages.default.label"/>
                                         </th>
-                                        <th style="text-align:center"  ><fmt:message key="label.delete"/></th>
+                                        <th style="text-align:center"><fmt:message key="label.remove"/></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -97,21 +95,25 @@
                                         <%
                                             } %>
                                         <td align="left">
-                                            <%=curLocale.getDisplayName(currentLocale) %>(<%=curLocale.toString() %>
-                                            )
+                                            <%=curLocale.getDisplayName(currentLocale) %> (<%=curLocale.toString() %>)
                                         </td>
                                         <td align="center">
-                                            <% if (mandatoryLanguageSet.contains(lang)) { %>
-                                            <input type="checkbox" name="mandatoryLanguages" value="<%=lang%>"
-                                                   checked><% } else { %>
-                                            <input type="checkbox" name="mandatoryLanguages" value="<%=lang%>"><% } %>
+                                            <input type="checkbox" name="mandatoryLanguages" value="<%=lang%>"<% if (mandatoryLanguageSet.contains(lang)) { %>checked="checked"<% }%>/>
+                                        </td>
+                                        <td align="center">
+                                            <% if (lang.equals(defaultLanguage)) {%>
+                                                <input type="checkbox" name="activeLanguages_display" value="<%=lang%>" checked="checked" disabled="disabled"/>
+                                                <input type="hidden" name="activeLanguages" value="<%=lang%>"/>
+                                            <% } else { %>
+                                            <input type="checkbox" name="activeLanguages" value="<%=lang%>"<% if (!inactiveLanguageSet.contains(lang)) { %>checked="checked"<% }%>/>
+                                            <% } %>
                                         </td>
                                         <td align="center">
                                             <input type="radio" name="defaultLanguage" value="<%=lang%>"
-                                                   <% if (lang.equals(defaultLanguage)) {%>checked="true"<% } %>>
+                                                   <% if (lang.equals(defaultLanguage)) {%>checked="checked"<% } %>/>
                                         </td>
                                         <td align="center">
-                                            <input type="checkbox" name="deletedLanguages" value="<%=lang%>">
+                                            <input type="checkbox" name="deletedLanguages" value="<%=lang%>"/>
                                         </td>
                                     </tr>
                                     <%
@@ -124,13 +126,8 @@
                                         <fmt:message key="label.options"/>
                                     </div>
                                 </div>
-                                <%
-                                    if (mixLanguages) { %>
-                                <input type="checkbox" name="mixLanguages" id="mixLanguages" checked="checked" value="true"/><%
-                            } else { %>
-                                <input type="checkbox" name="mixLanguages" id="mixLanguages" value="true"/><%
-                                } %>
-                                <label for="mixLanguages"><fmt:message
+                                <input type="checkbox" name="mixLanguages" id="mixLanguages" value="true"${mixLanguages ? ' checked="checked"' : ''} />
+                                <label for="mixLanguages">&nbsp;<fmt:message
                                         key="org.jahia.admin.languages.ManageSiteLanguages.mixLanguages.label"/></label>
                                 <br>
                                 <% if (request.getAttribute("jahiaErrorMessage") != null) { %>
@@ -150,7 +147,7 @@
                                             <td>
                                                 <b><fmt:message
                                                         key="org.jahia.admin.languages.ManageSiteLanguages.availableLanguages.label"/></b><br/>
-                                                <select name="language_list" multiple="" size="10">
+                                                <select name="language_list" multiple="multiple" size="10">
                                                     <%
                                                         Iterator localeIter = LanguageCodeConverters.getSortedLocaleList(
                                                                 currentLocale).iterator();

@@ -50,7 +50,6 @@ import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.*;
-import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -227,6 +226,15 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
             languagesList.add(language.getString());
         }
         site.setLanguages(languagesList);
+
+        if (node.hasProperty("j:inactiveLanguages")) {
+            languagesList = new LinkedHashSet<String>();
+            for (Value language : node.getProperty("j:inactiveLanguages").getValues()) {
+                languagesList.add(language.getString());
+            }
+            site.setInactiveLanguages(languagesList);
+        }
+        
         languages = node.getProperty("j:mandatoryLanguages").getValues();
         languagesList = new LinkedHashSet<String>();
         for (Value language : languages) {
@@ -431,6 +439,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                 site.setInstalledModules(new ArrayList<String>(Collections.singleton(templatePackage)));
 
                 final Set<String> languages = site.getLanguages();
+                final Set<String> inactiveLanguages = site.getInactiveLanguages();
                 final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
 
                 int id = 1;
@@ -478,6 +487,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                 siteNode.setProperty("j:defaultLanguage", finalSite.getDefaultLanguage());
                                 siteNode.setProperty("j:mixLanguage", finalSite.isMixLanguagesActive());
                                 siteNode.setProperty("j:languages", languages.toArray(new String[languages.size()]));
+                                siteNode.setProperty("j:inactiveLanguages", inactiveLanguages.toArray(new String[inactiveLanguages.size()]));
                                 siteNode.setProperty("j:mandatoryLanguages", mandatoryLanguages.toArray(new String[mandatoryLanguages
                                         .size()]));
                                 siteNode.setProperty("j:templatesSet", templatePackage);
@@ -703,6 +713,8 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         siteNode.setProperty("j:mixLanguage", site.isMixLanguagesActive());
         siteNode.setProperty("j:languages", site.getLanguages().toArray(
                 new String[site.getLanguages().size()]));
+        siteNode.setProperty("j:inactiveLanguages", site.getInactiveLanguages().toArray(
+                new String[site.getInactiveLanguages().size()]));
         siteNode.setProperty("j:mandatoryLanguages", site.getMandatoryLanguages().toArray(
                 new String[site.getMandatoryLanguages().size()]));
 

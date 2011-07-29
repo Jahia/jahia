@@ -55,7 +55,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.RepositoryException;
@@ -67,15 +66,76 @@ import static org.jahia.services.sites.SitesSettings.*;
 
 
 /**
- * Class JahiaSite.<br>
- * A site item in Jahia
+ * Represent a virtual site (web project) in Jahia's context.
  *
  * @author Khue ng
- * @version 1.0
  */
 public class JahiaSite implements Serializable {
 
+    public static class TitleComparator implements Comparator<JahiaSite> {
+
+        private Collator collator = Collator.getInstance();
+
+        public TitleComparator() {
+        }
+
+        public TitleComparator(Locale locale) {
+            if (locale != null) {
+                collator = Collator.getInstance(locale);
+            }
+        }
+
+        public int compare(JahiaSite site1,
+                           JahiaSite site2) {
+            if (site1 == null || site1.getTitle() == null) {
+                return 1;
+            }
+            if (site2 == null || site2.getTitle() == null) {
+                return -1;
+            }
+            return collator.compare(site1.getTitle(), site2.getTitle());
+        }
+
+        public boolean equals(Object obj) {
+            if (obj instanceof TitleComparator) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
     private static final long serialVersionUID = 5114861205251079794L;
+
+    public static TitleComparator getTitleComparator() {
+        return new TitleComparator();
+    }
+
+    public static TitleComparator getTitleComparator(Locale locale) {
+        return new TitleComparator(locale);
+    }
+
+    private String defaultLanguage;
+
+    private Set<String> inactiveLanguages = new HashSet<String>();
+    
+    private List<String> installedModules;
+
+    private String JCRLocalPath;
+
+    private Set<String> languages;
+
+    private Set<String> mandatoryLanguages;
+
+    private String mDescr;
+    
+    private Boolean mixLanguagesActive;
+    /**
+     * Server Name www.jahia.org *
+     */
+    private String mServerName = "";
+    
+    private Properties mSettings = new Properties();
 
     /**
      * the site id *
@@ -83,36 +143,17 @@ public class JahiaSite implements Serializable {
     private int mSiteID = -1;
 
     /**
-     * the site display title *
-     */
-    private String mTitle = "";
-
-    /**
      * a unique String identifier key chosen by the creator *
      */
     private String mSiteKey = "";
 
     /**
-     * Server Name www.jahia.org *
+     * the site display title *
      */
-    private String mServerName = "";
+    private String mTitle = "";
 
     private String templatePackageName;
-    private List<String> installedModules;
 
-    /**
-     * desc *
-     */
-    private String mDescr;
-
-    private Properties mSettings = new Properties();
-
-    private Boolean mixLanguagesActive;
-    private Set<String> languages;
-    private Set<String> mandatoryLanguages;
-    private String defaultLanguage;
-
-    private String JCRLocalPath;
 
     private String uuid;
 
@@ -121,7 +162,7 @@ public class JahiaSite implements Serializable {
      * <jsp:useBean...> tag in JSP
      */
     public JahiaSite() {
-
+        super();
     }
 
     /**
@@ -148,85 +189,25 @@ public class JahiaSite implements Serializable {
         this.JCRLocalPath = JCRLocalPath;
     }
 
-
-    public int getID() {
-        return mSiteID;
+    public boolean equals(Object obj) {
+        // fix for PEU-77 (contributed by PELTIER Olivier)
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof JahiaSite) {
+            return mSiteID == ((JahiaSite) obj).getID();
+        } else {
+            return false;
+        }
     }
 
-    public void setID(int id) {
-        mSiteID = id;
-    }
-
-    public String getTitle() {
-        return mTitle;
-    }
-
-    public void setTitle(String value) {
-        mTitle = value;
-    }
-
-    /**
-     * Return the Full Qualified Domain Name ( www.jahia.org )
-     */
-    public String getServerName() {
-        return mServerName;
-    }
-
-
-    /**
-     * Set the Full Qualified Domain Name ( www.jahia.org )
-     */
-    public void setServerName(String name) {
-        mServerName = name;
-    }
-
-    /**
-     * Return the unique String identifier key ( ex: jahia )
-     */
-    public String getSiteKey() {
-        return mSiteKey;
-    }
-
-
-    public int getHomePageID() {
-        return -1;
-    }
-
-    public boolean isWCAGComplianceCheckEnabled() {
-        return Boolean.valueOf(getProperty(WCAG_COMPLIANCE_CHECKING_ENABLED, "false"));
-    }
-
-    public boolean isHtmlMarkupFilteringEnabled() {
-        return Boolean.valueOf(getProperty(HTML_MARKUP_FILTERING_ENABLED, "false"));
-    }
-
-    public String getHtmlMarkupFilteringTags() {
-        return mSettings.getProperty(HTML_MARKUP_FILTERING_TAGS);
-    }
-
-    public String getTemplateFolder() {
-        return ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                .getTemplatePackage(getTemplatePackageName()).getRootFolder();
+    public String getDefaultLanguage() {
+        return defaultLanguage;
     }
 
 
     public String getDescr() {
         return mDescr;
-    }
-
-    public void setDescr(String descr) {
-        mDescr = descr;
-    }
-
-
-
-    /**
-     * returns the default homepage definition for users
-     * -1 : undefined
-     */
-    public int getUserDefaultHomepageDef() {
-        return -1;
-
     }
 
     /**
@@ -237,6 +218,37 @@ public class JahiaSite implements Serializable {
 
     }
 
+    public int getHomePageID() {
+        return -1;
+    }
+
+    public String getHtmlMarkupFilteringTags() {
+        return mSettings.getProperty(HTML_MARKUP_FILTERING_TAGS);
+    }
+
+    public int getID() {
+        return mSiteID;
+    }
+
+
+    /**
+     * Returns a set of languages, which are not considered in live mode browsing, i.e. are currently inactive in navigation.
+     * 
+     * @return a set of languages, which are not considered in live mode browsing, i.e. are currently inactive in navigation
+     */
+    public Set<String> getInactiveLanguages() {
+        return inactiveLanguages;
+    }
+
+    public List<String> getInstalledModules() {
+        return installedModules;
+    }
+
+
+
+    public String getJCRLocalPath() {
+        return JCRLocalPath;
+    }
 
     /**
      * Returns a List of site language settings. The order of this List
@@ -267,92 +279,41 @@ public class JahiaSite implements Serializable {
         return localeList;
     }
 
-    /**
-     * Sets the language settings for this site. This directly interfaces with
-     * the persistant storage to store the modifications if there were any.
-     *
-     * @throws JahiaException when an error occured while storing the modified
-     *                        site language settings values.
-     */
-    public void setLanguages(Set<String> languages) {
-        this.languages = languages;
-    }
-
-    /**
-     * Sets the value of the site property that controls
-     *
-     * @param mixLanguagesActive
-     */
-    public void setMixLanguagesActive(boolean mixLanguagesActive) {
-        this.mixLanguagesActive = mixLanguagesActive;
-    }
-
-    public boolean isMixLanguagesActive() {
-        return mixLanguagesActive;
-    }
-
-    public void setMandatoryLanguages(Set<String> mandatoryLanguages) {
-        this.mandatoryLanguages = mandatoryLanguages;
-    }
 
     public Set<String> getMandatoryLanguages() {
         return mandatoryLanguages;
     }
 
-    public void setDefaultLanguage(String defaultLanguage) {
-        this.defaultLanguage = defaultLanguage;
+    public JCRNodeWrapper getNode() throws RepositoryException {
+        return JCRSessionFactory.getInstance().getCurrentUserSession().getNode(getJCRLocalPath());
     }
 
-    public String getDefaultLanguage() {
-        return defaultLanguage;
+    private String getProperty(String key, String defaultValue) {
+        Object value = mSettings.get(key);
+        return value != null ? value.toString() : defaultValue;
     }
 
-    public static class TitleComparator implements Comparator<JahiaSite> {
-
-        private Collator collator = Collator.getInstance();
-
-        public TitleComparator(Locale locale) {
-            if (locale != null) {
-                collator = Collator.getInstance(locale);
-            }
-        }
-
-        public TitleComparator() {
-        }
-
-        public int compare(JahiaSite site1,
-                           JahiaSite site2) {
-            if (site1 == null || site1.getTitle() == null) {
-                return 1;
-            }
-            if (site2 == null || site2.getTitle() == null) {
-                return -1;
-            }
-            return collator.compare(site1.getTitle(), site2.getTitle());
-        }
-
-        public boolean equals(Object obj) {
-            if (obj instanceof TitleComparator) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+    /**
+     * Return the Full Qualified Domain Name ( www.jahia.org )
+     */
+    public String getServerName() {
+        return mServerName;
     }
 
-    public static TitleComparator getTitleComparator() {
-        return new TitleComparator();
+    public Properties getSettings() {
+        return mSettings;
     }
 
-    public static TitleComparator getTitleComparator(Locale locale) {
-        return new TitleComparator(locale);
+    /**
+     * Return the unique String identifier key ( ex: jahia )
+     */
+    public String getSiteKey() {
+        return mSiteKey;
     }
 
-    public String toString() {
-        final StringBuffer buff = new StringBuffer();
-        buff.append("JahiaSite: ID = ").append(mSiteID).
-                append(", Settings: ").append(mSettings);
-        return buff.toString();
+    public String getTemplateFolder() {
+        return ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                .getTemplatePackage(getTemplatePackageName()).getRootFolder();
     }
 
     /**
@@ -364,33 +325,28 @@ public class JahiaSite implements Serializable {
         return templatePackageName;
     }
 
+    public String getTitle() {
+        return mTitle;
+    }
+
     /**
-     * Sets the template package name for this virtual site.
-     *
-     * @param packageName the new template package name for this virtual site
+     * returns the default homepage definition for users
+     * -1 : undefined
      */
-    public void setTemplatePackageName(String packageName) {
-        this.templatePackageName = packageName;
+    public int getUserDefaultHomepageDef() {
+        return -1;
+
     }
 
-    public List<String> getInstalledModules() {
-        return installedModules;
-    }
-
-    public void setInstalledModules(List<String> installedModules) {
-        this.installedModules = installedModules;
-    }
-
-    public boolean equals(Object obj) {
-        // fix for PEU-77 (contributed by PELTIER Olivier)
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof JahiaSite) {
-            return mSiteID == ((JahiaSite) obj).getID();
-        } else {
-            return false;
-        }
+    /**
+     * Returns the corresponding JCR node identifier or <code>null</code> if the
+     * site is coming not from the JCR provider.
+     * 
+     * @return the the corresponding JCR node identifier or <code>null</code> if
+     *         the site is coming not from the JCR provider
+     */
+    public String getUuid() {
+        return uuid;
     }
 
     public int hashCode() {
@@ -409,33 +365,95 @@ public class JahiaSite implements Serializable {
         return defaultSite != null && defaultSite.equals(this);
     }
 
-    private String getProperty(String key, String defaultValue) {
-        Object value = mSettings.get(key);
-        return value != null ? value.toString() : defaultValue;
+    public boolean isHtmlMarkupFilteringEnabled() {
+        return Boolean.valueOf(getProperty(HTML_MARKUP_FILTERING_ENABLED, "false"));
     }
 
-    public String getJCRLocalPath() {
-        return JCRLocalPath;
+    public boolean isMixLanguagesActive() {
+        return mixLanguagesActive;
+    }
+
+    public boolean isWCAGComplianceCheckEnabled() {
+        return Boolean.valueOf(getProperty(WCAG_COMPLIANCE_CHECKING_ENABLED, "false"));
+    }
+
+    public void setDefaultLanguage(String defaultLanguage) {
+        this.defaultLanguage = defaultLanguage;
+        if (inactiveLanguages.contains(defaultLanguage)) {
+            inactiveLanguages.remove(defaultLanguage);
+        }
+    }
+
+    public void setDescr(String descr) {
+        mDescr = descr;
+    }
+
+    public void setID(int id) {
+        mSiteID = id;
+    }
+
+    /**
+     * Sets languages, which are not considered in live mode browsing, i.e. are currently inactive in navigation.
+     * 
+     * @param inactiveLanguages
+     *            the set of inactive languages
+     */
+    public void setInactiveLanguages(Set<String> inactiveLanguages) {
+        this.inactiveLanguages = inactiveLanguages == null ? new HashSet<String>()
+                : inactiveLanguages;
+    }
+
+    public void setInstalledModules(List<String> installedModules) {
+        this.installedModules = installedModules;
     }
 
     public void setJCRLocalPath(String JCRLocalPath) {
         this.JCRLocalPath = JCRLocalPath;
     }
 
-    public JCRNodeWrapper getNode() throws RepositoryException {
-        return JCRSessionFactory.getInstance().getCurrentUserSession().getNode(getJCRLocalPath());
-    }
-
 
     /**
-     * Returns the corresponding JCR node identifier or <code>null</code> if the
-     * site is coming not from the JCR provider.
-     * 
-     * @return the the corresponding JCR node identifier or <code>null</code> if
-     *         the site is coming not from the JCR provider
+     * Sets the language settings for this site. This directly interfaces with
+     * the persistant storage to store the modifications if there were any.
+     *
+     * @throws JahiaException when an error occured while storing the modified
+     *                        site language settings values.
      */
-    public String getUuid() {
-        return uuid;
+    public void setLanguages(Set<String> languages) {
+        this.languages = languages;
+    }
+
+    public void setMandatoryLanguages(Set<String> mandatoryLanguages) {
+        this.mandatoryLanguages = mandatoryLanguages;
+    }
+
+    /**
+     * Sets the value of the site property that controls
+     *
+     * @param mixLanguagesActive
+     */
+    public void setMixLanguagesActive(boolean mixLanguagesActive) {
+        this.mixLanguagesActive = mixLanguagesActive;
+    }
+
+    /**
+     * Set the Full Qualified Domain Name ( www.jahia.org )
+     */
+    public void setServerName(String name) {
+        mServerName = name;
+    }
+
+    /**
+     * Sets the template package name for this virtual site.
+     *
+     * @param packageName the new template package name for this virtual site
+     */
+    public void setTemplatePackageName(String packageName) {
+        this.templatePackageName = packageName;
+    }
+
+    public void setTitle(String value) {
+        mTitle = value;
     }
 
     /**
@@ -449,7 +467,10 @@ public class JahiaSite implements Serializable {
         this.uuid = uuid;
     }
 
-    public Properties getSettings() {
-        return mSettings;
+    public String toString() {
+        final StringBuffer buff = new StringBuffer();
+        buff.append("JahiaSite: ID = ").append(mSiteID).
+                append(", Settings: ").append(mSettings);
+        return buff.toString();
     }
 }

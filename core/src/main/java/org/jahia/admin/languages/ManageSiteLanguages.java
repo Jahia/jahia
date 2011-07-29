@@ -41,7 +41,6 @@
 package org.jahia.admin.languages;
 
 import org.jahia.admin.AbstractAdministrationModule;
-import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
@@ -147,6 +146,7 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
             throws IOException, ServletException {
         request.setAttribute("mixLanguages", site.isMixLanguagesActive());
         request.setAttribute("languageSet", site.getLanguages());
+        request.setAttribute("inactiveLanguageSet", site.getInactiveLanguages());
         request.setAttribute("mandatoryLanguageSet", site.getMandatoryLanguages());
         request.setAttribute("defaultLanguage", site.getDefaultLanguage());
         JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "manage_languages.jsp");
@@ -173,18 +173,20 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
         String mixLanguages = request.getParameter("mixLanguages");
         boolean flushCache = mixLanguages == null && site.isMixLanguagesActive() ||
                 mixLanguages != null && !site.isMixLanguagesActive();
-        if (mixLanguages != null) {
-            logger.debug("Setting language mix for site to active");
-            site.setMixLanguagesActive(true);
-        } else {
-            logger.debug("Setting language mix for site to disabled");
-            site.setMixLanguagesActive(false);
-        }
+        site.setMixLanguagesActive(mixLanguages != null);
+        logger.debug("Setting language mix for site to "
+                + (mixLanguages != null ? "active" : "disabled"));
 
         final String[] new_languages = request.getParameterValues("language_list");
         if (new_languages != null && new_languages.length > 0) {
             site.getLanguages().addAll(Arrays.asList(new_languages));
         }
+        
+        final String[] activeLanguages = request.getParameterValues("activeLanguages");
+        site.getInactiveLanguages().clear();
+        site.getInactiveLanguages().addAll(site.getLanguages());
+        site.getInactiveLanguages().removeAll(Arrays.asList(activeLanguages));
+        
         final String[] mandatoryLanguages = request.getParameterValues("mandatoryLanguages");
         final Set<String> mandatoryLanguagesSet = site.getMandatoryLanguages();
         mandatoryLanguagesSet.clear();

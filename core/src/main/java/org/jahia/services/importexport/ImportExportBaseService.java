@@ -47,13 +47,12 @@ import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
-import org.jahia.bin.JahiaAdministration;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSitesBaseService;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -99,7 +98,7 @@ import java.util.regex.Pattern;
  */
 public class ImportExportBaseService extends JahiaService implements ImportExportService {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ImportExportBaseService.class);
+    private static Logger logger = LoggerFactory.getLogger(ImportExportBaseService.class);
 
     private static ImportExportBaseService instance;
 
@@ -491,7 +490,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         Set<String> v = s.getLanguages();
         for (String sls : v) {
-            p.setProperty("language." + sls + ".activated", "true");
+            p.setProperty("language." + sls + ".activated", s.getInactiveLanguages().contains(sls) ? "false" : "true");
             p.setProperty("language." + sls + ".mandatory", "" + s.getMandatoryLanguages().contains(sls));
         }
 
@@ -839,6 +838,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Set<Object> keys = p.keySet();
         boolean isMultiLang = true;
         final Set<String> languages = new HashSet<String>();
+        final Set<String> inactiveLanguages = site.getInactiveLanguages();
+        inactiveLanguages.clear();
         final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
         mandatoryLanguages.clear();
         String defaultLanguage = null;
@@ -855,6 +856,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
                 if (!languages.contains(lang)) {
                     languages.add(lang);
+                    if (!Boolean.valueOf(p.getProperty("language." + lang + ".activated", "true"))) {
+                        inactiveLanguages.add(lang);
+                    }
                     if (Boolean.valueOf(p.getProperty("language." + lang + ".mandatory", "false"))) {
                         mandatoryLanguages.add(lang);
                     }
@@ -897,6 +901,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 site.setMandatoryLanguages(singleLang);
             } else {
                 site.setLanguages(siteLangs);
+                site.setInactiveLanguages(inactiveLanguages);
                 site.setMandatoryLanguages(mandatoryLanguages);
             }
             if (defaultLanguage == null) {

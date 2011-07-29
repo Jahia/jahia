@@ -242,7 +242,12 @@
                      j:privilegedAccess="true"/>
 
         <editor jcr:primaryType="jnt:role" j:roleGroup="edit-role"
-                j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode/editModeAccess /permissions/editMode/editSelector /permissions/editMode/engineTabs/viewCategoriesTab /permissions/editMode/engineTabs/viewContentTab /permissions/editMode/engineTabs/viewLayoutTab /permissions/editMode/engineTabs/viewMetadataTab /permissions/editMode/engineTabs/viewOptionsTab /permissions/editMode/engineTabs/viewCategoriesTab /permissions/editMode/engineTabs/viewLiveRolesTab /permissions/editMode/engineTabs/viewTagsTab /permissions/editMode/engineTabs/viewSeoTab /permissions/contributeMode /permissions/templates /permissions/managers/fileManager /permissions/managers/portletManager /permissions/workflow-tasks/start-one-step-review /permissions/workflow-tasks/start-one-step-unpublish /permissions/wysiwyg-editor-toolbar/view-full-wysiwyg-editor"
+                j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode/editModeAccess /permissions/editMode/editSelector /permissions/editMode/engineTabs/viewCategoriesTab
+                /permissions/editMode/engineTabs/viewContentTab /permissions/editMode/engineTabs/viewLayoutTab /permissions/editMode/engineTabs/viewMetadataTab
+                /permissions/editMode/engineTabs/viewOptionsTab /permissions/editMode/engineTabs/viewCategoriesTab /permissions/editMode/engineTabs/viewRolesTab/viewLiveRolesTab
+                /permissions/editMode/engineTabs/viewTagsTab /permissions/editMode/engineTabs/viewSeoTab /permissions/contributeMode /permissions/templates
+                /permissions/managers/fileManager /permissions/managers/portletManager /permissions/workflow-tasks/start-one-step-review
+                /permissions/workflow-tasks/start-one-step-unpublish /permissions/wysiwyg-editor-toolbar/view-full-wysiwyg-editor"
                 j:privilegedAccess="true"
                 />
 
@@ -252,7 +257,10 @@
                 />
 
         <editor-in-chief jcr:primaryType="jnt:role" j:roleGroup="edit-role"
-                j:permissions="/permissions/workflow-tasks /permissions/repository-permissions/jcr:all_default /permissions/repository-permissions/publish /permissions/managers/categoryManager /permissions/managers/editorialContentManager /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/managers/tagManager /permissions/jobs /permissions/editMode /permissions/wysiwyg-editor-toolbar/view-light-wysiwyg-editor /permissions/templates"
+                j:permissions="/permissions/workflow-tasks /permissions/repository-permissions/jcr:all_default /permissions/repository-permissions/publish
+                /permissions/managers/categoryManager /permissions/managers/editorialContentManager /permissions/managers/fileManager
+                /permissions/managers/portletManager /permissions/managers/siteManager /permissions/managers/tagManager /permissions/jobs
+                /permissions/editMode /permissions/wysiwyg-editor-toolbar/view-light-wysiwyg-editor /permissions/templates"
                 j:privilegedAccess="true"
                 />
 

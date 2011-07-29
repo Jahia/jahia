@@ -222,6 +222,12 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
         try {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    if (isMember(principal)) {
+                        return false;
+                    }
+                    if (principal.equals(JCRGroup.this)) {
+                        return false;
+                    }
                     JCRPrincipal jcrUser = null;
                     String name = principal.getName();
                     if (principal instanceof JCRUser) {

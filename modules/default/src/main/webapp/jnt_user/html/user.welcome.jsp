@@ -9,9 +9,9 @@
 
 <h3><fmt:message key="welcome"/>&nbsp;<c:choose>
         <c:when test="${empty firstname.string && empty lastname.string}">
-           ${currentNode.name}
+           ${fn:escapeXml(currentNode.name)}
         </c:when>
         <c:otherwise>
-           ${firstname.string}&nbsp;${lastname.string}.
+           ${fn:escapeXml(firstname.string)}&nbsp;${fn:escapeXml(lastname.string)}
         </c:otherwise>
 </c:choose></h3>

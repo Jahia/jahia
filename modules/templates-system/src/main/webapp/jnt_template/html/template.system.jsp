@@ -23,9 +23,9 @@
     <jcr:nodeProperty node="${renderContext.mainResource.node}" name="j:keywords" inherited="true" var="kws"/>
     <c:set var="keywords" value=""/>
     <c:forEach items="${kws}" var="keyword"><c:set var="keywords" value="${empty keywords?'':keywords + ' '}${keyword.string}"/></c:forEach>
-    <c:if test="${!empty description}"><meta name="description" content="${description.string}" /></c:if>
-    <c:if test="${!empty author}"><meta name="author" content="${author.string}" /></c:if>
-    <c:if test="${!empty keywords}"><meta name="keywords" content="${keywords}" /></c:if>
+    <c:if test="${!empty description}"><meta name="description" content="${fn:escapeXml(description.string)}" /></c:if>
+    <c:if test="${!empty author}"><meta name="author" content="${fn:escapeXml(author.string)}" /></c:if>
+    <c:if test="${!empty keywords}"><meta name="keywords" content="${fn:escapeXml(keywords)}" /></c:if>
 
     <title>${fn:escapeXml(renderContext.mainResource.node.displayableName)}</title>
 </head>

@@ -50,10 +50,7 @@ import org.xml.sax.SAXException;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 
@@ -134,7 +131,7 @@ public class ReferencesHelper {
                     resolved = false;
                     // store reference for later
                     for (String path : paths) {
-                        JCRNodeWrapper r = refRoot.addNode("j:reference", "jnt:reference");
+                        JCRNodeWrapper r = refRoot.addNode("j:reference" + UUID.randomUUID().toString(), "jnt:reference");
                         String refuuid = path.substring(0, path.lastIndexOf("/"));
                         String pName = path.substring(path.lastIndexOf("/") + 1);
                         r.setProperty("j:node", refuuid);
@@ -145,7 +142,7 @@ public class ReferencesHelper {
                     resolved = false;
                     // store reference for later
                     for (String path : paths) {
-                        JCRNodeWrapper r = refRoot.addNode("j:reference", "jnt:reference");
+                        JCRNodeWrapper r = refRoot.addNode("j:reference" + UUID.randomUUID().toString(), "jnt:reference");
                         String refuuid = path.substring(0, path.lastIndexOf("/"));
                         String pName = path.substring(path.lastIndexOf("/") + 1);
                         r.setProperty("j:node", refuuid);

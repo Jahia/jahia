@@ -279,6 +279,7 @@ public class CreateContentEngine extends AbstractContentEngine {
 
                     if (node.isPage() || node.getNodeTypes().contains("jnt:externalLink")
                             || node.getNodeTypes().contains("jnt:nodeLink")
+                            || node.getNodeTypes().contains("jnt:template") || node.getInheritedNodeTypes().contains("jnt:template")
                             || node.getInheritedNodeTypes().contains("jmix:visibleInPagesTree")) {
                         linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
                     } else {

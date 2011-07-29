@@ -18,7 +18,7 @@
         <c:forEach items="${targetNode.nodes}" var="subchild">
             <c:if test="${jcr:isNodeType(subchild, 'jnt:file')}">
                 <li>
-                    <template:module node="${subchild}" view="link"/>
+                    <template:module node="${subchild}" view="link" editable="false"/>
                 </li>
             </c:if>
         </c:forEach>

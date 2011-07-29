@@ -48,6 +48,7 @@ import com.extjs.gxt.ui.client.event.ScrollListener;
 import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.util.Rectangle;
 import com.extjs.gxt.ui.client.util.Size;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.HtmlContainer;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
@@ -85,7 +86,7 @@ public class InfoLayers {
             public void widgetScrolled(ComponentEvent ce) {
                 for (InfoLayer infoLayer : containers) {
                     if (!infoLayer.isHeader) {
-                        position(infoLayer);
+                        position(infoLayer,0);
                     }
                 }
                 super.widgetScrolled(ce);
@@ -110,7 +111,11 @@ public class InfoLayers {
         LayoutContainer container = module.getContainer();
         El el = container.el();
         final boolean header = headerOnly && module instanceof MainModule;
+        int totalWidth = 0;
         if (header) {
+            for (Component component : module.getHeader().getTools()) {
+                totalWidth += component.el().getSize().width;
+            }
             el = module.getHeader().el();
         }
 
@@ -141,7 +146,7 @@ public class InfoLayers {
 
         final InfoLayer infoLayer = new InfoLayer(layoutContainer, el, header, images.size());
 
-        position(infoLayer);
+        position(infoLayer, totalWidth);
 
         layoutContainer.show();
         containers.add(infoLayer);
@@ -151,7 +156,7 @@ public class InfoLayers {
         }
     }
 
-    protected void position(InfoLayer infoLayer) {
+    protected void position(InfoLayer infoLayer, int width) {
         Point xy = infoLayer.el.getXY();
         int x = xy.x;
         int y = xy.y;
@@ -163,8 +168,8 @@ public class InfoLayers {
             w = infoLayer.images * 16;
             h = 16;
             if (infoLayer.isHeader) {
-                x -= 15 + (infoLayer.images * 16);
-                y += 5;
+                x -= width + (infoLayer.images * 16);
+                y += 9;
             }
         }
 

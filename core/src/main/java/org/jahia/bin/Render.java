@@ -736,7 +736,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     renderContext.setMainResource(resource);
 
                     JCRSiteNode site = resource.getNode().getResolveSite();
-                    if (site != null && !site.getLanguagesAsLocales().contains(urlResolver.getLocale()) && renderContext.getEditModeConfigName() != null && !renderContext.getEditModeConfigName().equals(Studio.STUDIO_MODE)) {
+                    if (site != null
+                            && (renderContext.getEditModeConfigName() == null
+                            || !renderContext.getEditModeConfigName().equals(Studio.STUDIO_MODE))
+                            && !(renderContext.isLiveMode() ? site.getActiveLanguagesAsLocales()
+                                    .contains(urlResolver.getLocale()) : site
+                                    .getLanguagesAsLocales().contains(urlResolver.getLocale()))) {
                         throw new PathNotFoundException("This language does not exist on this site");
                     }
                     renderContext.setSite(site);

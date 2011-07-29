@@ -3092,7 +3092,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 JCRSiteNode siteNode = getResolveSite();
                 if (siteNode != null) {
                     Set<String> mandatoryLanguages = siteNode.getMandatoryLanguages();
-                    List<Locale> locales = siteNode.getLanguagesAsLocales();
+                    List<Locale> locales = jcrSessionWrapper.isLive() ? siteNode.getActiveLanguagesAsLocales() : siteNode.getLanguagesAsLocales();
                     if (locales.size() == 0) {
                         return true;
                     }

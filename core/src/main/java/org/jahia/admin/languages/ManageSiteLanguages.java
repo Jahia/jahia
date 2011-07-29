@@ -46,7 +46,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.render.filter.cache.ModuleCacheProvider;
+import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.sites.JahiaSitesService;
@@ -183,9 +183,11 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
         }
         
         final String[] activeLanguages = request.getParameterValues("activeLanguages");
+        int oldInactiveCount = site.getInactiveLanguages().size();
         site.getInactiveLanguages().clear();
         site.getInactiveLanguages().addAll(site.getLanguages());
         site.getInactiveLanguages().removeAll(Arrays.asList(activeLanguages));
+        flushCache = flushCache || oldInactiveCount != site.getInactiveLanguages().size(); 
         
         final String[] mandatoryLanguages = request.getParameterValues("mandatoryLanguages");
         final Set<String> mandatoryLanguagesSet = site.getMandatoryLanguages();
@@ -218,7 +220,7 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
             request.setAttribute("jahiaDisplayMessage", dspMsg);
         }
         if (flushCache) {
-            ModuleCacheProvider.getInstance().flushCaches();
+            CacheHelper.flushOutputCaches(true);
         }
         displayLanguageList(request, response, session);
     } // end addComponent

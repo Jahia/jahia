@@ -40,27 +40,16 @@
 
 package org.jahia.services.render;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.ComparatorUtils;
-import org.apache.commons.collections.Factory;
-import org.apache.commons.collections.FastHashMap;
-import org.apache.commons.collections.Transformer;
-import org.apache.commons.collections.functors.NOPTransformer;
-import org.apache.commons.collections.map.LazyMap;
-import org.apache.commons.collections.map.LazySortedMap;
-import org.apache.commons.collections.map.TransformedSortedMap;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRSessionFactory;

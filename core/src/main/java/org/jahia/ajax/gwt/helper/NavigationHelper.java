@@ -945,13 +945,11 @@ public class NavigationHelper {
             try {
                 JCRSiteNode siteNode = node.getResolveSite();
                 if (siteNode != null) {
-                    String[] languages = siteNode.getActiveLanguageCodes();
-                    final HashSet<String> languagesAsSet = new HashSet<String>(Arrays.asList(languages));
                     JCRSessionWrapper session = node.getSession();
 
                     n.setAggregatedPublicationInfos(publication.getAggregatedPublicationInfosByLanguage(node.getIdentifier(),
-                            languagesAsSet, session));
-                    n.setFullPublicationInfos(publication.getFullPublicationInfosByLanguage(Arrays.asList(node.getIdentifier()), languagesAsSet,
+                            siteNode.getLanguages(), session));
+                    n.setFullPublicationInfos(publication.getFullPublicationInfosByLanguage(Arrays.asList(node.getIdentifier()), siteNode.getLanguages(),
                                         session, false));
                 }
             } catch (UnsupportedRepositoryOperationException e) {
@@ -982,10 +980,9 @@ public class NavigationHelper {
             try {
                 JCRSiteNode node1 = node.getResolveSite();
                 if (node1 != null) {
-                    String[] codes = node1.getActiveLanguageCodes();
                     Map<String, GWTJahiaWorkflowInfo> infoMap = new HashMap<String, GWTJahiaWorkflowInfo>();
                     JCRSessionWrapper session = node.getSession();
-                    for (String code : codes) {
+                    for (String code : node1.getLanguages()) {
                         Locale locale = LanguageCodeConverters.languageCodeToLocale(code);
                         JCRSessionWrapper localeSession =
                                 sessionFactory.getCurrentUserSession(session.getWorkspace().getName(), locale);

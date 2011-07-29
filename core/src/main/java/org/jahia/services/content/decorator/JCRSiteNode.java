@@ -42,6 +42,7 @@ package org.jahia.services.content.decorator;
 
 import static org.jahia.services.sites.SitesSettings.*;
 
+import org.apache.commons.collections.set.UnmodifiableSet;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,117 +57,37 @@ import javax.jcr.Value;
 import java.util.*;
 
 /**
+ * JCR node representing the Jahia virtual site.
+ * 
  * User: toto
  * Date: Mar 30, 2010
  * Time: 12:37:45 PM
- * 
  */
 public class JCRSiteNode extends JCRNodeDecorator {
     private static final Logger logger = LoggerFactory.getLogger(JCRSiteNode.class);
 
+    private Set<String> activeLanguages;
+    
+    private String defaultLanguage;
+    
     private JCRNodeWrapper home;
+
+    private Set<String> languages;
+    
+    private Set<String> mandatoryLanguages;
+    
+    private Boolean mixLanguagesActive;
+
+    private String templateFolder;
 
     public JCRSiteNode(JCRNodeWrapper node) {
         super(node);
     }
 
-    public JCRSiteNode getResolveSite() throws RepositoryException {
-        return this;
-    }
-    
-    public int getID() {
-        try {
-            return (int) getProperty("j:siteId").getLong();
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
-            return -1;
-        }
-    }
-
-    public String getTitle() {
-        try {
-            return getProperty("j:title").getString();
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
-            return null;
-        }
-    }
-
-    public String getServerName() {
-        try {
-            if (hasProperty("j:serverName")) {
-                return getProperty("j:serverName").getString();
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
-        }
-        return null;
-    }
-
-    public String getSiteKey() {
-        return getName();
-    }
-
-    public boolean isWCAGComplianceCheckEnabled() {
-        try {
-            if (hasProperty(WCAG_COMPLIANCE_CHECKING_ENABLED)) {
-                return getProperty(WCAG_COMPLIANCE_CHECKING_ENABLED).getBoolean();
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property " + WCAG_COMPLIANCE_CHECKING_ENABLED, e);
-        }
-        return false;
-    }
-
-    public boolean isHtmlMarkupFilteringEnabled() {
-        try {
-            if (hasProperty(HTML_MARKUP_FILTERING_ENABLED)) {
-                return getProperty(HTML_MARKUP_FILTERING_ENABLED).getBoolean();
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property " + HTML_MARKUP_FILTERING_ENABLED, e);
-        }
-        return false;
-    }
-
-    public String getHtmlMarkupFilteringTags() {
-        try {
-            if (hasProperty(HTML_MARKUP_FILTERING_TAGS)) {
-                return getProperty(HTML_MARKUP_FILTERING_TAGS).getString();
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property " + HTML_MARKUP_FILTERING_TAGS, e);
-        }
-        return null;
-    }
-
-    public String getDescr() {
-        try {
-            if (hasProperty("j:description")) {
-                return getProperty("j:description").getString();
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
-        }
-        return null;
-    }
-
-    public Set<String> getLanguages() {
-        Set<String> languages = new HashSet<String>() ;
-        try {
-            if (hasProperty("j:languages")) {
-                Value[] values = getProperty("j:languages").getValues();
-                for (Value value : values) {
-                    languages.add(value.getString());
-                }
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
-            return null;
-        }
-        return languages;
-    }
-
+    /**
+     * @deprecated use either {@link #getActiveLanguages()} or {@link #getLanguage()} methods instead
+     */
+    @Deprecated
     public String[] getActiveLanguageCodes() {
         Set<String> languages = getLanguages();
         if (languages != null) {
@@ -175,14 +96,40 @@ public class JCRSiteNode extends JCRNodeDecorator {
             return null;
         }
     }
+    
+    /**
+     * Returns a set of active site languages
+     * 
+     * @return a set of active site languages
+     */
+    @SuppressWarnings("unchecked")
+    public Set<String> getActiveLanguages() {
+        if (activeLanguages == null) {
+            Set<String> langs = new HashSet<String>(getLanguages()) ;
+            try {
+                if (hasProperty("j:inactiveLanguages")) {
+                    Value[] values = getProperty("j:inactiveLanguages").getValues();
+                    for (Value value : values) {
+                        langs.remove(value.getString());
+                    }
+                }
+                activeLanguages = UnmodifiableSet.decorate(langs);
+            } catch (RepositoryException e) {
+                logger.error("Cannot get site property",e);
+                return null;
+            }
+        }
+        
+        return activeLanguages;
+    }
 
     /**
-     * Returns an List of site language  ( as Locale ).
+     * Returns an List of active site language  ( as Locale ).
      *
-     * @return an List of Locale elements.
+     * @return a List of Locale elements
      */
-    public List<Locale> getLanguagesAsLocales() {
-        Set<String> languages = getLanguages();
+    public List<Locale> getActiveLanguagesAsLocales() {
+        Set<String> languages = getActiveLanguages();
 
         List<Locale> localeList = new ArrayList<Locale>();
         if (languages != null) {
@@ -195,102 +142,23 @@ public class JCRSiteNode extends JCRNodeDecorator {
         return localeList;
     }
 
-    /**
-     * Sets the language settings for this site. This directly interfaces with
-     * the persistent storage to store the modifications if there were any.
-     *
-     * @throws JahiaException when an error occured while storing the modified
-     *                        site language settings values.
-     */
-    public void setLanguages(Set<String> languages) {
-        try {
-            List<Value> l = new ArrayList<Value>();
-            for (String s : languages) {
-                l.add(getSession().getValueFactory().createValue(s));
-            }
-
-            setProperty("j:languages", l.toArray(new Value[l.size()]));
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
-        }
-    }
-
-    /**
-     * Sets the value of the site property that controls
-     *
-     * @param mixLanguagesActive
-     */
-    public void setMixLanguagesActive(boolean mixLanguagesActive) {
-        try {
-            setProperty("j:mixLanguage",mixLanguagesActive);
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
-        }
-    }
-
-    public boolean isMixLanguagesActive() {
-        try {
-            if (hasProperty("j:mixLanguage")) {
-                return getProperty("j:mixLanguage").getBoolean();
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
-        }
-        return false;
-    }
-
-    public void setMandatoryLanguages(Set<String> mandatoryLanguages) {
-        try {
-            List<Value> l = new ArrayList<Value>();
-            for (String s : mandatoryLanguages) {
-                l.add(getSession().getValueFactory().createValue(s));
-            }
-
-            setProperty("j:mandatoryLanguages", l.toArray(new Value[l.size()]));
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
-        }
-    }
-
-    public Set<String> getMandatoryLanguages() {
-        Set<String> languages = new HashSet<String>() ;
-        try {
-            if (hasProperty("j:mandatoryLanguages")) {
-                Value[] values = getProperty("j:mandatoryLanguages").getValues();
-                for (Value value : values) {
-                    languages.add(value.getString());
-                }
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
-            return null;
-        }
-        return languages;
-    }
-
-    public void setDefaultLanguage(String defaultLanguage) {
-        try {
-            setProperty("j:defaultLanguage", defaultLanguage);
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
-        }
-    }
-
     public String getDefaultLanguage() {
-        try {
-            if (hasProperty("j:defaultLanguage")) {
-                return getProperty("j:defaultLanguage").getString();
+        if (defaultLanguage == null) {
+            try {
+                if (hasProperty("j:defaultLanguage")) {
+                    defaultLanguage = getProperty("j:defaultLanguage").getString();
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get site property",e);
             }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
         }
-        return null;
+        return defaultLanguage;
     }
 
-    public String getTemplateFolder() {
+    public String getDescr() {
         try {
-            if (hasProperty("j:installedModules")) {
-                return getProperty("j:installedModules").getValues()[0].getString();
+            if (hasProperty("j:description")) {
+                return getProperty("j:description").getString();
             }
         } catch (RepositoryException e) {
             logger.error("Cannot get site property",e);
@@ -314,6 +182,116 @@ public class JCRSiteNode extends JCRNodeDecorator {
         return home;
     }
 
+    public String getHtmlMarkupFilteringTags() {
+        try {
+            if (hasProperty(HTML_MARKUP_FILTERING_TAGS)) {
+                return getProperty(HTML_MARKUP_FILTERING_TAGS).getString();
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property " + HTML_MARKUP_FILTERING_TAGS, e);
+        }
+        return null;
+    }
+
+    public int getID() {
+        try {
+            return (int) getProperty("j:siteId").getLong();
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property",e);
+            return -1;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public Set<String> getLanguages() {
+        if (languages == null) {
+            Set<String> langs = new HashSet<String>() ;
+            try {
+                if (hasProperty("j:languages")) {
+                    Value[] values = getProperty("j:languages").getValues();
+                    for (Value value : values) {
+                        langs.add(value.getString());
+                    }
+                }
+                languages = UnmodifiableSet.decorate(langs);
+            } catch (RepositoryException e) {
+                logger.error("Cannot get site property",e);
+                return null;
+            }
+        }
+        return languages;
+    }
+    /**
+     * Returns an List of site language  ( as Locale ).
+     *
+     * @return an List of Locale elements.
+     */
+    public List<Locale> getLanguagesAsLocales() {
+        Set<String> languages = getLanguages();
+
+        List<Locale> localeList = new ArrayList<Locale>();
+        if (languages != null) {
+            for (String language : languages) {
+                Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(language);
+                localeList.add(tempLocale);
+            }
+
+        }
+        return localeList;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Set<String> getMandatoryLanguages() {
+        if (mandatoryLanguages == null) {
+            Set<String> langs = new HashSet<String>() ;
+            try {
+                if (hasProperty("j:mandatoryLanguages")) {
+                    Value[] values = getProperty("j:mandatoryLanguages").getValues();
+                    for (Value value : values) {
+                        langs.add(value.getString());
+                    }
+                }
+                mandatoryLanguages = UnmodifiableSet.decorate(langs);
+            } catch (RepositoryException e) {
+                logger.error("Cannot get site property",e);
+                return null;
+            }
+        }
+        return mandatoryLanguages;
+    }
+
+    public JCRSiteNode getResolveSite() throws RepositoryException {
+        return this;
+    }
+
+    public String getServerName() {
+        try {
+            if (hasProperty("j:serverName")) {
+                return getProperty("j:serverName").getString();
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property",e);
+        }
+        return null;
+    }
+
+    public String getSiteKey() {
+        return getName();
+    }
+
+    public String getTemplateFolder() {
+        if (templateFolder == null) {
+            try {
+                if (hasProperty("j:installedModules")) {
+                    templateFolder = getProperty("j:installedModules").getValues()[0].getString();
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get site property",e);
+            }
+        }
+        return templateFolder;
+    }
+
     /**
      * Returns the corresponding template set name of this virtual site.
      *
@@ -326,6 +304,105 @@ public class JCRSiteNode extends JCRNodeDecorator {
             return null;
         }
         return templatePackageByFileName.getName();
+    }
+
+    public String getTitle() {
+        try {
+            return getProperty("j:title").getString();
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property",e);
+            return null;
+        }
+    }
+
+    public boolean isHtmlMarkupFilteringEnabled() {
+        try {
+            if (hasProperty(HTML_MARKUP_FILTERING_ENABLED)) {
+                return getProperty(HTML_MARKUP_FILTERING_ENABLED).getBoolean();
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property " + HTML_MARKUP_FILTERING_ENABLED, e);
+        }
+        return false;
+    }
+
+    public boolean isMixLanguagesActive() {
+        if (mixLanguagesActive == null) {
+            mixLanguagesActive = false;
+            try {
+                if (hasProperty("j:mixLanguage")) {
+                    mixLanguagesActive = getProperty("j:mixLanguage").getBoolean();
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get site property",e);
+            }
+        }
+        return mixLanguagesActive;
+    }
+
+    public boolean isWCAGComplianceCheckEnabled() {
+        try {
+            if (hasProperty(WCAG_COMPLIANCE_CHECKING_ENABLED)) {
+                return getProperty(WCAG_COMPLIANCE_CHECKING_ENABLED).getBoolean();
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property " + WCAG_COMPLIANCE_CHECKING_ENABLED, e);
+        }
+        return false;
+    }
+
+    public void setDefaultLanguage(String defaultLanguage) {
+        try {
+            setProperty("j:defaultLanguage", defaultLanguage);
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property",e);
+        }
+    }
+
+    /**
+     * Sets the language settings for this site. This directly interfaces with
+     * the persistent storage to store the modifications if there were any.
+     *
+     * @throws JahiaException when an error occured while storing the modified
+     *                        site language settings values.
+     */
+    public void setLanguages(Set<String> languages) {
+        try {
+            List<Value> l = new ArrayList<Value>();
+            for (String s : languages) {
+                l.add(getSession().getValueFactory().createValue(s));
+            }
+
+            setProperty("j:languages", l.toArray(new Value[l.size()]));
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property",e);
+        }
+    }
+
+    public void setMandatoryLanguages(Set<String> mandatoryLanguages) {
+        try {
+            List<Value> l = new ArrayList<Value>();
+            for (String s : mandatoryLanguages) {
+                l.add(getSession().getValueFactory().createValue(s));
+            }
+
+            setProperty("j:mandatoryLanguages", l.toArray(new Value[l.size()]));
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property",e);
+        }
+    }
+
+    /**
+     * Sets the value of the site property that controls
+     *
+     * @param mixLanguagesActive
+     */
+    public void setMixLanguagesActive(boolean mixLanguagesActive) {
+        try {
+            setProperty("j:mixLanguage",mixLanguagesActive);
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property",e);
+        }
     }
 
 }

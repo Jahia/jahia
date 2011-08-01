@@ -414,7 +414,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 return;
             }
 
-            if (includeInNodeIndex && supportSpellchecking) {
+            if (includeInNodeIndex && isSupportSpellchecking()) {
                 String site = resolveSite();
                 String language = resolveLanguage();
                 StringBuilder fulltextNameBuilder = new StringBuilder(FieldNames.FULLTEXT);

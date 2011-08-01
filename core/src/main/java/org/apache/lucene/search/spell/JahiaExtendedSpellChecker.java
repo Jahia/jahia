@@ -147,7 +147,22 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
         }
 
         // System.out.println("Q: " + query);
-        Hits hits = searcher.search(query);
+        IndexSearcher usedSearcher = searcher;
+        Hits hits = null;
+        boolean retry = true;
+        while (retry) {
+            try {
+                hits = usedSearcher.search(query);
+            } catch (IOException e) {
+                if (retry && usedSearcher != searcher) {
+                    usedSearcher = searcher;
+                } else {
+                    throw e;
+                }
+            } finally {
+                retry = false;
+            }
+        }
         // System.out.println("HITS: " + hits.length());
         SuggestWordQueue sugQueue = new SuggestWordQueue(numSug);
 
@@ -280,10 +295,17 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
             writer.close();
         }
         // close the old searcher, if there was one
-        if (searcher != null) {
-            searcher.close();
+        reopenSearcher();
+    }
+    
+    private void reopenSearcher() throws IOException {
+        // create a new and close the old searcher
+        IndexSearcher oldSearcher = searcher; 
+        IndexSearcher newSearcher = new IndexSearcher(this.spellIndex);
+        searcher = newSearcher;
+        if (oldSearcher != null) {
+            oldSearcher.close();      
         }
-        searcher = new IndexSearcher(this.spellIndex);
     }
 
     /**
@@ -295,9 +317,7 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
         IndexWriter writer = new IndexWriter(spellIndex, null, true);
         writer.close();
 
-        // close the old searcher
-        searcher.close();
-        searcher = new IndexSearcher(this.spellIndex);
+        reopenSearcher();
     }
 
     /**
@@ -353,10 +373,12 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
         writer.optimize();
         writer.close();
         // also re-open the spell index to see our own changes when the next
-        // suggestion
-        // is fetched:
-        searcher.close();
-        searcher = new IndexSearcher(this.spellIndex);
+        // suggestion is fetched:
+        // create a new and close the old searcher
+        IndexSearcher oldSearcher = searcher; 
+        IndexSearcher newSearcher = new IndexSearcher(this.spellIndex);
+        searcher = newSearcher;
+        oldSearcher.close();
     }
 
     private static Document createDocument(String text, int ng1, int ng2, String site, String langCode) {

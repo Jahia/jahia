@@ -109,6 +109,7 @@ public class ClipboardActionItem extends BaseActionItem {
                     } else {
                         m.setText(copiedNodes.get(0).getDisplayName());
                     }
+                    m.setEnabled(false);
                     menu.add(m);
                 }
                 b.setEnabled(true);

@@ -46,6 +46,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.tika.io.IOUtils;
@@ -669,13 +670,17 @@ public class ContentManagerHelper {
             List<GWTJahiaNodeACE> aces = new ArrayList<GWTJahiaNodeACE>();
             Map<String, GWTJahiaNodeACE> map = new HashMap<String, GWTJahiaNodeACE>();
 
+            JahiaGroupManagerService groupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
             for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext();) {
                 String principal = iterator.next();
                 GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
                 ace.setPrincipalType(principal.charAt(0));
                 ace.setPrincipal(principal.substring(2));
                 if (ace.getPrincipalType() == 'g') {
-                    JahiaGroup g = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(ace.getPrincipal());
+                    JahiaGroup g = groupManagerService.lookupGroup(node.getResolveSite().getID(), ace.getPrincipal());
+                    if (g == null) {
+                        g = groupManagerService.lookupGroup(ace.getPrincipal());
+                    }
                     if (g != null) {
                         ace.setHidden(g.isHidden());
                         ace.setPrincipalKey(g.getGroupKey());
@@ -735,7 +740,11 @@ public class ContentManagerHelper {
                         ace.setPrincipalType(principal.charAt(0));
                         ace.setPrincipal(principal.substring(2));
                         if (ace.getPrincipalType() == 'g') {
-                            JahiaGroup g = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(ace.getPrincipal());
+                            JahiaGroup g = groupManagerService.lookupGroup(node.getResolveSite().getID(),
+                                    ace.getPrincipal());
+                            if (g == null) {
+                                g = groupManagerService.lookupGroup(ace.getPrincipal());
+                            }
                             if (g != null) {
                                 ace.setHidden(g.isHidden());
                             }

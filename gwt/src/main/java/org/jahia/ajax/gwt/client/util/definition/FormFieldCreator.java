@@ -41,7 +41,10 @@
 package org.jahia.ajax.gwt.client.util.definition;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -190,10 +193,14 @@ public class FormFieldCreator {
                         ListField<GWTJahiaValueDisplayBean> from = lists.getFromList();
                         from.setStore(store);
                         from.setDisplayField("display");
+                        store.setSortDir(Style.SortDir.ASC);
+                        store.setSortField("display");
                         ListField<GWTJahiaValueDisplayBean> to = lists.getToList();
                         to.setDisplayField("display");
                         ListStore<GWTJahiaValueDisplayBean> tostore = new ListStore<GWTJahiaValueDisplayBean>();
                         to.setStore(tostore);
+                        tostore.setSortDir(Style.SortDir.ASC);
+                        tostore.setSortField("display");
                         field = lists;
                     } else {
                         ComboBox<GWTJahiaValueDisplayBean> combo = new ComboBox<GWTJahiaValueDisplayBean>() {
@@ -542,6 +549,37 @@ public class FormFieldCreator {
             super.onRender(target, index);
             getFromList().getListView().el().makePositionable();
             getToList().getListView().el().makePositionable();
+        }
+
+        @Override
+        protected void onButtonLeft(IconButtonEvent be) {
+            super.onButtonLeft(be);
+            getFromList().getStore().sort("display", Style.SortDir.ASC);
+        }
+
+        @Override
+        protected void onButtonAllLeft(IconButtonEvent be) {
+            super.onButtonAllLeft(be);
+            getFromList().getStore().sort("display", Style.SortDir.ASC);
+        }
+
+        @Override
+        protected void onButtonAllRight(IconButtonEvent be) {
+            super.onButtonAllRight(be);
+            getToList().getStore().sort("display", Style.SortDir.ASC);
+        }
+
+        @Override
+        protected void onButtonRight(IconButtonEvent be) {
+            super.onButtonRight(be);
+            getToList().getStore().sort("display", Style.SortDir.ASC);
+        }
+
+        @Override
+        public void onComponentEvent(ComponentEvent ce) {
+            super.onComponentEvent(ce);
+            getToList().getStore().sort("display", Style.SortDir.ASC);
+            getFromList().getStore().sort("display", Style.SortDir.ASC);
         }
     }
 }

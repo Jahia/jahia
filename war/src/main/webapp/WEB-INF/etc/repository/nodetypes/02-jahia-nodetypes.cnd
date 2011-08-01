@@ -694,7 +694,7 @@ extends = jnt:content
  - j:originalUuid (string) nofulltext
 
 [jnt:referencesKeeper] > nt:base, jmix:nodenameInfo
- + j:reference (jnt:reference) multiple
+ + * (jnt:reference) multiple
 
 
 //---------------------------------------------------------

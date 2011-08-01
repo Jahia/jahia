@@ -32,13 +32,7 @@
 
 package org.jahia.services.content.interceptor;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.jcr.PropertyType;
-
 import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.nodetypes.SelectorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -62,24 +56,7 @@ public class PropertyInterceptorRegistrator implements InitializingBean, Disposa
 
     public void afterPropertiesSet() throws Exception {
         if (propertyInterceptor != null) {
-            if (propertyInterceptor instanceof BaseInterceptor) {
-                Set<String> requiredTypes = new HashSet<String>();
-                for (Integer type : ((BaseInterceptor) propertyInterceptor).getRequiredTypes()) {
-                    requiredTypes.add(PropertyType.nameFromValue(type));
-                }
-                Set<String> selectors = new HashSet<String>();
-                for (Integer selector : ((BaseInterceptor) propertyInterceptor).getSelectors()) {
-                    selectors.add(SelectorType.nameFromValue(selector));
-                }
-
-                logger.info("Registering property interceptor "
-                        + propertyInterceptor.getClass().getName() + " for types " + requiredTypes
-                        + " and selectors " + selectors);
-
-            } else {
-                logger.info("Registering property interceptor {}", propertyInterceptor.getClass()
-                        .getName());
-            }
+            logger.info("Registering property interceptor {}", propertyInterceptor);
 
             jcrStoreService.removeInterceptor(propertyInterceptor);
 

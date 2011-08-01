@@ -57,7 +57,7 @@ Jahia 6.5 - Core Module - Property interceptors
 
   An interceptor needs to implement the <<<org.jahia.services.content.interceptor.PropertyInterceptor>>> interface.
   A base implementation class is provided for convenience: <<<org.jahia.services.content.interceptor.BaseInterceptor>>>
-  that already supports some criteria, like node type, property required type or selector type. 
+  that already supports some criteria, like node type, property required type, property name or selector type. 
 
   Assuming we are implementing a filtering interceptor for forum or blog posts and comments:
   

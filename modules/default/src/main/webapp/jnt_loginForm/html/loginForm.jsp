@@ -28,12 +28,12 @@
 
         <p>
             <label class="left" for="username"><fmt:message key="label.username"/></label>
-            <input class="full" type="text" value="" tabindex="1" maxlength="250" name="username" id="username" onkeydown="keyDown"/>
+            <input class="full" type="text" value="" tabindex="1" maxlength="250" name="username" id="username"/>
         </p>
 
         <p>
             <label class="left" for="password"><fmt:message key="label.password"/></label>
-            <input class="full" type="password" tabindex="2" maxlength="250" name="password" id="password" onkeydown="keyDown"/>
+            <input class="full" type="password" tabindex="2" maxlength="250" name="password" id="password"/>
         </p>
 
         <p>

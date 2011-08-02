@@ -240,6 +240,12 @@ public class ContentTabItem extends PropertiesTabItem {
                 FormData fd = new FormData("98%");
                 fd.setMargins(new Margins(0));
                 nameFieldSet.add(name, fd);
+                if(engine.getNode().isLocked()) {
+                    nameText.setReadOnly(true);
+                    if(autoUpdateName!=null) {
+                        autoUpdateName.setEnabled(false);
+                    }
+                }
             }
 
             String nodeName = (String) tab.getData("NodeName");

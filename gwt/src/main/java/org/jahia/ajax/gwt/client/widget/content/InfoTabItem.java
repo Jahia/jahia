@@ -53,6 +53,8 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
 import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -108,8 +110,30 @@ public class InfoTabItem extends EditEngineTabItem {
                             org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
                 }
                 if (selectedNode.isLocked() && selectedNode.getLockInfos() != null) {
+                    String infos = "";
+                    if (selectedNode.getLockInfos().containsKey(null) && selectedNode.getLockInfos().size() == 1) {
+                        for (String s : selectedNode.getLockInfos().get(null)) {
+                            if("label.locked.by.workflow.process".equals(s)) {
+                                infos = Messages.get(s);
+                            } else {
+                                infos += s.substring(0,s.indexOf(":")) + " (" + s.substring(s.indexOf(":")+1) + ") ";
+                            }
+                        }
+                    } else {
+                        for (Map.Entry<String, List<String>> entry : selectedNode.getLockInfos().entrySet()) {
+                            if (entry.getKey() != null) {
+                                if (infos.length()>0) {
+                                    infos += ", ";
+                                }
+                                infos += entry.getKey() + " : ";
+                                for (String s : entry.getValue()) {
+                                    infos += s.substring(0,s.indexOf(":")) + " (" + s.substring(s.indexOf(":")+1) + ") ";
+                                }
+                            }
+                        }
+                    }
                     flowPanel.add(new HTML(
-                            "<b>" + Messages.get("info.lock.label") + ":</b> " + selectedNode.getLockInfos()));
+                            "<b>" + Messages.get("info.lock.label") + ":</b> " + infos));
                 }
 
                 flowPanel.add(new HTML("<b>" + Messages.get("nodes.label", "Types") + ":</b> " + selectedNode.getNodeTypes()));

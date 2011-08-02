@@ -216,7 +216,11 @@ public class EditContentEngine extends AbstractContentEngine {
                     String infos = "";
                     if (node.getLockInfos().containsKey(null) && node.getLockInfos().size() == 1) {
                         for (String s : node.getLockInfos().get(null)) {
-                            infos += s.substring(0,s.indexOf(":")) + " (" + s.substring(s.indexOf(":")+1) + ") ";
+                            if("label.locked.by.workflow.process".equals(s)) {
+                                infos = Messages.get(s);
+                            } else {
+                                infos += s.substring(0,s.indexOf(":")) + " (" + s.substring(s.indexOf(":")+1) + ") ";
+                            }
                         }
                     } else {
                         for (Map.Entry<String, List<String>> entry : node.getLockInfos().entrySet()) {

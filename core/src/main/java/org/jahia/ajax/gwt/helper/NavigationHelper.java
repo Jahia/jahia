@@ -55,6 +55,7 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Contribute;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRQueryNode;
@@ -64,6 +65,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.sites.SitesSettings;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
@@ -810,6 +812,15 @@ public class NavigationHelper {
             String username = node.getSession().getUser().getUsername();
             n.setLocked(JCRContentUtils.isLockedAndCannotBeEdited(node));
             Map<String, List<String>> infos = node.getLockInfos();
+            if(!infos.isEmpty()) {
+                Map.Entry<String, List<String>> stringListEntry = infos.entrySet().iterator().next();
+                JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
+                        StringUtils.substringBefore(stringListEntry.getValue().get(0), ":"));
+                if(jahiaUser==null) {
+                    infos.clear();
+                    infos.put(stringListEntry.getKey(),Arrays.asList("label.locked.by.workflow.process"));
+                }
+            }
             n.setLockInfos(infos);
             if (node.getSession().getLocale() != null) {
                 String l = node.getSession().getLocale().toString();

@@ -44,12 +44,14 @@
                       tabindex="21" ></textarea></p>
         </c:if>
         <div>
+            <fmt:message key="label.noTitle" var="i18nNoTitle"/>
             <input type="submit" class="button"
                    value="${currentNode.properties['buttonLabel'].string}" tabindex="28"
                    onclick="if (document.${formid}.elements['jcr:title'].value == '') {
-                               alert('you must fill the title ');
+                               alert('${functions:escapeJavaScript(i18nNoTitle)}');
                                return false;
                            }
+                           alert('go go go!');
                            document.${formid}.submit();
                        "
                      ${disabled} />

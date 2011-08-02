@@ -133,7 +133,6 @@ public class ManualListOrderingEditor extends ContentPanel {
         childrenGrid.setBorders(true);
         childrenGrid.setHeight(400);
         new GridDragSource(childrenGrid);
-
         GridDropTarget target = new GridDropTarget(childrenGrid);
         target.setAllowSelfAsSource(true);
         target.setFeedback(DND.Feedback.INSERT);
@@ -157,6 +156,7 @@ public class ManualListOrderingEditor extends ContentPanel {
 
             public void execute(GWTJahiaNode selectedNode) {
                 // find a better way to get index
+                removeSorter();
                 int index = childrenGrid.getStore().indexOf(selectedNode);
                 if (index > 0) {
                     childrenGrid.getStore().remove(selectedNode);
@@ -181,6 +181,7 @@ public class ManualListOrderingEditor extends ContentPanel {
             }
 
             public void execute(GWTJahiaNode node, int index) {
+                removeSorter();
                 childrenGrid.getStore().remove(node);
                 childrenGrid.getStore().insert(node, index);
                 childrenGrid.getSelectionModel().select(index, true);
@@ -204,6 +205,7 @@ public class ManualListOrderingEditor extends ContentPanel {
                 // find a better way to get index
                 int index = childrenGrid.getStore().indexOf(selectedNode);
                 if (index < childrenGrid.getStore().getCount() - 1) {
+                    removeSorter();
                     childrenGrid.getStore().remove(selectedNode);
                     childrenGrid.getStore().insert(selectedNode, index + 1);
                     childrenGrid.getSelectionModel().select(index + 1, true);
@@ -230,6 +232,7 @@ public class ManualListOrderingEditor extends ContentPanel {
 
 
             public void execute(GWTJahiaNode node, int index) {
+                removeSorter();
                 childrenGrid.getStore().remove(node);
                 childrenGrid.getStore().insert(node, index);
                 childrenGrid.getSelectionModel().select(index, true);
@@ -258,6 +261,17 @@ public class ManualListOrderingEditor extends ContentPanel {
         childrenGrid.setBorders(true);
         childrenGrid.addPlugin(sm);
         add(childrenGrid);
+    }
+
+    private void removeSorter() {
+        if (childrenGrid.getStore().getStoreSorter() != null ) {
+            childrenGrid.getStore().setSortField("index");
+            childrenGrid.getStore().setStoreSorter(null);
+            childrenGrid.getView().refresh(true);
+        }
+        else {
+            childrenGrid.getView().refresh(false);
+        }
     }
 
     /**

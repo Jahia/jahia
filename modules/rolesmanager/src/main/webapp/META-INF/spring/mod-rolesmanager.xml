@@ -31,7 +31,6 @@
                         <ref bean="Toolbar.Item.Delete"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Copy"/>
-                        <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.PasteInMain"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Refresh"/>
@@ -48,7 +47,6 @@
                         <ref bean="Toolbar.Item.Import"/>
                         <ref bean="Toolbar.Item.Delete"/>
                         <ref bean="Toolbar.Item.Copy"/>
-                        <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.PasteInMain"/>
                         <ref bean="Toolbar.Item.Refresh"/>
                     </list>

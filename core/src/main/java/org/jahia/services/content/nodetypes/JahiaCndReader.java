@@ -157,6 +157,100 @@ public class JahiaCndReader {
      */
     protected String currentToken;
 
+
+    /**
+     * Checks if the provided token is semantically equal to the given
+     * argument.
+     *
+     * @param token the tokens to be compared
+     * @param s the tokens to compare with
+     * @return <code>true</code> if equals; <code>false</code> otherwise.
+     */
+    protected static boolean tokenEquals(String token, String[] s) {
+        for (String e : s) {
+            if (token.equals(e)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Returns the parsed property type or <code>-1</code> if the type is not recognized.
+     * 
+     * @param token
+     *            the token to parse property type from
+     * @return the parsed property type or <code>-1</code> if the type is not recognized
+     */
+    public static int getPropertyType(String token) {
+        if (tokenEquals(token, Lexer.STRING)) {
+            return PropertyType.STRING;
+        } else if (tokenEquals(token, Lexer.BINARY)) {
+            return PropertyType.BINARY;
+        } else if (tokenEquals(token, Lexer.LONG)) {
+            return PropertyType.LONG;
+        } else if (tokenEquals(token, Lexer.DOUBLE)) {
+            return PropertyType.DOUBLE;
+        } else if (tokenEquals(token, Lexer.BOOLEAN)) {
+            return PropertyType.BOOLEAN;
+        } else if (tokenEquals(token, Lexer.DATE)) {
+            return PropertyType.DATE;
+        } else if (tokenEquals(token, Lexer.NAME)) {
+            return PropertyType.NAME;
+        } else if (tokenEquals(token, Lexer.PATH)) {
+            return PropertyType.PATH;
+        } else if (tokenEquals(token, Lexer.REFERENCE)) {
+            return PropertyType.REFERENCE;
+        } else if (tokenEquals(token, Lexer.WEAKREFERENCE)) {
+            return ExtendedPropertyType.WEAKREFERENCE;
+        } else if (tokenEquals(token, Lexer.URI)) {
+            return ExtendedPropertyType.URI;
+        } else if (tokenEquals(token, Lexer.DECIMAL)) {
+            return ExtendedPropertyType.DECIMAL;
+        } else if (tokenEquals(token, Lexer.UNDEFINED)) {
+            return PropertyType.UNDEFINED;
+        } else {
+            return -1;
+        }
+    }
+
+    /**
+     * Returns the parsed selector type or <code>-1</code> if the selector is not recognized.
+     * 
+     * @param token
+     *            the token to parse property type from
+     * @return the parsed selector type or <code>-1</code> if the selector is not recognized
+     */
+    public static int getSelectorType(String token) {
+        if (tokenEquals(token, Lexer.SMALLTEXT)) {
+            return SelectorType.SMALLTEXT;
+        } else if (tokenEquals(token, Lexer.RICHTEXT)) {
+            return SelectorType.RICHTEXT;
+        } else if (tokenEquals(token, Lexer.TEXTAREA)) {
+            return SelectorType.TEXTAREA;
+        } else if (tokenEquals(token, Lexer.CHOICELIST)) {
+            return SelectorType.CHOICELIST;
+        } else if (tokenEquals(token, Lexer.CRON)) {
+            return SelectorType.CRON;
+        } else if (tokenEquals(token, Lexer.DATEPICKER)) {
+            return SelectorType.DATEPICKER;
+        } else if (tokenEquals(token, Lexer.DATETIMEPICKER)) {
+            return SelectorType.DATETIMEPICKER;
+        } else if (tokenEquals(token, Lexer.CATEGORY)) {
+            return SelectorType.CATEGORY;
+        } else if (tokenEquals(token, Lexer.CONTENTPICKER)) {
+            return SelectorType.CONTENTPICKER;
+        } else if (tokenEquals(token, Lexer.FILEUPLOAD)) {
+            return SelectorType.FILEUPLOAD;
+        } else if (tokenEquals(token, Lexer.COLOR)) {
+            return SelectorType.COLOR;
+        } else if (tokenEquals(token, Lexer.CHECKBOX)) {
+            return SelectorType.CHECKBOX;
+        } else {
+            return -1;
+        }
+    }
+
     /**
      * Creates a new CND reader.
      *
@@ -425,32 +519,9 @@ public class JahiaCndReader {
         }
         nextToken();
         if (pdi.getRequiredType() == 0) {
-            if (currentTokenEquals(Lexer.STRING)) {
-                pdi.setRequiredType(PropertyType.STRING);
-            } else if (currentTokenEquals(Lexer.BINARY)) {
-                pdi.setRequiredType(PropertyType.BINARY);
-            } else if (currentTokenEquals(Lexer.LONG)) {
-                pdi.setRequiredType(PropertyType.LONG);
-            } else if (currentTokenEquals(Lexer.DOUBLE)) {
-                pdi.setRequiredType(PropertyType.DOUBLE);
-            } else if (currentTokenEquals(Lexer.BOOLEAN)) {
-                pdi.setRequiredType(PropertyType.BOOLEAN);
-            } else if (currentTokenEquals(Lexer.DATE)) {
-                pdi.setRequiredType(PropertyType.DATE);
-            } else if (currentTokenEquals(Lexer.NAME)) {
-                pdi.setRequiredType(PropertyType.NAME);
-            } else if (currentTokenEquals(Lexer.PATH)) {
-                pdi.setRequiredType(PropertyType.PATH);
-            } else if (currentTokenEquals(Lexer.REFERENCE)) {
-                pdi.setRequiredType(PropertyType.REFERENCE);
-            } else if (currentTokenEquals(Lexer.WEAKREFERENCE)) {
-                pdi.setRequiredType(ExtendedPropertyType.WEAKREFERENCE);
-            } else if (currentTokenEquals(Lexer.URI)) {
-                pdi.setRequiredType(ExtendedPropertyType.URI);
-            } else if (currentTokenEquals(Lexer.DECIMAL)) {
-                pdi.setRequiredType(ExtendedPropertyType.DECIMAL);
-            } else if (currentTokenEquals(Lexer.UNDEFINED)) {
-                pdi.setRequiredType(PropertyType.UNDEFINED);
+            int propType = getPropertyType(currentToken);
+            if (propType >= 0) {
+                pdi.setRequiredType(propType);
             } else {
                 lexer.fail("Unknown type '" + currentToken + "' specified");
             }
@@ -469,30 +540,9 @@ public class JahiaCndReader {
     }
 
     private void doPropertySelector(ExtendedPropertyDefinition pdi) throws ParseException, IOException {
-        if (currentTokenEquals(Lexer.SMALLTEXT)) {
-            pdi.setSelector(SelectorType.SMALLTEXT);
-        } else if (currentTokenEquals(Lexer.RICHTEXT)) {
-            pdi.setSelector(SelectorType.RICHTEXT);
-        } else if (currentTokenEquals(Lexer.TEXTAREA)) {
-            pdi.setSelector(SelectorType.TEXTAREA);
-        } else if (currentTokenEquals(Lexer.CHOICELIST)) {
-            pdi.setSelector(SelectorType.CHOICELIST);
-        } else if (currentTokenEquals(Lexer.CRON)) {
-            pdi.setSelector(SelectorType.CRON);
-        } else if (currentTokenEquals(Lexer.DATEPICKER)) {
-            pdi.setSelector(SelectorType.DATEPICKER);
-        } else if (currentTokenEquals(Lexer.DATETIMEPICKER)) {
-            pdi.setSelector(SelectorType.DATETIMEPICKER);
-        } else if (currentTokenEquals(Lexer.CATEGORY)) {
-            pdi.setSelector(SelectorType.CATEGORY);
-        } else if (currentTokenEquals(Lexer.CONTENTPICKER)) {
-            pdi.setSelector(SelectorType.CONTENTPICKER);
-        } else if (currentTokenEquals(Lexer.FILEUPLOAD)) {
-            pdi.setSelector(SelectorType.FILEUPLOAD);
-        } else if (currentTokenEquals(Lexer.COLOR)) {
-            pdi.setSelector(SelectorType.COLOR);
-        } else if (currentTokenEquals(Lexer.CHECKBOX)) {
-            pdi.setSelector(SelectorType.CHECKBOX);
+        int selector = getSelectorType(currentToken);
+        if (selector >= 0) {
+            pdi.setSelector(selector);
         } else {
             lexer.fail("Unknown type '" + currentToken + "' specified");
         }
@@ -915,12 +965,7 @@ public class JahiaCndReader {
      * @return <code>true</code> if equals; <code>false</code> otherwise.
      */
     protected boolean currentTokenEquals(String[] s) {
-        for (String e : s) {
-            if (currentToken.equals(e)) {
-                return true;
-            }
-        }
-        return false;
+        return tokenEquals(currentToken, s);
     }
 
     /**

@@ -44,7 +44,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
@@ -59,7 +58,10 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.JahiaCndReader;
 import org.jahia.services.content.nodetypes.SelectorType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract property interceptor that does not do any value modifications. To be subclassed for particular usage.
@@ -67,6 +69,8 @@ import org.jahia.services.content.nodetypes.SelectorType;
  * @author Sergiy Shyrkov
  */
 public abstract class BaseInterceptor implements PropertyInterceptor {
+
+    private static final Logger logger = LoggerFactory.getLogger(BaseInterceptor.class);
 
     private Set<String> nodeTypes = Collections.emptySet();
 
@@ -110,7 +114,7 @@ public abstract class BaseInterceptor implements PropertyInterceptor {
             throws RepositoryException {
 
         // enforce constraints on the property name, required property type, selector type and node type if they were specified
-        
+
         return (getPropertyNames().size() == 0 || getPropertyNames().contains(definition.getName()))
                 && (getRequiredTypes().size() == 0 || getRequiredTypes().contains(
                         definition.getRequiredType()))
@@ -178,7 +182,12 @@ public abstract class BaseInterceptor implements PropertyInterceptor {
         if (requiredTypes != null && requiredTypes.size() > 0) {
             this.requiredTypes = new HashSet<Integer>(requiredTypes.size());
             for (String type : requiredTypes) {
-                this.requiredTypes.add(PropertyType.valueFromName(type));
+                int parsedType = JahiaCndReader.getPropertyType(type);
+                if (parsedType >= 0) {
+                    this.requiredTypes.add(parsedType);
+                } else {
+                    logger.error("Unknown property type {}. Skipping.", type);
+                }
             }
         } else {
             this.requiredTypes = Collections.emptySet();
@@ -189,13 +198,19 @@ public abstract class BaseInterceptor implements PropertyInterceptor {
         if (selectors != null && selectors.size() > 0) {
             this.selectors = new HashSet<Integer>(selectors.size());
             for (String selector : selectors) {
+                int parsedSelector = JahiaCndReader.getSelectorType(selector);
+                if (parsedSelector >= 0) {
+                    this.selectors.add(parsedSelector);
+                } else {
+                    logger.error("Unknown property selector {}. Skipping.", selector);
+                }
                 this.selectors.add(SelectorType.valueFromName(selector));
             }
         } else {
             this.selectors = Collections.emptySet();
         }
     }
-    
+
     @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this);

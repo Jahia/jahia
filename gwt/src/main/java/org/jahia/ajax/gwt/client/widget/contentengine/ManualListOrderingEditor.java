@@ -265,7 +265,7 @@ public class ManualListOrderingEditor extends ContentPanel {
 
     private void removeSorter() {
         if (childrenGrid.getStore().getStoreSorter() != null ) {
-            childrenGrid.getStore().setSortField("index");
+            childrenGrid.getStore().setSortField(null);
             childrenGrid.getStore().setStoreSorter(null);
             childrenGrid.getView().refresh(true);
         }

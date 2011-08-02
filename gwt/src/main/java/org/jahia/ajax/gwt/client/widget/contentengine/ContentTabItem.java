@@ -95,7 +95,7 @@ public class ContentTabItem extends PropertiesTabItem {
     public void init(final NodeHolder engine, AsyncTabItem tab, String language) {
         super.init(engine, tab, language);
 
-        if (engine.getMixin() != null) {
+        if (engine.getMixin() != null && nameFieldSet !=null) {
             final Field<?> titleField;
             PropertiesEditor.PropertyAdapterField adapterField = propertiesEditor.getFieldsMap().get("jcr:title");
             if (adapterField != null) {

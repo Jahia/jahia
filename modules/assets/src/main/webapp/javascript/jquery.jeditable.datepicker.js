@@ -35,14 +35,14 @@ $.editable.addInputType('datetimepicker', {
 
 
     submit: function (settings, original) {
-        $("#datetimepicker_", this).val($("#datetimepicker_", this).val().trim().replace(" ", "T"));
+        $("#datetimepicker_", this).val(jQuery.trim($("#datetimepicker_", this).val()).replace(" ", "T"));
     },
 
 
     content : function(string, settings, original) {
         var now;
         if(settings.loaddata.defaultValue) {
-            now = new Date(Date.parse(settings.loaddata.defaultValue));
+            now = settings.loaddata.defaultValue.indexOf('T') != -1 ? new Date(Date.parse(settings.loaddata.defaultValue)) : new Date(Number(settings.loaddata.defaultValue));
         } else {
             now = new Date();
         }
@@ -69,7 +69,7 @@ $.editable.addInputType('datepicker', {
 
 
     submit: function (settings, original) {
-        $("#datepicker_", this).val($("#datepicker_", this).val().trim().replace(" ", "T"));
+        $("#datepicker_", this).val(jQuery.trim($("#datepicker_", this).val()).replace(" ", "T"));
     },
 
 

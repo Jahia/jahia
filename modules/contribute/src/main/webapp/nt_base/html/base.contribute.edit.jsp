@@ -178,7 +178,7 @@
                                value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER ? 'dateTimeEdit' : 'dateEdit'}"/>
                         <div jcr:id="${propertyDefinition.name}" class="${dateTimePicker}${currentNode.identifier}"
                              id="${dateTimePicker}${currentNode.identifier}${scriptPropName}"
-                             jcr:url="<c:url value='${url.base}${currentNode.path}'/>" jcr:value="${prop.string}">
+                             jcr:url="<c:url value='${url.base}${currentNode.path}'/>" jcr:value="${prop.string}" jcr:valuems="${not empty prop.date ? prop.date.timeInMillis : ''}">
                             <c:if test="${not empty prop}">
                                 <fmt:formatDate value="${prop.date.time}" pattern="dd, MMMM yyyy HH:mm"/>
                             </c:if>

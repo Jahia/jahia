@@ -162,7 +162,7 @@
             </c:if>
             <span jcr:id="j:birthDate" class="dateEdit${currentNode.identifier}"
                  id="dateEdit${currentNode.identifier}j_birthDate"
-                 jcr:url="<c:url value='${url.basePreview}${user.path}'/>" jcr:value="${birthDate.string}">${displayBirthDate}</span>
+                 jcr:url="<c:url value='${url.basePreview}${user.path}'/>" jcr:value="${birthDate.string}" jcr:valuems="${not empty birthDate.date ? birthDate.date.timeInMillis : ''}">${displayBirthDate}</span>
         </li>
     </c:if>
 

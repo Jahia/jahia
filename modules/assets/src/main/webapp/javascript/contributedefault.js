@@ -81,7 +81,7 @@ function initEditFields(id) {
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
-        loaddata : {defaultValue:$(".dateEdit" + id).attr('jcr:value')}
+        loaddata : {defaultValue:($(".dateEdit" + id).attr('jcr:valuems') != null ? $(".dateEdit" + id).attr('jcr:valuems') : $(".dateEdit" + id).attr('jcr:value'))}
     });
 
     $(".dateTimeEdit" + id).editable(function (value, settings) {
@@ -97,7 +97,7 @@ function initEditFields(id) {
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
-        loaddata : {defaultValue:$(".dateTimeEdit" + id).attr('jcr:value')}
+        loaddata : {defaultValue:($(".dateTimeEdit" + id).attr('jcr:valuems') != null ? $(".dateTimeEdit" + id).attr('jcr:valuems') : $(".dateTimeEdit" + id).attr('jcr:value'))}
     });
 
     $(".choicelistEdit" + id).editable(function (value, settings) {

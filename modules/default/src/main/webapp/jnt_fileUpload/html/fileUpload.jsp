@@ -52,6 +52,7 @@
                     handler.formData = {
                         'jcrNodeType':"jnt:file",
                         'jcrReturnContentType':"json",
+                        'jcrReturnContentTypeOverride':$.browser.msie ? 'text/plain' : 'application/json',
                         'jcrRedirectTo':"<c:url value='${url.base}${renderContext.mainResource.node.path}'/>",
                         'jcrNewNodeOutputFormat':"${renderContext.mainResource.template}.html",
                         'form-token': $('#file_upload${currentNode.identifier} input[name=form-token]').val()

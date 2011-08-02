@@ -125,6 +125,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String ALIAS_USER = "alias";
     public static final String PARENT_TYPE = "jcrParentType";
     public static final String RETURN_CONTENTTYPE = "jcrReturnContentType";
+    public static final String RETURN_CONTENTTYPE_OVERRIDE = "jcrReturnContentTypeOverride";
     public static final String RESOURCE_ID = "jcrResourceID";
     public static final String REMOVE_MIXIN = "jcrRemoveMixin";
     public static final String COOKIE_VALUE = "jcrCookieValue";
@@ -170,6 +171,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         reservedParameters.add(AUTO_ASSIGN_ROLE);
         reservedParameters.add(PARENT_TYPE);
         reservedParameters.add(RETURN_CONTENTTYPE);
+        reservedParameters.add(RETURN_CONTENTTYPE_OVERRIDE);
         reservedParameters.add(COOKIE_NAME);
         reservedParameters.add(COOKIE_VALUE);
         reservedParameters.add(COOKIE_PATH);
@@ -935,10 +937,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if (result != null) {
             if (result.getResultCode() < 300) {
                 resp.setStatus(result.getResultCode());
-                boolean doJson = "json".equals(parameters.get(RETURN_CONTENTTYPE) != null ? parameters.get(RETURN_CONTENTTYPE).get(0) : "");
-                if ((req.getHeader("accept") != null && req.getHeader("accept").contains("application/json") || doJson) && result.getJson() != null) {
+                
+                if (result.getJson() != null && 
+                        ("json".equals(parameters.get(RETURN_CONTENTTYPE) != null ? parameters.get(RETURN_CONTENTTYPE).get(0) : "") 
+                                || req.getHeader("accept") != null && req.getHeader("accept").contains("application/json"))) {
                     try {
-                        resp.setContentType("application/json");
+                        resp.setContentType(parameters.get(RETURN_CONTENTTYPE_OVERRIDE) != null ? parameters.get(RETURN_CONTENTTYPE_OVERRIDE).get(0) : "application/json");
                         result.getJson().write(resp.getWriter());
                     } catch (JSONException e) {
                         logger.error(e.getMessage(), e);

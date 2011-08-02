@@ -96,12 +96,11 @@ public class ContentTypeTree extends LayoutContainer {
                     panel.add(ContentModelIconProvider.getInstance().getIcon(gwtJahiaNodeType).createImage());
                     tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
                     tableData.setWidth("95%");
-                    panel.add(label, tableData);
                 } else {
                     tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
                     tableData.setWidth("100%");
-                    panel.add(label, tableData);
                 }
+                panel.add(label, tableData);
                 if (!"".equals(gwtJahiaNodeType.getDescription())) { panel.setToolTip(gwtJahiaNodeType.getDescription()); }
                 panel.layout();
                 return panel;
@@ -112,6 +111,9 @@ public class ContentTypeTree extends LayoutContainer {
         treeGrid.setAutoExpandColumn("label");
         treeGrid.getTreeView().setRowHeight(25);
         treeGrid.getTreeView().setForceFit(true);
+        treeGrid.getTreeView().setBufferEnabled(true);
+        treeGrid.getTreeView().setCacheSize(128);
+        treeGrid.getTreeView().setScrollDelay(5);
         treeGrid.getStyle().setNodeCloseIcon(null);
         treeGrid.getStyle().setNodeOpenIcon(null);
         Layout layout = new BorderLayout();
@@ -133,6 +135,7 @@ public class ContentTypeTree extends LayoutContainer {
 
         add(filter, new BorderLayoutData(Style.LayoutRegion.NORTH,22));
         add(treeGrid, new BorderLayoutData(Style.LayoutRegion.CENTER));
+        setScrollMode(Style.Scroll.AUTOY);
     }
 
     public void filldataStore(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> types) {

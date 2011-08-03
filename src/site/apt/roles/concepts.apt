@@ -44,8 +44,8 @@ Jahia 6.5 - Authorization system concepts
 
     Roles are stored as a flat list of <<<jnt:role>>> nodes under <<</roles>>>
 
-    Roles can be assigned a role group, which will be edited in different places. Roles provided by jahia are split between
-    two groups : edit roles and live roles.
+    Roles can be assigned a role group, which will be edited in different places. Roles, provided by Jahia, are split between
+    two groups: edit roles and live roles.
 
 * {Access Control Lists}
 

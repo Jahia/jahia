@@ -18,7 +18,7 @@
             of the web application
         </description>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath*:org/jahia/defaults/config/**/applicationcontext-*.xml,WEB-INF/etc/spring/**/applicationcontext-*.xml,classpath*:org/jahia/config/**/applicationcontext-*.xml</param-value>
+        <param-value>classpath*:org/jahia/defaults/config/**/applicationcontext-*.xml,classpath*:org/jahia/defaults/config/**/applicationcontext-override-*.xml,WEB-INF/etc/spring/**/applicationcontext-*.xml,WEB-INF/etc/spring/**/applicationcontext-override-*.xml,classpath*:org/jahia/config/**/applicationcontext-*.xml,classpath*:org/jahia/config/**/applicationcontext-override-*.xml</param-value>
     </context-param>
 
     <context-param>

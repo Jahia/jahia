@@ -85,6 +85,38 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
+    <bean id="jiraAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
+        <property name="urlKey" value="community-jira" />
+        <property name="permissionName" value="adminIssueTracking" />
+        <property name="name" value="community-jira" />
+        <property name="icon" value="debug_view" />
+        <property name="label" value="label.jira" />
+        <property name="urlType" value="external" />
+        <property name="urlAction" value="http://jira.jahia.org/" />
+        <property name="rank" value="98"/>
+    </bean>
+    <bean id="docsAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
+        <property name="urlKey" value="pedia" />
+        <property name="permissionName" value="adminDocumentation" />
+        <property name="name" value="pedia" />
+        <property name="icon" value="books" />
+        <property name="label" value="label.jahiapedia" />
+        <property name="urlType" value="external" />
+        <property name="urlAction" value="http://www.jahia.com/community/documentation/jahiapedia/index.html" />
+        <property name="rank" value="99"/>
+    </bean>
+    <bean id="infoAdministrationModule" class="org.jahia.admin.JspForwardAdministrationModule" parent="abstractAdministrationModule">
+        <property name="urlKey" value="info" />
+        <property name="permissionName" value="adminAbout" />
+        <property name="name" value="info" />
+        <property name="icon" value="about" />
+        <property name="label" value="label.aboutJahia" />
+        <property name="urlAction" value="info" />
+        <property name="urlParams" value="" />
+        <property name="jspPath" value="/admin/show_info.jsp" />
+        <property name="rank" value="100"/>
+    </bean>
+    
     <!-- Site settings administration modules -->
 
     <bean id="groupsAdministrationModule" class="org.jahia.admin.users.ManageGroups" parent="abstractAdministrationModule">

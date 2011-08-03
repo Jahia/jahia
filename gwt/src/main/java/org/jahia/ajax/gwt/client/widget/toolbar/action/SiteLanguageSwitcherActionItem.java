@@ -69,7 +69,6 @@ public class SiteLanguageSwitcherActionItem extends LanguageSwitcherActionItem {
             events = false;
             mainComponent.getStore().removeAll();
             mainComponent.reset();
-            mainComponent.setSelection(Collections.<GWTJahiaLanguage>emptyList());
             mainComponent.getStore().add(JahiaGWTParameters.getSiteLanguages());
             mainComponent.getListView().getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
             if (mainComponent.getSelection().isEmpty() || !JahiaGWTParameters.getLanguage().equals(mainComponent.getSelection().get(0).getLanguage())) {

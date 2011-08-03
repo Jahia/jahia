@@ -40,11 +40,15 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.Style;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Language switcher toolbar item for languages of the current site.
@@ -65,12 +69,13 @@ public class SiteLanguageSwitcherActionItem extends LanguageSwitcherActionItem {
             events = false;
             mainComponent.getStore().removeAll();
             mainComponent.reset();
+            mainComponent.setSelection(Collections.<GWTJahiaLanguage>emptyList());
             mainComponent.getStore().add(JahiaGWTParameters.getSiteLanguages());
-
-            if (mainComponent.getSelection().isEmpty()) {
+            mainComponent.getListView().getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+            if (mainComponent.getSelection().isEmpty() || !JahiaGWTParameters.getLanguage().equals(mainComponent.getSelection().get(0).getLanguage())) {
                 for (GWTJahiaLanguage language : JahiaGWTParameters.getSiteLanguages()) {
                     if (language.getLanguage().equals(JahiaGWTParameters.getLanguage())) {
-                        mainComponent.select(language);
+                        mainComponent.setSelection(Arrays.asList(language));
                     }
                 }
             }

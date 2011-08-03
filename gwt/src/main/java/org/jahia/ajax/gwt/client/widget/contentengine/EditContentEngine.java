@@ -381,6 +381,12 @@ public class EditContentEngine extends AbstractContentEngine {
                             l.getMainModule().handleNewMainSelection(node.getPath().substring(0, node.getPath().lastIndexOf("/")+1)+node.getName(), l.getMainModule().getTemplate(), null);
                             refresh += Linker.REFRESH_PAGES;
                         }
+                        if (node.isPage() || node.getNodeTypes().contains("jnt:externalLink")
+                            || node.getNodeTypes().contains("jnt:nodeLink")
+                            || node.getNodeTypes().contains("jnt:template") || node.getInheritedNodeTypes().contains("jnt:template")
+                            || node.getInheritedNodeTypes().contains("jmix:visibleInPagesTree")) {
+                            refresh += Linker.REFRESH_PAGES;
+                        }
                         EditContentEngine.this.container.closeEngine();
                         linker.refresh(refresh);
                     }

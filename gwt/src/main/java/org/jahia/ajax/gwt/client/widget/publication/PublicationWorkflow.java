@@ -155,7 +155,8 @@ public class PublicationWorkflow implements CustomWorkflow {
                     final String status = Messages.get("label.publication.task", "Publishing content");
                     Info.display(status, status);
                     WorkInProgressActionItem.setStatus(status);
-                    JahiaContentManagementService.App.getInstance().publish(getAllUuids(), nodeProperties, null,
+                    final List<String> allUuids = getAllUuids();
+                    JahiaContentManagementService.App.getInstance().publish(allUuids, nodeProperties, null,
                             new BaseAsyncCallback() {
                                 public void onApplicationFailure(Throwable caught) {
                                     WorkInProgressActionItem.removeStatus(status);
@@ -165,6 +166,9 @@ public class PublicationWorkflow implements CustomWorkflow {
 
                                 public void onSuccess(Object result) {
                                     WorkInProgressActionItem.removeStatus(status);
+                                    if(allUuids.size() < 20) {
+                                        dialog.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
+                                    }
                                 }
                             });
                 }

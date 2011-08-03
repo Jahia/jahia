@@ -43,7 +43,7 @@ Jahia 6.5 - Internationalization
   And the one in French in finished on Tuesday my English page will only be visible for my end users on Tuesday when the French workflow is over
   even if my page in English exist in my live repository since Monday.
 
-** Mix langauge
+** Mix language
 
   Mix language allows to display the content even if it not translated, by using the default language instead. Click on
   the mix language button in language administration to activate the option.

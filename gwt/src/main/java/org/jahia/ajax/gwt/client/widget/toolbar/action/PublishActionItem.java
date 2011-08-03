@@ -144,9 +144,12 @@ public class PublishActionItem extends BaseActionItem {
 
                     setEnabled(GWTJahiaPublicationInfo.canPublish(gwtJahiaNode, info,
                             JahiaGWTParameters.getLanguage()));
-
-                    updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
-                                JahiaGWTParameters.getLanguageDisplayName());
+                    if(gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
+                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
+                    } else {
+                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
+                                    JahiaGWTParameters.getLanguageDisplayName());
+                    }
                 }
             } else {
                 setEnabled(false);

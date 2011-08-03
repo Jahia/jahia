@@ -69,8 +69,15 @@ public class PublishAllActionItem extends PublishActionItem {
             gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
             if (gwtJahiaNode != null) {
                 setEnabled(true);
+                if(gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
+                    updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
+                    if(gwtJahiaNode.isFile()) {
+                        setEnabled(false);
+                    }
+                } else {
                 updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
                             JahiaGWTParameters.getLanguageDisplayName());
+                }
             }
         }
     }

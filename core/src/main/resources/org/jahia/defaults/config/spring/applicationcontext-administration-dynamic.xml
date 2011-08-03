@@ -21,7 +21,7 @@
         <property name="icon" value="books" />
         <property name="label" value="label.jahiapedia" />
         <property name="urlType" value="external" />
-        <property name="urlAction" value="http://www.jahia.org/cms/home/jahiapedia" />
+        <property name="urlAction" value="http://www.jahia.com/community/documentation/jahiapedia/index.html" />
         <property name="rank" value="99"/>
     </bean>
     <bean id="infoAdministrationModule" class="org.jahia.admin.JspForwardAdministrationModule" parent="abstractAdministrationModule">

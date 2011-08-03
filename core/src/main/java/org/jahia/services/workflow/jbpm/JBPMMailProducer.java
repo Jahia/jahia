@@ -51,6 +51,7 @@ import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.ScriptEngineUtils;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jbpm.api.Execution;
 import org.jbpm.api.cmd.Environment;
 import org.jbpm.pvm.internal.email.impl.AddressTemplate;
@@ -312,11 +313,12 @@ public class JBPMMailProducer extends MailProducerImpl {
 
     private Bindings getBindings(Execution execution) throws RepositoryException {
         EnvironmentImpl environment = EnvironmentImpl.getCurrent();
-        final Bindings bindings = new MyBindings(environment);
-        ResourceBundle resourceBundle = ResourceBundle.getBundle(
-                "org.jahia.services.workflow." + ((ExecutionImpl) execution).getProcessDefinition().getKey());
-        bindings.put("bundle", resourceBundle);
         final Map<String, Object> vars = ((ExecutionImpl) execution).getVariables();
+        Locale locale = (Locale) vars.get("locale");
+        final Bindings bindings = new MyBindings(environment);
+        ResourceBundle resourceBundle = JahiaResourceBundle.lookupBundle(
+                "org.jahia.services.workflow." + ((ExecutionImpl) execution).getProcessDefinition().getKey(), locale);
+        bindings.put("bundle", resourceBundle);
         JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(
                 (String) vars.get("user"));
         if (jahiaUser.getProperty("j:email") != null) {
@@ -326,7 +328,7 @@ public class JBPMMailProducer extends MailProducerImpl {
         }
         bindings.put("date", new DateTool());
         bindings.put("submissionDate", Calendar.getInstance());
-        bindings.put("locale", vars.get("locale"));
+        bindings.put("locale", locale);
         bindings.put("workspace", vars.get("workspace"));
         bindings.put("nodes", JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {

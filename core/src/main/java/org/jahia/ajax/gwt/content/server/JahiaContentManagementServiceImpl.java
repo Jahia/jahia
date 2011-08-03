@@ -1076,7 +1076,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryForUser() throws GWTJahiaServiceException {
-        List<GWTJahiaWorkflowHistoryItem> res = workflow.getWorkflowHistoryForUser(getUser(), getLocale());
+        List<GWTJahiaWorkflowHistoryItem> res = workflow.getWorkflowHistoryForUser(getUser(), getUILocale());
 
 //        JCRSessionWrapper session = retrieveCurrentSession();
 
@@ -1687,7 +1687,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             result.put("activeJobs",schedulerHelper.getActiveJobs(getLocale()));
         }
         if (keys.contains("numberOfTasks")) {
-            result.put("numberOfTasks",workflow.getNumberOfTasksForUser(getUser(), getLocale()));
+            result.put("numberOfTasks",workflow.getNumberOfTasksForUser(getUser(), getUILocale()));
         }
         return result;
     }
@@ -1785,7 +1785,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public int getNumberOfTasksForUser() throws GWTJahiaServiceException {
-        return workflow.getNumberOfTasksForUser(getUser(), getLocale());
+        return workflow.getNumberOfTasksForUser(getUser(), getUILocale());
     }
 
     private WCAGValidationResult toWCAGResult(ValidatorResults validatorResults) {

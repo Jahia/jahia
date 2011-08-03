@@ -52,6 +52,7 @@ import org.jahia.services.mail.MailService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.RepositoryException;
 import javax.script.*;
@@ -213,7 +214,7 @@ public class RulesNotificationService {
                                                                         ".");
             String subject = "";
             try {
-                ResourceBundle resourceBundle = ResourceBundle.getBundle(resourceBundleName, locale);
+                ResourceBundle resourceBundle = JahiaResourceBundle.lookupBundle(resourceBundleName, locale);
                 bindings.put("bundle", resourceBundle);
                 subject = resourceBundle.getString("subject");
             } catch (MissingResourceException e) {

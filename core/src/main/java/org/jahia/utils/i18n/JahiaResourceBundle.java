@@ -241,6 +241,17 @@ public class JahiaResourceBundle extends ResourceBundle {
     }
 
     /**
+     * Finds a ResourceBundle depending on a baseName
+     *
+     * @param baseName
+     * @param preferredLocale
+     * @return a resource bundle instance for the specified base name and locale
+     */
+    public static ResourceBundle lookupBundle(String baseName, Locale preferredLocale) {
+        return lookupBundle(baseName, preferredLocale, null, true);
+    }
+    
+    /**
      * find  ResourceBundle depending on a baseName
      *
      * @param baseName
@@ -248,7 +259,7 @@ public class JahiaResourceBundle extends ResourceBundle {
      * @param loader
      * @return
      */
-    private static ResourceBundle lookupBundle(String baseName, Locale preferredLocale, ClassLoader loader, boolean throwExeptionIfNotFound) {
+    public static ResourceBundle lookupBundle(String baseName, Locale preferredLocale, ClassLoader loader, boolean throwExeptionIfNotFound) {
         JahiaCacheKey cacheKey = new JahiaCacheKey(baseName, preferredLocale, loader);
         ResourceBundle bundle = null;
 
@@ -280,9 +291,6 @@ public class JahiaResourceBundle extends ResourceBundle {
             }
         }
         
-        jahiaCacheList.put(cacheKey, new JahiaBundleReference(bundle, jahiaReferenceQueue, cacheKey));
-
-
         ResourceBundle match = null;
 
         if (!SettingsBean.getInstance().isConsiderDefaultJVMLocale()) {
@@ -300,6 +308,8 @@ public class JahiaResourceBundle extends ResourceBundle {
         } else {
             match = bundle;
         }
+        
+        jahiaCacheList.put(cacheKey, new JahiaBundleReference(match, jahiaReferenceQueue, cacheKey));
 
         return match;
     }

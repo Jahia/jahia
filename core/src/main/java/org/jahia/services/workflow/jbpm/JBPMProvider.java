@@ -49,6 +49,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
 import org.jahia.utils.FileUtils;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jbpm.api.*;
 import org.jbpm.api.activity.ActivityBehaviour;
 import org.jbpm.api.cmd.Command;
@@ -781,8 +782,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
 
     private ResourceBundle getResourceBundle(Locale locale, final String definitionKey) {
     	try {
-        return ResourceBundle
-                .getBundle(WorkflowService.class.getPackage().getName() + "." + definitionKey.replaceAll(" ", ""),
+    	    return JahiaResourceBundle
+                .lookupBundle(WorkflowService.class.getPackage().getName() + "." + definitionKey.replaceAll(" ", ""),
                         locale);
     	} catch (Exception e) {
     		logger.error(e.getMessage(), e);

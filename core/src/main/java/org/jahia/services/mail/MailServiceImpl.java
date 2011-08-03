@@ -311,7 +311,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
             if (templatePackageName == null) {
                 String resourceBundleName = StringUtils.substringBeforeLast(StringUtils.substringAfter(template.replaceAll("/WEB-INF",""), "/")
                         .replaceAll("/", "."), ".");
-                resourceBundle = ResourceBundle.getBundle(resourceBundleName, locale);
+                resourceBundle = JahiaResourceBundle.lookupBundle(resourceBundleName, locale);
             } else {
                 resourceBundle = new JahiaResourceBundle(locale, templatePackageName);
             }

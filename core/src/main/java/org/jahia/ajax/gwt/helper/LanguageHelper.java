@@ -93,19 +93,21 @@ public class LanguageHelper {
                     }
                 }
             } else {
-                JahiaSite siteByKey = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(
-                        JahiaSitesBaseService.SYSTEM_SITE_KEY);
-                List<Locale> locales = siteByKey.getLanguagesAsLocales();
+                JCRSiteNode siteByKey = (JCRSiteNode) ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(
+                        JahiaSitesBaseService.SYSTEM_SITE_KEY).getNode();
+                final Set<String>languages  = siteByKey.getLanguages();
+                final Set<String> activeLanguages = siteByKey.getActiveLanguages();
+                final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
                 final TreeSet<String> orderedLangs = new TreeSet<String>();
-                for (Locale locale : locales) {
-                    orderedLangs.add(locale.getLanguage());
-                }
+                orderedLangs.addAll(languages);
                 for (String langCode : orderedLangs) {
                     GWTJahiaLanguage item = new GWTJahiaLanguage();
                     item.setLanguage(langCode);
                     item.setDisplayName(getDisplayName(langCode));
                     item.setImage(getLangIcon(Jahia.getContextPath(), langCode));
                     item.setCurrent(langCode.equalsIgnoreCase(currentLocale.toString()));
+                    item.setActive(activeLanguages.contains(langCode));
+                    item.setMandatory(mandatoryLanguages.contains(langCode));
                     items.add(item);
                 }
             }

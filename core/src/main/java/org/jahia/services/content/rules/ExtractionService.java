@@ -168,7 +168,9 @@ public class ExtractionService {
             if (logger.isDebugEnabled()) {
                 logger.warn("Error extracting metadata for node " + node.getPath(), e);
             } else {
-                logger.warn("Error extracting metadata for node " + node.getPath() + ". Cause: " + e.getMessage());
+                logger.warn("Error extracting metadata for node " + node.getPath() + ". Cause: "
+                        + e.getMessage()
+                        + (e.getCause() != null ? " Original cause: " + e.getCause().getMessage() : ""));
             }
         } finally {
             IOUtils.closeQuietly(stream);
@@ -245,7 +247,13 @@ public class ExtractionService {
                         n.setProperty(Constants.EXTRACTION_DATE, new GregorianCalendar());
                         session.save();
                     } catch (Exception e) {
-                        logger.warn("Cannot extract content for node " + sourcePath, e);
+                        if (logger.isDebugEnabled()) {
+                            logger.warn("Cannot extract content for node " + sourcePath, e);
+                        } else {
+                            logger.warn("Cannot extract content for node " + sourcePath + ". Cause: "
+                                    + e.getMessage()
+                                    + (e.getCause() != null ? " Original cause: " + e.getCause().getMessage() : ""));
+                        }
                     } finally {
                         IOUtils.closeQuietly(stream);
                     }

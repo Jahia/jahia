@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content jcr:primaryType="jnt:systemFolder"
+         jcr:mixinTypes="jmix:accessControlled jmix:workflowRulesable"
+         xmlns:jcr="http://www.jcp.org/jcr/1.0"
+         xmlns:j="http://www.jahia.org/jahia/1.0"
+         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+
+    <permissions jcr:primaryType="jnt:permission" jcr:mixinTypes="mix:versionable">
+        <editMode jcr:primaryType="jnt:permission">
+            <engineTabs jcr:primaryType="jnt:permission">
+                <viewRolesTab jcr:primaryType="jnt:permission">
+                    <viewLiveRolesTab jcr:primaryType="jnt:permission"/>
+                    <viewEditRolesTab jcr:primaryType="jnt:permission"/>
+                </viewRolesTab>
+            </engineTabs>
+        </editMode>
+    </permissions>
+
+    <roles jcr:primaryType="jnt:roles">
+        <reader j:roleGroup="live-role" />
+
+        <jahiapp-user j:roleGroup="live-role" />
+
+        <owner j:roleGroup="live-role" />
+
+        <privileged j:roleGroup="edit-role" />
+
+        <contributor j:roleGroup="edit-role" />
+
+        <editor j:roleGroup="edit-role"
+                j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode/editModeAccess /permissions/editMode/editSelector /permissions/editMode/engineTabs/viewCategoriesTab /permissions/editMode/engineTabs/viewContentTab /permissions/editMode/engineTabs/viewLayoutTab /permissions/editMode/engineTabs/viewMetadataTab /permissions/editMode/engineTabs/viewOptionsTab /permissions/editMode/engineTabs/viewCategoriesTab /permissions/editMode/engineTabs/viewLiveRolesTab /permissions/editMode/engineTabs/viewTagsTab /permissions/editMode/engineTabs/viewSeoTab /permissions/contributeMode /permissions/templates /permissions/managers/fileManager /permissions/managers/portletManager /permissions/workflow-tasks/start-one-step-review /permissions/workflow-tasks/start-one-step-unpublish /permissions/wysiwyg-editor-toolbar/view-full-wysiwyg-editor" />
+
+        <reviewer j:roleGroup="edit-role" />
+
+        <editor-in-chief j:roleGroup="edit-role" />
+
+        <web-designer j:roleGroup="edit-role" />
+
+        <site-administrator j:roleGroup="edit-role" />
+    </roles>
+</content>

@@ -31,7 +31,9 @@ $.editable.addInputType('ajaxupload', {
         var form = this;
         form.attr("enctype", "multipart/form-data");
         $("button[type='submit']", form).bind('click', function() {
-            //$(".message").show();
+        	if ($('#upload').val() == null || $('#upload').val().length == 0) {
+        		return false;
+        	}
             var target = settings.target;
             if($.isFunction(settings.target)) {
                 target = settings.target.apply(this,null);

@@ -77,6 +77,7 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
         String s = model.getName();
         model.set("shortName", Format.ellipse(s, 14));
         model.set("nameLabel", Messages.get("label.name", "Name"));
+        model.set("titleLabel", Messages.get("label.title", "Title"));
         model.set("authorLabel", Messages.get("versioning_author", "Author"));
         model.set("tagsLabel", Messages.get("org.jahia.jcr.edit.tags.tab", "tags"));
         String width = model.get("j:width");
@@ -132,6 +133,7 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
         '<div><div style="width: 140px; float: left; text-align: center;" class="thumb">{nodeImg}</div>',
         '<div style="margin-left: 160px; " class="thumbDetails">',
         '<div><b>{nameLabel}: </b>{name}</div>',
+        '<div><b>{titleLabel}: </b>{displayName}</div>',
         '<div><b>{authorLabel}: </b>{createdBy}</div>',
         '{widthHTML}',
         '{heightHTML}',

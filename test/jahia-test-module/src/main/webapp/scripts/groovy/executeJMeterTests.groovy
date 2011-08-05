@@ -1,13 +1,15 @@
 def test = project.properties['test']
-def gui = project.properties['gui']
 
 def p = ~/.*\.jmx/
+
+def tests;
+tests = test.tokenize(",");
 
 new File(project.properties['jahia.test.jmeter.path']+"/bin/testPlan").eachDir {
     moduleDir ->
     new File(moduleDir,"scripts/jmeter").eachDir {
         d ->
-        if ((test != null && d.getName().equals(test)) || test == null) {
+        if ((test != null && tests.contains(d.getName())) || test == null) {
             new File(d.getAbsolutePath()).eachFileMatch(p) {
                 f ->
                 final def file = new File(d.getAbsolutePath() + "/test.properties");
@@ -20,14 +22,11 @@ new File(project.properties['jahia.test.jmeter.path']+"/bin/testPlan").eachDir {
 
                 project.properties.each() { key, value -> params += " -J${key}=${value}"}
 
-                def guiparam = "-n "
-                if (gui != null) guiparam = ""
-
                 if (jmeterPath.toString().count("/") != 0) {
-                    jmeterPath = project.properties['jahia.test.jmeter.path'] + "/bin/jmeter.sh " + guiparam + " -t "
+                    jmeterPath = project.properties['jahia.test.jmeter.path'] + "/bin/jmeter.sh -n -t "
                 } else {
                     // if windows
-                    jmeterPath = project.properties['jahia.test.jmeter.path'] + "\\bin\\jmeter.bat " + guiparam  + " -t "
+                    jmeterPath = project.properties['jahia.test.jmeter.path'] + "\\bin\\jmeter.bat -n -t "
                 }
                 if (file.exists()) jmeterExe = jmeterPath + f + " " + evaluate(file) else
                     jmeterExe = jmeterPath + f + params

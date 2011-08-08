@@ -587,13 +587,31 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     addConstraint(textSearchConstraints, "or", "jcr:contains(@j:keywords, " + searchExpression + ")");
                 }
                 if (searchFields.isFilename()) {
-                    addConstraint(
-                            textSearchConstraints,
-                            "or",
-                            "jcr:contains(@j:nodename, "
-                                    + (textSearch.getTerm().endsWith("*") ? searchExpression
-                                    : getSearchExpressionForMatchType(textSearch.getTerm()
-                                    , textSearch.getMatch(), "*")) + ")");
+                    String[] terms = null;
+                    String constraint = "or";
+                    if (textSearch.getMatch() == MatchType.ANY_WORD || textSearch.getMatch() == MatchType.ALL_WORDS || textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
+                        terms = cleanMultipleWhiteSpaces(textSearch.getTerm()).split(" ");
+                        if (textSearch.getMatch() == MatchType.ALL_WORDS || textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
+                            constraint = "and";
+                        }
+                    } else {
+                        terms = new String[]{textSearch.getTerm()};
+                    }
+                    StringBuilder nameSearchConstraints = new StringBuilder(256);
+                    for (String term : terms) {
+                        String termConstraint = "jcr:like(@j:nodename, "
+                                + (term.contains("*") ? stringToQueryLiteral(StringUtils
+                                        .replaceChars(term, '*', '%'))
+                                        : stringToQueryLiteral("%" + term + "%")
+                                                + ")");
+                        if (textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
+                            termConstraint = "not(" + termConstraint + ")";
+                        }
+                        addConstraint(nameSearchConstraints, constraint,
+                                termConstraint);
+                    }
+                    addConstraint(textSearchConstraints,
+                            "or", nameSearchConstraints.toString());
                 }
                 if (searchFields.isTags() && getTaggingService() != null
                         && (params.getSites().getValue() != null || params.getOriginSiteKey() != null)

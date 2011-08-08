@@ -27,23 +27,31 @@
     <c:choose>
         <c:when test="${not empty moduleMap.displaySearchParams}">
             <c:set var="searchUrl"><search:searchUrl/>&</c:set>
-        </c:when>
-        <c:when test="${not empty moduleMap.pagerUrl}">
-            <c:set var="searchUrl" value="${moduleMap.pagerUrl}"/>
+            <c:url value="${searchUrl}" context="/" var="basePaginationUrl">
+                <c:if test="${not empty param}">
+                    <c:forEach items="${param}" var="extraParam">
+                        <c:if test="${extraParam.key ne 'begin' and extraParam.key ne 'end' and extraParam.key ne 'pagesize'}">
+                            <c:param name="${extraParam.key}" value="${extraParam.value}"/>
+                        </c:if>
+                    </c:forEach>
+                </c:if>
+            </c:url>
         </c:when>
         <c:otherwise>
-            <c:set var="searchUrl" value="${url.mainResource}?"/>
+            <c:set var="searchUrl" value="${not empty moduleMap.pagerUrl ? moduleMap.pagerUrl : url.mainResource}${not empty moduleMap.pagerUrl ? '':'?'}"/>
+            <c:url value="${searchUrl}" var="basePaginationUrl">
+                <c:if test="${not empty param}">
+                    <c:forEach items="${param}" var="extraParam">
+                        <c:if test="${extraParam.key ne 'begin' and extraParam.key ne 'end' and extraParam.key ne 'pagesize'}">
+                            <c:param name="${extraParam.key}" value="${extraParam.value}"/>
+                        </c:if>
+                    </c:forEach>
+                </c:if>
+            </c:url>            
         </c:otherwise>
     </c:choose>
-    <c:url value="${searchUrl}" var="basePaginationUrl">
-        <c:if test="${not empty param}">
-            <c:forEach items="${param}" var="extraParam">
-                <c:if test="${extraParam.key ne 'begin' and extraParam.key ne 'end' and extraParam.key ne 'pagesize'}">
-                    <c:param name="${extraParam.key}" value="${extraParam.value}"/>
-                </c:if>
-            </c:forEach>
-        </c:if>
-    </c:url>
+    
+
     <c:set target="${moduleMap}" property="basePaginationUrl" value="${basePaginationUrl}"/>
     ${extraParams}
     <div class="pagination"><!--start pagination-->

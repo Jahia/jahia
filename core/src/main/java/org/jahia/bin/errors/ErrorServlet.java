@@ -51,8 +51,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.URLResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,19 +157,27 @@ public class ErrorServlet extends HttpServlet {
                 if (null == path) {
                     try {
                         JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteKey);
-                        // try template set error page considering inheritance
-                        JahiaTemplateManagerService templateService = ServicesRegistry.getInstance()
-                                .getJahiaTemplateManagerService();
-                        JahiaTemplatesPackage pkg = templateService.getTemplatePackage(site
-                                .getTemplatePackageName());
-                        if (pkg != null) {
-                            pathToCheck = pkg.getRootFolderPath() + "/errors/" + page;
-                            path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
-                                    : null;
-                            if (null == path) {
-                                pathToCheck = pkg.getRootFolderPath() + "/errors/error.jsp";
-                                path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
+                        if (site != null) {
+                            // try template set error page considering inheritance
+                            JahiaTemplateManagerService templateService = ServicesRegistry
+                                    .getInstance()
+                                    .getJahiaTemplateManagerService();
+                            JahiaTemplatesPackage pkg = templateService
+                                    .getTemplatePackage(site
+                                            .getTemplatePackageName());
+                            if (pkg != null) {
+                                pathToCheck = pkg.getRootFolderPath()
+                                        + "/errors/" + page;
+                                path = getServletContext().getResource(
+                                        pathToCheck) != null ? pathToCheck
                                         : null;
+                                if (null == path) {
+                                    pathToCheck = pkg.getRootFolderPath()
+                                            + "/errors/error.jsp";
+                                    path = getServletContext().getResource(
+                                            pathToCheck) != null ? pathToCheck
+                                            : null;
+                                }
                             }
                         }
                     } catch (JahiaException e) {

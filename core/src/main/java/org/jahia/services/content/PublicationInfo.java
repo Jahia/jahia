@@ -50,6 +50,9 @@ import java.util.*;
  * @author toto
  */
 public class PublicationInfo implements Serializable {
+
+    private static final long serialVersionUID = -5752968731917175200L;
+    
     public static final int PUBLISHED = 1;
     public static final int MODIFIED = 3;
     public static final int NOT_PUBLISHED = 4;
@@ -61,7 +64,7 @@ public class PublicationInfo implements Serializable {
     public static final int MANDATORY_LANGUAGE_VALID = 10;
     public static final int DELETED = 11;
 
-    private transient List<String> allUuids;
+    private transient Map<String, List<String>> allUuidsCache = new HashMap<String, List<String>>();
 
 
     private PublicationInfoNode root;
@@ -90,6 +93,8 @@ public class PublicationInfo implements Serializable {
     }
 
     public List<String> getAllUuids(boolean includeDeleted, boolean includePublished) {
+        String cacheKey = getKey(includeDeleted, includePublished);
+        List<String> allUuids = allUuidsCache.get(cacheKey);
         if (allUuids != null) {
             return allUuids;
         }
@@ -107,7 +112,12 @@ public class PublicationInfo implements Serializable {
                 allUuids.add(node.getUuid());
             }
         }
+        allUuidsCache.put(cacheKey, allUuids);
         return allUuids;
+    }
+    
+    private String getKey(boolean includeDeleted, boolean includePublished) {
+        return String.valueOf(includeDeleted) + String.valueOf(includePublished);
     }
 
     public List<PublicationInfo> getAllReferences() {

@@ -204,8 +204,8 @@ public class JCRVersionService extends JahiaService {
             if (logger.isDebugEnabled()) {
                 logger.debug(
                         "Version " + v.getName() + " checkinDateAvailable=" + checkinDateAvailable + " checkinDate=" +
-                        checkinDate + " created=" + v.getCreated().getTime() + " properties:" +
-                        propertyString.toString());
+                                checkinDate + " created=" + v.getCreated().getTime() + " properties:" +
+                                propertyString.toString());
             }
             lastVersion = v;
         }
@@ -217,7 +217,7 @@ public class JCRVersionService extends JahiaService {
         }
         if (closestVersion!=null && logger.isDebugEnabled()) {
             logger.debug("Resolved date " + versionDate + " for node title " + nodeTitle + " to closest version " +
-                         closestVersion.getName() + " createdTime=" + closestVersion.getCreated().getTime());
+                    closestVersion.getName() + " createdTime=" + closestVersion.getCreated().getTime());
         }
         return closestVersion;
     }
@@ -282,7 +282,7 @@ public class JCRVersionService extends JahiaService {
             logger.info("Checking property for updating "+propertyName+" from source node "+destinationNode.getPath());
             try {
                 if (!property.getDefinition().isProtected() &&
-                    !Constants.forbiddenPropertiesToCopy.contains(propertyName)) {
+                        !Constants.forbiddenPropertiesToCopy.contains(propertyName)) {
                     logger.info("Setting property "+propertyName+" on node "+destinationNode.getPath());
                     if (property.getDefinition().isMultiple() && property.isMultiple()) {
                         destinationNode.setProperty(propertyName, property.getValues());
@@ -310,7 +310,7 @@ public class JCRVersionService extends JahiaService {
         mixin = destinationNode.getMixinNodeTypes();
         for (NodeType aMixin : mixin) {
             if (!frozenNode.isNodeType(aMixin.getName()) &&
-                !Constants.forbiddenMixinToCopy.contains(aMixin.getName())) {
+                    !Constants.forbiddenMixinToCopy.contains(aMixin.getName())) {
                 logger.info("Removing mixin "+aMixin.getName()+" on node "+destinationNode.getPath());
                 destinationNode.removeMixin(aMixin.getName());
             }
@@ -327,33 +327,36 @@ public class JCRVersionService extends JahiaService {
         ni = frozenNode.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
-            names.add(child.getName());
-            if (destinationNodes.containsKey(child.getIdentifier())) {
-                JCRNodeWrapper node = destinationNodes.remove(child.getIdentifier());
-                synchronizeNode(child, node, session, allSubTree);
-            } else if (child.getRealNode().getParent().isNodeType(Constants.NT_FROZENNODE)) {
-                JCRNodeWrapper node = destinationNode.addNode(child.getName(), child.getPrimaryNodeType().getName());
-                synchronizeNode(child, node, session, allSubTree);
-            } else {
-                VersionHistory history;
-                try {
-                    history = (VersionHistory) child.getRealNode().getProperty(
-                            Constants.JCR_VERSIONHISTORY).getNode();
-                } catch (RepositoryException e){
-                    history = (VersionHistory) child.getRealNode().getParent().getParent();
-                }
-                Version version = findVersionByLabel(history, ((JCRFrozenNodeAsRegular) child).getVersionLabel());
-                if (version == null) {
-                    version = findClosestVersion(history, ((JCRFrozenNodeAsRegular) child).getVersionDate());
-                }
-                if (version != null) {
-                    session.save();
-                    logger.info("Restoring node "+child.getPath()+" on parent "+destinationNode.getPath());
-                    session.getWorkspace().getVersionManager().restore(child.getPath(),version, false);
-                    JCRNodeWrapper node = session.getNode(child.getPath(), false);
+            // do not handle rights on the node when restore a node
+            if (!child.getName().equals("j:acl")) {
+                names.add(child.getName());
+                if (destinationNodes.containsKey(child.getIdentifier())) {
+                    JCRNodeWrapper node = destinationNodes.remove(child.getIdentifier());
                     synchronizeNode(child, node, session, allSubTree);
+                } else if (child.getRealNode().getParent().isNodeType(Constants.NT_FROZENNODE)) {
+                    JCRNodeWrapper node = destinationNode.addNode(child.getName(), child.getPrimaryNodeType().getName());
+                    synchronizeNode(child, node, session, allSubTree);
+                } else {
+                    VersionHistory history;
+                    try {
+                        history = (VersionHistory) child.getRealNode().getProperty(
+                                Constants.JCR_VERSIONHISTORY).getNode();
+                    } catch (RepositoryException e){
+                        history = (VersionHistory) child.getRealNode().getParent().getParent();
+                    }
+                    Version version = findVersionByLabel(history, ((JCRFrozenNodeAsRegular) child).getVersionLabel());
+                    if (version == null) {
+                        version = findClosestVersion(history, ((JCRFrozenNodeAsRegular) child).getVersionDate());
+                    }
+                    if (version != null) {
+                        session.save();
+                        logger.info("Restoring node "+child.getPath()+" on parent "+destinationNode.getPath());
+                        session.getWorkspace().getVersionManager().restore(child.getPath(),version, false);
+                        JCRNodeWrapper node = session.getNode(child.getPath(), false);
+                        synchronizeNode(child, node, session, allSubTree);
+                    }
+                    //child.copy(destinationNode, child.getName(), false);
                 }
-                //child.copy(destinationNode, child.getName(), false);
             }
         }
 
@@ -405,7 +408,7 @@ public class JCRVersionService extends JahiaService {
                         if (!versionHistory.hasVersionLabel(labelWithWs)) {
                             Version version = versionManager.getBaseVersion(node.getPath());
                             logger.debug("Add version label " + labelWithWs + " on " + node.getPath() + " for version " +
-                                         version.getName());
+                                    version.getName());
                             if (nodeWrapper.isVersioned()) {
                                 versionHistory.addVersionLabel(version.getName(), labelWithWs, true);
                             }
@@ -429,7 +432,7 @@ public class JCRVersionService extends JahiaService {
                         if (!versionHistory.hasVersionLabel(labelWithWs)) {
                             Version version = versionManager.getBaseVersion(nodeWrapper.getPath());
                             logger.debug("Add version label " + labelWithWs + " on " + nodeWrapper.getPath() + " for version " +
-                                         version.getName());
+                                    version.getName());
                             if (nodeWrapper.isVersioned()) {
                                 versionHistory.addVersionLabel(version.getName(), labelWithWs, true);
                             }

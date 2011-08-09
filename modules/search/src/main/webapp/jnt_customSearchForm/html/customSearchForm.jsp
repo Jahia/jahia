@@ -14,14 +14,8 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<template:addResources type="css" resources="jquery.autocomplete.css" />
-<template:addResources type="css" resources="thickbox.css" />
 <template:addResources type="css" resources="simplesearchform.css" />
 
-<template:addResources type="javascript" resources="jquery.min.js"/>
-<template:addResources type="javascript" resources="jquery.autocomplete.js" />
-<template:addResources type="javascript" resources="jquery.bgiframe.min.js" />
-<template:addResources type="javascript" resources="thickbox-compressed.js" />
 <c:set var="pathType" value="${currentNode.properties.pathType.string}"/>
 <c:set var="searchPath" value="${currentNode.properties.path.node.path}"/>
 <c:set var="searchType" value="${currentNode.properties.nodeType.string}"/>
@@ -64,59 +58,6 @@
 
 <c:url var="findUrl" value="${url.find}"/>
 
-<template:addResources>
-    <script type="text/javascript">
-        $(document).ready(function() {
-
-            /**
-             * As any property can match the query, we try to intelligently display properties that either matched or make
-             * sense to display.
-             * @param node
-             */
-            function getCustomText(node) {
-                if (node.matchingProperties.length > 0) {
-                    var firstMatchingProperty = node.matchingProperties[0];
-                    return node[firstMatchingProperty];
-                }
-                if (node["jcr:title"] != null) {
-                    return node["jcr:title"];
-                } else if (node["text"] != null) {
-                    return node["text"];
-                } else if (node["j:nodename"] != null) {
-                    return node["j:nodename"];
-                }
-            }
-
-            function formatCustom(result) {
-                return getCustomText(result["node"]);
-            }
-
-            $("#searchCustomTerm").autocomplete("${findUrl}", {
-                dataType: "json",
-                selectFirst: false,
-                cacheLength: 1,
-                parse: function parse(data) {
-                    return $.map(data, function(row) {
-                        return {
-                            data: row,
-                            value: getCustomText(row["node"]),
-                            result: getCustomText(row["node"])
-                        }
-                    });
-                },
-                formatItem: function(item) {
-                    return formatCustom(item);
-                },
-                extraParams: {
-                    query : "${xPathQuery}",
-                    language : "xpath",
-                    propertyMatchRegexp : "{$q}.*",
-                    removeDuplicatePropValues : "true"
-                }
-            });
-        });
-    </script>
-</template:addResources>
 <template:addCacheDependency uuid="${currentNode.properties.result.string}"/>
 <c:if test="${not empty currentNode.properties.result.node}">
     <c:url value='${url.base}${currentNode.properties.result.node.path}.html' var="searchUrl"/>

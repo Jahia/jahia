@@ -5,67 +5,10 @@
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
-<template:addResources type="css" resources="jquery.autocomplete.css" />
-<template:addResources type="css" resources="thickbox.css" />
 <template:addResources type="css" resources="simplesearchform.css" />
 
-<template:addResources type="javascript" resources="jquery.min.js"/>
-<template:addResources type="javascript" resources="jquery.autocomplete.js" />
-<template:addResources type="javascript" resources="jquery.bgiframe.min.js" />
-<template:addResources type="javascript" resources="thickbox-compressed.js" />
 <template:addResources>
 <c:url var="findUrl" value="${url.find}"/>
-<script type="text/javascript">
-    $(document).ready(function() {
-
-        /**
-         * As any property can match the query, we try to intelligently display properties that either matched or make
-         * sense to display.
-         * @param node
-         */
-        function getText(node) {
-            if (node.matchingProperties.length > 0) {
-                var firstMatchingProperty = node.matchingProperties[0];
-                return node[firstMatchingProperty];
-            }
-            if (node["jcr:title"] != null) {
-                return node["jcr:title"];
-            } else if (node["text"] != null) {
-                return node["text"];
-            } else if (node["j:nodename"] != null) {
-                return node["j:nodename"];
-            }
-        }
-
-        function format(result) {
-            return getText(result["node"]);
-        }
-
-        $("#searchTerm").autocomplete("${findUrl}", {
-            dataType: "json",
-            selectFirst: false,
-            cacheLength: 1,
-            parse: function parse(data) {
-                return $.map(data, function(row) {
-				    return {
-					    data: row,
-					    value: getText(row["node"]),
-					    result: getText(row["node"])
-				    }
-			    });
-            },
-            formatItem: function(item) {
-			    return format(item);
-		    },
-            extraParams: {
-                query : "/jcr:root${renderContext.site.path}//element(*, nt:base)[jcr:contains(.,'{$q}*')]",
-                language : "xpath",
-                propertyMatchRegexp : "{$q}.*",
-                removeDuplicatePropValues : "true"
-            }
-        });
-    });
-</script>
 </template:addResources>
 <template:addCacheDependency uuid="${currentNode.properties.result.string}"/>
 <c:if test="${not empty currentNode.properties.result.node}">

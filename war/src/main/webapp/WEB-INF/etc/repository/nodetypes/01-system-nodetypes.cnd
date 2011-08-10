@@ -298,8 +298,8 @@
  */
 [mix:lockable]
   mixin
-  - jcr:lockOwner (STRING) protected IGNORE hidden nofulltext
-  - jcr:lockIsDeep (BOOLEAN) protected IGNORE hidden
+  - jcr:lockOwner (STRING) protected IGNORE hidden indexed=no
+  - jcr:lockIsDeep (BOOLEAN) protected IGNORE hidden indexed=no
 
 //------------------------------------------------------------------------------
 // S H A R E A B L E   N O D E S

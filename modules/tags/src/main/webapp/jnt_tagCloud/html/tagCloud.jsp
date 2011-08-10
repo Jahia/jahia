@@ -56,6 +56,7 @@
                     <c:param name="src_terms[0].term" value="${tagName.name}"/>
                     <c:param name="src_terms[0].fields.tags" value="true"/>
                     <c:param name="src_sites.values" value="${renderContext.site.siteKey}"/>
+                    <c:param name="autoSuggest" value="false"/>
                 </c:url>
                 <li><c:if test="${!edit}"><a href="${facetUrl}" class="tag${functions:round(10 * tag.value / totalUsages)}0"
                                              title="${tagName.name} (${tag.value})">${tagName.name}</a></c:if>

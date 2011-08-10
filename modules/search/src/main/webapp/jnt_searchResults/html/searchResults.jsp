@@ -46,7 +46,7 @@
 <jcr:nodeProperty name="autoSuggest" node="${currentNode}" var="autoSuggest"/>
 <div id="${currentNode.UUID}">
 <div class="resultsList">
-    <c:if test="${autoSuggest.boolean && (empty moduleMap || empty moduleMap.begin || moduleMap.begin == 0)}">
+    <c:if test="${param.autoSuggest != false && autoSuggest.boolean && (empty moduleMap || empty moduleMap.begin || moduleMap.begin == 0)}">
    	<%-- spelling auto suggestions are enabled --%>
         <jcr:nodeProperty name="autoSuggestMinimumHitCount" node="${currentNode}" var="autoSuggestMinimumHitCount"/>
         <jcr:nodeProperty name="autoSuggestHitCount" node="${currentNode}" var="autoSuggestHitCount"/>

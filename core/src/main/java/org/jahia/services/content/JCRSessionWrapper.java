@@ -231,13 +231,19 @@ public class JCRSessionWrapper implements Session {
                 return wrapper;
             } catch (ItemNotFoundException ee) {
                 // All good
-                originalEx = ee;
+                if (originalEx == null) {
+                    originalEx = ee;
+                }
             } catch (UnsupportedRepositoryOperationException uso) {
                 logger.debug(
                         "getNodeByUUID unsupported by : " + provider.getKey() + " / " + provider.getClass().getName());
-                originalEx = uso;
+                if (originalEx == null) {
+                    originalEx = uso;
+                }
             } catch (RepositoryException ex) {
-                originalEx = ex;
+                if (originalEx == null) {
+                    originalEx = ex;
+                }
                 logger.warn(
                         "repository exception : " + provider.getKey() + " / " + provider.getClass().getName() + " : " +
                                 ex.getMessage());

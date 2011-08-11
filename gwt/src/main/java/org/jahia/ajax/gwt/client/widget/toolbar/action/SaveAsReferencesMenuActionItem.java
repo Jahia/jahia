@@ -56,11 +56,12 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * 
+ *
  * User: ktlili
  * Date: Jan 20, 2010
  * Time: 1:51:18 PM
@@ -70,6 +71,7 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
 
     private static String siteKey;
     private static List<GWTJahiaNode> pages;
+    private static List<SaveAsReferencesMenuActionItem> listOfMenus = new ArrayList<SaveAsReferencesMenuActionItem>();
 
     private GWTJahiaProperty allowedNodeType;
     private boolean menuItemsCount;
@@ -79,6 +81,7 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
         setEnabled(false);
         targetName = gwtToolbarItem.getProperties().get("targetName");
         allowedNodeType = gwtToolbarItem.getProperties().get("allowedNodeType");
+        listOfMenus.add(this);
         if (siteKey == null) {
             siteKey = JahiaGWTParameters.getSiteKey();
             loadNodes(linker);
@@ -102,37 +105,38 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
     }
 
     private void initMenu(final Linker linker) {
-        final Menu menu = new Menu();
-
-        menu.removeAll();
-        boolean displayMenu = false;
-        if (pages != null) {
-            if (pages.size() > 1) {
-                for (final GWTJahiaNode page : pages) {
+        for (SaveAsReferencesMenuActionItem m : listOfMenus) {
+            final Menu menu = new Menu();
+            menu.removeAll();
+            boolean displayMenu = false;
+            if (pages != null) {
+                if (pages.size() > 1) {
+                    for (final GWTJahiaNode page : pages) {
+                        if (PermissionsUtils.isPermitted("jcr:write", page.getPermissions())) {
+                            MenuItem item = new MenuItem(page.getDisplayName());
+                            addSelectionListener(page, item, linker);
+                            menu.add(item);
+                            displayMenu = true;
+                        }
+                    }
+                } else if (pages.size() == 1) {
+                    GWTJahiaNode page = pages.get(0);
                     if (PermissionsUtils.isPermitted("jcr:write", page.getPermissions())) {
-                        MenuItem item = new MenuItem(page.getDisplayName());
-                        addSelectionListener(page, item, linker);
-                        menu.add(item);
+                        addSelectionListener(page, getContextMenuItem(), linker);
                         displayMenu = true;
                     }
                 }
-            } else if (pages.size() == 1) {
-                GWTJahiaNode page = pages.get(0);
-                if (PermissionsUtils.isPermitted("jcr:write", page.getPermissions())) {
-                    addSelectionListener(page, getContextMenuItem(), linker);
-                    displayMenu = true;
+            }
+            if (displayMenu) {
+                if (menu.getItemCount() > 0) {
+                    setSubMenu(menu);
                 }
+                setEnabled(true);
+                m.setMenuItemsCount(true);
+            } else {
+                setEnabled(false);
+                m.setMenuItemsCount(false);
             }
-        }
-        if (displayMenu) {
-            if (menu.getItemCount() > 0) {
-                setSubMenu(menu);
-            }
-            setEnabled(true);
-            menuItemsCount = true;
-        } else {
-            setEnabled(false);
-            menuItemsCount = false;
         }
     }
 
@@ -166,6 +170,10 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
         LinkerSelectionContext lh = linker.getSelectionContext();
         setEnabled(lh.getSingleSelection() != null && !lh.isSecondarySelection() && lh.getSingleSelection().getInheritedNodeTypes().contains(
                 allowedNodeType.getValue()) && menuItemsCount);
+    }
+
+    public void setMenuItemsCount(boolean menuItemsCount) {
+        this.menuItemsCount = menuItemsCount;
     }
 }
 

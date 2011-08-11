@@ -733,7 +733,13 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         Set<String> grantedRoles = getRoles(absPath);
 
         for (String role : grantedRoles) {
-            Node node = securitySession.getNode("/roles/" + role);
+            Node node = null;
+            try {
+                node = securitySession.getNode("/roles/" + role);
+            } catch (PathNotFoundException pnfe) {
+                logger.warn("Role " + role + " is missing despite still being in use in path "+absPath+ " (or parent). Please re-create it in the administration, remove all uses and then you can delete it !");
+                continue;
+            }
             if (node.hasProperty("j:permissions")) {
                 Value[] perms = node.getProperty("j:permissions").getValues();
 

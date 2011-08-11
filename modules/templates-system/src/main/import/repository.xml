@@ -16,7 +16,7 @@
         </root>
     </users>
     <templateSets jcr:primaryType="jnt:templateSets">
-        <templates-system changefreq="monthly" j:installedModules="templates-system" j:siteType="templatesSet" j:title="Template - System" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
+        <templates-system j:installedModules="templates-system" j:siteType="templatesSet" j:title="Template - System" j:wcagCompliance="true" jcr:primaryType="jnt:virtualsite">
             <templates jcr:primaryType="jnt:templatesFolder">
                 <files jcr:primaryType="jnt:folder">
                     <themes jcr:primaryType="jnt:folder">

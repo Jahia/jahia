@@ -1305,30 +1305,42 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider, epd);
     }
 
-    // TODO does not yet support i18n reference nodes
-
-    private JCRPropertyWrapper retrieveExternalReferenceProperty(String name, ExtendedPropertyDefinition epd) throws RepositoryException {
-        Property referenceProperty = getProperty(REFERENCE_PROPERTY_NAMES_PROPERTYNAME);
-        Value[] propertyReferences = referenceProperty.getValues();
-        String foundNodeIdentifier = null;
-        for (Value propertyReference : propertyReferences) {
-            String curPropertyReference = propertyReference.getString();
-            String[] refParts = curPropertyReference.split(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
-            String curNodeIdentifier = refParts[0];
-            String curPropertyName = refParts[1];
-            if (curPropertyName.equals(name)) {
-                foundNodeIdentifier = curNodeIdentifier;
-                break;
+	private JCRPropertyWrapper retrieveExternalReferenceProperty(String name,
+			ExtendedPropertyDefinition epd) throws RepositoryException {
+        Locale locale = getSession().getLocale();
+        Property referenceProperty = null;
+        if (locale != null) {
+		    referenceProperty = getProperty(REFERENCE_PROPERTY_NAMES_PROPERTYNAME);
+            Value[] propertyReferences = referenceProperty.getValues();
+            String foundNodeIdentifier = null;
+            for (Value propertyReference : propertyReferences) {
+                String curPropertyReference = propertyReference.getString();
+                String[] refParts = curPropertyReference
+                        .split(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
+                String curNodeIdentifier = refParts[0];
+                String curPropertyName = refParts[1];
+                if (curPropertyName.equals(name)) {
+                    foundNodeIdentifier = curNodeIdentifier;
+                    break;
+                }
             }
-        }
-        if (foundNodeIdentifier != null) {
-            Node referencedNode = getSession().getNodeByIdentifier(foundNodeIdentifier);
-            Property nodeProperty = new ExternalReferencePropertyImpl(name, this, session, foundNodeIdentifier, referencedNode);
-            return new JCRPropertyWrapperImpl(this, nodeProperty, session, provider, epd);
+            if (foundNodeIdentifier != null) {
+                Node referencedNode = getSession().getNodeByIdentifier(
+                        foundNodeIdentifier);
+                Property nodeProperty = new ExternalReferencePropertyImpl(name,
+                        this, session, foundNodeIdentifier, referencedNode);
+                return new JCRPropertyWrapperImpl(this, nodeProperty, session,
+                        provider, epd);
+            } else {
+                // in this case we are dealing with a "regular" reference property, we will try to load it.
+                return internalGetProperty(name, epd);
+            }
         } else {
-            throw new PathNotFoundException("Couldn't find matching external property reference for name " + name);
+            // if we have no locale we cannot access external reference properties, we fallback to regular property
+            // loading.
+            return internalGetProperty(name, epd);
         }
-    }
+	}
 
     /**
      * {@inheritDoc}

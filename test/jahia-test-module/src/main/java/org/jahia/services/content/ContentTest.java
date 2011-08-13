@@ -739,6 +739,10 @@ public class ContentTest {
             assertFalse(providerRoot + " : multiple reference property should no longer exist !", refNode.hasProperty(MULTIPLE_I18N_REFERENCE_PROPERTY_NAME));
             assertFalse(providerRoot + " : node should no longer have the jmix:externalReference node mixin node type", refNode.isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE));
 
+            // TODO add tests where we use property iterators to retrieve external reference properties, as this is currently not implemented
+
+            // TODO add tests where we mix internal references AND external references in the same property in different languages.
+
         } finally {
             if (session != null) {
                 session.logout();

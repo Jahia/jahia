@@ -41,6 +41,7 @@
 package org.jahia.services.content.impl.vfs;
 
 import org.apache.commons.io.FileUtils;
+import org.jahia.api.Constants;
 import org.jahia.test.JahiaAdminUser;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -64,7 +65,10 @@ import org.junit.Test;
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -207,6 +211,43 @@ public class VFSContentStoreProviderTest {
         session.checkout(folder1Node);
         folder1Node.remove();
         session.save();
+
+        mountNode.remove();
+        session.save();
+
+    }
+
+    @Test
+    public void testReferencing() throws GWTJahiaServiceException, RepositoryException, UnsupportedEncodingException {
+        ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext().getBean("ContentHubHelper");
+        JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
+        contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser);
+
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+
+        JCRNodeWrapper mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
+        assertNode(mountNode, 0);
+
+        String value = "This is a test";
+        String mimeType = "text/plain";
+
+        InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+
+        String name1 = "test1_" + System.currentTimeMillis() + ".txt";
+        JCRNodeWrapper testFile1 = mountNode.uploadFile(name1, is, mimeType);
+
+        session.save();
+
+        JCRSiteNode siteNode = (JCRSiteNode) session.getNode(SITECONTENT_ROOT_NODE);
+
+        // simple external referencing testing...
+
+        JCRNodeWrapper fileReferenceNode = siteNode.addNode("externalReferenceNode", "jnt:fileReference");
+        fileReferenceNode.setProperty("j:node", testFile1);
+
+        // TODO add tests where we use property iterators to retrieve external reference properties, as this is currently not implemented
+
+        // TODO add tests where we mix internal references AND external references in the same property in different languages.
 
         mountNode.remove();
         session.save();

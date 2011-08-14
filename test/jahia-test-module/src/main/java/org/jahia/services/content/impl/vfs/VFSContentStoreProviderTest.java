@@ -212,8 +212,23 @@ public class VFSContentStoreProviderTest {
         folder1Node.remove();
         session.save();
 
-        mountNode.remove();
-        session.save();
+        // now let's unmount.
+        JCRTemplate.getInstance().doExecuteWithSystemSession(jahiaRootUser.getName(), new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRNodeWrapper mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
+                mountNode.remove();
+                session.save();
+                return null;
+            }
+        });
+
+        boolean mountNodeStillExists = false;
+        try {
+            mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
+            mountNodeStillExists = true;
+        } catch (PathNotFoundException pnfe) {
+        }
+        assertFalse("Dynamic mount node should have been removed but is still present in repository !", mountNodeStillExists);
 
     }
 

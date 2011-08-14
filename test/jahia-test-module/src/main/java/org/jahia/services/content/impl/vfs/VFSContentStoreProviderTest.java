@@ -244,6 +244,11 @@ public class VFSContentStoreProviderTest {
 
         JCRNodeWrapper fileReferenceNode = siteNode.addNode("externalReferenceNode", "jnt:fileReference");
         fileReferenceNode.setProperty("j:node", testFile1);
+        session.save();
+
+        Property externalReferenceProperty = fileReferenceNode.getProperty("j:node");
+        Node externalNode = externalReferenceProperty.getNode();
+        assertEquals("External node identifier retrieved from reference do not match", testFile1.getIdentifier(), externalNode.getIdentifier());
 
         // TODO add tests where we use property iterators to retrieve external reference properties, as this is currently not implemented
 

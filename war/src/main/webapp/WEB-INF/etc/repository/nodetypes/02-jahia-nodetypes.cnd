@@ -557,6 +557,8 @@
 [jmix:externalReference] mixin
 - j:referenceNodeIdentifiers (string) multiple i18n nofulltext
 - j:referencePropertyNames (string) multiple i18n nofulltext
+- j:sharedRefNodeIdentifiers (string) multiple nofulltext
+- j:sharedRefPropertyNames (string) multiple nofulltext
 
 [jnt:fileI18nReference] > jnt:fileReference
  - j:node (weakreference,picker[type='file']) i18n < jnt:file 

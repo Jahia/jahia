@@ -278,7 +278,7 @@ public class VFSContentStoreProviderTest {
 
         JCRSiteNode siteNode = (JCRSiteNode) session.getNode(SITECONTENT_ROOT_NODE);
 
-        // simple external referencing testing...
+        // simple external referencing testing, with no language specified...
 
         JCRNodeWrapper fileReferenceNode = siteNode.addNode("externalReferenceNode", "jnt:fileReference");
         fileReferenceNode.setProperty("j:node", testFile1);
@@ -287,6 +287,16 @@ public class VFSContentStoreProviderTest {
         Property externalReferenceProperty = fileReferenceNode.getProperty("j:node");
         Node externalNode = externalReferenceProperty.getNode();
         assertEquals("External node identifier retrieved from reference do not match", testFile1.getIdentifier(), externalNode.getIdentifier());
+        PropertyIterator weakReferenceProperties = testFile1.getWeakReferences();
+        boolean foundWeakReferenceProperty = false;
+        while (weakReferenceProperties.hasNext()) {
+            Property property = weakReferenceProperties.nextProperty();
+            if (property.getName().equals("j:node") && property.getParent().getIdentifier().equals(fileReferenceNode.getIdentifier())) {
+                foundWeakReferenceProperty = true;
+                break;
+            }
+        }
+        assertTrue("Expected to find weak reference property j:node but it wasn't found !", foundWeakReferenceProperty);
 
         // TODO add tests where we use property iterators to retrieve external reference properties, as this is currently not implemented
 

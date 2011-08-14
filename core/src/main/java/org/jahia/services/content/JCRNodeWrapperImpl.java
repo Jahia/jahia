@@ -1305,6 +1305,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider, epd);
     }
 
+    private Set<String> getExternalPropertyNames() {
+        return new HashSet<String>();
+    }
+
 	private JCRPropertyWrapper retrieveExternalReferenceProperty(String name,
 			ExtendedPropertyDefinition epd) throws RepositoryException {
         Locale locale = getSession().getLocale();

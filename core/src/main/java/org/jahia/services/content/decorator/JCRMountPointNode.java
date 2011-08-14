@@ -102,6 +102,16 @@ public class JCRMountPointNode extends JCRNodeDecorator {
     }
 
     private JCRNodeWrapper getRootNode() throws RepositoryException {
+        JCRStoreProvider provider = getMountProvider();
+
+        if (provider != null) {
+            JCRSessionWrapper sessionWrapper = (JCRSessionWrapper) getSession();
+            return provider.getNodeWrapper(sessionWrapper.getProviderSession(provider).getRootNode(), sessionWrapper);
+        }
+        return null;
+    }
+
+    private JCRStoreProvider getMountProvider() throws RepositoryException {
         JCRStoreProvider provider = null;
         Map<String, JCRStoreProvider> dynamicMountPoints = getProvider().getSessionFactory().getDynamicMountPoints();
         if (!dynamicMountPoints.containsKey(getPath())) {
@@ -113,16 +123,11 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         } else {
             provider = dynamicMountPoints.get(getPath());
         }
-
-        if (provider != null) {
-            JCRSessionWrapper sessionWrapper = (JCRSessionWrapper) getSession();
-            return provider.getNodeWrapper(sessionWrapper.getProviderSession(provider).getRootNode(), sessionWrapper);
-        }
-        return null;
+        return provider;
     }
 
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        getProvider().getSessionFactory().unmount(getProvider());
+        getProvider().getSessionFactory().unmount(getMountProvider());
         super.remove();
     }
 

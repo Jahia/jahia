@@ -212,24 +212,37 @@ public class VFSContentStoreProviderTest {
         folder1Node.remove();
         session.save();
 
-        // now let's unmount.
-        JCRTemplate.getInstance().doExecuteWithSystemSession(jahiaRootUser.getName(), new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRNodeWrapper mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
-                mountNode.remove();
-                session.save();
-                return null;
-            }
-        });
+        unMountDynamicMountPoint(jahiaRootUser);
+
+        // we must recycle session because of internal session caches.
+        session.refresh(false);
+        session.logout();
+
+        session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
         boolean mountNodeStillExists = false;
         try {
-            mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
+            mountNode = session.getNode(MOUNTS_DYNAMIC_MOUNT_POINT);
             mountNodeStillExists = true;
         } catch (PathNotFoundException pnfe) {
         }
         assertFalse("Dynamic mount node should have been removed but is still present in repository !", mountNodeStillExists);
 
+    }
+
+    private void unMountDynamicMountPoint(JahiaUser jahiaRootUser) throws RepositoryException {
+        // now let's unmount.
+        JCRTemplate.getInstance().doExecuteWithSystemSession(jahiaRootUser.getName(), new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRNodeWrapper mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
+                if (!mountNode.getParent().isCheckedOut()) {
+                    mountNode.getParent().checkout();
+                }
+                mountNode.remove();
+                session.save();
+                return null;
+            }
+        });
     }
 
     @Test
@@ -269,9 +282,7 @@ public class VFSContentStoreProviderTest {
 
         // TODO add tests where we mix internal references AND external references in the same property in different languages.
 
-        mountNode.remove();
-        session.save();
-
+        unMountDynamicMountPoint(jahiaRootUser);
     }
 
     private JCRNodeWrapper getNode(JCRSessionWrapper session, String path) throws RepositoryException {

@@ -108,10 +108,14 @@ public class VFSContentStoreProviderTest {
         if (!dynamicMountDir.exists()) {
             dynamicMountDir.mkdir();
         }
+        JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
+        unMountDynamicMountPoint(jahiaRootUser);
     }
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
+        JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
+        unMountDynamicMountPoint(jahiaRootUser);
         TestHelper.deleteSite(TESTSITE_NAME);
         try {
             FileUtils.deleteDirectory(dynamicMountDir);
@@ -230,16 +234,22 @@ public class VFSContentStoreProviderTest {
 
     }
 
-    private void unMountDynamicMountPoint(JahiaUser jahiaRootUser) throws RepositoryException {
+    private static void unMountDynamicMountPoint(JahiaUser jahiaRootUser) throws RepositoryException {
         // now let's unmount.
         JCRTemplate.getInstance().doExecuteWithSystemSession(jahiaRootUser.getName(), new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRNodeWrapper mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
-                if (!mountNode.getParent().isCheckedOut()) {
-                    mountNode.getParent().checkout();
+                JCRNodeWrapper mountNode = null;
+                try {
+                    mountNode = session.getNode(MOUNTS_DYNAMIC_MOUNT_POINT);
+                } catch (PathNotFoundException pnfe) {
                 }
-                mountNode.remove();
-                session.save();
+                if (mountNode != null) {
+                    if (!mountNode.getParent().isCheckedOut()) {
+                        mountNode.getParent().checkout();
+                    }
+                    mountNode.remove();
+                    session.save();
+                }
                 return null;
             }
         });
@@ -282,7 +292,6 @@ public class VFSContentStoreProviderTest {
 
         // TODO add tests where we mix internal references AND external references in the same property in different languages.
 
-        unMountDynamicMountPoint(jahiaRootUser);
     }
 
     private JCRNodeWrapper getNode(JCRSessionWrapper session, String path) throws RepositoryException {

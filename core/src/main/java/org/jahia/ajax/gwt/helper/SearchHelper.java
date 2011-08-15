@@ -60,6 +60,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -372,7 +373,7 @@ public class SearchHelper {
         // nodeType
         if (gwtQuery.getNodeTypes() != null && gwtQuery.getNodeTypes().size() == 1) {
             criteria.setNodeType(gwtQuery.getNodeTypes().get(0));
-            gwtQuery.getNodeTypes().clear();
+            gwtQuery.setNodeTypes(new LinkedList<String>());
         }        
         
         // language

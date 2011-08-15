@@ -3281,13 +3281,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 ExtendedPropertyDefinition epd = node.getApplicablePropertyDefinition(foundPropertyName);
                 if (epd != null)  {
                     Property nodeProperty = new ExternalReferencePropertyImpl(foundPropertyName, node, session, getIdentifier(), this);
-                    matchingProperties.add(new JCRPropertyWrapperImpl(this, nodeProperty, session, provider, epd));
+                    matchingProperties.add(new JCRPropertyWrapperImpl(node, nodeProperty, session, provider, epd));
                 }
             } else {
                 throw new PathNotFoundException("Couldn't find matching external property reference for name " + foundPropertyName);
             }
 
         }
+
+        // now let's query all the shared external references
         query = queryManager.createQuery("SELECT * FROM [jmix:externalReference] as n WHERE n.[" + SHARED_REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME + "]='" + getIdentifier() + "'", Query.JCR_SQL2);
         queryResult = query.execute();
         rowIterator = queryResult.getRows();
@@ -3311,7 +3313,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 ExtendedPropertyDefinition epd = node.getApplicablePropertyDefinition(foundPropertyName);
                 if (epd != null)  {
                     Property nodeProperty = new ExternalReferencePropertyImpl(foundPropertyName, node, session, getIdentifier(), this);
-                    matchingProperties.add(new JCRPropertyWrapperImpl(this, nodeProperty, session, provider, epd));
+                    matchingProperties.add(new JCRPropertyWrapperImpl(node, nodeProperty, session, provider, epd));
                 }
             } else {
                 throw new PathNotFoundException("Couldn't find matching external property reference for name " + foundPropertyName);

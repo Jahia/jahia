@@ -313,7 +313,7 @@ public class VFSContentStoreProviderTest {
         Property externalReferenceProperty = fileReferenceNode.getProperty("j:node");
         Node externalNode = externalReferenceProperty.getNode();
         assertEquals("External node identifier retrieved from reference do not match", vfsTestFile1.getIdentifier(), externalNode.getIdentifier());
-        PropertyIterator weakReferenceProperties = vfsTestFile1.getWeakReferences();
+        PropertyIterator weakReferenceProperties = vfsTestFile1.getWeakReferences("j:node");
         boolean foundWeakReferenceProperty = false;
         while (weakReferenceProperties.hasNext()) {
             Property property = weakReferenceProperties.nextProperty();

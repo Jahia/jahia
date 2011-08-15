@@ -59,20 +59,34 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
     private PropertyIterator i18nPropertyIterator;
     private Property tempNext = null;
     private String fallbackLocale;
+    private Set<String> externalSharedPropertyNames = new HashSet<String>();
+    private Set<String> externalI18NPropertyNames = new HashSet<String>();;
 
     public LazyPropertyIterator(JCRNodeWrapper node) {
         this.node = node;
     }
 
-    public LazyPropertyIterator(JCRNodeWrapper node, Locale locale) {
+    public LazyPropertyIterator(JCRNodeWrapper node, Locale locale, Set<String> sharedPropertyNames, Set<String> i18PropertyNames) {
         this.node = node;
         this.locale = locale;
+        if (sharedPropertyNames != null) {
+            this.externalSharedPropertyNames = sharedPropertyNames;
+        }
+        if (i18PropertyNames != null) {
+            this.externalI18NPropertyNames = i18PropertyNames;
+        }
     }
 
-    public LazyPropertyIterator(JCRNodeWrapper node, Locale locale, String pattern) {
+    public LazyPropertyIterator(JCRNodeWrapper node, Locale locale, String pattern, Set<String> sharedPropertyNames, Set<String> i18PropertyNames) {
         this.node = node;
         this.locale = locale;
         this.pattern = pattern;
+        if (sharedPropertyNames != null) {
+            this.externalSharedPropertyNames = sharedPropertyNames;
+        }
+        if (i18PropertyNames != null) {
+            this.externalI18NPropertyNames = i18PropertyNames;
+        }
     }
 
     public int size() {

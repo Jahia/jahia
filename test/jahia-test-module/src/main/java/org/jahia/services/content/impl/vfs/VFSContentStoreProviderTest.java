@@ -42,6 +42,7 @@ package org.jahia.services.content.impl.vfs;
 
 import org.apache.commons.io.FileUtils;
 import org.jahia.api.Constants;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.JahiaAdminUser;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -92,10 +93,30 @@ public class VFSContentStoreProviderTest {
     private static final String MOUNTS_DYNAMIC_MOUNT_POINT = "/mounts/dynamic-mount-point";
     private static final String MOUNTS_DYNAMIC_MOUNT_POINT_NAME = "dynamic-mount-point";
 
+    private static final String SIMPLE_WEAKREFERENCE_PROPERTY_NAME = "test:simpleNode";
+    private static final String MULTIPLE_WEAKREFERENCE_PROPERTY_NAME = "test:multipleNode";
+    private static final String MULTIPLE_I18N_WEAKREFERENCE_PROPERTY_NAME = "test:multipleI18NNode";
+    private static final String TEST_EXTERNAL_WEAKREFERENCE_NODE_TYPE = "test:externalWeakReference";
+
+    private static JahiaSite site;
+
+    JCRSessionWrapper englishEditSession;
+    JCRSessionWrapper frenchEditSession;
+
+    private void getCleanSession() throws Exception {
+        String defaultLanguage = site.getDefaultLanguage();
+        JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
+        sessionFactory.closeAllSessions();
+        englishEditSession = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH,
+                LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+        frenchEditSession = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.FRENCH,
+                LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+    }
+
     @BeforeClass
     public static void oneTimeSetUp()
             throws Exception {
-        TestHelper.createSite(TESTSITE_NAME, "localhost", "templates-web");
+        site = TestHelper.createSite(TESTSITE_NAME);
         
         File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
 
@@ -256,7 +277,7 @@ public class VFSContentStoreProviderTest {
     }
 
     @Test
-    public void testReferencing() throws GWTJahiaServiceException, RepositoryException, UnsupportedEncodingException {
+    public void testReferencing() throws Exception, RepositoryException, UnsupportedEncodingException {
         ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext().getBean("ContentHubHelper");
         JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
         contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser);
@@ -272,7 +293,12 @@ public class VFSContentStoreProviderTest {
         InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
 
         String name1 = "test1_" + System.currentTimeMillis() + ".txt";
-        JCRNodeWrapper testFile1 = mountNode.uploadFile(name1, is, mimeType);
+        JCRNodeWrapper vfsTestFile1 = mountNode.uploadFile(name1, is, mimeType);
+
+        is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+
+        String name2 = "test2_" + System.currentTimeMillis() + ".txt";
+        JCRNodeWrapper vfsTestFile2 = mountNode.uploadFile(name2, is, mimeType);
 
         session.save();
 
@@ -281,13 +307,13 @@ public class VFSContentStoreProviderTest {
         // simple external referencing testing, with no language specified...
 
         JCRNodeWrapper fileReferenceNode = siteNode.addNode("externalReferenceNode", "jnt:fileReference");
-        fileReferenceNode.setProperty("j:node", testFile1);
+        fileReferenceNode.setProperty("j:node", vfsTestFile1);
         session.save();
 
         Property externalReferenceProperty = fileReferenceNode.getProperty("j:node");
         Node externalNode = externalReferenceProperty.getNode();
-        assertEquals("External node identifier retrieved from reference do not match", testFile1.getIdentifier(), externalNode.getIdentifier());
-        PropertyIterator weakReferenceProperties = testFile1.getWeakReferences();
+        assertEquals("External node identifier retrieved from reference do not match", vfsTestFile1.getIdentifier(), externalNode.getIdentifier());
+        PropertyIterator weakReferenceProperties = vfsTestFile1.getWeakReferences();
         boolean foundWeakReferenceProperty = false;
         while (weakReferenceProperties.hasNext()) {
             Property property = weakReferenceProperties.nextProperty();
@@ -298,9 +324,72 @@ public class VFSContentStoreProviderTest {
         }
         assertTrue("Expected to find weak reference property j:node but it wasn't found !", foundWeakReferenceProperty);
 
-        // TODO add tests where we use property iterators to retrieve external reference properties, as this is currently not implemented
+        // Now let's test accessing using property iterator
 
-        // TODO add tests where we mix internal references AND external references in the same property in different languages.
+        boolean foundReferenceProperty = false;
+        PropertyIterator fileReferenceProperties = fileReferenceNode.getProperties();
+        while (fileReferenceProperties.hasNext()) {
+            Property property = fileReferenceProperties.nextProperty();
+            if (property.getName().equals("j:node")) {
+                foundReferenceProperty = true;
+                break;
+            }
+        }
+        assertTrue("Couldn't find property j:node using property iterators", foundReferenceProperty);
+
+        fileReferenceProperties = fileReferenceNode.getProperties("j:nod* | j:*ode");
+        while (fileReferenceProperties.hasNext()) {
+            Property property = fileReferenceProperties.nextProperty();
+            if (property.getName().equals("j:node")) {
+                foundReferenceProperty = true;
+                break;
+            }
+        }
+        assertTrue("Couldn't find property j:node using property iterators and name patterns", foundReferenceProperty);
+
+        // TODO add tests where we mix internal references AND external references in the same multi-valued property in different languages.
+        getCleanSession();
+        siteNode = (JCRSiteNode) englishEditSession.getNode(SITECONTENT_ROOT_NODE);
+        vfsTestFile1 = englishEditSession.getNode(MOUNTS_DYNAMIC_MOUNT_POINT + "/" + name1);
+        vfsTestFile2 = englishEditSession.getNode(MOUNTS_DYNAMIC_MOUNT_POINT + "/" + name2);
+
+        JCRNodeWrapper mixedFileReferenceNode = siteNode.addNode("externalMixedReferenceNode", TEST_EXTERNAL_WEAKREFERENCE_NODE_TYPE);
+        mixedFileReferenceNode.setProperty(SIMPLE_WEAKREFERENCE_PROPERTY_NAME, vfsTestFile1);
+        ValueFactory valueFactory = session.getValueFactory();
+
+        List<Value> values = new ArrayList<Value>();
+        values.add(valueFactory.createValue(vfsTestFile2));
+
+        is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+
+        JCRNodeWrapper siteFile1 = siteNode.uploadFile(name1, is, mimeType);
+        values.add(valueFactory.createValue(siteFile1));
+
+        Value[] multipleWeakRefs = values.toArray(new Value[values.size()]);
+
+        mixedFileReferenceNode.setProperty(MULTIPLE_WEAKREFERENCE_PROPERTY_NAME, multipleWeakRefs);
+        session.save();
+
+        // let's get another session to make sure we don't have cache issues
+        englishEditSession.logout();
+        getCleanSession();
+
+        mixedFileReferenceNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/externalMixedReferenceNode");
+
+        Property simpleRefProperty = mixedFileReferenceNode.getProperty(SIMPLE_WEAKREFERENCE_PROPERTY_NAME);
+        assertTrue("Reference property does not have proper value", simpleRefProperty.getNode().getIdentifier().equals(vfsTestFile1.getIdentifier()));
+
+        Property multipleRefProperty = mixedFileReferenceNode.getProperty(MULTIPLE_WEAKREFERENCE_PROPERTY_NAME);
+        assertTrue("Expected multiple property but it is not multi-valued", multipleRefProperty.isMultiple());
+        Value[] multipleRefPropertyValues = multipleRefProperty.getValues();
+        assertTrue("First property value type is not correct", multipleRefPropertyValues[0].getType() == PropertyType.WEAKREFERENCE);
+        assertTrue("First property value does not match VFS test file 2", multipleRefPropertyValues[0].getString().equals(vfsTestFile2.getIdentifier()));
+        assertTrue("Second property value type is not correct", multipleRefPropertyValues[1].getType() == PropertyType.WEAKREFERENCE);
+        assertTrue("Second property value does not match site test file 1", multipleRefPropertyValues[1].getString().equals(siteFile1.getIdentifier()));
+
+        // TODO we will have to set the last property in multiple languages. We will need multiple
+        // session objects for this.
+
 
     }
 

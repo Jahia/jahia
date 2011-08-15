@@ -118,3 +118,8 @@
 [test:externalReference] > nt:base, jmix:droppableContent
 - test:simpleNode (reference)     
 - test:multipleI18NNode (reference) multiple i18n
+
+[test:externalWeakReference] > nt:base, jmix:droppableContent
+- test:simpleNode (weakreference)
+- test:multipleNode (weakreference) multiple
+- test:multipleI18NNode (weakreference) multiple i18n

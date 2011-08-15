@@ -602,8 +602,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         String termConstraint = "jcr:like(@j:nodename, "
                                 + (term.contains("*") ? stringToQueryLiteral(StringUtils
                                         .replaceChars(term, '*', '%'))
-                                        : stringToQueryLiteral("%" + term + "%")
-                                                + ")");
+                                        : stringToQueryLiteral("%" + term + "%"))
+                                                + ")";
                         if (textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
                             termConstraint = "not(" + termConstraint + ")";
                         }

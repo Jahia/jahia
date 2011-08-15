@@ -63,7 +63,7 @@ pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(L
         <input type="hidden" name="workspace" id="workspace" value="${workspace}"/>
         <input type="hidden" name="locale" id="locale" value="${locale}"/>
         <textarea rows="3" cols="75" name="query" id="query"
-            onkeypress="if ((event || window.event).keyCode == 13 && (event || window.event).ctrlKey) document.getElementById('navigateForm').submit();"
+            onkeyup="if ((event || window.event).keyCode == 13 && (event || window.event).ctrlKey) document.getElementById('navigateForm').submit();"
         >${not empty param.query ? param.query : 'SELECT * FROM [nt:file]'}</textarea>
         <span>
         <span style="position: absolute;"><a id="helpLink" title="Help" href="#helpArea"><img src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16" height="16" alt="help" title="Help"></a></span>

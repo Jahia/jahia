@@ -181,7 +181,7 @@
     <cache
             name="HTMLDependenciesCache"
             overflowToDisk="true"
-            maxElementsInMemory="500"
+            maxElementsInMemory="5000"
             diskPersistent="true"
             eternal="true"/>
 

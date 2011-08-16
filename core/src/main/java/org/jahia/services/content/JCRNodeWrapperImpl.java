@@ -1346,7 +1346,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return result;
     }
 
-	private JCRPropertyWrapper retrieveExternalReferenceProperty(String name,
+	public JCRPropertyWrapper retrieveExternalReferenceProperty(String name,
 			ExtendedPropertyDefinition epd) throws RepositoryException {
         Locale locale = getSession().getLocale();
         Property referenceProperty = null;
@@ -1885,7 +1885,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     private boolean internalHasProperty(String propertyName) throws RepositoryException {
         final Locale locale = getSession().getLocale();
+        if (isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE) &&
+            getSharedExternalPropertyNames().contains(propertyName)) {
+            return true;
+        }
         if (locale != null && !propertyName.equals("jcr:language")) {
+            if (isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE) &&
+                    getCurrentLocaleExternalPropertyNames().contains(propertyName)) {
+                return true;
+            }
             try {
                 ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(propertyName);
                 if (epd != null && epd.isInternationalized()) {
@@ -1912,6 +1920,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (hasI18N(locale, true)) {
                 return getI18N(locale).hasProperties();
             }
+        }
+        if (isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE) &&
+            getAllExternalPropertyNames().size() > 0) {
+            return true;
         }
         return false;
     }

@@ -40,6 +40,7 @@
 
 package org.jahia.services.content;
 
+import org.apache.jackrabbit.util.ChildrenCollectorFilter;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 import javax.jcr.*;
@@ -61,6 +62,8 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
     private String fallbackLocale;
     private Set<String> externalSharedPropertyNames = new HashSet<String>();
     private Set<String> externalI18NPropertyNames = new HashSet<String>();;
+    private PropertyIterator externalSharedPropertyNameIterator;
+    private PropertyIterator externalI18NPropertyNameIterator;
 
     public LazyPropertyIterator(JCRNodeWrapper node) {
         this.node = node;
@@ -90,7 +93,7 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
     }
 
     public int size() {
-        return (int) (getPropertiesIterator().getSize() + getI18NPropertyIterator().getSize());
+        return (int) (getPropertiesIterator().getSize() + getI18NPropertyIterator().getSize() + externalI18NPropertyNames.size() + externalSharedPropertyNames.size());
     }
 
     private PropertyIterator getPropertiesIterator() {
@@ -131,8 +134,26 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
         return i18nPropertyIterator;
     }
 
+    private PropertyIterator getExternalSharedPropertyNameIterator() {
+        if (externalSharedPropertyNameIterator == null) {
+            externalSharedPropertyNameIterator = new LazyExternalRefPropertyIterator(node, externalSharedPropertyNames, pattern);
+        }
+        return externalSharedPropertyNameIterator;
+    }
+
+    private PropertyIterator getExternalI18NPropertyNameIterator() {
+        if (externalI18NPropertyNameIterator == null) {
+            externalI18NPropertyNameIterator = new LazyExternalRefPropertyIterator(node, externalI18NPropertyNames, pattern);
+        }
+        return externalI18NPropertyNameIterator;
+    }
+
+
     public boolean isEmpty() {
-        return getPropertiesIterator().getSize() == 0 && getI18NPropertyIterator().getSize() == 0;
+        return getPropertiesIterator().getSize() == 0 &&
+                getI18NPropertyIterator().getSize() == 0 &&
+                getExternalSharedPropertyNameIterator().getSize() == 0 &&
+                getExternalI18NPropertyNameIterator().getSize() == 0;
     }
 
     public Property nextProperty() {
@@ -147,7 +168,9 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                 Property property = getPropertiesIterator().nextProperty();
                 ExtendedPropertyDefinition epd = node.getApplicablePropertyDefinition(property.getName());
                 return new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), epd);
-            } else {
+            } else if (getExternalSharedPropertyNameIterator().hasNext()) {
+                return getExternalSharedPropertyNameIterator().nextProperty();
+            } else if (getI18NPropertyIterator().hasNext()) {
                 do {
                     Property property = getI18NPropertyIterator().nextProperty();
                     final String name = property.getName();
@@ -156,6 +179,10 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                         return new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), def, name);
                     }
                 } while (true);
+            } else if (getExternalI18NPropertyNameIterator().hasNext()) {
+                return getExternalI18NPropertyNameIterator().nextProperty();
+            } else {
+                return null;
             }
         } catch (ConstraintViolationException e) {
             return nextProperty();
@@ -168,8 +195,12 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
         for (int i=0; i < skipNum; i++) {
             if (getPropertiesIterator().hasNext()) {
                 getPropertiesIterator().skip(1);
-            } else {
+            } else if (getExternalSharedPropertyNameIterator().hasNext()) {
+                getExternalSharedPropertyNameIterator().skip(1);
+            } else if (getI18NPropertyIterator().hasNext()) {
                 getI18NPropertyIterator().skip(1);
+            } else {
+                getExternalI18NPropertyNameIterator().skip(1);
             }
         }
     }
@@ -179,7 +210,10 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
     }
 
     public long getPosition() {
-        return getPropertiesIterator().getPosition() + getI18NPropertyIterator().getPosition();
+        return getPropertiesIterator().getPosition() +
+                getExternalSharedPropertyNameIterator().getPosition() +
+                getI18NPropertyIterator().getPosition() +
+                getExternalI18NPropertyNameIterator().getPosition();
     }
 
     public boolean hasNext() {
@@ -192,7 +226,10 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                 ExtendedPropertyDefinition epd = node.getApplicablePropertyDefinition(property.getName());
                 tempNext = new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), epd);
                 return true;
-            } else {
+            } else if (getExternalSharedPropertyNameIterator().hasNext()) {
+                tempNext = getExternalSharedPropertyNameIterator().nextProperty();
+                return true;
+            } else if (getI18NPropertyIterator().hasNext()) {
                 do {
                     Property property = getI18NPropertyIterator().nextProperty();
                     final String name = property.getName();
@@ -202,6 +239,11 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                         return true;
                     }
                 } while (true);
+            } else if (getExternalI18NPropertyNameIterator().hasNext()) {
+                tempNext = getExternalI18NPropertyNameIterator().nextProperty();
+                return true;
+            } else {
+                return false;
             }
         } catch (ConstraintViolationException e) {
             return hasNext();

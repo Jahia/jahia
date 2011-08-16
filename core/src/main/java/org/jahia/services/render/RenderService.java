@@ -95,9 +95,9 @@ public class RenderService {
             if (bean instanceof RenderServiceAware) {
                 ((RenderServiceAware) bean).setRenderService(getInstance());
             }
-            if(bean instanceof RenderFilter) {
-				logger.info("Registering render filter {}", bean.getClass().getName());
-				getInstance().addFilter((RenderFilter) bean);
+            if (bean instanceof RenderFilter) {
+                logger.info("Registering render filter {}", bean.getClass().getName());
+                getInstance().addFilter((RenderFilter) bean);
             }
             return bean;
         }
@@ -157,10 +157,7 @@ public class RenderService {
             return "loop";
         }
 
-        RenderChain renderChain = new RenderChain();
-        renderChain.addFilters(filters);
-        renderChain.addFilters(templateManagerService.getRenderFilters());
-        String output = renderChain.doFilter(context, resource);
+        String output = new RenderChain(filters, templateManagerService.getRenderFilters()).doFilter(context, resource);
 
         return output;
     }

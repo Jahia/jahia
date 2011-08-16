@@ -48,8 +48,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
- * RenderChain.
- *
  * Main pipeline that generates output for rendering.
  *
  * Date: Nov 24, 2009
@@ -71,13 +69,35 @@ public class RenderChain {
 
     /**
      * Initializes an instance of this class.
+     * @param filters to be used
+     */
+    public RenderChain(Collection<RenderFilter> filters) {
+        super();
+        addFilters(filters);
+    }
+
+    /**
+     * Initializes an instance of this class.
+     * @param filters1 to be used
+     * @param filters2 to be used (additionally to filters1)
+     */
+    public RenderChain(Collection<RenderFilter> filters1, Collection<RenderFilter> filters2) {
+        super();
+        this.filters.addAll(filters1);
+        this.filters.addAll(filters2);
+        Collections.sort(this.filters);
+    }
+
+    /**
+     * Initializes an instance of this class.
      * @param filters a list of filters to be used in the chain
      */
     public RenderChain(RenderFilter... filters) {
         this();
         for (RenderFilter renderFilter : filters) {
-            addFilter(renderFilter);
+            this.filters.add(renderFilter);
         }
+        Collections.sort(this.filters);
     }
 
     /**
@@ -130,7 +150,7 @@ public class RenderChain {
                 	long timer = System.currentTimeMillis();
                     out = filter.prepare(renderContext, resource, this);
                     if (logger.isDebugEnabled()) { 
-						logger.debug("{}: prepare filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
+			logger.debug("{}: prepare filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
                     }
                 }
             }

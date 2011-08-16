@@ -204,7 +204,6 @@ public abstract class BaseInterceptor implements PropertyInterceptor {
                 } else {
                     logger.error("Unknown property selector {}. Skipping.", selector);
                 }
-                this.selectors.add(SelectorType.valueFromName(selector));
             }
         } else {
             this.selectors = Collections.emptySet();

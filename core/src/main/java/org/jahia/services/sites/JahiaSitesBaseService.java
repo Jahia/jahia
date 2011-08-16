@@ -218,24 +218,32 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         }
         site.setInstalledModules(installedModules);
 
-        site.setMixLanguagesActive(node.getProperty("j:mixLanguage").getBoolean());
-        site.setDefaultLanguage(node.getProperty("j:defaultLanguage").getString());
-        Value[] languages = node.getProperty("j:languages").getValues();
+        site.setMixLanguagesActive(node.getProperty(SitesSettings.MIX_LANGUAGES_ACTIVE).getBoolean());
+        site.setDefaultLanguage(node.getProperty(SitesSettings.DEFAULT_LANGUAGE).getString());
+        Value[] languages = node.getProperty(SitesSettings.LANGUAGES).getValues();
         Set<String> languagesList = new LinkedHashSet<String>();
         for (Value language : languages) {
             languagesList.add(language.getString());
         }
         site.setLanguages(languagesList);
 
-        if (node.hasProperty("j:inactiveLanguages")) {
+        if (node.hasProperty(SitesSettings.INACTIVE_LANGUAGES)) {
             languagesList = new LinkedHashSet<String>();
-            for (Value language : node.getProperty("j:inactiveLanguages").getValues()) {
+            for (Value language : node.getProperty(SitesSettings.INACTIVE_LANGUAGES).getValues()) {
                 languagesList.add(language.getString());
             }
             site.setInactiveLanguages(languagesList);
         }
         
-        languages = node.getProperty("j:mandatoryLanguages").getValues();
+        if (node.hasProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES)) {
+            languagesList = new LinkedHashSet<String>();
+            for (Value language : node.getProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES).getValues()) {
+                languagesList.add(language.getString());
+            }
+            site.setInactiveLiveLanguages(languagesList);
+        }
+        
+        languages = node.getProperty(SitesSettings.MANDATORY_LANGUAGES).getValues();
         languagesList = new LinkedHashSet<String>();
         for (Value language : languages) {
             languagesList.add(language.getString());
@@ -439,6 +447,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                 site.setInstalledModules(new ArrayList<String>(Collections.singleton(templatePackage)));
 
                 final Set<String> languages = site.getLanguages();
+                final Set<String> inactiveLiveLanguages = site.getInactiveLiveLanguages();
                 final Set<String> inactiveLanguages = site.getInactiveLanguages();
                 final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
 
@@ -484,11 +493,12 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                 siteNode.setProperty("j:description", finalSite.getDescr());
                                 siteNode.setProperty("j:serverName", finalSite.getServerName());
                                 siteNode.setProperty("j:siteId", siteId);
-                                siteNode.setProperty("j:defaultLanguage", finalSite.getDefaultLanguage());
-                                siteNode.setProperty("j:mixLanguage", finalSite.isMixLanguagesActive());
-                                siteNode.setProperty("j:languages", languages.toArray(new String[languages.size()]));
-                                siteNode.setProperty("j:inactiveLanguages", inactiveLanguages.toArray(new String[inactiveLanguages.size()]));
-                                siteNode.setProperty("j:mandatoryLanguages", mandatoryLanguages.toArray(new String[mandatoryLanguages
+                                siteNode.setProperty(SitesSettings.DEFAULT_LANGUAGE, finalSite.getDefaultLanguage());
+                                siteNode.setProperty(SitesSettings.MIX_LANGUAGES_ACTIVE, finalSite.isMixLanguagesActive());
+                                siteNode.setProperty(SitesSettings.LANGUAGES, languages.toArray(new String[languages.size()]));
+                                siteNode.setProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES, inactiveLiveLanguages.toArray(new String[inactiveLiveLanguages.size()]));
+                                siteNode.setProperty(SitesSettings.INACTIVE_LANGUAGES, inactiveLanguages.toArray(new String[inactiveLanguages.size()]));
+                                siteNode.setProperty(SitesSettings.MANDATORY_LANGUAGES, mandatoryLanguages.toArray(new String[mandatoryLanguages
                                         .size()]));
                                 siteNode.setProperty("j:templatesSet", templatePackage);
                                 siteNode.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(templatePackage)} );
@@ -709,13 +719,15 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 //                    siteNode.setProperty("j:installedModules", new String[]{site.getTemplatePackageName()});
         String defaultLanguage = site.getDefaultLanguage();
         if (defaultLanguage != null)
-            siteNode.setProperty("j:defaultLanguage", defaultLanguage);
-        siteNode.setProperty("j:mixLanguage", site.isMixLanguagesActive());
-        siteNode.setProperty("j:languages", site.getLanguages().toArray(
+            siteNode.setProperty(SitesSettings.DEFAULT_LANGUAGE, defaultLanguage);
+        siteNode.setProperty(SitesSettings.MIX_LANGUAGES_ACTIVE, site.isMixLanguagesActive());
+        siteNode.setProperty(SitesSettings.LANGUAGES, site.getLanguages().toArray(
                 new String[site.getLanguages().size()]));
-        siteNode.setProperty("j:inactiveLanguages", site.getInactiveLanguages().toArray(
+        siteNode.setProperty(SitesSettings.INACTIVE_LANGUAGES, site.getInactiveLanguages().toArray(
                 new String[site.getInactiveLanguages().size()]));
-        siteNode.setProperty("j:mandatoryLanguages", site.getMandatoryLanguages().toArray(
+        siteNode.setProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES, site.getInactiveLiveLanguages().toArray(
+                new String[site.getInactiveLiveLanguages().size()]));
+        siteNode.setProperty(SitesSettings.MANDATORY_LANGUAGES, site.getMandatoryLanguages().toArray(
                 new String[site.getMandatoryLanguages().size()]));
 
         for (Map.Entry<Object, Object> prop : site.getSettings().entrySet()) {

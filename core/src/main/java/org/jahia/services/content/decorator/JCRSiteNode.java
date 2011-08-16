@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.sites.SitesSettings;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.NodeIterator;
@@ -107,8 +108,8 @@ public class JCRSiteNode extends JCRNodeDecorator {
         if (activeLanguages == null) {
             Set<String> langs = new HashSet<String>(getLanguages()) ;
             try {
-                if (hasProperty("j:inactiveLanguages")) {
-                    Value[] values = getProperty("j:inactiveLanguages").getValues();
+                if (hasProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES)) {
+                    Value[] values = getProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES).getValues();
                     for (Value value : values) {
                         langs.remove(value.getString());
                     }
@@ -145,8 +146,8 @@ public class JCRSiteNode extends JCRNodeDecorator {
     public String getDefaultLanguage() {
         if (defaultLanguage == null) {
             try {
-                if (hasProperty("j:defaultLanguage")) {
-                    defaultLanguage = getProperty("j:defaultLanguage").getString();
+                if (hasProperty(SitesSettings.DEFAULT_LANGUAGE)) {
+                    defaultLanguage = getProperty(SitesSettings.DEFAULT_LANGUAGE).getString();
                 }
             } catch (RepositoryException e) {
                 logger.error("Cannot get site property",e);
@@ -207,8 +208,8 @@ public class JCRSiteNode extends JCRNodeDecorator {
         if (languages == null) {
             Set<String> langs = new HashSet<String>() ;
             try {
-                if (hasProperty("j:languages")) {
-                    Value[] values = getProperty("j:languages").getValues();
+                if (hasProperty(SitesSettings.LANGUAGES)) {
+                    Value[] values = getProperty(SitesSettings.LANGUAGES).getValues();
                     for (Value value : values) {
                         langs.add(value.getString());
                     }
@@ -245,8 +246,8 @@ public class JCRSiteNode extends JCRNodeDecorator {
         if (mandatoryLanguages == null) {
             Set<String> langs = new HashSet<String>() ;
             try {
-                if (hasProperty("j:mandatoryLanguages")) {
-                    Value[] values = getProperty("j:mandatoryLanguages").getValues();
+                if (hasProperty(SitesSettings.MANDATORY_LANGUAGES)) {
+                    Value[] values = getProperty(SitesSettings.MANDATORY_LANGUAGES).getValues();
                     for (Value value : values) {
                         langs.add(value.getString());
                     }
@@ -330,8 +331,8 @@ public class JCRSiteNode extends JCRNodeDecorator {
         if (mixLanguagesActive == null) {
             mixLanguagesActive = false;
             try {
-                if (hasProperty("j:mixLanguage")) {
-                    mixLanguagesActive = getProperty("j:mixLanguage").getBoolean();
+                if (hasProperty(SitesSettings.MIX_LANGUAGES_ACTIVE)) {
+                    mixLanguagesActive = getProperty(SitesSettings.MIX_LANGUAGES_ACTIVE).getBoolean();
                 }
             } catch (RepositoryException e) {
                 logger.error("Cannot get site property",e);
@@ -353,7 +354,7 @@ public class JCRSiteNode extends JCRNodeDecorator {
 
     public void setDefaultLanguage(String defaultLanguage) {
         try {
-            setProperty("j:defaultLanguage", defaultLanguage);
+            setProperty(SitesSettings.DEFAULT_LANGUAGE, defaultLanguage);
         } catch (RepositoryException e) {
             logger.error("Cannot get site property",e);
         }
@@ -373,7 +374,7 @@ public class JCRSiteNode extends JCRNodeDecorator {
                 l.add(getSession().getValueFactory().createValue(s));
             }
 
-            setProperty("j:languages", l.toArray(new Value[l.size()]));
+            setProperty(SitesSettings.LANGUAGES, l.toArray(new Value[l.size()]));
         } catch (RepositoryException e) {
             logger.error("Cannot get site property",e);
         }
@@ -386,7 +387,7 @@ public class JCRSiteNode extends JCRNodeDecorator {
                 l.add(getSession().getValueFactory().createValue(s));
             }
 
-            setProperty("j:mandatoryLanguages", l.toArray(new Value[l.size()]));
+            setProperty(SitesSettings.MANDATORY_LANGUAGES, l.toArray(new Value[l.size()]));
         } catch (RepositoryException e) {
             logger.error("Cannot get site property",e);
         }
@@ -399,7 +400,7 @@ public class JCRSiteNode extends JCRNodeDecorator {
      */
     public void setMixLanguagesActive(boolean mixLanguagesActive) {
         try {
-            setProperty("j:mixLanguage",mixLanguagesActive);
+            setProperty(SitesSettings.MIX_LANGUAGES_ACTIVE,mixLanguagesActive);
         } catch (RepositoryException e) {
             logger.error("Cannot get site property",e);
         }

@@ -42,7 +42,6 @@ package org.jahia.admin.languages;
 
 import org.jahia.admin.AbstractAdministrationModule;
 import org.jahia.bin.JahiaAdministration;
-import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -51,7 +50,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.utils.LanguageCodeConverters;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -73,7 +72,7 @@ import java.util.*;
 
 public class ManageSiteLanguages extends AbstractAdministrationModule {
 
-    private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ManageSiteLanguages.class);
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(ManageSiteLanguages.class);
 
     private static final String JSP_PATH = JahiaAdministration.JSP_PATH;
 
@@ -88,16 +87,8 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
      */
     public void service(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        ProcessingContext jParams = null;
-        if (jData != null) {
-            jParams = jData.getProcessingContext();
-        }
-
         userRequestDispatcher(request, response, request.getSession());
-    } // end constructor
-
-    //-------------------------------------------------------------------------
+    }
 
     /**
      * This method is used like a dispatcher for user requests.
@@ -126,8 +117,6 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
                 displayLanguageList(request, response, session);
             } else if (operation.equals("commit")) {
                 commitChanges(request, response, session);
-            } else if (operation.equals("reallyDelete")) {
-                reallyDelete(request, response, session);
             } else {
                 displayLanguageList(request, response, session);
             }
@@ -137,31 +126,24 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "menu.jsp");
         }
-    } // userRequestDispatcher
-
-
-    //-------------------------------------------------------------------------
+    }
 
     private void displayLanguageList(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws IOException, ServletException {
         request.setAttribute("mixLanguages", site.isMixLanguagesActive());
-        request.setAttribute("languageSet", site.getLanguages());
+        Set<String> allLangs = new HashSet<String>(site.getLanguages());
+        allLangs.addAll(site.getInactiveLanguages());
+        request.setAttribute("languageSet", allLangs);
         request.setAttribute("inactiveLanguageSet", site.getInactiveLanguages());
+        request.setAttribute("inactiveLiveLanguageSet", site.getInactiveLiveLanguages());
         request.setAttribute("mandatoryLanguageSet", site.getMandatoryLanguages());
         request.setAttribute("defaultLanguage", site.getDefaultLanguage());
         JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "manage_languages.jsp");
     }
 
-    //-------------------------------------------------------------------------
-
     private void commitChanges(HttpServletRequest request, HttpServletResponse response, HttpSession session)
 
             throws IOException, ServletException {
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        ProcessingContext jParams = null;
-        if (jData != null) {
-            jParams = jData.getProcessingContext();
-        }
 
         request.setAttribute("warningMsg", "");
 
@@ -180,14 +162,27 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
         final String[] new_languages = request.getParameterValues("language_list");
         if (new_languages != null && new_languages.length > 0) {
             site.getLanguages().addAll(Arrays.asList(new_languages));
+            flushCache = true;
         }
         
         final String[] activeLanguages = request.getParameterValues("activeLanguages");
-        int oldInactiveCount = site.getInactiveLanguages().size();
+        List<String> oldInactive = new LinkedList<String>(site.getInactiveLanguages());
         site.getInactiveLanguages().clear();
-        site.getInactiveLanguages().addAll(site.getLanguages());
+        site.getInactiveLanguages().addAll(Arrays.asList(request.getParameterValues("languages")));
         site.getInactiveLanguages().removeAll(Arrays.asList(activeLanguages));
-        flushCache = flushCache || oldInactiveCount != site.getInactiveLanguages().size(); 
+        flushCache = flushCache || oldInactive.size() != site.getInactiveLanguages().size()
+                || !oldInactive.containsAll(site.getInactiveLanguages());
+        
+        site.getLanguages().addAll(Arrays.asList(activeLanguages));
+        site.getLanguages().removeAll(site.getInactiveLanguages());
+        
+        final String[] activeLiveLanguages = request.getParameterValues("activeLiveLanguages");
+        List<String> oldInactiveLive = new LinkedList<String>(site.getInactiveLiveLanguages());
+        site.getInactiveLiveLanguages().clear();
+        site.getInactiveLiveLanguages().addAll(site.getLanguages());
+        site.getInactiveLiveLanguages().removeAll(Arrays.asList(activeLiveLanguages));
+        flushCache = flushCache || oldInactiveLive.size() != site.getInactiveLiveLanguages().size()
+                || !oldInactiveLive.containsAll(site.getInactiveLiveLanguages());
         
         final String[] mandatoryLanguages = request.getParameterValues("mandatoryLanguages");
         final Set<String> mandatoryLanguagesSet = site.getMandatoryLanguages();
@@ -196,13 +191,6 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
             mandatoryLanguagesSet.addAll(Arrays.asList(mandatoryLanguages));
         }
         site.setDefaultLanguage(request.getParameter("defaultLanguage"));
-        final String[] deletedLanguages = request.getParameterValues("deletedLanguages");
-        if (deletedLanguages != null && deletedLanguages.length > 0) {
-            flushCache = true;
-            final List<String> deletedLanguageList = Arrays.asList(deletedLanguages);
-            mandatoryLanguagesSet.removeAll(deletedLanguageList);
-            site.getLanguages().removeAll(deletedLanguageList);
-        }
         try {
             JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
             service.updateSite(site);
@@ -223,41 +211,6 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
             CacheHelper.flushOutputCaches(true);
         }
         displayLanguageList(request, response, session);
-    } // end addComponent
-
-
-    //-------------------------------------------------------------------------
-
-    private void reallyDelete(HttpServletRequest request, HttpServletResponse response, HttpSession session)
-            throws ServletException, IOException {
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        ProcessingContext jParams = null;
-        if (jData != null) {
-            jParams = jData.getProcessingContext();
-        }
-
-        request.setAttribute("warningMsg", "");
-
-        List languagesToDelete = (List) session.getAttribute("languagesToDelete");
-
-        if (languagesToDelete.size() == 0) {
-            displayLanguageList(request, response, session);
-        } else {
-
-            session.removeAttribute("languagesToDelete");
-            logger.debug("Really deleting languages...");
-            Set languageCodeSet = new HashSet();
-            Iterator languagesToDeleteEnum = languagesToDelete.iterator();
-            List locales = new ArrayList();
-            while (languagesToDeleteEnum.hasNext()) {
-                String curSetting = (String) languagesToDeleteEnum.next();
-                locales.add(LanguageCodeConverters.languageCodeToLocale(curSetting));
-                languageCodeSet.add(curSetting);
-            }
-
-        }
-
-        displayLanguageList(request, response, session);
-
     }
+
 }

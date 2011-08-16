@@ -119,6 +119,8 @@ public class JahiaSite implements Serializable {
 
     private Set<String> inactiveLanguages = new HashSet<String>();
     
+    private Set<String> inactiveLiveLanguages = new HashSet<String>();
+    
     private List<String> installedModules;
 
     private String JCRLocalPath;
@@ -232,12 +234,21 @@ public class JahiaSite implements Serializable {
 
 
     /**
+     * Returns a set of languages, which are deactivated completely for browsing and editing.
+     * 
+     * @return a set of languages, which are deactivated completely for browsing and editing
+     */
+    public Set<String> getInactiveLanguages() {
+        return inactiveLanguages;
+    }
+
+    /**
      * Returns a set of languages, which are not considered in live mode browsing, i.e. are currently inactive in navigation.
      * 
      * @return a set of languages, which are not considered in live mode browsing, i.e. are currently inactive in navigation
      */
-    public Set<String> getInactiveLanguages() {
-        return inactiveLanguages;
+    public Set<String> getInactiveLiveLanguages() {
+        return inactiveLiveLanguages;
     }
 
     public List<String> getInstalledModules() {
@@ -379,8 +390,8 @@ public class JahiaSite implements Serializable {
 
     public void setDefaultLanguage(String defaultLanguage) {
         this.defaultLanguage = defaultLanguage;
-        if (inactiveLanguages.contains(defaultLanguage)) {
-            inactiveLanguages.remove(defaultLanguage);
+        if (inactiveLiveLanguages.contains(defaultLanguage)) {
+            inactiveLiveLanguages.remove(defaultLanguage);
         }
     }
 
@@ -393,7 +404,7 @@ public class JahiaSite implements Serializable {
     }
 
     /**
-     * Sets languages, which are not considered in live mode browsing, i.e. are currently inactive in navigation.
+     * Sets languages, which are completely deactivated for browsing and editing.
      * 
      * @param inactiveLanguages
      *            the set of inactive languages
@@ -401,6 +412,17 @@ public class JahiaSite implements Serializable {
     public void setInactiveLanguages(Set<String> inactiveLanguages) {
         this.inactiveLanguages = inactiveLanguages == null ? new HashSet<String>()
                 : inactiveLanguages;
+    }
+
+    /**
+     * Sets languages, which are not considered in live mode browsing, i.e. are currently inactive in navigation.
+     * 
+     * @param inactiveLiveLanguages
+     *            the set of inactive languages
+     */
+    public void setInactiveLiveLanguages(Set<String> inactiveLiveLanguages) {
+        this.inactiveLiveLanguages = inactiveLiveLanguages == null ? new HashSet<String>()
+                : inactiveLiveLanguages;
     }
 
     public void setInstalledModules(List<String> installedModules) {

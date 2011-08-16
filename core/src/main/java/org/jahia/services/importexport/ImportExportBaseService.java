@@ -490,8 +490,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         Set<String> v = s.getLanguages();
         for (String sls : v) {
-            p.setProperty("language." + sls + ".activated", s.getInactiveLanguages().contains(sls) ? "false" : "true");
+            p.setProperty("language." + sls + ".activated", s.getInactiveLiveLanguages().contains(sls) ? "false" : "true");
             p.setProperty("language." + sls + ".mandatory", "" + s.getMandatoryLanguages().contains(sls));
+        }
+        for (String sls : s.getInactiveLanguages()) {
+            p.setProperty("language." + sls + ".disabledCompletely", "true");
         }
 
 
@@ -840,6 +843,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         final Set<String> languages = new HashSet<String>();
         final Set<String> inactiveLanguages = site.getInactiveLanguages();
         inactiveLanguages.clear();
+        final Set<String> inactiveLiveLanguages = site.getInactiveLiveLanguages();
+        inactiveLiveLanguages.clear();
         final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
         mandatoryLanguages.clear();
         String defaultLanguage = null;
@@ -857,13 +862,17 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 if (!languages.contains(lang)) {
                     languages.add(lang);
                     if (!Boolean.valueOf(p.getProperty("language." + lang + ".activated", "true"))) {
+                        inactiveLiveLanguages.add(lang);
+                    }
+                    if (Boolean.valueOf(p.getProperty("language." + lang + ".disabledCompletely", "false"))) {
                         inactiveLanguages.add(lang);
+                        languages.remove(lang);
                     }
                     if (Boolean.valueOf(p.getProperty("language." + lang + ".mandatory", "false"))) {
                         mandatoryLanguages.add(lang);
                     }
-                    if (StringUtils.isEmpty(lowestRankLanguage)
-                            || p.containsKey("language." + lang + ".rank")) {
+                    if (!inactiveLanguages.contains(lang) && (StringUtils.isEmpty(lowestRankLanguage)
+                            || p.containsKey("language." + lang + ".rank"))) {
                         int langRank = NumberUtils.toInt(p
                                 .getProperty("language." + lang + ".rank"));
                         if (currentRank == 0 || langRank < currentRank) {
@@ -902,6 +911,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             } else {
                 site.setLanguages(siteLangs);
                 site.setInactiveLanguages(inactiveLanguages);
+                site.setInactiveLiveLanguages(inactiveLiveLanguages);
                 site.setMandatoryLanguages(mandatoryLanguages);
             }
             if (defaultLanguage == null) {

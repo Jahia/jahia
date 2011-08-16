@@ -3,6 +3,7 @@
 <%
     Set<String> languageSet = (Set<String>) request.getAttribute("languageSet");
     Set<String> inactiveLanguageSet = (Set<String>) request.getAttribute("inactiveLanguageSet");
+    Set<String> inactiveLiveLanguageSet = (Set<String>) request.getAttribute("inactiveLiveLanguageSet");
     Set<String> mandatoryLanguageSet = (Set<String>) request.getAttribute("mandatoryLanguageSet");
     Boolean mixLanguages = (Boolean) request.getAttribute("mixLanguages");
     String defaultLanguage = (String) request.getAttribute("defaultLanguage");
@@ -60,16 +61,18 @@
                                         </th>
                                         <th style="text-align:center">
                                             <fmt:message
-                                                    key="org.jahia.admin.languages.ManageSiteLanguages.mandatory.label"/>
-                                        </th>
-                                        <th style="text-align:center">
-                                            <fmt:message key="label.active"/>
+                                                    key="org.jahia.admin.languages.ManageSiteLanguages.default.label"/>
                                         </th>
                                         <th style="text-align:center">
                                             <fmt:message
-                                                    key="org.jahia.admin.languages.ManageSiteLanguages.default.label"/>
+                                                    key="org.jahia.admin.languages.ManageSiteLanguages.mandatory.label"/>
                                         </th>
-                                        <th style="text-align:center"><fmt:message key="label.remove"/></th>
+                                        <th style="text-align:center">
+                                            <fmt:message key="label.active"/> (<fmt:message key="label.edit"/>)
+                                        </th>
+                                        <th style="text-align:center">
+                                            <fmt:message key="label.active"/> (<fmt:message key="label.live"/>)
+                                        </th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -87,33 +90,59 @@
                                         for (String lang : languageSet) {
                                             count++;
                                             Locale curLocale = LanguageCodeConverters.languageCodeToLocale(lang);
-                                            if (count % 2 == 0) { %>
-                                    <tr class="evenLine">
-                                            <%
-                                            } else { %>
-                                    <tr class="oddLine">
-                                        <%
-                                            } %>
-                                        <td align="left">
+                                            pageContext.setAttribute("lang", lang);
+                                            pageContext.setAttribute("even", (count % 2 == 0));
+                                            pageContext.setAttribute("defaultLang", lang.equals(defaultLanguage));
+                                            pageContext.setAttribute("mandatory", mandatoryLanguageSet.contains(lang));
+                                            pageContext.setAttribute("inactive", inactiveLanguageSet.contains(lang));
+                                            pageContext.setAttribute("inactiveLive", inactiveLiveLanguageSet.contains(lang));
+                                            
+                                            String style = null;
+                                            if (inactiveLanguageSet.contains(lang)) {
+                                                style = "color: #666666";
+                                            } else {
+                                                if (lang.equals(defaultLanguage)) {
+                                                    style = "font-weight: bold; color: blue;";
+                                                } else if (!inactiveLiveLanguageSet.contains(lang)) {
+                                                    style = "color: blue;";
+                                                }
+                                            }
+                                            pageContext.setAttribute("style", style != null ? " style=\"" + style + "\"" : null);
+                                            %>
+                                    <tr class="${even ? 'evenLine' : 'oddLine'}">
+                                        <td align="left"${not empty style ? style : ''}>
                                             <%=curLocale.getDisplayName(currentLocale) %> (<%=curLocale.toString() %>)
+                                            <input type="hidden" name="languages" value="${lang}"/>
                                         </td>
                                         <td align="center">
-                                            <input type="checkbox" name="mandatoryLanguages" value="<%=lang%>"<% if (mandatoryLanguageSet.contains(lang)) { %>checked="checked"<% }%>/>
+                                            <input type="radio" name="defaultLanguage" value="${lang}"
+                                                    ${defaultLang ? 'checked="checked"' : ''}
+                                                    ${!defaultLang && inactive ? 'disabled="disabled"' : ''}/>
                                         </td>
                                         <td align="center">
-                                            <% if (lang.equals(defaultLanguage)) {%>
-                                                <input type="checkbox" name="activeLanguages_display" value="<%=lang%>" checked="checked" disabled="disabled"/>
-                                                <input type="hidden" name="activeLanguages" value="<%=lang%>"/>
-                                            <% } else { %>
-                                            <input type="checkbox" name="activeLanguages" value="<%=lang%>"<% if (!inactiveLanguageSet.contains(lang)) { %>checked="checked"<% }%>/>
-                                            <% } %>
+                                            <input type="checkbox" name="mandatoryLanguages" value="${lang}"
+                                            ${mandatory ? 'checked="checked"' : ''}
+                                            ${inactive ? 'disabled="disabled"' : ''}/>
                                         </td>
                                         <td align="center">
-                                            <input type="radio" name="defaultLanguage" value="<%=lang%>"
-                                                   <% if (lang.equals(defaultLanguage)) {%>checked="checked"<% } %>/>
+                                            <c:if test="${defaultLang}">
+                                                <input type="checkbox" name="activeLanguages_display" value="${lang}" checked="checked" disabled="disabled"/>
+                                                <input type="hidden" name="activeLanguages" value="${lang}"/>
+                                            </c:if>
+                                            <c:if test="${!defaultLang}">
+                                            <input type="checkbox" name="activeLanguages" value="${lang}"${!inactive ? 'checked="checked"' : ''}/>
+                                            </c:if>
                                         </td>
                                         <td align="center">
-                                            <input type="checkbox" name="deletedLanguages" value="<%=lang%>"/>
+                                            <c:if test="${defaultLang}">
+                                                <input type="checkbox" name="activeLiveLanguages_display" value="${lang}" checked="checked" disabled="disabled"/>
+                                                <input type="hidden" name="activeLiveLanguages" value="${lang}"/>
+                                            </c:if>
+                                            <c:if test="${!defaultLang}">
+                                            <input type="checkbox" name="activeLiveLanguages" value="${lang}"
+                                                ${!inactive && !inactiveLive? 'checked="checked"' : ''}
+                                                ${inactive ? 'disabled="disabled"' : ''}/>
+                                            </c:if>
                                         </td>
                                     </tr>
                                     <%
@@ -147,7 +176,7 @@
                                             <td>
                                                 <b><fmt:message
                                                         key="org.jahia.admin.languages.ManageSiteLanguages.availableLanguages.label"/></b><br/>
-                                                <select name="language_list" multiple="multiple" size="10">
+                                                <select name="language_list" id="language_list" multiple="multiple" size="10">
                                                     <%
                                                         Iterator localeIter = LanguageCodeConverters.getSortedLocaleList(
                                                                 currentLocale).iterator();
@@ -198,7 +227,7 @@
                 </span>
                 <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-ok" href="javascript:sendForm();"><fmt:message key='label.save'/></a>
+                    <a class="ico-ok" href="#save" onclick="document.getElementById('language_list').selectedIndex=-1; sendForm(); return false;"><fmt:message key='label.save'/></a>
                   </span>
                 </span>
 </div>

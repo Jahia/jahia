@@ -84,10 +84,18 @@ public final class SitesSettings {
     /**
      * Language settings
      */
-    public static final String MIX_LANGUAGES_ACTIVE = "mix_languages_active";
+    public static final String MIX_LANGUAGES_ACTIVE = "j:mixLanguage";
 
     public static final String JAHIA_GA_PROFILE = "jahiaGAprofile_";
 
+    public static final String INACTIVE_LIVE_LANGUAGES = "j:inactiveLiveLanguages"; 
 
+    public static final String INACTIVE_LANGUAGES = "j:inactiveLanguages"; 
+
+    public static final String MANDATORY_LANGUAGES = "j:mandatoryLanguages";
+    
+    public static final String DEFAULT_LANGUAGE = "j:defaultLanguage";
+
+    public static final String LANGUAGES = "j:languages"; 
 
 }

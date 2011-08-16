@@ -62,6 +62,9 @@ public class MetricsLoggingFilter extends AbstractFilter {
     }
 
     public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
+        if (!loggingService.isProfilingEnabled()) {
+            return null;
+        }
         JCRNodeWrapper node = resource.getNode();
 
         String profilerName = "render module " + node.getPath();
@@ -75,6 +78,9 @@ public class MetricsLoggingFilter extends AbstractFilter {
     @Override
     public String execute(String previousOut, RenderContext context, Resource resource,
                           RenderChain chain) throws Exception {
+        if (!loggingService.isProfilingEnabled()) {
+            return previousOut;
+        }
         JCRNodeWrapper node = resource.getNode();
 
         String profilerName = "render module " + node.getPath();
@@ -84,7 +90,9 @@ public class MetricsLoggingFilter extends AbstractFilter {
         if (session != null) {
             sessionID = session.getId();
         }
-        loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), sessionID, node.getIdentifier(), node.getPath(), node.getNodeTypes().get(0), "moduleViewed", resource.getResolvedTemplate());
+        if (loggingService.isEnabled()) {
+            loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), sessionID, node.getIdentifier(), node.getPath(), node.getNodeTypes().get(0), "moduleViewed", resource.getResolvedTemplate());
+        }
 
         loggingService.stopNestedProfiler("MAIN", profilerName);
 

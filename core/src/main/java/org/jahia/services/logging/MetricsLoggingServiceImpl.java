@@ -95,7 +95,7 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
      */
     public void logContentEvent(String user, String ipAddress, String sessionID, String nodeIdentifier, String path, String nodeType,
                                 String logTemplate, String... args) {
-        if (!metricsLogger.isTraceEnabled() || ignoreUsers.contains(user)) {
+        if (!isEnabled() || ignoreUsers.contains(user)) {
             return;
         }
         String template = logTemplatesMap.get(logTemplate);
@@ -124,6 +124,9 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
      * @param action       the action you want to profile
      */
     public void startProfiler(String profilerName, String action) {
+        if (!isProfilingEnabled()) {
+            return;
+        }
         final ProfilerRegistry profilerRegistry = ProfilerRegistry.getThreadContextInstance();
         Profiler profiler = profilerRegistry.get(profilerName);
         if (profiler == null) {
@@ -140,6 +143,9 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
      * @param profilerName the name of the profiler you want to stop
      */
     public void stopProfiler(String profilerName) {
+        if (!isProfilingEnabled()) {
+            return;
+        }
         final ProfilerRegistry profilerRegistry = ProfilerRegistry.getThreadContextInstance();
         Profiler profiler = profilerRegistry.get(profilerName);
         if (profiler != null) {
@@ -157,6 +163,9 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
      * @return the nested profiler
      */
     public Profiler createNestedProfiler(String parentProfilerName, String nestedProfilerName) {
+        if (!isProfilingEnabled()) {
+            return null;
+        }
         Stack<Profiler> profilers;
         if (threadLocal.get() == null) {
             profilers = new Stack<Profiler>();
@@ -183,6 +192,9 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
      * @param nestedProfilerName the sub profiler name
      */
     public void stopNestedProfiler(String parentProfilerName, String nestedProfilerName) {
+        if (!isProfilingEnabled()) {
+            return;
+        }
         Stack<Profiler> profilers = threadLocal.get();
         final Profiler profiler = profilers.pop();
         if (profiler.getName().equals(nestedProfilerName)) {
@@ -191,6 +203,9 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
     }
 
     public Profiler startProfiler(String profilerName) {
+        if (!isProfilingEnabled()) {
+            return null;
+        }
         final ProfilerRegistry profilerRegistry = ProfilerRegistry.getThreadContextInstance();
         Profiler profiler = profilerRegistry.get(profilerName);
         if (profiler == null) {
@@ -211,5 +226,13 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
             instance = new MetricsLoggingServiceImpl();
         }
         return instance;
+    }
+
+    public boolean isEnabled() {
+        return metricsLogger.isTraceEnabled();
+    }
+    
+    public boolean isProfilingEnabled() {
+        return profilerMetricsLogger.isDebugEnabled();
     }
 }

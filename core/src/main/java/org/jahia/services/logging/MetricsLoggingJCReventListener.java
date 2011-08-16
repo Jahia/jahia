@@ -73,7 +73,7 @@ public class MetricsLoggingJCReventListener extends DefaultEventListener {
     }
 
     public int getEventTypes() {
-        return Event.NODE_ADDED + Event.NODE_MOVED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED;
+        return loggingService.isEnabled() ? Event.NODE_ADDED + Event.NODE_MOVED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED : 0;
     }
 
     public String[] getNodeTypes() {

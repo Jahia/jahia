@@ -52,6 +52,19 @@ import org.slf4j.profiler.Profiler;
  *        Created : 24 nov. 2009
  */
 public interface MetricsLoggingService {
+    
+    /**
+     * Returns <code>true</code> if the logging is generally enabled; <code>false</code> otherwise.
+     * @return <code>true</code> if the logging is generally enabled; <code>false</code> otherwise
+     */
+    boolean isEnabled();
+    
+    /**
+     * Returns <code>true</code> if the profiler logging is generally enabled; <code>false</code> otherwise.
+     * @return <code>true</code> if the profiler logging is generally enabled; <code>false</code> otherwise
+     */
+    boolean isProfilingEnabled();
+    
     /**
      * Log some metric about a node.
      *

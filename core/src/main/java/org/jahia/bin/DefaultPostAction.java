@@ -189,8 +189,10 @@ public class DefaultPostAction extends Action {
         if (newNode != null) {
             nodeIdentifier = newNode.getIdentifier();
         }
-        loggingService.logContentEvent(renderContext.getUser().getName(), req
-                .getRemoteAddr(), sessionID, nodeIdentifier, urlResolver.getPath(), (String) ((List) parameters.get(Render.NODE_TYPE)).get(0), "nodeCreated", new JSONObject(parameters).toString());
+        if (loggingService.isEnabled()) {
+            loggingService.logContentEvent(renderContext.getUser().getName(), req
+                    .getRemoteAddr(), sessionID, nodeIdentifier, urlResolver.getPath(), (String) ((List) parameters.get(Render.NODE_TYPE)).get(0), "nodeCreated", new JSONObject(parameters).toString());
+        }
 
         if (newNode != null) {
             return new ActionResult(HttpServletResponse.SC_CREATED, newNode.getPath(), Render.serializeNodeToJSON(newNode));

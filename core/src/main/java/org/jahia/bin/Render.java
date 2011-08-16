@@ -262,9 +262,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             sessionID = httpSession.getId();
         }
         loggingService.stopProfiler("MAIN");
-        loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(), sessionID,
-                resource.getNode().getIdentifier(), resource.getNode().getPath(), resource.getNode().getPrimaryNodeType().getName(), "pageViewed",
-                req.getHeader("User-Agent"), req.getHeader("Referer"), Long.toString(System.currentTimeMillis() - startTime));
+        if (loggingService.isEnabled()) {
+            loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(), sessionID,
+                    resource.getNode().getIdentifier(), resource.getNode().getPath(), resource.getNode().getPrimaryNodeType().getName(), "pageViewed",
+                    req.getHeader("User-Agent"), req.getHeader("Referer"), Long.toString(System.currentTimeMillis() - startTime));
+        }
     }
 
     protected void doPut(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
@@ -337,9 +339,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if (httpSession != null) {
             sessionID = httpSession.getId();
         }
-        loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(), sessionID,
-                node.getIdentifier(), urlResolver.getPath(), node.getPrimaryNodeType().getName(), "nodeUpdated",
-                new JSONObject(req.getParameterMap()).toString());
+        if (loggingService.isEnabled()) {
+            loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(), sessionID,
+                    node.getIdentifier(), urlResolver.getPath(), node.getPrimaryNodeType().getName(), "nodeUpdated",
+                    new JSONObject(req.getParameterMap()).toString());
+        }
     }
 
     public static JSONObject serializeNodeToJSON(JCRNodeWrapper node)

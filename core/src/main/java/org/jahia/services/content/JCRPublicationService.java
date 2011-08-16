@@ -387,9 +387,11 @@ public class JCRPublicationService extends JahiaService {
                     commentBuf.append(comment);
                 }
             }
-            loggingService.logContentEvent(userID, "", "", publishedNode.getIdentifier(), publishedNode.getPath(),
-                    publishedNode.getPrimaryNodeTypeName(), "publishedNode", sourceSession.getWorkspace().getName(),
-                    destinationSession.getWorkspace().getName(), commentBuf.toString());
+            if (loggingService.isEnabled()) {
+                loggingService.logContentEvent(userID, "", "", publishedNode.getIdentifier(), publishedNode.getPath(),
+                        publishedNode.getPrimaryNodeTypeName(), "publishedNode", sourceSession.getWorkspace().getName(),
+                        destinationSession.getWorkspace().getName(), commentBuf.toString());
+            }
         }
     }
 
@@ -875,9 +877,11 @@ public class JCRPublicationService extends JahiaService {
         if ((userID != null) && (userID.startsWith(JahiaLoginModule.SYSTEM))) {
             userID = userID.substring(JahiaLoginModule.SYSTEM.length());
         }
-        loggingService
-                .logContentEvent(userID, "", "", node.getIdentifier(), node.getPath(), node.getPrimaryNodeTypeName(),
-                        "unpublishedNode", node.getSession().getWorkspace().getName());
+        if (loggingService.isEnabled()) { 
+            loggingService
+                    .logContentEvent(userID, "", "", node.getIdentifier(), node.getPath(), node.getPrimaryNodeTypeName(),
+                            "unpublishedNode", node.getSession().getWorkspace().getName());
+        }
     }
 
     public List<PublicationInfo> getPublicationInfos(List<String> uuids, Set<String> languages,

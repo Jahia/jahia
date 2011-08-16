@@ -58,17 +58,20 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.commons.conversion.MalformedPathException;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
@@ -87,13 +90,17 @@ public class FileServlet extends HttpServlet {
 
     private static final long serialVersionUID = -414690364676304370L;
 
-    private static final Pattern UNDERSCORES = Pattern.compile("___");
+    protected static final Pattern UNDERSCORES = Pattern.compile("___");
 
-    private int cacheThreshold = 64 * 1024;
+    protected FileCacheManager cacheManager;
+
+    protected int cacheThreshold = 64 * 1024;
 
     protected String characterEncoding = null;
 
-    private FileCacheManager cacheManager;
+    protected MetricsLoggingService loggingService;
+
+    private JCRSessionFactory sessionFactory;
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,
             IOException {
@@ -113,6 +120,7 @@ public class FileServlet extends HttpServlet {
                     // resource is not changed
                     code = HttpServletResponse.SC_NOT_MODIFIED;
                     res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                    logAccess(fileKey, req, "ok-not-modified");
                     return;
                 }
 
@@ -140,6 +148,7 @@ public class FileServlet extends HttpServlet {
                         // resource is not changed
                         code = HttpServletResponse.SC_NOT_MODIFIED;
                         res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                        logAccess(fileKey, req, "ok-not-modified");
                         return;
                     }
 
@@ -151,12 +160,14 @@ public class FileServlet extends HttpServlet {
                         }
                         entries.put(fileKey.getThumbnail(), fileEntry);
                         contentCache.put(fileKey.getCacheKey(), entries);
+                        logAccess(fileKey, req, "ok");
                     }
                 } else {
                     if (lastModifiedEntry == null) {
                         lastModifiedEntry = new FileLastModifiedCacheEntry(fileEntry.getETag(), fileEntry.getLastModified());
                         lastModifiedCache.put(fileKey.getCacheKey(), lastModifiedEntry);
                     }
+                    logAccess(fileKey, req, "ok-cached");
                     if (logger.isDebugEnabled()) {
                         logger.debug("Serving cached file entry {}", fileKey.toString());
                     }
@@ -335,6 +346,19 @@ public class FileServlet extends HttpServlet {
         } catch (JahiaRuntimeException e) {
             throw new ServletException(e.getCause());
         }
+        
+        value = StringUtils.defaultString(config.getInitParameter("statistics-enabled"), "").toLowerCase();
+        if (value.length() > 0
+                && ("true".equals(value) || "yes".equals(value) || "on".equals(value))) {
+            try {
+                loggingService = (MetricsLoggingService) SpringContextSingleton
+                        .getBean("loggingService");
+                
+                sessionFactory = JCRSessionFactory.getInstance();
+            } catch (Exception e) {
+                logger.error("Unable to get the logging service instance. Metrics logging will be disabled.");
+            }
+        }
     }
 
     protected boolean isNotModified(FileKey fileKey, FileLastModifiedCacheEntry lastModifiedEntry,
@@ -354,6 +378,18 @@ public class FileServlet extends HttpServlet {
         }
 
         return false;
+    }
+
+    protected void logAccess(FileKey fileKey, HttpServletRequest req, String status) {
+        if (loggingService == null || !loggingService.isEnabled()) {
+            return;
+        }
+
+        HttpSession httpSession = req.getSession(false);
+        String sessionID = httpSession != null ? httpSession.getId() : req.getRequestedSessionId();
+        loggingService.logContentEvent(sessionFactory.getCurrentUser().getName(),
+                req.getRemoteAddr(), sessionID, null, fileKey.getPath(), null, "fileAccessed",
+                status);
     }
 
     protected FileKey parseKey(HttpServletRequest req) throws UnsupportedEncodingException {

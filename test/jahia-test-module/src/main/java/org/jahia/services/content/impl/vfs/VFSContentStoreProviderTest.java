@@ -73,6 +73,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Unit test for VFS content store provider.
@@ -346,6 +347,13 @@ public class VFSContentStoreProviderTest {
             }
         }
         assertTrue("Couldn't find property j:node using property iterators and name patterns", foundReferenceProperty);
+
+        // as our own property iterators also support the Map interface, we will test that now.
+        Map fileReferencePropertiesMap = (Map) fileReferenceNode.getProperties("j:nod* | j:*ode");
+        assertTrue("Properties used as a map do not have the reference property j:node", fileReferencePropertiesMap.containsKey("j:node"));
+        Value refValue = (Value) fileReferencePropertiesMap.get("j:node");
+        assertTrue("Reference property could not be found in properties used as a map", refValue != null);
+        assertEquals("Reference property retrieved from properties used as a map does not contain proper reference", vfsTestFile1.getIdentifier(), refValue.getString());
 
         // TODO add tests where we mix internal references AND external references in the same multi-valued property in different languages.
         getCleanSession();

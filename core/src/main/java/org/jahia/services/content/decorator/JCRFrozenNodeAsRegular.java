@@ -382,7 +382,7 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
     public PropertyIterator getProperties() throws RepositoryException {
         final Locale locale = getSession().getLocale();
         if (locale != null) {
-            return new LazyPropertyIterator(this, locale);
+            return new LazyPropertyIterator(this, locale, null, null);
         }
         return new LazyPropertyIterator(this);
     }
@@ -391,9 +391,9 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
     public PropertyIterator getProperties(String namePattern) throws RepositoryException {
         final Locale locale = getSession().getLocale();
         if (locale != null) {
-            return new LazyPropertyIterator(this, locale, namePattern);
+            return new LazyPropertyIterator(this, locale, namePattern, null, null);
         }
-        return new LazyPropertyIterator(this, null, namePattern);
+        return new LazyPropertyIterator(this, null, namePattern, null, null);
     }
 
     @Override

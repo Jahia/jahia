@@ -62,21 +62,35 @@ public class AbstractJCRTag extends AbstractJahiaTag {
 
     private JCRSessionWrapper session;
 
+    protected String getWorkspace() throws RepositoryException {
+        String workspace = null;
+        Resource resource = getCurrentResource();
+        RenderContext ctx = getRenderContext();
+        resource = resource != null ? resource : (ctx != null ? ctx.getMainResource() : null);
+        if (resource != null) {
+            workspace = resource.getWorkspace();
+        }
+        return workspace;
+    }
+    
+    protected Locale getLocale() {
+        Locale locale = null;
+        Resource resource = getCurrentResource();
+        RenderContext ctx = getRenderContext();
+        resource = resource != null ? resource : (ctx != null ? ctx.getMainResource() : null);
+        if (resource != null) {
+            locale = resource.getLocale();
+        } else {
+            locale = LanguageCodeConverters.languageCodeToLocale(getLanguageCode());
+        }
+        return locale;
+    } 
+    
     protected JCRSessionWrapper getJCRSession() throws RepositoryException {
         if (session == null) {
-            String workspace = null;
-            Locale locale = null;
-            Resource resource = getCurrentResource();
             RenderContext ctx = getRenderContext();
-            resource = resource != null ? resource : (ctx != null ? ctx.getMainResource() : null);
-            if (resource != null) {
-                workspace = resource.getWorkspace();
-                locale = resource.getLocale();
-            } else {
-                locale = LanguageCodeConverters.languageCodeToLocale(getLanguageCode());
-            }
-            session = ctx != null ? JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale,
-                    ctx.getFallbackLocale()) : JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
+            session = ctx != null ? JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace(), getLocale(),
+                    ctx.getFallbackLocale()) : JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace(), getLocale());
         }
 
         return session;

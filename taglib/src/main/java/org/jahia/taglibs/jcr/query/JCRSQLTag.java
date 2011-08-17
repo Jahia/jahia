@@ -41,19 +41,19 @@
 package org.jahia.taglibs.jcr.query;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.ValueFactory;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
-import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.jackrabbit.commons.query.QueryObjectModelBuilder;
-import org.apache.jackrabbit.commons.query.QueryObjectModelBuilderRegistry;
 import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
 
 /**
@@ -62,18 +62,31 @@ import org.jahia.taglibs.jcr.AbstractJCRTag;
 public class JCRSQLTag extends AbstractJCRTag {
     private static final long serialVersionUID = 4183406665401018247L;
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRSQLTag.class);
+    private boolean useRootUser = false;
     private int scope = PageContext.PAGE_SCOPE;
     private String var;
     private String statement;
     private long limit;
     private long offset;
-
+    
     public int doEndTag() throws JspException {
+        QueryResult result = null;
+        JahiaUser userToReset = null;
         try {
-            pageContext.setAttribute(var, executeQuery(), scope);
+            if (isUseRootUser()) {
+                userToReset = JCRSessionFactory.getInstance().getCurrentUser();
+                JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
+            }    
+            result = executeQuery(getJCRSession());
+            
         } catch (RepositoryException e) {
             throw new JspTagException(e);
+        } finally {
+            if (userToReset != null)  {
+                JCRSessionFactory.getInstance().setCurrentUser(userToReset);
+            }
         }
+        pageContext.setAttribute(var, result, scope);
         resetState();
         return EVAL_PAGE;
     }
@@ -85,14 +98,14 @@ public class JCRSQLTag extends AbstractJCRTag {
      * @throws RepositoryException in case of JCR errors 
      * @throws InvalidQueryException in case of bad query statement
      */
-    private QueryResult executeQuery() throws InvalidQueryException, RepositoryException {
+    private QueryResult executeQuery(JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {
         long startTime = System.currentTimeMillis();
         QueryResult queryResult = null;
         if (logger.isDebugEnabled()) {
             logger.debug("Executing " + getQueryLanguage() + " query: " + statement);
         }
 
-        Query q = getJCRSession().getWorkspace().getQueryManager().createQuery(statement, getQueryLanguage());
+        Query q = session.getWorkspace().getQueryManager().createQuery(statement, getQueryLanguage());
         if (limit > 0) {
             q.setLimit(limit);
         }
@@ -107,7 +120,7 @@ public class JCRSQLTag extends AbstractJCRTag {
 
         return queryResult;
     }
-
+    
     @Override
     protected void resetState() {
         scope = PageContext.PAGE_SCOPE;
@@ -149,5 +162,13 @@ public class JCRSQLTag extends AbstractJCRTag {
 
     public void setOffset(long offset) {
         this.offset = offset;
+    }
+
+    public boolean isUseRootUser() {
+        return useRootUser;
+    }
+
+    public void setUseRootUser(boolean useSystemUserSession) {
+        this.useRootUser = useSystemUserSession;
     }
 }

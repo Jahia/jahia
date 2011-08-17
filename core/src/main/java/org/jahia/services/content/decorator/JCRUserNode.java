@@ -53,7 +53,6 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.usermanager.JahiaExternalUser;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.UserProperties;
 import org.jahia.services.usermanager.UserPropertyReadOnlyException;
 import org.jahia.services.usermanager.jcr.JCRUser;

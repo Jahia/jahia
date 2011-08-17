@@ -251,6 +251,18 @@
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.Long</type>
         </attribute>
+        <attribute>
+            <description>
+                If set to 'true' the query will be run with using the root user instead of the currently logged on user.
+                This is useful if you want to run queries with constraints on attributes, on which the current user has no access.
+                This option will work-around access control, so be very careful, when using this option to then not display results,
+                on which the current user has no access.  
+            </description>
+            <name>useRootUser</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>        
     </tag>
     <tag>
         <description>
@@ -293,6 +305,18 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.Long</type>
+        </attribute>
+        <attribute>
+            <description>
+                If set to 'true' the query will be run with using the root user instead of the currently logged on user.
+                This is useful if you want to run queries with constraints on attributes, on which the current user has no access.
+                This option will work-around access control, so be very careful, when using this option to then not display results,
+                on which the current user has no access.  
+            </description>
+            <name>useRootUser</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
         </attribute>
     </tag>
     <tag>

@@ -280,12 +280,20 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
             }
             InputStream is = item.getInputStream();
             try {
-                locationFolder.getSession().getWorkspace().getVersionManager().checkout(locationFolder.getPath());
+                boolean versioningAvailable = false;
+                if (locationFolder.getProvider().isVersioningAvailable()) {
+                    versioningAvailable = true;
+                }
+                if (versioningAvailable) {
+                    locationFolder.getSession().getWorkspace().getVersionManager().checkout(locationFolder.getPath());
+                }
                 JCRNodeWrapper node = locationFolder.uploadFile(filename, is, item.getContentType());
                 node.save();
-                node.checkpoint();
-                String label = "uploaded_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(node.getProperty("jcr:created").getDate().getTime());
-                JCRVersionService.getInstance().addVersionLabel(node,label);
+                if (versioningAvailable) {
+                    node.checkpoint();
+                    String label = "uploaded_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(node.getProperty("jcr:created").getDate().getTime());
+                    JCRVersionService.getInstance().addVersionLabel(node,label);
+                }
             } finally {
                 IOUtils.closeQuietly(is);
             }

@@ -55,10 +55,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * 
@@ -105,13 +102,19 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         mainComponent.removeAllListeners();
         mainComponent.getStore().removeAll();
         mainComponent.getStore().add(sites);
+        Set<String> siteNames= new LinkedHashSet<String>();
         for (GWTJahiaNode site : sites) {
+            if(siteNames.contains(site.getDisplayName())) {
+                site.set("switcherDisplayName",site.getDisplayName()+" ("+site.getSiteKey()+")");
+            } else {
+                site.set("switcherDisplayName",site.getDisplayName());
+            }
+            siteNames.add(site.getDisplayName());
             if (site.getUUID().equals(JahiaGWTParameters.getSiteUUID())) {
                 mainComponent.setValue(site);
-                break;
             }
         }
-        mainComponent.getStore().sort("displayName", Style.SortDir.ASC);
+        mainComponent.getStore().sort("switcherDisplayName", Style.SortDir.ASC);
 
         mainComponent.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
@@ -137,7 +140,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
     private void initMainComponent() {
         mainComponent = new ComboBox<GWTJahiaNode>();
         mainComponent.setStore(new ListStore<GWTJahiaNode>());
-        mainComponent.setDisplayField("displayName");
+        mainComponent.setDisplayField("switcherDisplayName");
         mainComponent.setValueField("uuid");
         mainComponent.setTypeAhead(true);
         mainComponent.setTriggerAction(ComboBox.TriggerAction.ALL);

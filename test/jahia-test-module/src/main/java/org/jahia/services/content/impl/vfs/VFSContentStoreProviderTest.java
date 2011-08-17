@@ -324,6 +324,7 @@ public class VFSContentStoreProviderTest {
             }
         }
         assertTrue("Expected to find weak reference property j:node but it wasn't found !", foundWeakReferenceProperty);
+        assertTrue("Expected to find j:node property when testing for it's presence but it wasn't found.", fileReferenceNode.hasProperty("j:node"));
 
         // Now let's test accessing using property iterator
 
@@ -383,6 +384,7 @@ public class VFSContentStoreProviderTest {
 
         mixedFileReferenceNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/externalMixedReferenceNode");
 
+        assertTrue("Couldn't find property when testing for it's presence with the hasProperty method", mixedFileReferenceNode.hasProperty(SIMPLE_WEAKREFERENCE_PROPERTY_NAME));
         Property simpleRefProperty = mixedFileReferenceNode.getProperty(SIMPLE_WEAKREFERENCE_PROPERTY_NAME);
         assertTrue("Reference property does not have proper value", simpleRefProperty.getNode().getIdentifier().equals(vfsTestFile1.getIdentifier()));
 

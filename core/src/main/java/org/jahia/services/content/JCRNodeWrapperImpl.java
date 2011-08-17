@@ -1310,14 +1310,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public Set<String> getSharedExternalPropertyNames() throws RepositoryException {
         Set<String> result = new HashSet<String>();
 
-        Property referenceProperty = getProperty(SHARED_REFERENCE_PROPERTY_NAMES_PROPERTYNAME);
-        Value[] propertyReferences = referenceProperty.getValues();
-        for (Value propertyReference : propertyReferences) {
-            String curPropertyReference = propertyReference.getString();
-            String[] refParts = curPropertyReference
-                    .split(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
-            String curPropertyName = refParts[1];
-            result.add(curPropertyName);
+        if (objectNode.hasProperty(SHARED_REFERENCE_PROPERTY_NAMES_PROPERTYNAME)) {
+            Property referenceProperty = getProperty(SHARED_REFERENCE_PROPERTY_NAMES_PROPERTYNAME);
+            Value[] propertyReferences = referenceProperty.getValues();
+            for (Value propertyReference : propertyReferences) {
+                String curPropertyReference = propertyReference.getString();
+                String[] refParts = curPropertyReference
+                        .split(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
+                String curPropertyName = refParts[1];
+                result.add(curPropertyName);
+            }
         }
         return result;
     }
@@ -1328,14 +1330,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return result;
         }
 
-        Property referenceProperty = getProperty(REFERENCE_PROPERTY_NAMES_PROPERTYNAME);
-        Value[] propertyReferences = referenceProperty.getValues();
-        for (Value propertyReference : propertyReferences) {
-            String curPropertyReference = propertyReference.getString();
-            String[] refParts = curPropertyReference
-                    .split(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
-            String curPropertyName = refParts[1];
-            result.add(curPropertyName);
+        if (hasI18N(getSession().getLocale()) &&
+                getI18N(getSession().getLocale()).hasProperty(REFERENCE_PROPERTY_NAMES_PROPERTYNAME)) {
+            Property referenceProperty = getProperty(REFERENCE_PROPERTY_NAMES_PROPERTYNAME);
+            Value[] propertyReferences = referenceProperty.getValues();
+            for (Value propertyReference : propertyReferences) {
+                String curPropertyReference = propertyReference.getString();
+                String[] refParts = curPropertyReference
+                        .split(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
+                String curPropertyName = refParts[1];
+                result.add(curPropertyName);
+            }
         }
         return result;
     }

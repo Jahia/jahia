@@ -49,6 +49,8 @@ import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.Name;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -74,6 +76,9 @@ import java.util.Map;
  * 
  */
 public class VFSNodeImpl extends VFSItemImpl implements Node {
+
+    private static final Logger logger = LoggerFactory.getLogger(VFSNodeImpl.class);
+
     private FileObject fileObject;
     private VFSSessionImpl session;
     private Map<String, VFSPropertyImpl> properties = null;
@@ -261,12 +266,15 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
                 } else {
                     throw new PathNotFoundException(s);
                 }
-            } else {
+            } else if (fileObject.getType() == FileType.FOLDER) {
                 FileObject child = fileObject.getChild(s);
                 if (child == null) {
                     throw new PathNotFoundException(s);
                 }
                 return new VFSNodeImpl(child, session);
+            } else {
+                logger.warn("Found non file or folder entry, maybe an alias. VFS file type=" + fileObject.getType());
+                throw new PathNotFoundException(s);
             }
         } catch (FileSystemException e) {
             throw new RepositoryException(e);
@@ -277,8 +285,11 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
         try {
             if (fileObject.getType() == FileType.FILE) {
                 return new VFSContentNodeIteratorImpl(session, fileObject.getContent());
-            } else {
+            } else if (fileObject.getType() == FileType.FOLDER) {
                 return new VFSNodeIteratorImpl(session, fileObject.getChildren());
+            } else {
+                logger.warn("Found non file or folder entry, maybe an alias. VFS file type=" + fileObject.getType());
+                return VFSNodeIteratorImpl.EMPTY;
             }
         } catch (FileSystemException e) {
             throw new RepositoryException(e);
@@ -332,9 +343,12 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
                 if ("jcr:content".equals(s)) {
                     return true;
                 }
-            } else {
+            } else if (fileObject.getType() == FileType.FOLDER) {
                 FileObject child = fileObject.getChild(s);
                 return child != null && child.exists();
+            } else {
+                logger.warn("Found non file or folder entry, maybe an alias. VFS file type=" + fileObject.getType());
+                return false;
             }
         } catch (FileSystemException e) {
             throw new RepositoryException(e);
@@ -350,8 +364,11 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
         try {
             if (fileObject.getType() == FileType.FILE) {
                 return true;
-            } else {
+            } else if (fileObject.getType() == FileType.FOLDER) {
                 return fileObject.getChildren().length > 0;
+            } else {
+                logger.warn("Found non file or folder entry, maybe an alias. VFS file type=" + fileObject.getType());
+                return false;
             }
         } catch (FileSystemException e) {
             throw new RepositoryException(e);

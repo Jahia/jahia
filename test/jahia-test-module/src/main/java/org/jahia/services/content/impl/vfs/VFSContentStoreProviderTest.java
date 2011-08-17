@@ -397,6 +397,9 @@ public class VFSContentStoreProviderTest {
         // TODO we will have to set the last property in multiple languages. We will need multiple
         // session objects for this.
 
+        // TODO add tests for reference removal, making sure we don't have dangling references.
+
+        // TODO add tests for handling missing reference targets.
 
     }
 

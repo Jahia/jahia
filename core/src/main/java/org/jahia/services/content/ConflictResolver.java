@@ -204,16 +204,6 @@ public class ConflictResolver {
             List<String> removed = new ArrayList<String>(uuids1.keySet());
             removed.removeAll(uuids2.keySet());
 
-            // Ordering
-            Map<String,String> oldOrdering = getOrdering(uuids1, removed);
-            Map<String,String> newOrdering = getOrdering(uuids2, added);
-            if (!newOrdering.equals(oldOrdering)) {
-                for (Map.Entry<String, String> entry : newOrdering.entrySet()) {
-                    diffs.add(new ChildNodeReorderedDiff(entry.getKey(), newOrdering.get(entry.getKey()),
-                            addPath(basePath,(String) uuids2.get(entry.getKey())), (String) uuids2.get(newOrdering.get(entry.getKey())),newOrdering));
-                }
-            }
-
             // Removed nodes
             for (String s : removed) {
                 try {
@@ -224,13 +214,28 @@ public class ConflictResolver {
                 }
 
             }
-
-            // Added nodes
-            for (String s : added) {
-                if (s.equals(uuids2.lastKey())) {
-                    diffs.add(new ChildAddedDiff(s, addPath(basePath, (String) uuids2.get(s)), null));
-                } else {
-                    diffs.add(new ChildAddedDiff(s, addPath(basePath, (String) uuids2.get(s)), (String) uuids2.get(uuids2.get(uuids2.indexOf(s)+1))));
+            
+            // Ordering
+            Map<String,String> oldOrdering = getOrdering(uuids1, removed);
+            Map<String,String> newOrdering = getOrdering(uuids2, Collections.<String>emptyList());
+            
+            if (!newOrdering.equals(oldOrdering)) {
+                for (Map.Entry<String, String> entry : newOrdering.entrySet()) {
+                    String uuid = entry.getKey();
+                    if (added.contains(uuid)) {
+                        diffs.add((uuid.equals(uuids2.lastKey()) ? new ChildAddedDiff(
+                                uuid, addPath(basePath,
+                                        (String) uuids2.get(uuid)), null)
+                                : new ChildAddedDiff(uuid, addPath(basePath,
+                                        (String) uuids2.get(uuid)),
+                                        (String) uuids2.get(uuids.get(uuids
+                                                .indexOf(uuid) + 1)))));
+                    } else {
+                        diffs.add(new ChildNodeReorderedDiff(uuid, newOrdering
+                                .get(uuid), addPath(basePath,
+                                (String) uuids2.get(uuid)), (String) uuids2
+                                .get(newOrdering.get(uuid)), newOrdering));
+                    }
                 }
             }
         }
@@ -341,6 +346,14 @@ public class ConflictResolver {
         }
 
         return diffs;
+    }
+    private ChildAddedDiff getAddedDiff (String uuid, ListOrderedMap uuids, String basePath) {
+        return (uuid.equals(uuids.lastKey()) ? new ChildAddedDiff(uuid,
+                addPath(basePath, (String) uuids.get(uuid)), null)
+                : new ChildAddedDiff(uuid, addPath(basePath,
+                        (String) uuids.get(uuid)), (String) uuids.get(uuids
+                        .get(uuids.indexOf(uuid) + 1))));
+        
     }
 
     private Map<String,String> getOrdering(ListOrderedMap uuids1, List<String> removed) {
@@ -532,6 +545,7 @@ public class ConflictResolver {
             return "ChildAddedDiff{" +
                     "uuid='" + uuid + '\'' +
                     ", newName='" + newName + '\'' +
+                    ", nextSibling='" + nextSibling + '\'' +                    
                     '}';
         }
     }

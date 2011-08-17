@@ -40,6 +40,8 @@
 
 package org.jahia.services.content;
 
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -64,11 +66,14 @@ public class ExternalReferencePropertyImpl implements Property {
     private Node referencedNode;
     private Node parentNode;
     private Value value;
+    private Value[] values;
     private String nodeIdentifier;
     private Session session;
+    private ExtendedPropertyDefinition epd;
 
-    public ExternalReferencePropertyImpl(String name, Node parentNode, Session session, final String nodeIdentifier, Node referencedNode) throws RepositoryException {
+    public ExternalReferencePropertyImpl(String name, ExtendedPropertyDefinition epd, Node parentNode, Session session, final String nodeIdentifier, Node referencedNode) throws RepositoryException {
         this.name = name;
+        this.epd = epd;
         this.path = parentNode.getPath() + "/" + name;
         this.parentNode = parentNode;
         this.session = session;
@@ -77,10 +82,21 @@ public class ExternalReferencePropertyImpl implements Property {
         this.referencedNode = referencedNode;
     }
 
+    public ExternalReferencePropertyImpl(String name, ExtendedPropertyDefinition epd, Node parentNode, Session session, Value[] values) throws RepositoryException {
+        this.name = name;
+        this.epd = epd;
+        this.path = parentNode.getPath() + "/" + name;
+        this.parentNode = parentNode;
+        this.session = session;
+        this.values = values;
+    }
+
     public void setValue(Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        this.value = value;
     }
 
     public void setValue(Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        this.values = values;
     }
 
     public void setValue(String value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -118,7 +134,7 @@ public class ExternalReferencePropertyImpl implements Property {
     }
 
     public Value[] getValues() throws ValueFormatException, RepositoryException {
-        return new Value[0];
+        return values;
     }
 
     public String getString() throws ValueFormatException, RepositoryException {
@@ -170,7 +186,7 @@ public class ExternalReferencePropertyImpl implements Property {
     }
 
     public PropertyDefinition getDefinition() throws RepositoryException {
-        return null;
+        return epd;
     }
 
     public int getType() throws RepositoryException {
@@ -178,7 +194,7 @@ public class ExternalReferencePropertyImpl implements Property {
     }
 
     public boolean isMultiple() throws RepositoryException {
-        return false;
+        return epd.isMultiple();
     }
 
     public String getPath() throws RepositoryException {

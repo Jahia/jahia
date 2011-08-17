@@ -1377,7 +1377,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (foundNodeIdentifier != null) {
             Node referencedNode = getSession().getNodeByIdentifier(
                     foundNodeIdentifier);
-            Property nodeProperty = new ExternalReferencePropertyImpl(name,
+            Property nodeProperty = new ExternalReferencePropertyImpl(name, epd,
                     this, session, foundNodeIdentifier, referencedNode);
             return new JCRPropertyWrapperImpl(this, nodeProperty, session,
                     provider, epd);
@@ -1540,9 +1540,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             throw new ConstraintViolationException("Couldn't find definition for property " + name);
         }
 
+        boolean hasExternalReferenceValue = false;
         if (values != null) {
             for (int i = 0; i < values.length; i++) {
-                if (values[i] != null && PropertyType.UNDEFINED != epd.getRequiredType() && values[i].getType() != epd.getRequiredType()) {
+                if (values[i] instanceof ExternalReferenceValue) {
+                    hasExternalReferenceValue = true;
+                } else if (values[i] != null && PropertyType.UNDEFINED != epd.getRequiredType() && values[i].getType() != epd.getRequiredType()) {
                     values[i] = getSession().getValueFactory()
                             .createValue(values[i].getString(), epd.getRequiredType());
                 }
@@ -1550,6 +1553,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(this, name, epd, values);
+
+        if (hasExternalReferenceValue) {
+            return setExternalReferenceProperty(name, values, epd);
+        }
 
         if (locale != null) {
             if (epd != null && epd.isInternationalized()) {
@@ -1701,7 +1708,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     private JCRPropertyWrapper setExternalReferenceProperty(String name, Node node, ExtendedPropertyDefinition epd) throws RepositoryException {
         internalSetExternalReferenceProperty(name, node.getIdentifier(), epd);
 
-        Property nodeProperty = new ExternalReferencePropertyImpl(name, this, session, node.getIdentifier(), node);
+        Property nodeProperty = new ExternalReferencePropertyImpl(name, epd, this, session, node.getIdentifier(), node);
+        return new JCRPropertyWrapperImpl(this, nodeProperty, session, provider, epd);
+    }
+
+    private JCRPropertyWrapper setExternalReferenceProperty(String name, Value[] values, ExtendedPropertyDefinition epd) throws RepositoryException {
+        internalSetExternalReferenceProperty(name, values, epd);
+
+        Property nodeProperty = new ExternalReferencePropertyImpl(name, epd, this, session, values);
         return new JCRPropertyWrapperImpl(this, nodeProperty, session, provider, epd);
     }
 
@@ -1753,6 +1767,40 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             referenceProperties.add(newPropertyReferenceValue);
         }
         setProperty(refPropertyNamesPropertyName, referenceProperties.toArray(new Value[referenceProperties.size()]));
+    }
+
+    private void internalSetExternalReferenceProperty(String name, Value[] values, ExtendedPropertyDefinition epd) throws RepositoryException {
+        // we are creating a reference to a node that is in another repository, we will use a special mixin for that.
+        List<Value> nodeIdentifiers = null;
+        List<Value> referenceProperties = null;
+
+        nodeIdentifiers = new ArrayList<Value>();
+        referenceProperties = new ArrayList<Value>();
+
+        String refNodeIdentifierPropertyName = SHARED_REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME;
+        String refPropertyNamesPropertyName = SHARED_REFERENCE_PROPERTY_NAMES_PROPERTYNAME;
+        if (epd.isInternationalized()) {
+            if (session.getLocale() == null) {
+                logger.warn("No locale passed, cannot set reference for propoerty " + name);
+                return;
+            }
+            refNodeIdentifierPropertyName = REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME;
+            refPropertyNamesPropertyName = REFERENCE_PROPERTY_NAMES_PROPERTYNAME;
+        }
+
+        if (!isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE)) {
+            addMixin(Constants.JAHIAMIX_EXTERNALREFERENCE);
+        }
+        for (Value value : values) {
+            nodeIdentifiers.add(getSession().getValueFactory().createValue(value.getString()));
+        }
+        setProperty(refNodeIdentifierPropertyName, nodeIdentifiers.toArray(new Value[nodeIdentifiers.size()]));
+
+        for (Value value : values) {
+            referenceProperties.add(getSession().getValueFactory().createValue(value.getString() + EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR + name));
+        }
+        setProperty(refPropertyNamesPropertyName, referenceProperties.toArray(new Value[referenceProperties.size()]));
+
     }
 
     protected void removeExternalReferenceProperty(String name, ExtendedPropertyDefinition epd) throws ItemNotFoundException, RepositoryException {
@@ -3348,7 +3396,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (foundPropertyName != null) {
                 ExtendedPropertyDefinition epd = node.getApplicablePropertyDefinition(foundPropertyName);
                 if (epd != null)  {
-                    Property nodeProperty = new ExternalReferencePropertyImpl(foundPropertyName, node, session, getIdentifier(), this);
+                    Property nodeProperty = new ExternalReferencePropertyImpl(foundPropertyName, epd, node, session, getIdentifier(), this);
                     matchingProperties.add(new JCRPropertyWrapperImpl(node, nodeProperty, session, provider, epd));
                 }
             } else {
@@ -3385,7 +3433,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (foundPropertyName != null) {
                 ExtendedPropertyDefinition epd = node.getApplicablePropertyDefinition(foundPropertyName);
                 if (epd != null)  {
-                    Property nodeProperty = new ExternalReferencePropertyImpl(foundPropertyName, node, session, getIdentifier(), this);
+                    Property nodeProperty = new ExternalReferencePropertyImpl(foundPropertyName, epd, node, session, getIdentifier(), this);
                     matchingProperties.add(new JCRPropertyWrapperImpl(node, nodeProperty, session, provider, epd));
                 }
             } else {

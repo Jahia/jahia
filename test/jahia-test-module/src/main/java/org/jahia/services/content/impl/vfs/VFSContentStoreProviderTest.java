@@ -363,10 +363,10 @@ public class VFSContentStoreProviderTest {
 
         JCRNodeWrapper mixedFileReferenceNode = siteNode.addNode("externalMixedReferenceNode", TEST_EXTERNAL_WEAKREFERENCE_NODE_TYPE);
         mixedFileReferenceNode.setProperty(SIMPLE_WEAKREFERENCE_PROPERTY_NAME, vfsTestFile1);
-        ValueFactory valueFactory = session.getValueFactory();
+        ValueFactory valueFactory = englishEditSession.getValueFactory();
 
         List<Value> values = new ArrayList<Value>();
-        values.add(valueFactory.createValue(vfsTestFile2));
+        values.add(new ExternalReferenceValue(vfsTestFile2.getIdentifier(), PropertyType.WEAKREFERENCE));
 
         is = new ByteArrayInputStream(value.getBytes("UTF-8"));
 
@@ -376,10 +376,9 @@ public class VFSContentStoreProviderTest {
         Value[] multipleWeakRefs = values.toArray(new Value[values.size()]);
 
         mixedFileReferenceNode.setProperty(MULTIPLE_WEAKREFERENCE_PROPERTY_NAME, multipleWeakRefs);
-        session.save();
+        englishEditSession.save();
 
         // let's get another session to make sure we don't have cache issues
-        englishEditSession.logout();
         getCleanSession();
 
         mixedFileReferenceNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/externalMixedReferenceNode");

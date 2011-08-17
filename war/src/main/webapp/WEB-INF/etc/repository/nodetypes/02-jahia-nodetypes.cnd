@@ -537,7 +537,7 @@
  - j:node (weakreference) < jmix:droppableContent
 
 [jnt:contentFolderReference] > jnt:content, jmix:nodeReference, jmix:editorialContent, jmix:listContent
- - j:node (weakreference) < jnt:contentFolder
+ - j:node (weakreference,picker[type='contentfolder']) < jnt:contentFolder
 
 [jnt:nodeLink] > jnt:content, jmix:nodeReference, jmix:link, jmix:navMenuItem
  - j:node (weakreference) < jmix:droppableContent, jnt:page, jnt:contentFolder, jnt:folder

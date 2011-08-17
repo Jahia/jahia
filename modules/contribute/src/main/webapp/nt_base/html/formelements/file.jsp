@@ -72,6 +72,16 @@
                              onClose="${onClose}"
                              fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:false,previewPath:'${previewPath}'}"/>
         </c:when>
+        <c:when test="${propertyDefinition.selectorOptions.type == 'contentfolder'}">
+            <ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
+                             displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
+                             label="${folderLabel}"
+                             nodeTypes="jnt:contentFolder"
+                             selectableNodeTypes="jnt:contentFolder"
+                             onSelect="${onSelect}"
+                             onClose="${onClose}"
+                             fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:false,previewPath:'${previewPath}'}"/>
+        </c:when>        
         <c:otherwise>
             <ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                              displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
@@ -81,7 +91,7 @@
                              fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:true,previewPath:'${previewPath}'}"/>
         </c:otherwise>
     </c:choose>
-    <c:if test="${propertyDefinition.selectorOptions.type != 'folder'}">
+    <c:if test="${propertyDefinition.selectorOptions.type != 'folder' && propertyDefinition.selectorOptions.type != 'contentfolder'}">
         <strong><fmt:message key="label.or"/></strong>
         <div id="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">
             <span><fmt:message key="add.file"/></span>

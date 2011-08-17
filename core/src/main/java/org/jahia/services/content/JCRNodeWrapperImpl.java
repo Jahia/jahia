@@ -1790,14 +1790,37 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         if (!isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE)) {
             addMixin(Constants.JAHIAMIX_EXTERNALREFERENCE);
+            nodeIdentifiers = new ArrayList<Value>();
+            referenceProperties = new ArrayList<Value>();
+        } else {
+            Property nodeIdentifierProperty = getProperty(refNodeIdentifierPropertyName);
+            if (nodeIdentifierProperty != null) {
+                // We create an ArrayList because Arrays.asList returns a non-mutable list
+                nodeIdentifiers = new ArrayList<Value>(Arrays.asList(nodeIdentifierProperty.getValues()));
+            } else {
+                nodeIdentifiers = new ArrayList<Value>();
+            }
+            Property referenceProperty = getProperty(refPropertyNamesPropertyName);
+            if (referenceProperty != null) {
+                // We create an ArrayList because Arrays.asList returns a non-mutable list
+                referenceProperties = new ArrayList<Value>(Arrays.asList(referenceProperty.getValues()));
+            } else {
+                referenceProperties = new ArrayList<Value>();
+            }
         }
         for (Value value : values) {
-            nodeIdentifiers.add(getSession().getValueFactory().createValue(value.getString()));
+            Value newNodeIdentifierValue = getSession().getValueFactory().createValue(value.getString());
+            if (!nodeIdentifiers.contains(newNodeIdentifierValue)) {
+                nodeIdentifiers.add(newNodeIdentifierValue);
+            }
         }
         setProperty(refNodeIdentifierPropertyName, nodeIdentifiers.toArray(new Value[nodeIdentifiers.size()]));
 
         for (Value value : values) {
-            referenceProperties.add(getSession().getValueFactory().createValue(value.getString() + EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR + name));
+            Value newPropertyReferenceValue = getSession().getValueFactory().createValue(value.getString() + EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR + name);
+            if (!referenceProperties.contains(newPropertyReferenceValue)) {
+                referenceProperties.add(newPropertyReferenceValue);
+            }
         }
         setProperty(refPropertyNamesPropertyName, referenceProperties.toArray(new Value[referenceProperties.size()]));
 

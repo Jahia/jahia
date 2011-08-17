@@ -554,7 +554,19 @@ public class PropertiesEditor extends FormPanel {
                     values.add(propertyValue);
                 }
             } else {
-                values.add(getPropertyValue(fld.getValue(), propDef.getRequiredType()));
+                if(propDef.isMultiple()) {
+                    Object fldValue = fld.getValue();
+                    if(propDef.getSelector()==GWTJahiaNodeSelectorType.SMALLTEXT) {
+                        String[] strings = fldValue.toString().split("(,|;) ?");
+                        for (String string : strings) {
+                            if(!"".equals(string.trim())) {
+                                values.add(getPropertyValue(string.trim(),propDef.getRequiredType()));
+                            }
+                        }
+                    }
+                } else {
+                    values.add(getPropertyValue(fld.getValue(), propDef.getRequiredType()));
+                }
             }
         }
 

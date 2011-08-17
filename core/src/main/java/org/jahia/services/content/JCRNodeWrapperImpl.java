@@ -1362,7 +1362,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         referenceProperty = getProperty(refPropertyNamesPropertyName);
         Value[] propertyReferences = referenceProperty.getValues();
-        String foundNodeIdentifier = null;
+        List<String> foundNodeIdentifiers = new ArrayList<String>();
         for (Value propertyReference : propertyReferences) {
             String curPropertyReference = propertyReference.getString();
             String[] refParts = curPropertyReference
@@ -1370,17 +1370,36 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             String curNodeIdentifier = refParts[0];
             String curPropertyName = refParts[1];
             if (curPropertyName.equals(name)) {
-                foundNodeIdentifier = curNodeIdentifier;
-                break;
+                foundNodeIdentifiers.add(curNodeIdentifier);
             }
         }
-        if (foundNodeIdentifier != null) {
-            Node referencedNode = getSession().getNodeByIdentifier(
-                    foundNodeIdentifier);
-            Property nodeProperty = new ExternalReferencePropertyImpl(name, epd,
-                    this, session, foundNodeIdentifier, referencedNode);
-            return new JCRPropertyWrapperImpl(this, nodeProperty, session,
-                    provider, epd);
+        if (foundNodeIdentifiers.size() > 0) {
+            if (epd.isMultiple()) {
+                List<Value> values = new ArrayList<Value>();
+                for (String foundNodeIdentifier : foundNodeIdentifiers) {
+                    JCRNodeWrapper referencedNode = getSession().getNodeByIdentifier(
+                            foundNodeIdentifier);
+                    if (epd != null) {
+                        if (getRealNode().getClass().getName().equals(referencedNode.getRealNode().getClass().getName())) {
+                            values.add(getSession().getValueFactory().createValue(referencedNode, true));
+                        } else {
+                            values.add(new ExternalReferenceValue(referencedNode.getIdentifier(), PropertyType.WEAKREFERENCE));
+                        }
+                    }
+                }
+                Property nodeProperty = new ExternalReferencePropertyImpl(name, epd,
+                        this, session, values.toArray(new Value[values.size()]));
+                return new JCRPropertyWrapperImpl(this, nodeProperty, session,
+                        provider, epd);
+            } else {
+                String foundNodeIdentifier = foundNodeIdentifiers.get(0);
+                Node referencedNode = getSession().getNodeByIdentifier(
+                        foundNodeIdentifier);
+                Property nodeProperty = new ExternalReferencePropertyImpl(name, epd,
+                        this, session, foundNodeIdentifier, referencedNode);
+                return new JCRPropertyWrapperImpl(this, nodeProperty, session,
+                        provider, epd);
+            }
         } else {
             // in this case we are dealing with a "regular" reference property, we will try to load it.
             return internalGetProperty(name, epd);

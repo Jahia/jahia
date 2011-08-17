@@ -347,14 +347,6 @@ public class ConflictResolver {
 
         return diffs;
     }
-    private ChildAddedDiff getAddedDiff (String uuid, ListOrderedMap uuids, String basePath) {
-        return (uuid.equals(uuids.lastKey()) ? new ChildAddedDiff(uuid,
-                addPath(basePath, (String) uuids.get(uuid)), null)
-                : new ChildAddedDiff(uuid, addPath(basePath,
-                        (String) uuids.get(uuid)), (String) uuids.get(uuids
-                        .get(uuids.indexOf(uuid) + 1))));
-        
-    }
 
     private Map<String,String> getOrdering(ListOrderedMap uuids1, List<String> removed) {
         Map<String,String> previousMap = new LinkedHashMap<String,String>();

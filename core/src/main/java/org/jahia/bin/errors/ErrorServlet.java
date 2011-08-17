@@ -51,7 +51,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.URLResolver;
+import org.jahia.services.render.URLResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -59,6 +61,7 @@ import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.params.valves.LoginConfig;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.WebUtils;
@@ -77,6 +80,14 @@ public class ErrorServlet extends HttpServlet {
     public static final String MAINTENANCE_MODE = "Jahia in under maintenance";
 
     private static final long serialVersionUID = -6990851339777685000L;
+    
+    protected boolean siteLevelErrorPagesEnabled;
+
+    protected JahiaSitesService sitesService;
+
+    protected JahiaTemplateManagerService templateService;
+
+    protected URLResolverFactory urlResolverFactory;
     
     protected void forwardToErrorPage(String errorPagePath, HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
@@ -125,73 +136,56 @@ public class ErrorServlet extends HttpServlet {
         }
 
         if (null == path) {
+            if (siteLevelErrorPagesEnabled) {
+                String siteKey = resolveSiteKey(request);
 
-            String siteKey = null;
-            SettingsBean settings = SettingsBean.getInstance();
-            String jspPath = "/";
-
-            if (settings.getSiteErrorEnabled()) {
                 // site information available?
-                try {
-                    URLResolver urlResolver = ((URLResolver) request.getAttribute("urlResolver"));
-                    if (urlResolver != null) {
-                        siteKey = urlResolver.getSiteKey();
+                if (siteKey != null) {
+                    // check site-specific page
+                    String pathToCheck = "/errors/sites/" + siteKey + "/" + page;
+                    if (getServletContext().getResource(pathToCheck) != null) {
+                        path = pathToCheck;
+                    } else {
+                        pathToCheck = "/errors/sites/" + siteKey + "/error.jsp";
+                        path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
+                                : null;
                     }
-                } catch (Exception e) {
-                    // ignore
-                }
-            }
-
-            // relative page path specified
-            // site information available?
-            if (siteKey != null) {
-                // check site-specific page
-                String pathToCheck = jspPath + "errors/sites/" + siteKey + "/" + page;
-                if (getServletContext().getResource(pathToCheck) != null) {
-                    path = pathToCheck;
-                } else {
-                    pathToCheck = jspPath + "errors/sites/" + siteKey + "/error.jsp";
-                    path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
-                            : null;
-                }
-                if (null == path) {
-                    try {
-                        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteKey);
-                        if (site != null) {
-                            // try template set error page considering inheritance
-                            JahiaTemplateManagerService templateService = ServicesRegistry
-                                    .getInstance()
-                                    .getJahiaTemplateManagerService();
-                            JahiaTemplatesPackage pkg = templateService
-                                    .getTemplatePackage(site
-                                            .getTemplatePackageName());
-                            if (pkg != null) {
-                                pathToCheck = pkg.getRootFolderPath()
-                                        + "/errors/" + page;
-                                path = getServletContext().getResource(
-                                        pathToCheck) != null ? pathToCheck
-                                        : null;
-                                if (null == path) {
+                    if (null == path) {
+                        try {
+                            JahiaSite site = sitesService.getSiteByKey(siteKey);
+                            if (site != null) {
+                                // try template set error page considering inheritance
+                                JahiaTemplatesPackage pkg = templateService
+                                        .getTemplatePackage(site
+                                                .getTemplatePackageName());
+                                if (pkg != null) {
                                     pathToCheck = pkg.getRootFolderPath()
-                                            + "/errors/error.jsp";
+                                            + "/errors/" + page;
                                     path = getServletContext().getResource(
                                             pathToCheck) != null ? pathToCheck
                                             : null;
+                                    if (null == path) {
+                                        pathToCheck = pkg.getRootFolderPath()
+                                                + "/errors/error.jsp";
+                                        path = getServletContext().getResource(
+                                                pathToCheck) != null ? pathToCheck
+                                                : null;
+                                    }
                                 }
                             }
+                        } catch (JahiaException e) {
+                            logger.debug("Cannot find site",e);
                         }
-                    } catch (JahiaException e) {
-                        logger.debug("Cannot find site",e);
                     }
                 }
             }
 
             if (null == path) {
-                String pathToCheck = jspPath + "errors/" + page;
+                String pathToCheck = "/errors/" + page;
                 if (getServletContext().getResource(pathToCheck) != null) {
                     path = pathToCheck;
                 } else {
-                    pathToCheck = jspPath + "errors/error.jsp";
+                    pathToCheck = "/errors/error.jsp";
                     path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
                             : null;
                 }
@@ -199,6 +193,22 @@ public class ErrorServlet extends HttpServlet {
         }
 
         return path;
+    }
+
+    protected String resolveSiteKey(HttpServletRequest request) {
+        String siteKey = null;
+        // site information available?
+        try {
+            URLResolver urlResolver = ((URLResolver) request.getAttribute("urlResolver"));
+            if (urlResolver == null) {
+                urlResolver = urlResolverFactory.createURLResolver(request.getPathInfo(),
+                        request.getServerName(), request);
+            }
+            siteKey = urlResolver.getSiteKey();
+        } catch (Exception e) {
+            // ignore
+        }
+        return siteKey;
     }
 
     protected Throwable getException(HttpServletRequest request) {
@@ -211,6 +221,12 @@ public class ErrorServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
+        siteLevelErrorPagesEnabled = SettingsBean.getInstance().getSiteErrorEnabled();
+        if (siteLevelErrorPagesEnabled) {
+            sitesService = ServicesRegistry.getInstance().getJahiaSitesService();
+            templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+            urlResolverFactory = (URLResolverFactory) SpringContextSingleton.getBean("urlResolverFactory");
+        }
     }
 
     protected void process(HttpServletRequest request, HttpServletResponse response)

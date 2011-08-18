@@ -217,7 +217,7 @@ public class EditContentEngine extends AbstractContentEngine {
                     if (node.getLockInfos().containsKey(null) && node.getLockInfos().size() == 1) {
                         for (String s : node.getLockInfos().get(null)) {
                             if("label.locked.by.workflow.process".equals(s)) {
-                                infos = Messages.get(s);
+                                infos = Messages.get(s, "Locked by workflow process");
                             } else {
                                 infos += s.substring(0,s.indexOf(":")) + " (" + s.substring(s.indexOf(":")+1) + ") ";
                             }

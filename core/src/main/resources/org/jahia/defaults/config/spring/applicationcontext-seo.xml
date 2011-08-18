@@ -36,7 +36,7 @@
                         
     <bean class="org.jahia.services.render.filter.URLFilter">
         <constructor-arg ref="org.jahia.services.render.filter.URLTraverser" />
-        <property name="priority" value="19" />
+        <property name="priority" value="22" />
         <property name="applyOnConfigurations" value="page" />
         <property name="applyOnModes" value="live"/>
         <property name="handlers">

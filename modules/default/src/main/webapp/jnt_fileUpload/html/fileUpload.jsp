@@ -18,6 +18,16 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="jquery.fileupload.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.fileupload.js,jquery.fileupload-ui.js"/>
+<fmt:message key="label.dropHere.ie" var="i18nDropHereIE"/>
+<template:addResources type="inlinejavascript">
+<script type="text/javascript">
+$(document).ready(function() {
+	if (jQuery.browser.msie) {
+		$('#drop-box-file-upload-${currentNode.identifier}').empty().append('${functions:escapeJavaScript(i18nDropHereIE)}');
+	}
+});
+</script>
+</template:addResources>
 <c:set var="linked" value="${ui:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:set var="targetNode" value="${renderContext.mainResource.node}"/>
 <c:if test="${!empty currentNode.properties.target}">
@@ -29,7 +39,7 @@
         <div id="file_upload_container">
             <input type="file" name="file" multiple>
             <button><fmt:message key="label.upload"/></button>
-            <div><fmt:message key="label.dropHere"/></div>
+            <div id="drop-box-file-upload-${currentNode.identifier}"><fmt:message key="label.dropHere"/></div>
         </div>
         <c:url var="targetNodePath" value="${url.base}${linked.path}.html.ajax">
             <c:param name="targetNodePath" value="${targetNode.path}"/>

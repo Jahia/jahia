@@ -223,6 +223,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                 for (SimpleUrlHandlerMapping mapping : mappings) {
                     for (String registeredPattern : mapping.getUrlMap().keySet()) {
                         if (mapping.getPathMatcher().match(registeredPattern, path)) {
+                            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SKIP_INBOUND_SEO_RULES, Boolean.TRUE);
                             return false;
                         }
                     }

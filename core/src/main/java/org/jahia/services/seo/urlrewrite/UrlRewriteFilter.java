@@ -117,10 +117,7 @@ public class UrlRewriteFilter implements Filter {
             return;
         }
 
-        if (!urlRewriteService.prepareInbound(hsRequest, hsResponse)) {
-            chain.doFilter(hsRequest, hsResponse);
-            return;
-        }
+        urlRewriteService.prepareInbound(hsRequest, hsResponse);
         
         // if no rewrite has taken place continue as normal
         if (!urlRewriter.processRequest(hsRequest, hsResponse, chain)) {

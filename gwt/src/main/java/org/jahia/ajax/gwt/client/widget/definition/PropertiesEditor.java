@@ -52,6 +52,8 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
@@ -680,7 +682,7 @@ public class PropertiesEditor extends FormPanel {
                 panel.setLayout(hBoxLayout);
                 panel.add(field);
                 field.setWidth("98%");
-                if (isWriteable && viewCopyToAllLangs && definition.isInternationalized()) {
+                if (isWriteable && viewCopyToAllLangs && JahiaGWTParameters.getSiteLanguages().size() > 1 && definition.isInternationalized()) {
                     final Button button = new Button(Messages.get("label.translate.copyall","Copy to all languages"));
                     button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                         @Override

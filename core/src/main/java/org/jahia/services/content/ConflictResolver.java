@@ -223,13 +223,10 @@ public class ConflictResolver {
                 for (Map.Entry<String, String> entry : newOrdering.entrySet()) {
                     String uuid = entry.getKey();
                     if (added.contains(uuid)) {
-                        diffs.add((uuid.equals(uuids2.lastKey()) ? new ChildAddedDiff(
-                                uuid, addPath(basePath,
-                                        (String) uuids2.get(uuid)), null)
-                                : new ChildAddedDiff(uuid, addPath(basePath,
-                                        (String) uuids2.get(uuid)),
-                                        (String) uuids2.get(uuids.get(uuids
-                                                .indexOf(uuid) + 1)))));
+                        diffs.add(new ChildAddedDiff(uuid, addPath(basePath,
+                                (String) uuids2.get(uuid)), uuid.equals(uuids2
+                                .lastKey()) ? null : (String) uuids2.get(uuids2
+                                .get(uuids2.indexOf(uuid) + 1))));
                     } else {
                         diffs.add(new ChildNodeReorderedDiff(uuid, newOrdering
                                 .get(uuid), addPath(basePath,

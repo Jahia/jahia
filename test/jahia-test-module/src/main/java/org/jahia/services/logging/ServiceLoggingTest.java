@@ -183,8 +183,8 @@ public class ServiceLoggingTest {
         logger.info(stopWatch.prettyPrint());
         
         if (withLogs > withoutLogs) {
-            assertThat("Logs has more than 5% impact on peformance",
-                    ((Math.abs(withLogs - withoutLogs) / (float)withoutLogs) * 100), (Matcher<Object>) lessThan((float)5));
+            assertThat("Logs has more than 8% impact on peformance",
+                    ((Math.abs(withLogs - withoutLogs) / (float)withoutLogs) * 100), (Matcher<Object>) lessThan((float)8));
         }
     }
 }

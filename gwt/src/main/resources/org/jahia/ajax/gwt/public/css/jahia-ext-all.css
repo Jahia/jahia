@@ -4433,6 +4433,12 @@ a.x-menu-item {
 .x-tool-refresh-over {
     background-position:-15px -225px;
 }
+.x-tool-refresh-red {
+    background-position:0 -330px;
+}
+.x-tool-refresh-red-over {
+    background-position:-15px -330px;
+}
 .x-tool-minus {
     background-position:0 -255px;
 }

@@ -53,6 +53,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
@@ -76,7 +77,7 @@ public class SidePanel extends ContentPanel {
     private final List<SidePanelTabItem> tabs;
     private SidePanelTabItem templatesTabItem;
     private GWTEditConfiguration config;
-
+    private ToolButton refreshButton;
     public SidePanel(GWTEditConfiguration config) {
         super(new FitLayout());
         this.head = new ToolbarHeader();
@@ -88,7 +89,7 @@ public class SidePanel extends ContentPanel {
         TabPanel tabPanel = new TabPanel();
         tabPanel.setBorders(false);
         tabPanel.setBodyBorder(false);
-        
+
         for (GWTSidePanelTab tabConfig : config.getTabs()) {
             SidePanelTabItem tabItem = tabConfig.getTabItem();
             tabs.add(tabItem);
@@ -106,13 +107,17 @@ public class SidePanel extends ContentPanel {
         for (GWTJahiaToolbarItem item : config.getSidePanelToolbar().getGwtToolbarItems()) {
             ((ToolbarHeader)head).addItem(editLinker, item);
         }
-
-        head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
+        refreshButton = new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
                 refresh(EditLinker.REFRESH_ALL + Linker.REFRESH_DEFINITIONS);
                 DeployTemplatesActionItem.refreshAllMenus(editLinker);
+                refreshButton.removeStyleName("x-tool-refresh-red");
+                refreshButton.addStyleName("x-tool-refresh");
+                refreshButton.removeToolTip();
             }
-        }));
+
+        });
+        head.addTool(refreshButton);
 
         for (SidePanelTabItem tab : tabs) {
             tab.initWithLinker(editLinker);
@@ -142,6 +147,15 @@ public class SidePanel extends ContentPanel {
     public void refresh(int flag) {
         for (SidePanelTabItem tab : tabs) {
             tab.refresh(flag);
+        }
+        if (!((flag & Linker.REFRESH_FOLDERS) != 0
+                || (flag & Linker.REFRESH_PAGES) != 0
+                || (flag & Linker.REFRESH_DEFINITIONS) != 0
+                || (flag & Linker.REFRESH_LAST_CONTENT) != 0)) {
+            refreshButton.setToolTip(Messages.get("label.refresh.modify"));
+            refreshButton.removeStyleName("x-tool-refresh");
+            refreshButton.addStyleName("x-tool-refresh-red");
+            refreshButton.getToolTip().show();
         }
     }
 }

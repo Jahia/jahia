@@ -917,8 +917,11 @@ public class QueryServiceImpl extends QueryService {
                     }
                     Set<String> languageCodes = getLanguagesPerSelector().get(
                             selector.getSelectorName());
-                    if ((languageCodes == null || languageCodes.isEmpty()) && session != null
-                            && session.getLocale() != null) {
+                    if (((languageCodes == null || languageCodes.isEmpty())
+                            && session != null && session.getLocale() != null)
+                            && !(Constants.NT_QUERY.equals(selector
+                                    .getNodeTypeName()) || Constants.JAHIANT_QUERY
+                                    .equals(selector.getNodeTypeName()))) {
                         if (getModificationInfo().getMode() == CHECK_FOR_MODIFICATION_MODE) {
                             
                             Set<String> newLanguageCodes = getNewLanguagesPerSelector().get(

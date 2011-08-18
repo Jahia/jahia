@@ -183,6 +183,7 @@ public class Constants {
     public static final String JAHIANT_TASKS = "jnt:tasks";
     public static final String JAHIANT_MAINRESOURCE_DISPLAY = "jnt:mainResourceDisplay";
     public static final String JAHIANT_AREA = "jnt:area";
+    public static final String JAHIANT_QUERY = "jnt:query";
 
     public static final String LASTPUBLISHED = "j:lastPublished";
     public static final String LASTPUBLISHEDBY = "j:lastPublishedBy";

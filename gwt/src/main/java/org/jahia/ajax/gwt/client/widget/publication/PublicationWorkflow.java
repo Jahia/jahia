@@ -46,6 +46,8 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -62,6 +64,7 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EngineCards;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
 import org.jahia.ajax.gwt.client.widget.contentengine.EnginePanel;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineWindow;
+import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem;
 import org.jahia.ajax.gwt.client.widget.workflow.CustomWorkflow;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
@@ -106,8 +109,18 @@ public class PublicationWorkflow implements CustomWorkflow {
             public void componentSelected(ButtonEvent buttonEvent) {
                 dialog.disableButtons();
                 List<GWTJahiaNodeProperty> nodeProperties = new ArrayList<GWTJahiaNodeProperty>();
-                if (dialog.getPropertiesEditor() != null) {
-                    nodeProperties = dialog.getPropertiesEditor().getProperties();
+                PropertiesEditor propertiesEditor = dialog.getPropertiesEditor();
+                if (propertiesEditor != null) {
+                    for (PropertiesEditor.PropertyAdapterField adapterField : propertiesEditor.getFieldsMap().values()) {
+                        Field<?> field = adapterField.getField();
+                        if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet)adapterField.getParent()).isExpanded()) {
+                            final String status = Messages.get("label.workflow.form.error", "Your form is not valid");
+                            Info.display(status,status);
+                            dialog.enableButtons();
+                            return;
+                        }
+                    }
+                    nodeProperties = propertiesEditor.getProperties();
                 }
                 dialog.getContainer().closeEngine();
                 Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get(

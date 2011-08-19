@@ -46,9 +46,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.form.FormButtonBinding;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
+import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -366,6 +364,14 @@ public class WorkflowActionDialog extends LayoutContainer {
         }
     }
 
+    public void enableButtons() {
+        for (Component component : bar.getItems()) {
+            if (component instanceof Button) {
+                ((Button) component).setEnabled(true);
+            }
+        }
+    }
+
     private Button generateStartWorkflowButton(final GWTJahiaWorkflowDefinition wf) {
         final Button button = new Button(Messages.get("label.workflow.start", "Start Workflow") + ":" + wf.getName());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -374,6 +380,15 @@ public class WorkflowActionDialog extends LayoutContainer {
                 disableButtons();
                 List<GWTJahiaNodeProperty> nodeProperties = new ArrayList<GWTJahiaNodeProperty>();
                 if (propertiesEditor != null) {
+                    for (PropertiesEditor.PropertyAdapterField adapterField : propertiesEditor.getFieldsMap().values()) {
+                        Field<?> field = adapterField.getField();
+                        if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet)adapterField.getParent()).isExpanded()) {
+                            final String status = Messages.get("label.workflow.form.error", "Your form is not valid");
+                            Info.display(status,status);
+                            enableButtons();
+                            return;
+                        }
+                    }
                     nodeProperties = propertiesEditor.getProperties();
                 }
                 container.closeEngine();
@@ -411,6 +426,15 @@ public class WorkflowActionDialog extends LayoutContainer {
                     disableButtons();
                     List<GWTJahiaNodeProperty> nodeProperties = new ArrayList<GWTJahiaNodeProperty>();
                     if (propertiesEditor != null) {
+                        for (PropertiesEditor.PropertyAdapterField adapterField : propertiesEditor.getFieldsMap().values()) {
+                        Field<?> field = adapterField.getField();
+                        if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet)adapterField.getParent()).isExpanded()) {
+                            final String status = Messages.get("label.workflow.form.error", "Your form is not valid");
+                            Info.display(status,status);
+                            enableButtons();
+                            return;
+                        }
+                    }
                         nodeProperties = propertiesEditor.getProperties();
                     }
                     final String status = Messages.get("label.workflow.task", "Executing workflow task");

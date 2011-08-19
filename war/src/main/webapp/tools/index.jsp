@@ -31,6 +31,7 @@
         <li><a href="definitionsBrowser.jsp">Installed definitions browser</a></li>
         <li><a href="jobadmin.jsp">Background job administration</a></li>
         <li><a href="search.jsp">Search engine management</a></li>
+        <li><a href="dbQuery.jsp">DB query tool</a></li>
     </ul>
 </fieldset>
 <fieldset>

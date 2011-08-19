@@ -45,7 +45,10 @@ import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.bin.Jahia;
+import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 
 import javax.jcr.RepositoryException;
 import java.util.List;
@@ -76,15 +79,24 @@ public class JCRPortletNode extends JCRNodeDecorator {
                 context = Jahia.getContextPath() + context.substring("$context".length());
             }
             // Set the applicationReference now
-            try {
-                final ApplicationBean applicationByContext = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationByContext(context);
-                getSession().checkout(this);
-                setProperty("j:applicationRef", applicationByContext.getID());
-                setProperty("j:definition", strings[1]);
-                save();
-            } catch (JahiaException e1) {
-                e1.printStackTrace();
-            }
+            final String finalContext = context;
+            final String uuid = getUUID();
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null,this.getSession().getWorkspace().getName(),this.getSession().getLocale(),new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    try {
+                        final ApplicationBean applicationByContext = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationByContext(
+                                finalContext);
+                        JCRNodeWrapper nodeByUUID = session.getNodeByUUID(uuid);
+                        session.checkout(nodeByUUID);
+                        nodeByUUID.setProperty("j:applicationRef", applicationByContext.getID());
+                        nodeByUUID.setProperty("j:definition", strings[1]);
+                        session.save();
+                    } catch (JahiaException e1) {
+                        e1.printStackTrace();
+                    }
+                    return null;
+                }
+            });
         }
         return context;
     }

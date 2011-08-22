@@ -204,17 +204,6 @@ public class ConflictResolver {
             List<String> removed = new ArrayList<String>(uuids1.keySet());
             removed.removeAll(uuids2.keySet());
 
-            // Removed nodes
-            for (String s : removed) {
-                try {
-                    sourceNode.getSession().getNodeByUUID(s);
-                    // Item has been moved
-                } catch (ItemNotFoundException e) {
-                    diffs.add(new ChildRemovedDiff(s,addPath(basePath, (String) uuids1.get(s))));
-                }
-
-            }
-            
             // Ordering
             Map<String,String> oldOrdering = getOrdering(uuids1, removed);
             Map<String,String> newOrdering = getOrdering(uuids2, Collections.<String>emptyList());
@@ -235,6 +224,16 @@ public class ConflictResolver {
                     }
                 }
             }
+            
+            // Removed nodes
+            for (String s : removed) {
+                try {
+                    sourceNode.getSession().getNodeByUUID(s);
+                    // Item has been moved
+                } catch (ItemNotFoundException e) {
+                    diffs.add(new ChildRemovedDiff(s,addPath(basePath, (String) uuids1.get(s))));
+                }
+            }    
         }
 
         PropertyIterator pi1 = frozenNode.getProperties();

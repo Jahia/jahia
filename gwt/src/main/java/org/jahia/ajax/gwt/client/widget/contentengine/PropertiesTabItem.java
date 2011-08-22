@@ -49,6 +49,7 @@ import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -388,11 +389,11 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 changedI18NProperties.get(lang).addAll(getLanguageProperties(true, lang));
             }
             if (propertiesEditor != null) {
-                changedProperties.addAll(propertiesEditor.getProperties(false, true, true));
+                changedProperties.addAll(propertiesEditor.getProperties(false, true, node != null));
             }
         } else {
             if (propertiesEditor != null) {
-                changedProperties.addAll(propertiesEditor.getProperties(true, true, true));
+                changedProperties.addAll(propertiesEditor.getProperties(true, true, node != null));
             }
         }
 

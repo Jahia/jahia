@@ -431,3 +431,11 @@
     background-color: transparent;
     border: 0;
 }
+
+.deleted-overlay {
+    position: absolute;
+    vertical-align: middle;
+    text-align:center;
+    margin-left: auto;
+    margin-right: auto;
+}

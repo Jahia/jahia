@@ -143,7 +143,7 @@ public class TrashboardEngine extends LayoutContainer {
         bar = new ButtonBar();
         bar.setAlignment(Style.HorizontalAlignment.CENTER);
 
-        Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
+        Button cancel = new Button(Messages.get("label.close"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 container.closeEngine();
             }

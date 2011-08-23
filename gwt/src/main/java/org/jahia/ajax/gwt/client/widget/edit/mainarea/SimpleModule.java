@@ -143,5 +143,19 @@ public class SimpleModule extends Module {
         if (node.isShared()) {
             this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"), Messages.get("info_sharednode", "This is a shared node")));
         }
+
+        if (node.getNodeTypes().contains("jmix:markedForDeletionRoot")) {
+            setStyleAttribute("position","relative");
+
+            HTML deleted = new HTML("DELETED");
+            insert(deleted,0);
+            deleted.addStyleName("deleted-overlay");
+            deleted.setHeight(Integer.toString(html.getOffsetHeight())+"px");
+            deleted.setWidth(Integer.toString(html.getOffsetWidth())+"px");
+
+            DOM.setStyleAttribute(html.getElement(), "opacity", "0.4");
+
+            layout();
+        }
     }
 }

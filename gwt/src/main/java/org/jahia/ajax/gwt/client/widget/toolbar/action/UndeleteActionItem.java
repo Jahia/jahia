@@ -59,7 +59,7 @@ public class UndeleteActionItem extends BaseActionItem {
         if (selection != null && selection.size() > 0) {
             canUndelete = true;
             for (GWTJahiaNode gwtJahiaNode : selection) {
-                canUndelete &= gwtJahiaNode.getInheritedNodeTypes().contains("jmix:markedForDeletionRoot");
+                canUndelete &= gwtJahiaNode.getNodeTypes().contains("jmix:markedForDeletionRoot");
             }
         }
         setEnabled(canUndelete && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions()));

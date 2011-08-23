@@ -8,8 +8,11 @@ import com.extjs.gxt.ui.client.data.ListLoader;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -82,12 +85,12 @@ public class TrashboardEngine extends LayoutContainer {
 
         column = new ColumnConfig("displayName", Messages.get("label.name", "Name"), 100);
         columns.add(column);
-        column = new ColumnConfig("deletionDate", Messages.get("label.deletionDate", "deletionDate"), 150);
+        column = new ColumnConfig("j:deletionDate", Messages.get("label.deletionDate", "Deletion date"), 150);
         columns.add(column);
-        column = new ColumnConfig("deletionUser", Messages.get("label.deletionUser", "deletionUser"), 150);
+        column = new ColumnConfig("j:deletionUser", Messages.get("label.deletionUser", "User"), 150);
         columns.add(column);
 
-        column = new ColumnConfig("undelete", "Undelete", 100);
+        column = new ColumnConfig("undelete", Messages.get("label.undelete", "Undelete"), 100);
         column.setRenderer(new GridCellRenderer() {
             public Object render(final ModelData modelData, String property, ColumnData columnData, int rowIndex, int colIndex,
                                  ListStore listStore, Grid grid) {
@@ -95,18 +98,29 @@ public class TrashboardEngine extends LayoutContainer {
                 Button button = new Button(Messages.get("label.undelete", "Undelete"), new SelectionListener<ButtonEvent>() {
                     @Override
                     public void componentSelected(ButtonEvent buttonEvent) {
-                        JahiaContentManagementService.App.getInstance().undeletePaths(Arrays.asList(((GWTJahiaNode)modelData).getPath()), new BaseAsyncCallback() {
-                            @Override
-                            public void onApplicationFailure(Throwable throwable) {
-                                Log.error(throwable.getMessage(), throwable);
-                                MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
-                            }
+                       MessageBox.confirm(
+                               Messages.get("label.information", "Information"),
+                               Messages.getWithArgs(
+                                                "message.undelete.confirm",
+                                                "Do you really want to undelete the selected resource {0}?",
+                                                new String[] { ((GWTJahiaNode)modelData).getDisplayName() }),
+                               new Listener<MessageBoxEvent>() {
+                                   public void handleEvent(MessageBoxEvent be) {
+                                       if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
+                                           JahiaContentManagementService.App.getInstance().undeletePaths(Arrays.asList(((GWTJahiaNode)modelData).getPath()), new BaseAsyncCallback() {
+                                               @Override
+                                               public void onApplicationFailure(Throwable throwable) {
+                                                   Log.error(throwable.getMessage(), throwable);
+                                                   MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
+                                               }
 
-                            public void onSuccess(Object result) {
-                                deletedNodes.remove((GWTJahiaNode) modelData);
-                            }
-                        });
-
+                                               public void onSuccess(Object result) {
+                                                   deletedNodes.remove((GWTJahiaNode) modelData);
+                                               }
+                                           });
+                                       }
+                                   }
+                               });
                     }
                 });
                 button.setIcon(StandardIconsProvider.STANDARD_ICONS.restore());
@@ -115,7 +129,7 @@ public class TrashboardEngine extends LayoutContainer {
         });
         columns.add(column);
 
-        column = new ColumnConfig("infos", "infos", 100);
+        column = new ColumnConfig("infos", "", 100);
         column.setRenderer(new GridCellRenderer() {
             public Object render(final ModelData modelData, String property, ColumnData columnData, int rowIndex, int colIndex,
                                  ListStore listStore, Grid grid) {
@@ -143,7 +157,7 @@ public class TrashboardEngine extends LayoutContainer {
         bar = new ButtonBar();
         bar.setAlignment(Style.HorizontalAlignment.CENTER);
 
-        Button cancel = new Button(Messages.get("label.close"), new SelectionListener<ButtonEvent>() {
+        Button cancel = new Button(Messages.get("label.close", "Close"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 container.closeEngine();
             }

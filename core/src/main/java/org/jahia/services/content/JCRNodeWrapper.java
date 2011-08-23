@@ -839,4 +839,12 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      */
     void markForDeletion(String comment) throws RepositoryException;
 
+    /**
+     * Unmarks this node and all the sub-nodes for deletion. This operation does not call session.save() after modifications.
+     * 
+     * @throws RepositoryException
+     *             in case of repository access errors
+     */
+    void unmarkForDeletion() throws RepositoryException;
+
 }

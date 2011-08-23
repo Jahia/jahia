@@ -3518,19 +3518,19 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
     
     public boolean isMarkedForDeletion() throws RepositoryException {
-        return objectNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION);
+        return objectNode.isNodeType(JAHIAMIX_MARKED_FOR_DELETION);
     }
 
     public void markForDeletion(String comment) throws RepositoryException {
         long timer = System.currentTimeMillis();
         checkout();
-        if (!objectNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION)) {
+        if (!objectNode.isNodeType(JAHIAMIX_MARKED_FOR_DELETION)) {
             // no mixin yet, add it
-            addMixin(Constants.JAHIAMIX_MARKED_FOR_DELETION);
+            addMixin(JAHIAMIX_MARKED_FOR_DELETION);
         }
-        if (!objectNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
+        if (!objectNode.isNodeType(JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
             // no mixin for the root node of the deletion yet, add it
-            addMixin(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT);
+            addMixin(JAHIAMIX_MARKED_FOR_DELETION_ROOT);
         }
 
         // store deletion info: user, date, comment
@@ -3562,18 +3562,75 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             child.getSession().checkout(child);
 
             // set mixin
-            if (!child.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION)) {
-                child.addMixin(Constants.JAHIAMIX_MARKED_FOR_DELETION);
+            if (!child.isNodeType(JAHIAMIX_MARKED_FOR_DELETION)) {
+                child.addMixin(JAHIAMIX_MARKED_FOR_DELETION);
             }
             
             if (child.getSession().hasPendingChanges()) {
                 child.getSession().save();
             }
             
+            // set lock
             child.lockAndStoreToken(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_TYPE);
             
             // recurse into children
             markNodesForDeletion(child);
+        }
+    }
+
+    public void unmarkForDeletion() throws RepositoryException {
+        long timer = System.currentTimeMillis();
+
+        checkout();
+        
+        // remove lock
+        if (isNodeType("jmix:lockable")) {
+            try {
+                unlock(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_TYPE);
+            } catch (LockException ex) {
+                logger.warn("Node {} is not locked. Skipping during undelete operation.", getPath());
+            }
+        }
+
+        if (objectNode.isNodeType(JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
+            removeMixin(JAHIAMIX_MARKED_FOR_DELETION_ROOT);
+            if (objectNode.isNodeType(JAHIAMIX_MARKED_FOR_DELETION)) {
+                removeMixin(JAHIAMIX_MARKED_FOR_DELETION);
+            }
+            
+            // unmark all child nodes
+            unmarkNodesForDeletion(this);
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("unmarkForDeletion for node {} took {} ms", getPath(),
+                    (System.currentTimeMillis() - timer));
+        }
+    }
+    
+    private static void unmarkNodesForDeletion(JCRNodeWrapper node) throws RepositoryException {
+        for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {
+            JCRNodeWrapper child = (JCRNodeWrapper) iterator.nextNode();
+            
+            child.getSession().checkout(child);
+
+            // do unlock
+            if (child.isNodeType("jmix:lockable")) {
+                try {
+                    child.unlock(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_TYPE);
+                } catch (LockException ex) {
+                    logger.warn("Node {} is not locked. Skipping during undelete operation.",
+                            child.getPath());
+                }
+            }
+            
+            // remove mixin
+            if (child.isNodeType(JAHIAMIX_MARKED_FOR_DELETION)) {
+                child.removeMixin(JAHIAMIX_MARKED_FOR_DELETION);
+            }
+            
+            // recurse into children
+            unmarkNodesForDeletion(child);
         }
     }
 }

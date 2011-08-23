@@ -777,4 +777,8 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     public void markForDeletion(String comment) throws RepositoryException {
         node.markForDeletion(comment);
     }
+
+    public void unmarkForDeletion() throws RepositoryException {
+        node.unmarkForDeletion();
+    }
 }

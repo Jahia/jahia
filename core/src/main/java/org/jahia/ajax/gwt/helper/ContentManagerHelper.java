@@ -524,13 +524,13 @@ public class ContentManagerHelper {
                 if (!nodeToDelete.hasPermission(Privilege.JCR_REMOVE_NODE)) {
                     missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - ACCESS DENIED").toString());
                 } else if (!getRecursedLocksAndFileUsages(nodeToDelete, missedPaths, user.getUsername())) {
-                    if (!nodeToDelete.getParent().isCheckedOut()) {
-                        nodeToDelete.getParent().checkout();
-                    }
-
                     if (!permanentlyDelete && supportsMarkingForDeletion(nodeToDelete)) {
                         nodeToDelete.markForDeletion(comment);
                     } else {
+                        if (!nodeToDelete.getParent().isCheckedOut()) {
+                            nodeToDelete.getParent().checkout();
+                        }
+
                         nodeToDelete.remove();
                     }
                     
@@ -549,7 +549,7 @@ public class ContentManagerHelper {
             }
         }
         if (missedPaths.size() > 0) {
-            StringBuilder errors = new StringBuilder(JahiaResourceBundle.getJahiaInternalResource("label.error.nodes.not.deleted", currentUserSession.getLocale()));
+            StringBuilder errors = new StringBuilder(JahiaResourceBundle.getJahiaInternalResource("label.error.nodes.not.deleted", currentUserSession.getLocale(), "The following nodes could not be deleted:"));
             for (String err : missedPaths) {
                 errors.append("\n").append(err);
             }
@@ -559,6 +559,34 @@ public class ContentManagerHelper {
 
     public void undeletePaths(List<String> paths, JahiaUser user, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
+        List<String> missedPaths = new ArrayList<String>();
+        for (String path : paths) {
+            JCRNodeWrapper nodeToUndelete = null;
+            try {
+                nodeToUndelete = currentUserSession.getNode(path);
+                if (!nodeToUndelete.hasPermission(Privilege.JCR_REMOVE_NODE)) {
+                    missedPaths.add(new StringBuilder(nodeToUndelete.getPath()).append(" - ACCESS DENIED").toString());
+                } else {
+                    nodeToUndelete.unmarkForDeletion();
+                    nodeToUndelete.saveSession();
+                }
+            } catch (PathNotFoundException e) {
+                missedPaths.add(new StringBuilder(path).append(" could not be accessed : ")
+                        .append(e.toString()).toString());
+            } catch (AccessDeniedException e) {
+                missedPaths.add(new StringBuilder(nodeToUndelete != null ? nodeToUndelete.getPath() : "").append(" - ACCESS DENIED").toString());
+            } catch (RepositoryException e) {
+                logger.error("error", e);
+                throw new GWTJahiaServiceException(e);
+            }
+        }
+        if (missedPaths.size() > 0) {
+            StringBuilder errors = new StringBuilder(JahiaResourceBundle.getJahiaInternalResource("label.error.nodes.not.deleted", currentUserSession.getLocale(), "The following nodes could not be undeleted:"));
+            for (String err : missedPaths) {
+                errors.append("\n").append(err);
+            }
+            throw new GWTJahiaServiceException(errors.toString());
+        }
     }
 
     private boolean supportsMarkingForDeletion(JCRNodeWrapper nodeToDelete) {

@@ -53,6 +53,8 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -191,6 +193,29 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
         }
     };
 
+    public static final GridCellRenderer<GWTJahiaNode> NAME_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+        public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex,
+                             ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
+            Object v = node.get(property);
+            if (node.getNodeTypes().contains("jmix:markedForDeletion")) {
+                v = "<span style=\"text-decoration:line-through;\">" + v + "</span>";
+            }
+            return v;
+        }
+    };
+
+    public static final TreeGridCellRenderer<GWTJahiaNode> NAME_TREEGRID_RENDERER = new TreeGridCellRenderer<GWTJahiaNode>() {
+        @Override
+        protected String getText(TreeGrid<GWTJahiaNode> gwtJahiaNodeTreeGrid, GWTJahiaNode model, String property, int rowIndex, int colIndex) {
+            String v = super.getText(gwtJahiaNodeTreeGrid, model, property, rowIndex, colIndex);
+            if (model.getNodeTypes().contains("jmix:markedForDeletion")) {
+                v = "<span style=\"text-decoration:line-through;\">" + v + "</span>";
+            }
+            return v;
+        }
+    };
+
+
     public NodeColumnConfigList(List<GWTColumn> columnList) {
         this(columnList, false);
     }
@@ -251,6 +276,8 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 col.setFixed(true);
                 col.setId("numberer");
                 col.setDataIndex("index");
+            } else if ("name".equals(column.getKey()) || "displayName".equals(column.getKey())) {
+                col.setRenderer(NAME_RENDERER);
             }
             add(col);
         }

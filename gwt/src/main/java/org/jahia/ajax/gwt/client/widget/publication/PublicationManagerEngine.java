@@ -66,6 +66,7 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 
@@ -116,7 +117,7 @@ public class PublicationManagerEngine extends Window {
         loader = factory.getLoader();
         List<ColumnConfig> columns = new LinkedList<ColumnConfig>();
         ColumnConfig config = new ColumnConfig("displayName", "Name", 150);
-        config.setRenderer(new TreeGridCellRenderer());
+        config.setRenderer(NodeColumnConfigList.NAME_TREEGRID_RENDERER);
         config.setSortable(false);
         columns.add(config);
         checkboxMap = new HashMap<String, LayoutContainer>();

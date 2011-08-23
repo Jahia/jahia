@@ -108,7 +108,7 @@ public class RepositoryTab extends ContentPanel {
 
         NodeColumnConfigList columns = new NodeColumnConfigList(config.getTreeColumns());
         columns.init();
-        columns.get(0).setRenderer(new TreeGridCellRenderer());
+        columns.get(0).setRenderer(NodeColumnConfigList.NAME_TREEGRID_RENDERER);
         m_tree = factory.getTreeGrid(new ColumnModel(columns));
         m_tree.setHideHeaders(true);
         m_tree.setIconProvider(ContentModelIconProvider.getInstance());

@@ -97,7 +97,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
 
         NodeColumnConfigList columns = new NodeColumnConfigList(config.getTreeColumns());
         columns.init();
-        columns.get(0).setRenderer(new TreeGridCellRenderer());
+        columns.get(0).setRenderer(NodeColumnConfigList.NAME_TREEGRID_RENDERER);
 
         tree = factory.getTreeGrid(new ColumnModel(columns));
         tree.setAutoExpandColumn(columns.getAutoExpand());

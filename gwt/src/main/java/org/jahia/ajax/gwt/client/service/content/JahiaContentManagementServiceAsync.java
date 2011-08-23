@@ -123,6 +123,8 @@ public interface JahiaContentManagementServiceAsync {
 
     void deletePaths(List<String> path, AsyncCallback async);
 
+    void undeletePaths(List<String> path, AsyncCallback async);
+
     void getAbsolutePath(String path, AsyncCallback<String> async);
 
     void checkWriteable(List<String> paths, AsyncCallback async);

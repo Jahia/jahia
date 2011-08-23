@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.client.service.content;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -125,9 +126,11 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void setLock(List<String> paths, boolean locked) throws GWTJahiaServiceException;
 
-     public void clearAllLocks(String path, boolean processChildNodes) throws GWTJahiaServiceException;
+    public void clearAllLocks(String path, boolean processChildNodes) throws GWTJahiaServiceException;
 
     public void deletePaths(List<String> path) throws GWTJahiaServiceException;
+
+    public void undeletePaths(List<String> path) throws GWTJahiaServiceException;
 
     public String getAbsolutePath(String path) throws GWTJahiaServiceException;
 

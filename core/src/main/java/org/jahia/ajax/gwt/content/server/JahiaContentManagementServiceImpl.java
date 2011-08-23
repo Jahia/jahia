@@ -508,6 +508,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.deletePaths(paths, getUser(), retrieveCurrentSession());
     }
 
+    public void undeletePaths(List<String> paths) throws GWTJahiaServiceException {
+        contentManager.undeletePaths(paths, getUser(), retrieveCurrentSession());
+    }
+
     public String getAbsolutePath(String path) throws GWTJahiaServiceException {
         return navigation.getAbsolutePath(path, retrieveCurrentSession(), getRequest());
     }

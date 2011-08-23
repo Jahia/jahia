@@ -79,14 +79,14 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
     private List<GWTColumn> columnList;
     private String autoExpand;
 
-    private transient final GridCellRenderer<GWTJahiaNode> ICON_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+    public static final GridCellRenderer<GWTJahiaNode> ICON_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
                              ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
             return ContentModelIconProvider.getInstance().getIcon(modelData).getHTML();
         }
     };
 
-    private transient final GridCellRenderer<GWTJahiaNode> LOCKED_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+    public static final GridCellRenderer<GWTJahiaNode> LOCKED_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
                              ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
             if (modelData.getLockInfos().containsKey(null) && (modelData.getLockInfos().size() == 1 || modelData.getLockInfos().containsKey(JahiaGWTParameters.getLanguage()))) {
@@ -99,7 +99,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
         }
     };
 
-    private transient final GridCellRenderer<GWTJahiaNode> SIZE_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+    public static final GridCellRenderer<GWTJahiaNode> SIZE_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
                              ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
             if (modelData.getSize() != null) {
@@ -111,7 +111,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
         }
     };
 
-    private transient final GridCellRenderer<GWTJahiaNode> DATE_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+    public static final GridCellRenderer<GWTJahiaNode> DATE_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
                              ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
             Date d = modelData.get(s);
@@ -124,7 +124,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
         }
     };
 
-    private transient final GridCellRenderer<GWTJahiaNode> PUBLICATION_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+    public static final GridCellRenderer<GWTJahiaNode> PUBLICATION_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex,
                              ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
             final GWTJahiaPublicationInfo info = node.getAggregatedPublicationInfo();
@@ -137,7 +137,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
         }
     };
 
-    private transient final GridCellRenderer<GWTJahiaNode> VERSION_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+    public static final GridCellRenderer<GWTJahiaNode> VERSION_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1,
                              ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
             List<GWTJahiaNodeVersion> versions = gwtJahiaNode.getVersions();

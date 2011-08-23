@@ -775,6 +775,14 @@
         <property name="icon" value="delete"/>
     </bean>
 
+    <bean id="Toolbar.Item.Undelete" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UndeleteActionItem"/>
+        </property>
+        <property name="titleKey" value="label.undelete"/>
+        <property name="icon" value="undelete"/>
+    </bean>
+
     <!-- new content action buttons  -->
     <bean id="Toolbar.Item.Copy" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
@@ -1183,6 +1191,14 @@
         </property>
         <property name="titleKey" value="label.newExternalLink"/>
         <property name="icon" value="newExternalLink"/>
+    </bean>
+
+    <bean id="Toolbar.Item.ShowTrashboard" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ShowTrashboardActionItem"/>
+        </property>
+        <property name="titleKey" value="label.showTrashboard"/>
+        <property name="icon" value="showTrashboard"/>
     </bean>
 
 </beans>

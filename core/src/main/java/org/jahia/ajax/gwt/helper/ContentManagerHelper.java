@@ -557,6 +557,10 @@ public class ContentManagerHelper {
         }
     }
 
+    public void undeletePaths(List<String> paths, JahiaUser user, JCRSessionWrapper currentUserSession)
+            throws GWTJahiaServiceException {
+    }
+
     private boolean supportsMarkingForDeletion(JCRNodeWrapper nodeToDelete) {
         // TODO implement check for node types, supporting marking for deletion
         return true;

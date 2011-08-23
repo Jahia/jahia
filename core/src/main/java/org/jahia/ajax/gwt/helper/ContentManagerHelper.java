@@ -510,7 +510,7 @@ public class ContentManagerHelper {
         return targetNode.getNode(name);
     }
 
-    public void deletePaths(List<String> paths, JahiaUser user, JCRSessionWrapper currentUserSession)
+    public void deletePaths(List<String> paths, boolean permanentlyDelete, String comment, JahiaUser user, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
         for (String path : paths) {
@@ -528,8 +528,8 @@ public class ContentManagerHelper {
                         nodeToDelete.getParent().checkout();
                     }
 
-                    if (supportsMarkingForDeletion(nodeToDelete)) {
-                        nodeToDelete.markForDeletion(null);
+                    if (!permanentlyDelete && supportsMarkingForDeletion(nodeToDelete)) {
+                        nodeToDelete.markForDeletion(comment);
                     } else {
                         nodeToDelete.remove();
                     }

@@ -121,7 +121,9 @@ public interface JahiaContentManagementServiceAsync {
 
     void clearAllLocks(String path, boolean processChildNodes, AsyncCallback async);
 
-    void deletePaths(List<String> path, AsyncCallback async);
+    void deletePaths(List<String> paths, AsyncCallback async);
+
+    void markForDeletion(List<String> paths, String comment, AsyncCallback async);
 
     void undeletePaths(List<String> path, AsyncCallback async);
 

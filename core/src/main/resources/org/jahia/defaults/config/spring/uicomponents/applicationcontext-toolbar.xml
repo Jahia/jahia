@@ -769,6 +769,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem">
                 <property name="referenceTitleKey" value="label.remove"/>
+                <property name="permanentlyDelete" value="false"/>
             </bean>
         </property>
         <property name="titleKey" value="label.delete"/>

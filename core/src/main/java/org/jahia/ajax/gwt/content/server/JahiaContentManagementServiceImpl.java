@@ -42,8 +42,6 @@ package org.jahia.ajax.gwt.content.server;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
@@ -87,7 +85,6 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.googledocs.GoogleDocsService;
@@ -504,8 +501,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.clearAllLocks(path, processChildNodes, retrieveCurrentSession());
     }
 
+    public void markForDeletion(List<String> paths, String comment) throws GWTJahiaServiceException {
+        contentManager.deletePaths(paths, false, comment, getUser(), retrieveCurrentSession());
+    }
+
     public void deletePaths(List<String> paths) throws GWTJahiaServiceException {
-        contentManager.deletePaths(paths, getUser(), retrieveCurrentSession());
+        contentManager.deletePaths(paths, true, null, getUser(), retrieveCurrentSession());
     }
 
     public void undeletePaths(List<String> paths) throws GWTJahiaServiceException {
@@ -1987,6 +1988,5 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 //            throw new GWTJahiaServiceException(e.toString());
 //        }
     }
-
 
 }

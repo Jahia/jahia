@@ -3543,7 +3543,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         // mark all child nodes as deleted
         markNodesForDeletion(this);
 
-        // TODO add locking
+        if (session.hasPendingChanges()) {
+            objectNode.getSession().save();
+        }
+        
+        lockAndStoreToken(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_TYPE);
         
         if (logger.isDebugEnabled()) {
             logger.debug("markForDeletion for node {} took {} ms", getPath(),
@@ -3561,6 +3565,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (!child.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION)) {
                 child.addMixin(Constants.JAHIAMIX_MARKED_FOR_DELETION);
             }
+            
+            if (child.getSession().hasPendingChanges()) {
+                child.getSession().save();
+            }
+            
+            child.lockAndStoreToken(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_TYPE);
             
             // recurse into children
             markNodesForDeletion(child);

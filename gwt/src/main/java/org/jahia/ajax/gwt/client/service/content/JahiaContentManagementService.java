@@ -126,9 +126,11 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void setLock(List<String> paths, boolean locked) throws GWTJahiaServiceException;
 
-    public void clearAllLocks(String path, boolean processChildNodes) throws GWTJahiaServiceException;
+     public void clearAllLocks(String path, boolean processChildNodes) throws GWTJahiaServiceException;
 
-    public void deletePaths(List<String> path) throws GWTJahiaServiceException;
+    public void deletePaths(List<String> paths) throws GWTJahiaServiceException;
+
+    public void markForDeletion(List<String> paths, String comment) throws GWTJahiaServiceException;
 
     public void undeletePaths(List<String> path) throws GWTJahiaServiceException;
 

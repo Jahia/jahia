@@ -769,4 +769,12 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     public AccessControlManager getAccessControlManager() throws RepositoryException {
         return node.getAccessControlManager();
     }
+
+    public boolean isMarkedForDeletion() throws RepositoryException {
+        return node.isMarkedForDeletion();
+    }
+
+    public void markForDeletion(String comment) throws RepositoryException {
+        node.markForDeletion(comment);
+    }
 }

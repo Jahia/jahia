@@ -77,6 +77,7 @@ import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.query.Query;
 import javax.jcr.security.Privilege;
+
 import java.io.*;
 import java.util.*;
 import java.util.zip.ZipEntry;
@@ -527,7 +528,12 @@ public class ContentManagerHelper {
                         nodeToDelete.getParent().checkout();
                     }
 
-                    nodeToDelete.remove();
+                    if (supportsMarkingForDeletion(nodeToDelete)) {
+                        nodeToDelete.markForDeletion(null);
+                    } else {
+                        nodeToDelete.remove();
+                    }
+                    
                     nodeToDelete.saveSession();
                 }
             } catch (PathNotFoundException e) {
@@ -549,6 +555,11 @@ public class ContentManagerHelper {
             }
             throw new GWTJahiaServiceException(errors.toString());
         }
+    }
+
+    private boolean supportsMarkingForDeletion(JCRNodeWrapper nodeToDelete) {
+        // TODO implement check for node types, supporting marking for deletion
+        return true;
     }
 
     public void rename(String path, String newName, JCRSessionWrapper currentUserSession)

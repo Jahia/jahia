@@ -40,6 +40,8 @@
 
 package org.jahia.services.content;
 
+import static org.jahia.api.Constants.*;
+
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
 import org.apache.commons.lang.StringUtils;
@@ -105,7 +107,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     private static final String SHARED_REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME = "j:sharedRefNodeIdentifiers";
     private static final String SHARED_REFERENCE_PROPERTY_NAMES_PROPERTYNAME = "j:sharedRefPropertyNames";
     public static final String EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR = "___";
-
+    
     private Map<String, ExtendedPropertyDefinition> applicablePropertyDefinition = new HashMap<String, ExtendedPropertyDefinition>();
     private Map<String, Boolean> hasPropertyCache = new HashMap<String, Boolean>();
 
@@ -3513,5 +3515,55 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public void flushLocalCaches() {
         hasPropertyCache.clear();
+    }
+    
+    public boolean isMarkedForDeletion() throws RepositoryException {
+        return objectNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION);
+    }
+
+    public void markForDeletion(String comment) throws RepositoryException {
+        long timer = System.currentTimeMillis();
+        checkout();
+        if (!objectNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION)) {
+            // no mixin yet, add it
+            addMixin(Constants.JAHIAMIX_MARKED_FOR_DELETION);
+        }
+        if (!objectNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
+            // no mixin for the root node of the deletion yet, add it
+            addMixin(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT);
+        }
+
+        // store deletion info: user, date, comment
+        objectNode.setProperty(MARKED_FOR_DELETION_USER, session.getUserID());
+        objectNode.setProperty(MARKED_FOR_DELETION_DATE, Calendar.getInstance());
+        if (comment != null && comment.length() > 0) {
+            objectNode.setProperty(MARKED_FOR_DELETION_MESSAGE, comment);
+        }
+        
+        // mark all child nodes as deleted
+        markNodesForDeletion(this);
+
+        // TODO add locking
+        
+        if (logger.isDebugEnabled()) {
+            logger.debug("markForDeletion for node {} took {} ms", getPath(),
+                    (System.currentTimeMillis() - timer));
+        }
+    }
+
+    private static void markNodesForDeletion(JCRNodeWrapper node) throws RepositoryException {
+        for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {
+            JCRNodeWrapper child = (JCRNodeWrapper) iterator.nextNode();
+            
+            child.getSession().checkout(child);
+
+            // set mixin
+            if (!child.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION)) {
+                child.addMixin(Constants.JAHIAMIX_MARKED_FOR_DELETION);
+            }
+            
+            // recurse into children
+            markNodesForDeletion(child);
+        }
     }
 }

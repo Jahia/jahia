@@ -250,6 +250,13 @@ public class Constants {
     public static final String JAHIA_SOURCE_TEMPLATE = "j:sourceTemplate";
     public static final String JAHIA_MODULE_TEMPLATE = "j:moduleTemplate";
 
+    public static final String JAHIAMIX_MARKED_FOR_DELETION = "jmix:markedForDeletion";
+    public static final String JAHIAMIX_MARKED_FOR_DELETION_ROOT = "jmix:markedForDeletionRoot";
+    public static final String MARKED_FOR_DELETION_LOCK_TYPE = "deletion";
+    public static final String MARKED_FOR_DELETION_USER = "j:deletionUser";
+    public static final String MARKED_FOR_DELETION_DATE = "j:deletionDate";
+    public static final String MARKED_FOR_DELETION_MESSAGE = "j:deletionMessage";
+    
     public static final List<String> forbiddenPropertiesToCopy = Arrays.asList(PROCESSID,JCR_FROZENUUID,
             JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_UUID,JCR_BASEVERSION,JCR_MIXINTYPES,JCR_PRIMARYTYPE,
             JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT, JCR_CREATED, JCR_CREATEDBY, JAHIA_LOCKTYPES,

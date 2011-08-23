@@ -8,7 +8,7 @@
         </c:if>
     </c:when>
     <c:when test="${value.type == jcrPropertyTypes.DATE && not empty value.date}"> <%-- date --%>
-        <fmt:formatDate value="${value.date.time}" pattern="yyyy-MM-dd HH:mm"/>
+        <fmt:formatDate value="${value.date.time}" pattern="yyyy-MM-dd HH:mm:ss"/>
     </c:when>
     <c:when test="${value.type == jcrPropertyTypes.REFERENCE || value.type == jcrPropertyTypes.WEAKREFERENCE}">
         <c:if test="${not empty value.node}" var="valuePresent">

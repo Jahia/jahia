@@ -342,7 +342,15 @@ public class JCRPublicationService extends JahiaService {
 //            }
 
             List<String> toDelete = new ArrayList<String>();
-            for (JCRNodeWrapper nodeWrapper : toPublish) {
+            List<JCRNodeWrapper> toDeleteOnSource = new ArrayList<JCRNodeWrapper>();
+            for (ListIterator<JCRNodeWrapper> lit = toPublish.listIterator(); lit.hasNext(); ) {
+                JCRNodeWrapper nodeWrapper = lit.next();
+                for (JCRNodeWrapper nodeToDelete : toDeleteOnSource) {
+                    if (nodeWrapper.getPath().startsWith(nodeToDelete.getPath())) {
+                        lit.remove();
+                        break;
+                    }
+                }
                 if (nodeWrapper.hasProperty("j:deletedChildren")) {
                     JCRPropertyWrapper property = nodeWrapper.getProperty("j:deletedChildren");
                     Value[] values = property.getValues();
@@ -352,6 +360,22 @@ public class JCRPublicationService extends JahiaService {
                     property.remove();
                     nodeWrapper.removeMixin("jmix:deletedChildren");
                 }
+                if (nodeWrapper.isNodeType(JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
+                    nodeWrapper.unmarkForDeletion();
+                    
+                    toDeleteOnSource.add(nodeWrapper);
+                    toDelete.add(nodeWrapper.getIdentifier());
+                    
+                    lit.remove();
+                } 
+            }
+            
+            for (JCRNodeWrapper nodeWrapper : toDeleteOnSource) {
+                try {
+                    nodeWrapper.remove();
+                } catch (InvalidItemStateException e) {
+                    logger.warn("Already deleted : "+nodeWrapper.getPath());
+                }                
             }
             for (String s : toDelete) {
                 try {
@@ -394,7 +418,7 @@ public class JCRPublicationService extends JahiaService {
             }
         }
     }
-
+    
     private void cloneParents(JCRNodeWrapper node, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
         String path;
         try {

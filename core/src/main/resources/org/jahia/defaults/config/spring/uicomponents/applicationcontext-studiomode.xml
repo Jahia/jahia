@@ -71,6 +71,7 @@
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Undelete"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.EditSourceContent"/>
                                     <ref bean="Toolbar.Item.Separator"/>
@@ -178,6 +179,7 @@
                     <list>
                         <ref bean="Toolbar.Item.EditContent"/>
                         <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
                         <ref bean="Toolbar.Item.EditSourceContent"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
@@ -275,6 +277,7 @@
                                     </bean>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Undelete"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
@@ -290,6 +293,7 @@
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Undelete"/>
                                 </list>
                             </property>
                         </bean>
@@ -339,6 +343,7 @@
                                     <ref bean="Toolbar.Item.NewMenuAvailable"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Undelete"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
@@ -353,6 +358,7 @@
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Undelete"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
@@ -394,6 +400,7 @@
                                     <ref bean="Toolbar.Item.Upload"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Undelete"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
@@ -410,6 +417,7 @@
                                     <ref bean="Toolbar.Item.FilePreview"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Undelete"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
@@ -446,6 +454,7 @@
                                     <ref bean="Toolbar.Item.NewPortlet"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Undelete"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
@@ -460,6 +469,7 @@
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Undelete"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
@@ -504,6 +514,7 @@
                                     <ref bean="Toolbar.Item.NavMenuText"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Undelete"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>

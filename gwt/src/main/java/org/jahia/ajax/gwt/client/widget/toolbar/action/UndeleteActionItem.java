@@ -1,8 +1,10 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -23,31 +25,52 @@ public class UndeleteActionItem extends BaseActionItem {
     public void onComponentSelection() {
         final LinkerSelectionContext lh = linker.getSelectionContext();
         if (!lh.getMultipleSelection().isEmpty()) {
-            final List<String> l = new ArrayList<String>();
-            for (GWTJahiaNode node : lh.getMultipleSelection()) {
-                l.add(node.getPath());
+            String message = null;
+            if (lh.getMultipleSelection().size() > 1) {
+                message = Messages.getWithArgs(
+                        "message.undelete.multiple.confirm",
+                        "Do you really want to undelete the {0} selected resources?",
+                        new String[] { String.valueOf(lh.getMultipleSelection().size()) });
+            } else {
+                message = Messages.getWithArgs(
+                        "message.undelete.confirm",
+                        "Do you really want to undelete the selected resource {0}?",
+                        new String[] { lh.getSingleSelection().getDisplayName() });
             }
-            JahiaContentManagementService.App.getInstance().undeletePaths(l, new BaseAsyncCallback() {
-                @Override
-                public void onApplicationFailure(Throwable throwable) {
-                    Log.error(throwable.getMessage(), throwable);
-                    MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
-                }
+            MessageBox.confirm(
+                    Messages.get("label.information", "Information"),
+                    message,
+                                     new Listener<MessageBoxEvent>() {
+                                         public void handleEvent(MessageBoxEvent be) {
+                                             if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
+                                                 final List<String> l = new ArrayList<String>();
+                                                 for (GWTJahiaNode node : lh.getMultipleSelection()) {
+                                                     l.add(node.getPath());
+                                                 }
+                                                 JahiaContentManagementService.App.getInstance().undeletePaths(l, new BaseAsyncCallback() {
+                                                     @Override
+                                                     public void onApplicationFailure(Throwable throwable) {
+                                                         Log.error(throwable.getMessage(), throwable);
+                                                         MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
+                                                     }
 
-                public void onSuccess(Object result) {
-                    EditLinker el = null;
-                    if (linker instanceof SidePanelTabItem.SidePanelLinker) {
-                        el = ((SidePanelTabItem.SidePanelLinker) linker).getEditLinker();
-                    } else if (linker instanceof EditLinker) {
-                        el = (EditLinker) linker;
-                    }
-                    if (el != null && l.contains(el.getSelectionContext().getMainNode().getPath())) {
-                        linker.refresh(EditLinker.REFRESH_PAGES);
-                    } else {
-                        linker.refresh(EditLinker.REFRESH_ALL);
-                    }
-                }
-            });
+                                                     public void onSuccess(Object result) {
+                                                         EditLinker el = null;
+                                                         if (linker instanceof SidePanelTabItem.SidePanelLinker) {
+                                                             el = ((SidePanelTabItem.SidePanelLinker) linker).getEditLinker();
+                                                         } else if (linker instanceof EditLinker) {
+                                                             el = (EditLinker) linker;
+                                                         }
+                                                         if (el != null && l.contains(el.getSelectionContext().getMainNode().getPath())) {
+                                                             linker.refresh(EditLinker.REFRESH_PAGES);
+                                                         } else {
+                                                             linker.refresh(EditLinker.REFRESH_ALL);
+                                                         }
+                                                     }
+                                                 });
+                                             }
+                                         }
+                                     });
         }
     }
 

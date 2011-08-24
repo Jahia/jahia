@@ -1086,20 +1086,17 @@ public class JCRPublicationService extends JahiaService {
                     logger.warn(info.getUuid() + " : Some property is null : " + modProp + "/" + pubProp + "/" +
                             liveModProp);
                     info.setStatus(PublicationInfo.MODIFIED);
-                    if (node.isNodeType("jmix:markedForDeletion")) {
-                        info.setStatus(PublicationInfo.MARKED_FOR_DELETION);
-                    }
                 } else {
                     long mod = modProp.getTime();
                     long pub = pubProp.getTime();
                     if (mod > pub) {
                         info.setStatus(PublicationInfo.MODIFIED);
-                        if (node.isNodeType("jmix:markedForDeletion")) {
-                            info.setStatus(PublicationInfo.MARKED_FOR_DELETION);
-                        }
                     } else {
                         info.setStatus(PublicationInfo.PUBLISHED);
                     }
+                }
+                if (node.isNodeType("jmix:markedForDeletion")) {
+                    info.setStatus(PublicationInfo.MARKED_FOR_DELETION);
                 }
             }
         }

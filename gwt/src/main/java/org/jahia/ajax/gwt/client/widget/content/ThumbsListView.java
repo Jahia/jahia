@@ -50,11 +50,11 @@ import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
 /**
- * 
+ *
  * User: toto
  * Date: Dec 21, 2009
  * Time: 11:12:37 AM
- * 
+ *
  */
 public class ThumbsListView extends ListView<GWTJahiaNode> {
     public ThumbsListView() {
@@ -74,8 +74,12 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
 
     @Override
     protected GWTJahiaNode prepareData(GWTJahiaNode model) {
-        String s = model.getName();
-        model.set("shortName", Format.ellipse(s, 14));
+        if (model.getNodeTypes().contains("jmix:markedForDeletion")) {
+            model.set("markedForDeletion", "true" );
+        } else {
+            model.set("markedForDeletion", "false" );
+        }
+        model.set("shortName",  Format.ellipse(model.getName(), 14));
         model.set("nameLabel", Messages.get("label.name", "Name"));
         model.set("titleLabel", Messages.get("label.title", "Title"));
         model.set("authorLabel", Messages.get("versioning_author", "Author"));
@@ -114,34 +118,49 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
 
     public native String getSimpleTemplate() /*-{
         return ['<tpl for=".">',
-      '<div title="{name}" class="thumb-wrap" id="{name}">',
-      '<div class="thumb">{nodeImg}</div>',
-      '<span class="x-editable"> {shortName}</span>',
-      '{widthHTML}',
-      '{heightHTML}',
-      '{tagsHTML}',
-      '</div>',
-      '</tpl>',
-      '<div class="x-clear"></div>'].join("");
+            '<div title="{name}" class="thumb-wrap" id="{name}">',
+            '<div class="thumb">{nodeImg}</div>',
+            '<tpl if="markedForDeletion == \'true\'">',
+            '<span style="text-decoration:line-through;">',
+            '</tpl>',
+            '<span class="x-editable">{shortName}</span>',
+            '<tpl if="markedForDeletion == \'true\'">',
+            '</span>',
+            '</tpl>',
+            '{widthHTML}',
+            '{heightHTML}',
+            '{tagsHTML}',
+            '</div>',
+            '</tpl>',
+            '<div class="x-clear"></div>'
+        ].join("");
 
-      }-*/;
+    }-*/;
 
 
     public native String getDetailedTemplate() /*-{
-    return ['<tpl for=".">',
-        '<div style="padding: 5px ;border-bottom: 1px solid #D9E2F4;float: left;width: 100%;" class="thumb-wrap" id="{name}">',
-        '<div><div style="width: 140px; float: left; text-align: center;" class="thumb">{nodeImg}</div>',
-        '<div style="margin-left: 160px; " class="thumbDetails">',
-        '<div><b>{nameLabel}: </b>{name}</div>',
-        '<div><b>{titleLabel}: </b>{displayName}</div>',
-        '<div><b>{authorLabel}: </b>{createdBy}</div>',
-        '{widthHTML}',
-        '{heightHTML}',
-        '{tagsHTML}',
-        '</div>',
-        '</div>',
-        '<div style="padding-left: 10px; padding-top: 10px; clear: left">{description}</div></div></tpl>',
-        '<div class="x-clear"></div>'].join("");
+        return ['<tpl for=".">',
+            '<div style="padding: 5px ;border-bottom: 1px solid #D9E2F4;float: left;width: 100%;" class="thumb-wrap" id="{name}">',
+            '<div><div style="width: 140px; float: left; text-align: center;" class="thumb">{nodeImg}</div>',
+            '<div style="margin-left: 160px; " class="thumbDetails">',
+            '<div><tpl if="markedForDeletion == \'true\'">',
+            '<span style="text-decoration:line-through;text-align:left;">',
+            '</tpl>',
+            '<b>{nameLabel}: </b>{name}',
+            '<tpl if="markedForDeletion == \'true\'">',
+            '</span>',
+            '</tpl></div>',
+            '<div><b>{titleLabel}: </b>{displayName}</div>',
+            '<div><b>{authorLabel}: </b>{createdBy}</div>',
+            '{widthHTML}',
+            '{heightHTML}',
+            '{tagsHTML}',
+            '</div>',
+            '</div>',
+            '<div style="padding-left: 10px; padding-top: 10px; clear: left">{description}</div></div>',
+            '</tpl>',
+            '<div class="x-clear"></div>'
+        ].join("");
     }-*/;
 
 }

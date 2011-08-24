@@ -67,11 +67,13 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
     public static final int CONFLICT = 9;
     public static final int MANDATORY_LANGUAGE_VALID = 10;
     public static final int DELETED = 11;
+    public static final int MARKED_FOR_DELETION = 12;
 
     public static Map<Integer,String> statusToLabel = new HashMap<Integer, String>();
 
     static {
         statusToLabel.put(GWTJahiaPublicationInfo.PUBLISHED,"published");
+        statusToLabel.put(GWTJahiaPublicationInfo.MARKED_FOR_DELETION,"markedfordeletion");
         statusToLabel.put(GWTJahiaPublicationInfo.MODIFIED,"modified");
         statusToLabel.put(GWTJahiaPublicationInfo.NOT_PUBLISHED,"notpublished");
         statusToLabel.put(GWTJahiaPublicationInfo.UNPUBLISHED,"unpublished");

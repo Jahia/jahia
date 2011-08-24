@@ -121,9 +121,9 @@ public class RepositoryTab extends ContentPanel {
         m_tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             public void selectionChanged(SelectionChangedEvent selectionChangedEvent) {
                 getLinker().onTreeItemSelected();
+                setExpanded(true);
             }
         });
-//        m_tree.init();
 
         setScrollMode(Style.Scroll.NONE);
         setHeading(repo.getTitle());

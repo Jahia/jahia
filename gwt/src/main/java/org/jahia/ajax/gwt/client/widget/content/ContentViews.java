@@ -121,7 +121,6 @@ public class ContentViews extends TopRightComponent {
             current = newView;
             m_component.add(current.getComponent());
             m_component.layout();
-
             refresh();
 
             newView.setHiddenSelection(hiddenSelection);
@@ -175,6 +174,15 @@ public class ContentViews extends TopRightComponent {
         }
     }
 
+    public List<GWTJahiaNode> getHiddenSelection() {
+        if (current != null) {
+            return current.getHiddenSelection();
+        } else {
+            return null;
+        }
+    }
+
+
     public void selectNodes(List<GWTJahiaNode> nodes) {
         if (current != null) {
             current.selectNodes(nodes);
@@ -189,5 +197,12 @@ public class ContentViews extends TopRightComponent {
 
     public Component getComponent() {
         return m_component;
+    }
+
+    @Override
+    public void clearSelection() {
+        super.clearSelection();
+        tableView.clearSelection();
+        thumbView.clearSelection();
     }
 }

@@ -198,7 +198,7 @@ public class ContentActions {
                     }
 
                     public void onSuccess(GWTJahiaNode o) {
-                        linker.setSelectPathAfterDataUpdate(o.getPath());
+                        linker.setSelectPathAfterDataUpdate(Arrays.asList(o.getPath()));
                         linker.loaded();
                         linker.refresh(Linker.REFRESH_FOLDERS);
                     }
@@ -227,7 +227,7 @@ public class ContentActions {
                 linker.loading(Messages.get("statusbar.newfoldering.label"));
                 JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, nodeType, null, null, null, null, new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode o) {
-                        linker.setSelectPathAfterDataUpdate(o.getPath());
+                        linker.setSelectPathAfterDataUpdate(Arrays.asList(o.getPath()));
                         linker.loaded();
                         linker.refresh(EditLinker.REFRESH_ALL);
                     }

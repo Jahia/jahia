@@ -157,7 +157,7 @@ public abstract class AbstractView extends TopRightComponent {
         }
     }
 
-    List<GWTJahiaNode> getHiddenSelection() {
+    public List<GWTJahiaNode> getHiddenSelection() {
         return hiddenSelection;
     }
 
@@ -221,5 +221,17 @@ public abstract class AbstractView extends TopRightComponent {
             }
         });
 
-    }    
+    }
+
+    @Override
+    public void clearSelection() {
+        super.clearSelection();
+        if (hiddenSelection != null) {
+            hiddenSelection.clear();
+        }
+        if (visibleSelection != null) {
+            visibleSelection.clear();
+        }
+
+    }
 }

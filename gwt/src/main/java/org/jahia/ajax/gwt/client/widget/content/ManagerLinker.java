@@ -50,7 +50,6 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -140,20 +139,36 @@ public class ManagerLinker implements Linker {
 
     /**
      * Called when the left tree selection changes.
+     * When a tree item is selected, by default, we remove the selection
      */
     public void onTreeItemSelected() {
-        if (m_topRightComponent != null) {
-            m_topRightComponent.clearSelection();
+        if (m_leftComponent!= null && m_leftComponent.getSelectedItem() != null) {
+            boolean clearSelection = true;
+            if (m_bottomRightComponent != null) {
+                if (m_bottomRightComponent.getSelection() != null) {
+                    for (GWTJahiaNode n :m_bottomRightComponent.getSelection()) {
+                        if (n.getPath().substring(0,n.toString().lastIndexOf("/")).equals(m_leftComponent.getSelectedItem().toString())) {
+                            clearSelection = false;
+                            break;
+                        }
+                    }
+                }
+                if (m_bottomRightComponent.getComponentType().equals(PICKER)) {
+                    if (clearSelection && m_leftComponent!= null) {
+                        m_bottomRightComponent.fillData(new ArrayList<GWTJahiaNode>());
+                    }
+                }   else {
+                    m_bottomRightComponent.fillData(m_leftComponent.getSelectedItem());
+                }
+            }
+            if (m_topRightComponent != null) {
+                if (clearSelection) {
+                    m_topRightComponent.clearSelection();
+                }
+                m_topRightComponent.setContent(m_leftComponent.getSelectedItem());
+            }
+            handleNewSelection();
         }
-        if (m_topRightComponent != null && m_leftComponent != null) {
-            m_topRightComponent.setContent(m_leftComponent.getSelectedItem());
-        }
-        // if in content manager (not in picker ..) refresh bottom right panel and empty hiddenSelection
-        if (m_bottomRightComponent != null && !(m_bottomRightComponent.getComponentType().equals(PICKER))) {
-            m_topRightComponent.selectNodes(null);
-            m_bottomRightComponent.fillData(m_leftComponent.getSelectedItem());
-        }
-        handleNewSelection();
     }
 
     /**
@@ -161,7 +176,7 @@ public class ManagerLinker implements Linker {
      */
     public void onTableItemSelected() {
         handleNewSelection();
-        if (m_bottomRightComponent != null && m_topRightComponent!= null) {
+        if (m_bottomRightComponent != null && m_topRightComponent!= null && m_topRightComponent.getSelection()!=null) {
             m_bottomRightComponent.fillData(m_topRightComponent.getSelection());
         }
     }
@@ -184,7 +199,6 @@ public class ManagerLinker implements Linker {
 
     public void onTableItemDoubleClicked(Object item) {
         if (m_leftComponent != null) {
-
             m_leftComponent.openAndSelectItem(item);
         }
     }
@@ -207,7 +221,7 @@ public class ManagerLinker implements Linker {
             m_topRightComponent.refresh();
         }
         if (m_bottomRightComponent != null) {
-            m_bottomRightComponent.clear();
+            m_bottomRightComponent.fillData(m_topRightComponent != null?m_topRightComponent.getHiddenSelection():null);
         }
         handleNewSelection();
     }
@@ -331,8 +345,19 @@ public class ManagerLinker implements Linker {
         this.leftPanelSelectionWhenHidden = leftPanelSelectionWhenHidden;
     }
 
-    public void setSelectPathAfterDataUpdate(String path) {
-        m_topRightComponent.setSelectPathAfterDataUpdate(path);
+    public void setSelectPathAfterDataUpdate(List<String> paths) {
+        List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
+        for (String path: paths) {
+            GWTJahiaNode n = new GWTJahiaNode();
+            n.setPath(path);
+            n.setName(path.substring(path.lastIndexOf("/")));
+            l.add(n);
+        }
+        m_topRightComponent.selectNodes(l);
+        if (l.size() > 0) {
+            m_bottomRightComponent.fillData(l.get(0));
+        }
+
     }
 
     public void refresh() {

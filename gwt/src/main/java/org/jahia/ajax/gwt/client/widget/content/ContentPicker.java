@@ -130,7 +130,6 @@ public class ContentPicker extends TriPanelBrowserLayout {
             contentViews.getComponent().setContextMenu(actionContextMenu);
         }
         linker.handleNewSelection();
-
         pickedContent = (PickedContentView) bottomComponents;
     }
 

@@ -66,6 +66,7 @@ import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -235,7 +236,7 @@ public class FileUploader extends Window {
         form.addListener(Events.Submit, new Listener<FormEvent>() {
             public void handleEvent(FormEvent formEvent) {
                 bar.reset();
-                linker.setSelectPathAfterDataUpdate(location.getPath() + "/" + p.getUpload().getFilename());
+                linker.setSelectPathAfterDataUpdate(Arrays.asList(location.getPath() + "/" + p.getUpload().getFilename()));
 
                 String result = formEvent.getResultHtml();
            

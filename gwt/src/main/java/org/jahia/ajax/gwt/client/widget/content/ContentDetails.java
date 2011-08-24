@@ -306,6 +306,11 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
         return acl;
     }
 
+    @Override
+    public List<GWTJahiaNode> getSelection() {
+        return selectedNodes;
+    }
+
     public Map<String, Set<String>> getReferencesWarnings() {
         return referencesWarnings;
     }

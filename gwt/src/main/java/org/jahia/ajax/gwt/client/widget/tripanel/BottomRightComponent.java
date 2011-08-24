@@ -40,6 +40,10 @@
 
 package org.jahia.ajax.gwt.client.widget.tripanel;
 
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+
+import java.util.List;
+
 /**
  * 
  *
@@ -60,5 +64,9 @@ public abstract class BottomRightComponent extends LinkableComponent {
 
     public void setComponentType(String componentType) {
         this.componentType = componentType;
+    }
+
+    public List<GWTJahiaNode> getSelection() {
+        return null;
     }
 }

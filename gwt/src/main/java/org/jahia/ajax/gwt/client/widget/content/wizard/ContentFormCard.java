@@ -119,7 +119,7 @@ public class ContentFormCard extends ContentWizardCard {
 
                             public void onSuccess(GWTJahiaNode result) {
                                 if (getWizardWindow().getLinker() != null) {
-                                    getWizardWindow().getLinker().setSelectPathAfterDataUpdate(result.getPath());
+                                    getWizardWindow().getLinker().setSelectPathAfterDataUpdate(Arrays.asList(result.getPath()));
                                     getWizardWindow().getLinker().refresh(Linker.REFRESH_MAIN);
                                 }
                                 MessageBox.info(Messages.get("org.jahia.engines.contentmanager.addContentWizard.formCard.success", "Info"),

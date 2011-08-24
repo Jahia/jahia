@@ -283,6 +283,7 @@ public class CreateContentEngine extends AbstractContentEngine {
                             || node.getInheritedNodeTypes().contains("jmix:visibleInPagesTree")) {
                         linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
                     } else {
+                        linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
                         linker.refresh(Linker.REFRESH_MAIN);
                     }
                 } else {

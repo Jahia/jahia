@@ -70,7 +70,7 @@ public interface Linker {
 
     public void select(Object o);
 
-    public void setSelectPathAfterDataUpdate(String path);
+    public void setSelectPathAfterDataUpdate(List<String> paths);
 
     public LinkerSelectionContext getSelectionContext();
 

@@ -55,8 +55,8 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Contribute;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.content.JCRContentUtils.LockType;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRQueryNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -65,7 +65,6 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.sites.SitesSettings;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
@@ -814,11 +813,11 @@ public class NavigationHelper {
             Map<String, List<String>> infos = node.getLockInfos();
             if(!infos.isEmpty()) {
                 Map.Entry<String, List<String>> stringListEntry = infos.entrySet().iterator().next();
-                JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
-                        StringUtils.substringBefore(stringListEntry.getValue().get(0), ":"));
-                if(jahiaUser==null) {
+                String lockTypeToken = stringListEntry.getValue().get(0);
+                LockType type = LockType.getLockType(lockTypeToken);
+                if (LockType.USER != type) {
                     infos.clear();
-                    infos.put(stringListEntry.getKey(),Arrays.asList("label.locked.by.workflow.process"));
+                    infos.put(stringListEntry.getKey(),Arrays.asList("label.locked.by." + type.toString().toLowerCase()));
                 }
             }
             n.setLockInfos(infos);

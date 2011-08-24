@@ -356,7 +356,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean grantRoles(String principalKey, Set<String> roles) throws RepositoryException {
-        Map m = new HashMap<String, String>();
+        Map<String, String> m = new HashMap<String, String>();
         for (String role : roles) {
             m.put(role, "GRANT");
         }
@@ -367,7 +367,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean denyRoles(String principalKey, Set<String> roles) throws RepositoryException {
-        Map m = new HashMap<String, String>();
+        Map<String, String> m = new HashMap<String, String>();
         for (String role : roles) {
             m.put(role, "DENY");
         }
@@ -1355,16 +1355,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
 	public JCRPropertyWrapper retrieveExternalReferenceProperty(String name,
 			ExtendedPropertyDefinition epd) throws RepositoryException {
-        Locale locale = getSession().getLocale();
         Property referenceProperty = null;
-        String refNodeIdentifierPropertyName = SHARED_REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME;
         String refPropertyNamesPropertyName = SHARED_REFERENCE_PROPERTY_NAMES_PROPERTYNAME;
         if (epd.isInternationalized()) {
             if (session.getLocale() == null) {
                 logger.warn("No locale passed, cannot remove reference for property " + name);
                 throw new PathNotFoundException(name);
             }
-            refNodeIdentifierPropertyName = REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME;
             refPropertyNamesPropertyName = REFERENCE_PROPERTY_NAMES_PROPERTYNAME;
         }
         referenceProperty = getProperty(refPropertyNamesPropertyName);
@@ -1921,14 +1918,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     private String findExternalReferenceIdFromPropertyName(String name, ExtendedPropertyDefinition epd) throws ItemNotFoundException, RepositoryException {
-        String refNodeIdentifierPropertyName = SHARED_REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME;
         String refPropertyNamesPropertyName = SHARED_REFERENCE_PROPERTY_NAMES_PROPERTYNAME;
         if (epd.isInternationalized()) {
             if (session.getLocale() == null) {
                 logger.warn("No locale passed, cannot find reference for property " + name);
                 return null;
             }
-            refNodeIdentifierPropertyName = REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME;
             refPropertyNamesPropertyName = REFERENCE_PROPERTY_NAMES_PROPERTYNAME;
         }
         Property referenceProperty = getProperty(refPropertyNamesPropertyName);
@@ -3547,7 +3542,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             objectNode.getSession().save();
         }
         
-        lockAndStoreToken(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_TYPE);
+        lockAndStoreToken(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
         
         if (logger.isDebugEnabled()) {
             logger.debug("markForDeletion for node {} took {} ms", getPath(),
@@ -3571,7 +3566,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             
             // set lock
-            child.lockAndStoreToken(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_TYPE);
+            child.lockAndStoreToken(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
             
             // recurse into children
             markNodesForDeletion(child);
@@ -3586,7 +3581,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         // remove lock
         if (isNodeType("jmix:lockable")) {
             try {
-                unlock(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_TYPE);
+                unlock(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
             } catch (LockException ex) {
                 logger.warn("Node {} is not locked. Skipping during undelete operation.", getPath());
             }
@@ -3617,7 +3612,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             // do unlock
             if (child.isNodeType("jmix:lockable")) {
                 try {
-                    child.unlock(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_TYPE);
+                    child.unlock(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
                 } catch (LockException ex) {
                     logger.warn("Node {} is not locked. Skipping during undelete operation.",
                             child.getPath());

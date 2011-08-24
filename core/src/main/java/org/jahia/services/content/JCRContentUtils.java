@@ -40,8 +40,7 @@
 
 package org.jahia.services.content;
 
-import static org.jahia.api.Constants.EDIT_WORKSPACE;
-import static org.jahia.api.Constants.LIVE_WORKSPACE;
+import static org.jahia.api.Constants.*;
 
 import com.google.common.collect.ImmutableSet;
 import org.apache.commons.collections.map.UnmodifiableMap;
@@ -98,6 +97,41 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class JCRContentUtils {
     
+    /**
+     * Various lock types, used in Jahia.
+     * 
+     * @author Sergiy Shyrkov
+     */
+    public enum LockType {
+        DELETION, UNKNOWN, USER, WORKFLOW;
+
+        /**
+         * Returns the parsed lock type from the provided token.
+         * 
+         * @param lockTypeToken
+         *            the token to detect lock type from
+         * @return the parsed lock type from the provided token
+         */
+        public static LockType getLockType(String lockTypeToken) {
+            LockType type = UNKNOWN;
+            if (lockTypeToken != null && lockTypeToken.length() > 1) {
+                if (lockTypeToken.charAt(0) == ' ') {
+                    // system or process type lock
+                    if (lockTypeToken.startsWith(MARKED_FOR_DELETION_LOCK_USER)) {
+                        type = DELETION;
+                    } else if (lockTypeToken.endsWith(":validation")) {
+                        type = WORKFLOW;
+                    }
+                } else {
+                    // user lock
+                    type = USER;
+                }
+            }
+
+            return type;
+        }
+    }
+
     private  static final Map<String, Boolean> iconsPresence = new ConcurrentHashMap<String, Boolean>(512,0.8f,32);
     private static JCRContentUtils instance;
 

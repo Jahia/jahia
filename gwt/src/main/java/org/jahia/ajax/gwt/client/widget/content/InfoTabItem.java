@@ -113,8 +113,8 @@ public class InfoTabItem extends EditEngineTabItem {
                     String infos = "";
                     if (selectedNode.getLockInfos().containsKey(null) && selectedNode.getLockInfos().size() == 1) {
                         for (String s : selectedNode.getLockInfos().get(null)) {
-                            if("label.locked.by.workflow.process".equals(s)) {
-                                infos = Messages.get(s, "Locked by workflow process");
+                            if(s.startsWith("label.")) {
+                                infos = Messages.get(s);
                             } else {
                                 infos += s.substring(0,s.indexOf(":")) + " (" + s.substring(s.indexOf(":")+1) + ") ";
                             }

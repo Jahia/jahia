@@ -253,6 +253,7 @@ public class Constants {
     public static final String JAHIAMIX_MARKED_FOR_DELETION = "jmix:markedForDeletion";
     public static final String JAHIAMIX_MARKED_FOR_DELETION_ROOT = "jmix:markedForDeletionRoot";
     public static final String MARKED_FOR_DELETION_LOCK_TYPE = "deletion";
+    public static final String MARKED_FOR_DELETION_LOCK_USER = " deletion ";
     public static final String MARKED_FOR_DELETION_USER = "j:deletionUser";
     public static final String MARKED_FOR_DELETION_DATE = "j:deletionDate";
     public static final String MARKED_FOR_DELETION_MESSAGE = "j:deletionMessage";

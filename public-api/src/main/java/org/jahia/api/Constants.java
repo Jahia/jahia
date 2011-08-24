@@ -261,9 +261,11 @@ public class Constants {
     public static final List<String> forbiddenPropertiesToCopy = Arrays.asList(PROCESSID,JCR_FROZENUUID,
             JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_UUID,JCR_BASEVERSION,JCR_MIXINTYPES,JCR_PRIMARYTYPE,
             JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT, JCR_CREATED, JCR_CREATEDBY, JAHIA_LOCKTYPES,
-            JAHIA_LOCKTOKEN, JCR_LOCKOWNER, JCR_LOCKISDEEP, JAHIA_SOURCE_TEMPLATE, PUBLISHED);
+            JAHIA_LOCKTOKEN, JCR_LOCKOWNER, JCR_LOCKISDEEP, JAHIA_SOURCE_TEMPLATE, PUBLISHED, MARKED_FOR_DELETION_DATE,
+            MARKED_FOR_DELETION_MESSAGE, MARKED_FOR_DELETION_USER);
 
-    public static final List<String> forbiddenMixinToCopy = Arrays.asList(JAHIAMIX_WORKFLOW);
+    public static final List<String> forbiddenMixinToCopy = Arrays.asList(JAHIAMIX_WORKFLOW, JAHIAMIX_MARKED_FOR_DELETION, JAHIAMIX_MARKED_FOR_DELETION_ROOT);
+
     public static final String JCR_LASTLOGINDATE = "lastLoginDate";
     public static final String J_ROLES = "j:roles";
     public static final String JAHIANT_PERMISSION = "jnt:permission";

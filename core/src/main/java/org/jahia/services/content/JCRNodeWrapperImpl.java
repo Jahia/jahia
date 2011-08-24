@@ -2147,7 +2147,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             NodeType[] mixin = objectNode.getMixinNodeTypes();
             for (NodeType aMixin : mixin) {
-                copy.addMixin(aMixin.getName());
+                if (!Constants.forbiddenMixinToCopy.contains(aMixin.getName())) {
+                    copy.addMixin(aMixin.getName());
+                }
             }
         } catch (RepositoryException e) {
             logger.error("Error adding mixin types to copy", e);
@@ -2174,7 +2176,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 } else {
                     source.copy(copy, source.getName(), allowsExternalSharedNodes, references);
                 }
-            } else {
+            } else if (!source.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
                 source.copy(copy, source.getName(), allowsExternalSharedNodes, references);
             }
         }

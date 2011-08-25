@@ -870,8 +870,11 @@ public class ContentManagerHelper {
                 }
             }
             if (nodeToDelete.isLocked() && !nodeToDelete.getLockOwner().equals(username)) {
-                lockedNodes.add(new StringBuilder(nodeToDelete.getPath()).append(" - locked by ")
-                        .append(nodeToDelete.getLockOwner()).toString());
+                Set<JCRNodeLockType> lockTypes = JCRContentUtils.getLockTypes(nodeToDelete.getLockInfos());
+                if (lockTypes.size() != 1 || !lockTypes.contains(JCRNodeLockType.DELETION)) {
+                    lockedNodes.add(new StringBuilder(nodeToDelete.getPath()).append(" - locked by ")
+                            .append(nodeToDelete.getLockOwner()).toString());
+                }
             }
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());

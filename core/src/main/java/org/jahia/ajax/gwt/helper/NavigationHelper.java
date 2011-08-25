@@ -56,7 +56,6 @@ import org.jahia.bin.Contribute;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
 import org.jahia.services.content.*;
-import org.jahia.services.content.JCRContentUtils.LockType;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRQueryNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -814,8 +813,8 @@ public class NavigationHelper {
             if(!infos.isEmpty()) {
                 Map.Entry<String, List<String>> stringListEntry = infos.entrySet().iterator().next();
                 String lockTypeToken = stringListEntry.getValue().get(0);
-                LockType type = LockType.getLockType(lockTypeToken);
-                if (LockType.USER != type) {
+                JCRNodeLockType type = JCRContentUtils.getLockType(lockTypeToken);
+                if (JCRNodeLockType.USER != type) {
                     infos.clear();
                     infos.put(stringListEntry.getKey(),Arrays.asList("label.locked.by." + type.toString().toLowerCase()));
                 }

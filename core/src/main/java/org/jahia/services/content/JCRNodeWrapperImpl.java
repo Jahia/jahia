@@ -2148,8 +2148,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             NodeType[] mixin = objectNode.getMixinNodeTypes();
             for (NodeType aMixin : mixin) {
                 if (!Constants.forbiddenMixinToCopy.contains(aMixin.getName())) {
-                    copy.addMixin(aMixin.getName());
-                }
+                copy.addMixin(aMixin.getName());
+            }
             }
         } catch (RepositoryException e) {
             logger.error("Error adding mixin types to copy", e);
@@ -3558,6 +3558,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             
             child.getSession().checkout(child);
 
+            if (child.isNodeType(JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
+                // if by any chance the child node was already marked for deletion (root), remove the mixin
+                child.unlock(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
+                child.removeMixin(JAHIAMIX_MARKED_FOR_DELETION_ROOT);
+            }
             // set mixin
             if (!child.isNodeType(JAHIAMIX_MARKED_FOR_DELETION)) {
                 child.addMixin(JAHIAMIX_MARKED_FOR_DELETION);
@@ -3625,6 +3630,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (child.isNodeType(JAHIAMIX_MARKED_FOR_DELETION)) {
                 child.removeMixin(JAHIAMIX_MARKED_FOR_DELETION);
             }
+
+            // if the child node was before deleted, remove its root mixin
+            if (child.isNodeType(JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
+                child.removeMixin(JAHIAMIX_MARKED_FOR_DELETION_ROOT);
+            }
+            
             
             // recurse into children
             unmarkNodesForDeletion(child);

@@ -275,7 +275,7 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     }
 
     public String getUUID() throws UnsupportedRepositoryOperationException, RepositoryException {
-        return null;
+        return getIdentifier();
     }
 
     public int getIndex() throws RepositoryException {
@@ -438,7 +438,12 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     }
 
     public String getIdentifier() throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            // return UUID.nameUUIDFromBytes(fileObject.getURL().toString().getBytes()).toString();
+            return content.getFile().getURL().toString() + "/" + getName();
+        } catch (FileSystemException fse) {
+            throw new RepositoryException("Error retrieving URL for VFS file", fse);
+        }
     }
 
     public PropertyIterator getReferences(String name) throws RepositoryException {

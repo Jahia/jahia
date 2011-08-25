@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE configuration SYSTEM "http://jackrabbit.apache.org/dtd/indexing-configuration-1.2.dtd">
-<configuration xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:jnt='http://www.jahia.org/jahia/nt/1.0'>
+<configuration xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:jnt='http://www.jahia.org/jahia/nt/1.0' xmlns:jmix='http://www.jahia.org/jahia/mix/1.0' xmlns:mix='http://www.jcp.org/jcr/mix/1.0'>
 
     <!-- see http://wiki.apache.org/jackrabbit/IndexingConfiguration for details -->
 
@@ -23,6 +23,325 @@ The following example creates an index aggregate on jnt:file that includes the c
         <exclude-property>j:lastPublishedBy</exclude-property>        
         <exclude-property>j:published</exclude-property>        
     </i18ncopy>
+    <index-rule nodeType="jnt:contentRetrieval">
+        <property useInExcerpt="false">j:subNodesView</property>
+    </index-rule>
+    <index-rule nodeType="jnt:navMenu">
+        <property useInExcerpt="false">j:baselineNode</property>
+        <property useInExcerpt="false">j:menuItemView</property>
+        <property useInExcerpt="false">j:styleName</property>
+        <property useInExcerpt="false">j:layoutID</property>
+    </index-rule>
+    <index-rule nodeType="jnt:flash">
+        <property useInExcerpt="false">width</property>
+        <property useInExcerpt="false">height</property>
+        <property useInExcerpt="false">flashPlayer</property>
+        <property useInExcerpt="false">id</property>
+        <property useInExcerpt="false">swliveconnect</property>
+        <property useInExcerpt="false">quality</property>
+        <property useInExcerpt="false">scale</property>
+    </index-rule>    
+    <index-rule nodeType="jnt:pageFormCreation">
+        <property useInExcerpt="false">buttonLabel</property>
+    </index-rule>
+    <index-rule nodeType="jmix:style">
+        <property useInExcerpt="false">j:style</property>
+    </index-rule>
+    <index-rule nodeType="jmix:customSkin">
+        <property useInExcerpt="false">j:classname</property>
+        <property useInExcerpt="false">j:id</property>
+    </index-rule>    
+    <index-rule nodeType="jnt:task">
+        <property useInExcerpt="false">priority</property>
+        <property useInExcerpt="false">state</property>
+    </index-rule>                
+    <index-rule nodeType="jnt:currentUserTasks">
+        <property useInExcerpt="false">workflowTypes</property>
+    </index-rule>
+    <index-rule nodeType="mix:created">
+        <property useInExcerpt="false">jcr:createdBy</property>
+    </index-rule>
+    <index-rule nodeType="mix:lastModified">
+        <property useInExcerpt="false">jcr:lastModifiedBy</property>
+    </index-rule>
+    <index-rule nodeType="mix:language">
+        <property useInExcerpt="false">jcr:language</property>
+    </index-rule>
+    <index-rule nodeType="mix:mimeType">
+        <property useInExcerpt="false">jcr:mimeType</property>
+        <property useInExcerpt="false">jcr:encoding</property>
+    </index-rule>
+    <index-rule nodeType="nt:address">
+        <property useInExcerpt="false">jcr:protocol</property>
+        <property useInExcerpt="false">jcr:host</property>
+        <property useInExcerpt="false">jcr:port</property>
+        <property useInExcerpt="false">jcr:repository</property>
+        <property useInExcerpt="false">jcr:workspace</property>
+    </index-rule>
+    <index-rule nodeType="mix:etag">
+        <property useInExcerpt="false">jcr:etag</property>
+    </index-rule>
+    <index-rule nodeType="mix:referenceable">
+        <property useInExcerpt="false">jcr:uuid</property>
+    </index-rule>
+    <index-rule nodeType="nt:versionHistory">
+        <property useInExcerpt="false">jcr:versionableUuid</property>
+    </index-rule>
+    <index-rule nodeType="nt:frozenNode">
+        <property useInExcerpt="false">jcr:frozenUuid</property>
+    </index-rule>    
+    <index-rule nodeType="nt:propertyDefinition">
+        <property useInExcerpt="false">jcr:onParentVersion</property>
+        <property useInExcerpt="false">jcr:requiredType</property>
+        <property useInExcerpt="false">jcr:valueConstraints</property>
+    </index-rule>
+    <index-rule nodeType="nt:childNodeDefinition">
+        <property useInExcerpt="false">jcr:onParentVersion</property>
+    </index-rule>
+    <index-rule nodeType="nt:query">
+        <property useInExcerpt="false">jcr:language</property>
+    </index-rule>
+    <index-rule nodeType="mix:lifecycle">
+        <property useInExcerpt="false">jcr:currentLifecycleState</property>
+    </index-rule>
+    <index-rule nodeType="jmix:nodenameInfo">
+        <property useInExcerpt="false">j:nodename</property>
+        <property useInExcerpt="false">j:fullpath</property>
+    </index-rule>
+    <index-rule nodeType="jmix:lastPublished">
+        <property useInExcerpt="false">j:lastPublishedBy</property>
+    </index-rule>
+    <index-rule nodeType="jmix:originWS">
+        <property useInExcerpt="false">j:originWS</property>
+    </index-rule>
+    <index-rule nodeType="jnt:ace">
+        <property useInExcerpt="false">j:aceType</property>
+        <property useInExcerpt="false">j:principal</property>
+    </index-rule>
+    <index-rule nodeType="jmix:workflow">
+        <property useInExcerpt="false">j:processId</property>
+    </index-rule>
+    <index-rule nodeType="jnt:workflowRule">
+        <property useInExcerpt="false">j:workflow</property>
+    </index-rule>
+    <index-rule nodeType="jnt:textExtract">
+        <property useInExcerpt="false">j:originalUuid</property>
+    </index-rule>
+    <index-rule nodeType="jnt:portletPreference">
+        <property useInExcerpt="false">j:portletName</property>
+        <property useInExcerpt="false">j:prefName</property>
+    </index-rule>
+    <index-rule nodeType="jnt:usersFolder">
+        <property useInExcerpt="false">j:usersFolderConfig</property>
+        <property useInExcerpt="false">j:usersFolderSkeleton</property>
+    </index-rule>
+    <index-rule nodeType="jnt:user">
+        <property useInExcerpt="false">j:externalSource</property>
+    </index-rule>
+    <index-rule nodeType="jmix:renderable">
+        <property useInExcerpt="false">j:view</property>
+    </index-rule>
+    <index-rule nodeType="jnt:template">
+        <property useInExcerpt="false">j:moduleTemplate</property>
+        <property useInExcerpt="false">j:view</property>
+    </index-rule>
+    <index-rule nodeType="jmix:requiredPermissions">
+        <property useInExcerpt="false">j:requiredMode</property>
+    </index-rule>
+    <index-rule nodeType="jmix:renderableMainResource">
+        <property useInExcerpt="false">j:mainResourceView</property>
+    </index-rule>
+    <index-rule nodeType="jmix:renderableUser">
+        <property useInExcerpt="false">j:userView</property>
+    </index-rule>
+    <index-rule nodeType="jmix:renderableList">
+        <property useInExcerpt="false">j:subNodesView</property>
+    </index-rule>
+    <index-rule nodeType="jmix:renderableArea">
+        <property useInExcerpt="false">j:areaView</property>
+        <property useInExcerpt="false">j:subNodesView</property>
+    </index-rule>
+    <index-rule nodeType="jnt:virtualsitesFolder">
+        <property useInExcerpt="false">j:virtualsitesFolderConfig</property>
+        <property useInExcerpt="false">j:virtualsitesFolderSkeleton</property>
+    </index-rule>
+    <index-rule nodeType="jnt:virtualsite">
+        <property useInExcerpt="false">j:title</property>
+        <property useInExcerpt="false">j:serverName</property>
+        <property useInExcerpt="false">j:installedModules</property>
+        <property useInExcerpt="false">j:languages</property>
+        <property useInExcerpt="false">j:inactiveLanguages</property>
+        <property useInExcerpt="false">j:mandatoryLanguages</property>
+        <property useInExcerpt="false">j:defaultLanguage</property>
+        <property useInExcerpt="false">j:dependencies</property>
+    </index-rule>
+    <index-rule nodeType="jnt:vfsMountPoint">
+        <property useInExcerpt="false">j:root</property>
+    </index-rule>
+    <index-rule nodeType="jmix:shareable">
+        <property useInExcerpt="false">j:movedFrom</property>
+    </index-rule>
+    <index-rule nodeType="jmix:link">
+        <property useInExcerpt="false">j:target</property>
+    </index-rule>
+    <index-rule nodeType="jnt:referenceInField">
+        <property useInExcerpt="false">j:fieldName</property>
+    </index-rule>
+    <index-rule nodeType="jmix:externalReference">
+        <property useInExcerpt="false">j:referenceNodeIdentifiers</property>
+        <property useInExcerpt="false">j:referencePropertyNames</property>
+    </index-rule>
+    <index-rule nodeType="jmix:autoSplitFolders">
+        <property useInExcerpt="false">j:splitConfig</property>
+        <property useInExcerpt="false">j:splitNodeType</property>
+    </index-rule>
+    <index-rule nodeType="jmix:contributeMode">
+        <property useInExcerpt="false">j:contributeTypes</property>
+    </index-rule>
+    <index-rule nodeType="jmix:listRestrictions">
+        <property useInExcerpt="false">j:allowedTypes</property>
+    </index-rule>
+    <index-rule nodeType="jnt:portletDefinition">
+        <property useInExcerpt="false">j:name</property>
+        <property useInExcerpt="false">j:type</property>
+        <property useInExcerpt="false">j:context</property>
+    </index-rule>
+    <index-rule nodeType="jnt:portlet">
+        <property useInExcerpt="false">j:application</property>
+        <property useInExcerpt="false">j:cacheScope</property>
+    </index-rule>
+    <index-rule nodeType="jnt:reference">
+        <property useInExcerpt="false">j:propertyName</property>
+        <property useInExcerpt="false">j:originalUuid</property>
+    </index-rule>
+    <index-rule nodeType="jnt:layoutItem">
+        <property useInExcerpt="false">j:status</property>
+    </index-rule>
+    <index-rule nodeType="jmix:document">
+        <property useInExcerpt="false">j:appName</property>
+        <property useInExcerpt="false">j:codePage</property>
+    </index-rule>
+    <index-rule nodeType="jmix:exif">
+        <property useInExcerpt="false">j:colorSpace</property>
+        <property useInExcerpt="false">j:componentsConfiguration</property>
+        <property useInExcerpt="false">j:compression</property>
+        <property useInExcerpt="false">j:compressedBitsPerPixel</property>
+        <property useInExcerpt="false">j:dateTime</property>
+        <property useInExcerpt="false">j:dateTimeDigitized</property>
+        <property useInExcerpt="false">j:dateTimeOriginal</property>
+        <property useInExcerpt="false">j:exifVersion</property>
+        <property useInExcerpt="false">j:exposureBiasValue</property>
+        <property useInExcerpt="false">j:exposureProgram</property>
+        <property useInExcerpt="false">j:exposureTime</property>
+        <property useInExcerpt="false">j:fileSource</property>
+        <property useInExcerpt="false">j:flash</property>
+        <property useInExcerpt="false">j:flashPixVersion</property>
+        <property useInExcerpt="false">j:fNumber</property>
+        <property useInExcerpt="false">j:focalLength</property>
+        <property useInExcerpt="false">j:interoperabilityIndex</property>
+        <property useInExcerpt="false">j:interoperabilityVersion</property>
+        <property useInExcerpt="false">j:make</property>
+        <property useInExcerpt="false">j:maxApertureValue</property>
+        <property useInExcerpt="false">j:meteringMode</property>
+        <property useInExcerpt="false">j:model</property>
+        <property useInExcerpt="false">j:orientation</property>
+        <property useInExcerpt="false">j:resolutionUnit</property>
+        <property useInExcerpt="false">j:sceneType</property>
+        <property useInExcerpt="false">j:software</property>
+        <property useInExcerpt="false">j:xresolution</property>
+        <property useInExcerpt="false">j:ycbcrPositioning</property>
+        <property useInExcerpt="false">j:yresolution</property>
+    </index-rule>
+    <index-rule nodeType="jmix:doc">
+        <property useInExcerpt="false">j:codeProjet</property>
+        <property useInExcerpt="false">j:codeStatutDocument</property>
+    </index-rule>
+    <index-rule nodeType="jmix:remotelyPublished">
+        <property useInExcerpt="false">uuid</property>
+    </index-rule>
+    <index-rule nodeType="jnt:remotePublication">
+        <property useInExcerpt="false">remoteUrl</property>
+        <property useInExcerpt="false">node</property>
+        <property useInExcerpt="false">remotePath</property>
+        <property useInExcerpt="false">remoteUser</property>
+    </index-rule>
+    <index-rule nodeType="jnt:latestBlog">
+        <property useInExcerpt="false">j:subNodesView</property>
+    </index-rule>
+    <index-rule nodeType="jnt:latestBlogContent">
+        <property useInExcerpt="false">j:subNodesView</property>
+    </index-rule>
+    <index-rule nodeType="jnt:latestBlogComment">
+        <property useInExcerpt="false">j:subNodesView</property>
+    </index-rule>
+    <index-rule nodeType="jnt:topicList">
+        <property useInExcerpt="false">j:subNodesView</property>
+    </index-rule>
+    <index-rule nodeType="jnt:postsList">
+        <property useInExcerpt="false">j:subNodesView</property>
+    </index-rule>
+    <index-rule nodeType="jnt:socialMediaItem">
+        <property useInExcerpt="false">j:type</property>
+        <property useInExcerpt="false">j:mimeType</property>
+        <property useInExcerpt="false">j:taggedPeople</property>
+    </index-rule>
+    <index-rule nodeType="jnt:socialActivity">
+        <property useInExcerpt="false">j:messageKey</property>
+        <property useInExcerpt="false">j:appID</property>
+        <property useInExcerpt="false">j:link</property>
+        <property useInExcerpt="false">j:targetNodeTypes</property>
+        <property useInExcerpt="false">j:attribution</property>
+        <property useInExcerpt="false">j:type</property>
+    </index-rule>
+    <index-rule nodeType="jnt:subscription">
+        <property useInExcerpt="false">j:subscriber</property>
+        <property useInExcerpt="false">j:provider</property>
+        <property useInExcerpt="false">j:suspended</property>
+        <property useInExcerpt="false">j:confirmed</property>
+        <property useInExcerpt="false">j:confirmationKey</property>
+    </index-rule>
+    <index-rule nodeType="jnt:subscriptionComponent">
+        <property useInExcerpt="false">j:fields</property>
+    </index-rule>
+    <index-rule nodeType="jnt:newslettersSubscriptions">
+        <property useInExcerpt="false">j:fields</property>
+    </index-rule>
+    <index-rule nodeType="jmix:convertedFile">
+        <property useInExcerpt="false">originDocFormat</property>
+        <property useInExcerpt="false">convertedDocFormat</property>
+    </index-rule>
+    <index-rule nodeType="jmix:googleAnalytics">
+        <property useInExcerpt="false">webPropertyID</property>
+    </index-rule>
+    <index-rule nodeType="jnt:job">
+        <property useInExcerpt="false">date</property>
+    </index-rule>
+    <index-rule nodeType="jmix:geotagged">
+        <property useInExcerpt="false">j:latitude</property>
+        <property useInExcerpt="false">j:longitude</property>
+    </index-rule>
+    <index-rule nodeType="jnt:location">
+        <property useInExcerpt="false">j:latitude</property>
+        <property useInExcerpt="false">j:longitude</property>
+    </index-rule>    
+    <index-rule nodeType="jnt:lastNews">
+        <property useInExcerpt="false">j:subNodesView</property>
+    </index-rule>    
+    <index-rule nodeType="jnt:person">
+        <property useInExcerpt="false">telephone</property>
+        <property useInExcerpt="false">cellular</property>
+        <property useInExcerpt="false">fax</property>
+    </index-rule>
+    <index-rule nodeType="jnt:publication">
+        <property useInExcerpt="false">date</property>
+    </index-rule>
+    <index-rule nodeType="jnt:vanityUrl">
+        <property useInExcerpt="false">j:url</property>
+    </index-rule>
+    <index-rule nodeType="jmix:sitemap">
+        <property useInExcerpt="false">changefreq</property>
+        <property useInExcerpt="false">priority</property>        
+    </index-rule>
     <analyzers> 
         <analyzer class="org.apache.lucene.analysis.KeywordAnalyzer">
             <property>jcr:primaryType</property>

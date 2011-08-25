@@ -345,12 +345,6 @@ public class JCRPublicationService extends JahiaService {
             List<JCRNodeWrapper> toDeleteOnSource = new ArrayList<JCRNodeWrapper>();
             for (ListIterator<JCRNodeWrapper> lit = toPublish.listIterator(); lit.hasNext(); ) {
                 JCRNodeWrapper nodeWrapper = lit.next();
-                for (JCRNodeWrapper nodeToDelete : toDeleteOnSource) {
-                    if (nodeWrapper.getPath().startsWith(nodeToDelete.getPath())) {
-                        lit.remove();
-                        break;
-                    }
-                }
                 if (nodeWrapper.hasProperty("j:deletedChildren")) {
                     JCRPropertyWrapper property = nodeWrapper.getProperty("j:deletedChildren");
                     Value[] values = property.getValues();
@@ -367,7 +361,14 @@ public class JCRPublicationService extends JahiaService {
                     toDelete.add(nodeWrapper.getIdentifier());
                     
                     lit.remove();
-                } 
+                } else {
+                    for (JCRNodeWrapper nodeToDelete : toDeleteOnSource) {
+                        if (nodeWrapper.getPath().startsWith(nodeToDelete.getPath())) {
+                            lit.remove();
+                            break;
+                        }
+                    }
+                }
             }
             
             for (JCRNodeWrapper nodeWrapper : toDeleteOnSource) {

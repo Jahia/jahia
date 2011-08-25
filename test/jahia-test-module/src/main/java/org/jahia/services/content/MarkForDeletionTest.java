@@ -56,6 +56,8 @@ import org.junit.Test;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+
 import java.util.*;
 
 import static junit.framework.Assert.fail;
@@ -74,9 +76,14 @@ public class MarkForDeletionTest {
     private static final String MEETING = "meeting";
     private static final String PARIS = "paris";
     private static final String GENEVA = "geneva";
+    private static final String KLAGENFURT = "klagenfurt";
+    private static final String DUESSELDORF = "duesseldorf";
     
     private static final String DELETION_MESSAGE = "Deleted in unit test";
-    
+
+    private static final String QUERY = "select * from ["
+            + Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT + "]";
+
     JCRSessionWrapper editSession;
     JCRSessionWrapper liveSession;
 
@@ -439,6 +446,69 @@ public class MarkForDeletionTest {
         session.save();
     }
 
+    @Test
+    public void testMixinsAndQuery() throws Exception {
+        reopenSession();
+
+        JCRNodeWrapper parent = editSession.getNode("/sites/markedForDeletionTest/contents");
+        editSession.getWorkspace().getVersionManager().checkout(parent.getPath());
+        
+        JCRNodeWrapper node = parent.addNode("mixinsAndQueryTest", "jnt:contentFolder");
+
+        Calendar calendar = new GregorianCalendar(2000, 0, 1, 12, 0);
+        createEvent(node, MEETING, PARIS, calendar, 1);
+        createEvent(node, MEETING, GENEVA, calendar, 2);
+        createEvent(node, MEETING, KLAGENFURT, calendar, 3);
+        createEvent(node, MEETING, DUESSELDORF, calendar, 4);
+        
+        editSession.save();
+        
+        assertEquals("Failed to create 4 event sub-nodes", 4, JCRContentUtils.size(node.getNodes()));
+
+        reopenSession();
+        
+        assertEquals(
+                "Query for marked for deletion nodes delivered wrong number of results",
+                0,
+                JCRContentUtils.size(editSession.getWorkspace().getQueryManager()
+                        .createQuery(QUERY, Query.JCR_SQL2).execute().getNodes()));
+
+        editSession.getNode("/sites/markedForDeletionTest/contents/mixinsAndQueryTest/" + MEETING + 2).markForDeletion(DELETION_MESSAGE);
+        editSession.getNode("/sites/markedForDeletionTest/contents/mixinsAndQueryTest/" + MEETING + 4).markForDeletion(DELETION_MESSAGE);
+        editSession.save();
+        
+        reopenSession();
+        
+        assertEquals(
+                "Query for marked for deletion nodes delivered wrong number of results",
+                2,
+                JCRContentUtils.size(editSession.getWorkspace().getQueryManager()
+                        .createQuery(QUERY, Query.JCR_SQL2).execute().getNodes()));
+
+        editSession.getNode("/sites/markedForDeletionTest/contents/mixinsAndQueryTest/" + MEETING + 2).unmarkForDeletion();
+        editSession.save();
+        
+        reopenSession();
+        
+        assertEquals(
+                "Query for marked for deletion nodes delivered wrong number of results",
+                1,
+                JCRContentUtils.size(editSession.getWorkspace().getQueryManager()
+                        .createQuery(QUERY, Query.JCR_SQL2).execute().getNodes()));
+
+        editSession.getNode("/sites/markedForDeletionTest/contents/mixinsAndQueryTest/" + MEETING + 4).unmarkForDeletion();
+        editSession.save();
+        
+        reopenSession();
+        
+        assertEquals(
+                "Query for marked for deletion nodes delivered wrong number of results",
+                0,
+                JCRContentUtils.size(editSession.getWorkspace().getQueryManager()
+                        .createQuery(QUERY, Query.JCR_SQL2).execute().getNodes()));
+
+    }
+    
     private static void createEvent(JCRNodeWrapper node, final String eventType, String location, Calendar calendar,
                              int i)
             throws RepositoryException {

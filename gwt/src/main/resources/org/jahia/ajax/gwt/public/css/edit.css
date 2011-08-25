@@ -439,3 +439,7 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+.markedForDeletion {
+    text-decoration:line-through;
+}

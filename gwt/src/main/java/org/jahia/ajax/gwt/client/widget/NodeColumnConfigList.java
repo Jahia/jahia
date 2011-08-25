@@ -198,7 +198,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                              ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
             Object v = node.get(property);
             if (node.getNodeTypes().contains("jmix:markedForDeletion")) {
-                v = "<span style=\"text-decoration:line-through;\">" + v + "</span>";
+                v = "<span class=\"markedForDeletion\">" + v + "</span>";
             }
             return v;
         }
@@ -209,7 +209,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
         protected String getText(TreeGrid<GWTJahiaNode> gwtJahiaNodeTreeGrid, GWTJahiaNode model, String property, int rowIndex, int colIndex) {
             String v = super.getText(gwtJahiaNodeTreeGrid, model, property, rowIndex, colIndex);
             if (model.getNodeTypes().contains("jmix:markedForDeletion")) {
-                v = "<span style=\"text-decoration:line-through;\">" + v + "</span>";
+                v = "<span class=\"markedForDeletion\">" + v + "</span>";
             }
             return v;
         }

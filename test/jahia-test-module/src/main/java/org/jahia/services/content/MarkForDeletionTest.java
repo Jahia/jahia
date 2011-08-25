@@ -133,6 +133,11 @@ public class MarkForDeletionTest {
         
         try {
             editSession.getNode("/sites/markedForDeletionTest/contents/" + MEETING + 0);
+            fail("Did not throw PathNotFoundException");
+        } catch (PathNotFoundException e) {
+            // this is expected
+        }
+        try {
             liveSession.getNode("/sites/markedForDeletionTest/contents/" + MEETING + 0);
             fail("Did not throw PathNotFoundException");
         } catch (PathNotFoundException e) {
@@ -171,11 +176,16 @@ public class MarkForDeletionTest {
         
         try {
             editSession.getNode("/sites/markedForDeletionTest/contents/" + MEETING + 1);
+            fail("Did not throw PathNotFoundException");
+        } catch (PathNotFoundException e) {
+            // this is expected
+        }
+        try {
             liveSession.getNode("/sites/markedForDeletionTest/contents/" + MEETING + 1);
             fail("Did not throw PathNotFoundException");
         } catch (PathNotFoundException e) {
             // this is expected
-        }        
+        }    
     }
     
     @Test
@@ -213,9 +223,24 @@ public class MarkForDeletionTest {
 
         try {
             editSession.getNode("/sites/markedForDeletionTest/pages/page3/page31");
+            fail("Did not throw PathNotFoundException");
+        } catch (PathNotFoundException e) {
+            // this is expected
+        }
+        try {
             liveSession
                     .getNode("/sites/markedForDeletionTest/pages/page3/page31");
+            fail("Did not throw PathNotFoundException");
+        } catch (PathNotFoundException e) {
+            // this is expected
+        }
+        try {
             editSession.getNode("/sites/markedForDeletionTest/pages/page3");
+            fail("Did not throw PathNotFoundException");
+        } catch (PathNotFoundException e) {
+            // this is expected
+        }
+        try {
             liveSession
                     .getNode("/sites/markedForDeletionTest/pages/page3");
             fail("Did not throw PathNotFoundException");
@@ -263,37 +288,36 @@ public class MarkForDeletionTest {
         assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page2"));
         assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page2/page21"));
         
-        jcrService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
-        
-        reopenSession();
-       
-        parentNode = editSession.getNode("/sites/markedForDeletionTest/pages/page2");
-        
-        assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page2"));
-        try {
-            editSession.getNode("/sites/markedForDeletionTest/pages/page2/page21");
-            liveSession
-                    .getNode("/sites/markedForDeletionTest/pages/page2/page21");
-            fail("Did not throw PathNotFoundException");
-        } catch (PathNotFoundException e) {
-            // this is expected
-        }
-        
         jcrService.publishByMainId(parentNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
         
         reopenSession();
         
         try {
             editSession.getNode("/sites/markedForDeletionTest/pages/page2/page21");
+            fail("Did not throw PathNotFoundException");
+        } catch (PathNotFoundException e) {
+            // this is expected
+        }
+        try {
             liveSession
                     .getNode("/sites/markedForDeletionTest/pages/page2/page21");
+            fail("Did not throw PathNotFoundException");
+        } catch (PathNotFoundException e) {
+            // this is expected
+        }
+        try {
             editSession.getNode("/sites/markedForDeletionTest/pages/page2");
+            fail("Did not throw PathNotFoundException");
+        } catch (PathNotFoundException e) {
+            // this is expected
+        }
+        try {
             liveSession
                     .getNode("/sites/markedForDeletionTest/pages/page2");
             fail("Did not throw PathNotFoundException");
         } catch (PathNotFoundException e) {
             // this is expected
-        }
+        }        
     }
     
     @Test

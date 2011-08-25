@@ -56,6 +56,7 @@ import java.util.*;
  * 
  */
 public class GWTJahiaPublicationInfo extends SerializableBaseModel {
+    private static final long serialVersionUID = -8549934950900000042L;
 
     public static final int PUBLISHED = 1;
     public static final int MODIFIED = 3;

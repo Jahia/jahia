@@ -119,6 +119,7 @@ public class MarkForDeletionTest {
 
         JCRNodeWrapper node = editSession.getNode("/sites/markedForDeletionTest/contents/" + MEETING + 0);
         node.markForDeletion(DELETION_MESSAGE);
+        editSession.save();
         
         assertTrue("jmix:markedForDeletionRoot not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertTrue("jmix:markedForDeletion not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
@@ -167,6 +168,7 @@ public class MarkForDeletionTest {
         node = editSession.getNode("/sites/markedForDeletionTest/contents/" + MEETING + 1);
         
         node.markForDeletion(DELETION_MESSAGE);
+        editSession.save();
         
         assertTrue("jmix:markedForDeletionRoot not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertTrue("jmix:markedForDeletion not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
@@ -211,6 +213,7 @@ public class MarkForDeletionTest {
         JCRNodeWrapper childNode = editSession.getNode("/sites/markedForDeletionTest/pages/page3/page31");
         
         node.markForDeletion(DELETION_MESSAGE);
+        editSession.save();
         
         assertTrue("jmix:markedForDeletionRoot not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertTrue("jmix:markedForDeletion not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
@@ -271,6 +274,7 @@ public class MarkForDeletionTest {
         JCRNodeWrapper parentNode = editSession.getNode("/sites/markedForDeletionTest/pages/page2");
         
         node.markForDeletion(DELETION_MESSAGE);
+        editSession.save();
         
         assertTrue("jmix:markedForDeletionRoot not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertTrue("jmix:markedForDeletion not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
@@ -279,6 +283,7 @@ public class MarkForDeletionTest {
         assertTrue("j:deletionDate not set", node.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
                 
         parentNode.markForDeletion("2nd " + DELETION_MESSAGE);
+        editSession.save();
         
         assertTrue("jmix:markedForDeletionRoot not set", parentNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertTrue("jmix:markedForDeletion not set", parentNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
@@ -286,11 +291,11 @@ public class MarkForDeletionTest {
         assertTrue("j:deletionUser not set", parentNode.hasProperty(Constants.MARKED_FOR_DELETION_USER));
         assertTrue("j:deletionDate not set", parentNode.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
         
-        assertTrue("jmix:markedForDeletionRoot not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
+        assertFalse("jmix:markedForDeletionRoot should not be set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertTrue("jmix:markedForDeletion not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
-        assertTrue("marked for deletion comment not set", node.getPropertyAsString(Constants.MARKED_FOR_DELETION_MESSAGE).equals(DELETION_MESSAGE));
-        assertTrue("j:deletionUser not set", node.hasProperty(Constants.MARKED_FOR_DELETION_USER));
-        assertTrue("j:deletionDate not set", node.hasProperty(Constants.MARKED_FOR_DELETION_DATE));        
+        assertFalse("marked for deletion comment should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
+        assertFalse("j:deletionUser should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_USER));
+        assertFalse("j:deletionDate should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_DATE));        
         
         assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page2"));
         assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page2/page21"));
@@ -342,6 +347,7 @@ public class MarkForDeletionTest {
         JCRNodeWrapper childNode = editSession.getNode("/sites/markedForDeletionTest/pages/page1/page11");
         
         node.markForDeletion(DELETION_MESSAGE);
+        editSession.save();
         
         assertTrue("jmix:markedForDeletionRoot not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertTrue("jmix:markedForDeletion not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
@@ -359,21 +365,22 @@ public class MarkForDeletionTest {
         assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page1/page11"));
         
         node.unmarkForDeletion();
+        editSession.save();
         
         assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page1"));        
         assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page1/page11"));
         
         assertFalse("jmix:markedForDeletionRoot should not be set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertFalse("jmix:markedForDeletion should not be set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
-//        assertFalse("marked for deletion comment should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
-//        assertFalse("j:deletionUser should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_USER));
-//        assertFalse("j:deletionDate should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
+        assertFalse("marked for deletion comment should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
+        assertFalse("j:deletionUser should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_USER));
+        assertFalse("j:deletionDate should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
         
         assertFalse("jmix:markedForDeletionRoot should not be set", childNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertFalse("jmix:markedForDeletion should not be set", childNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
-//        assertFalse("marked for deletion comment should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
-//        assertFalse("j:deletionUser should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_USER));
-//        assertFalse("j:deletionDate should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
+        assertFalse("marked for deletion comment should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
+        assertFalse("j:deletionUser should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_USER));
+        assertFalse("j:deletionDate should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
         
         jcrService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
         
@@ -389,15 +396,15 @@ public class MarkForDeletionTest {
 
         assertFalse("jmix:markedForDeletionRoot should not be set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertFalse("jmix:markedForDeletion should not be set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
-//        assertFalse("marked for deletion comment should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
-//        assertFalse("j:deletionUser should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_USER));
-//        assertFalse("j:deletionDate should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
+        assertFalse("marked for deletion comment should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
+        assertFalse("j:deletionUser should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_USER));
+        assertFalse("j:deletionDate should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
         
         assertFalse("jmix:markedForDeletionRoot should not be set", childNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertFalse("jmix:markedForDeletion should not be set", childNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
-//        assertFalse("marked for deletion comment should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
-//        assertFalse("j:deletionUser should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_USER));
-//        assertFalse("j:deletionDate should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
+        assertFalse("marked for deletion comment should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
+        assertFalse("j:deletionUser should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_USER));
+        assertFalse("j:deletionDate should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
     }    
     
     private static void initContent(JCRSessionWrapper session) throws RepositoryException {

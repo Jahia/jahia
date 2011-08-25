@@ -373,8 +373,8 @@ public class MarkForDeletionTest {
         assertFalse("jmix:markedForDeletionRoot should not be set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertFalse("jmix:markedForDeletion should not be set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
         assertFalse("marked for deletion comment should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
-        assertFalse("j:deletionUser should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_USER));
         assertFalse("j:deletionDate should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
+        assertFalse("j:deletionUser should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_USER));
         
         assertFalse("jmix:markedForDeletionRoot should not be set", childNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertFalse("jmix:markedForDeletion should not be set", childNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));

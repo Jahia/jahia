@@ -47,21 +47,15 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflow;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
-import org.jahia.ajax.gwt.client.widget.contentengine.EngineCards;
-import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
-import org.jahia.ajax.gwt.client.widget.contentengine.EnginePanel;
-import org.jahia.ajax.gwt.client.widget.contentengine.EngineWindow;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem;
 import org.jahia.ajax.gwt.client.widget.workflow.CustomWorkflow;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
@@ -85,17 +79,26 @@ public class UnpublicationWorkflow implements CustomWorkflow {
         this.publicationInfos = publicationInfos;
     }
 
-    public List<TabItem> getAdditionalTabs() {
-        List tabs = new ArrayList<TabItem>();
+    public void initStartWorkflowDialog(GWTJahiaWorkflowDefinition workflow, WorkflowActionDialog dialog) {
+        initDialog(dialog);
 
+        dialog.getButtonsBar().remove(dialog.getButtonsBar().getItem(0));
+        dialog.getButtonsBar().insert(getBypassWorkflowButton(workflow, dialog), 0);
+        dialog.getButtonsBar().insert(getStartWorkflowButton(workflow, dialog), 0);
+    }
+
+    public void initExecuteActionDialog(GWTJahiaWorkflow workflow, WorkflowActionDialog dialog) {
+        initDialog(dialog);
+    }
+
+    private void initDialog(WorkflowActionDialog dialog) {
         TabItem tab = new TabItem("Unpublication infos");
         tab.setLayout(new FitLayout());
-        tabs.add(tab);
 
         PublicationStatusGrid g = new PublicationStatusGrid(publicationInfos, true);
         tab.add(g);
 
-        return tabs;
+        dialog.getTabPanel().add(tab);
     }
 
     public Button getStartWorkflowButton(final GWTJahiaWorkflowDefinition wf, final WorkflowActionDialog dialog) {

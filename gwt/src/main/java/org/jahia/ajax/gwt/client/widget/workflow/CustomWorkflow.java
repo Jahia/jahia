@@ -45,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflow;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 
 import java.io.Serializable;
@@ -55,10 +56,8 @@ import java.util.Map;
  * Custom GUI interface for Workflow dialogs
  */
 public interface CustomWorkflow extends Serializable, IsSerializable {
-    public List<TabItem> getAdditionalTabs();
+    public void initStartWorkflowDialog(GWTJahiaWorkflowDefinition workflow, WorkflowActionDialog dialog);
 
-    public Button getStartWorkflowButton(GWTJahiaWorkflowDefinition wf, WorkflowActionDialog dialog);
-
-    public Button getBypassWorkflowButton(final GWTJahiaWorkflowDefinition wf, final WorkflowActionDialog dialog);
+    public void initExecuteActionDialog(GWTJahiaWorkflow workflow, WorkflowActionDialog dialog);
 
 }

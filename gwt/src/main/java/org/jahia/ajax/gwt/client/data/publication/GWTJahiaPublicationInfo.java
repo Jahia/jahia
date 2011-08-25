@@ -199,17 +199,13 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         set("language", language);
     }
 
-    public static Object renderPublicationStatusImage(GWTJahiaPublicationInfo info) {
-        if (info != null) {
-            String label= statusToLabel.get(info.getStatus());
+    public static Image renderPublicationStatusImage(Integer status) {
+        String label= statusToLabel.get(status);
 
-            String title = Messages.get("label.publication." + label, label);
-            final Image image = ToolbarIconProvider.getInstance().getIcon("publication/" + label).createImage();
-            image.setTitle(title);
-            return image;
-        }
-
-        return "";
+        String title = Messages.get("label.publication." + label, label);
+        final Image image = ToolbarIconProvider.getInstance().getIcon("publication/" + label).createImage();
+        image.setTitle(title);
+        return image;
     }
 
     public static boolean canPublish(GWTJahiaNode node, GWTJahiaPublicationInfo info, final String language) {

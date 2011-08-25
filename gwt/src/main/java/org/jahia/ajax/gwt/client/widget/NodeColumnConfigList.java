@@ -56,6 +56,7 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -131,11 +132,12 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                              ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
             final GWTJahiaPublicationInfo info = node.getAggregatedPublicationInfo();
             HorizontalPanel p = new HorizontalPanel();
-            Object res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info);
-            if (res instanceof Widget) {
-                p.add((Widget) res);
+            if (info != null) {
+                Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info.getStatus());
+                p.add(res);
+                return p;
             }
-            return p;
+            return "";
         }
     };
 

@@ -90,7 +90,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     private Linker linker;
     private PropertiesEditor propertiesEditor;
-    private ButtonBar bar;
+    private ButtonBar buttonsBar;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -100,6 +100,9 @@ public class WorkflowActionDialog extends LayoutContainer {
         this(linker, custom, container, title);
         this.nodePath = nodePath;
         initStartWorkflowDialog(workflow);
+        if (custom != null) {
+            custom.initStartWorkflowDialog(workflow, this);
+        }
     }
 
     public WorkflowActionDialog(final GWTJahiaWorkflow workflow, final GWTJahiaWorkflowTask task, final Linker linker,
@@ -107,6 +110,9 @@ public class WorkflowActionDialog extends LayoutContainer {
         this(linker, custom, container, (workflow.getVariables().get("jcr:title") != null && workflow.getVariables().get("jcr:title").getValues().size() == 1) ? workflow.getVariables().get("jcr:title").getValues().get(0).getString() : null);
         this.workflow = workflow;
         initExecuteActionDialog(task);
+        if (custom != null) {
+            custom.initExecuteActionDialog(workflow, this);
+        }
     }
 
     private WorkflowActionDialog(Linker linker, CustomWorkflow custom, EngineContainer container, String title) {
@@ -119,15 +125,15 @@ public class WorkflowActionDialog extends LayoutContainer {
         setLayout(new FitLayout());
         add(tabPanel);
 
-        bar = new ButtonBar();
-        bar.setAlignment(Style.HorizontalAlignment.CENTER);
+        buttonsBar = new ButtonBar();
+        buttonsBar.setAlignment(Style.HorizontalAlignment.CENTER);
 
         actionTab = new TabItem();
 
         comments = new ArrayList<String>();
 
         this.container = container;
-        container.setEngine(this, title, bar, this.linker);
+        container.setEngine(this, title, buttonsBar, this.linker);
     }
 
     public EngineContainer getContainer() {
@@ -148,27 +154,15 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     public void initStartWorkflowDialog(final GWTJahiaWorkflowDefinition workflowDefinition) {
         initTabs(workflowDefinition.getFormResourceName());
-        Button button = null;
-        Button bypassButton = null;
-        if (custom != null) {
-            button = custom.getStartWorkflowButton(workflowDefinition, this);
-            bypassButton = custom.getBypassWorkflowButton(workflowDefinition, this);
-        }
-        if (button == null) {
-            button = generateStartWorkflowButton(workflowDefinition);
-        }
-
-        bar.add(button);
-        if (bypassButton != null) {
-            bar.add(bypassButton);
-        }
+        Button button = generateStartWorkflowButton(workflowDefinition);
+        buttonsBar.add(button);
 
         Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 container.closeEngine();
             }
         });
-        bar.add(cancel);
+        buttonsBar.add(cancel);
     }
 
     public void initExecuteActionDialog(final GWTJahiaWorkflowTask task) {
@@ -176,7 +170,7 @@ public class WorkflowActionDialog extends LayoutContainer {
         List<Button> buttons = generateActionButtons(task);
 
         for (Button button : buttons) {
-            bar.add(button);
+            buttonsBar.add(button);
         }
 
         Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
@@ -184,7 +178,7 @@ public class WorkflowActionDialog extends LayoutContainer {
                 container.closeEngine();
             }
         });
-        bar.add(cancel);
+        buttonsBar.add(cancel);
     }
 
     private void initTabs(final String formResourceName) {
@@ -192,17 +186,12 @@ public class WorkflowActionDialog extends LayoutContainer {
         tabPanel.add(action);
         TabItem comments = initCommentTab();
         tabPanel.add(comments);
-        if (custom != null) {
-            for (TabItem item : custom.getAdditionalTabs()) {
-                tabPanel.add(item);
-            }
-        }
     }
 
 
     private TabItem initActionTab(String formResourceName) {
         actionTab = new TabItem(Messages.get("label.action", "Action"));
-        actionTab.setLayout(new FitLayout());
+        actionTab.setLayout(new BorderLayout());
         if (formResourceName != null && !"".equals(formResourceName)) {
             contentManagement.getWFFormForNodeAndNodeType(formResourceName, new BaseAsyncCallback<GWTJahiaNodeType>() {
                 public void onSuccess(final GWTJahiaNodeType result) {
@@ -228,7 +217,7 @@ public class WorkflowActionDialog extends LayoutContainer {
                                     propertiesEditor.setFrame(true);
                                     propertiesEditor.setBorders(false);
                                     propertiesEditor.setBodyBorder(false);
-                                    actionTab.add(propertiesEditor);
+                                    actionTab.add(propertiesEditor, new BorderLayoutData(Style.LayoutRegion.CENTER));
                                     actionTab.layout();
                                 }
                             });
@@ -357,7 +346,7 @@ public class WorkflowActionDialog extends LayoutContainer {
     }
 
     public void disableButtons() {
-        for (Component component : bar.getItems()) {
+        for (Component component : buttonsBar.getItems()) {
             if (component instanceof Button) {
                 ((Button) component).setEnabled(false);
             }
@@ -365,7 +354,7 @@ public class WorkflowActionDialog extends LayoutContainer {
     }
 
     public void enableButtons() {
-        for (Component component : bar.getItems()) {
+        for (Component component : buttonsBar.getItems()) {
             if (component instanceof Button) {
                 ((Button) component).setEnabled(true);
             }
@@ -468,6 +457,14 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     public List<String> getComments() {
         return comments;
+    }
+
+    public TabPanel getTabPanel() {
+        return tabPanel;
+    }
+
+    public ButtonBar getButtonsBar() {
+        return buttonsBar;
     }
 
     // -------------------------- OTHER METHODS --------------------------

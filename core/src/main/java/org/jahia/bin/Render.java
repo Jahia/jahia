@@ -132,6 +132,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String COOKIE_NAME = "jcrCookieName";
     public static final String COOKIE_PATH = "jcrCookiePath";
     public static final String CONTRIBUTE_POST = "jcrContributePost";
+    public static final String MARK_FOR_DELETION = "jcrMarkForDeletion";
+    public static final String MARK_FOR_DELETION_MESSAGE = "jcrDeletionMessage";
 
     private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
             Arrays.asList(new String[]{String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY)}));
@@ -176,6 +178,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         reservedParameters.add(COOKIE_VALUE);
         reservedParameters.add(COOKIE_PATH);
         reservedParameters.add(CONTRIBUTE_POST);
+        reservedParameters.add(MARK_FOR_DELETION);
     }
 
     private transient ServletConfig servletConfig;

@@ -16,6 +16,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<utils:setBundle basename="JahiaContributeMode" useUILocale="true" templateName="Jahia Contribute Mode"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.fancybox.js,animatedcollapse.js"/>
 <%--
 <template:addResources type="css" resources="contribute-toolbar.css,jquery.fancybox.css"/>
@@ -53,10 +54,26 @@
             }
         }
 
-        function deleteNodes() {
+        <fmt:message key="label.delete.confirm" var="i18nConfirmDelete"/>
+        <fmt:message key="message.undelete.selected.confirm" var="i18nConfirmUndelete"/>
+        <fmt:message key="label.comment" var="i18nComment"/>
+        function deleteNodes(markForDeletion) {
             var uuids = getUuids();
             if (uuids.length > 0) {
-                $.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.deleteNodes.do'/>", {"uuids": uuids}, function(result) {
+            	var comment;
+            	if (markForDeletion == true) {
+                    comment = prompt('${functions:escapeJavaScript(i18nConfirmDelete)}\n${functions:escapeJavaScript(i18nComment)}:', '');
+                    if (comment == null) {
+                    	return false;
+                    }
+            	} else if (markForDeletion == false) {
+                    if (!confirm('${functions:escapeJavaScript(i18nConfirmUndelete)}')) {
+                    	return false;
+                    }
+            	} else if (!confirm('${functions:escapeJavaScript(i18nConfirmDelete)}')) {
+            		return false;
+            	}
+            	$.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.deleteNodes.do'/>", {"uuids": uuids, "markForDeletion":markForDeletion,"markForDeletionComment":comment}, function(result) {
                     reload();
                 }, "json");
             } else {
@@ -161,7 +178,6 @@
 
     </script>
 </template:addResources>
-<utils:setBundle basename="JahiaContributeMode" useUILocale="true" templateName="Jahia Contribute Mode"/>
 <div id="contributeToolbar" >
 
     <div id="edit">
@@ -171,17 +187,17 @@
                 key="label.preview"/></a>
         <span> </span>
         <c:if test="${jcr:hasPermission(currentNode, 'jcr:removeChildNodes_default')}">
-            <a href="#" id="delete-${currentNode.identifier}" onclick="deleteNodes();"><img src="<c:url value='/icons/delete.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
+            <a href="#" id="delete-${currentNode.identifier}" onclick="deleteNodes(true); return false;"><img src="<c:url value='/icons/delete.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
                 key="label.delete"/></a>
         </c:if>
-        <a href="#" id="copy-${currentNode.identifier}" onclick="copyNodes();"><img src="<c:url value='/icons/copy.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.copy"/></a>
+        <a href="#" id="copy-${currentNode.identifier}" onclick="copyNodes(); return false;"><img src="<c:url value='/icons/copy.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.copy"/></a>
         <c:if test="${jcr:hasPermission(currentNode, 'jcr:removeChildNodes_default')}">
             <a href="#" id="cut-${currentNode.identifier}" onclick="cutNodes();"><img src="<c:url value='/icons/cut.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.cut"/></a>
         </c:if>
         <c:if test="${jcr:hasPermission(currentNode, 'jcr:write_default')}">
-            <a href="#" id="publish-${currentNode.identifier}" onclick="publishNodes();"><img src="<c:url value='/icons/publish.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.requestPublication"/></a>
+            <a href="#" id="publish-${currentNode.identifier}" onclick="publishNodes(); return false;"><img src="<c:url value='/icons/publish.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.requestPublication"/></a>
         </c:if>
-        <a href="#" id="empty-${currentNode.identifier}" onclick="emptyClipboard();" style="display:none;"><img src="<c:url value='/icons/clipboard.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
+        <a href="#" id="empty-${currentNode.identifier}" onclick="emptyClipboard(); return false;" style="display:none;"><img src="<c:url value='/icons/clipboard.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
                 key="label.clipboard.reset"/></a>
         <a href="#clipboardpreview-${currentNode.identifier}" id="clipboard-${currentNode.identifier}" style="display:none;"><img src="<c:url value='/icons/clipboard.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
                 key="label.clipboard.contains"/></a>

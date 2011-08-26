@@ -883,15 +883,10 @@ public class ContentManagerHelper {
 
     public void clearAllLocks(String path, boolean processChildNodes, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
-            JCRNodeWrapper node = currentUserSession.getNode(path);
             if (currentUserSession.getUser().isRoot()) {
-                node.clearAllLocks();
-                for (NodeIterator iterator = node.getNodes(); iterator.hasNext() && processChildNodes;) {
-                    JCRNodeWrapper child = (JCRNodeWrapper) iterator.next();
-                    clearAllLocks(child.getPath(),processChildNodes,currentUserSession);
-                }
+                JCRContentUtils.clearAllLocks(path, processChildNodes, currentUserSession);
             } else {
-                logger.error("Error when clearing all locks on node " + node.getPath());
+                logger.error("Error when clearing all locks on node " + path);
                 throw new GWTJahiaServiceException("Error when clearing all locks on node " + path + " with user " + currentUserSession.getUser().getUserKey());
             }
         } catch (RepositoryException e) {

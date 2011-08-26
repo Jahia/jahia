@@ -73,6 +73,7 @@ import javax.jcr.*;
 import javax.jcr.nodetype.ItemDefinition;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
@@ -117,6 +118,30 @@ public final class JCRContentUtils {
     }
     
     /**
+     * Removes all locks on the current node and optionally on its children.
+     * 
+     * @param path
+     *            the path of the node remove locks from
+     * @param processChildNodes
+     *            do we need to also remove locks in children?
+     * @param currentUserSession
+     *            current JCR session
+     * @throws RepositoryException
+     *             in case of an error
+     */
+    public static void clearAllLocks(String path, boolean processChildNodes,
+            JCRSessionWrapper currentUserSession) throws RepositoryException {
+        JCRNodeWrapper node = currentUserSession.getNode(path);
+        node.clearAllLocks();
+        if (processChildNodes) {
+            for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {
+                JCRNodeWrapper child = (JCRNodeWrapper) iterator.next();
+                clearAllLocks(child.getPath(), processChildNodes, currentUserSession);
+            }
+        }
+    }
+
+    /**
      * Creates the JCR property value, depending on the type of the corresponding value.
      * 
      * @param objectValue
@@ -157,8 +182,6 @@ public final class JCRContentUtils {
         }
         return null;
     }
-
-    
 
     /**
      * Reverse operation of encodeJCRNamePrefix.
@@ -227,7 +250,7 @@ public final class JCRContentUtils {
         }
         return targetFile;
     }
-
+    
     /**
      * Encode a JCR qualified form name prefix, according to the grammar defined in section 3.2.5.2
      * of the JCR 2.0 specification http://www.day.com/specs/jcr/2.0/3_Repository_Model.html#Names
@@ -259,7 +282,7 @@ public final class JCRContentUtils {
         }
         return buffer.toString();
     }
-    
+
     public static String escapeNodePath(String path) {
         StringBuilder buffer = new StringBuilder(path.length() * 2);
         for (int i = 0; i < path.length(); i++) {
@@ -370,6 +393,32 @@ public final class JCRContentUtils {
     }
 
     /**
+     * Returns a set of all mixin types, which can be added to the provided node.
+     * 
+     * @param node
+     *            the node to add mixin types to
+     * @return a set of all mixin types, which can be added to the provided node
+     * @throws RepositoryException
+     *             in case of a repository access error
+     */
+    public static Set<String> getAssignableMixins(JCRNodeWrapper node) throws RepositoryException {
+        Set<String> mixins = new TreeSet<String>();
+        Set<String> existingMixins = new HashSet<String>(node.getNodeTypes());
+        existingMixins.add("mix:shareable"); // we will skip this one
+
+        NodeTypeIterator allMixins = node.getSession().getWorkspace().getNodeTypeManager()
+                .getMixinNodeTypes();
+        while (allMixins.hasNext()) {
+            String nt = allMixins.nextNodeType().getName();
+            if (!existingMixins.contains(nt) && node.canAddMixin(nt)) {
+                mixins.add(nt);
+            }
+        }
+
+        return mixins;
+    }
+
+    /**
      * Returns a list of child nodes of the provided node, matching the specified node type (multiple node types can be specified, separated
      * by a comma).
      * 
@@ -459,7 +508,7 @@ public final class JCRContentUtils {
         
         return path.toString();
     }
-
+    
     public static NodeIterator getDescendantNodes(JCRNodeWrapper node, String type) {
         try {
             return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where isdescendantnode(sel,['"+node.getPath()+"'])",
@@ -470,8 +519,8 @@ public final class JCRContentUtils {
             logger.error("Error while retrieving nodes", e);
         }
         return NodeIteratorImpl.EMPTY;
-    }
-    
+    }    
+
     /**
      * Get the node or property display name depending on the locale
      *
@@ -521,8 +570,8 @@ public final class JCRContentUtils {
             }
         }
         return null;
-    }    
-
+    }
+    
     public static String getExpandedName(String name, NamespaceRegistry namespaceRegistry) throws RepositoryException {
         if (!name.startsWith("{")) {
             if (name.contains(":")) {
@@ -534,8 +583,8 @@ public final class JCRContentUtils {
         }
         
         return name;
-    }
-    
+    }    
+
     public static String getIcon(ExtendedNodeType type) throws RepositoryException {
         String icon = getIconsFolder(type) + type.getName().replace(':', '_');
         if (check(icon)) {
@@ -548,8 +597,8 @@ public final class JCRContentUtils {
             }
         }
         return null;
-    }    
-
+    }
+    
     public static String getIcon(JCRNodeWrapper f) throws RepositoryException {
         String folder = JCRContentUtils.getIconsFolder(f.getPrimaryNodeType());
         if (f.isFile()) {
@@ -571,7 +620,7 @@ public final class JCRContentUtils {
             return icon;
         }
     }
-    
+
     public static String getIconsFolder(final ExtendedNodeType primaryNodeType) throws RepositoryException {
         String folder = primaryNodeType.getSystemId();
         if (folder.startsWith("system-")) {
@@ -774,7 +823,7 @@ public final class JCRContentUtils {
         }
         return null;
     }
-
+    
     public static PropertyDefinition getPropertyDefinition(NodeType type,
             String property) throws RepositoryException {
         PropertyDefinition foundDefintion = null;
@@ -789,7 +838,7 @@ public final class JCRContentUtils {
 
         return foundDefintion;
     }
-    
+
     public static PropertyDefinition getPropertyDefinition(String nodeType,
             String property) throws RepositoryException {
         return getPropertyDefinition(NodeTypeRegistry.getInstance().getNodeType(
@@ -994,6 +1043,33 @@ public final class JCRContentUtils {
     }
 
     /**
+     * Returns <code>true</code> if the provided node matches one of the specified node types.
+     * 
+     * @param node
+     *            the node to be tested
+     * @param types
+     *            an array of node types to be matched.
+     * @return <code>true</code> if the provided node matches one of the specified node types
+     * @throws RepositoryException
+     *             in case of a JCR error
+     */
+    public static boolean isNodeType(JCRNodeWrapper node, Iterable<String> types)
+            throws RepositoryException {
+        if (node == null || types == null) {
+            return false;
+        }
+        boolean matches = false;
+        for (String matchType : types) {
+            if (node.isNodeType(matchType)) {
+                matches = true;
+                break;
+            }
+        }
+
+        return matches;
+    }
+
+    /**
      * Returns <code>true</code> if the provided node matches the specified node type (multiple node types can be specified, separated by a
      * comma).
      * 
@@ -1021,33 +1097,6 @@ public final class JCRContentUtils {
             }
         } else {
             matches = node.isNodeType(type);
-        }
-
-        return matches;
-    }
-
-    /**
-     * Returns <code>true</code> if the provided node matches one of the specified node types.
-     * 
-     * @param node
-     *            the node to be tested
-     * @param types
-     *            an array of node types to be matched.
-     * @return <code>true</code> if the provided node matches one of the specified node types
-     * @throws RepositoryException
-     *             in case of a JCR error
-     */
-    public static boolean isNodeType(JCRNodeWrapper node, Iterable<String> types)
-            throws RepositoryException {
-        if (node == null || types == null) {
-            return false;
-        }
-        boolean matches = false;
-        for (String matchType : types) {
-            if (node.isNodeType(matchType)) {
-                matches = true;
-                break;
-            }
         }
 
         return matches;
@@ -1096,6 +1145,7 @@ public final class JCRContentUtils {
                 || LIVE_WORKSPACE.equals(workspace);
     }
 
+
     /**
      * Small utility method to help with proper namespace registration in all JCR providers.
      * @param session
@@ -1112,7 +1162,6 @@ public final class JCRContentUtils {
         }
 
     }
-
 
     /**
      * Returns the number of elements in the provided iterator.
@@ -1180,6 +1229,7 @@ public final class JCRContentUtils {
         return ISO9075.encode(Text.escapeIllegalJcrChars(str));
     }
 
+
     /**
      * Convert a string to a JCR search expression literal, suitable for use in
      * jcr:contains() (inside XPath) or contains (SQL2). The characters - and " have
@@ -1197,7 +1247,6 @@ public final class JCRContentUtils {
         // in one of the combinations \" or \-
         return stringToQueryLiteral(Text.escapeIllegalXpathSearchChars(str));
     }
-
 
     /**
      * Convert a string to a literal, suitable for inclusion
@@ -1222,7 +1271,7 @@ public final class JCRContentUtils {
     public static String unescapeLocalNodeName(final String encodedLocalName) {
         return Text.unescapeIllegalJcrChars(encodedLocalName);
     }
-
+    
     private Map<String, String> fileExtensionIcons;
     
     private Map<String, List<String>> mimeTypes;

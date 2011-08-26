@@ -42,3 +42,31 @@
 	vertical-align: text-bottom;
 	margin-right:5px
 }
+.bodywrapper span.markedForDeletion {
+	text-decoration: line-through;
+}
+
+.bodywrapper div.markedForDeletion {
+    background-color: #EAEAEA;
+    border: 1px dashed #333333;
+    color: #666666;
+    overflow: hidden;
+    position: relative;
+}
+
+.bodywrapper span.markedForDeletionLabel {
+    background-color: #333333;
+    border: 1px solid #000000;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 1px 3px #999999;
+    color: #FFFFFF;
+    font-family: tahoma,arial,verdana,sans-serif;
+    left: 35%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px;
+    position: absolute;
+    text-align: center;
+    top: 35%;
+    width: 30%;
+}

@@ -20,7 +20,7 @@
                 <span class="icon-contribute icon-edit"></span><fmt:message key="label.edit"/>&nbsp;</button>
         </c:if>
         <button id="lockbtn-${child.identifier}" style="${locked ne 'true' ? 'display:none;' : '' }">
-            <span class="icon-contribute icon-locked"></span>Locked
+            <span class="icon-contribute icon-locked"></span><fmt:message key="label.locked"/>
         </button>
 
         <button style="display:none;" id="quitbtn-${child.identifier}"
@@ -54,13 +54,25 @@
                 <span class="icon-contribute icon-movedown"></span><fmt:message key="label.move.down"/></button>
         </c:if>
     </c:if>
-    <c:if test="${locked ne 'true'}">
-        <c:if test="${(areaResource.properties['j:canDeleteInContribution'].boolean or currentNode.properties['j:canDeleteInContribution'].boolean)}">
+    <c:if test="${areaResource.properties['j:canDeleteInContribution'].boolean || currentNode.properties['j:canDeleteInContribution'].boolean}">
+        <c:set var="markedForDeletion" value="${child.markedForDeletion}"/>
+        <c:if test="${!locked && !markedForDeletion}">
+            <fmt:message key="message.remove.single.confirm" var="i18nDeleteConfirm">
+                <fmt:param value="${child.displayableName}"/>
+            </fmt:message>
+            <fmt:message key="label.comment" var="i18nDeleteComment"/>
             <button id="delbtn-${child.identifier}"
-                    onclick="var callback = '$(\'.addContentContributeDiv\').each(function(index,value){animatedcollapse.addDiv($(this).attr(\'id\'), \'fade=1,speed=700,group=tasks\');});animatedcollapse.reinit();if (navigator.userAgent.indexOf(\'MSIE\') > 0) {location.reload();}';deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',callback)">
+                    onclick="var msg=prompt('${functions:escapeJavaScript(i18nDeleteConfirm)}\n${functions:escapeJavaScript(i18nDeleteComment)}:', ''); if (msg == null) { return false; } var callback = '$(\'.addContentContributeDiv\').each(function(index,value){animatedcollapse.addDiv($(this).attr(\'id\'), \'fade=1,speed=700,group=tasks\');});animatedcollapse.reinit();if (navigator.userAgent.indexOf(\'MSIE\') > 0) {location.reload();}';deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',callback,true,msg)">
                 <span class="icon-contribute icon-delete"></span><fmt:message key="label.delete"/></button>
         </c:if>
-
+        <c:if test="${markedForDeletion}">
+            <fmt:message key="message.undelete.confirm" var="i18nUndeleteConfirm">
+                <fmt:param value="${child.displayableName}"/>
+            </fmt:message>
+            <button id="undelbtn-${child.identifier}"
+                    onclick="if (!confirm('${functions:escapeJavaScript(i18nUndeleteConfirm)}')) { return false; } var callback = '$(\'.addContentContributeDiv\').each(function(index,value){animatedcollapse.addDiv($(this).attr(\'id\'), \'fade=1,speed=700,group=tasks\');});animatedcollapse.reinit();if (navigator.userAgent.indexOf(\'MSIE\') > 0) {location.reload();}';deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',callback,false)">
+                <span class="icon-contribute icon-undelete"></span><fmt:message key="label.undelete"/></button>
+        </c:if>
     </c:if>
 
     <c:set var="previousChild" value="${child}"/>

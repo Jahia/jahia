@@ -42,11 +42,7 @@ package org.jahia.services.scheduler;
 
 import static org.jahia.services.scheduler.BackgroundJob.*;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -96,7 +92,9 @@ public class SchedulerService extends JahiaService implements JahiaAfterInitiali
     private Scheduler ramScheduler = null;
     
     private Scheduler scheduler = null;
-    
+
+    private ThreadLocal<List<JobDetail>> scheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
+
 	public Integer deleteAllCompletedJobs() throws SchedulerException {
 		return deleteAllCompletedJobs(PURGE_ALL_STRATEGY, true);
 	}
@@ -262,6 +260,30 @@ public class SchedulerService extends JahiaService implements JahiaAfterInitiali
 		}
 		scheduler.scheduleJob(jobDetail, trigger);
 	}
+
+    public void scheduleJobAtEndOfRequest(JobDetail jobDetail) throws SchedulerException {
+        List<JobDetail> jobList = scheduledAtEndOfRequest.get();
+        if (jobList == null) {
+            jobList = new ArrayList<JobDetail>();
+            scheduledAtEndOfRequest.set(jobList);
+        }
+        jobList.add(jobDetail);
+	}
+
+    public void triggerEndOfRequest() {
+        List<JobDetail> jobList = scheduledAtEndOfRequest.get();
+        scheduledAtEndOfRequest.set(null);
+        if (jobList != null) {
+            for (JobDetail detail : jobList) {
+                try {
+                    scheduleJobNow(detail);
+                } catch (SchedulerException e) {
+                    logger.error("Cannot schedule job",e);
+                }
+            }
+        }
+
+    }
 
     public void setRamScheduler(Scheduler ramscheduler) {
         this.ramScheduler = ramscheduler;

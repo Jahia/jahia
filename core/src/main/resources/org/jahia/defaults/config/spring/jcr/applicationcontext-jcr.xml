@@ -319,6 +319,7 @@
     <bean id="JcrSessionFilter" class="org.jahia.bin.filters.jcr.JcrSessionFilter">
         <property name="authPipeline" ref="authPipeline"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
+        <property name="schedulerService" ref="SchedulerService"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>
 

@@ -142,6 +142,7 @@ public abstract class BackgroundJob implements StatefulJob {
 	            sessionFactory.setCurrentUser(null);
 	            sessionFactory.setCurrentLocale(null);
 	            sessionFactory.closeAllSessions();
+                ServicesRegistry.getInstance().getSchedulerService().triggerEndOfRequest();
             }
         }
     }

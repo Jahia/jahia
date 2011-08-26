@@ -40,6 +40,7 @@
 
 package org.jahia.bin.filters.jcr;
 
+import org.jahia.services.scheduler.SchedulerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.params.ProcessingContext;
@@ -67,7 +68,9 @@ public class JcrSessionFilter implements Filter {
     private Pipeline authPipeline;
 
     private JCRSessionFactory sessionFactory;
-    
+
+    private SchedulerService schedulerService;
+
     private JahiaUserManagerService userManagerService;
     
     public void destroy() {
@@ -105,6 +108,8 @@ public class JcrSessionFilter implements Filter {
                 /*sessionFactory.setVersionDate(null);
                 sessionFactory.setVersionLabel(null);*/
                 sessionFactory.closeAllSessions();
+
+                schedulerService.triggerEndOfRequest();
             }
         }
     }
@@ -123,5 +128,9 @@ public class JcrSessionFilter implements Filter {
 
 	public void setUserManagerService(JahiaUserManagerService userManagerService) {
     	this.userManagerService = userManagerService;
+    }
+
+    public void setSchedulerService(SchedulerService schedulerService) {
+        this.schedulerService = schedulerService;
     }
 }

@@ -25,6 +25,7 @@
 <label for="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
 <input type="hidden" name="${propertyDefinition.name}" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
 <fmt:message key="label.select.file" var="fileLabel"/>
+<fmt:message key="label.select.page" var="pageLabel"/>
 <fmt:message key="label.select.folder" var="folderLabel"/>
 <fmt:message key="label.selected" var="selected"/>
 <c:url value="${url.files}" var="previewPath"/>
@@ -82,6 +83,16 @@
                              onClose="${onClose}"
                              fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:false,previewPath:'${previewPath}'}"/>
         </c:when>        
+        <c:when test="${propertyDefinition.selectorOptions.type == 'page'}">
+            <ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
+                             displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
+                             label="${pageLabel}"
+                             nodeTypes="jnt:page"
+                             selectableNodeTypes="jnt:page"
+                             onSelect="${onSelect}"
+                             onClose="${onClose}"
+                             fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:false,previewPath:'${previewPath}'}"/>
+        </c:when>
         <c:otherwise>
             <ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                              displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
@@ -91,7 +102,7 @@
                              fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:true,previewPath:'${previewPath}'}"/>
         </c:otherwise>
     </c:choose>
-    <c:if test="${propertyDefinition.selectorOptions.type != 'folder' && propertyDefinition.selectorOptions.type != 'contentfolder'}">
+    <c:if test="${propertyDefinition.selectorOptions.type != 'folder' && propertyDefinition.selectorOptions.type != 'contentfolder' && propertyDefinition.selectorOptions.type != 'page'}">
         <strong><fmt:message key="label.or"/></strong>
         <div id="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">
             <span><fmt:message key="add.file"/></span>

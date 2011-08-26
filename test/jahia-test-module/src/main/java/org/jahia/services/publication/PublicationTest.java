@@ -40,11 +40,6 @@
 
 package org.jahia.services.publication;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,11 +51,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.jcr.ImportUUIDBehavior;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
@@ -78,6 +69,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 
 import com.google.common.collect.Lists;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit test for publish / unpublish using JCR
@@ -1412,5 +1405,37 @@ public class PublicationTest {
             pageFound.add(s);
             i++;
         }
-   }    
+   }
+
+
+    @Test
+    public void testNodeRemoveAndAdd() throws Exception {
+        JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
+
+        getCleanSession();
+        JCRNodeWrapper home = englishEditSession.getNode(SITECONTENT_ROOT_NODE);
+
+        JCRNodeWrapper source = home.addNode("source", "jnt:page");
+        source.setProperty("jcr:title", "Source");
+        JCRNodeWrapper list = TestHelper.createList(source, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        englishEditSession.save();
+
+        jcrService.publishByMainId(home.getIdentifier());
+        String firstId = list.getIdentifier();
+        list.remove();
+        list = TestHelper.createList(source, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        String secondId = list.getIdentifier();
+        englishEditSession.save();
+
+        jcrService.publishByMainId(home.getIdentifier());
+
+        try {
+            englishLiveSession.getNodeByUUID(firstId);
+            fail("Node should have been deleted");
+        } catch (ItemNotFoundException e) {
+        }
+
+        JCRNodeWrapper liveList = englishLiveSession.getNode(list.getPath());
+        assertEquals("Invalid uuid", secondId, liveList.getIdentifier());
+   }
 }

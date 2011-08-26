@@ -1057,8 +1057,12 @@ public class JCRPublicationService extends JahiaService {
                 }
                 // Conflict , a node exists in live !
                 info.setStatus(PublicationInfo.CONFLICT);
-                for (String language : languages) {
-                    info.setCanPublish(false,language);
+                if(languages == null || languages.isEmpty()) {
+                    info.setCanPublish(true,"");
+                } else {
+                    for (String language : languages) {
+                        info.setCanPublish(false,language);
+                    }
                 }
                 return info;
             } catch (ItemNotFoundException e) {

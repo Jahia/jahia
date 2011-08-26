@@ -13,17 +13,6 @@
 <%@taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr"%>
 <%@taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="stylesheet" href="tools.css" type="text/css" />
-<title>JCR Browser</title>
-<script type="text/javascript">
-function doNavigate(what, whereToGo) {
-	document.getElementById(what).value=whereToGo; 
-	document.getElementById('navigateForm').submit();
-}
-</script>
-</head>
 <utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType" scope="application"/>
 <c:set var="showProperties" value="${functions:default(param.showProperties, 'false')}"/>
 <c:set var="showReferences" value="${functions:default(param.showReferences, 'false')}"/>
@@ -45,44 +34,80 @@ if (request.getParameter("path") != null && request.getParameter("path").length(
 pageContext.setAttribute("node", node);
 pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
 %>
+<head>
+<title>JCR Browser</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="tools.css" type="text/css" />
+<script type="text/javascript">
+function go(id1, value1, id2, value2, id3, value3) {
+	document.getElementById(id1).value=value1;
+	if ('path' == id1) {
+		document.getElementById('uuid').value='';
+	}
+	if (id2) {
+		document.getElementById(id2).value=value2;
+	}
+	if (id3) {
+		document.getElementById(id3).value=value3;
+	}
+	document.getElementById('navigateForm').submit();
+}
+</script>
+</head>
 <body>
-<c:url var="switchWorkspaceUrl" value="?">
-    <c:param name="uuid" value="${node.identifier}"/>
-    <c:param name="showProperties" value="${showProperties}"/>
-    <c:param name="showReferences" value="${showReferences}"/>
-    <c:param name="showNodes" value="${showNodes}"/>
-    <c:param name="showActions" value="${showActions}"/>
-    <c:param name="workspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
-</c:url>
 <c:url var="mgrUrl" value="/engines/manager.jsp">
     <c:param name="selectedPaths" value="${currentNode.path}"/>
     <c:param name="workspace" value="${workspace}"/>
 </c:url>
 <fieldset>
     <form id="navigateForm" action="?" method="get">
-        <input type="hidden" name="showProperties" value="${showProperties}"/>
-        <input type="hidden" name="showReferences" value="${showProperties}"/>
-        <input type="hidden" name="showNodes" value="${showNodes}"/>
-        <input type="hidden" name="showActions" value="${showActions}"/>
-        <input type="hidden" name="workspace" value="${workspace}"/>
+        <input type="hidden" id="showProperties" name="showProperties" value="${showProperties}"/>
+        <input type="hidden" id="showReferences" name="showReferences" value="${showReferences}"/>
+        <input type="hidden" id="showNodes" name="showNodes" value="${showNodes}"/>
+        <input type="hidden" id="showActions" name="showActions" value="${showActions}"/>
+        <input type="hidden" id="workspace" name="workspace" value="${workspace}"/>
         <input type="hidden" id="path" name="path" value=""/>
-        <input type="hidden" id="uuid" name="uuid" value=""/>
+        <input type="hidden" id="uuid" name="uuid" value="${nodeId}"/>
+        <input type="hidden" id="value" name="value" value=""/>
+        <input type="hidden" id="action" name="action" value=""/>
+        <input type="hidden" id="target" name="target" value=""/>
     </form> 
     <input type="text" id="goToPath" name="goToPath" value="${fn:escapeXml(node.path)}"
-        onkeypress="if ((event || window.event).keyCode == 13) doNavigate('path', this.value);" />
+        onkeypress="if ((event || window.event).keyCode == 13) go('path', this.value);" />
     &nbsp;<a href="#go"
-        onclick='var path=document.getElementById("goToPath").value; if (path.length > 0) { doNavigate("path", path); } return false;' title="Got to the node with path">
+        onclick='var path=document.getElementById("goToPath").value; if (path.length > 0) { go("path", path); } return false;' title="Got to the node with path">
         <img src="${pageContext.request.contextPath}/icons/refresh.png" height="16" width="16" title="Got to the node with path" border="0" style="vertical-align: middle;"/>
     </a>
     <label for="goToUuid">UUID: </label>
     <input type="text" id="goToUuid" name="goToUuid" value=""
-        onkeypress="if ((event || window.event).keyCode == 13) doNavigate('uuid', this.value);" />
-    &nbsp;<a href="#go" onclick='var uuid=document.getElementById("goToUuid").value; if (uuid.length > 0) { doNavigate("uuid", uuid); } return false;' title="Got to the node with UUID"><img src="${pageContext.request.contextPath}/icons/search.png" height="16" width="16" title="Got to the node with UUID" border="0" style="vertical-align: middle;"/></a>
+        onkeypress="if ((event || window.event).keyCode == 13) go('uuid', this.value);" />
+    &nbsp;<a href="#go" onclick='var uuid=document.getElementById("goToUuid").value; if (uuid.length > 0) { go("uuid", uuid); } return false;' title="Got to the node with UUID"><img src="${pageContext.request.contextPath}/icons/search.png" height="16" width="16" title="Got to the node with UUID" border="0" style="vertical-align: middle;"/></a>
 </fieldset>
+ 
 <fieldset>
-    <legend><strong>${fn:escapeXml(not empty node.name ? node.name : '<root>')}</strong>&nbsp;- workspace:&nbsp;<strong>${workspace}</strong>&nbsp;(<a href="${switchWorkspaceUrl}">switch to ${workspace == 'default' ? 'live' : 'default'}</a>)
-        <a href="${mgrUrl}" target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; ">Repository Explorer</a>
+    <c:url value="/icons/${workspace == 'default' ? 'editMode' : 'live'}.png" var="iconWorkspace"/>
+    <c:url value="/icons/${workspace == 'default' ? 'live' : 'editMode'}.png" var="iconSwitchWorkspace"/>
+    <c:url value="/icons/${showActions ? 'preview' : 'editContent'}.png" var="iconActions"/>
+    <c:set var="anotherWorkspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
+    <legend><strong>${fn:escapeXml(not empty node.name ? node.name : '<root>')}</strong>&nbsp;- workspace:&nbsp;<img src="${iconWorkspace}" width="16" height="16" alt=" "/>&nbsp;<strong>${workspace}</strong>&nbsp;(<a href="#switchWorkspace" onclick="go('workspace', '${anotherWorkspace}'); return false;">switch to ${anotherWorkspace} <img src="${iconSwitchWorkspace}" width="16" height="16" alt=" "/></a>)
+        &nbsp;
+        <a href="${mgrUrl}" target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px;"/>repository explorer</a>
     </legend>
+
+    <fieldset style="position: absolute; right: 20px;">
+        <legend><strong>Settings</strong></legend>
+        <p>
+            <input id="cbActions" type="checkbox" ${showActions ? 'checked="checked"' : ''}
+                onchange="go('showActions', '${!showActions}')"/>&nbsp;<label for="cbActions">Show actions</label><br/>
+            <input id="cbProperties" type="checkbox" ${showProperties ? 'checked="checked"' : ''}
+                onchange="go('showProperties', '${!showProperties}')"/>&nbsp;<label for="cbProperties">Show properties</label><br/>
+            <input id="cbNodes" type="checkbox" ${showNodes ? 'checked="checked"' : ''}
+                onchange="go('showNodes', '${!showNodes}')"/>&nbsp;<label for="cbNodes">Show child nodes</label><br/>
+            <input id="cbReferences" type="checkbox" ${showReferences ? 'checked="checked"' : ''}
+                onchange="go('showReferences', '${!showReferences}')"/>&nbsp;<label for="cbReferences">Show references</label>
+        </p>
+    </fieldset>
+    
     <c:if test="${not empty param.action}">
         <c:choose>
             <c:when test="${param.action == 'delete' && not empty param.target}">
@@ -94,47 +119,89 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
                 %>
                 <p style="color: blue">Node <strong>${fn:escapeXml(target.path)}</strong> deleted successfully</p>
             </c:when>
-            <c:when test="${param.action == 'rename' && not empty param.target && not empty param.name}">
+            <c:when test="${param.action == 'rename' && not empty param.target && not empty param.value}">
                 <% JCRNodeWrapper target = jcrSession.getNodeByIdentifier(request.getParameter("target"));
                 pageContext.setAttribute("target", target);
                 jcrSession.checkout(target.getParent());
-                target.rename(JCRContentUtils.findAvailableNodeName(target.getParent(), request.getParameter("name")));
+                target.rename(JCRContentUtils.findAvailableNodeName(target.getParent(), request.getParameter("value")));
                 jcrSession.save();
                 %>
                 <p style="color: blue">Node <strong>${fn:escapeXml(target.path)}</strong> renamed successfully</p>
             </c:when>
+            <c:when test="${param.action == 'removeMixin' && not empty param.value}">
+                <%
+                jcrSession.checkout(node);
+                node.removeMixin(request.getParameter("value"));
+                jcrSession.save();
+                %>
+                <p style="color: blue">Mixin ${param.value} successfully removed from the node <strong>${fn:escapeXml(node.path)}</strong></p>
+            </c:when>
+            <c:when test="${param.action == 'addMixin' && not empty param.value}">
+                <%
+                jcrSession.checkout(node);
+                node.addMixin(request.getParameter("value"));
+                jcrSession.save();
+                %>
+                <p style="color: blue">Mixin ${param.value} successfully added to the node <strong>${fn:escapeXml(node.path)}</strong></p>
+            </c:when>
+            <c:when test="${param.action == 'lock'}">
+                <%
+                node.lockAndStoreToken("user");
+                jcrSession.save();
+                %>
+                <p style="color: blue">Node <strong>${fn:escapeXml(node.path)}</strong> locked</p>
+            </c:when>
+            <c:when test="${param.action == 'unlock'}">
+                <%
+                JCRContentUtils.clearAllLocks(node.getPath(), false, jcrSession);
+                jcrSession.save();
+                %>
+                <p style="color: blue">Locks cleared for node <strong>${fn:escapeXml(node.path)}</strong></p>
+            </c:when>
+            <c:when test="${param.action == 'unlockTree'}">
+                <%
+                JCRContentUtils.clearAllLocks(node.getPath(), true, jcrSession);
+                jcrSession.save();
+                %>
+                <p style="color: blue">Locks cleared for node <strong>${fn:escapeXml(node.path)}</strong> and its children</p>
+            </c:when>
         </c:choose>
     </c:if>
+    
     <c:if test="${node.path != '/'}">
-        <c:url var="parentUrl" value="?">
-            <c:param name="uuid" value="${node.parent.identifier}"/>
-            <c:param name="showProperties" value="${showProperties}"/>
-            <c:param name="showReferences" value="${showReferences}"/>
-            <c:param name="showNodes" value="${showNodes}"/>
-            <c:param name="showActions" value="${showActions}"/>
-            <c:param name="workspace" value="${workspace}"/>
-        </c:url>
-    <a href="${parentUrl}">[..]&nbsp;${fn:escapeXml(node.parent.name)}</a>
+        <a href="#parent" onclick="go('uuid', '${node.parent.identifier}'); return false;">[..]&nbsp;${fn:escapeXml(node.parent.name)}</a>
     </c:if>
     <p>
+        <c:if test="${showActions}">
+            <p>
+            <c:if test="${!node.locked}">
+                <img src="${pageContext.request.contextPath}/icons/lock.png" height="16" width="16" border="0" style="vertical-align: middle;" alt=" "/>&nbsp;<a href="#lock" onclick="if (confirm('You are about to put a lock on this node. Continue?')) {go('action', 'lock');} return false;" title="Put a lock on this node">lock node</a>
+            </c:if>
+            <c:if test="${node.locked}">
+                <img src="${pageContext.request.contextPath}/icons/unlock.png" height="16" width="16" border="0" style="vertical-align: middle;" alt=" "/>&nbsp;<a href="#unlock" onclick="if (confirm('You are about to remove all locks on this node. Continue?')) {go('action', 'unlock');} return false;" title="Clean all locks on this node">unlock node</a>
+                <img src="${pageContext.request.contextPath}/icons/unlock.png" height="16" width="16" border="0" style="vertical-align: middle;" alr=" "/>&nbsp;<a href="#unlockTree" onclick="if (confirm('You are about to remove all locks on this node and its children. Continue?')) {go('action', 'unlockTree');} return false;" title="Clean all locks on this node and its children">unlock tree</a>
+            </c:if>
+            </p>
+        </c:if>
         <strong>Name:&nbsp;</strong>${fn:escapeXml(not empty node.name ? node.name : '<root>')}<br/>
         <strong>Path:&nbsp;</strong>${fn:escapeXml(node.path)}<br/>
         <strong>ID:&nbsp;</strong>${fn:escapeXml(node.identifier)}<br/>
-        <strong>Types:&nbsp;</strong>${fn:escapeXml(node.nodeTypes)}<br/>
-        <strong>Mixins:&nbsp;</strong>[<c:forEach items="${node.mixinNodeTypes}" var="mixin" varStatus="status">${status.index > 0 ? ", " : ""}${fn:escapeXml(mixin.name)}</c:forEach>]
+        <strong>Type:&nbsp;</strong>${fn:escapeXml(node.primaryNodeTypeName)}<br/>
+        <strong>Mixins:&nbsp;</strong>[<c:forEach items="${node.mixinNodeTypes}" var="mixin" varStatus="status">${status.index > 0 ? ", " : ""}${mixin.name}<c:if test="${showActions}">&nbsp;<a href="#remove" onclick="if (confirm('You are about to remove mixin ${mixin.name} from the node. Continue?')) {go('action', 'removeMixin', 'value', '${mixin.name}');} return false;"><img src="${pageContext.request.contextPath}/icons/delete.png" height="16" width="16" title="Delete mixin" border="0" style="vertical-align: middle;"/></a></c:if></c:forEach>]
+        <c:if test="${showActions}">
+            <% pageContext.setAttribute("mixins", JCRContentUtils.getAssignableMixins(node)); %>
+            <select id="mixins" name="mixins">
+                <c:forEach items="${mixins}" var="mixin">
+                    <option value="${mixin}">${mixin}</option>
+                </c:forEach>
+            </select>
+            <button onclick="var newMixin=document.getElementById('mixins').value; if (confirm('You are about to add mixin ' + newMixin + ' to the node. Continue?')) {go('action', 'addMixin', 'value', newMixin);} return false;">add</button>
+        </c:if>
         <c:if test="${jcr:isNodeType(node, 'nt:file')}">
             <br/><strong>File:&nbsp;</strong><a target="_blank" href="<c:url value='${node.url}' context='/'/>" title="download"><img src="${pageContext.request.contextPath}/icons/download.png" height="16" width="16" title="download" border="0" style="vertical-align: middle;"/></a>
         </c:if>
     </p>
-       <c:url var="propsUrl" value="?">
-           <c:param name="uuid" value="${node.identifier}"/>
-           <c:param name="showProperties" value="${showProperties ? 'false' : 'true'}"/>
-           <c:param name="showReferences" value="${showReferences}"/>
-           <c:param name="showNodes" value="${showNodes}"/>
-           <c:param name="showActions" value="${showActions}"/>
-           <c:param name="workspace" value="${workspace}"/>
-       </c:url>
-    <p><strong>Properties:&nbsp;</strong><a href="${propsUrl}">${showProperties ? 'hide' : 'show'}</a></p>
+    <p><strong>Properties:&nbsp;</strong><a href="#properties" onclick="go('showProperties', ${showProperties ? 'false' : 'true'}); return false;">${showProperties ? 'hide' : 'show'}</a></p>
     <c:if test="${showProperties}">
         <ul>
         <c:set var="properties" value="${node.properties}"/>
@@ -164,15 +231,7 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
         </ul>
     </c:if>
     
-    <c:url var="refsUrl" value="?">
-        <c:param name="uuid" value="${node.identifier}"/>
-        <c:param name="showProperties" value="${showProperties}"/>
-        <c:param name="showReferences" value="${showReferences ? 'false' : 'true'}"/>
-        <c:param name="showNodes" value="${showNodes}"/>
-        <c:param name="showActions" value="${showActions}"/>
-        <c:param name="workspace" value="${workspace}"/>
-    </c:url>
-    <p><strong>References:&nbsp;</strong><a href="${refsUrl}">${showReferences ? 'hide' : 'show'}</a></p>
+    <p><strong>References:&nbsp;</strong><a href="#references" onclick="go('showReferences', ${showReferences ? 'false' : 'true'}); return false;">${showReferences ? 'hide' : 'show'}</a></p>
     <c:if test="${showReferences}">
         <ul>
         <c:set var="refsCount" value="${functions:length(node.references) + functions:length(node.weakReferences)}"/>
@@ -182,15 +241,7 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
             <li>
                 <c:if test="${not empty ref}">
                     <c:set var="refTarget" value="${ref.parent}"/>
-                    <c:url var="refUrl" value="?">
-                        <c:param name="uuid" value="${refTarget.identifier}"/>
-                        <c:param name="showProperties" value="${showProperties}"/>
-                        <c:param name="showReferences" value="${showReferences}"/>
-                        <c:param name="showNodes" value="${showNodes}"/>
-                        <c:param name="showActions" value="${showActions}"/>
-                        <c:param name="workspace" value="${workspace}"/>
-                    </c:url>
-                    <a href="${refUrl}">${fn:escapeXml(refTarget.name)}&nbsp;(${refTarget.identifier})</a>
+                    <a href="#reference" onclick="go('uuid', '${refTarget.identifier}'); return false;">${fn:escapeXml(refTarget.name)}&nbsp;(${refTarget.identifier})</a>
                 </c:if>
             </li>
         </c:forEach>
@@ -198,15 +249,7 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
             <li>
                 <c:if test="${not empty ref}">
                     <c:set var="refTarget" value="${ref.parent}"/>
-                    <c:url var="refUrl" value="?">
-                        <c:param name="uuid" value="${refTarget.identifier}"/>
-                        <c:param name="showProperties" value="${showProperties}"/>
-                        <c:param name="showReferences" value="${showReferences}"/>
-                        <c:param name="showNodes" value="${showNodes}"/>
-                        <c:param name="showActions" value="${showActions}"/>
-                        <c:param name="workspace" value="${workspace}"/>
-                    </c:url>
-                    <a href="${refUrl}">${fn:escapeXml(refTarget.name)}&nbsp;(${refTarget.identifier})</a>
+                    <a href="#reference" onclick="go('uuid', '${refTarget.identifier}'); return false;">${fn:escapeXml(refTarget.name)}&nbsp;(${refTarget.identifier})</a>
                 </c:if>
             </li>
         </c:forEach>
@@ -214,25 +257,7 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
         </ul>
     </c:if>
 
-    <c:url var="nodesUrl" value="?">
-        <c:param name="uuid" value="${node.identifier}"/>
-        <c:param name="showProperties" value="${showProperties}"/>
-        <c:param name="showReferences" value="${showReferences}"/>
-        <c:param name="showNodes" value="${showNodes ? 'false' : 'true'}"/>
-        <c:param name="showActions" value="${showActions}"/>
-        <c:param name="workspace" value="${workspace}"/>
-    </c:url>
-    <p><strong>Child nodes:&nbsp;</strong><a href="${nodesUrl}">${showNodes ? 'hide' : 'show'}</a>
-        <c:if test="${showNodes}">
-            <c:url var="actionsUrl" value="?">
-                <c:param name="uuid" value="${node.identifier}"/>
-                <c:param name="showProperties" value="${showProperties}"/>
-                <c:param name="showReferences" value="${showReferences}"/>
-                <c:param name="showNodes" value="${showNodes}"/>
-                <c:param name="showActions" value="${showActions ? 'false' : 'true'}"/>
-            </c:url>
-            (<a href="${actionsUrl}">${showActions ? 'hide actions' : 'show actions'}</a>)
-        </c:if>
+    <p><strong>Child nodes:&nbsp;</strong><a href="#nodes" onclick="go('showNodes', ${showNodes ? 'false' : 'true'}); return false;">${showNodes ? 'hide' : 'show'}</a>
     <c:if test="${showNodes}">
         <c:set var="nodes" value="${node.nodes}"/>
         <c:set var="childrenCount" value="${functions:length(nodes)}"/>
@@ -246,36 +271,8 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
         <c:if test="${childrenCount > 0}">
                <c:forEach items="${nodes}" var="child">
                 <li>
-                    <c:url var="childUrl" value="?">
-                        <c:param name="uuid" value="${child.identifier}"/>
-                        <c:param name="showProperties" value="${showProperties}"/>
-                        <c:param name="showReferences" value="${showReferences}"/>
-                        <c:param name="showNodes" value="${showNodes}"/>
-                        <c:param name="showActions" value="${showActions}"/>
-                        <c:param name="workspace" value="${workspace}"/>
-                    </c:url>
-                    <a href="${childUrl}">${fn:escapeXml(child.name)}</a>&nbsp;(${child.nodeTypes})
+                    <a href="#child" onclick="go('uuid', '${child.identifier}'); return false;">${fn:escapeXml(child.name)}</a>&nbsp;(${child.nodeTypes})
                     <c:if test="${showActions}">
-                        <c:url var="deleteUrl" value="?">
-                            <c:param name="uuid" value="${node.identifier}"/>
-                            <c:param name="showProperties" value="${showProperties}"/>
-                            <c:param name="showReferences" value="${showReferences}"/>
-                            <c:param name="showNodes" value="${showNodes}"/>
-                            <c:param name="showActions" value="${showActions}"/>
-                            <c:param name="workspace" value="${workspace}"/>
-                            <c:param name="action" value="delete"/>
-                            <c:param name="target" value="${child.identifier}"/>
-                        </c:url>
-                        <c:url var="renameUrl" value="?">
-                            <c:param name="uuid" value="${node.identifier}"/>
-                            <c:param name="showProperties" value="${showProperties}"/>
-                            <c:param name="showReferences" value="${showReferences}"/>
-                            <c:param name="showNodes" value="${showNodes}"/>
-                            <c:param name="showActions" value="${showActions}"/>
-                            <c:param name="workspace" value="${workspace}"/>
-                            <c:param name="action" value="rename"/>
-                            <c:param name="target" value="${child.identifier}"/>
-                        </c:url>
                         &nbsp;|
                         <c:if test="${jcr:isNodeType(child, 'nt:file')}">
                             &nbsp;<a target="_blank" href="<c:url value='${child.url}' context='/'/>" title="download"><img src="${pageContext.request.contextPath}/icons/download.png" height="16" width="16" title="download" border="0" style="vertical-align: middle;"/></a>
@@ -283,8 +280,8 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
                         &nbsp;<a target="_blank" href="<c:url value='/cms/export/${workspace}${child.path}.xml?cleanup=simple'/>" title="Exaport as XML"><img src="${pageContext.request.contextPath}/icons/import.png" height="16" width="16" title="Export as XML" border="0" style="vertical-align: middle;"/></a>
                         &nbsp;<a target="_blank" href="<c:url value='/cms/export/${workspace}${child.path}.zip?cleanup=simple'/>" title="Exaport as ZIP"><img src="${pageContext.request.contextPath}/icons/zip.png" height="16" width="16" title="Export as ZIP" border="0" style="vertical-align: middle;"/></a>
                         |&nbsp;
-                        &nbsp;<a href="${renameUrl}" onclick='var name=prompt("Please provide a new name for the node:", "${child.name}"); if (name != null & name != "${child.name}") { this.href = this.href + "name=" + name; return true; } else { return false; }' title="Rename"><img src="${pageContext.request.contextPath}/icons/editContent.png" height="16" width="16" title="Rename" border="0" style="vertical-align: middle;"/></a>
-                        &nbsp;<a href="${deleteUrl}" onclick='var nodeName="${child.name}"; return confirm("You are about to delete the node " + nodeName + " with all child nodes. Continue?")' title="Delete"><img src="${pageContext.request.contextPath}/icons/delete.png" height="16" width="16" title="Delete" border="0" style="vertical-align: middle;"/></a>
+                        &nbsp;<a href="#rename" onclick='var name=prompt("Please provide a new name for the node:", "${child.name}"); if (name != null & name != "${child.name}") { go("action", "rename", "target", "${child.identifier}", "value", name);} return false;' title="Rename"><img src="${pageContext.request.contextPath}/icons/editContent.png" height="16" width="16" title="Rename" border="0" style="vertical-align: middle;"/></a>
+                        &nbsp;<a href="#delete" onclick='var nodeName="${child.name}"; if (!confirm("You are about to delete the node " + nodeName + " with all child nodes. Continue?")) return false; go("action", "delete", "target", "${child.identifier}"); return false;' title="Delete"><img src="${pageContext.request.contextPath}/icons/delete.png" height="16" width="16" title="Delete" border="0" style="vertical-align: middle;"/></a>
                     </c:if>
                 </li>
             </c:forEach>
@@ -328,6 +325,10 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
 &nbsp;<a href="${switchWorkspaceUrl}">switch to ${workspace == 'default' ? 'live' : 'default'} workspace</a>
 &nbsp;<a href="javascript:history.back()">go back</a>
 </p>
+<%} catch (Exception e) {
+%>
+<body>
+<p style="color:red;"><strong>Error: </strong><%=e %><% e.printStackTrace(new java.io.PrintWriter(out)); %></p>
 <%} finally {
     JCRSessionFactory.getInstance().setCurrentUser(null);
 }%>

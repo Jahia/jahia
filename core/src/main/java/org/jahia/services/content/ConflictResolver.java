@@ -208,15 +208,11 @@ public class ConflictResolver {
             Map<String,String> oldOrdering = getOrdering(uuids1, removed);
             Map<String,String> newOrdering = getOrdering(uuids2, Collections.<String>emptyList());
             
+            // Reordering
             if (!newOrdering.equals(oldOrdering)) {
                 for (Map.Entry<String, String> entry : newOrdering.entrySet()) {
                     String uuid = entry.getKey();
-                    if (added.contains(uuid)) {
-                        diffs.add(new ChildAddedDiff(uuid, addPath(basePath,
-                                (String) uuids2.get(uuid)), uuid.equals(uuids2
-                                .lastKey()) ? null : (String) uuids2.get(uuids2
-                                .get(uuids2.indexOf(uuid) + 1))));
-                    } else {
+                    if (!added.contains(uuid)) {
                         diffs.add(new ChildNodeReorderedDiff(uuid, newOrdering
                                 .get(uuid), addPath(basePath,
                                 (String) uuids2.get(uuid)), (String) uuids2
@@ -224,7 +220,7 @@ public class ConflictResolver {
                     }
                 }
             }
-            
+
             // Removed nodes
             for (String s : removed) {
                 try {
@@ -233,7 +229,20 @@ public class ConflictResolver {
                 } catch (ItemNotFoundException e) {
                     diffs.add(new ChildRemovedDiff(s,addPath(basePath, (String) uuids1.get(s))));
                 }
-            }    
+            }
+
+            // Added nodes
+            if (!newOrdering.equals(oldOrdering)) {
+                for (Map.Entry<String, String> entry : newOrdering.entrySet()) {
+                    String uuid = entry.getKey();
+                    if (added.contains(uuid)) {
+                        diffs.add(new ChildAddedDiff(uuid, addPath(basePath,
+                                (String) uuids2.get(uuid)), uuid.equals(uuids2
+                                .lastKey()) ? null : (String) uuids2.get(uuids2
+                                .get(uuids2.indexOf(uuid) + 1))));
+                    }
+                }
+            }
         }
 
         PropertyIterator pi1 = frozenNode.getProperties();

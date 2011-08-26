@@ -54,17 +54,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import javax.jcr.*;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -1252,7 +1243,7 @@ public class PublicationTest {
 
         getCleanSession();
         JCRNodeWrapper home = englishEditSession.getNode(SITECONTENT_ROOT_NODE);
-        
+
         JCRNodeWrapper source = home.addNode("source", "jnt:page");
         source.setProperty("jcr:title", "Source");
         JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
@@ -1302,7 +1293,7 @@ public class PublicationTest {
         englishEditSession.save();
 
         jcrService.publishByMainId(home.getIdentifier());
-        
+
         pageNames = Arrays.asList("page1", "page4", "page2", "page3", "page6", "page5");
         pageFound = new ArrayList<String>();
         i = 0;
@@ -1325,7 +1316,7 @@ public class PublicationTest {
 
         getCleanSession();
         JCRNodeWrapper home = englishEditSession.getNode(SITECONTENT_ROOT_NODE);
-        
+
         JCRNodeWrapper source = home.addNode("source", "jnt:page");
         source.setProperty("jcr:title", "Source");
         JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
@@ -1334,18 +1325,18 @@ public class PublicationTest {
         page2.setProperty("jcr:title", "Page2");
         JCRNodeWrapper page3 = source.addNode("page3", "jnt:page");
         page3.setProperty("jcr:title", "Page3");
-        
+
         englishEditSession.save();
         jcrService.publishByMainId(home.getIdentifier());
-        
-        
+
+
         JCRNodeWrapper page4 = source.addNode("page4", "jnt:page");
         page4.setProperty("jcr:title", "Page4");
         JCRNodeWrapper page5 = source.addNode("page5", "jnt:page");
         page5.setProperty("jcr:title", "Page5");
         JCRNodeWrapper page6 = source.addNode("page6", "jnt:page");
         page6.setProperty("jcr:title", "Page6");
-        
+
         englishEditSession.save();
         jcrService.publishByMainId(home.getIdentifier());
 
@@ -1379,7 +1370,7 @@ public class PublicationTest {
 
         englishEditSession.save();
         jcrService.publishByMainId(home.getIdentifier());
-        
+
         pageNames = Arrays.asList("page1", "page3", "page4", "page2", "page5", "page6");
         pageFound = new ArrayList<String>();
         i = 0;
@@ -1395,4 +1386,36 @@ public class PublicationTest {
             i++;
         }
    }    
+
+    @Test
+    public void testNodeRemoveAndAdd() throws Exception {
+        JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
+
+        getCleanSession();
+        JCRNodeWrapper home = englishEditSession.getNode(SITECONTENT_ROOT_NODE);
+
+        JCRNodeWrapper source = home.addNode("source", "jnt:page");
+        source.setProperty("jcr:title", "Source");
+        JCRNodeWrapper list = TestHelper.createList(source, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        englishEditSession.save();
+
+        jcrService.publishByMainId(home.getIdentifier());
+        String firstId = list.getIdentifier();
+        list.remove();
+        list = TestHelper.createList(source, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        String secondId = list.getIdentifier();
+        englishEditSession.save();
+
+        jcrService.publishByMainId(home.getIdentifier());
+
+        try {
+            englishLiveSession.getNodeByUUID(firstId);
+            fail("Node should have been deleted");
+        } catch (ItemNotFoundException e) {
+        }
+
+        JCRNodeWrapper liveList = englishLiveSession.getNode(list.getPath());
+        assertEquals("Invalid uuid", secondId, liveList.getIdentifier());
+   }
+
 }

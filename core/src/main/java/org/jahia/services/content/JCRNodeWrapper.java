@@ -820,6 +820,15 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     AccessControlManager getAccessControlManager() throws RepositoryException;
 
     /**
+     * Checks if this node can be marked for deletion. This will usually return false on repository implementations
+     * that do not support versioining or adding mixins, etc...
+     *
+     * @return true if the node suppors marking for deletion.
+     * @throws RepositoryException
+     */
+    boolean canMarkForDeletion() throws RepositoryException;
+
+    /**
      * Returns true if this node is marked for deletion.
      * 
      * @return true if this node is marked for deletion.

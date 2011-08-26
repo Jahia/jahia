@@ -3513,6 +3513,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public void flushLocalCaches() {
         hasPropertyCache.clear();
     }
+
+    public boolean canMarkForDeletion() throws RepositoryException {
+        JCRStoreProvider provider = getProvider();
+        return provider.isLockingAvailable() && (objectNode.canAddMixin(JAHIAMIX_MARKED_FOR_DELETION));
+    }
     
     public boolean isMarkedForDeletion() throws RepositoryException {
         return objectNode.isNodeType(JAHIAMIX_MARKED_FOR_DELETION);
@@ -3521,6 +3526,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public void markForDeletion(String comment) throws RepositoryException {
         long timer = System.currentTimeMillis();
         checkout();
+        if (!canMarkForDeletion()) {
+            throw new UnsupportedRepositoryOperationException("Mark for deletion is not supported on this node !");
+        }
         if (!objectNode.isNodeType(JAHIAMIX_MARKED_FOR_DELETION)) {
             // no mixin yet, add it
             addMixin(JAHIAMIX_MARKED_FOR_DELETION);

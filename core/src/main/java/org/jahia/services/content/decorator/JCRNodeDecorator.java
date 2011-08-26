@@ -770,6 +770,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getAccessControlManager();
     }
 
+    public boolean canMarkForDeletion() throws RepositoryException {
+        return node.canMarkForDeletion();
+    }
+
     public boolean isMarkedForDeletion() throws RepositoryException {
         return node.isMarkedForDeletion();
     }

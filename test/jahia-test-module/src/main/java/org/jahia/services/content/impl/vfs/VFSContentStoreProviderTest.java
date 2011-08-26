@@ -438,7 +438,15 @@ public class VFSContentStoreProviderTest {
 
         JCRSiteNode siteNode = (JCRSiteNode) englishEditSession.getNode(SITECONTENT_ROOT_NODE);
         vfsTestFile1 = getNode(englishEditSession, MOUNTS_DYNAMIC_MOUNT_POINT + "/" + name1);
-        vfsTestFile1.markForDeletion(DELETION_MESSAGE);
+        assertFalse("Node should not allow mark for deletion", vfsTestFile1.canMarkForDeletion());
+
+        boolean unsupportedRepositoryOperation = false;
+        try {
+            vfsTestFile1.markForDeletion(DELETION_MESSAGE);
+        } catch (UnsupportedRepositoryOperationException uroe) {
+            unsupportedRepositoryOperation = true;
+        }
+        assertTrue("Mark for deletion should not be allowed", unsupportedRepositoryOperation);
         englishEditSession.save();
 
         assertTrue("jmix:markedForDeletionRoot not set", vfsTestFile1.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));

@@ -589,9 +589,8 @@ public class ContentManagerHelper {
         }
     }
 
-    private boolean supportsMarkingForDeletion(JCRNodeWrapper nodeToDelete) {
-        // TODO implement check for node types, supporting marking for deletion
-        return true;
+    private boolean supportsMarkingForDeletion(JCRNodeWrapper nodeToDelete) throws RepositoryException {
+        return nodeToDelete.canMarkForDeletion();
     }
 
     public void rename(String path, String newName, JCRSessionWrapper currentUserSession)

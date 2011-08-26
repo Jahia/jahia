@@ -449,11 +449,19 @@ public class VFSContentStoreProviderTest {
         assertTrue("Mark for deletion should not be allowed", unsupportedRepositoryOperation);
         englishEditSession.save();
 
-        assertTrue("jmix:markedForDeletionRoot not set", vfsTestFile1.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
-        assertTrue("jmix:markedForDeletion not set", vfsTestFile1.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
-        assertTrue("marked for deletion comment not set", vfsTestFile1.getPropertyAsString(Constants.MARKED_FOR_DELETION_MESSAGE).equals(DELETION_MESSAGE));
-        assertTrue("j:deletionUser not set", vfsTestFile1.hasProperty(Constants.MARKED_FOR_DELETION_USER));
-        assertTrue("j:deletionDate not set", vfsTestFile1.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
+        assertFalse("jmix:markedForDeletionRoot set", vfsTestFile1.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
+        assertFalse("jmix:markedForDeletion set", vfsTestFile1.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
+        assertFalse("marked for deletion comment not set", DELETION_MESSAGE.equals(vfsTestFile1.getPropertyAsString(Constants.MARKED_FOR_DELETION_MESSAGE)));
+        assertFalse("j:deletionUser not set", vfsTestFile1.hasProperty(Constants.MARKED_FOR_DELETION_USER));
+        assertFalse("j:deletionDate not set", vfsTestFile1.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
+
+        unsupportedRepositoryOperation = false;
+        try {
+            vfsTestFile1.markForDeletion(DELETION_MESSAGE);
+        } catch (UnsupportedRepositoryOperationException uroe) {
+            unsupportedRepositoryOperation = true;
+        }
+        assertTrue("Unmark for deletion should not be allowed", unsupportedRepositoryOperation);
 
         unMountDynamicMountPoint(jahiaRootUser);
     }

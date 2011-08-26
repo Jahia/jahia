@@ -3525,10 +3525,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public void markForDeletion(String comment) throws RepositoryException {
         long timer = System.currentTimeMillis();
-        checkout();
         if (!canMarkForDeletion()) {
             throw new UnsupportedRepositoryOperationException("Mark for deletion is not supported on this node !");
         }
+        checkout();
         if (!objectNode.isNodeType(JAHIAMIX_MARKED_FOR_DELETION)) {
             // no mixin yet, add it
             addMixin(JAHIAMIX_MARKED_FOR_DELETION);
@@ -3590,6 +3590,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public void unmarkForDeletion() throws RepositoryException {
         long timer = System.currentTimeMillis();
+        if (!canMarkForDeletion()) {
+            throw new UnsupportedRepositoryOperationException("Mark for deletion is not supported on this node !");
+        }
 
         checkout();
         

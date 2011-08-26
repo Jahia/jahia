@@ -166,12 +166,16 @@ public class JCRPublicationService extends JahiaService {
 
     private void doUnlock(String id, JCRSessionWrapper session, String key)
             throws RepositoryException {
-        JCRNodeWrapper node = session.getNodeByUUID(id);
-        if (node.isLocked()) {
-            try {
-                node.unlock("validation"," " +key+" ");
-            } catch (LockException e) {
+        try {
+            JCRNodeWrapper node = session.getNodeByUUID(id);
+            if (node.isLocked()) {
+                try {
+                    node.unlock("validation"," " +key+" ");
+                } catch (LockException e) {
+                }
             }
+        } catch (ItemNotFoundException nfe) {
+            // Item has been deleted, ignore
         }
     }
 

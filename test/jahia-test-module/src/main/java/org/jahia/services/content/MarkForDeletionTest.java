@@ -457,6 +457,9 @@ public class MarkForDeletionTest {
     public void testMixinsAndQuery() throws Exception {
         reopenSession();
 
+        long initialNoOfMarkedNodes = JCRContentUtils.size(editSession.getWorkspace().getQueryManager()
+                .createQuery(QUERY, Query.JCR_SQL2).execute().getNodes());
+        
         JCRNodeWrapper parent = editSession.getNode("/sites/markedForDeletionTest/contents");
         editSession.getWorkspace().getVersionManager().checkout(parent.getPath());
         
@@ -476,7 +479,7 @@ public class MarkForDeletionTest {
         
         assertEquals(
                 "Query for marked for deletion nodes delivered wrong number of results",
-                0,
+                0 + initialNoOfMarkedNodes,
                 JCRContentUtils.size(editSession.getWorkspace().getQueryManager()
                         .createQuery(QUERY, Query.JCR_SQL2).execute().getNodes()));
 
@@ -488,7 +491,7 @@ public class MarkForDeletionTest {
         
         assertEquals(
                 "Query for marked for deletion nodes delivered wrong number of results",
-                2,
+                2 + initialNoOfMarkedNodes,
                 JCRContentUtils.size(editSession.getWorkspace().getQueryManager()
                         .createQuery(QUERY, Query.JCR_SQL2).execute().getNodes()));
 
@@ -499,7 +502,7 @@ public class MarkForDeletionTest {
         
         assertEquals(
                 "Query for marked for deletion nodes delivered wrong number of results",
-                1,
+                1 + initialNoOfMarkedNodes,
                 JCRContentUtils.size(editSession.getWorkspace().getQueryManager()
                         .createQuery(QUERY, Query.JCR_SQL2).execute().getNodes()));
 
@@ -510,7 +513,7 @@ public class MarkForDeletionTest {
         
         assertEquals(
                 "Query for marked for deletion nodes delivered wrong number of results",
-                0,
+                0 + initialNoOfMarkedNodes,
                 JCRContentUtils.size(editSession.getWorkspace().getQueryManager()
                         .createQuery(QUERY, Query.JCR_SQL2).execute().getNodes()));
 

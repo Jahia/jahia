@@ -1,0 +1,29 @@
+Jahia 6.5 - Core Module - Delete
+
+  Jahia provides a system to avoid unsafe deletion of nodes, equivalent to a trash can.
+  When a user wants to delete a node, it is not directly deleted, but marked for deletion and can be undeleted.
+  Node are effectively deleted when a publication occurs only.
+
+* Marked for deletion mixin types
+
+  The mixin <jmix:markedForDeletion> is added to the node and its sub nodes to mark it for deletion. This mixin
+  does not define any property, it is only used as a marker.
+  Nodes having this mixin will be deleted when a publication occurs.
+
+  On the root node itself is also added the mixin <jmix:markedForDeletionRoot>. This mixin defines some properties
+  used to describe the deletion :
+
+------------------
+[jmix:markedForDeletionRoot] mixin
+ - j:deletionUser (string) mandatory hidden indexed=no
+ - j:deletionDate (date) mandatory hidden
+ - j:deletionMessage (string) hidden indexed=no
+------------------
+
+  deletionUser and deletionDate contains information about the user who made the deletion and the time it has been
+  done. deletionMessage is an optional message entered by the user explaining the reason of the deletion.
+
+* Trash dashboard
+
+  The trash dashboard lists all nodes that are marked for deletion. It lists only nodes having the
+  jmix:markedForDeletionRoot mixin, not their sub nodes.

@@ -147,7 +147,7 @@ public class SimpleModule extends Module {
         if (node.getNodeTypes().contains("jmix:markedForDeletionRoot")) {
             setStyleAttribute("position","relative");
 
-            HTML deleted = new HTML("DELETED");
+            HTML deleted = new HTML(Messages.get("label.deleted", "Deleted"));
             insert(deleted,0);
             deleted.addStyleName("deleted-overlay");
             deleted.setHeight(Integer.toString(html.getOffsetHeight())+"px");

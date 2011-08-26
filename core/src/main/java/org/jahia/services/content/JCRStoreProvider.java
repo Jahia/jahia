@@ -144,6 +144,7 @@ public class JCRStoreProvider {
     private Boolean versioningAvailable = null;
     private Boolean lockingAvailable = null;
     private Boolean searchAvailable = null;
+    private Boolean updateMixinAvailable = null;
 
     private final Object syncRepoInit = new Object();
 
@@ -1028,6 +1029,25 @@ public class JCRStoreProvider {
             searchAvailable = Boolean.TRUE;
         }
         return searchAvailable;
+    }
+
+    public boolean isUpdateMixinAvailable() {
+        if (updateMixinAvailable != null) {
+            return updateMixinAvailable;
+        }
+        Repository repository = getRepository();
+        Value updateMixinOptionValue = repository.getDescriptorValue(Repository.OPTION_UPDATE_MIXIN_NODE_TYPES_SUPPORTED);
+        if (updateMixinOptionValue == null) {
+            updateMixinAvailable = Boolean.FALSE;
+            return false;
+        }
+        try {
+            updateMixinAvailable = updateMixinOptionValue.getBoolean();
+        } catch (RepositoryException e) {
+            logger.warn("Error while trying to check for mixin updates support", e);
+            updateMixinAvailable = Boolean.FALSE;
+        }
+        return updateMixinAvailable;
     }
 
 }

@@ -3516,7 +3516,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public boolean canMarkForDeletion() throws RepositoryException {
         JCRStoreProvider provider = getProvider();
-        return provider.isLockingAvailable() && (objectNode.canAddMixin(JAHIAMIX_MARKED_FOR_DELETION));
+        return provider.isLockingAvailable() && provider.isUpdateMixinAvailable();
     }
     
     public boolean isMarkedForDeletion() throws RepositoryException {

@@ -197,3 +197,6 @@ button span.icon-accept{
 button span.icon-cancel{
  	background:url(img/toolbar-contribute.png) no-repeat 0px -128px;
 }
+button span.icon-undelete{
+ 	background:url(img/toolbar-contribute.png) no-repeat 0px -144px;
+}

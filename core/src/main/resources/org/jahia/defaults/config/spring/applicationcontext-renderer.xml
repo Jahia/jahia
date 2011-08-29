@@ -189,4 +189,10 @@
         <property name="cacheService" ref="JahiaCacheService" />
         <property name="urlResolverListener" ref="urlResolverListener" />
     </bean>
+
+    <bean id="visibilityFilter" class="org.jahia.services.visibility.filters.VisibilityFilter">
+        <property name="visibilityService" ref="visiblityService"/>
+        <property name="applyOnModes" value="preview"/>
+        <property name="priority" value="29"/>
+    </bean>
 </beans>

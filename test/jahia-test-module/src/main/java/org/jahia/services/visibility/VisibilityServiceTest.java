@@ -171,6 +171,22 @@ public class VisibilityServiceTest {
         instance.add(Calendar.MINUTE, 1);
         firstCondition.setProperty("j:start", instance);
         editSession.save();
+        // Validate that content is not visible in preview
+        GetMethod versionGet = new GetMethod(
+                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/default/en" + stageNode.getPath() +
+                ".html");
+        try {
+            int responseCode = client.executeMethod(versionGet);
+            assertEquals("Response code " + responseCode, 200, responseCode);
+            String responseBody = versionGet.getResponseBodyAsString();
+            logger.debug("Response body=[" + responseBody + "]");
+            assertFalse("Could find non expected value (Page not visible) in response body", responseBody.indexOf(
+                    "Page not visible") > 0);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+
         Set<String> languagesStringSet = new LinkedHashSet<String>();
         languagesStringSet.add(Locale.ENGLISH.toString());
         // publish it
@@ -182,7 +198,9 @@ public class VisibilityServiceTest {
         List<String> uuids = getUuids(publicationInfo);
         jcrVersionService.addVersionLabel(uuids, label, Constants.LIVE_WORKSPACE);
 
-        GetMethod versionGet = new GetMethod(
+
+        // Validate that content is not visible in live
+        versionGet = new GetMethod(
                 "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" + stageNode.getPath() +
                 ".html");
         try {
@@ -201,6 +219,7 @@ public class VisibilityServiceTest {
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         }
+        // Validate that content is visible in live
         try {
             int responseCode = client.executeMethod(versionGet);
             assertEquals("Response code " + responseCode, 200, responseCode);

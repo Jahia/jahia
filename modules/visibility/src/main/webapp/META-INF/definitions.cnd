@@ -8,5 +8,5 @@
 [jnt:condition] > jmix:observable
 
 [jnt:startEndDateCondition] > jnt:condition
- - j:start (date)
- - j:end   (date)
+ - j:start (date, datetimepicker)
+ - j:end   (date, datetimepicker)

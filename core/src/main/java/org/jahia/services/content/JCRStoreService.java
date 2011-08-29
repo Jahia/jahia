@@ -60,6 +60,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
 import javax.jcr.observation.ObservationManager;
+
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -91,6 +93,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     }
 
     private Map<String, String> decorators = new HashMap<String, String>();
+    private Map<String, Constructor<?>> decoratorCreators = new HashMap<String, Constructor<?>>();
     private InterceptorChain interceptorChain;
 
     private List<PropertyInterceptor> interceptors = new LinkedList<PropertyInterceptor>();
@@ -126,14 +129,20 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
 
     public JCRNodeWrapper decorate(JCRNodeWrapper w) {
         try {
-            for (String type : decorators.keySet()) {
-                if (w.isNodeType(type)) {
-                    String className = decorators.get(type);
-                    try {
-                        return (JCRNodeWrapper) Class.forName(className).getConstructor(JCRNodeWrapper.class).newInstance(w);
-                    } catch (Exception e) {
-                        logger.error("Cannot decorate node", e);
+            Constructor<?> creator = decoratorCreators.get(w.getPrimaryNodeTypeName());
+            if (creator == null) {
+                for (String type : decoratorCreators.keySet()) {
+                    if (w.isNodeType(type)) {
+                        creator = decoratorCreators.get(type);
+                        break;
                     }
+                }
+            }
+            if (creator != null) {
+                try {
+                    return (JCRNodeWrapper) creator.newInstance(w);
+                } catch (Exception e) {
+                    logger.error("Cannot decorate node", e);
                 }
             }
         } catch (RepositoryException e) {
@@ -246,6 +255,16 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
 
     public void setDecorators(Map<String, String> decorators) {
         this.decorators = decorators;
+        if (decorators != null) {
+            for (Map.Entry<String, String> decorator : decorators.entrySet()) {
+                try {
+                    decoratorCreators.put(decorator.getKey(), Class.forName(decorator.getValue())
+                            .getConstructor(JCRNodeWrapper.class));
+                } catch (Exception e) {
+                    logger.error("Unable to instanciate decorator: " + decorator.getValue(), e);
+                }
+            }
+        }
     }
 
     public void setInterceptors(List<PropertyInterceptor> interceptors) {

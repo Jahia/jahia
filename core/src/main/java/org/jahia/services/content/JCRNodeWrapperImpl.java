@@ -51,6 +51,7 @@ import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.util.Text;
+import org.jahia.services.visibility.VisibilityService;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -3285,12 +3286,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         final JCRSessionWrapper jcrSessionWrapper = getSession();
         try {
             if (Constants.LIVE_WORKSPACE.equals(jcrSessionWrapper.getWorkspace().getName())) {
-                if (jcrSessionWrapper.getLocale() != null) {
+                boolean isLocaleDefined = jcrSessionWrapper.getLocale() != null;
+                if (isLocaleDefined) {
                     if (objectNode.hasProperty("j:published") && !objectNode.getProperty("j:published").getBoolean()) {
                         return false;
                     }
                 }
-                return checkLanguageValidity(null);
+                boolean result = checkLanguageValidity(null);
+                if(result && isLocaleDefined && objectNode.isNodeType("jmix:conditionalVisibility")) {
+                    result = VisibilityService.getInstance().matchesConditions(this);
+                }
+                return result;
             }
         } catch (RepositoryException e) {
             return false;

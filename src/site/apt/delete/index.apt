@@ -30,3 +30,20 @@ Jahia 6.5 - Core Module - Delete
 
   The trash dashboard lists all nodes that are marked for deletion. It lists only nodes having the
   <<<jmix:markedForDeletionRoot>>> mixin, not their sub nodes.
+  
+* Nodes, not supporting marking for deletion
+
+  A list of nodes that will be immediately deleted is configured in the <<<applicationcontext-basejahiaconfig.xml>>> file:
+
++------------------
+    <bean id="JCRContentUtils" class="org.jahia.services.content.JCRContentUtils">
+...
+        <property name="unsupportedMarkForDeletionNodeTypes">
+            <set>
+                <value>jmix:autoPublish</value>
+            </set>
+        </property>
+    </bean>
++------------------
+
+  Currently only auto-published nodes are in the list (users, groups are matching this condition).

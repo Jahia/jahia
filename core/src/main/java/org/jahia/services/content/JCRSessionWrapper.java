@@ -227,6 +227,7 @@ public class JCRSessionWrapper implements Session {
                     wrapper = getFrozenVersionAsRegular(n, provider);
                 }
                 sessionCacheByIdentifier.put(uuid, wrapper);
+                sessionCacheByPath.put(wrapper.getPath(), wrapper);
 
                 return wrapper;
             } catch (ItemNotFoundException ee) {
@@ -332,6 +333,7 @@ public class JCRSessionWrapper implements Session {
                         wrapper = getFrozenVersionAsRegular(node, provider);
                     }
                     sessionCacheByPath.put(path, wrapper);
+                    sessionCacheByIdentifier.put(wrapper.getIdentifier(), wrapper);
 
                     return wrapper;
                 } else {
@@ -784,8 +786,12 @@ public class JCRSessionWrapper implements Session {
     public void removeItem(String absPath)
             throws VersionException, LockException, ConstraintViolationException, AccessDeniedException,
             RepositoryException {
-        getItem(absPath).remove();
+        JCRItemWrapper item = getItem(absPath);
+        item.remove();
         sessionCacheByPath.remove(absPath);
+        if (item instanceof JCRNodeWrapper) {
+            sessionCacheByIdentifier.remove(((JCRNodeWrapper) item).getIdentifier());
+        }
     }
 
     public boolean hasPermission(String absPath, String actions) throws RepositoryException {
@@ -938,5 +944,9 @@ public class JCRSessionWrapper implements Session {
     protected void flushCaches() {
         sessionCacheByIdentifier.clear();
         sessionCacheByPath.clear();
+    }
+
+    protected JCRNodeWrapper getCachedNode(String uuid) {
+        return sessionCacheByIdentifier.get(uuid);
     }
 }

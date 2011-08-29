@@ -168,7 +168,7 @@ public class VisibilityServiceTest {
         stagedSubPage.addMixin("jmix:conditionalVisibility");
         JCRNodeWrapper firstCondition = stagedSubPage.addNode("firstCondition", "jnt:startEndDateCondition");
         Calendar instance = Calendar.getInstance();
-        instance.add(Calendar.DAY_OF_MONTH, 2);
+        instance.add(Calendar.MINUTE, 1);
         firstCondition.setProperty("j:start", instance);
         editSession.save();
         Set<String> languagesStringSet = new LinkedHashSet<String>();
@@ -191,6 +191,22 @@ public class VisibilityServiceTest {
             String responseBody = versionGet.getResponseBodyAsString();
             logger.debug("Response body=[" + responseBody + "]");
             assertFalse("Could find non expected value (Page not visible) in response body", responseBody.indexOf(
+                    "Page not visible") > 0);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        try {
+            Thread.sleep(70000);
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage(), e);
+        }
+        try {
+            int responseCode = client.executeMethod(versionGet);
+            assertEquals("Response code " + responseCode, 200, responseCode);
+            String responseBody = versionGet.getResponseBodyAsString();
+            logger.debug("Response body=[" + responseBody + "]");
+            assertTrue("Could not find expected value (Page not visible) in response body", responseBody.indexOf(
                     "Page not visible") > 0);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);

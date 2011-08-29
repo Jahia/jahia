@@ -5,7 +5,7 @@
 - matchesAllCondition (boolean) = false autocreated
  + * (jnt:condition)
 
-[jnt:condition]
+[jnt:condition] > jmix:observable
 
 [jnt:startEndDateCondition] > jnt:condition
  - j:start (date)

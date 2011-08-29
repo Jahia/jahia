@@ -4,5 +4,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-
+    <bean class="org.jahia.modules.actions.StartDateVisibilityConditionBackgroundActionImpl">
+        <property name="cacheProvider" ref="ModuleCacheProvider"/>
+    </bean>
+    <bean class="org.jahia.modules.actions.EndDateVisibilityConditionBackgroundActionImpl">
+        <property name="cacheProvider" ref="ModuleCacheProvider"/>
+    </bean>
 </beans>

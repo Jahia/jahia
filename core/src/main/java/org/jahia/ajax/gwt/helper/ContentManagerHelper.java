@@ -44,6 +44,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -494,14 +495,14 @@ public class ContentManagerHelper {
             JCRSiteNode targetSite = targetNode.getResolveSite();
             if (!sourceSite.equals(targetSite)) {
                 JCRSessionWrapper session = node.getSession();
-                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:template] as t where isdescendantnode(t, ['"+sourceSite.getPath() + "/templates'])", Query.JCR_SQL2);
+                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:template] as t where isdescendantnode(t, ['" + sourceSite.getPath() + "/templates'])", Query.JCR_SQL2);
                 NodeIterator ni = q.execute().getNodes();
                 while (ni.hasNext()) {
                     JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
                     try {
                         session.getUuidMapping().put(next.getIdentifier(), session.getNode(targetSite.getPath() + StringUtils.substringAfter(next.getPath(), sourceSite.getPath())).getIdentifier());
                     } catch (RepositoryException e) {
-                        logger.debug("No matching template for copy",e);
+                        logger.debug("No matching template for copy", e);
                     }
                 }
             }
@@ -533,7 +534,7 @@ public class ContentManagerHelper {
 
                         nodeToDelete.remove();
                     }
-                    
+
                     nodeToDelete.saveSession();
                 }
             } catch (PathNotFoundException e) {
@@ -713,7 +714,7 @@ public class ContentManagerHelper {
             Map<String, GWTJahiaNodeACE> map = new HashMap<String, GWTJahiaNodeACE>();
 
             JahiaGroupManagerService groupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-            for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext();) {
+            for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext(); ) {
                 String principal = iterator.next();
                 GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
                 ace.setPrincipalType(principal.charAt(0));
@@ -772,7 +773,7 @@ public class ContentManagerHelper {
 
             if (aclInheritanceBreak) {
                 m = node.getParent().getAclEntries();
-                for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext();) {
+                for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext(); ) {
                     String principal = iterator.next();
                     GWTJahiaNodeACE ace = map.get(principal);
                     if (ace == null) {
@@ -860,7 +861,7 @@ public class ContentManagerHelper {
     private boolean getRecursedLocksAndFileUsages(JCRNodeWrapper nodeToDelete, List<String> lockedNodes,
                                                   String username) throws GWTJahiaServiceException {
         try {
-            for (NodeIterator iterator = nodeToDelete.getNodes(); iterator.hasNext();) {
+            for (NodeIterator iterator = nodeToDelete.getNodes(); iterator.hasNext(); ) {
                 JCRNodeWrapper child = (JCRNodeWrapper) iterator.next();
                 getRecursedLocksAndFileUsages(child, lockedNodes, username);
                 if (lockedNodes.size() >= 10) {
@@ -890,7 +891,7 @@ public class ContentManagerHelper {
                 throw new GWTJahiaServiceException("Error when clearing all locks on node " + path + " with user " + currentUserSession.getUser().getUserKey());
             }
         } catch (RepositoryException e) {
-            logger.error("Repository error when clearing all locks on node " + path,e);
+            logger.error("Repository error when clearing all locks on node " + path, e);
             throw new GWTJahiaServiceException("Error when clearing all locks on node " + path + " with user " + currentUserSession.getUser().getUserKey());
         }
     }
@@ -1029,7 +1030,7 @@ public class ContentManagerHelper {
             throws GWTJahiaServiceException {
         try {
             ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployTemplates(templatesPath, sitePath, currentUserSession.getUser().getUsername());
-            cacheHelper.flush(sitePath,true);
+            cacheHelper.flush(sitePath, true);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -1046,12 +1047,12 @@ public class ContentManagerHelper {
                 session.save();
                 templateSet.setProperty("j:siteType", siteType);
                 templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
-                templateSet.setProperty("j:title",key);
+                templateSet.setProperty("j:title", key);
 
                 String skeletons = MODULE_SKELETONS.replace("${type}", siteType);
                 HashMap<String, String> replacements = new HashMap<String, String>();
                 replacements.put("SITEKEY_PLACEHOLDER", shortName);
-                JCRContentUtils.importSkeletons(skeletons, "/templateSets" , session, replacements);
+                JCRContentUtils.importSkeletons(skeletons, "/templateSets", session, replacements);
 //                if (isTemplatesSet) {
 //                    templateSet.getNode("templates/base").setProperty("j:view", shortName);
 //                }
@@ -1071,7 +1072,7 @@ public class ContentManagerHelper {
 
                 List<GWTJahiaNode> result = copy(Arrays.asList("/templateSets/" + baseSet), "/templateSets", shortName, false, false, false, false, session);
                 siteType = session.getNode("/templateSets/" + baseSet).getProperty("j:siteType").getValue().getString();
-                session.getNode("/templateSets/" + shortName).setProperty("j:title",key);
+                session.getNode("/templateSets/" + shortName).setProperty("j:title", key);
 
                 boolean isTemplatesSet = "templatesSet".equals(siteType);
 
@@ -1253,4 +1254,30 @@ public class ContentManagerHelper {
         }
     }
 
+
+    public void saveVisibilityConditions(GWTJahiaNode node, List<GWTJahiaNode> conditions, JCRSessionWrapper session) throws GWTJahiaServiceException {
+        try {
+            JCRNodeWrapper parent = session.getNode(node.getPath());
+
+            if (!conditions.isEmpty()) {
+                parent.addMixin("jmix:conditionalVisibility");
+            } else {
+                parent.removeMixin("jmix:conditionalVisibility");
+            }
+
+            for (GWTJahiaNode condition : conditions) {
+                List<GWTJahiaNodeProperty> props = (List<GWTJahiaNodeProperty>) condition.get("gwtproperties");
+                if (condition.get("new-node") != null) {
+                    createNode(node.getPath(), condition.getName(), condition.getNodeTypes().get(0), new ArrayList<String>(), props, session);
+                } else {
+                    JCRNodeWrapper jcrCondition = session.getNode(condition.getPath());
+                    properties.setProperties(jcrCondition, props);
+                }
+            }
+            session.save();
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e);
+        }
+
+    }
 }

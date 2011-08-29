@@ -242,6 +242,7 @@
                 <ref bean="Engine.Tab.Usages"/>
                 <ref bean="Engine.Tab.History"/>
                 <ref bean="Engine.Tab.Versioning"/>
+                <ref bean="Engine.Tab.Visibility"/>
             </list>
         </property>
 
@@ -768,6 +769,15 @@
                     </list>
                 </property>
             </bean>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.Visibility" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="visibility"/>
+        <property name="titleKey" value="label.engineTab.visibility"/>
+        <property name="requiredPermission" value="viewVisibilityTab"/>
+        <property name="tabItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.VisibilityTabItem"/>
         </property>
     </bean>
 

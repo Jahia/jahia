@@ -265,16 +265,17 @@ class SearchTabItem extends SidePanelTabItem {
         combo.setForceSelection(true);
         ArrayList<String> list = new ArrayList<String>();
         list.add("nt:base");
-        JahiaContentManagementService.App.getInstance().getSubNodetypes(Arrays.asList("jmix:editorialContent"), true, false, new BaseAsyncCallback<Map<GWTJahiaNodeType,List<GWTJahiaNodeType>>>() {
-                    public void onSuccess(Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> result) {
-                        for (GWTJahiaNodeType key : result.keySet()) {
-                            combo.getStore().add(result.get(key));
-                        }
-                    }
-                    public void onApplicationFailure(Throwable caught) {
-                        Log.error("Unable to get nodetypes :",caught);
-                    }
-                });
+        JahiaContentManagementService.App.getInstance().getContentTypes(Arrays.asList("jmix:editorialContent"), true, false, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+            public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
+                for (GWTJahiaNodeType key : result.keySet()) {
+                    combo.getStore().add(result.get(key));
+                }
+            }
+
+            public void onApplicationFailure(Throwable caught) {
+                Log.error("Unable to get nodetypes :", caught);
+            }
+        });
         return combo;
     }
 

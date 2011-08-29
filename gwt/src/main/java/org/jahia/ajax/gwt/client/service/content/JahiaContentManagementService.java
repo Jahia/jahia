@@ -386,6 +386,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
     List<GWTJahiaNodeType> getNodeTypes(List<String> names) throws GWTJahiaServiceException;
 
+    List<GWTJahiaNodeType> getSubNodeTypes(List<String> names) throws GWTJahiaServiceException;
+
     /**
      * Returns a list of node types with name and label populated that are the
      * sub-types of the specified base type.
@@ -396,7 +398,7 @@ public interface JahiaContentManagementService extends RemoteService {
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type
      */
-    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement) throws GWTJahiaServiceException;
+    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getContentTypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement) throws GWTJahiaServiceException;
 
     GWTJahiaNodeType getWFFormForNodeAndNodeType(String formResourceName)
             throws GWTJahiaServiceException;

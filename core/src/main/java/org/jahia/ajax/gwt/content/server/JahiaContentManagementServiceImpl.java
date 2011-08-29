@@ -692,6 +692,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         if (node.get("vanityMappings") != null) {
             saveUrlMappings(node, langCodeProperties.keySet(), (List<GWTJahiaUrlMapping>) node.get("vanityMappings"));
         }
+        if (node.get("visibilityConditions") != null) {
+            contentManager.saveVisibilityConditions(node, (List<GWTJahiaNode>) node.get("visibilityConditions"), jcrSessionWrapper);
+        }
         if (node.get("activeWorkflows") != null) {
             workflow.updateWorkflowRules(node,
                     (Set<GWTJahiaWorkflowDefinition>) node.get("activeWorkflows"), jcrSessionWrapper);
@@ -1699,7 +1702,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public BasePagingLoadResult<GWTJahiaJobDetail> getJobs(int offset, int limit, String sortField, String sortDir,
                                                            List<String> groupNames) throws GWTJahiaServiceException {
-        // todo Proper pagination support would imply that we only load the job details that were requested. Also sorting is not at all supported for the moment. 
+        // todo Proper pagination support would imply that we only load the job details that were requested. Also sorting is not at all supported for the moment.
         JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
         List<GWTJahiaJobDetail> jobList =
                 schedulerHelper.getAllJobs(getLocale(), sessionWrapper.getUser(), new HashSet<String>(groupNames));
@@ -1961,6 +1964,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return contentDefinition.getNodeTypes(names, getUILocale());
     }
 
+    public List<GWTJahiaNodeType> getSubNodeTypes(List<String> names) throws GWTJahiaServiceException {
+        return contentDefinition.getSubNodeTypes(names, getUILocale());
+    }
+
     /**
      * Returns a list of node types with name and label populated that are the
      * sub-types of the specified base type.
@@ -1972,8 +1979,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type
      */
-    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement) throws GWTJahiaServiceException {
-        return contentDefinition.getSubNodetypes(baseTypes, new HashMap<String, Object>(), getUILocale(), includeSubTypes, displayStudioElement);
+    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getContentTypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement) throws GWTJahiaServiceException {
+        return contentDefinition.getContentTypes(baseTypes, new HashMap<String, Object>(), getUILocale(), includeSubTypes, displayStudioElement);
     }
 
     public GWTJahiaNodeType getWFFormForNodeAndNodeType(String formResourceName)

@@ -55,6 +55,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.test.TestHelper;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -106,6 +107,8 @@ public class ContentTest {
 
     private static List<String> nodes = new ArrayList<String>();
 
+    private JCRSessionWrapper session;
+    
     public ContentTest(String path) {
         this.providerRoot = path;
     }
@@ -121,17 +124,12 @@ public class ContentTest {
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
-        try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-            if (session.nodeExists(SITECONTENT_ROOT_NODE)) {
-                TestHelper.deleteSite(TESTSITE_NAME);
-            }
-            session.save();
+        TestHelper.deleteSite(TESTSITE_NAME);
+    }
 
-            session.logout();
-        } catch (Exception ex) {
-            logger.warn("Exception during test tearDown", ex);
-        }
+    @Before
+    public void setUp() throws RepositoryException {
+        session = JCRSessionFactory.getInstance().getCurrentUserSession();
     }
 
     @After
@@ -808,4 +806,59 @@ public class ContentTest {
         }
     }
 
+    @Test
+    public void testNodeCache() throws RepositoryException {
+        JCRNodeWrapper root = session.getNode(SITECONTENT_ROOT_NODE).addNode("testNodeCache-" + System.currentTimeMillis(), "jnt:contentFolder");
+        String nodePath = root.getPath();
+        
+        JCRNodeWrapper video = root.addNode("video-1", "jnt:video");
+        video.setProperty("jcr:title", "Jahia 6.5 Features Overview");
+        video.setProperty("height", 400);
+        video.setProperty("width", 500);
+        video.setProperty("autoplay", true);
+        
+        video = root.addNode("video-2", "jnt:video");
+        video.setProperty("jcr:title", "Jahia 6.5 Technical Spec");
+        video.setProperty("height", 700);
+        video.setProperty("width", 800);
+        video.setProperty("autoplay", false);
+        
+        session.save();
+        nodes.add(root.getIdentifier());
+        
+        // check the properties
+        video = session.getNode(root.getPath() + "/video-1");
+        assertTrue("Expected property jcr:title not found", video.hasProperty("jcr:title"));
+        assertTrue("Expected property height not found", video.hasProperty("height"));
+        assertTrue("Expected property width not found", video.hasProperty("width"));
+        assertTrue("Expected property autoplay not found", video.hasProperty("autoplay"));
+        
+        // remove height property and check it with hasProperty
+        session.getNode(root.getPath() + "/video-1").getProperty("height").remove();
+        assertFalse("Property height is still there", session.getNode(root.getPath() + "/video-1").hasProperty("height"));
+        assertFalse("Property height is still there", video.hasProperty("height"));
+        session.save();
+        assertFalse("Property height is still there", session.getNode(root.getPath() + "/video-1").hasProperty("height"));
+        assertFalse("Property height is still there", video.hasProperty("height"));
+        
+        
+        // remove the width property and check it with hasProperty the other way
+        root = session.getNode(nodePath);
+        video = session.getNode(root.getPath() + "/video-1");
+        JCRNodeWrapper video2 = session.getNode(root.getPath() + "/video-2");
+        // populate hasPropertyCache
+        assertTrue("Property width is not found", video.hasProperty("width"));
+        assertTrue("Property width is not found", video2.hasProperty("width"));
+        
+        // remove width for both children accessing them indirectly (via root.getNodes())
+        for (NodeIterator iterator = root.getNodes(); iterator.hasNext();) {
+            iterator.nextNode().getProperty("width").remove();
+        }
+        session.save();
+        assertFalse("Property width is still there", session.getNode(root.getPath() + "/video-1").hasProperty("width"));
+        assertFalse("Property width is still there", session.getNode(root.getPath() + "/video-2").hasProperty("width"));
+        // those two check the correctness of hasPropertyCache invalidation
+        assertFalse("Property width is still there", video.hasProperty("width"));
+        assertFalse("Property width is still there", video2.hasProperty("width"));
+    }
 }

@@ -457,7 +457,7 @@ public class VFSContentStoreProviderTest {
 
         unsupportedRepositoryOperation = false;
         try {
-            vfsTestFile1.markForDeletion(DELETION_MESSAGE);
+            vfsTestFile1.unmarkForDeletion();
         } catch (UnsupportedRepositoryOperationException uroe) {
             unsupportedRepositoryOperation = true;
         }

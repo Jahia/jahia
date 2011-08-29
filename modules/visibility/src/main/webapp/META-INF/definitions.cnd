@@ -2,7 +2,7 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
 [jmix:conditionalVisibility] mixin
-- matchesAllCondition (boolean) autocreated mandatory = false
+- matchesAllCondition (boolean) = false autocreated
  + * (jnt:condition)
 
 [jnt:condition]

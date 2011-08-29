@@ -3523,9 +3523,19 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public boolean canMarkForDeletion() throws RepositoryException {
         JCRStoreProvider provider = getProvider();
-        return provider.isLockingAvailable() && provider.isUpdateMixinAvailable();
+        if (!provider.isLockingAvailable() || !provider.isUpdateMixinAvailable()) {
+            return false;
+        }
+
+        for (String skipType : JCRContentUtils.getInstance().getUnsupportedMarkForDeletionNodeTypes()) {
+            if (isNodeType(skipType)) {
+                return false;
+            }
+        }
+
+        return true;
     }
-    
+
     public boolean isMarkedForDeletion() throws RepositoryException {
         return objectNode.isNodeType(JAHIAMIX_MARKED_FOR_DELETION);
     }

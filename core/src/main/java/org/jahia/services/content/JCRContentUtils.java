@@ -1278,6 +1278,8 @@ public final class JCRContentUtils {
 
     private NameGenerationHelper nameGenerationHelper;
 
+    private Set<String> unsupportedMarkForDeletionNodeTypes = Collections.emptySet();
+    
     /**
      * Initializes an instance of this class.
      * 
@@ -1337,5 +1339,13 @@ public final class JCRContentUtils {
 
     public void setNameGenerationHelper(NameGenerationHelper nameGenerationHelper) {
         this.nameGenerationHelper = nameGenerationHelper;
+    }
+
+    public Set<String> getUnsupportedMarkForDeletionNodeTypes() {
+        return unsupportedMarkForDeletionNodeTypes;
+    }
+
+    public void setUnsupportedMarkForDeletionNodeTypes(Set<String> unsupportedMarkForDeletionNodeTypes) {
+        this.unsupportedMarkForDeletionNodeTypes = unsupportedMarkForDeletionNodeTypes;
     }
 }

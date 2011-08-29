@@ -118,6 +118,12 @@
                 </property>
             </bean>
         </property>
+        
+        <property name="unsupportedMarkForDeletionNodeTypes">
+            <set>
+                <value>jmix:autoPublish</value>
+            </set>
+        </property>
     </bean>
 
     <bean id="fileExtensionIcons" class="org.springframework.beans.factory.config.MapFactoryBean">

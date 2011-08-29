@@ -192,6 +192,7 @@
                 <module>tags</module>
                 <module>tasks</module>
                 <module>templates-system</module>
+                <module>visibility</module>
             </modules>
         </profile>
     </profiles>

@@ -141,6 +141,14 @@
         <property name="titleKey" value="label.showPublicationStatus"/>
     </bean>
 
+    <bean id="Toolbar.Item.ViewVisibilityStatus" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ViewIconStatusActionItem">
+                <property name="type" value="visibility"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.showVisibilityStatus"/>
+    </bean>
 
     <bean id="Toolbar.Item.WorkflowStatusAction" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">

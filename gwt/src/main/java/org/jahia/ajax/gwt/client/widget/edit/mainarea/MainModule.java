@@ -46,6 +46,7 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.DOM;
@@ -530,17 +531,18 @@ public class MainModule extends Module {
             if (modules != null) {
                 for (Module m : modules) {
                     if (!m.getPath().endsWith("*")) {
-                        if (m.getNode() != null) {
+                        GWTJahiaNode currentNode = m.getNode();
+                        if (currentNode != null) {
                             List<AbstractImagePrototype> images = new ArrayList<AbstractImagePrototype>();
-                            if (activeLayers.containsKey("acl") && m.getNode().isHasAcl()) {
+                            if (activeLayers.containsKey("acl") && currentNode.isHasAcl()) {
                                 images.add(ToolbarIconProvider.getInstance().getIcon(
                                         "viewACLStatus"));
                             }
                             if (activeLayers.containsKey("publication")) {
-                                GWTJahiaPublicationInfo info = m.getNode()
+                                GWTJahiaPublicationInfo info = currentNode
                                         .getAggregatedPublicationInfo();
                                 if (lastUnpublished == null
-                                        || !m.getNode().getPath().startsWith(lastUnpublished)) {
+                                        || !currentNode.getPath().startsWith(lastUnpublished)) {
                                     if (info.isLocked()) {
                                         images.add(ToolbarIconProvider.getInstance().getIcon(
                                                 "publication/locked"));
@@ -548,7 +550,7 @@ public class MainModule extends Module {
 
                                     if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED
                                             || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
-                                        lastUnpublished = m.getNode().getPath();
+                                        lastUnpublished = currentNode.getPath();
                                         if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                                             images.add(ToolbarIconProvider.getInstance().getIcon(
                                                     "publication/unpublished"));
@@ -565,6 +567,20 @@ public class MainModule extends Module {
                                     } else if (info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID) {
                                         images.add(ToolbarIconProvider.getInstance().getIcon(
                                                 "publication/mandatorylanguagevalid"));
+                                    }
+                                }
+                            }
+                            if (activeLayers.containsKey("visibility")) {
+                                Map<String,Boolean> visibility = currentNode.getVisibilityInfo();
+                                if (!visibility.isEmpty()) {
+                                    if (currentNode.isVisible()) {
+                                        AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
+                                                "visibilityStatusGreen");
+                                        images.add(icon);
+                                    } else {
+                                        AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
+                                                "visibilityStatusRed");
+                                        images.add(icon);
                                     }
                                 }
                             }

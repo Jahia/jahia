@@ -92,6 +92,8 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String WORKFLOW_INFOS = "workflowInfos";
     public static final String PRIMARY_TYPE_LABEL = "primaryTypeLabel";
     public static final String DEFAULT_LANGUAGE = "j:defaultLanguage";
+    public static final String VISIBILITY_INFO = "visibilityInfo";
+    public static final String IS_VISIBLE = "isVisible";
 
     public static final List<String> DEFAULT_FIELDS =
             Arrays.asList(ICON, TAGS, CHILDREN_INFO, "j:view", "j:width", "j:height", PUBLICATION_INFO);
@@ -356,6 +358,22 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public String getSiteKey() {
         return get(SITE_KEY);
+    }
+
+    public void setVisibilityInfo(Map<String,Boolean> visible) {
+        set(VISIBILITY_INFO, visible);
+    }
+
+    public Map<String,Boolean> getVisibilityInfo() {
+        return get(VISIBILITY_INFO);
+    }
+
+    public void setVisible(Boolean visible) {
+        set(IS_VISIBLE, visible);
+    }
+
+    public Boolean isVisible() {
+        return get(IS_VISIBLE);
     }
 
     public boolean isVersioned() {

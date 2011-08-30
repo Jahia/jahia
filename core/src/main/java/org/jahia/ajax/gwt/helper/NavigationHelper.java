@@ -64,6 +64,8 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.sites.SitesSettings;
+import org.jahia.services.visibility.VisibilityConditionRule;
+import org.jahia.services.visibility.VisibilityService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
@@ -89,6 +91,7 @@ public class NavigationHelper {
 
     private JCRSessionFactory sessionFactory;
     private JCRVersionService jcrVersionService;
+    private VisibilityService visibilityService;
 
     private PublicationHelper publication;
     private WorkflowHelper workflow;
@@ -115,6 +118,10 @@ public class NavigationHelper {
 
     public void setJcrVersionService(JCRVersionService jcrVersionService) {
         this.jcrVersionService = jcrVersionService;
+    }
+
+    public void setVisibilityService(VisibilityService visibilityService) {
+        this.visibilityService = visibilityService;
     }
 
     /**
@@ -828,6 +835,12 @@ public class NavigationHelper {
         } catch (RepositoryException e) {
             logger.error("Error when getting lock", e);
         }
+
+        if (fields.contains(GWTJahiaNode.VISIBILITY_INFO)) {
+            n.setVisibilityInfo(visibilityService.getConditionMatchesDetails(node));
+            n.setVisible(visibilityService.matchesConditions(node));
+        }
+
         n.setThumbnailsMap(new HashMap<String, String>());
         n.setVersioned(node.isVersioned());
         n.setLanguageCode(node.getLanguage());

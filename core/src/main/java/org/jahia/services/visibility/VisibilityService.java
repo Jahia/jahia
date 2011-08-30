@@ -37,7 +37,6 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.RepositoryException;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,5 +117,24 @@ public class VisibilityService {
             logger.error(e.getMessage(), e);
             return false;
         }
+    }
+
+    public Map<String,Boolean> getConditionMatchesDetails(JCRNodeWrapper node) {
+        Map<String, Boolean> conditions = new HashMap<String, Boolean>();
+        try {
+            if (node.isNodeType("jmix:conditionalVisibility")) {
+                List<JCRNodeWrapper> childrenOfType = JCRContentUtils.getChildrenOfType(node, "jnt:condition");
+                boolean matches = true;
+                for (JCRNodeWrapper nodeWrapper : childrenOfType) {
+                    VisibilityConditionRule rule = this.conditions.get(nodeWrapper.getPrimaryNodeTypeName());
+                    if (rule != null) {
+                        conditions.put(nodeWrapper.getName(),rule.matches(nodeWrapper));
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return conditions;
     }
 }

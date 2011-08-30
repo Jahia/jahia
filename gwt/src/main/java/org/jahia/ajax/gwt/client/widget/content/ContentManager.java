@@ -50,6 +50,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -92,7 +93,7 @@ public class ContentManager extends TriPanelBrowserLayout {
                             selectedPaths,null,false, linker.isDisplayHiddenTypes(), config.getHiddenTypes(), config.getHiddenRegex(), new BaseAsyncCallback<List<GWTJahiaNode>>() {
                         public void onSuccess(List<GWTJahiaNode> gwtJahiaNode) {
                             linker.setLeftPanelSelectionWhenHidden(gwtJahiaNode.get(0));
-                            linker.refresh();
+                            linker.refresh(Linker.REFRESH_ALL);
                         }
 
                         public void onApplicationFailure(Throwable throwable) {

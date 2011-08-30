@@ -64,6 +64,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.*;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 
@@ -158,6 +159,11 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             ((AsyncTabItem) item).setProcessed(false);
             item.setEnabled(false);
         }
+    }
+
+    @Override
+    public void emptySelection() {
+        fillData(new ArrayList<GWTJahiaNode>());
     }
 
     public void close() {
@@ -392,7 +398,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 public void onSuccess(Object o) {
                     Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
                     if (getNodes().contains(linker.getSelectionContext().getMainNode())) {
-                        linker.refreshAll();
+                        linker.refresh(Linker.REFRESH_ALL);
                     } else {
                         linker.refreshTable();
                     }

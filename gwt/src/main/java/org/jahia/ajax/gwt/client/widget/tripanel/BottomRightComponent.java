@@ -69,4 +69,6 @@ public abstract class BottomRightComponent extends LinkableComponent {
     public List<GWTJahiaNode> getSelection() {
         return null;
     }
+
+    public abstract void emptySelection();
 }

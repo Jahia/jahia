@@ -50,7 +50,7 @@ public abstract class LeftComponent extends LinkableComponent {
 
     public abstract void openAndSelectItem(Object item) ;
 
-    public abstract void refresh() ;
+    public abstract void refresh(int flag) ;
 
     public abstract Object getSelectedItem() ;
 

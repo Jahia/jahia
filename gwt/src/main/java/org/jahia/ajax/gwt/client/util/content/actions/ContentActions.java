@@ -55,6 +55,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
@@ -199,7 +200,7 @@ public class ContentActions {
                     public void onSuccess(GWTJahiaNode o) {
                         linker.setSelectPathAfterDataUpdate(Arrays.asList(o.getPath()));
                         linker.loaded();
-                        linker.refresh(Linker.REFRESH_FOLDERS);
+                        linker.refresh(Linker.REFRESH_ALL);
                     }
                 });
             }

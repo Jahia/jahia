@@ -216,6 +216,11 @@ public class PickedContentView extends BottomRightComponent {
     public void clear() {
     }
 
+    @Override
+    public void emptySelection() {
+        fillData(new ArrayList<GWTJahiaNode>());
+    }
+
     /**
      * Set content
      *

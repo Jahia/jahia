@@ -155,7 +155,7 @@ public class ManagerLinker implements Linker {
                 }
                 if (m_bottomRightComponent.getComponentType().equals(PICKER)) {
                     if (clearSelection && m_leftComponent!= null) {
-                        m_bottomRightComponent.fillData(new ArrayList<GWTJahiaNode>());
+                        m_bottomRightComponent.emptySelection();
                     }
                 }   else {
                     m_bottomRightComponent.fillData(m_leftComponent.getSelectedItem());
@@ -201,19 +201,6 @@ public class ManagerLinker implements Linker {
         if (m_leftComponent != null) {
             m_leftComponent.openAndSelectItem(item);
         }
-    }
-
-    public void onTreeItemInserted() {
-        if (m_leftComponent != null) {
-            m_leftComponent.refresh();
-        }
-    }
-
-    public void refreshAll() {
-        if (m_leftComponent != null) {
-            m_leftComponent.refresh();
-        }
-        refreshTable();
     }
 
     public void refreshTable() {
@@ -360,13 +347,13 @@ public class ManagerLinker implements Linker {
 
     }
 
-    public void refresh() {
-        refreshAll();
-    }
-
     public void refresh(int flag) {
-        refresh();
-
+        if ((Linker.REFRESH_ALL & flag) != 0) {
+            m_leftComponent.refresh(Linker.REFRESH_OPEN_FOLDER);
+        } else {
+            m_leftComponent.refresh(flag);
+        }
+        refreshTable();
     }
 
     public void select(Object o) {
@@ -418,7 +405,7 @@ public class ManagerLinker implements Linker {
 
     public void switchLanguage(GWTJahiaLanguage locale) {
         setLocale(locale);
-        refresh();
+        refresh(Linker.REFRESH_ALL);
     }
 
     public boolean isDisplayHiddenTypes() {

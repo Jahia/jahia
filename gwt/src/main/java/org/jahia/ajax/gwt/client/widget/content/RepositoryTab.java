@@ -61,6 +61,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
@@ -121,7 +122,9 @@ public class RepositoryTab extends ContentPanel {
         m_tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             public void selectionChanged(SelectionChangedEvent selectionChangedEvent) {
                 getLinker().onTreeItemSelected();
-                setExpanded(true);
+                if (selectionChangedEvent.getSelection() != null && selectionChangedEvent.getSelection().size() > 0) {
+                    setExpanded(true);
+                }
             }
         });
 
@@ -129,7 +132,7 @@ public class RepositoryTab extends ContentPanel {
         setHeading(repo.getTitle());
         getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
-                refresh();
+                refresh(Linker.REFRESH_ALL);
             }
         }));
         add(m_tree);
@@ -227,12 +230,18 @@ public class RepositoryTab extends ContentPanel {
 
     /**
      * Refresh
+     * @param flag
      */
-    public void refresh() {
-//        init = true;
-        store.removeAll();
-        factory.setDisplayHiddenTypes(getLinker()!=null&&getLinker().isDisplayHiddenTypes());
-        loader.load();
+    public void refresh(int flag) {
+        boolean refresh = true;
+        if ((Linker.REFRESH_OPEN_FOLDER & flag) != 0) {
+            refresh = isExpanded();
+        }
+        if (refresh) {
+            store.removeAll();
+            factory.setDisplayHiddenTypes(getLinker()!=null&&getLinker().isDisplayHiddenTypes());
+            loader.load();
+        }
     }
 
     /**
@@ -269,9 +278,9 @@ public class RepositoryTab extends ContentPanel {
     }
 
     /**
-     * deselecte on free search
+     * remove selection
      */
-    public void deselectOnFreeSearch() {
+    public void removeSelection() {
         m_tree.getSelectionModel().deselectAll();
     }
 

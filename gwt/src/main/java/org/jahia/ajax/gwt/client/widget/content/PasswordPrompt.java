@@ -54,6 +54,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
  *
@@ -104,7 +105,7 @@ public class PasswordPrompt extends Window {
                     public void onSuccess(Object o) {
                         hide();
                         item.setText(logoutLabel);
-                        m_linker.refreshAll();
+                        m_linker.refresh(Linker.REFRESH_ALL);
                     }
 
                     public void onApplicationFailure(Throwable throwable) {

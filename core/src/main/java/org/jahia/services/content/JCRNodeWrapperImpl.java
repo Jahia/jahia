@@ -1452,7 +1452,27 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public String getPropertyAsString(String name) {
         try {
-        return getPropertiesAsString().get(name);
+            Property property = getProperty(name);
+            if (property == null) {
+                return null;
+            }
+            if (property.getType() == PropertyType.BINARY) {
+                return null;
+            }
+            if (!property.isMultiple()) {
+                return property.getString();
+            } else {
+                Value[] vs = property.getValues();
+                StringBuffer b = new StringBuffer();
+                for (int i = 0; i < vs.length; i++) {
+                    Value v = vs[i];
+                    b.append(v.getString());
+                    if (i + 1 < vs.length) {
+                        b.append(" ");
+                    }
+                }
+                return b.toString();
+            }
         } catch (RepositoryException e) {
             return null;
         }

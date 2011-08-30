@@ -191,7 +191,7 @@
     </bean>
 
     <bean id="visibilityFilter" class="org.jahia.services.visibility.filters.VisibilityFilter">
-        <property name="visibilityService" ref="visiblityService"/>
+        <property name="visibilityService" ref="visibilityService"/>
         <property name="applyOnModes" value="preview"/>
         <property name="priority" value="29"/>
     </bean>

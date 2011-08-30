@@ -688,7 +688,7 @@ public class JCRStoreProvider {
                         }
                     });
         }
-        final JCRNodeWrapperImpl w = createWrapper(objectNode, null, null, session);
+        final JCRNodeWrapper w = createWrapper(objectNode, null, null, session);
         if (w.checkValidity()) {
             return service.decorate(w);
         } else {
@@ -710,7 +710,7 @@ public class JCRStoreProvider {
                         }
                     });
         }
-        final JCRNodeWrapperImpl w = createWrapper(objectNode, path, parent, session);
+        final JCRNodeWrapper w = createWrapper(objectNode, path, parent, session);
         if (objectNode.isNew() || w.checkValidity()) {
             return service.decorate(w);
         } else {
@@ -718,14 +718,19 @@ public class JCRStoreProvider {
         }
     }
 
-    private JCRNodeWrapperImpl createWrapper(Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session) {
+    private JCRNodeWrapper createWrapper(Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session) throws RepositoryException {
+        JCRNodeWrapper wrapper =  objectNode != null ? session.getCachedNode(objectNode.getIdentifier()) : null;
+        if (wrapper != null) {
+            return wrapper;
+        }
+            
         if (session.getVersionDate() != null || session.getVersionLabel() != null) {
             try {
                 if (objectNode.isNodeType(Constants.NT_FROZENNODE)) {
                     return new JCRFrozenNodeAsRegular(objectNode, path, parent, session, this, session.getVersionDate(), session.getVersionLabel());
                 }
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
         return new JCRNodeWrapperImpl(objectNode, path, parent, session, this);

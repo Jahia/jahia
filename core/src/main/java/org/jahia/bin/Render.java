@@ -134,6 +134,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String CONTRIBUTE_POST = "jcrContributePost";
     public static final String MARK_FOR_DELETION = "jcrMarkForDeletion";
     public static final String MARK_FOR_DELETION_MESSAGE = "jcrDeletionMessage";
+    public static final String PREVIEW_DATE = "prevdate";
 
     private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
             Arrays.asList(new String[]{String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY)}));
@@ -728,6 +729,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             jcrSessionFactory.setCurrentLocale(urlResolver.getLocale());
             if (renderContext.isPreviewMode() && req.getParameter(ALIAS_USER) != null && !JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
                 jcrSessionFactory.setCurrentAliasedUser(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(req.getParameter(ALIAS_USER)));
+            }
+            if (renderContext.isPreviewMode() && req.getParameter(PREVIEW_DATE) != null && !JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
+                Calendar previewDate = Calendar.getInstance();
+                previewDate.setTime(new Date(new Long(req.getParameter(PREVIEW_DATE))));
+                jcrSessionFactory.setCurrentPreviewDate(previewDate);
             }
             if (method.equals(METHOD_GET)) {
                 if (!StringUtils.isEmpty(urlResolver.getRedirectUrl())) {

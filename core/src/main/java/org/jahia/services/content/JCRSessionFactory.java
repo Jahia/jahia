@@ -86,6 +86,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private ThreadLocal<Locale> currentLocale = new ThreadLocal<Locale>();
     private ThreadLocal<JahiaUser> currentAliasedUser = new ThreadLocal<JahiaUser>();
     private ThreadLocal<String> currentServletPath = new ThreadLocal<String>();
+    private ThreadLocal<Calendar> currentPreviewDate = new ThreadLocal<Calendar>();
 
     private JCRSessionFactory() {
     }
@@ -438,4 +439,11 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         currentServletPath.set(path);
     }
 
+    public void setCurrentPreviewDate(Calendar previewDate) {
+        currentPreviewDate.set(previewDate);
+    }
+
+    public Calendar getCurrentPreviewDate() {
+        return currentPreviewDate.get();
+    }
 }

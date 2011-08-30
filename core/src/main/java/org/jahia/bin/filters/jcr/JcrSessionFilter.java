@@ -105,6 +105,7 @@ public class JcrSessionFilter implements Filter {
                 sessionFactory.setCurrentLocale(null);
                 sessionFactory.setCurrentAliasedUser(null);
                 sessionFactory.setCurrentServletPath(null);
+                sessionFactory.setCurrentPreviewDate(null);
                 /*sessionFactory.setVersionDate(null);
                 sessionFactory.setVersionLabel(null);*/
                 sessionFactory.closeAllSessions();

@@ -268,9 +268,9 @@
 
     <bean id="Toolbar.Item.PreviewAsGuest" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchModeActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CustomizedPreviewActionItem"/>
         </property>
-        <property name="titleKey" value="label.preview.as.guest"/>
+        <property name="titleKey" value="label.preview.customized"/>
         <property name="icon" value="previewAsGuest"/>
         <property name="properties">
             <list>

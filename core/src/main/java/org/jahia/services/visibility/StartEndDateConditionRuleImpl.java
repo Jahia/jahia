@@ -34,6 +34,7 @@ package org.jahia.services.visibility;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -66,7 +67,14 @@ public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = null;
+        try {
+            calendar = nodeWrapper.getSession().getPreviewDate();
+        } catch (RepositoryException e) {
+        }
+        if (calendar == null) {
+            calendar = Calendar.getInstance();
+        }
         if (start != null) {
             if (!calendar.after(start)) {
                 return false;

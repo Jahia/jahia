@@ -35,12 +35,20 @@ package org.jahia.services.visibility;
 import org.jahia.services.content.JCRNodeWrapper;
 
 /**
- * Created by IntelliJ IDEA.
- *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 8/29/11
+ * Defines a visibility condition for a piece of content in Jahia.
+ * @author rincevent
+ * @since JAHIA 6.5
+ * Created : 8/29/11
  */
 public interface VisibilityConditionRule {
-    boolean matches (JCRNodeWrapper nodeWrapper);
+    
+    /**
+     * Returns <code>true</code> if the condition is satisfied and content will be rendered.
+     * 
+     * @param node
+     *            the node to test visibility condition for
+     * @return <code>true</code> if the condition is satisfied and content will be rendered
+     */
+    boolean matches(JCRNodeWrapper node);
+
 }

@@ -49,7 +49,7 @@ import java.util.Set;
  * Represents workflow instance, i.e. single execution of the workflow process definition.
  *
  * @author rincevent
- * @since JAHIA 6.1
+ * @since JAHIA 6.5
  */
 public class Workflow extends WorkflowBase {
     private static final long serialVersionUID = 7740902280649636296L;

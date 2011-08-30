@@ -35,11 +35,9 @@ package org.jahia.modules.actions;
 import org.apache.log4j.Logger;
 
 /**
- * Created by IntelliJ IDEA.
- *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 8/29/11
+ * @author rincevent
+ * @since JAHIA 6.6
+ * Created : 8/29/11
  */
 public class EndDateVisibilityConditionBackgroundActionImpl extends DateVisibilityConditionBackgroundAction {
     private transient static Logger logger = Logger.getLogger(EndDateVisibilityConditionBackgroundActionImpl.class);

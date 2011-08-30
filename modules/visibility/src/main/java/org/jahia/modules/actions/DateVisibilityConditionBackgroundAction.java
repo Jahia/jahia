@@ -40,11 +40,9 @@ import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import javax.jcr.RepositoryException;
 
 /**
- * Created by IntelliJ IDEA.
- *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 8/29/11
+ * @author rincevent
+ * @since JAHIA 6.6
+ * Created : 8/29/11
  */
 public abstract class DateVisibilityConditionBackgroundAction implements BackgroundAction {
     private transient static Logger logger = Logger.getLogger(DateVisibilityConditionBackgroundAction.class);

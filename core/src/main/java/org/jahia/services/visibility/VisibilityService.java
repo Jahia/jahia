@@ -37,22 +37,23 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.RepositoryException;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 8/29/11
+ * @author rincevent
+ * @since JAHIA 6.6
+ * Created : 8/29/11
  */
 public class VisibilityService {
     private transient static Logger logger = Logger.getLogger(VisibilityService.class);
 
-    private Map<String, VisibilityConditionRule> conditions;
     private static volatile VisibilityService instance;
 
+    private Map<String, VisibilityConditionRule> conditions = new HashMap<String, VisibilityConditionRule>(1);
+    
     public static VisibilityService getInstance() {
         if (instance == null) {
             synchronized (VisibilityService.class) {
@@ -69,7 +70,9 @@ public class VisibilityService {
     }
 
     public void setConditions(Map<String, VisibilityConditionRule> conditions) {
-        this.conditions = conditions;
+        if (conditions != null) {
+            this.conditions.putAll(conditions);
+        }
     }
 
     public void addCondition(String conditionType, VisibilityConditionRule instance) {
@@ -77,6 +80,9 @@ public class VisibilityService {
     }
 
     public boolean matchesConditions(JCRNodeWrapper node) {
+        if (conditions.isEmpty()) {
+            return true;
+        }
         try {
             if (node.isNodeType("jmix:conditionalVisibility")) {
                 boolean matchesAllCondition = node.getProperty("matchesAllCondition").getBoolean();

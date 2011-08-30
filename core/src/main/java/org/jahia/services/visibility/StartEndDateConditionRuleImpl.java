@@ -40,11 +40,9 @@ import javax.jcr.RepositoryException;
 import java.util.Calendar;
 
 /**
- * Created by IntelliJ IDEA.
- *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 8/29/11
+ * @author rincevent
+ * @since JAHIA 6.6
+ * Created : 8/29/11
  */
 public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
     private transient static Logger logger = Logger.getLogger(StartEndDateConditionRuleImpl.class);

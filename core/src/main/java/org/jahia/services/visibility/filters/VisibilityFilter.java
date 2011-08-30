@@ -32,7 +32,6 @@
  */
 package org.jahia.services.visibility.filters;
 
-import org.apache.log4j.Logger;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
@@ -40,14 +39,11 @@ import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.visibility.VisibilityService;
 
 /**
- * Created by IntelliJ IDEA.
- *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 8/29/11
+ * @author rincevent
+ * @since JAHIA 6.6
+ * Created : 8/29/11
  */
 public class VisibilityFilter extends AbstractFilter {
-    private transient static Logger logger = Logger.getLogger(VisibilityFilter.class);
     private VisibilityService visibilityService;
 
     public void setVisibilityService(VisibilityService visibilityService) {

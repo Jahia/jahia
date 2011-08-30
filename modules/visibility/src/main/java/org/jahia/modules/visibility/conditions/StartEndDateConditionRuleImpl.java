@@ -30,22 +30,46 @@
  * between you and Jahia Limited. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.visibility;
+package org.jahia.modules.visibility.conditions;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.visibility.VisibilityConditionRule;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
- * @author rincevent
- * @since JAHIA 6.6
- * Created : 8/29/11
+ * Created by IntelliJ IDEA.
+ *
+ * @author : rincevent
+ * @since : JAHIA 6.1
+ *        Created : 8/29/11
  */
 public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
     private transient static Logger logger = Logger.getLogger(StartEndDateConditionRuleImpl.class);
+    private String associatedNodeType;
+    private String displayTemplateKey;
+
+    public void setAssociatedNodeType(String associatedNodeType) {
+        this.associatedNodeType = associatedNodeType;
+    }
+
+    public String getAssociatedNodeType() {
+        return associatedNodeType;
+    }
+
+    /**
+     * Return the associated display template that will be used by gwt.
+     *
+     * @return Return the associated display template that will be used by gwt.
+     */
+    public String getGWTDisplayTemplate(Locale locale) {
+        return JahiaResourceBundle.getString("JahiaVisibility", displayTemplateKey,locale, "visibility");
+    }
 
     public boolean matches(JCRNodeWrapper nodeWrapper) {
         Calendar start = null;
@@ -83,5 +107,13 @@ public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
             }
         }
         return true;
+    }
+
+    public void setDisplayTemplateKey(String displayTemplateKey) {
+        this.displayTemplateKey = displayTemplateKey;
+    }
+
+    public String getDisplayTemplateKey() {
+        return displayTemplateKey;
     }
 }

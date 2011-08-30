@@ -38,6 +38,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.RepositoryException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -124,7 +125,6 @@ public class VisibilityService {
         try {
             if (node.isNodeType("jmix:conditionalVisibility")) {
                 List<JCRNodeWrapper> childrenOfType = JCRContentUtils.getChildrenOfType(node, "jnt:condition");
-                boolean matches = true;
                 for (JCRNodeWrapper nodeWrapper : childrenOfType) {
                     VisibilityConditionRule rule = this.conditions.get(nodeWrapper.getPrimaryNodeTypeName());
                     if (rule != null) {

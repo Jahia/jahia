@@ -214,11 +214,7 @@
     <!--</bean>-->
     <bean id="visibilityService" class="org.jahia.services.visibility.VisibilityService" factory-method="getInstance">
         <property name="conditions">
-            <map key-type="java.lang.String" value-type="org.jahia.services.visibility.VisibilityConditionRule">
-                <entry key="jnt:startEndDateCondition">
-                    <bean class="org.jahia.services.visibility.StartEndDateConditionRuleImpl"/>
-                </entry>
-            </map>
+            <map key-type="java.lang.String" value-type="org.jahia.services.visibility.VisibilityConditionRule"/>
         </property>
     </bean>
 </beans>

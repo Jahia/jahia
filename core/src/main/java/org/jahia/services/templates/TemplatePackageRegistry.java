@@ -40,6 +40,8 @@
 
 package org.jahia.services.templates;
 
+import org.jahia.services.visibility.VisibilityConditionRule;
+import org.jahia.services.visibility.VisibilityService;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorklowTypeRegistration;
 import org.slf4j.Logger;
@@ -84,6 +86,8 @@ class TemplatePackageRegistry {
         private ChoiceListInitializerService choiceListInitializers;
 
         private WorkflowService workflowService;
+
+        private VisibilityService visibilityService;
 
         private Map<String, String> staticAssetMapping;
 
@@ -171,6 +175,15 @@ class TemplatePackageRegistry {
                 WorklowTypeRegistration registration = (WorklowTypeRegistration) bean;
                 workflowService.registerWorkflowType(registration.getType(), registration.getDefinition(), registration.getPermissions());
             }
+
+            if (bean instanceof VisibilityConditionRule) {
+                VisibilityConditionRule conditionRule = (VisibilityConditionRule) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug(
+                            "Registering Visibility Condition Rule '" + conditionRule.getClass().getName() + "' (" + beanName + ")");
+                }
+                visibilityService.addCondition(conditionRule.getAssociatedNodeType(),conditionRule);
+            }
             return bean;
         }
 
@@ -198,6 +211,10 @@ class TemplatePackageRegistry {
 
         public void setWorkflowService(WorkflowService workflowService) {
             this.workflowService = workflowService;
+        }
+
+        public void setVisibilityService(VisibilityService visibilityService) {
+            this.visibilityService = visibilityService;
         }
     }
 

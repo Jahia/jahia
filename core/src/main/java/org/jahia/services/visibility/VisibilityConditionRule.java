@@ -34,6 +34,8 @@ package org.jahia.services.visibility;
 
 import org.jahia.services.content.JCRNodeWrapper;
 
+import java.util.Locale;
+
 /**
  * Defines a visibility condition for a piece of content in Jahia.
  * @author rincevent
@@ -51,4 +53,17 @@ public interface VisibilityConditionRule {
      */
     boolean matches(JCRNodeWrapper node);
 
+    /**
+     * Return the node type associated with this condition.
+     * 
+     * @return Return the node type associated with this condition. 
+     */
+    String getAssociatedNodeType();
+
+    /**
+     * Return the associated display template that will be used by gwt.
+     *
+     * @return Return the associated display template that will be used by gwt.
+     */
+    String getGWTDisplayTemplate(Locale locale);
 }

@@ -512,6 +512,9 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     }
 
     public GWTJahiaPublicationInfo getAggregatedPublicationInfo() {
+        if (publicationInfos == null) {
+            return null;
+        }
         return publicationInfos.get(JahiaGWTParameters.getLanguage());
     }
 

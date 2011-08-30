@@ -1268,16 +1268,24 @@ public class ContentManagerHelper {
             for (GWTJahiaNode condition : conditions) {
                 List<GWTJahiaNodeProperty> props = (List<GWTJahiaNodeProperty>) condition.get("gwtproperties");
                 if (condition.get("new-node") != null) {
-                    createNode(node.getPath(), condition.getName(), condition.getNodeTypes().get(0), new ArrayList<String>(), props, session);
+                    GWTJahiaNode n = createNode(node.getPath(), condition.getName(), condition.getNodeTypes().get(0), new ArrayList<String>(), props, session);
+                    condition.setUUID(n.getUUID());
+                    condition.setPath(n.getPath());
                 } else {
                     JCRNodeWrapper jcrCondition = session.getNode(condition.getPath());
                     properties.setProperties(jcrCondition, props);
                 }
             }
             session.save();
+            for (GWTJahiaNode condition : conditions) {
+                if (condition.get("node-removed") != null) {
+                    JCRNodeWrapper jcrCondition = session.getNode(condition.getPath());
+                    jcrCondition.remove();
+                }
+            }
+            session.save();
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e);
         }
-
     }
 }

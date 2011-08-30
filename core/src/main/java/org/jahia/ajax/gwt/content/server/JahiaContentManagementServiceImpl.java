@@ -693,7 +693,17 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             saveUrlMappings(node, langCodeProperties.keySet(), (List<GWTJahiaUrlMapping>) node.get("vanityMappings"));
         }
         if (node.get("visibilityConditions") != null) {
-            contentManager.saveVisibilityConditions(node, (List<GWTJahiaNode>) node.get("visibilityConditions"), jcrSessionWrapper);
+            List<GWTJahiaNode> visibilityConditions = (List<GWTJahiaNode>) node.get("visibilityConditions");
+            contentManager.saveVisibilityConditions(node, visibilityConditions, jcrSessionWrapper);
+            try {
+                for (GWTJahiaNode condition : visibilityConditions) {
+                    if (condition.get("node-published") != null) {
+                        publication.publish(Arrays.asList(jcrSessionWrapper.getNode(condition.getPath()).getIdentifier()));
+                    }
+                }
+            } catch (RepositoryException e) {
+                throw new GWTJahiaServiceException(e);
+            }
         }
         if (node.get("activeWorkflows") != null) {
             workflow.updateWorkflowRules(node,

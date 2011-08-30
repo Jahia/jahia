@@ -3313,7 +3313,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     }
                 }
                 boolean result = checkLanguageValidity(null);
-                if(result && isLocaleDefined && objectNode.isNodeType("jmix:conditionalVisibility")) {
+                if(result && isLocaleDefined) {
                     result = VisibilityService.getInstance().matchesConditions(this);
                 }
                 return result;

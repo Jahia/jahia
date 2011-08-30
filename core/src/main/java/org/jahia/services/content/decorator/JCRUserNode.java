@@ -40,6 +40,8 @@
 
 package org.jahia.services.content.decorator;
 
+import org.jahia.settings.SettingsBean;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -91,6 +93,20 @@ public class JCRUserNode extends JCRNodeDecorator {
         } catch (NoSuchNodeTypeException e) {
             logger.error(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public String getDisplayableName() {
+        try {
+            if (getName().equals(Constants.GUEST_USERNAME)) {
+                JahiaResourceBundle rb = new JahiaResourceBundle(null, getSession().getLocale(), SettingsBean.getInstance().getGuestResourceModuleName());
+
+                return rb.get(SettingsBean.getInstance().getGuestResourceKey(), getName());
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage());
+        }
+        return super.getDisplayableName();
     }
 
     @Override
@@ -177,7 +193,7 @@ public class JCRUserNode extends JCRNodeDecorator {
                 user.getUserProperties().setProperty(s, value);
             } catch (UserPropertyReadOnlyException e) {
                 logger.warn("Cannot set read-only property {} for user {}", s, user.getUserKey());
-                
+
             }
             return prop;
         }
@@ -442,7 +458,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          */
         public void setValue(Value value)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-            
+
         }
 
         /**
@@ -484,7 +500,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          */
         public void setValue(Value[] values)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-            
+
         }
 
         /**
@@ -508,7 +524,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          */
         public void setValue(String value)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-            
+
         }
 
         /**
@@ -532,7 +548,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          */
         public void setValue(String[] values)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-            
+
         }
 
         /**
@@ -560,7 +576,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          */
         public void setValue(InputStream value)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-            
+
         }
 
         /**
@@ -585,7 +601,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          */
         public void setValue(Binary value)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-            
+
         }
 
         /**
@@ -609,7 +625,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          */
         public void setValue(long value)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-            
+
         }
 
         /**
@@ -633,7 +649,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          */
         public void setValue(double value)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-            
+
         }
 
         /**
@@ -658,7 +674,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          */
         public void setValue(BigDecimal value)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-            
+
         }
 
         /**
@@ -682,7 +698,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          */
         public void setValue(Calendar value)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-            
+
         }
 
         /**
@@ -706,7 +722,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          */
         public void setValue(boolean value)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-            
+
         }
 
         /**
@@ -732,7 +748,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          */
         public void setValue(Node value)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-            
+
         }
 
         /**
@@ -761,7 +777,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException  if another error occurs.
          */
         public Value[] getValues() throws ValueFormatException, RepositoryException {
-            return new Value[0];  
+            return new Value[0];
         }
 
         /**
@@ -801,7 +817,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @deprecated As of JCR 2.0, {@link #getBinary()} should be used instead.
          */
         public InputStream getStream() throws ValueFormatException, RepositoryException {
-            return null;  
+            return null;
         }
 
         /**
@@ -821,7 +837,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @since JCR 2.0
          */
         public Binary getBinary() throws ValueFormatException, RepositoryException {
-            return null;  
+            return null;
         }
 
         /**
@@ -841,7 +857,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException  if another error occurs
          */
         public long getLong() throws ValueFormatException, RepositoryException {
-            return 0;  
+            return 0;
         }
 
         /**
@@ -861,7 +877,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException  if another error occurs
          */
         public double getDouble() throws ValueFormatException, RepositoryException {
-            return 0;  
+            return 0;
         }
 
         /**
@@ -882,7 +898,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @since JCR 2.0
          */
         public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
-            return null;  
+            return null;
         }
 
         /**
@@ -905,7 +921,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException  if another error occurs
          */
         public Calendar getDate() throws ValueFormatException, RepositoryException {
-            return null;  
+            return null;
         }
 
         /**
@@ -925,7 +941,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException  if another error occurs
          */
         public boolean getBoolean() throws ValueFormatException, RepositoryException {
-            return false;  
+            return false;
         }
 
         /**
@@ -962,7 +978,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException  if another error occurs
          */
         public Node getNode() throws ItemNotFoundException, ValueFormatException, RepositoryException {
-            return null;  
+            return null;
         }
 
         /**
@@ -994,7 +1010,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @since JCR 2.0
          */
         public Property getProperty() throws ItemNotFoundException, ValueFormatException, RepositoryException {
-            return null;  
+            return null;
         }
 
         /**
@@ -1014,7 +1030,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException  if another error occurs.
          */
         public long getLength() throws ValueFormatException, RepositoryException {
-            return 0;  
+            return 0;
         }
 
         /**
@@ -1033,7 +1049,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException  if another error occurs.
          */
         public long[] getLengths() throws ValueFormatException, RepositoryException {
-            return new long[0];  
+            return new long[0];
         }
 
         /**
@@ -1049,7 +1065,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @see javax.jcr.nodetype.NodeType#getPropertyDefinitions
          */
         public PropertyDefinition getDefinition() throws RepositoryException {
-            return null;  
+            return null;
         }
 
         /**
@@ -1080,7 +1096,7 @@ public class JCRUserNode extends JCRNodeDecorator {
         }
 
         public boolean isMultiple() throws RepositoryException {
-            return false;  
+            return false;
         }
 
         /**
@@ -1093,7 +1109,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException if an error occurs.
          */
         public String getPath() throws RepositoryException {
-            return null;  
+            return null;
         }
 
         /**
@@ -1144,7 +1160,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException if another error occurs.
          */
         public Item getAncestor(int depth) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
-            return null;  
+            return null;
         }
 
         /**
@@ -1160,7 +1176,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException if another error occurs.
          */
         public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
-            return null;  
+            return null;
         }
 
         /**
@@ -1178,7 +1194,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException if an error occurs.
          */
         public int getDepth() throws RepositoryException {
-            return 0;  
+            return 0;
         }
 
         /**
@@ -1195,7 +1211,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException if an error occurs.
          */
         public Session getSession() throws RepositoryException {
-            return null;  
+            return null;
         }
 
         /**
@@ -1208,7 +1224,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          *         <code>Node</code>, <code>false</code> if it is a <code>Property</code>.
          */
         public boolean isNode() {
-            return false;  
+            return false;
         }
 
         /**
@@ -1227,7 +1243,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @return <code>true</code> if this item is new; <code>false</code> otherwise.
          */
         public boolean isNew() {
-            return false;  
+            return false;
         }
 
         /**
@@ -1244,7 +1260,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @return <code>true</code> if this item is modified; <code>false</code> otherwise.
          */
         public boolean isModified() {
-            return false;  
+            return false;
         }
 
         /**
@@ -1285,7 +1301,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException if an error occurs.
          */
         public boolean isSame(Item otherItem) throws RepositoryException {
-            return false;  
+            return false;
         }
 
         /**
@@ -1298,7 +1314,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException if an error occurs.
          */
         public void accept(ItemVisitor visitor) throws RepositoryException {
-            
+
         }
 
         /**
@@ -1393,7 +1409,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          */
         public void save()
                 throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
-            
+
         }
 
         /**
@@ -1419,7 +1435,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException if another error occurs.
          */
         public void refresh(boolean keepChanges) throws InvalidItemStateException, RepositoryException {
-            
+
         }
 
         /**
@@ -1478,10 +1494,11 @@ public class JCRUserNode extends JCRNodeDecorator {
          */
         public void remove()
                 throws VersionException, LockException, ConstraintViolationException, AccessDeniedException, RepositoryException {
-            
+
         }
+
     }
-    
+
     protected JahiaUser lookupUser() {
         return ServicesRegistry.getInstance().getJahiaUserManagerService()
                 .lookupUser(node.getName());

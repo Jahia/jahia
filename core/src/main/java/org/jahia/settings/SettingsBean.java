@@ -180,6 +180,18 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean disableJsessionIdParameter = true;
     private String jsessionIdParameterName = "jsessionid";
 
+    private String guestResourceModuleName;
+    private String guestResourceKey;
+
+    private String rootResourceModuleName;
+    private String rootResourceKey;
+
+    private String usersResourceModuleName;
+    private String usersResourceKey;
+
+    private String administratorsResourceModuleName;
+    private String administratorsResourceKey;
+
     /**
      * Default constructor.
      *
@@ -330,6 +342,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             disableJsessionIdParameter = getBoolean("disableJsessionIdParameter", true);
             jsessionIdParameterName = getString("jsessionIdParameterName", "jsessionid");
+
+            guestResourceModuleName = getString("guestResourceModuleName");
+            guestResourceKey = getString("guestResourceKey");
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -817,6 +832,14 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public void setJsessionIdParameterName(String jsessionIdParameterName) {
         this.jsessionIdParameterName = jsessionIdParameterName;
+    }
+
+    public String getGuestResourceKey() {
+        return guestResourceKey;
+    }
+
+    public String getGuestResourceModuleName() {
+        return guestResourceModuleName;
     }
 
     /**

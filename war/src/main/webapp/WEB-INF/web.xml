@@ -267,7 +267,7 @@
         -->
         <init-param>
             <param-name>supported_jdk_versions</param-name>
-            <param-value>1.5 &lt;= x &lt; 1.7</param-value>
+            <param-value>1.5 &lt;= x &lt; 1.8</param-value>
         </init-param>
         <load-on-startup>8</load-on-startup>
     </servlet>

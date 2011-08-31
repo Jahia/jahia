@@ -157,6 +157,11 @@ public class VisibilityServiceTest {
             logger.debug("New activity=" + versioningTestActivity.getName());
         }
 
+        // Test GWT display template
+        String gwtDisplayTemplate = VisibilityService.getInstance().getConditions().get(
+                "jnt:startEndDateCondition").getGWTDisplayTemplate(Locale.ENGLISH);
+        assertNotNull(gwtDisplayTemplate);
+
         // get home page
         JCRNodeWrapper stageNode = stageRootNode.getNode("home");
 

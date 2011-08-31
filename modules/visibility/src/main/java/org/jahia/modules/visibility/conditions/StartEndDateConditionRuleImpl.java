@@ -68,7 +68,7 @@ public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
      * @return Return the associated display template that will be used by gwt.
      */
     public String getGWTDisplayTemplate(Locale locale) {
-        return JahiaResourceBundle.getString("JahiaVisibility", displayTemplateKey,locale, "visibility");
+        return JahiaResourceBundle.getString("JahiaVisibility", displayTemplateKey,locale, "Jahia Visibility");
     }
 
     public boolean matches(JCRNodeWrapper nodeWrapper) {

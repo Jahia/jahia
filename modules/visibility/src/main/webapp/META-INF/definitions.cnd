@@ -9,5 +9,5 @@
 [jnt:condition] > nt:base, jmix:observable, mix:versionable, mix:lastModified, jmix:lastPublished
 
 [jnt:startEndDateCondition] > jnt:condition
- - j:start (date, datetimepicker)
- - j:end   (date, datetimepicker)
+ - start (date, datetimepicker)
+ - end   (date, datetimepicker)

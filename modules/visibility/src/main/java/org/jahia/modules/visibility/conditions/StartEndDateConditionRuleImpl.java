@@ -43,10 +43,12 @@ import java.util.Calendar;
 import java.util.Locale;
 
 /**
- * Created by IntelliJ IDEA.
+ * This class handle the execution of a start/end date condition for checking a node visibility.
+ * If the current date is after the start date or if start date is not defined then the node is visible unless
+ * end date is defined and we are after end date.
  *
  * @author : rincevent
- * @since : JAHIA 6.1
+ * @since : JAHIA 6.6
  *        Created : 8/29/11
  */
 public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
@@ -75,16 +77,16 @@ public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
         Calendar start = null;
         Calendar end = null;
         try {
-            start = nodeWrapper.getProperty("j:start").getValue().getDate();
+            start = nodeWrapper.getProperty("start").getValue().getDate();
         } catch (PathNotFoundException e) {
-            logger.debug("j:start is not defined for this rule");
+            logger.debug("start is not defined for this rule");
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
         try {
-            end = nodeWrapper.getProperty("j:end").getValue().getDate();
+            end = nodeWrapper.getProperty("end").getValue().getDate();
         } catch (PathNotFoundException e) {
-            logger.debug("j:end is not defined for this rule");
+            logger.debug("end is not defined for this rule");
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

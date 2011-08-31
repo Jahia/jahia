@@ -39,7 +39,7 @@ import java.util.Locale;
 /**
  * Defines a visibility condition for a piece of content in Jahia.
  * @author rincevent
- * @since JAHIA 6.5
+ * @since JAHIA 6.6
  * Created : 8/29/11
  */
 public interface VisibilityConditionRule {

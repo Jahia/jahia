@@ -16,17 +16,17 @@ global Logger logger
 rule "Flush caches for start date visibility condition"
     salience 25
     when
-        A property j:start has been set on a node
+        A property start has been set on a node
              - the node has the type jnt:startEndDateCondition
     then
-        Execute the action "startDateVisibilityAction" at j:start on the node
+        Execute the action "startDateVisibilityAction" at start on the node
 end
 
 rule "Flush caches for end date visibility condition"
     salience 25
     when
-        A property j:end has been set on a node
+        A property end has been set on a node
              - the node has the type jnt:startEndDateCondition
     then
-        Execute the action "endDateVisibilityAction" at j:end on the node
+        Execute the action "endDateVisibilityAction" at end on the node
 end

@@ -174,7 +174,7 @@ public class VisibilityServiceTest {
         JCRNodeWrapper firstCondition = stagedSubPage.addNode("firstCondition", "jnt:startEndDateCondition");
         Calendar instance = Calendar.getInstance();
         instance.add(Calendar.MINUTE, 1);
-        firstCondition.setProperty("j:start", instance);
+        firstCondition.setProperty("start", instance);
         editSession.save();
         // Validate that content is not visible in preview
         GetMethod versionGet = new GetMethod(

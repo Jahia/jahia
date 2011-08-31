@@ -40,6 +40,8 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.ModelData;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.lang.StringUtils;
@@ -838,9 +840,16 @@ public class NavigationHelper {
 
         if (fields.contains(GWTJahiaNode.VISIBILITY_INFO)) {
             Map<JCRNodeWrapper, Boolean> conditionMatchesDetails = visibilityService.getConditionMatchesDetails(node);
-            Map<String,Boolean> visibilityInfo = new HashMap<String, Boolean>();
+            Map<GWTJahiaNode,ModelData> visibilityInfo = new HashMap<GWTJahiaNode, ModelData>();
             for (Map.Entry<JCRNodeWrapper, Boolean> entry : conditionMatchesDetails.entrySet()) {
-                visibilityInfo.put(entry.getKey().getName(), entry.getValue());
+                ModelData data = new BaseModelData();
+                data.set("matches",entry.getValue());
+                try {
+                    data.set("xtemplate",visibilityService.getConditions().get(entry.getKey().getPrimaryNodeTypeName()).getGWTDisplayTemplate(node.getSession().getLocale()));
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+                visibilityInfo.put(getGWTJahiaNode(entry.getKey(),Arrays.asList("start","end")), data);
             }
             n.setVisibilityInfo(visibilityInfo);
             n.setVisible(visibilityService.matchesConditions(node));

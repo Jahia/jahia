@@ -42,10 +42,15 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.core.XTemplate;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.http.client.URL;
@@ -55,6 +60,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -74,10 +80,7 @@ import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * First module of any rendered element.
@@ -533,54 +536,97 @@ public class MainModule extends Module {
                     if (!m.getPath().endsWith("*")) {
                         GWTJahiaNode currentNode = m.getNode();
                         if (currentNode != null) {
-                            List<AbstractImagePrototype> images = new ArrayList<AbstractImagePrototype>();
+                            List<LayoutContainer> images = new ArrayList<LayoutContainer>();
                             if (activeLayers.containsKey("acl") && currentNode.isHasAcl()) {
-                                images.add(ToolbarIconProvider.getInstance().getIcon(
-                                        "viewACLStatus"));
+                                AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
+                                        "viewACLStatus");
+                                LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                layoutContainer.add(icon.createImage());
+                                images.add(layoutContainer);
                             }
                             if (activeLayers.containsKey("publication")) {
-                                GWTJahiaPublicationInfo info = currentNode
-                                        .getAggregatedPublicationInfo();
-                                if (lastUnpublished == null
-                                        || !currentNode.getPath().startsWith(lastUnpublished)) {
+                                GWTJahiaPublicationInfo info = currentNode.getAggregatedPublicationInfo();
+                                if (lastUnpublished == null || !currentNode.getPath().startsWith(lastUnpublished)) {
                                     if (info.isLocked()) {
-                                        images.add(ToolbarIconProvider.getInstance().getIcon(
-                                                "publication/locked"));
+                                        AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
+                                                "publication/locked");
+                                        LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                        layoutContainer.add(icon.createImage());
+                                        images.add(layoutContainer);
                                     }
 
-                                    if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED
-                                            || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                                    if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED ||
+                                        info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                                         lastUnpublished = currentNode.getPath();
                                         if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
-                                            images.add(ToolbarIconProvider.getInstance().getIcon(
-                                                    "publication/unpublished"));
+                                            AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
+                                                    "publication/unpublished");
+                                            LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                            layoutContainer.add(icon.createImage());
+                                            images.add(layoutContainer);
                                         } else {
-                                            images.add(ToolbarIconProvider.getInstance().getIcon(
-                                                    "publication/notpublished"));
+                                            AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
+                                                    "publication/notpublished");
+                                            LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                            layoutContainer.add(icon.createImage());
+                                            images.add(layoutContainer);
                                         }
                                     } else if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
-                                        images.add(ToolbarIconProvider.getInstance().getIcon(
-                                                "publication/modified"));
-                                    } else if (info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
-                                        images.add(ToolbarIconProvider.getInstance().getIcon(
-                                                "publication/mandatorylanguageunpublishable"));
+                                        AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
+                                                "publication/modified");
+                                        LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                        layoutContainer.add(icon.createImage());
+                                        images.add(layoutContainer);
+                                    } else if (info.getStatus() ==
+                                               GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
+                                        AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
+                                                "publication/mandatorylanguageunpublishable");
+                                        LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                        layoutContainer.add(icon.createImage());
+                                        images.add(layoutContainer);
                                     } else if (info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID) {
-                                        images.add(ToolbarIconProvider.getInstance().getIcon(
-                                                "publication/mandatorylanguagevalid"));
+                                        AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
+                                                "publication/mandatorylanguagevalid");
+                                        LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                        layoutContainer.add(icon.createImage());
+                                        images.add(layoutContainer);
                                     }
                                 }
                             }
                             if (activeLayers.containsKey("visibility")) {
-                                Map<String,Boolean> visibility = currentNode.getVisibilityInfo();
+                                Map<GWTJahiaNode, ModelData> visibility = currentNode.getVisibilityInfo();
                                 if (!visibility.isEmpty()) {
                                     if (currentNode.isVisible()) {
                                         AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
                                                 "visibilityStatusGreen");
-                                        images.add(icon);
+                                        Image image = icon.createImage();
+                                        LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                        layoutContainer.add(image);
+                                        Set<Map.Entry<GWTJahiaNode, ModelData>> entries = visibility.entrySet();
+                                        String toolTip = "";
+                                        for (Map.Entry<GWTJahiaNode, ModelData> entry : entries) {
+                                            XTemplate tpl = XTemplate.create((String) entry.getValue().get(
+                                                    "xtemplate"));
+                                            toolTip += tpl.applyTemplate(com.extjs.gxt.ui.client.util.Util.getJsObject(
+                                                    entry.getKey()));
+                                        }
+                                        layoutContainer.setToolTip(toolTip);
+                                        images.add(layoutContainer);
                                     } else {
                                         AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
                                                 "visibilityStatusRed");
-                                        images.add(icon);
+                                        LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                        layoutContainer.add(icon.createImage());
+                                        Set<Map.Entry<GWTJahiaNode, ModelData>> entries = visibility.entrySet();
+                                        String toolTip = "";
+                                        for (Map.Entry<GWTJahiaNode, ModelData> entry : entries) {
+                                            XTemplate tpl = XTemplate.create((String) entry.getValue().get(
+                                                    "xtemplate"));
+                                            toolTip += tpl.applyTemplate(com.extjs.gxt.ui.client.util.Util.getJsObject(
+                                                    entry.getKey()));
+                                        }
+                                        layoutContainer.setToolTip(toolTip);
+                                        images.add(layoutContainer);
                                     }
                                 }
                             }

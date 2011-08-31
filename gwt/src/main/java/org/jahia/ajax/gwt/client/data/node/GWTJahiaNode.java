@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.client.data.node;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.extjs.gxt.ui.client.data.ListLoadConfig;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -360,11 +361,11 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return get(SITE_KEY);
     }
 
-    public void setVisibilityInfo(Map<String,Boolean> visible) {
+    public void setVisibilityInfo(Map<GWTJahiaNode,ModelData> visible) {
         set(VISIBILITY_INFO, visible);
     }
 
-    public Map<String,Boolean> getVisibilityInfo() {
+    public Map<GWTJahiaNode,ModelData> getVisibilityInfo() {
         return get(VISIBILITY_INFO);
     }
 

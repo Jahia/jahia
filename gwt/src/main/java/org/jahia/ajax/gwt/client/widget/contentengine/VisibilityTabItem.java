@@ -24,6 +24,8 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -46,6 +48,9 @@ public class VisibilityTabItem extends EditEngineTabItem {
     private transient Map<String, PropertiesEditor> propertiesEditorMap = new HashMap<String, PropertiesEditor>();
     private transient ListStore<GWTJahiaNode> conditionsStore;
     private transient List<GWTJahiaNode> deleted;
+    private transient CheckBox allConditionsMatch;
+    private transient boolean oneTrue;
+    private transient boolean oneFalse;
 
     @Override
     public void init(NodeHolder engine, AsyncTabItem tab, String language) {
@@ -59,45 +64,47 @@ public class VisibilityTabItem extends EditEngineTabItem {
         LayoutContainer top = new LayoutContainer(new FillLayout(Style.Orientation.VERTICAL));
         tab.add(top, new RowData(1, 60, new Margins(5)));
 
-        Text status = new Text("Current status : ");
-        top.add(status);
+        final HorizontalPanel statusPanel = new HorizontalPanel();
+        statusPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
+        top.add(statusPanel);
 
-        HorizontalPanel p = new HorizontalPanel();
-        p.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
-        top.add(p);
+        statusPanel.add(new Text(Messages.get("label.visibility.currentStatus", "Current status") + " : &nbsp;"));
 
-        Text addText = new Text("Add new condition : ");
-        p.add(addText);
+        HorizontalPanel addPanel = new HorizontalPanel();
+        addPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
+        top.add(addPanel);
 
-//        RpcProxy<List<GWTJahiaNodeType>> typesProxy = new RpcProxy<List<GWTJahiaNodeType>>() {
-//            protected void load(Object loadConfig, final AsyncCallback<List<GWTJahiaNodeType>> listAsyncCallback) {
-//                JahiaContentManagementService.App.getInstance().getSubNodeTypes(Arrays.asList("jnt:condition"), listAsyncCallback);
-//            }
-//        };
-//        final ListLoader<GWTJahiaNodeType> typesLoader = new BaseListLoader(typesProxy);
+        addPanel.add(new Text(Messages.get("label.visibility.allConditionsMatch", "All conditions should match")+" : "));
+        allConditionsMatch = new CheckBox();
+        allConditionsMatch.addListener(Events.Change, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent event) {
+                statusPanel.removeAll();
+                statusPanel.add(new Text(Messages.get("label.visibility.currentStatus", "Current status") + " : &nbsp;"));
+                if ((allConditionsMatch.getValue() && !oneFalse) || (!allConditionsMatch.getValue() && oneTrue)) {
+                    statusPanel.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusGreen").createImage());
+                } else {
+                    statusPanel.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusRed").createImage());
+                }
+                statusPanel.layout();
+            }
+        });
+        addPanel.add(allConditionsMatch);
+
+        addPanel.add(new Text("&nbsp; "+Messages.get("label.visibility.addCondition", "Add new condition")+" : "));
         final ListStore<GWTJahiaNodeType> typesStore = new ListStore<GWTJahiaNodeType>();
         final ComboBox<GWTJahiaNodeType> types = new ComboBox<GWTJahiaNodeType>();
         types.setDisplayField("label");
         types.setStore(typesStore);
-        p.add(types);
+        types.setWidth(250);
+        addPanel.add(types);
 
         final Map<String, GWTJahiaNodeType> typesMap = new HashMap<String, GWTJahiaNodeType>();
 
         final Button add = new Button();
         add.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
         add.setEnabled(false);
-        p.add(add);
+        addPanel.add(add);
 
-//        // data proxy
-//        RpcProxy<List<GWTJahiaNode>> conditionsProxy = new RpcProxy<List<GWTJahiaNode>>() {
-//            @Override
-//            protected void load(Object loadConfig, AsyncCallback<List<GWTJahiaNode>> callback) {
-//                List<String> l = new ArrayList<String>(GWTJahiaNode.DEFAULT_FIELDS);
-//                JahiaContentManagementService.App.getInstance().searchSQL("select * from [jnt:condition] as c where ischildnode(c,['" + node.getPath() + "'])", -1, null, null, null,
-//                        l, true, callback);
-//            }
-//        };
-//        ListLoader<GWTJahiaNode> conditionsLoader = new BaseListLoader(conditionsProxy);
         conditionsStore = new ListStore<GWTJahiaNode>();
         deleted = new ArrayList<GWTJahiaNode>();
 
@@ -300,6 +307,25 @@ public class VisibilityTabItem extends EditEngineTabItem {
                 }
 
                 conditionsStore.add((List<GWTJahiaNode>) result.get("conditions"));
+
+                allConditionsMatch.setValue(result.<Boolean>get("matchesAllCondition"));
+
+                if (result.get("currentStatus").equals(Boolean.TRUE)) {
+                    statusPanel.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusGreen").createImage());
+                } else {
+                    statusPanel.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusRed").createImage());
+                }
+                statusPanel.layout();
+
+                for (GWTJahiaNode model : conditionsStore.getModels()) {
+                    if (model.get("conditionMatch") != null) {
+                        if (model.get("conditionMatch").equals(Boolean.TRUE)) {
+                            oneTrue = true;
+                        } else {
+                            oneFalse = true;
+                        }
+                    }
+                }
             }
         });
 
@@ -312,6 +338,9 @@ public class VisibilityTabItem extends EditEngineTabItem {
             propertiesEditorMap = new HashMap<String, PropertiesEditor>();
             conditionsStore = null;
             deleted = null;
+            allConditionsMatch = null;
+            oneTrue = false;
+            oneFalse = false;
         }
         super.setProcessed(processed);
     }
@@ -328,6 +357,10 @@ public class VisibilityTabItem extends EditEngineTabItem {
             }
             list.addAll(deleted);
             node.set("visibilityConditions", list);
+            if (allConditionsMatch.isDirty()) {
+                changedProperties.add(new GWTJahiaNodeProperty("matchesAllCondition",
+                        new GWTJahiaNodePropertyValue(allConditionsMatch.getValue().toString(), GWTJahiaNodePropertyType.BOOLEAN)));
+            }
         }
     }
 }

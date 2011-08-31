@@ -30,37 +30,28 @@
  * between you and Jahia Limited. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.modules.actions;
+package org.jahia.services.visibility;
 
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.rules.BackgroundAction;
-import org.jahia.services.render.filter.cache.ModuleCacheProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.jcr.RepositoryException;
+import org.jahia.services.Conditional;
 
 /**
- * Background action that invalidates output caches for the node, having start/end date visibility condition.
+ * Base class for visibility condition rules.
  * 
- * @author rincevent
- * @since JAHIA 6.6
- * Created : 8/29/11
+ * @author Sergiy Shyrkov
  */
-public abstract class DateVisibilityConditionBackgroundAction implements BackgroundAction {
-    private transient static Logger logger = LoggerFactory.getLogger(DateVisibilityConditionBackgroundAction.class);
-    private ModuleCacheProvider cacheProvider;
+public abstract class BaseVisibilityConditionRule implements VisibilityConditionRule, Conditional {
 
-    public void setCacheProvider(ModuleCacheProvider cacheProvider) {
-        this.cacheProvider = cacheProvider;
+    private String associatedNodeType;
+
+    public void setAssociatedNodeType(String associatedNodeType) {
+        this.associatedNodeType = associatedNodeType;
     }
 
-    public void executeBackgroundAction(JCRNodeWrapper node) {
-        try {
-            cacheProvider.invalidate(node.getParent().getPath());
-            cacheProvider.invalidate(node.getParent().getParent().getPath());
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
+    public String getAssociatedNodeType() {
+        return associatedNodeType;
+    }
+
+    public boolean evaluate() {
+        return true;
     }
 }

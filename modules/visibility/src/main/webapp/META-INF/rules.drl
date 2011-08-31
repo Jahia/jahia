@@ -3,6 +3,7 @@ package org.jahia.modules.visibility.rules
 
 #list any import classes here.
 import org.jahia.services.content.rules.*
+import org.jahia.modules.visibility.rules.*
 import org.slf4j.Logger
 
 expander rules.dsl
@@ -11,6 +12,7 @@ expander rules.dsl
 global User user
 global Service service
 global Logger logger
+global VisibilityRuleService visibilityService 
 ###############################################################################
 
 rule "Flush caches for start date visibility condition"
@@ -29,4 +31,12 @@ rule "Flush caches for end date visibility condition"
              - the node has the type jnt:startEndDateCondition
     then
         Execute the action "endDateVisibilityAction" at end on the node
+end
+
+rule "Import legacy visibility settings"
+    when
+        A property j:legacyRuleSettings has been set on a node
+             - the node has the type jmix:conditionalVisibility
+    then
+        Import legacy visibility settings propertyValueAsString on the node
 end

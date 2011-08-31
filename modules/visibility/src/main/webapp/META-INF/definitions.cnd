@@ -3,7 +3,8 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 [jmix:conditionalVisibility] mixin
-- matchesAllCondition (boolean) = false autocreated
+ - j:forceMatchAllConditions (boolean) = false autocreated
+ - j:legacyRuleSettings (string) hidden indexed=no
  + * (jnt:condition)
 
 [jnt:condition] > nt:base, jmix:observable, mix:versionable, mix:lastModified, jmix:lastPublished

@@ -340,4 +340,55 @@
         <value>j:lockTypes</value>
         <value>j:processId</value>
     </util:set>
+    
+    <util:map id="ImportDefinitionsMappingMetadata">
+        <entry key="jahia:defaultCategory">
+            <bean class="org.jahia.services.importexport.DefinitionsMapping$PropertyMapping">
+                <constructor-arg index="0" value="jahia:defaultCategory"/>
+                <constructor-arg index="1" value="jmix:categorized|j:defaultCategory"/>
+            </bean>
+        </entry>
+        <entry key="jahia:keywords">
+            <bean class="org.jahia.services.importexport.DefinitionsMapping$PropertyMapping">
+                <constructor-arg index="0" value="jahia:keywords"/>
+                <constructor-arg index="1" value="jmix:keywords|j:keywords"/>
+            </bean>
+        </entry>
+        <entry key="jahia:description">
+            <bean class="org.jahia.services.importexport.DefinitionsMapping$PropertyMapping">
+                <constructor-arg index="0" value="jahia:description"/>
+                <constructor-arg index="1" value="jmix:description|jcr:description"/>
+            </bean>
+        </entry>
+        <entry key="jahia:createdBy">
+            <bean class="org.jahia.services.importexport.DefinitionsMapping$PropertyMapping">
+                <constructor-arg index="0" value="jahia:createdBy"/>
+                <constructor-arg index="1" value="mix:created|jcr:createdBy"/>
+            </bean>
+        </entry>
+        <entry key="jahia:lastModifiedBy">
+            <bean class="org.jahia.services.importexport.DefinitionsMapping$PropertyMapping">
+                <constructor-arg index="0" value="jahia:lastModifiedBy"/>
+                <constructor-arg index="1" value="mix:lastModified|jcr:lastModifiedBy"/>
+            </bean>
+        </entry>
+        <entry key="jahia:lastPublishingDate">
+            <bean class="org.jahia.services.importexport.DefinitionsMapping$PropertyMapping">
+                <constructor-arg index="0" value="jahia:lastPublishingDate"/>
+                <constructor-arg index="1" value="jmix:lastPublished|j:lastPublished"/>
+            </bean>
+        </entry>
+        <entry key="jahia:lastPublisher">
+            <bean class="org.jahia.services.importexport.DefinitionsMapping$PropertyMapping">
+                <constructor-arg index="0" value="jahia:lastPublisher"/>
+                <constructor-arg index="1" value="jmix:lastPublished|j:lastPublishedBy"/>
+            </bean>
+        </entry>
+        <entry key="jahia:ruleSettings">
+            <bean class="org.jahia.services.importexport.DefinitionsMapping$PropertyMapping">
+                <constructor-arg index="0" value="jahia:ruleSettings"/>
+                <constructor-arg index="1" value="jmix:conditionalVisibility|j:legacyRuleSettings"/>
+            </bean>
+        </entry>
+    </util:map>
 </beans>

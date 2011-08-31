@@ -32,9 +32,9 @@
  */
 package org.jahia.modules.actions;
 
-import org.apache.log4j.Logger;
-
 /**
+ * Background action that invalidates output caches for the node, having start/end date visibility condition.
+ * 
  * @author rincevent
  * @since JAHIA 6.6
  * Created : 8/29/11

@@ -32,23 +32,26 @@
  */
 package org.jahia.services.visibility;
 
-import org.apache.log4j.Logger;
+import org.jahia.services.Conditional;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * Service implementation for evaluating visibility conditions on a content item.
+ * 
  * @author rincevent
  * @since JAHIA 6.6
  * Created : 8/29/11
  */
 public class VisibilityService {
-    private transient static Logger logger = Logger.getLogger(VisibilityService.class);
+    private transient static Logger logger = LoggerFactory.getLogger(VisibilityService.class);
 
     private static volatile VisibilityService instance;
 
@@ -71,11 +74,20 @@ public class VisibilityService {
 
     public void setConditions(Map<String, VisibilityConditionRule> conditions) {
         if (conditions != null) {
-            this.conditions.putAll(conditions);
+            for (Map.Entry<String, VisibilityConditionRule> cond : conditions.entrySet()) {
+                addCondition(cond.getKey(), cond.getValue());
+            }
         }
     }
 
     public void addCondition(String conditionType, VisibilityConditionRule instance) {
+        if (instance instanceof Conditional) {
+            if (!((Conditional) instance).evaluate()) {
+                logger.info("Visibility condition of type {} is considered disabled. Skipping it.",
+                        conditionType);
+                return;
+            }
+        }
         this.conditions.put(conditionType, instance);
     }
 
@@ -85,9 +97,9 @@ public class VisibilityService {
         }
         try {
             if (node.isNodeType("jmix:conditionalVisibility")) {
-                boolean matchesAllCondition = node.getProperty("matchesAllCondition").getBoolean();
+                boolean forceMatchAllConditions = node.getProperty("j:forceMatchAllConditions").getBoolean();
                 List<JCRNodeWrapper> childrenOfType = JCRContentUtils.getChildrenOfType(node, "jnt:condition");
-                if (matchesAllCondition) {
+                if (forceMatchAllConditions) {
                     boolean matches = true;
                     for (JCRNodeWrapper nodeWrapper : childrenOfType) {
                         if (matches) {

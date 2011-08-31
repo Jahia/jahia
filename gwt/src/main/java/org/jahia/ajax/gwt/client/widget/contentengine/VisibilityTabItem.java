@@ -325,7 +325,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
                     }
                 }
 
-                allConditionsMatch.setValue(result.<Boolean>get("matchesAllCondition"));
+                allConditionsMatch.setValue(result.<Boolean>get("j:forceMatchAllConditions"));
 
                 statusPanel.layout();
 
@@ -373,7 +373,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
             list.addAll(deleted);
             node.set("visibilityConditions", list);
             if (allConditionsMatch.isDirty()) {
-                changedProperties.add(new GWTJahiaNodeProperty("matchesAllCondition",
+                changedProperties.add(new GWTJahiaNodeProperty("j:forceMatchAllConditions",
                         new GWTJahiaNodePropertyValue(allConditionsMatch.getValue().toString(), GWTJahiaNodePropertyType.BOOLEAN)));
             }
         }

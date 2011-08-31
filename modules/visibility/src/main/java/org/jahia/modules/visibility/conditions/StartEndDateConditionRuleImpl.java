@@ -32,38 +32,31 @@
  */
 package org.jahia.modules.visibility.conditions;
 
-import org.apache.log4j.Logger;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.visibility.VisibilityConditionRule;
-import org.jahia.utils.i18n.JahiaResourceBundle;
-
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.visibility.BaseVisibilityConditionRule;
+import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class handle the execution of a start/end date condition for checking a node visibility.
  * If the current date is after the start date or if start date is not defined then the node is visible unless
  * end date is defined and we are after end date.
  *
- * @author : rincevent
- * @since : JAHIA 6.6
- *        Created : 8/29/11
+ * @author rincevent
+ * @since JAHIA 6.6
+ * Created : 8/29/11
  */
-public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
-    private transient static Logger logger = Logger.getLogger(StartEndDateConditionRuleImpl.class);
-    private String associatedNodeType;
-
-    public void setAssociatedNodeType(String associatedNodeType) {
-        this.associatedNodeType = associatedNodeType;
-    }
-
-    public String getAssociatedNodeType() {
-        return associatedNodeType;
-    }
+public class StartEndDateConditionRuleImpl extends BaseVisibilityConditionRule {
+    private transient static Logger logger = LoggerFactory.getLogger(StartEndDateConditionRuleImpl.class);
 
     /**
      * Return the associated display template that will be used by gwt.

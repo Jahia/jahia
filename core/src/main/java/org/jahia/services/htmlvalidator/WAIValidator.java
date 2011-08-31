@@ -56,10 +56,11 @@ import net.htmlparser.jericho.StartTag;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.jahia.services.htmlvalidator.Result.Type;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMException;
 
 /**
@@ -72,7 +73,7 @@ import org.w3c.dom.DOMException;
  */
 public class WAIValidator {
 
-    private static final Logger logger = Logger.getLogger(WAIValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(WAIValidator.class);
 
     private boolean isDataTable = true;
     private int formLevel;

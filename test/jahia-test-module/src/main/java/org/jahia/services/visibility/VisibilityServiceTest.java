@@ -138,7 +138,7 @@ public class VisibilityServiceTest {
     }
 
     @Test
-    public void testVersionRender() throws RepositoryException, ParseException {
+    public void testVisibilityRender() throws RepositoryException, ParseException {
         JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
         JCRVersionService jcrVersionService = ServicesRegistry.getInstance().getJCRVersionService();
         JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE,
@@ -147,15 +147,6 @@ public class VisibilityServiceTest {
                 Locale.ENGLISH);
 
         JCRNodeWrapper stageRootNode = editSession.getNode(SITECONTENT_ROOT_NODE);
-
-        Node versioningTestActivity = editSession.getWorkspace().getVersionManager().createActivity("versioningTest");
-        Node previousActivity = editSession.getWorkspace().getVersionManager().setActivity(versioningTestActivity);
-        if (previousActivity != null) {
-            logger.debug("Previous activity=" + previousActivity.getName() + " new activity=" +
-                         versioningTestActivity.getName());
-        } else {
-            logger.debug("New activity=" + versioningTestActivity.getName());
-        }
 
         // Test GWT display template
         String gwtDisplayTemplate = VisibilityService.getInstance().getConditions().get(
@@ -177,13 +168,13 @@ public class VisibilityServiceTest {
         firstCondition.setProperty("start", instance);
         editSession.save();
         // Validate that content is not visible in preview
-        GetMethod versionGet = new GetMethod(
+        GetMethod visibilityGet = new GetMethod(
                 "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/default/en" + stageNode.getPath() +
                 ".html");
         try {
-            int responseCode = client.executeMethod(versionGet);
+            int responseCode = client.executeMethod(visibilityGet);
             assertEquals("Response code " + responseCode, 200, responseCode);
-            String responseBody = versionGet.getResponseBodyAsString();
+            String responseBody = visibilityGet.getResponseBodyAsString();
             logger.debug("Response body=[" + responseBody + "]");
             assertFalse("Could find non expected value (Page not visible) in response body", responseBody.indexOf(
                     "Page not visible") > 0);
@@ -205,13 +196,13 @@ public class VisibilityServiceTest {
 
 
         // Validate that content is not visible in live
-        versionGet = new GetMethod(
+        visibilityGet = new GetMethod(
                 "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" + stageNode.getPath() +
                 ".html");
         try {
-            int responseCode = client.executeMethod(versionGet);
+            int responseCode = client.executeMethod(visibilityGet);
             assertEquals("Response code " + responseCode, 200, responseCode);
-            String responseBody = versionGet.getResponseBodyAsString();
+            String responseBody = visibilityGet.getResponseBodyAsString();
             logger.debug("Response body=[" + responseBody + "]");
             assertFalse("Could find non expected value (Page not visible) in response body", responseBody.indexOf(
                     "Page not visible") > 0);
@@ -226,9 +217,9 @@ public class VisibilityServiceTest {
         }
         // Validate that content is visible in live
         try {
-            int responseCode = client.executeMethod(versionGet);
+            int responseCode = client.executeMethod(visibilityGet);
             assertEquals("Response code " + responseCode, 200, responseCode);
-            String responseBody = versionGet.getResponseBodyAsString();
+            String responseBody = visibilityGet.getResponseBodyAsString();
             logger.debug("Response body=[" + responseBody + "]");
             assertTrue("Could not find expected value (Page not visible) in response body", responseBody.indexOf(
                     "Page not visible") > 0);

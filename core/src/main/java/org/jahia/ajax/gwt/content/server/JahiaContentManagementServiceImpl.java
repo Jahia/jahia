@@ -2035,7 +2035,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
 
             result.set("conditions", conditions);
-            result.set("matchesAllCondition", node.getProperty("matchesAllCondition").getValue());
+            if(node.isNodeType("jmix:conditionalVisibility")) {
+                result.set("matchesAllCondition", node.getProperty("matchesAllCondition").getValue().getBoolean());
+            } else {
+                result.set("matchesAllCondition",false);
+            }
             result.set("currentStatus", visibilityService.matchesConditions(node));
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e);

@@ -337,4 +337,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void getWFFormForNodeAndNodeType(String formResourceName,
                                      AsyncCallback<GWTJahiaNodeType> asyncCallback);
+
+    void getVisibilityInformation(String path, AsyncCallback<ModelData> asyncCallback);
+
 }

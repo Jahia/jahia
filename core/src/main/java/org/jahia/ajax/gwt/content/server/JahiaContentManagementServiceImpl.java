@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.content.server;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
 import net.htmlparser.jericho.HTMLElementName;
@@ -95,6 +96,8 @@ import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.visibility.VisibilityConditionRule;
+import org.jahia.services.visibility.VisibilityService;
 import org.jahia.utils.EncryptionUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -2006,4 +2009,38 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 //        }
     }
 
+
+    public ModelData getVisibilityInformation(String path) throws GWTJahiaServiceException {
+        ModelData result = new BaseModelData();
+        try {
+            VisibilityService visibilityService = VisibilityService.getInstance();
+            Map<String, VisibilityConditionRule> conditionsClasses = visibilityService.getConditions();
+            List<GWTJahiaNodeType> types = new ArrayList<GWTJahiaNodeType>();
+            for (Map.Entry<String, VisibilityConditionRule> entry : conditionsClasses.entrySet()) {
+                GWTJahiaNodeType type = getNodeType(entry.getKey());
+                type.set("xtemplate", entry.getValue().getGWTDisplayTemplate(getLocale()));
+                types.add(type);
+            }
+            result.set("types", types);
+
+            JCRNodeWrapper node = retrieveCurrentSession().getNode(path);
+            Map<JCRNodeWrapper, Boolean> conditionMatchesDetails = visibilityService.getConditionMatchesDetails(node);
+
+            List<GWTJahiaNode> conditions = new ArrayList<GWTJahiaNode>();
+
+            for (Map.Entry<JCRNodeWrapper, Boolean> entry : conditionMatchesDetails.entrySet()) {
+                GWTJahiaNode jahiaNode = navigation.getGWTJahiaNode(entry.getKey(), Arrays.asList(GWTJahiaNode.PUBLICATION_INFO, "start", "end"));
+                jahiaNode.set("conditionMatch", entry.getValue());
+                conditions.add(jahiaNode);
+            }
+
+            result.set("conditions", conditions);
+            result.set("matchesAllCondition", node.getProperty("matchesAllCondition").getValue());
+            result.set("currentStatus", visibilityService.matchesConditions(node));
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e);
+        }
+
+        return result;
+    }
 }

@@ -403,6 +403,8 @@ public interface JahiaContentManagementService extends RemoteService {
     GWTJahiaNodeType getWFFormForNodeAndNodeType(String formResourceName)
             throws GWTJahiaServiceException;
 
+    public ModelData getVisibilityInformation(String path) throws GWTJahiaServiceException;
+
     // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

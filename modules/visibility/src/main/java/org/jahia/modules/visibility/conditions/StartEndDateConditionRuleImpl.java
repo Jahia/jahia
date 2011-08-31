@@ -54,7 +54,6 @@ import java.util.Locale;
 public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
     private transient static Logger logger = Logger.getLogger(StartEndDateConditionRuleImpl.class);
     private String associatedNodeType;
-    private String displayTemplateKey;
 
     public void setAssociatedNodeType(String associatedNodeType) {
         this.associatedNodeType = associatedNodeType;
@@ -70,7 +69,7 @@ public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
      * @return Return the associated display template that will be used by gwt.
      */
     public String getGWTDisplayTemplate(Locale locale) {
-        return JahiaResourceBundle.getString("JahiaVisibility", displayTemplateKey,locale, "Jahia Visibility");
+        return JahiaResourceBundle.getString("JahiaVisibility", "label.startEndDateCondition.xtemplate",locale, "Jahia Visibility");
     }
 
     public boolean matches(JCRNodeWrapper nodeWrapper) {
@@ -111,11 +110,4 @@ public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
         return true;
     }
 
-    public void setDisplayTemplateKey(String displayTemplateKey) {
-        this.displayTemplateKey = displayTemplateKey;
-    }
-
-    public String getDisplayTemplateKey() {
-        return displayTemplateKey;
-    }
 }

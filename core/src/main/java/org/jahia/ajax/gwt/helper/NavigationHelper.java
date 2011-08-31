@@ -837,7 +837,12 @@ public class NavigationHelper {
         }
 
         if (fields.contains(GWTJahiaNode.VISIBILITY_INFO)) {
-            n.setVisibilityInfo(visibilityService.getConditionMatchesDetails(node));
+            Map<JCRNodeWrapper, Boolean> conditionMatchesDetails = visibilityService.getConditionMatchesDetails(node);
+            Map<String,Boolean> visibilityInfo = new HashMap<String, Boolean>();
+            for (Map.Entry<JCRNodeWrapper, Boolean> entry : conditionMatchesDetails.entrySet()) {
+                visibilityInfo.put(entry.getKey().getName(), entry.getValue());
+            }
+            n.setVisibilityInfo(visibilityInfo);
             n.setVisible(visibilityService.matchesConditions(node));
         }
 

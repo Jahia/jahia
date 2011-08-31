@@ -120,15 +120,15 @@ public class VisibilityService {
         }
     }
 
-    public Map<String,Boolean> getConditionMatchesDetails(JCRNodeWrapper node) {
-        Map<String, Boolean> conditions = new HashMap<String, Boolean>();
+    public Map<JCRNodeWrapper,Boolean> getConditionMatchesDetails(JCRNodeWrapper node) {
+        Map<JCRNodeWrapper, Boolean> conditions = new HashMap<JCRNodeWrapper, Boolean>();
         try {
             if (node.isNodeType("jmix:conditionalVisibility")) {
                 List<JCRNodeWrapper> childrenOfType = JCRContentUtils.getChildrenOfType(node, "jnt:condition");
                 for (JCRNodeWrapper nodeWrapper : childrenOfType) {
                     VisibilityConditionRule rule = this.conditions.get(nodeWrapper.getPrimaryNodeTypeName());
                     if (rule != null) {
-                        conditions.put(nodeWrapper.getName(),rule.matches(nodeWrapper));
+                        conditions.put(nodeWrapper,rule.matches(nodeWrapper));
                     }
                 }
             }

@@ -12,6 +12,5 @@
     </bean>
     <bean class="org.jahia.modules.visibility.conditions.StartEndDateConditionRuleImpl">
         <property name="associatedNodeType" value="jnt:startEndDateCondition"/>
-        <property name="displayTemplateKey" value="label.startEndDateCondition.startend"/>
     </bean>
 </beans>

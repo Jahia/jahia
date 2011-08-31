@@ -1,10 +1,8 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.BaseListLoader;
-import com.extjs.gxt.ui.client.data.ListLoader;
-import com.extjs.gxt.ui.client.data.LoadEvent;
-import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.core.XTemplate;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -19,7 +17,7 @@ import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
@@ -32,6 +30,7 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
@@ -70,12 +69,12 @@ public class VisibilityTabItem extends EditEngineTabItem {
         Text addText = new Text("Add new condition : ");
         p.add(addText);
 
-        RpcProxy<List<GWTJahiaNodeType>> typesProxy = new RpcProxy<List<GWTJahiaNodeType>>() {
-            protected void load(Object loadConfig, final AsyncCallback<List<GWTJahiaNodeType>> listAsyncCallback) {
-                JahiaContentManagementService.App.getInstance().getSubNodeTypes(Arrays.asList("jnt:condition"), listAsyncCallback);
-            }
-        };
-        final ListLoader<GWTJahiaNodeType> typesLoader = new BaseListLoader(typesProxy);
+//        RpcProxy<List<GWTJahiaNodeType>> typesProxy = new RpcProxy<List<GWTJahiaNodeType>>() {
+//            protected void load(Object loadConfig, final AsyncCallback<List<GWTJahiaNodeType>> listAsyncCallback) {
+//                JahiaContentManagementService.App.getInstance().getSubNodeTypes(Arrays.asList("jnt:condition"), listAsyncCallback);
+//            }
+//        };
+//        final ListLoader<GWTJahiaNodeType> typesLoader = new BaseListLoader(typesProxy);
         final ListStore<GWTJahiaNodeType> typesStore = new ListStore<GWTJahiaNodeType>();
         final ComboBox<GWTJahiaNodeType> types = new ComboBox<GWTJahiaNodeType>();
         types.setDisplayField("label");
@@ -89,37 +88,51 @@ public class VisibilityTabItem extends EditEngineTabItem {
         add.setEnabled(false);
         p.add(add);
 
-        // data proxy
-        RpcProxy<List<GWTJahiaNode>> conditionsProxy = new RpcProxy<List<GWTJahiaNode>>() {
-            @Override
-            protected void load(Object loadConfig, AsyncCallback<List<GWTJahiaNode>> callback) {
-                List<String> l = new ArrayList<String>(GWTJahiaNode.DEFAULT_FIELDS);
-                JahiaContentManagementService.App.getInstance().searchSQL("select * from [jnt:condition] as c where ischildnode(c,['" + node.getPath() + "'])", -1, null, null, null,
-                        l, true, callback);
-            }
-        };
-        ListLoader<GWTJahiaNode> conditionsLoader = new BaseListLoader(conditionsProxy);
-        conditionsStore = new ListStore<GWTJahiaNode>(conditionsLoader);
+//        // data proxy
+//        RpcProxy<List<GWTJahiaNode>> conditionsProxy = new RpcProxy<List<GWTJahiaNode>>() {
+//            @Override
+//            protected void load(Object loadConfig, AsyncCallback<List<GWTJahiaNode>> callback) {
+//                List<String> l = new ArrayList<String>(GWTJahiaNode.DEFAULT_FIELDS);
+//                JahiaContentManagementService.App.getInstance().searchSQL("select * from [jnt:condition] as c where ischildnode(c,['" + node.getPath() + "'])", -1, null, null, null,
+//                        l, true, callback);
+//            }
+//        };
+//        ListLoader<GWTJahiaNode> conditionsLoader = new BaseListLoader(conditionsProxy);
+        conditionsStore = new ListStore<GWTJahiaNode>();
         deleted = new ArrayList<GWTJahiaNode>();
 
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig name = new ColumnConfig("name", Messages.get("label.title"), 500);
-//        name.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-//            public Object render(GWTJahiaNode condition, String property, com.extjs.gxt.ui.client.widget.grid.ColumnData config, int rowIndex, int colIndex,
-//                                 ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
-//                Object v = condition.get(property);
-//                if (condition.getNodeTypes().contains("jmix:markedForDeletion")) {
-//                    v = "<span class=\"markedForDeletion\">" + v + "</span>";
-//                }
-//                return v;
-//            }
-//        });
+        name.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
+            public Object render(GWTJahiaNode condition, String property, com.extjs.gxt.ui.client.widget.grid.ColumnData config, int rowIndex, int colIndex,
+                                 ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
+                String typeName = condition.getNodeTypes().get(0);
+                XTemplate tpl = typesMap.get(typeName).get("compiledTemplate");
+                return tpl.applyTemplate(com.extjs.gxt.ui.client.util.Util.getJsObject(condition));
+            }
+        });
         name.setFixed(true);
         configs.add(name);
 
+        ColumnConfig conditionStatus = new ColumnConfig("status", Messages.get("label.status"), 100);
+        conditionStatus.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
+            public Object render(GWTJahiaNode model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
+                if (model.get("conditionMatch") != null) {
+                    if (model.get("conditionMatch").equals(Boolean.TRUE)) {
+                        AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon("visibilityStatusGreen");
+                        return icon.getHTML();
+                    } else {
+                        AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon("visibilityStatusRed");
+                        return icon.getHTML();
+                    }
+                }
+                return "";
+            }
+        });
+        configs.add(conditionStatus);
+
         ColumnConfig remove = new ColumnConfig("remove", Messages.get("label.remove"), 100);
-        remove.setAlignment(Style.HorizontalAlignment.RIGHT);
         remove.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public Object render(final GWTJahiaNode condition, String property, com.extjs.gxt.ui.client.widget.grid.ColumnData config, final int rowIndex, final int colIndex, ListStore<GWTJahiaNode> listStore, final Grid<GWTJahiaNode> grid) {
                 final Button button;
@@ -266,18 +279,6 @@ public class VisibilityTabItem extends EditEngineTabItem {
             }
         });
 
-        typesLoader.addLoadListener(new LoadListener() {
-            @Override
-            public void loaderLoad(LoadEvent le) {
-                List<GWTJahiaNodeType> l = (List<GWTJahiaNodeType>) le.getData();
-                typesStore.add(l);
-                types.setSelection(Arrays.asList(l.get(0)));
-                for (GWTJahiaNodeType type : l) {
-                    typesMap.put(type.getName(), type);
-                }
-            }
-        });
-
         types.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNodeType>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNodeType> se) {
@@ -286,8 +287,22 @@ public class VisibilityTabItem extends EditEngineTabItem {
         });
 
 
-        conditionsLoader.load();
-        typesLoader.load();
+        JahiaContentManagementService.App.getInstance().getVisibilityInformation(node.getPath(), new BaseAsyncCallback<ModelData>() {
+            public void onSuccess(ModelData result) {
+                List<GWTJahiaNodeType> l = (List<GWTJahiaNodeType>) result.get("types");
+                typesStore.add(l);
+                types.setSelection(Arrays.asList(l.get(0)));
+                for (GWTJahiaNodeType type : l) {
+                    typesMap.put(type.getName(), type);
+                    XTemplate tpl = XTemplate.create((String) type.get("xtemplate"));
+                    tpl.compile();
+                    type.set("compiledTemplate", tpl);
+                }
+
+                conditionsStore.add((List<GWTJahiaNode>) result.get("conditions"));
+            }
+        });
+
         tab.layout();
     }
 

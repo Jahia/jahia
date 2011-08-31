@@ -71,7 +71,17 @@
 [jmix:versionInfo] mixin
 - j:checkinDate (date) hidden
 
-[jmix:basemetadata] > mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable, jmix:versionInfo, jmix:description, jmix:workflow mixin
+[jmix:conditionalVisibility] mixin
+ + j:conditionalVisibility (jnt:conditionalVisibility)
+
+[jnt:conditionalVisibility] > nt:base, jmix:observable, mix:versionable, mix:lastModified, jmix:lastPublished
+ - j:forceMatchAllConditions (boolean) = false autocreated
+ - j:legacyRuleSettings (string) hidden indexed=no
+ + * (jnt:condition)
+
+[jnt:condition] > nt:base, jmix:observable
+
+[jmix:basemetadata] > mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable, jmix:versionInfo, jmix:description, jmix:workflow, jmix:conditionalVisibility mixin
 
 [jmix:autoPublish] > jmix:observable mixin
 

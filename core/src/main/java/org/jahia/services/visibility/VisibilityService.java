@@ -45,7 +45,7 @@ import java.util.Map;
 
 /**
  * Service implementation for evaluating visibility conditions on a content item.
- * 
+ *
  * @author rincevent
  * @since JAHIA 6.6
  * Created : 8/29/11
@@ -56,7 +56,7 @@ public class VisibilityService {
     private static volatile VisibilityService instance;
 
     private Map<String, VisibilityConditionRule> conditions = new HashMap<String, VisibilityConditionRule>(1);
-    
+
     public static VisibilityService getInstance() {
         if (instance == null) {
             synchronized (VisibilityService.class) {
@@ -96,7 +96,8 @@ public class VisibilityService {
             return true;
         }
         try {
-            if (node.isNodeType("jmix:conditionalVisibility")) {
+            if (node.hasNode("j:conditionalVisibility")) {
+                node = node.getNode("j:conditionalVisibility");
                 boolean forceMatchAllConditions = node.getProperty("j:forceMatchAllConditions").getBoolean();
                 List<JCRNodeWrapper> childrenOfType = JCRContentUtils.getChildrenOfType(node, "jnt:condition");
                 if (forceMatchAllConditions) {
@@ -135,7 +136,8 @@ public class VisibilityService {
     public Map<JCRNodeWrapper,Boolean> getConditionMatchesDetails(JCRNodeWrapper node) {
         Map<JCRNodeWrapper, Boolean> conditions = new HashMap<JCRNodeWrapper, Boolean>();
         try {
-            if (node.isNodeType("jmix:conditionalVisibility")) {
+            if (node.hasNode("j:conditionalVisibility")) {
+                node = node.getNode("j:conditionalVisibility");
                 List<JCRNodeWrapper> childrenOfType = JCRContentUtils.getChildrenOfType(node, "jnt:condition");
                 for (JCRNodeWrapper nodeWrapper : childrenOfType) {
                     VisibilityConditionRule rule = this.conditions.get(nodeWrapper.getPrimaryNodeTypeName());

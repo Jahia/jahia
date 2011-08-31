@@ -81,7 +81,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
             public void handleEvent(ComponentEvent event) {
                 statusPanel.removeAll();
                 statusPanel.add(new Text(Messages.get("label.visibility.currentStatus", "Current status") + " : &nbsp;"));
-                if ((allConditionsMatch.getValue() && !oneFalse) || (!allConditionsMatch.getValue() && oneTrue)) {
+                if ((allConditionsMatch.getValue() && !oneFalse) || (!allConditionsMatch.getValue() && oneTrue) || (!oneTrue && !oneFalse)) {
                     statusPanel.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusGreen").createImage());
                 } else {
                     statusPanel.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusRed").createImage());
@@ -286,7 +286,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
                 newCondition.setNodeTypes(Arrays.asList(nodeTypeName));
                 String nodeName = nodeTypeName + conditionsStore.getCount();
                 newCondition.setName(nodeName);
-                newCondition.setPath(node.getPath() + "/" + nodeName);
+                newCondition.setPath(node.getPath() + "/j:conditionalVisibility/" + nodeName);
                 newCondition.set("new-node", Boolean.TRUE);
                 conditionsStore.add(newCondition);
                 selectionModel.select(Arrays.asList(newCondition), false);
@@ -326,6 +326,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
                 }
 
                 allConditionsMatch.setValue(result.<Boolean>get("j:forceMatchAllConditions"));
+                allConditionsMatch.fireEvent(Events.Change);
 
                 statusPanel.layout();
 
@@ -373,8 +374,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
             list.addAll(deleted);
             node.set("visibilityConditions", list);
             if (allConditionsMatch.isDirty()) {
-                changedProperties.add(new GWTJahiaNodeProperty("j:forceMatchAllConditions",
-                        new GWTJahiaNodePropertyValue(allConditionsMatch.getValue().toString(), GWTJahiaNodePropertyType.BOOLEAN)));
+                node.set("node-visibility-forceMatchAllConditions", allConditionsMatch.getValue());
             }
         }
     }

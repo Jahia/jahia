@@ -2,13 +2,6 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jmix:conditionalVisibility] mixin
- - j:forceMatchAllConditions (boolean) = false autocreated
- - j:legacyRuleSettings (string) hidden indexed=no
- + * (jnt:condition)
-
-[jnt:condition] > nt:base, jmix:observable, mix:versionable, mix:lastModified, jmix:lastPublished
-
 [jnt:startEndDateCondition] > jnt:condition
  - start (date, datetimepicker)
  - end   (date, datetimepicker)

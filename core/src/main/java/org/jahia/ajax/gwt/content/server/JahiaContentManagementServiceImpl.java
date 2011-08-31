@@ -2040,8 +2040,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
 
             result.set("conditions", conditions);
-            if(node.isNodeType("jmix:conditionalVisibility")) {
-                result.set("j:forceMatchAllConditions", node.getProperty("j:forceMatchAllConditions").getValue().getBoolean());
+            if (node.hasNode("j:conditionalVisibility")) {
+                result.set("j:forceMatchAllConditions", node.getNode("j:conditionalVisibility").getProperty("j:forceMatchAllConditions").getValue().getBoolean());
             } else {
                 result.set("j:forceMatchAllConditions",false);
             }

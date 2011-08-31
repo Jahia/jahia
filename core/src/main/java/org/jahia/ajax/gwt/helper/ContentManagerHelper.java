@@ -1259,16 +1259,16 @@ public class ContentManagerHelper {
         try {
             JCRNodeWrapper parent = session.getNode(node.getPath());
 
-            if (!conditions.isEmpty()) {
-                parent.addMixin("jmix:conditionalVisibility");
-            } else {
-                parent.removeMixin("jmix:conditionalVisibility");
+            if (!conditions.isEmpty() && !parent.hasNode("j:conditionalVisibility")) {
+                parent.addNode("j:conditionalVisibility", "jnt:conditionalVisibility");
             }
+
+            String path = node.getPath() + "/j:conditionalVisibility";
 
             for (GWTJahiaNode condition : conditions) {
                 List<GWTJahiaNodeProperty> props = (List<GWTJahiaNodeProperty>) condition.get("gwtproperties");
                 if (condition.get("new-node") != null) {
-                    GWTJahiaNode n = createNode(node.getPath(), condition.getName(), condition.getNodeTypes().get(0), new ArrayList<String>(), props, session);
+                    GWTJahiaNode n = createNode(path, condition.getName(), condition.getNodeTypes().get(0), new ArrayList<String>(), props, session);
                     condition.setUUID(n.getUUID());
                     condition.setPath(n.getPath());
                 } else {
@@ -1283,6 +1283,17 @@ public class ContentManagerHelper {
                     jcrCondition.remove();
                 }
             }
+
+            if (parent.hasNode("j:conditionalVisibility")) {
+                JCRNodeWrapper wrapper = parent.getNode("j:conditionalVisibility");
+                if (node.get("node-visibility-forceMatchAllConditions") != null) {
+                    wrapper.setProperty("j:forceMatchAllConditions", (Boolean) node.get("node-visibility-forceMatchAllConditions"));
+                }
+                if (!wrapper.hasNodes()) {
+                    wrapper.remove();
+                }
+            }
+
             session.save();
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e);

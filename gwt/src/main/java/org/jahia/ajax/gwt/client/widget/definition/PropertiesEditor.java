@@ -748,5 +748,13 @@ public class PropertiesEditor extends FormPanel {
             });
         }
 
+        @Override
+        public void addListener(EventType eventType, Listener<? extends BaseEvent> listener) {
+            if (eventType == Events.Change) {
+                field.addListener(eventType, listener);
+            } else {
+                super.addListener(eventType, listener);
+            }
+        }
     }
 }

@@ -12,6 +12,7 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -192,7 +193,11 @@ public class VisibilityTabItem extends EditEngineTabItem {
                 p.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
                 Integer infoStatus;
                 if (info != null) {
-                    infoStatus = info.getStatus();
+                    if (conditionNode.get("node-modified") != null) {
+                        infoStatus = GWTJahiaPublicationInfo.MODIFIED;
+                    } else {
+                        infoStatus = info.getStatus();
+                    }
                 } else {
                     infoStatus = GWTJahiaPublicationInfo.NOT_PUBLISHED;
                 }
@@ -252,6 +257,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
                                     propertiesEditorMap.put(conditionNode.getPath(), pe);
                                     form.add(pe);
                                     form.layout();
+                                    addFieldListener(pe, conditions, conditionNode);
                                 }
                             });
                         } else {
@@ -262,6 +268,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
                                     propertiesEditorMap.put(conditionNode.getPath(), pe);
                                     form.add(pe);
                                     form.layout();
+                                    addFieldListener(pe, conditions, conditionNode);
                                 }
                             });
                         }
@@ -308,15 +315,6 @@ public class VisibilityTabItem extends EditEngineTabItem {
 
                 conditionsStore.add((List<GWTJahiaNode>) result.get("conditions"));
 
-                allConditionsMatch.setValue(result.<Boolean>get("matchesAllCondition"));
-
-                if (result.get("currentStatus").equals(Boolean.TRUE)) {
-                    statusPanel.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusGreen").createImage());
-                } else {
-                    statusPanel.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusRed").createImage());
-                }
-                statusPanel.layout();
-
                 for (GWTJahiaNode model : conditionsStore.getModels()) {
                     if (model.get("conditionMatch") != null) {
                         if (model.get("conditionMatch").equals(Boolean.TRUE)) {
@@ -326,10 +324,27 @@ public class VisibilityTabItem extends EditEngineTabItem {
                         }
                     }
                 }
+
+                allConditionsMatch.setValue(result.<Boolean>get("matchesAllCondition"));
+
+                statusPanel.layout();
+
             }
         });
 
         tab.layout();
+    }
+
+    public void addFieldListener(final PropertiesEditor pe, final Grid grid, final GWTJahiaNode node) {
+        for (final Field<?> field : pe.getFields()) {
+            field.addListener(Events.Change, new Listener<BaseEvent>() {
+                public void handleEvent(BaseEvent be) {
+                    node.set(field.getName(), field.getValue());
+                    node.set("node-modified", Boolean.TRUE);
+                    grid.getView().refresh(false);
+                }
+            });
+        }
     }
 
     @Override

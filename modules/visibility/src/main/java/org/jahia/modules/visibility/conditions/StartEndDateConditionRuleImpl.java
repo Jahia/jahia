@@ -39,7 +39,9 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -70,6 +72,10 @@ public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
      */
     public String getGWTDisplayTemplate(Locale locale) {
         return JahiaResourceBundle.getString("JahiaVisibility", "label.startEndDateCondition.xtemplate",locale, "Jahia Visibility");
+    }
+
+    public List<String> getRequiredFieldNamesForTemplate() {
+        return Arrays.asList("start", "end");
     }
 
     public boolean matches(JCRNodeWrapper nodeWrapper) {

@@ -2016,9 +2016,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             VisibilityService visibilityService = VisibilityService.getInstance();
             Map<String, VisibilityConditionRule> conditionsClasses = visibilityService.getConditions();
             List<GWTJahiaNodeType> types = new ArrayList<GWTJahiaNodeType>();
+            Map<String, List<String>> requiredFields = new HashMap<String, List<String>>();
             for (Map.Entry<String, VisibilityConditionRule> entry : conditionsClasses.entrySet()) {
                 GWTJahiaNodeType type = getNodeType(entry.getKey());
                 type.set("xtemplate", entry.getValue().getGWTDisplayTemplate(getLocale()));
+                requiredFields.put(entry.getKey(), entry.getValue().getRequiredFieldNamesForTemplate());
                 types.add(type);
             }
             result.set("types", types);
@@ -2029,7 +2031,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             List<GWTJahiaNode> conditions = new ArrayList<GWTJahiaNode>();
 
             for (Map.Entry<JCRNodeWrapper, Boolean> entry : conditionMatchesDetails.entrySet()) {
-                GWTJahiaNode jahiaNode = navigation.getGWTJahiaNode(entry.getKey(), Arrays.asList(GWTJahiaNode.PUBLICATION_INFO, "start", "end"));
+                List<String> fields = new ArrayList<String>(Arrays.asList(GWTJahiaNode.PUBLICATION_INFO));
+                fields.addAll(requiredFields.get(entry.getKey().getPrimaryNodeTypeName()));
+
+                GWTJahiaNode jahiaNode = navigation.getGWTJahiaNode(entry.getKey(), fields);
                 jahiaNode.set("conditionMatch", entry.getValue());
                 conditions.add(jahiaNode);
             }

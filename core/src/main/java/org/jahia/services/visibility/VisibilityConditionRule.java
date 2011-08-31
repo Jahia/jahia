@@ -34,6 +34,7 @@ package org.jahia.services.visibility;
 
 import org.jahia.services.content.JCRNodeWrapper;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -66,4 +67,11 @@ public interface VisibilityConditionRule {
      * @return Return the associated display template that will be used by gwt.
      */
     String getGWTDisplayTemplate(Locale locale);
+
+    /**
+     * Return the associated display template that will be used by gwt.
+     *
+     * @return Return the associated display template that will be used by gwt.
+     */
+    List<String> getRequiredFieldNamesForTemplate();
 }

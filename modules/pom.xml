@@ -168,6 +168,7 @@
                 <module>skins</module>
                 <module>tasks</module>
                 <module>templates-system</module>
+                <module>visibility</module>
             </modules>
         </profile>
         <profile>

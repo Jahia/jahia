@@ -40,8 +40,6 @@ import org.apache.log4j.Logger;
  * Created : 8/29/11
  */
 public class EndDateVisibilityConditionBackgroundActionImpl extends DateVisibilityConditionBackgroundAction {
-    private transient static Logger logger = Logger.getLogger(EndDateVisibilityConditionBackgroundActionImpl.class);
-
     public String getName() {
         return "endDateVisibilityAction";
     }

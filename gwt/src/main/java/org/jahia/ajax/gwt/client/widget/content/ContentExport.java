@@ -70,6 +70,7 @@ public class ContentExport extends Window {
         setLayout(new FitLayout());
 
         setButtonAlign(Style.HorizontalAlignment.CENTER);
+        setId("JahiaGxtContentExport");
 
         setModal(true);
         final String result = JahiaGWTParameters.getContextPath() + "/cms/export/" + JahiaGWTParameters.getWorkspace() + n.getPath();

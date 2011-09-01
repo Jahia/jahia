@@ -129,6 +129,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         this.linker = linker;
         this.parentPath = parentPath;
         contentService = JahiaContentManagementService.App.getInstance();
+        setId("JahiaGxtContentEngine");
     }
 
     protected void init(EngineContainer container) {

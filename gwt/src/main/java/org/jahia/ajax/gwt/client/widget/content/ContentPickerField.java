@@ -41,7 +41,6 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -59,10 +58,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
-import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
-import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -136,6 +131,7 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
                         PermissionsUtils.loadPermissions(config.getPermissions());
                         final Window w = new Window();
                         w.setLayout(new FitLayout());
+                        w.setId("JahiaGxtContentPickerWindow");
                         final ContentPicker contentPicker =
                                 new ContentPicker(selectorOptions, getValue(), types, filters, mimeTypes,
                                         config, multiple);

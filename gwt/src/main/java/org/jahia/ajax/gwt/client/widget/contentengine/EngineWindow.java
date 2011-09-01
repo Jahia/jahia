@@ -62,6 +62,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 public class EngineWindow extends Window implements EngineContainer {
 
     public EngineWindow() {
+        setId("JahiaGxtEngineWindow");
         setSize(750, 480);
         setBodyBorder(false);
         setClosable(true);

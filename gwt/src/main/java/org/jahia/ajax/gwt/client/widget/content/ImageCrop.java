@@ -77,7 +77,7 @@ public class ImageCrop extends Window {
 
         this.linker = linker;
         setHeading(Messages.get("label.crop"));
-
+        setId("JahiaGxtImageCrop");
         FormPanel form = new FormPanel();
         form.setFrame(false);
         form.setHeaderVisible(false);

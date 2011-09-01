@@ -67,6 +67,7 @@ public class EnginePanel extends ContentPanel implements EngineContainer {
     public EnginePanel() {
         setBodyBorder(false);
         setLayout(new FitLayout());
+        setId("JahiaGxtEnginePanel");
     }
 
     public ContentPanel getPanel() {

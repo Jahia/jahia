@@ -40,8 +40,12 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import java.util.*;
-
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -52,21 +56,11 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.*;
 
 /**
  * User: toto
@@ -100,7 +94,7 @@ public class CreateContentEngine extends AbstractContentEngine {
             this.targetName = targetName;
         }
         this.createInParentAndMoveBefore = createInParentAndMoveBefore;
-
+        this.setId("JahiaGxtCreateContentEngine");
         nodeTypes = new ArrayList<GWTJahiaNodeType>(1);
         nodeTypes.add(type);
         presetProperties = new HashMap<String, GWTJahiaNodeProperty>(props);

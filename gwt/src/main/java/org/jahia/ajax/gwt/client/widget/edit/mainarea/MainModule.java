@@ -605,6 +605,9 @@ public class MainModule extends Module {
                                         Set<Map.Entry<GWTJahiaNode, ModelData>> entries = visibility.entrySet();
                                         String toolTip = "";
                                         for (Map.Entry<GWTJahiaNode, ModelData> entry : entries) {
+                                            if(!"".equals(toolTip)) {
+                                                toolTip+="<br/>";
+                                            }
                                             XTemplate tpl = XTemplate.create((String) entry.getValue().get(
                                                     "xtemplate"));
                                             toolTip += tpl.applyTemplate(com.extjs.gxt.ui.client.util.Util.getJsObject(
@@ -620,6 +623,9 @@ public class MainModule extends Module {
                                         Set<Map.Entry<GWTJahiaNode, ModelData>> entries = visibility.entrySet();
                                         String toolTip = "";
                                         for (Map.Entry<GWTJahiaNode, ModelData> entry : entries) {
+                                            if(!"".equals(toolTip)) {
+                                                toolTip+="<br/>";
+                                            }
                                             XTemplate tpl = XTemplate.create((String) entry.getValue().get(
                                                     "xtemplate"));
                                             toolTip += tpl.applyTemplate(com.extjs.gxt.ui.client.util.Util.getJsObject(

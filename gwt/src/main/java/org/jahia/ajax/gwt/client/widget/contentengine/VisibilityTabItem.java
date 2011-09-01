@@ -151,6 +151,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
                     @Override
                     public void componentSelected(ButtonEvent buttonEvent) {
                         conditionsStore.remove(condition);
+                        propertiesEditorMap.remove(condition.getPath());
                         if (condition.get("new-node") == null) {
                             deleted.add(condition);
                             condition.set("node-removed", Boolean.TRUE);
@@ -455,8 +456,8 @@ public class VisibilityTabItem extends EditEngineTabItem {
                 Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(infoStatus);
                 publicationInfoContainer.removeAll();
                 publicationInfoContainer.add(res);
+                checkbox.setEnabled(infoStatus != GWTJahiaPublicationInfo.PUBLISHED);
             }
-            checkbox.setEnabled(infoStatus != GWTJahiaPublicationInfo.PUBLISHED);
 
             statusPanel.layout();
         }

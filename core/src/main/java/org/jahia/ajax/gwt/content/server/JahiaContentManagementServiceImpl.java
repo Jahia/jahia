@@ -700,9 +700,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             contentManager.saveVisibilityConditions(node, visibilityConditions, jcrSessionWrapper);
             try {
                 for (GWTJahiaNode condition : visibilityConditions) {
-                    if (condition.get("node-published") != null) {
+                    if (Boolean.TRUE.equals(condition.get("node-published") != null)) {
                         publication.publish(Arrays.asList(jcrSessionWrapper.getNode(condition.getPath()).getIdentifier()));
                     }
+                }
+                if (Boolean.TRUE.equals(node.get("conditions-published"))) {
+                    publication.publish(Arrays.asList(jcrSessionWrapper.getNode(node.getPath()+"/j:conditionalVisibility").getIdentifier()));
                 }
             } catch (RepositoryException e) {
                 throw new GWTJahiaServiceException(e);
@@ -2041,11 +2044,21 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             result.set("conditions", conditions);
             if (node.hasNode("j:conditionalVisibility")) {
-                result.set("j:forceMatchAllConditions", node.getNode("j:conditionalVisibility").getProperty("j:forceMatchAllConditions").getValue().getBoolean());
+                JCRNodeWrapper conditionalVisibilityNode = node.getNode("j:conditionalVisibility");
+                result.set("j:forceMatchAllConditions", conditionalVisibilityNode.getProperty("j:forceMatchAllConditions").getValue().getBoolean());
+                String locale = node.getSession().getLocale().toString();
+                result.set("publicationInfo", publication.getAggregatedPublicationInfosByLanguage(conditionalVisibilityNode.getIdentifier(),
+                        Collections.singleton(locale), retrieveCurrentSession()).get(locale));
             } else {
                 result.set("j:forceMatchAllConditions",false);
             }
             result.set("currentStatus", visibilityService.matchesConditions(node));
+            try {
+                JCRNodeWrapper liveNode = retrieveCurrentSession("live",null, false).getNodeByUUID(node.getIdentifier());
+                result.set("liveStatus", visibilityService.matchesConditions(liveNode));
+            } catch (RepositoryException e) {
+
+            }
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e);
         }

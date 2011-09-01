@@ -1290,10 +1290,9 @@ public class ContentManagerHelper {
                     wrapper.setProperty("j:forceMatchAllConditions", (Boolean) node.get("node-visibility-forceMatchAllConditions"));
                 }
                 if (!wrapper.hasNodes()) {
-                    wrapper.remove();
+                    wrapper.markForDeletion("");
                 }
             }
-
             session.save();
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e);

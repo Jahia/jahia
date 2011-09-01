@@ -25,8 +25,6 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -50,8 +48,13 @@ public class VisibilityTabItem extends EditEngineTabItem {
     private transient ListStore<GWTJahiaNode> conditionsStore;
     private transient List<GWTJahiaNode> deleted;
     private transient CheckBox allConditionsMatch;
+
+    private transient boolean changed;
     private transient boolean oneTrue;
     private transient boolean oneFalse;
+    private transient boolean oneUnknown;
+
+    private transient StatusBar statusBar;
 
     @Override
     public void init(NodeHolder engine, AsyncTabItem tab, String language) {
@@ -68,25 +71,17 @@ public class VisibilityTabItem extends EditEngineTabItem {
         final HorizontalPanel statusPanel = new HorizontalPanel();
         statusPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
         top.add(statusPanel);
-
-        statusPanel.add(new Text(Messages.get("label.visibility.currentStatus", "Current status") + " : &nbsp;"));
+        statusBar = new StatusBar(node, statusPanel);
 
         HorizontalPanel addPanel = new HorizontalPanel();
         addPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
         top.add(addPanel);
 
-        addPanel.add(new Text(Messages.get("label.visibility.allConditionsMatch", "All conditions should match")+" : "));
+        addPanel.add(new Text(Messages.get("label.visibility.allConditionsMatch", "All conditions should match")+" : &nbsp;"));
         allConditionsMatch = new CheckBox();
         allConditionsMatch.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
-                statusPanel.removeAll();
-                statusPanel.add(new Text(Messages.get("label.visibility.currentStatus", "Current status") + " : &nbsp;"));
-                if ((allConditionsMatch.getValue() && !oneFalse) || (!allConditionsMatch.getValue() && oneTrue) || (!oneTrue && !oneFalse)) {
-                    statusPanel.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusGreen").createImage());
-                } else {
-                    statusPanel.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusRed").createImage());
-                }
-                statusPanel.layout();
+                statusBar.update();
             }
         });
         addPanel.add(allConditionsMatch);
@@ -135,7 +130,8 @@ public class VisibilityTabItem extends EditEngineTabItem {
                         return icon.getHTML();
                     }
                 }
-                return "";
+                AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon("visibilityStatusUnknown");
+                return icon.getHTML();
             }
         });
         configs.add(conditionStatus);
@@ -159,24 +155,9 @@ public class VisibilityTabItem extends EditEngineTabItem {
                             deleted.add(condition);
                             condition.set("node-removed", Boolean.TRUE);
                         }
-//                        if (condition.get("new-node") != null) {
-//                            conditionsStore.remove(condition);
-//                        } else {
-//                            if (condition.get("node-removed") == null || !condition.getNodeTypes().contains("jmix:markedForDeletion")) {
-//                                if (condition.getNodeTypes().contains("jmix:markedForDeletion")) {
-//                                    condition.set("node-unremoved", null);
-//                                } else {
-//                                    condition.set("node-removed", Boolean.TRUE);
-//                                }
-//                            } else {
-//                                if (condition.getNodeTypes().contains("jmix:markedForDeletion")) {
-//                                    condition.set("node-unremoved", Boolean.TRUE);
-//                                } else {
-//                                    condition.set("node-removed", null);
-//                                }
-//                            }
-//                            grid.getView().refresh(false);
-//                        }
+                        changed = true;
+                        refreshConditionsList();
+                        statusBar.update();
                     }
                 });
                 return button;
@@ -184,46 +165,46 @@ public class VisibilityTabItem extends EditEngineTabItem {
         });
         configs.add(remove);
 
-        ColumnConfig publicationInfo = new ColumnConfig("publish", Messages.get("label.publish"), 100);
-        publicationInfo.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-            public Object render(final GWTJahiaNode conditionNode, String property, ColumnData config, int rowIndex, int colIndex,
-                                 ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
-                final GWTJahiaPublicationInfo info = conditionNode.getAggregatedPublicationInfo();
-                HorizontalPanel p = new HorizontalPanel();
-                p.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
-                Integer infoStatus;
-                if (info != null) {
-                    if (conditionNode.get("node-modified") != null) {
-                        infoStatus = GWTJahiaPublicationInfo.MODIFIED;
-                    } else {
-                        infoStatus = info.getStatus();
-                    }
-                } else {
-                    infoStatus = GWTJahiaPublicationInfo.NOT_PUBLISHED;
-                }
-                PropertiesEditor pe = propertiesEditorMap.get(conditionNode.getPath());
-                if (pe != null) {
-                    if (pe.getProperties(false, true, true).isEmpty()) {
-                        infoStatus = GWTJahiaPublicationInfo.MODIFIED;
-                    }
-                }
-
-                Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(infoStatus);
-                p.add(res);
-                final CheckBox checkbox = new CheckBox();
-                if (infoStatus == GWTJahiaPublicationInfo.PUBLISHED) {
-                    checkbox.setEnabled(false);
-                }
-                checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
-                    public void handleEvent(ComponentEvent event) {
-                        conditionNode.set("node-published", checkbox.getValue());
-                    }
-                });
-                p.add(checkbox);
-                return p;
-            }
-        });
-        configs.add(publicationInfo);
+//        ColumnConfig publicationInfo = new ColumnConfig("publish", Messages.get("label.publish"), 100);
+//        publicationInfo.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
+//            public Object render(final GWTJahiaNode conditionNode, String property, ColumnData config, int rowIndex, int colIndex,
+//                                 ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
+//                final GWTJahiaPublicationInfo info = conditionNode.getAggregatedPublicationInfo();
+//                HorizontalPanel p = new HorizontalPanel();
+//                p.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
+//                Integer infoStatus;
+//                if (info != null) {
+//                    if (conditionNode.get("node-modified") != null) {
+//                        infoStatus = GWTJahiaPublicationInfo.MODIFIED;
+//                    } else {
+//                        infoStatus = info.getStatus();
+//                    }
+//                } else {
+//                    infoStatus = GWTJahiaPublicationInfo.NOT_PUBLISHED;
+//                }
+//                PropertiesEditor pe = propertiesEditorMap.get(conditionNode.getPath());
+//                if (pe != null) {
+//                    if (pe.getProperties(false, true, true).isEmpty()) {
+//                        infoStatus = GWTJahiaPublicationInfo.MODIFIED;
+//                    }
+//                }
+//
+//                Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(infoStatus);
+//                p.add(res);
+//                final CheckBox checkbox = new CheckBox();
+//                if (infoStatus == GWTJahiaPublicationInfo.PUBLISHED) {
+//                    checkbox.setEnabled(false);
+//                }
+//                checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
+//                    public void handleEvent(ComponentEvent event) {
+//                        conditionNode.set("node-published", checkbox.getValue());
+//                    }
+//                });
+//                p.add(checkbox);
+//                return p;
+//            }
+//        });
+//        configs.add(publicationInfo);
 
         ColumnModel cm = new ColumnModel(configs);
 
@@ -290,6 +271,10 @@ public class VisibilityTabItem extends EditEngineTabItem {
                 newCondition.set("new-node", Boolean.TRUE);
                 conditionsStore.add(newCondition);
                 selectionModel.select(Arrays.asList(newCondition), false);
+
+                changed = true;
+                refreshConditionsList();
+                statusBar.update();
             }
         });
 
@@ -315,34 +300,46 @@ public class VisibilityTabItem extends EditEngineTabItem {
 
                 conditionsStore.add((List<GWTJahiaNode>) result.get("conditions"));
 
-                for (GWTJahiaNode model : conditionsStore.getModels()) {
-                    if (model.get("conditionMatch") != null) {
-                        if (model.get("conditionMatch").equals(Boolean.TRUE)) {
-                            oneTrue = true;
-                        } else {
-                            oneFalse = true;
-                        }
-                    }
-                }
+                refreshConditionsList();
 
+                allConditionsMatch.setOriginalValue(result.<Boolean>get("j:forceMatchAllConditions"));
                 allConditionsMatch.setValue(result.<Boolean>get("j:forceMatchAllConditions"));
-                allConditionsMatch.fireEvent(Events.Change);
 
-                statusPanel.layout();
-
+                statusBar.initStatusBar((GWTJahiaPublicationInfo) result.get("publicationInfo"), (Boolean) result.get("liveStatus"));
             }
         });
 
         tab.layout();
     }
 
-    public void addFieldListener(final PropertiesEditor pe, final Grid grid, final GWTJahiaNode node) {
+    private void refreshConditionsList() {
+        oneTrue = false;
+        oneFalse = false;
+        oneUnknown = false;
+        for (GWTJahiaNode model : conditionsStore.getModels()) {
+            if (model.get("conditionMatch") != null) {
+                if (model.get("conditionMatch").equals(Boolean.TRUE)) {
+                    oneTrue = true;
+                } else {
+                    oneFalse = true;
+                }
+            }
+            if (model.get("new-node") != null) {
+                oneUnknown = true;
+            }
+        }
+    }
+
+
+    public void addFieldListener(final PropertiesEditor pe, final Grid grid, final GWTJahiaNode conditionNode) {
         for (final Field<?> field : pe.getFields()) {
             field.addListener(Events.Change, new Listener<BaseEvent>() {
                 public void handleEvent(BaseEvent be) {
-                    node.set(field.getName(), field.getValue());
-                    node.set("node-modified", Boolean.TRUE);
+                    conditionNode.set(field.getName(), field.getValue());
+                    conditionNode.set("node-modified", Boolean.TRUE);
+                    changed = true;
                     grid.getView().refresh(false);
+                    statusBar.update();
                 }
             });
         }
@@ -355,8 +352,11 @@ public class VisibilityTabItem extends EditEngineTabItem {
             conditionsStore = null;
             deleted = null;
             allConditionsMatch = null;
+            changed = false;
             oneTrue = false;
             oneFalse = false;
+            oneUnknown = false;
+            statusBar = null;
         }
         super.setProcessed(processed);
     }
@@ -378,4 +378,89 @@ public class VisibilityTabItem extends EditEngineTabItem {
             }
         }
     }
+
+    class StatusBar {
+        private GWTJahiaNode node;
+        private HorizontalPanel statusPanel;
+
+        private GWTJahiaPublicationInfo info;
+        private LayoutContainer statusContainer;
+        private CheckBox checkbox;
+        private LayoutContainer publicationInfoContainer;
+
+        StatusBar(GWTJahiaNode node, HorizontalPanel statusPanel) {
+            this.node = node;
+            this.statusPanel = statusPanel;
+            statusPanel.add(new Text(Messages.get("label.visibility.currentStatusInLive", "Current status in live") + " : &nbsp;"));
+        }
+
+        private void initStatusBar(final GWTJahiaPublicationInfo info, final Boolean liveStatus) {
+            this.info = info;
+
+            if (Boolean.TRUE.equals(liveStatus)) {
+                statusPanel.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusGreen").createImage());
+            } else if (Boolean.FALSE.equals(liveStatus)) {
+                statusPanel.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusRed").createImage());
+            } else {
+                statusPanel.add(new Text("not published"));
+            }
+
+            statusPanel.add(new Text("&nbsp;&nbsp;" + Messages.get("label.visibility.currentConditionsResult", "Current conditions result") + " : &nbsp;"));
+            statusContainer = new LayoutContainer(new FitLayout());
+            statusPanel.add(statusContainer);
+
+            if (node.getAggregatedPublicationInfo().getStatus() != GWTJahiaPublicationInfo.NOT_PUBLISHED) {
+                statusPanel.add(new Text("&nbsp;&nbsp;" + Messages.get("label.visibility.publicationStatus", "Publication status") + " : &nbsp;"));
+                publicationInfoContainer = new LayoutContainer(new FitLayout());
+                statusPanel.add(publicationInfoContainer);
+
+                statusPanel.add(new Text("&nbsp;&nbsp;" + Messages.get("label.visibility.publishOnSave", "Publish conditions on save") + " : &nbsp;"));
+
+                checkbox = new CheckBox();
+                checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
+                    public void handleEvent(ComponentEvent event) {
+                        node.set("conditions-published", checkbox.getValue());
+                    }
+                });
+                statusPanel.add(checkbox);
+
+            }
+            update();
+        }
+
+        private void update() {
+            statusContainer.removeAll();
+            if (oneUnknown && (allConditionsMatch.getValue() || (!oneTrue && !oneFalse))) {
+                statusContainer.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusUnknown").createImage());
+            } else if ((allConditionsMatch.getValue() && !oneFalse) || (!allConditionsMatch.getValue() && oneTrue) || (!oneTrue && !oneFalse)) {
+                statusContainer.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusGreen").createImage());
+            } else {
+                statusContainer.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusRed").createImage());
+            }
+
+            int infoStatus;
+            if (info != null) {
+                infoStatus = info.getStatus();
+                if (changed && infoStatus == GWTJahiaPublicationInfo.PUBLISHED) {
+                    infoStatus = GWTJahiaPublicationInfo.MODIFIED;
+                }
+            } else {
+                if (changed) {
+                    infoStatus = GWTJahiaPublicationInfo.NOT_PUBLISHED;
+                } else {
+                    infoStatus = GWTJahiaPublicationInfo.PUBLISHED;
+                }
+            }
+
+            Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(infoStatus);
+            publicationInfoContainer.removeAll();
+            publicationInfoContainer.add(res);
+
+            checkbox.setEnabled(infoStatus != GWTJahiaPublicationInfo.PUBLISHED);
+
+            statusPanel.layout();
+        }
+    }
+
+
 }

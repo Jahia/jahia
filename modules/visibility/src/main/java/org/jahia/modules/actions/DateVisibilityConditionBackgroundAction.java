@@ -57,8 +57,8 @@ public abstract class DateVisibilityConditionBackgroundAction implements Backgro
 
     public void executeBackgroundAction(JCRNodeWrapper node) {
         try {
-            cacheProvider.invalidate(node.getParent().getPath());
             cacheProvider.invalidate(node.getParent().getParent().getPath());
+            cacheProvider.invalidate(node.getParent().getParent().getParent().getPath());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

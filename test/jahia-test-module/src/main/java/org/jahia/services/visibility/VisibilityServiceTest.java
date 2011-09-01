@@ -325,4 +325,62 @@ public class VisibilityServiceTest {
             assertTrue(entry.getValue());
         }
     }
+
+    @Test
+    public void testVisibilityRenderMatchesAllEmptyConditions() throws RepositoryException, ParseException {
+        JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
+        JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                Locale.ENGLISH);
+
+        JCRNodeWrapper stageRootNode = editSession.getNode(SITECONTENT_ROOT_NODE);
+
+        // Test GWT display template
+        String gwtDisplayTemplate = VisibilityService.getInstance().getConditions().get(
+                "jnt:startEndDateCondition").getGWTDisplayTemplate(Locale.ENGLISH);
+        assertNotNull(gwtDisplayTemplate);
+
+        // get home page
+        JCRNodeWrapper stageNode = stageRootNode.getNode("home");
+
+        editSession.checkout(stageNode);
+        JCRNodeWrapper stagedSubPage = stageNode.addNode("home_subpage1", "jnt:page");
+        stagedSubPage.setProperty("j:templateNode", editSession.getNode(
+                SITECONTENT_ROOT_NODE + "/templates/base/simple"));
+        stagedSubPage.setProperty("jcr:title", "Page visible");
+        stagedSubPage.addMixin("jmix:conditionalVisibility");
+        JCRNodeWrapper condVis = stagedSubPage.addNode("j:conditionalVisibility", "jnt:conditionalVisibility");
+        condVis.setProperty("j:forceMatchAllConditions", true);
+        editSession.save();
+        // Validate that content is not visible in preview
+        GetMethod visibilityGet = new GetMethod(
+                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/default/en" + stageNode.getPath() +
+                ".html");
+        try {
+            int responseCode = client.executeMethod(visibilityGet);
+            assertEquals("Response code " + responseCode, 200, responseCode);
+            String responseBody = visibilityGet.getResponseBodyAsString();
+            logger.debug("Response body=[" + responseBody + "]");
+            assertTrue("Could not find expected value (Page visible) in response body", responseBody.indexOf(
+                    "Page visible") > 0);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        condVis.setProperty("j:forceMatchAllConditions", false);
+        editSession.save();
+        // Validate that content is not visible in preview
+        visibilityGet = new GetMethod(
+                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/default/en" + stageNode.getPath() +
+                ".html");
+        try {
+            int responseCode = client.executeMethod(visibilityGet);
+            assertEquals("Response code " + responseCode, 200, responseCode);
+            String responseBody = visibilityGet.getResponseBodyAsString();
+            logger.debug("Response body=[" + responseBody + "]");
+            assertTrue("Could not find expected value (Page visible) in response body", responseBody.indexOf(
+                    "Page visible") > 0);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
 }

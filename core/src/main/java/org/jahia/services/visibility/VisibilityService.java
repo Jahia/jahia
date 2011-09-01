@@ -100,6 +100,9 @@ public class VisibilityService {
                 node = node.getNode("j:conditionalVisibility");
                 boolean forceMatchAllConditions = node.getProperty("j:forceMatchAllConditions").getBoolean();
                 List<JCRNodeWrapper> childrenOfType = JCRContentUtils.getChildrenOfType(node, "jnt:condition");
+                if(childrenOfType.isEmpty()) {
+                    return true;
+                }
                 if (forceMatchAllConditions) {
                     boolean matches = true;
                     for (JCRNodeWrapper nodeWrapper : childrenOfType) {

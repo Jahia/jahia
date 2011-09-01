@@ -451,11 +451,11 @@ public class VisibilityTabItem extends EditEngineTabItem {
                     infoStatus = GWTJahiaPublicationInfo.PUBLISHED;
                 }
             }
-
-            Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(infoStatus);
-            publicationInfoContainer.removeAll();
-            publicationInfoContainer.add(res);
-
+            if (publicationInfoContainer != null) {
+                Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(infoStatus);
+                publicationInfoContainer.removeAll();
+                publicationInfoContainer.add(res);
+            }
             checkbox.setEnabled(infoStatus != GWTJahiaPublicationInfo.PUBLISHED);
 
             statusPanel.layout();

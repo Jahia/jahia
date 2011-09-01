@@ -123,7 +123,10 @@ public class VisibilityRuleService {
             }
             try {
                 JCRNodeWrapper node = nodeFact.getNode();
-                JCRNodeWrapper cond = node.addNode(
+                JCRNodeWrapper visibilityNode = node.hasNode(VisibilityService.NODE_NAME) ? node
+                        .getNode(VisibilityService.NODE_NAME) : node.addNode(
+                        VisibilityService.NODE_NAME, "jnt:conditionalVisibility");
+                JCRNodeWrapper cond = visibilityNode.addNode(
                         JCRContentUtils.findAvailableNodeName(node, "startEndDateCondition"),
                         "jnt:startEndDateCondition");
                 if (dates[0] != null) {
@@ -131,6 +134,10 @@ public class VisibilityRuleService {
                 }
                 if (dates[1] != null) {
                     cond.setProperty("end", dates[1]);
+                }
+
+                if (node.hasProperty("j:legacyRuleSettings")) {
+                    node.getProperty("j:legacyRuleSettings").remove();
                 }
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);

@@ -705,7 +705,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     }
                 }
                 if (Boolean.TRUE.equals(node.get("conditions-published"))) {
-                    publication.publish(Arrays.asList(jcrSessionWrapper.getNode(node.getPath()+"/j:conditionalVisibility").getIdentifier()));
+                    publication.publish(Arrays.asList(jcrSessionWrapper.getNode(node.getPath()+"/" + VisibilityService.NODE_NAME).getIdentifier()));
                 }
             } catch (RepositoryException e) {
                 throw new GWTJahiaServiceException(e);
@@ -2043,8 +2043,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
 
             result.set("conditions", conditions);
-            if (node.hasNode("j:conditionalVisibility")) {
-                JCRNodeWrapper conditionalVisibilityNode = node.getNode("j:conditionalVisibility");
+            if (node.hasNode(VisibilityService.NODE_NAME)) {
+                JCRNodeWrapper conditionalVisibilityNode = node.getNode(VisibilityService.NODE_NAME);
                 result.set("j:forceMatchAllConditions", conditionalVisibilityNode.getProperty("j:forceMatchAllConditions").getValue().getBoolean());
                 String locale = node.getSession().getLocale().toString();
                 result.set("publicationInfo", publication.getAggregatedPublicationInfosByLanguage(conditionalVisibilityNode.getIdentifier(),

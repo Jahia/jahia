@@ -51,6 +51,9 @@ import java.util.Map;
  * Created : 8/29/11
  */
 public class VisibilityService {
+    
+    public static final String NODE_NAME = "j:conditionalVisibility";
+
     private transient static Logger logger = LoggerFactory.getLogger(VisibilityService.class);
 
     private static volatile VisibilityService instance;
@@ -96,8 +99,8 @@ public class VisibilityService {
             return true;
         }
         try {
-            if (node.hasNode("j:conditionalVisibility")) {
-                node = node.getNode("j:conditionalVisibility");
+            if (node.hasNode(NODE_NAME)) {
+                node = node.getNode(NODE_NAME);
                 boolean forceMatchAllConditions = node.getProperty("j:forceMatchAllConditions").getBoolean();
                 List<JCRNodeWrapper> childrenOfType = JCRContentUtils.getChildrenOfType(node, "jnt:condition");
                 if(childrenOfType.isEmpty()) {
@@ -139,8 +142,8 @@ public class VisibilityService {
     public Map<JCRNodeWrapper,Boolean> getConditionMatchesDetails(JCRNodeWrapper node) {
         Map<JCRNodeWrapper, Boolean> conditions = new HashMap<JCRNodeWrapper, Boolean>();
         try {
-            if (node.hasNode("j:conditionalVisibility")) {
-                node = node.getNode("j:conditionalVisibility");
+            if (node.hasNode(NODE_NAME)) {
+                node = node.getNode(NODE_NAME);
                 List<JCRNodeWrapper> childrenOfType = JCRContentUtils.getChildrenOfType(node, "jnt:condition");
                 for (JCRNodeWrapper nodeWrapper : childrenOfType) {
                     VisibilityConditionRule rule = this.conditions.get(nodeWrapper.getPrimaryNodeTypeName());

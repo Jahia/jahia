@@ -72,11 +72,11 @@
 - j:checkinDate (date) hidden
 
 [jmix:conditionalVisibility] mixin
+ - j:legacyRuleSettings (string) hidden indexed=no
  + j:conditionalVisibility (jnt:conditionalVisibility)
 
 [jnt:conditionalVisibility] > nt:base, jmix:observable, mix:versionable, mix:lastModified, jmix:lastPublished
  - j:forceMatchAllConditions (boolean) = false autocreated
- - j:legacyRuleSettings (string) hidden indexed=no
  + * (jnt:condition)
 
 [jnt:condition] > nt:base, jmix:observable

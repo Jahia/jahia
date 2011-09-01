@@ -69,6 +69,7 @@ import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.quartz.JobDataMap;
@@ -1259,11 +1260,11 @@ public class ContentManagerHelper {
         try {
             JCRNodeWrapper parent = session.getNode(node.getPath());
 
-            if (!conditions.isEmpty() && !parent.hasNode("j:conditionalVisibility")) {
-                parent.addNode("j:conditionalVisibility", "jnt:conditionalVisibility");
+            if (!conditions.isEmpty() && !parent.hasNode(VisibilityService.NODE_NAME)) {
+                parent.addNode(VisibilityService.NODE_NAME, "jnt:conditionalVisibility");
             }
 
-            String path = node.getPath() + "/j:conditionalVisibility";
+            String path = node.getPath() + "/" + VisibilityService.NODE_NAME;
 
             for (GWTJahiaNode condition : conditions) {
                 List<GWTJahiaNodeProperty> props = (List<GWTJahiaNodeProperty>) condition.get("gwtproperties");
@@ -1284,8 +1285,8 @@ public class ContentManagerHelper {
                 }
             }
 
-            if (parent.hasNode("j:conditionalVisibility")) {
-                JCRNodeWrapper wrapper = parent.getNode("j:conditionalVisibility");
+            if (parent.hasNode(VisibilityService.NODE_NAME)) {
+                JCRNodeWrapper wrapper = parent.getNode(VisibilityService.NODE_NAME);
                 if (node.get("node-visibility-forceMatchAllConditions") != null) {
                     wrapper.setProperty("j:forceMatchAllConditions", (Boolean) node.get("node-visibility-forceMatchAllConditions"));
                 }

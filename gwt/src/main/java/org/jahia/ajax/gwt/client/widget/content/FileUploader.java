@@ -302,7 +302,7 @@ public class FileUploader extends Window {
         if (unzip.getValue().booleanValue()) {
             linker.refresh(Linker.REFRESH_ALL);
         } else {
-            linker.refresh(Linker.REFRESH_MAIN);
+            linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_FOLDERS);
         }
 
         hide();

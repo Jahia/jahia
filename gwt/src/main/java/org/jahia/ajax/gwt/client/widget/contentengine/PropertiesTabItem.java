@@ -386,7 +386,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 if (!changedI18NProperties.containsKey(lang)) {
                     changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
                 }
-                changedI18NProperties.get(lang).addAll(getLanguageProperties(true, lang));
+                changedI18NProperties.get(lang).addAll(getLanguageProperties(node != null, lang));
             }
             if (propertiesEditor != null) {
                 changedProperties.addAll(propertiesEditor.getProperties(false, true, node != null));

@@ -67,10 +67,8 @@ public class SeoTabItem extends EditEngineTabItem {
 
     private transient Map<String, UrlMappingEditor> editorsByLanguage = new HashMap<String, UrlMappingEditor>(1);
 
-
-    @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
+    public SeoTabItem() {
         setHandleCreate(false);
-        return super.create(engineTab,engine);
     }
 
     @Override

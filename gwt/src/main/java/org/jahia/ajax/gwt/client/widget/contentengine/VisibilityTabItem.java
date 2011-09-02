@@ -28,6 +28,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
@@ -55,6 +56,10 @@ public class VisibilityTabItem extends EditEngineTabItem {
     private transient boolean oneUnknown;
 
     private transient StatusBar statusBar;
+
+    public VisibilityTabItem() {
+        setHandleCreate(false);
+    }
 
     @Override
     public void init(NodeHolder engine, AsyncTabItem tab, String language) {

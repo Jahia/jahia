@@ -68,9 +68,8 @@ import java.util.Arrays;
  */
 public class UsagesTabItem extends EditEngineTabItem {
 
-    @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
+    public UsagesTabItem() {
         setHandleCreate(false);
-        return super.create(engineTab, engine);
     }
 
     @Override

@@ -194,6 +194,7 @@
                 <ref bean="Engine.Tab.EditRoles"/>
                 <ref bean="Engine.Tab.Usages"/>
                 <ref bean="Engine.Tab.Versioning"/>
+                <ref bean="Engine.Tab.Visibility"/>
             </list>
         </property>
         <!-- table columns-->
@@ -794,6 +795,7 @@
                 <ref bean="Engine.Tab.EditRoles"/>
                 <ref bean="Engine.Tab.Usages"/>
                 <ref bean="Engine.Tab.Versioning"/>
+                <ref bean="Engine.Tab.Visibility"/>
             </list>
         </property>
 
@@ -945,6 +947,7 @@
                 <ref bean="Engine.Tab.EditRoles"/>
                 <ref bean="Engine.Tab.Usages"/>
                 <ref bean="Engine.Tab.Versioning"/>
+                <ref bean="Engine.Tab.Visibility"/>
             </list>
         </property>
 
@@ -1122,6 +1125,7 @@
                 <ref bean="Engine.Tab.LiveRoles"/>
                 <ref bean="Engine.Tab.EditRoles"/>
                 <ref bean="Engine.Tab.Usages"/>
+                <ref bean="Engine.Tab.Visibility"/>
             </list>
         </property>
 

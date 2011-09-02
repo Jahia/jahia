@@ -46,6 +46,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
@@ -69,9 +70,8 @@ import java.util.*;
  * @author toto
  */
 public class JCRPublicationService extends JahiaService {
-    private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(JCRPublicationService.class);
+    private static transient Logger logger = LoggerFactory.getLogger(JCRPublicationService.class);
     private JCRSessionFactory sessionFactory;
-    private JCRVersionService jcrVersionService;
     private static JCRPublicationService instance;
     private MetricsLoggingService loggingService;
 
@@ -94,10 +94,6 @@ public class JCRPublicationService extends JahiaService {
      */
     public void setSessionFactory(JCRSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-    }
-
-    public void setJcrVersionService(JCRVersionService jcrVersionService) {
-        this.jcrVersionService = jcrVersionService;
     }
 
     public void setLoggingService(MetricsLoggingService loggingService) {
@@ -404,22 +400,23 @@ public class JCRPublicationService extends JahiaService {
             JCRObservationManager.setEventsDisabled(null);
         }
 
-        // now let's output the publication information to the logging service.
-        for (JCRNodeWrapper publishedNode : toPublish) {
-            String userID = sourceSession.getUserID();
-            if ((userID != null) && (userID.startsWith(JahiaLoginModule.SYSTEM))) {
-                userID = userID.substring(JahiaLoginModule.SYSTEM.length());
-            }
-            StringBuffer commentBuf = new StringBuffer();
-            if (comments != null) {
-                for (String comment : comments) {
-                    commentBuf.append(comment);
+        if (loggingService.isEnabled()) {
+            // now let's output the publication information to the logging service.
+            for (JCRNodeWrapper publishedNode : toPublish) {
+                String userID = sourceSession.getUserID();
+                if ((userID != null) && (userID.startsWith(JahiaLoginModule.SYSTEM))) {
+                    userID = userID.substring(JahiaLoginModule.SYSTEM.length());
                 }
-            }
-            if (loggingService.isEnabled()) {
+                StringBuilder commentBuf = null;
+                if (comments != null && comments.size() > 0) {
+                    commentBuf = new StringBuilder();
+                    for (String comment : comments) {
+                        commentBuf.append(comment);
+                    }
+                }
                 loggingService.logContentEvent(userID, "", "", publishedNode.getIdentifier(), publishedNode.getPath(),
                         publishedNode.getPrimaryNodeTypeName(), "publishedNode", sourceSession.getWorkspace().getName(),
-                        destinationSession.getWorkspace().getName(), commentBuf.toString());
+                        destinationSession.getWorkspace().getName(), commentBuf != null ? commentBuf.toString() : "");
             }
         }
     }
@@ -902,11 +899,11 @@ public class JCRPublicationService extends JahiaService {
                 i18n.setProperty("j:published", false);
             }
         }
-        String userID = node.getSession().getUserID();
-        if ((userID != null) && (userID.startsWith(JahiaLoginModule.SYSTEM))) {
-            userID = userID.substring(JahiaLoginModule.SYSTEM.length());
-        }
         if (loggingService.isEnabled()) { 
+            String userID = node.getSession().getUserID();
+            if ((userID != null) && (userID.startsWith(JahiaLoginModule.SYSTEM))) {
+                userID = userID.substring(JahiaLoginModule.SYSTEM.length());
+            }
             loggingService
                     .logContentEvent(userID, "", "", node.getIdentifier(), node.getPath(), node.getPrimaryNodeTypeName(),
                             "unpublishedNode", node.getSession().getWorkspace().getName());
@@ -1258,14 +1255,14 @@ public class JCRPublicationService extends JahiaService {
      * {@inheritDoc}
      */
     public void start() throws JahiaInitializationException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
     public void stop() throws JahiaException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // nothing to do
     }
 
 

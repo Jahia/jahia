@@ -198,10 +198,8 @@
     <bean id="jcrPublicationService" class="org.jahia.services.content.JCRPublicationService"
           factory-method="getInstance">
         <property name="sessionFactory" ref="jcrSessionFactory"/>
-        <property name="jcrVersionService" ref="jcrVersionService"/>
         <property name="loggingService" ref="loggingService"/>
     </bean>
-
 
     <bean id="jackrabbit" class="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository"
           init-method="start" destroy-method="stop" depends-on="JahiaTemplateManagerService">

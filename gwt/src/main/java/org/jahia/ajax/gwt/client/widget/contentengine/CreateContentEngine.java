@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
@@ -275,10 +276,10 @@ public class CreateContentEngine extends AbstractContentEngine {
                             || node.getNodeTypes().contains("jnt:nodeLink")
                             || node.getNodeTypes().contains("jnt:template") || node.getInheritedNodeTypes().contains("jnt:template")
                             || node.getInheritedNodeTypes().contains("jmix:visibleInPagesTree")) {
+                        linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
                         linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
                     } else {
-                        linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
-                        linker.refresh(Linker.REFRESH_MAIN);
+                        linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_FOLDERS);
                     }
                 } else {
                     CreateContentEngine.this.tabs.removeAll();

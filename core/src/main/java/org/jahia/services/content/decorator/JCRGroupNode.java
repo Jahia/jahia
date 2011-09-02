@@ -1,5 +1,6 @@
 package org.jahia.services.content.decorator;
 
+import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.settings.SettingsBean;
@@ -22,14 +23,10 @@ public class JCRGroupNode extends JCRNodeDecorator {
 
     @Override
     public String getDisplayableName() {
-        try {
-            if (getName().equals(JahiaGroupManagerService.GUEST_GROUPNAME)) {
-                JahiaResourceBundle rb = new JahiaResourceBundle(null, getSession().getLocale(), SettingsBean.getInstance().getGuestGroupResourceModuleName());
+        if (getName().equals(JahiaGroupManagerService.GUEST_GROUPNAME)) {
+            JahiaResourceBundle rb = new JahiaResourceBundle(null, Jahia.getThreadParamBean().getUILocale(), SettingsBean.getInstance().getGuestGroupResourceModuleName());
 
-                return rb.get(SettingsBean.getInstance().getGuestGroupResourceKey(), getName());
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage());
+            return rb.get(SettingsBean.getInstance().getGuestGroupResourceKey(), getName());
         }
         return super.getDisplayableName();
     }

@@ -40,6 +40,7 @@
 
 package org.jahia.services.content.decorator;
 
+import org.jahia.bin.Jahia;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
@@ -97,14 +98,10 @@ public class JCRUserNode extends JCRNodeDecorator {
 
     @Override
     public String getDisplayableName() {
-        try {
-            if (getName().equals(Constants.GUEST_USERNAME)) {
-                JahiaResourceBundle rb = new JahiaResourceBundle(null, getSession().getLocale(), SettingsBean.getInstance().getGuestUserResourceModuleName());
+        if (getName().equals(Constants.GUEST_USERNAME)) {
+            JahiaResourceBundle rb = new JahiaResourceBundle(null, Jahia.getThreadParamBean().getUILocale(), SettingsBean.getInstance().getGuestUserResourceModuleName());
 
-                return rb.get(SettingsBean.getInstance().getGuestUserResourceKey(), getName());
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage());
+            return rb.get(SettingsBean.getInstance().getGuestUserResourceKey(), getName());
         }
         return super.getDisplayableName();
     }

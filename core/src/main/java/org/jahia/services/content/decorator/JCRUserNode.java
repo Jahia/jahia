@@ -98,6 +98,10 @@ public class JCRUserNode extends JCRNodeDecorator {
 
     @Override
     public String getDisplayableName() {
+        if (Jahia.getThreadParamBean().getUILocale() == null) {
+            logger.warn("Couldn't resolve UI locale, returning default displayable name");
+            return super.getDisplayableName();
+        }
         if (getName().equals(Constants.GUEST_USERNAME)) {
             JahiaResourceBundle rb = new JahiaResourceBundle(null, Jahia.getThreadParamBean().getUILocale(), SettingsBean.getInstance().getGuestUserResourceModuleName());
 

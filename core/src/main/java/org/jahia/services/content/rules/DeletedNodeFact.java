@@ -40,6 +40,7 @@
 
 package org.jahia.services.content.rules;
 
+import org.apache.commons.lang.StringUtils;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.services.content.JCRSessionWrapper;
 
@@ -55,7 +56,7 @@ public class DeletedNodeFact implements NodeFact {
     private String path;
     private String identifier;
     private JCRSessionWrapper session;
-
+    private String name;
     private AddedNodeFact parent;
 
     private String workspace;
@@ -72,6 +73,8 @@ public class DeletedNodeFact implements NodeFact {
     public DeletedNodeFact(AddedNodeFact parent, String path) throws RepositoryException {
         this.parent = parent;
         this.path = path;
+        this.name = StringUtils.substringAfterLast(path,"/");
+        workspace = parent.getNode().getSession().getWorkspace().getName();
     }
 
     public String toString() {
@@ -104,5 +107,9 @@ public class DeletedNodeFact implements NodeFact {
 
     public String getWorkspace() throws RepositoryException {
         return workspace;
+    }
+    
+    public String getName() {
+        return name;
     }
 }

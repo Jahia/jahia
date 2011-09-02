@@ -43,7 +43,6 @@ package org.jahia.services.content.rules;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.slf4j.Logger;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -87,11 +86,16 @@ public class RulesListener extends DefaultEventListener {
 
     private ThreadLocal<Boolean> inRules = new ThreadLocal<Boolean>();
 
-    private List<File> dslFiles = new LinkedList<File>();
-    private Map<String, Object> globalObjects = new LinkedHashMap<String, Object>();
+    private List<File> dslFiles;
+    private Map<String, Object> globalObjects;
+
+    private List<String> filesAccepted;
 
     public RulesListener() {
         instances.add(this);
+        dslFiles = new LinkedList<File>();
+        globalObjects = new LinkedHashMap<String, Object>();
+        inRules = new ThreadLocal<Boolean>();
     }
 
     public static RulesListener getInstance(String workspace) {
@@ -533,5 +537,13 @@ public class RulesListener extends DefaultEventListener {
 
     public static List<RulesListener> getInstances() {
         return instances;
+    }
+
+    public List<String> getFilesAccepted() {
+        return filesAccepted;
+    }
+
+    public void setFilesAccepted(List<String> fileAccepted) {
+        this.filesAccepted = fileAccepted;
     }
 }

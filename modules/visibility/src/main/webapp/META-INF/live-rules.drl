@@ -21,6 +21,7 @@ rule "Flush caches for start date visibility condition"
         A property start has been set on a node
              - the node has the type jnt:startEndDateCondition
     then
+        Execute the action "startDateVisibilityAction" now on the node
         Execute the action "startDateVisibilityAction" at start on the node
 end
 
@@ -30,13 +31,25 @@ rule "Flush caches for end date visibility condition"
         A property end has been set on a node
              - the node has the type jnt:startEndDateCondition
     then
+        Execute the action "endDateVisibilityAction" now on the node
         Execute the action "endDateVisibilityAction" at end on the node
 end
 
-rule "Import legacy visibility settings"
+rule "Flush caches when j:conditionalVisibility is suppressed"
+    salience 25
     when
-        A property j:legacyRuleSettings has been set on a node
-             - the node has the type jmix:conditionalVisibility
+        A node is deleted
+             - its name is j:conditionalVisibility
     then
-        Import legacy visibility settings propertyValueAsString on the node
+        Execute the action "flushVisibilityOnDeleteAll" now on the parent
+end
+
+rule "Flush caches when a jnt:condition is suppressed"
+    salience 25
+    when
+        A node is deleted
+        The node has a parent
+            - the parent has the type jnt:conditionalVisibility
+    then
+        Execute the action "flushVisibilityOnDelete" now on the parent
 end

@@ -40,6 +40,7 @@
 
 package org.jahia.services.templates;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.services.workflow.WorkflowService;
@@ -400,7 +401,10 @@ class TemplatePackageRegistry {
             try {
                 for (String name : templatePackage.getRulesFiles()) {
                     for (RulesListener listener : RulesListener.getInstances()) {
-                        listener.addRules(new File(rootFolder, name));
+                        List<String> filesAccepted = listener.getFilesAccepted();
+                        if(filesAccepted.contains(StringUtils.substringAfterLast(name,"/"))) {
+                            listener.addRules(new File(rootFolder, name));
+                        }
                     }
                 }
             } catch (Exception e) {

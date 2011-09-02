@@ -10,6 +10,12 @@
     <bean class="org.jahia.modules.actions.EndDateVisibilityConditionBackgroundActionImpl">
         <property name="cacheProvider" ref="ModuleCacheProvider"/>
     </bean>
+    <bean class="org.jahia.modules.actions.FlushVisibilityConditionOnDeleteAllBackgroundAction">
+        <property name="cacheProvider" ref="ModuleCacheProvider"/>
+    </bean>
+    <bean class="org.jahia.modules.actions.FlushVisibilityConditionOnDeleteBackgroundAction">
+        <property name="cacheProvider" ref="ModuleCacheProvider"/>
+    </bean>
     <bean class="org.jahia.modules.visibility.conditions.StartEndDateConditionRuleImpl">
         <property name="associatedNodeType" value="jnt:startEndDateCondition"/>
         <property name="requiredFieldNamesForTemplate">

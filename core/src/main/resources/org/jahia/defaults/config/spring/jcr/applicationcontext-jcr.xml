@@ -112,6 +112,12 @@
                                            value-ref="org.jahia.services.content.rules.RulesNotificationService"/>
                                 </map>
                             </property>
+                            <property name="filesAccepted">
+                                <list value-type="java.lang.String">
+                                    <value type="java.lang.String">rules.drl</value>
+                                    <value type="java.lang.String">default-rules.drl</value>
+                                </list>
+                            </property>
                         </bean>
                         <bean class="org.jahia.services.content.textextraction.TextExtractionListener">
                             <property name="extractionService"
@@ -149,6 +155,35 @@
                                            value-ref="org.jahia.services.content.rules.ExtractionService"/>
                                 </map>
                             </property>
+                            <property name="filesAccepted">
+                                <list value-type="java.lang.String">
+                                    <value type="java.lang.String">rules.drl</value>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
+                            <property name="ruleFiles">
+                                <set/>
+                            </property>
+
+                            <property name="serverId" value="${cluster.node.serverId}"/>
+                            <property name="globalObjects">
+                                <map>
+                                    <entry key="service" value-ref="org.jahia.services.content.rules.Service"/>
+                                    <entry key="imageService"
+                                           value-ref="org.jahia.services.content.rules.ImageService"/>
+                                    <entry key="extractionService"
+                                           value-ref="org.jahia.services.content.rules.ExtractionService"/>
+                                    <entry key="notificationService"
+                                           value-ref="org.jahia.services.content.rules.RulesNotificationService"/>
+                                </map>
+                            </property>
+                            <property name="filesAccepted">
+                                <list value-type="java.lang.String">
+                                    <value type="java.lang.String">live-rules.drl</value>
+                                </list>
+                            </property>
+                            <property name="availableDuringPublish" value="true"/>
                         </bean>
                         <bean class="org.jahia.services.content.files.FileCacheListener">
                             <property name="availableDuringPublish" value="true"/>

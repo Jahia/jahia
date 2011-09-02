@@ -588,7 +588,7 @@ public class Service extends JahiaService {
     	if (schedule == null) {
     		return null;
     	}
-    	
+
         if (schedule instanceof Date) {
             return new SimpleTrigger(jobName + "TRIGGER", group, (Date) schedule);
         } else {
@@ -813,5 +813,18 @@ public class Service extends JahiaService {
     public void flushGroupCaches() {
         JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         groupService.flushCache();
+    }
+
+    public void executeActionNow(NodeFact node, final String actionToExecute, KnowledgeHelper drools)
+            throws SchedulerException, RepositoryException {
+	    final BackgroundAction action = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getBackgroundActions().get(
+                    actionToExecute);
+        if (action != null) {
+            if(node instanceof AddedNodeFact) {
+                action.executeBackgroundAction(((AddedNodeFact) node).getNode());
+            } else {
+                action.executeBackgroundAction(node.getParent().getNode());
+            }
+        }
     }
 }

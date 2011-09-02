@@ -75,6 +75,7 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
 	private transient static Logger logger = LoggerFactory.getLogger(JCRUser.class);
     protected static final String ROOT_USER_UUID = "b32d306a-6c74-11de-b3ef-001e4fead50b";
     private static final String PROVIDER_NAME = "jcr";
+    public static final String J_DISPLAYABLE_NAME = "j:displayableName";
     private final String nodeUuid;
     static final String J_PASSWORD = "j:password";
     public static final String J_EXTERNAL = "j:external";
@@ -158,7 +159,8 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
             try {
                 return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Properties>() {
                     public Properties doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        PropertyIterator iterator = getNode(session).getProperties();
+                        JCRUserNode jcrUserNode = (JCRUserNode) getNode(session);
+                        PropertyIterator iterator = jcrUserNode.getProperties();
                         for (; iterator.hasNext();) {
                             Property property = iterator.nextProperty();
                             if (!property.getDefinition().isMultiple()) {
@@ -178,6 +180,9 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
                                     properties.put(property.getName(), vals[0].getString());
                                 }
                             }
+                        }
+                        if (jcrUserNode.getDisplayableName() != null) {
+                            properties.put(J_DISPLAYABLE_NAME, jcrUserNode.getDisplayableName());
                         }
                         return properties;
                     }
@@ -204,7 +209,8 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
             try {
                 return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<UserProperties>() {
                     public UserProperties doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        PropertyIterator iterator = getNode(session).getProperties();
+                        JCRUserNode jcrUserNode = (JCRUserNode) getNode(session);
+                        PropertyIterator iterator = jcrUserNode.getProperties();
                         for (; iterator.hasNext();) {
                             Property property = iterator.nextProperty();
                             if(property instanceof JCRUserNode.JCRUserProperty) {
@@ -216,6 +222,9 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
                                                                                                     property.getString(),
                                                                                                     false));
                             }
+                        }
+                        if (jcrUserNode.getDisplayableName() != null) {
+                            userProperties.setUserProperty(J_DISPLAYABLE_NAME, new UserProperty(J_DISPLAYABLE_NAME, jcrUserNode.getDisplayableName(), true));
                         }
                         return userProperties;
                     }

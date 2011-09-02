@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.commons.server.rpc;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
+import org.jahia.services.usermanager.jcr.JCRUser;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
@@ -99,7 +100,11 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                 GWTJahiaUser data;
                 while (iterator.hasNext()) {
                     user = (JahiaUser) iterator.next();
-                    data = new GWTJahiaUser(user.getUsername(), user.getUserKey());
+                    String displayableName = user.getProperty(JCRUser.J_DISPLAYABLE_NAME);
+                    if (displayableName == null) {
+                        displayableName = user.getUsername();
+                    }
+                    data = new GWTJahiaUser(user.getUsername(), user.getUserKey(), displayableName);
                     Properties p = user.getProperties();
                     for (Object o : p.keySet()) {
                         data.set((String) o, p.get(o));
@@ -144,7 +149,11 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                     while (iterator.hasNext()) {
                         group = (JahiaGroup) iterator.next();
                         if (!group.isHidden()) {
-                            data = new GWTJahiaGroup(group.getGroupname(), group.getGroupKey());
+                            String displayableName = group.getProperty(JCRUser.J_DISPLAYABLE_NAME);
+                            if (displayableName == null) {
+                                displayableName = group.getGroupname();
+                            }
+                            data = new GWTJahiaGroup(group.getGroupname(), group.getGroupKey(), displayableName);
                             if (group.getSiteID() > 0) {
                                 JahiaSite jahiaSite = sitesService.getSite(group.getSiteID());
                                 if (jahiaSite != null) {

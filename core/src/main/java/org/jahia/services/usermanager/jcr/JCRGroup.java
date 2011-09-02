@@ -40,6 +40,7 @@
 
 package org.jahia.services.usermanager.jcr;
 
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRCallback;
@@ -68,6 +69,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
     public static final String J_HIDDEN = "j:hidden";
     public static final String J_EXTERNAL = "j:external";
     public static final String J_EXTERNAL_SOURCE = "j:externalSource";
+    public static final String J_DISPLAYABLE_NAME = "j:displayableName";
 
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRGroup.class);
     private String nodeUuid;
@@ -106,12 +108,16 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                 properties = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Properties>() {
                     public Properties doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Properties properties = new Properties();
-                        PropertyIterator iterator = getNode(session).getProperties();
+                        JCRGroupNode jcrGroupNode = (JCRGroupNode) getNode(session);
+                        PropertyIterator iterator = jcrGroupNode.getProperties();
                         for (; iterator.hasNext();) {
                             Property property = iterator.nextProperty();
                             if (!property.isMultiple()) {
                                 properties.put(property.getName(), property.getString());
                             }
+                        }
+                        if (jcrGroupNode.getDisplayableName() != null) {
+                            properties.put(J_DISPLAYABLE_NAME, jcrGroupNode.getDisplayableName());
                         }
                         return properties;
                     }

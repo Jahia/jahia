@@ -55,8 +55,8 @@ public class GWTJahiaUser extends GWTJahiaValueDisplayBean implements GWTJahiaPr
         setAllowNestedValues(false);
     }
 
-    public GWTJahiaUser(String username, String userKey) {
-        super(userKey,username);
+    public GWTJahiaUser(String username, String userKey, String displayableName) {
+        super(userKey,displayableName);
         setAllowNestedValues(false);
         setUsername(username);
         setUserKey(userKey);

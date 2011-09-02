@@ -151,14 +151,14 @@ public class UserGroupSelectButton extends InlineHTML {
                     public void addGroups(List<GWTJahiaGroup> groups) {
                         for (final GWTJahiaGroup group : groups) {
                             add(fieldId, callback, "g", group.getGroupKey(),
-                                    group.getGroupname());
+                                    group.getDisplay());
                         }
                     }
 
                     public void addUsers(List<GWTJahiaUser> users) {
                         for (final GWTJahiaUser user : users) {
                             add(fieldId, callback, "u", user.getUserKey(), user
-                                    .getUsername());
+                                    .getDisplay());
                         }
                     }
                 }, getViewMode(), "currentSite", singleSelectionMode);

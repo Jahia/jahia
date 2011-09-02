@@ -351,7 +351,7 @@ public class AclEditor {
                     if (ace == null) {
                         ace = new GWTJahiaNodeACE();
                         ace.setPrincipalType('u');
-                        ace.setPrincipal(user.getUsername());
+                        ace.setPrincipal(user.getDisplay());
                         ace.setPrincipalKey(user.getUserKey());
                         ace.setPermissions(new HashMap<String, Boolean>());
                         ace.setInheritedPermissions(new HashMap<String, Boolean>());
@@ -379,7 +379,7 @@ public class AclEditor {
                     if (ace == null) {
                         ace = new GWTJahiaNodeACE();
                         ace.setPrincipalType('g');
-                        ace.setPrincipal(group.getGroupname());
+                        ace.setPrincipal(group.getDisplay());
                         ace.setPrincipalKey(group.getGroupKey());
                         ace.setPermissions(new HashMap<String, Boolean>());
                         ace.setInheritedPermissions(new HashMap<String, Boolean>());

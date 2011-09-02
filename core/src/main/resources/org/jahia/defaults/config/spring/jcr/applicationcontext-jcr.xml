@@ -82,6 +82,7 @@
                 <entry key="jnt:portletPreference"
                        value="org.jahia.services.applications.pluto.JahiaPortletPreference"/>
                 <entry key="jnt:user" value="org.jahia.services.content.decorator.JCRUserNode"/>
+                <entry key="jnt:group" value="org.jahia.services.content.decorator.JCRGroupNode"/>
             </map>
         </property>
         <property name="listeners">

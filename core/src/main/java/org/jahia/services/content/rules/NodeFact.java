@@ -49,10 +49,40 @@ import javax.jcr.RepositoryException;
  */
 public interface NodeFact {
 
-	String getIdentifier() throws RepositoryException;
+    /**
+     * Returns the UUID of the corresponding node.
+     * 
+     * @return the UUID of the corresponding nodeo
+     * @throws RepositoryException
+     *             in case of a repository access error
+     */
+    String getIdentifier() throws RepositoryException;
 
-	AddedNodeFact getParent() throws RepositoryException;
+    /**
+     * Returns the parent node fact.
+     * 
+     * @return the parent node fact
+     * @throws RepositoryException
+     *             in case of a repository access error
+     */
+    AddedNodeFact getParent() throws RepositoryException;
 
-	String getPath() throws RepositoryException;
+    /**
+     * Returns the corresponding path of the node.
+     * 
+     * @return the corresponding path of the node
+     * @throws RepositoryException
+     *             in case of a repository access error
+     */
+    String getPath() throws RepositoryException;
 
+    /**
+     * Returns the current JCR workspace name.
+     * 
+     * @return the current JCR workspace name
+     * @throws RepositoryException
+     *             in case of a repository access error
+     * @since Jahia 6.6
+     */
+    String getWorkspace() throws RepositoryException;
 }

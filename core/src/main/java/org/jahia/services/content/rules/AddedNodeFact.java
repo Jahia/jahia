@@ -70,13 +70,17 @@ public class AddedNodeFact implements Updateable, NodeFact {
     private String type;
 
     private JCRNodeWrapper node;
+
+    private String workspace;
     
-    public AddedNodeFact(JCRNodeWrapper node) {
+    public AddedNodeFact(JCRNodeWrapper node) throws RepositoryException {
         this.node = node;
+        workspace = node.getSession().getWorkspace().getName();
     }
 
     public AddedNodeFact(AddedNodeFact parentNodeWrapper, String name, String type, KnowledgeHelper drools) throws RepositoryException {
         this.parentNode = parentNodeWrapper;
+        workspace = parentNode.getNode().getSession().getWorkspace().getName();
 
         JCRNodeWrapper node = (JCRNodeWrapper) parentNode.getNode();
         parentNodePath = node.getPath();
@@ -261,7 +265,11 @@ public class AddedNodeFact implements Updateable, NodeFact {
         return result;
     }
 
-	public String getIdentifier() throws RepositoryException {
-		return node != null ? node.getIdentifier() : null;
-	}
+    public String getIdentifier() throws RepositoryException {
+        return node != null ? node.getIdentifier() : null;
+    }
+
+    public String getWorkspace() throws RepositoryException {
+        return workspace;
+    }
 }

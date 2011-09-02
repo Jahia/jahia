@@ -58,8 +58,11 @@ public class DeletedNodeFact implements NodeFact {
 
     private AddedNodeFact parent;
 
+    private String workspace;
+    
     public DeletedNodeFact(AddedNodeFact nodeWrapper, KnowledgeHelper drools) throws RepositoryException {
         path = nodeWrapper.getPath();
+        workspace = nodeWrapper.getNode().getSession().getWorkspace().getName();
         nodeWrapper.getNode().remove();
         drools.retract(nodeWrapper);
 
@@ -97,5 +100,9 @@ public class DeletedNodeFact implements NodeFact {
 
     public void setSession(JCRSessionWrapper session) {
         this.session = session;
+    }
+
+    public String getWorkspace() throws RepositoryException {
+        return workspace;
     }
 }

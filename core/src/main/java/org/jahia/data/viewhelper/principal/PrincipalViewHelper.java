@@ -51,6 +51,8 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.*;
+import org.jahia.services.usermanager.jcr.JCRGroup;
+import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -221,9 +223,21 @@ public class PrincipalViewHelper implements Serializable {
      */
     public static String getName(Principal p, Integer size) {
         if (p instanceof JahiaUser) {
-            return adjustStringSize(((JahiaUser) p).getUsername(), size.intValue());
+            JahiaUser jahiaUser = (JahiaUser) p;
+            if (jahiaUser.getProperty(JCRUser.J_DISPLAYABLE_NAME) != null) {
+                return adjustStringSize(jahiaUser.getProperty(JCRUser.J_DISPLAYABLE_NAME), size.intValue());
+            } else {
+                return adjustStringSize(jahiaUser.getUsername(), size.intValue());
+            }
+        } else if (p instanceof JahiaGroup) {
+            JahiaGroup jahiaGroup = (JahiaGroup) p;
+            if (jahiaGroup.getProperty(JCRGroup.J_DISPLAYABLE_NAME) != null) {
+                return adjustStringSize(jahiaGroup.getProperty(JCRUser.J_DISPLAYABLE_NAME), size.intValue());
+            } else {
+                return adjustStringSize(jahiaGroup.getGroupname(), size.intValue());
+            }
         } else {
-            return adjustStringSize(((JahiaGroup) p).getGroupname(), size.intValue());
+            return adjustStringSize("unsupported principal type", size.intValue());
         }
     }
 
@@ -465,7 +479,6 @@ public class PrincipalViewHelper implements Serializable {
      *                          - properties
      *                          - storedOn
      *                          - providers
-     * @param siteID            The site ID containing the principal to search
      * @return a Properties object that contain the search criterium
      */
     public static Set getSearchResult(ProcessingContext processingContext) {
@@ -490,7 +503,6 @@ public class PrincipalViewHelper implements Serializable {
      *                - properties
      *                - storedOn
      *                - providers
-     * @param siteID  The site ID containing the principal to search
      * @return a Properties object that contain the search criterium
      */
     public static Set getSearchResult(ServletRequest request) {

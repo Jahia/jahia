@@ -180,17 +180,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean disableJsessionIdParameter = true;
     private String jsessionIdParameterName = "jsessionid";
 
-    private String guestResourceModuleName;
-    private String guestResourceKey;
+    private String guestUserResourceModuleName;
+    private String guestUserResourceKey;
 
-    private String rootResourceModuleName;
-    private String rootResourceKey;
-
-    private String usersResourceModuleName;
-    private String usersResourceKey;
-
-    private String administratorsResourceModuleName;
-    private String administratorsResourceKey;
+    private String guestGroupResourceModuleName;
+    private String guestGroupResourceKey;
 
     /**
      * Default constructor.
@@ -343,8 +337,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             disableJsessionIdParameter = getBoolean("disableJsessionIdParameter", true);
             jsessionIdParameterName = getString("jsessionIdParameterName", "jsessionid");
 
-            guestResourceModuleName = getString("guestResourceModuleName");
-            guestResourceKey = getString("guestResourceKey");
+            guestUserResourceModuleName = getString("guestUserResourceModuleName");
+            guestUserResourceKey = getString("guestUserResourceKey");
+
+            guestGroupResourceModuleName = getString("guestGroupResourceModuleName");
+            guestGroupResourceKey = getString("guestGroupResourceKey");
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -834,12 +831,28 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.jsessionIdParameterName = jsessionIdParameterName;
     }
 
-    public String getGuestResourceKey() {
-        return guestResourceKey;
+    public String getGuestUserResourceKey() {
+        return guestUserResourceKey;
     }
 
-    public String getGuestResourceModuleName() {
-        return guestResourceModuleName;
+    public String getGuestUserResourceModuleName() {
+        return guestUserResourceModuleName;
+    }
+
+    public String getGuestGroupResourceModuleName() {
+        return guestGroupResourceModuleName;
+    }
+
+    public void setGuestGroupResourceModuleName(String guestGroupResourceModuleName) {
+        this.guestGroupResourceModuleName = guestGroupResourceModuleName;
+    }
+
+    public String getGuestGroupResourceKey() {
+        return guestGroupResourceKey;
+    }
+
+    public void setGuestGroupResourceKey(String guestGroupResourceKey) {
+        this.guestGroupResourceKey = guestGroupResourceKey;
     }
 
     /**

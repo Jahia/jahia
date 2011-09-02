@@ -24,9 +24,9 @@ public class JCRGroupNode extends JCRNodeDecorator {
     public String getDisplayableName() {
         try {
             if (getName().equals(JahiaGroupManagerService.GUEST_GROUPNAME)) {
-                JahiaResourceBundle rb = new JahiaResourceBundle(null, getSession().getLocale(), SettingsBean.getInstance().getGuestResourceModuleName());
+                JahiaResourceBundle rb = new JahiaResourceBundle(null, getSession().getLocale(), SettingsBean.getInstance().getGuestGroupResourceModuleName());
 
-                return rb.get(SettingsBean.getInstance().getGuestResourceKey(), getName());
+                return rb.get(SettingsBean.getInstance().getGuestGroupResourceKey(), getName());
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage());

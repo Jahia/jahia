@@ -90,6 +90,7 @@ public class RulesListener extends DefaultEventListener {
     private Map<String, Object> globalObjects;
 
     private List<String> filesAccepted;
+    private List<Integer> operationTypes;
 
     public RulesListener() {
         instances.add(this);
@@ -110,14 +111,6 @@ public class RulesListener extends DefaultEventListener {
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED +
                 Event.PROPERTY_REMOVED;
-    }
-
-    public int getOperationTypes() {
-        return JCRObservationManager.SESSION_SAVE;
-    }
-
-    public Set<String> getRuleFiles() {
-        return ruleFiles;
     }
 
     private StatelessSession getStatelessSession(Map<String, Object> globals) {
@@ -256,7 +249,7 @@ public class RulesListener extends DefaultEventListener {
 
     public void onEvent(EventIterator eventIterator) {
         int operationType = ((JCREventIterator) eventIterator).getOperationType();
-        if (operationType != JCRObservationManager.SESSION_SAVE && operationType != JCRObservationManager.IMPORT) {
+        if (!operationTypes.contains(operationType)) {
             return;
         }
 
@@ -545,5 +538,13 @@ public class RulesListener extends DefaultEventListener {
 
     public void setFilesAccepted(List<String> fileAccepted) {
         this.filesAccepted = fileAccepted;
+    }
+
+    public void setOperationTypes(List<Integer> operationTypes) {
+        this.operationTypes = operationTypes;
+    }
+
+    public List<Integer> getOperationTypes() {
+        return operationTypes;
     }
 }

@@ -77,7 +77,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
         addPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
         top.add(addPanel);
 
-        addPanel.add(new Text(Messages.get("label.visibility.allConditionsMatch", "All conditions should match")+" : &nbsp;"));
+        addPanel.add(new Text(Messages.get("label.visibility.allConditionsMatch", "All conditions should match")+": &nbsp;"));
         allConditionsMatch = new CheckBox();
         allConditionsMatch.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
@@ -86,11 +86,15 @@ public class VisibilityTabItem extends EditEngineTabItem {
         });
         addPanel.add(allConditionsMatch);
 
-        addPanel.add(new Text("&nbsp; "+Messages.get("label.visibility.addCondition", "Add new condition")+" : "));
+        addPanel.add(new Text("&nbsp; "+Messages.get("label.visibility.addCondition", "Add new condition")+": "));
         final ListStore<GWTJahiaNodeType> typesStore = new ListStore<GWTJahiaNodeType>();
         final ComboBox<GWTJahiaNodeType> types = new ComboBox<GWTJahiaNodeType>();
         types.setDisplayField("label");
         types.setStore(typesStore);
+        types.setTypeAhead(true);
+        types.setTriggerAction(ComboBox.TriggerAction.ALL);
+        types.setForceSelection(true);
+        types.setEditable(false);
         types.setWidth(250);
         addPanel.add(types);
 
@@ -235,6 +239,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
                                     node.getPath(), new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
                                 public void onSuccess(GWTJahiaCreateEngineInitBean result) {
                                     PropertiesEditor pe = new PropertiesEditor(Arrays.asList(type), new HashMap<String, GWTJahiaNodeProperty>(), Arrays.asList("content"));
+                                    pe.setInitializersValues(result.getInitializersValues());                                    
                                     pe.renderNewFormPanel();
                                     propertiesEditorMap.put(conditionNode.getPath(), pe);
                                     form.add(pe);
@@ -246,6 +251,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
                             JahiaContentManagementService.App.getInstance().initializeEditEngine(conditionNode.getPath(), false, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
                                 public void onSuccess(GWTJahiaEditEngineInitBean result) {
                                     PropertiesEditor pe = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), Arrays.asList("content"));
+                                    pe.setInitializersValues(result.getInitializersValues());                                    
                                     pe.renderNewFormPanel();
                                     propertiesEditorMap.put(conditionNode.getPath(), pe);
                                     form.add(pe);
@@ -392,7 +398,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
         StatusBar(GWTJahiaNode node, HorizontalPanel statusPanel) {
             this.node = node;
             this.statusPanel = statusPanel;
-            statusPanel.add(new Text(Messages.get("label.visibility.currentStatusInLive", "Current status in live") + " : &nbsp;"));
+            statusPanel.add(new Text(Messages.get("label.visibility.currentStatusInLive", "Current status in live") + ": &nbsp;"));
         }
 
         private void initStatusBar(final GWTJahiaPublicationInfo info, final Boolean liveStatus) {
@@ -406,16 +412,16 @@ public class VisibilityTabItem extends EditEngineTabItem {
                 statusPanel.add(new Text("not published"));
             }
 
-            statusPanel.add(new Text("&nbsp;&nbsp;" + Messages.get("label.visibility.currentConditionsResult", "Current conditions result") + " : &nbsp;"));
+            statusPanel.add(new Text("&nbsp;&nbsp;" + Messages.get("label.visibility.currentConditionsResult", "Current conditions result") + ": &nbsp;"));
             statusContainer = new LayoutContainer(new FitLayout());
             statusPanel.add(statusContainer);
 
             if (node.getAggregatedPublicationInfo().getStatus() != GWTJahiaPublicationInfo.NOT_PUBLISHED) {
-                statusPanel.add(new Text("&nbsp;&nbsp;" + Messages.get("label.visibility.publicationStatus", "Publication status") + " : &nbsp;"));
+                statusPanel.add(new Text("&nbsp;&nbsp;" + Messages.get("label.visibility.publicationStatus", "Publication status") + ": &nbsp;"));
                 publicationInfoContainer = new LayoutContainer(new FitLayout());
                 statusPanel.add(publicationInfoContainer);
 
-                statusPanel.add(new Text("&nbsp;&nbsp;" + Messages.get("label.visibility.publishOnSave", "Publish conditions on save") + " : &nbsp;"));
+                statusPanel.add(new Text("&nbsp;&nbsp;" + Messages.get("label.visibility.publishOnSave", "Publish conditions on save") + ": &nbsp;"));
 
                 checkbox = new CheckBox();
                 checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {

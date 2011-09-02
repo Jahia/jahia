@@ -61,8 +61,10 @@ import java.util.*;
  *
  * @author : rincevent
  * @since JAHIA 6.5
- *        Created : 8 janv. 2010
+ * Created : 8 janv. 2010
+ * @deprecated use {@link AggregateCacheFilter} instead
  */
+@Deprecated
 public class CacheFilter extends AbstractFilter {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheFilter.class);
     private ModuleCacheProvider cacheProvider;

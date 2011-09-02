@@ -40,6 +40,9 @@
 
 package org.jahia.services.content.interceptor;
 
+import static org.jahia.api.Constants.JAHIAMIX_REFERENCES_IN_FIELD;
+import static org.jahia.api.Constants.JAHIA_REFERENCE_IN_FIELD_PREFIX;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
@@ -107,8 +110,8 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
     }
 
     public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition) throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        if (node.isNodeType("jmix:referencesInField")) {
-            NodeIterator ni = node.getNodes("j:referenceInField*");
+        if (node.isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
+            NodeIterator ni = node.getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
             if (definition.isInternationalized()) {
                 name += "_" + node.getSession().getLocale();
             }
@@ -136,7 +139,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
      *
      * @param node
      * @param name
-     *@param definition
+     * @param definition
      * @param originalValue Original value  @return Value to set, or null   @return
      * @throws ValueFormatException
      * @throws VersionException
@@ -144,8 +147,6 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
      * @throws ConstraintViolationException
      * @throws RepositoryException
      */
-
-
     public Value beforeSetValue(final JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         String content = originalValue.getString();
 
@@ -167,8 +168,8 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
             logger.debug("Intercept setValue for "+node.getPath()+"/"+name);
         }
 
-        if (node.isNodeType("jmix:referencesInField")) {
-            NodeIterator ni = node.getNodes("j:referenceInField*");
+        if (node.isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
+            NodeIterator ni = node.getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
                 if (name.equals(ref.getProperty("j:fieldName").getString())) {
@@ -202,13 +203,13 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
         }
 
         if (!newRefs.equals(refs)) {
-            if (!newRefs.isEmpty() && !node.isNodeType("jmix:referencesInField")) {
-                node.addMixin("jmix:referencesInField");
+            if (!newRefs.isEmpty() && !node.isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
+                node.addMixin(JAHIAMIX_REFERENCES_IN_FIELD);
             }
             if (logger.isDebugEnabled()) {
                 logger.debug("New references : "+newRefs);
             }
-            NodeIterator ni = node.getNodes("j:referenceInField*");
+            NodeIterator ni = node.getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
                 if (name.equals(ref.getProperty("j:fieldName").getString()) && !newRefs.containsKey(ref.getProperty("j:reference").getString())) {
@@ -293,8 +294,8 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
         if (parent.isNodeType(Constants.JAHIANT_TRANSLATION)) {
             parent = parent.getParent();
         }
-        if (parent.isNodeType("jmix:referencesInField")) {
-            NodeIterator ni = parent.getNodes("j:referenceInField*");
+        if (parent.isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
+            NodeIterator ni = parent.getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
                 if (name.equals(ref.getProperty("j:fieldName").getString())) {

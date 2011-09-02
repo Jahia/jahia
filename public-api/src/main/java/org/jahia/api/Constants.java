@@ -147,6 +147,9 @@ public class Constants {
 
     public final static String JAHIAMIX_IMAGE = "jmix:image";
 
+    public static final String JAHIAMIX_REFERENCES_IN_FIELD = "jmix:referencesInField";
+    public static final String JAHIA_REFERENCE_IN_FIELD_PREFIX = "j:referenceInField*";
+        
     public static final String JAHIAMIX_TAGGED = "jmix:tagged";
 
     public static final String JAHIAMIX_EXTERNALREFERENCE = "jmix:externalReference";

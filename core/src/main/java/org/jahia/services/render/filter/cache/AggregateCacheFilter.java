@@ -40,6 +40,9 @@
 
 package org.jahia.services.render.filter.cache;
 
+import static org.jahia.api.Constants.JAHIA_REFERENCE_IN_FIELD_PREFIX;
+import static org.jahia.api.Constants.JAHIAMIX_REFERENCES_IN_FIELD;
+
 import net.htmlparser.jericho.*;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
@@ -67,6 +70,7 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
 import javax.jcr.ItemNotFoundException;
+import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
@@ -276,6 +280,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         try {
             if (cacheable) {
+            	addReferencesToDependencies(resource);
                 String perUser = (String) renderContext.getRequest().getAttribute("perUser");
                 if (perUser != null) {
                     // This content must be cached by user as it is defined in the options panel
@@ -421,7 +426,33 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    private String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String, Serializable> moduleParams, String areaIdentifier, Stack<String> cacheKeyStack) {
+    /**
+     * Checks if the node properties has references to other content items (links in rich text fields) and adds those as dependencies.
+     * 
+     * @param resource
+     *            the resource to update dependencies on
+     * @throws RepositoryException
+     *             in case of a repository error
+     */
+    private void addReferencesToDependencies(Resource resource) throws RepositoryException {
+        if (resource.getNode().isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
+            NodeIterator ni = resource.getNode().getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
+            while (ni.hasNext()) {
+                JCRNodeWrapper ref = (JCRNodeWrapper) ni.nextNode();
+                try {
+                    resource.getDependencies().add(ref.getProperty("j:reference").getString());
+                } catch (PathNotFoundException e) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("j:reference property is not found on node {}", ref.getPath());
+                    }
+                } catch (Exception e) {
+                    logger.warn("Error adding dependency to node " + resource.getNode().getPath(), e);
+                }
+            }
+        }
+    }
+
+	private String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String, Serializable> moduleParams, String areaIdentifier, Stack<String> cacheKeyStack) {
         // aggregate content
         Source htmlContent = new Source(cachedContent);
         List<? extends Tag> esiIncludeTags = htmlContent.getAllStartTags("esi:include");

@@ -52,22 +52,6 @@ when we flush this entry we will flush the whole cache
         <property name="keyGenerator" ref="cacheKeyGenerator"/>
 	</bean>
 
-    <!--<bean id="cacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter">
-        <property name="priority" value="20" />
-    	<property name="cacheProvider" ref="ModuleCacheProvider"/>
-        <property name="conditions">
-            <set>
-                <bean class="org.jahia.services.render.filter.AbstractFilter$NotCondition">
-                    <constructor-arg>
-                        <bean class="org.jahia.services.render.filter.AbstractFilter$ModeCondition">
-                            <constructor-arg value="edit"/>
-                        </bean>
-                    </constructor-arg>
-                </bean>
-            </set>
-        </property>
-    </bean>-->
-
     <bean id="moduleGeneratorQueue" class="org.jahia.services.render.filter.cache.ModuleGeneratorQueue">
         <property name="maxModulesToGenerateInParallel" value="${maxModulesToGenerateInParallel}"/>
         <property name="moduleGenerationWaitTime" value="${moduleGenerationWaitTime}"/>
@@ -90,27 +74,7 @@ when we flush this entry we will flush the whole cache
             </map>
         </property>
     </bean>
-<!--
-    <bean id="mainResourceCacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter">
-        <property name="priority" value="16" />
-    	<property name="cacheProvider" ref="ModuleCacheProvider"/>
-    	<property name="skipOnTemplateTypes" value="json"/>
-        <property name="skipOnConfiguration" value="include,wrapper,option"/>
-        <property name="applyOnModes" value="live"/>
-        <property name="generatorQueue" ref="moduleGeneratorQueue"/>
-        <property name="applyOnMainResource" value="true"/>
-    </bean>
 
-    <bean id="nonMainResourceCacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter">
-        <property name="priority" value="16" />
-    	<property name="cacheProvider" ref="ModuleCacheProvider"/>
-    	<property name="skipOnTemplateTypes" value="json"/>
-        <property name="skipOnConfiguration" value="include,wrapper,option"/>
-        <property name="applyOnModes" value="live"/>
-        <property name="generatorQueue" ref="moduleGeneratorQueue"/>
-        <property name="skipOnMainResource" value="true"/>
-    </bean>
--->
     <bean name="cacheMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
             <map>

@@ -69,9 +69,9 @@ public interface VisibilityConditionRule {
     String getGWTDisplayTemplate(Locale locale);
 
     /**
-     * Return the associated display template that will be used by gwt.
-     *
-     * @return Return the associated display template that will be used by gwt.
+     * Returns a list of field names, required to display the info.
+     * 
+     * @return a list of field names, required to display the info
      */
     List<String> getRequiredFieldNamesForTemplate();
 }

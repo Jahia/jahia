@@ -12,6 +12,12 @@
     </bean>
     <bean class="org.jahia.modules.visibility.conditions.StartEndDateConditionRuleImpl">
         <property name="associatedNodeType" value="jnt:startEndDateCondition"/>
+        <property name="requiredFieldNamesForTemplate">
+            <list>
+                <value>start</value>
+                <value>end</value>
+            </list>
+        </property>
     </bean>
     
     <bean class="org.jahia.services.content.rules.ModuleGlobalObject">

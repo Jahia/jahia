@@ -32,9 +32,7 @@
  */
 package org.jahia.modules.visibility.conditions;
 
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 import javax.jcr.PathNotFoundException;
@@ -56,6 +54,7 @@ import org.slf4j.LoggerFactory;
  * Created : 8/29/11
  */
 public class StartEndDateConditionRuleImpl extends BaseVisibilityConditionRule {
+    
     private transient static Logger logger = LoggerFactory.getLogger(StartEndDateConditionRuleImpl.class);
 
     /**
@@ -65,10 +64,6 @@ public class StartEndDateConditionRuleImpl extends BaseVisibilityConditionRule {
      */
     public String getGWTDisplayTemplate(Locale locale) {
         return JahiaResourceBundle.getString("JahiaVisibility", "label.startEndDateCondition.xtemplate",locale, "Jahia Visibility");
-    }
-
-    public List<String> getRequiredFieldNamesForTemplate() {
-        return Arrays.asList("start", "end");
     }
 
     public boolean matches(JCRNodeWrapper nodeWrapper) {

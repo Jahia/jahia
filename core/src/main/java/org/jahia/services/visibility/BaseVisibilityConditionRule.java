@@ -32,6 +32,9 @@
  */
 package org.jahia.services.visibility;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.jahia.services.Conditional;
 
 /**
@@ -43,15 +46,27 @@ public abstract class BaseVisibilityConditionRule implements VisibilityCondition
 
     private String associatedNodeType;
 
-    public void setAssociatedNodeType(String associatedNodeType) {
-        this.associatedNodeType = associatedNodeType;
+    private List<String> requiredFieldNamesForTemplate = Collections.emptyList();
+
+    public boolean evaluate() {
+        return true;
     }
 
     public String getAssociatedNodeType() {
         return associatedNodeType;
     }
 
-    public boolean evaluate() {
-        return true;
+    public List<String> getRequiredFieldNamesForTemplate() {
+        return requiredFieldNamesForTemplate;
+    }
+
+    public void setAssociatedNodeType(String associatedNodeType) {
+        this.associatedNodeType = associatedNodeType;
+    }
+
+    public void setRequiredFieldNamesForTemplate(List<String> requiredFieldNamesForTemplate) {
+        if (requiredFieldNamesForTemplate != null && !requiredFieldNamesForTemplate.isEmpty()) {
+            this.requiredFieldNamesForTemplate = requiredFieldNamesForTemplate;
+        }
     }
 }

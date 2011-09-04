@@ -95,7 +95,6 @@ public class JahiaNodeIndexer extends NodeIndexer {
      */
     public static final String FACET_PREFIX = "FACET:";
     
-    public static final String ANCESTOR = "_:ANCESTOR".intern();
     public static final String TRANSLATED_NODE_PARENT = "_:TRANSLATED_PARENT".intern();
     public static final String TRANSLATION_LANGUAGE = "_:TRANSLATION_LANGUAGE".intern();
 

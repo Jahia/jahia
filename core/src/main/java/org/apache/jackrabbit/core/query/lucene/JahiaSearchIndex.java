@@ -40,7 +40,6 @@
 
 package org.apache.jackrabbit.core.query.lucene;
 
-import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.query.ExecutableQuery;
 import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
@@ -48,13 +47,11 @@ import org.apache.jackrabbit.core.query.lucene.constraint.NoDuplicatesConstraint
 import org.apache.jackrabbit.core.session.SessionContext;
 import org.apache.jackrabbit.core.state.ChildNodeEntry;
 import org.apache.jackrabbit.core.state.NodeState;
-import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.spi.commons.query.qom.QueryObjectModelTree;
 import org.slf4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.search.*;
 
 import javax.jcr.Node;
@@ -82,108 +79,64 @@ public class JahiaSearchIndex extends SearchIndex {
         BooleanQuery.setMaxClauseCount(maxClauseCount);
     }
 
-    //    /**
-//     * This implementation forwards the call to
-//     * {@link MultiIndex#update(java.util.Collection , java.util.Collection)} and
-//     * transforms the two iterators to the required types.
-//     *
-//     * @param remove ids of nodes to remove.
-//     * @param add    NodeStates to add. Calls to <code>next()</code> on this
-//     *               iterator may return <code>null</code>, to indicate that a
-//     *               node could not be indexed successfully.
-//     * @throws RepositoryException if an error occurs while indexing a node.
-//     * @throws IOException         if an error occurs while updating the index.
-//     */
-//    @Override
-//    public void updateNodes(Iterator<NodeId> remove, Iterator<NodeState> add)
-//            throws RepositoryException, IOException {
-//
-//        final List<NodeState> addList = new ArrayList<NodeState>();
-//        final List<NodeId> removeList = new ArrayList<NodeId>();
-//        final Set<NodeId> removedIds = new HashSet<NodeId>();
-//        final Set<NodeId> addedIds = new HashSet<NodeId>();
-//
-//        while (add.hasNext()) {
-//            final NodeState state = add.next();
-//            if (state != null) {
-//                addedIds.add(state.getNodeId());
-//            }
-//            addList.add(state);
-//        }
-//        while (remove.hasNext()) {
-//            NodeId nodeId = remove.next();
-//            removedIds.add(nodeId);
-//            removeList.add(nodeId);
-//        }
-//
-//        final IndexReader reader = getIndexReader();
-//        final Searcher searcher = new IndexSearcher(reader);
-//
-//        for (final NodeState node : new ArrayList<NodeState>(addList)) {
-//            if (node.getParentId() != null) {
-//                try {
-//                    int doc = -1;
-//                    TermDocs docs = reader.termDocs(new Term(FieldNames.UUID, node.getNodeId().toString()));
-//                    try {
-//                        if (docs.next()) {
-//                            doc = docs.doc();
-//
-//                            String oldUuid = reader.document(doc).get(FieldNames.PARENT);
-//                            String uuid = node.getParentId().toString();
-//                            if (!oldUuid.equals(uuid)) {
-//                                searcher.search(new TermQuery(new Term(JahiaNodeIndexer.ANCESTOR, node.getId().toString())), new HitCollector() {
-//                                    public void collect(int doc, float score) {
-//                                        try {
-//                                            String uuid = reader.document(doc).get(FieldNames.UUID);
-//
-//                                            final NodeId id = new NodeId(uuid);
-//                                            if (!removedIds.contains(id) && !addedIds.contains(id)) {
-//                                                removeList.add(id);
-//                                                removedIds.add(id);
-//                                            }
-//                                            if (!addedIds.contains(id)) {
-//                                                addList.add((NodeState) getContext()
-//                                                        .getItemStateManager().getItemState(id));
-//                                                addedIds.add(id);
-//                                            }
-//                                        } catch (Exception e) {
-//                                            log.error("Cannot search moved nodes", e);
-//                                        }
-//                                    }
-//                                });
-//                            }
-//                        }
-//                    } catch (Exception e) {
-//                        log.error("Cannot search moved nodes", e);
-//                    } finally {
-//                        docs.close();
-//                    }
-//                } catch (Exception e) {
-//                    log.error("Cannot search moved nodes", e);
-//                }
-//            }
-//            for (ChildNodeEntry childNodeEntry : node.getChildNodeEntries()) {
-//                if (childNodeEntry.getName().getLocalName().startsWith(TRANSLATION_LOCALNODENAME_PREFIX)) {
-//                    try {
-//                        if (!removedIds.contains(childNodeEntry.getId())
-//                                && !addedIds.contains(childNodeEntry.getId())) {
-//                            removeList.add(childNodeEntry.getId());
-//                            removedIds.add(childNodeEntry.getId());
-//                        }
-//                        if (!addedIds.contains(childNodeEntry.getId())) {
-//                            addList.add((NodeState) getContext().getItemStateManager()
-//                                    .getItemState(childNodeEntry.getId()));
-//                            addedIds.add(childNodeEntry.getId());
-//                        }
-//                    } catch (Exception e) {
-//                        log.warn("Index of translation node may not be updated", e);
-//                    }
-//                }
-//            }
-//        }
-//
-//        super.updateNodes(removeList.iterator(), addList.iterator());
-//    }
+    /**
+     * We override this method in order to trigger re-indexing on translation nodes, when their
+     * parent node is getting re-indexed.
+     * 
+     * After that we just call the updateNodes from the Jackrabbut SearchIndex implementation.
+     *
+     * @param remove ids of nodes to remove.
+     * @param add    NodeStates to add. Calls to <code>next()</code> on this
+     *               iterator may return <code>null</code>, to indicate that a
+     *               node could not be indexed successfully.
+     * @throws RepositoryException if an error occurs while indexing a node.
+     * @throws IOException         if an error occurs while updating the index.
+     */
+    @Override
+    public void updateNodes(Iterator<NodeId> remove, Iterator<NodeState> add)
+            throws RepositoryException, IOException {
+
+        final List<NodeState> addList = new ArrayList<NodeState>();
+        final List<NodeId> removeList = new ArrayList<NodeId>();
+        final Set<NodeId> removedIds = new HashSet<NodeId>();
+        final Set<NodeId> addedIds = new HashSet<NodeId>();
+
+        while (add.hasNext()) {
+            final NodeState state = add.next();
+            if (state != null) {
+                addedIds.add(state.getNodeId());
+            }
+            addList.add(state);
+        }
+        while (remove.hasNext()) {
+            NodeId nodeId = remove.next();
+            removedIds.add(nodeId);
+            removeList.add(nodeId);
+        }
+
+        for (final NodeState node : new ArrayList<NodeState>(addList)) {
+            for (ChildNodeEntry childNodeEntry : node.getChildNodeEntries()) {
+                if (childNodeEntry.getName().getLocalName().startsWith(TRANSLATION_LOCALNODENAME_PREFIX)) {
+                    try {
+                        if (!removedIds.contains(childNodeEntry.getId())
+                                && !addedIds.contains(childNodeEntry.getId())) {
+                            removeList.add(childNodeEntry.getId());
+                            removedIds.add(childNodeEntry.getId());
+                        }
+                        if (!addedIds.contains(childNodeEntry.getId())) {
+                            addList.add((NodeState) getContext().getItemStateManager()
+                                    .getItemState(childNodeEntry.getId()));
+                            addedIds.add(childNodeEntry.getId());
+                        }
+                    } catch (Exception e) {
+                        log.warn("Index of translation node may not be updated", e);
+                    }
+                }
+            }
+        }
+
+        super.updateNodes(removeList.iterator(), addList.iterator());
+    }
 
     @Override
     protected Document createDocument(final NodeState node, NamespaceMappings nsMappings,

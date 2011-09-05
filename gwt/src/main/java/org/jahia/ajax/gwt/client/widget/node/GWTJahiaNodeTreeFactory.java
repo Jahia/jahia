@@ -85,6 +85,7 @@ public class GWTJahiaNodeTreeFactory {
     private List<String> hiddenTypes = new ArrayList<String>();
     private String hiddenRegex;
     private boolean displayHiddenTypes = false;
+    private boolean showOnlyNodesWithTemplates = false;
 
     public GWTJahiaNodeTreeFactory(final List<String> paths) {
         this(paths, GWTJahiaNode.DEFAULT_FIELDS);
@@ -200,6 +201,9 @@ public class GWTJahiaNodeTreeFactory {
         this.hiddenTypes = hiddenTypes;
     }
 
+    public void setShowOnlyNodesWithTemplates(boolean showOnlyNodesWithTemplates) {
+        this.showOnlyNodesWithTemplates = showOnlyNodesWithTemplates;
+    }
     /**
      * init method()
      */
@@ -330,7 +334,7 @@ public class GWTJahiaNodeTreeFactory {
                     try {
                         JahiaContentManagementService.App.getInstance()
                                 .lsLoad(gwtJahiaNode, nodeTypes, mimeTypes, filters, fields, checkSubchilds, -1, -1, displayHiddenTypes,
-                                        hiddenTypes, hiddenRegex, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
+                                        hiddenTypes, hiddenRegex,showOnlyNodesWithTemplates, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
                                             public void onSuccess(PagingLoadResult<GWTJahiaNode> result) {
                                                 listAsyncCallback.onSuccess(result.getData());
                                             }

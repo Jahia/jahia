@@ -280,7 +280,7 @@ public class UIConfigHelper {
                 gwtConfig.setDisplaySearchInContent(config.isDisplaySearchInContent());
                 gwtConfig.setSearchInFile(config.isSearchInFile());
                 gwtConfig.setSearchInContent(config.isSearchInContent());                
-
+                gwtConfig.setShowOnlyNodesWithTemplates(config.isShowOnlyNodesWithTemplates());
                 // set toolbar
                 gwtConfig.setToolbars(createGWTToolbarSet(contextNode, site, jahiaUser, locale, uiLocale, request, config.getToolbars()));
                 gwtConfig.setContextMenu(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getContextMenu()));

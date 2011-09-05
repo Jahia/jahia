@@ -90,9 +90,9 @@ public abstract class AbstractView extends TopRightComponent {
                     JahiaContentManagementService.App.getInstance().lsLoad(root,
                             configuration.getAllNodeTypes(),
                             configuration.getMimeTypes(), configuration.getFilters(), configuration.getTableColumnKeys(),
-                            false, -1, -1,getLinker().isDisplayHiddenTypes() , configuration.getHiddenTypes(), configuration.getHiddenRegex(), listAsyncCallback);
+                            false, -1, -1,getLinker().isDisplayHiddenTypes() , configuration.getHiddenTypes(), configuration.getHiddenRegex(),configuration.isShowOnlyNodesWithTemplates(), listAsyncCallback);
                 } catch (org.jahia.ajax.gwt.client.service.GWTJahiaServiceException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    e.printStackTrace();
                 }
             }
         };

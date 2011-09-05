@@ -578,6 +578,7 @@
         <property name="searchInContent" value="true"/>
         <property name="searchInFile" value="true"/>   
         <property name="allowsMultipleSelection" value="false"/>
+        <property name="showOnlyNodesWithTemplates" value="true"/>
         <!-- accordion panels-->
         <property name="repositories">
             <list>

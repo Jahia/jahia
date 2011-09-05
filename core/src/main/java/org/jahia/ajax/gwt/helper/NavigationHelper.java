@@ -66,7 +66,6 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.sites.SitesSettings;
-import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -140,12 +139,14 @@ public class NavigationHelper {
     public List<GWTJahiaNode> ls(GWTJahiaNode gwtParentNode, List<String> nodeTypes, List<String> mimeTypes,
                                  List<String> nameFilters, List<String> fields, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
-        return ls(gwtParentNode, nodeTypes, mimeTypes, nameFilters, fields, false, false, null, null, currentUserSession);
+        return ls(gwtParentNode, nodeTypes, mimeTypes, nameFilters, fields, false, false, null, null, currentUserSession,
+                false);
     }
 
     public List<GWTJahiaNode> ls(GWTJahiaNode gwtParentNode, List<String> nodeTypes, List<String> mimeTypes,
                                  List<String> nameFilters, List<String> fields, boolean checkSubChild,
-                                 boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+                                 boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex,
+                                 JCRSessionWrapper currentUserSession, boolean showOnlyNodesWithTemplates) throws GWTJahiaServiceException {
         JCRNodeWrapper node = null;
         try {
             node = currentUserSession.getNode(gwtParentNode != null ? gwtParentNode.getPath() : "/");
@@ -161,7 +162,8 @@ public class NavigationHelper {
         }
         final List<GWTJahiaNode> gwtNodeChildren = new ArrayList<GWTJahiaNode>();
         try {
-            getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, node, gwtNodeChildren, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex);
+            getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, node, gwtNodeChildren, checkSubChild,
+                    displayHiddenTypes, hiddenTypes, hiddenRegex, showOnlyNodesWithTemplates);
 
             return gwtNodeChildren;
         } catch (RepositoryException e) {
@@ -172,7 +174,8 @@ public class NavigationHelper {
 
     private void getMatchingChilds(List<String> nodeTypes, List<String> mimeTypes, List<String> nameFilters,
                                    List<String> fields, JCRNodeWrapper node, List<GWTJahiaNode> gwtNodeChildren,
-                                   boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex) throws RepositoryException, GWTJahiaServiceException {
+                                   boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes,
+                                   String hiddenRegex, boolean showOnlyNodesWithTemplates) throws RepositoryException, GWTJahiaServiceException {
         final NodeIterator nodesIterator;
         if(node instanceof JCRQueryNode) {
             final Query q = node.getSession().getWorkspace().getQueryManager().getQuery(node.getRealNode());
@@ -195,7 +198,9 @@ public class NavigationHelper {
             if (logger.isDebugEnabled()) {
                 logger.debug(new StringBuilder("processing ").append(childNode.getPath()).toString());
             }
-
+            if(showOnlyNodesWithTemplates && !JCRContentUtils.isADisplayableNode(childNode, new RenderContext(null, null, node.getSession().getUser()))){
+                continue;
+            }
             // in case of a folder, it allows to know if the node is selectable
             boolean hiddenType = false;
             if (!displayHiddenTypes) {
@@ -238,7 +243,8 @@ public class NavigationHelper {
                 }
                 gwtNodeChildren.add(gwtChildNode);
             } else if (checkSubChild && childNode.hasNodes()) {
-                getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, childNode, gwtNodeChildren, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex);
+                getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, childNode, gwtNodeChildren, checkSubChild,
+                        displayHiddenTypes, hiddenTypes, hiddenRegex, showOnlyNodesWithTemplates);
             }
         }
     }
@@ -393,7 +399,7 @@ public class NavigationHelper {
                             if (openPath.startsWith(node.getPath()) && !node.isExpandOnLoad() && !node.isFile()) {
                                 node.setExpandOnLoad(true);
                                 List<GWTJahiaNode> list = ls(node, nodeTypes, mimeTypes, filters, fields, checkSubChild,
-                                        displayHiddenTypes, hiddenTypes, hiddenRegex, currentUserSession);
+                                        displayHiddenTypes, hiddenTypes, hiddenRegex, currentUserSession, false);
                                 for (int j = 0; j < list.size(); j++) {
                                     node.insert(list.get(j), j);
                                     allNodes.add(list.get(j));

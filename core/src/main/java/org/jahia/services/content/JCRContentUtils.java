@@ -1348,4 +1348,16 @@ public final class JCRContentUtils {
     public void setUnsupportedMarkForDeletionNodeTypes(Set<String> unsupportedMarkForDeletionNodeTypes) {
         this.unsupportedMarkForDeletionNodeTypes = unsupportedMarkForDeletionNodeTypes;
     }
+
+    public static boolean isADisplayableNode(JCRNodeWrapper node, RenderContext context) {
+        Template template = null;
+        JCRNodeWrapper currentNode = node;
+        try {
+            template = RenderService.getInstance().resolveTemplate(new org.jahia.services.render.Resource(currentNode,
+                    "html", null, org.jahia.services.render.Resource.CONFIGURATION_PAGE), context);
+            return template!=null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

@@ -86,7 +86,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void getEditConfiguration(String path, String name, AsyncCallback<GWTEditConfiguration> async);
 
-    public void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async) throws GWTJahiaServiceException;
+    public void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean showOnlyNodesWithTemplates, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async) throws GWTJahiaServiceException;
 
     void getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, AsyncCallback<List<GWTJahiaNode>> async);
 

@@ -89,7 +89,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
                     Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
                     try {
                         JahiaContentManagementService.App.getInstance()
-                                .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.CONTENT_NODETYPES, null, null, config.getTableColumnKeys(), false, -1, -1, false, null, null, listAsyncCallback);
+                                .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.CONTENT_NODETYPES, null, null, config.getTableColumnKeys(), false, -1, -1, false, null, null,false, listAsyncCallback);
                     } catch (org.jahia.ajax.gwt.client.service.GWTJahiaServiceException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }

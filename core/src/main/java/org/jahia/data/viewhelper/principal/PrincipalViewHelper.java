@@ -44,6 +44,7 @@ package org.jahia.data.viewhelper.principal;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
@@ -224,18 +225,20 @@ public class PrincipalViewHelper implements Serializable {
     public static String getName(Principal p, Integer size) {
         if (p instanceof JahiaUser) {
             JahiaUser jahiaUser = (JahiaUser) p;
-            if (jahiaUser.getProperty(JCRUser.J_DISPLAYABLE_NAME) != null) {
-                return adjustStringSize(jahiaUser.getProperty(JCRUser.J_DISPLAYABLE_NAME), size.intValue());
-            } else {
-                return adjustStringSize(jahiaUser.getUsername(), size.intValue());
+            String userName = jahiaUser.getUsername();
+            if (Constants.GUEST_USERNAME.equals(userName)) {
+                JahiaResourceBundle rb = new JahiaResourceBundle(null, getLocale(), SettingsBean.getInstance().getGuestUserResourceModuleName());
+                userName = rb.get(SettingsBean.getInstance().getGuestUserResourceKey(), userName);
             }
+            return adjustStringSize(userName, size.intValue());
         } else if (p instanceof JahiaGroup) {
             JahiaGroup jahiaGroup = (JahiaGroup) p;
-            if (jahiaGroup.getProperty(JCRGroup.J_DISPLAYABLE_NAME) != null) {
-                return adjustStringSize(jahiaGroup.getProperty(JCRUser.J_DISPLAYABLE_NAME), size.intValue());
-            } else {
-                return adjustStringSize(jahiaGroup.getGroupname(), size.intValue());
+            String groupName = jahiaGroup.getGroupname();
+            if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupName)) {
+                JahiaResourceBundle rb = new JahiaResourceBundle(null, getLocale(), SettingsBean.getInstance().getGuestGroupResourceModuleName());
+                groupName = rb.get(SettingsBean.getInstance().getGuestGroupResourceKey(), groupName);
             }
+            return adjustStringSize(groupName, size.intValue());
         } else {
             return adjustStringSize("unsupported principal type", size.intValue());
         }
@@ -687,6 +690,12 @@ public class PrincipalViewHelper implements Serializable {
     }
     
     private static String getI18n(String key, String defaultValue) {
+        Locale locale = getLocale();
+
+        return JahiaResourceBundle.getJahiaInternalResource(key, locale, defaultValue);
+    }
+
+    private static Locale getLocale() {
         Locale locale = JCRSessionFactory.getInstance().getCurrentLocale();
         if (locale == null) {
             // we are in Jahia Administration perhaps
@@ -698,8 +707,7 @@ public class PrincipalViewHelper implements Serializable {
         if (locale == null) {
             locale = Locale.ENGLISH;
         }
-
-        return JahiaResourceBundle.getJahiaInternalResource(key, locale, defaultValue);
+        return locale;
     }
 
     private static String adjustStringSize(String str, int size) {

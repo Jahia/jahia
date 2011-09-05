@@ -181,9 +181,6 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
                                 }
                             }
                         }
-                        if (jcrUserNode.getDisplayableName() != null) {
-                            properties.put(J_DISPLAYABLE_NAME, jcrUserNode.getDisplayableName());
-                        }
                         return properties;
                     }
                 });

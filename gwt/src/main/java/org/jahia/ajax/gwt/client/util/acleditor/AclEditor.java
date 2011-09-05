@@ -609,7 +609,7 @@ public class AclEditor {
             return;
         }
         BaseModelData value = new BaseModelData();//Object[3 + available.size()];
-        value.set("principal", ace.getPrincipal());
+        value.set("principal", ace.getPrincipalDisplayName());
 
         String o = ace.getPrincipalType() + ace.getPrincipalKey();
         if (!items.contains(o)) {

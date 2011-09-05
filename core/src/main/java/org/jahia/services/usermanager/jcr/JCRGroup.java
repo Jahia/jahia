@@ -116,9 +116,6 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                                 properties.put(property.getName(), property.getString());
                             }
                         }
-                        if (jcrGroupNode.getDisplayableName() != null) {
-                            properties.put(J_DISPLAYABLE_NAME, jcrGroupNode.getDisplayableName());
-                        }
                         return properties;
                     }
                 });

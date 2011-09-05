@@ -40,10 +40,6 @@
 
 package org.jahia.services.content.decorator;
 
-import org.jahia.bin.Jahia;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.settings.SettingsBean;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -95,20 +91,6 @@ public class JCRUserNode extends JCRNodeDecorator {
         } catch (NoSuchNodeTypeException e) {
             logger.error(e.getMessage(), e);
         }
-    }
-
-    @Override
-    public String getDisplayableName() {
-        if ((JCRSessionFactory.getInstance() == null) || (JCRSessionFactory.getInstance().getCurrentLocale() == null) ) {
-            logger.warn("Couldn't resolve locale, returning default displayable name");
-            return super.getDisplayableName();
-        }
-        if (getName().equals(Constants.GUEST_USERNAME)) {
-            JahiaResourceBundle rb = new JahiaResourceBundle(null, JCRSessionFactory.getInstance().getCurrentLocale(), SettingsBean.getInstance().getGuestUserResourceModuleName());
-
-            return rb.get(SettingsBean.getInstance().getGuestUserResourceKey(), getName());
-        }
-        return super.getDisplayableName();
     }
 
     @Override

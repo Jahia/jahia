@@ -43,7 +43,10 @@ package org.jahia.ajax.gwt.commons.server.rpc;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
+import org.jahia.api.Constants;
 import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.settings.SettingsBean;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
@@ -100,11 +103,12 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                 GWTJahiaUser data;
                 while (iterator.hasNext()) {
                     user = (JahiaUser) iterator.next();
-                    String displayableName = user.getProperty(JCRUser.J_DISPLAYABLE_NAME);
-                    if (displayableName == null) {
-                        displayableName = user.getUsername();
+                    String userName = user.getUsername();
+                    if (Constants.GUEST_USERNAME.equals(userName)) {
+                        JahiaResourceBundle rb = new JahiaResourceBundle(null, getUILocale(), SettingsBean.getInstance().getGuestUserResourceModuleName());
+                        userName = rb.get(SettingsBean.getInstance().getGuestUserResourceKey(), userName);
                     }
-                    data = new GWTJahiaUser(user.getUsername(), user.getUserKey(), displayableName);
+                    data = new GWTJahiaUser(user.getUsername(), user.getUserKey(), userName);
                     Properties p = user.getProperties();
                     for (Object o : p.keySet()) {
                         data.set((String) o, p.get(o));
@@ -149,11 +153,12 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                     while (iterator.hasNext()) {
                         group = (JahiaGroup) iterator.next();
                         if (!group.isHidden()) {
-                            String displayableName = group.getProperty(JCRUser.J_DISPLAYABLE_NAME);
-                            if (displayableName == null) {
-                                displayableName = group.getGroupname();
+                            String groupName = group.getGroupname();
+                            if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupName)) {
+                                JahiaResourceBundle rb = new JahiaResourceBundle(null, getUILocale(), SettingsBean.getInstance().getGuestGroupResourceModuleName());
+                                groupName = rb.get(SettingsBean.getInstance().getGuestGroupResourceKey(), groupName);
                             }
-                            data = new GWTJahiaGroup(group.getGroupname(), group.getGroupKey(), displayableName);
+                            data = new GWTJahiaGroup(group.getGroupname(), group.getGroupKey(), groupName);
                             if (group.getSiteID() > 0) {
                                 JahiaSite jahiaSite = sitesService.getSite(group.getSiteID());
                                 if (jahiaSite != null) {

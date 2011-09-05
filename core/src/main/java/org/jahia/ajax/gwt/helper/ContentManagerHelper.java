@@ -719,7 +719,7 @@ public class ContentManagerHelper {
                 String principal = iterator.next();
                 GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
                 ace.setPrincipalType(principal.charAt(0));
-                ace.setPrincipal(principal.substring(2));
+                ace.setPrincipal(principal.substring(2)); // we set this even if we can't lookup the principal
                 if (ace.getPrincipalType() == 'g') {
                     JahiaGroup g = groupManagerService.lookupGroup(node.getResolveSite().getID(), ace.getPrincipal());
                     if (g == null) {
@@ -728,6 +728,12 @@ public class ContentManagerHelper {
                     if (g != null) {
                         ace.setHidden(g.isHidden());
                         ace.setPrincipalKey(g.getGroupKey());
+                        String groupName = g.getGroupname();
+                        if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupName)) {
+                            JahiaResourceBundle rb = new JahiaResourceBundle(null, uiLocale, SettingsBean.getInstance().getGuestGroupResourceModuleName());
+                            groupName = rb.get(SettingsBean.getInstance().getGuestGroupResourceKey(), groupName);
+                        }
+                        ace.setPrincipalDisplayName(groupName);
                     } else {
                         continue;
                     }
@@ -735,6 +741,12 @@ public class ContentManagerHelper {
                     JahiaUser u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal());
                     if (u != null) {
                         ace.setPrincipalKey(u.getUserKey());
+                        String userName = u.getUsername();
+                        if (Constants.GUEST_USERNAME.equals(userName)) {
+                            JahiaResourceBundle rb = new JahiaResourceBundle(null, uiLocale, SettingsBean.getInstance().getGuestUserResourceModuleName());
+                            userName = rb.get(SettingsBean.getInstance().getGuestUserResourceKey(), userName);
+                        }
+                        ace.setPrincipalDisplayName(userName);
                     } else {
                         continue;
                     }
@@ -782,7 +794,7 @@ public class ContentManagerHelper {
                         map.put(principal, ace);
                         aces.add(ace);
                         ace.setPrincipalType(principal.charAt(0));
-                        ace.setPrincipal(principal.substring(2));
+                        ace.setPrincipal(principal.substring(2)); // we set this even if we can't lookup the principal
                         if (ace.getPrincipalType() == 'g') {
                             JahiaGroup g = groupManagerService.lookupGroup(node.getResolveSite().getID(),
                                     ace.getPrincipal());
@@ -791,6 +803,12 @@ public class ContentManagerHelper {
                             }
                             if (g != null) {
                                 ace.setHidden(g.isHidden());
+                                String groupName = g.getGroupname();
+                                if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupName)) {
+                                    JahiaResourceBundle rb = new JahiaResourceBundle(null, uiLocale, SettingsBean.getInstance().getGuestGroupResourceModuleName());
+                                    groupName = rb.get(SettingsBean.getInstance().getGuestGroupResourceKey(), groupName);
+                                }
+                                ace.setPrincipalDisplayName(groupName);
                             }
                         }
                         ace.setPermissions(new HashMap<String, Boolean>());

@@ -392,11 +392,6 @@
     <servlet>
         <servlet-name>Files</servlet-name>
         <servlet-class>org.jahia.services.content.files.FileServlet</servlet-class>
-        <init-param>
-            <description>Is the metrics (access statistics) logging enabled?</description>
-            <param-name>statistics-enabled</param-name>
-            <param-value>false</param-value>
-        </init-param>
         <load-on-startup>99</load-on-startup>
     </servlet>
 

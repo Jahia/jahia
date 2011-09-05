@@ -185,6 +185,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private String guestGroupResourceModuleName;
     private String guestGroupResourceKey;
+    
+    private boolean fileServletStatisticsEnabled;
 
     /**
      * Default constructor.
@@ -342,6 +344,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             guestGroupResourceModuleName = getString("guestGroupResourceModuleName");
             guestGroupResourceKey = getString("guestGroupResourceKey");
+            
+            fileServletStatisticsEnabled = getBoolean("jahia.fileServlet.statisticsEnabled", false);
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -352,7 +356,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                     getString("default_templates_set"));
 
             settings.put("templates.modules.onError", getString("templates.modules.onError", "compact"));
-
+            
             settings.setFast(true);
             // If cluster is activated then try to expose some properties as system properties for JGroups
             boolean clusterActivated = getBoolean("cluster.activated",false);
@@ -947,5 +951,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public boolean isUseJstackForThreadDumps() {
         return useJstackForThreadDumps;
+    }
+
+    public boolean isFileServletStatisticsEnabled() {
+        return fileServletStatisticsEnabled;
     }
 }

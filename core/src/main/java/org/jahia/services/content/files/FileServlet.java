@@ -347,9 +347,7 @@ public class FileServlet extends HttpServlet {
             throw new ServletException(e.getCause());
         }
         
-        value = StringUtils.defaultString(config.getInitParameter("statistics-enabled"), "").toLowerCase();
-        if (value.length() > 0
-                && ("true".equals(value) || "yes".equals(value) || "on".equals(value))) {
+        if (SettingsBean.getInstance().isFileServletStatisticsEnabled()) {
             try {
                 loggingService = (MetricsLoggingService) SpringContextSingleton
                         .getBean("loggingService");
@@ -388,7 +386,7 @@ public class FileServlet extends HttpServlet {
         HttpSession httpSession = req.getSession(false);
         String sessionID = httpSession != null ? httpSession.getId() : req.getRequestedSessionId();
         loggingService.logContentEvent(sessionFactory.getCurrentUser().getName(),
-                req.getRemoteAddr(), sessionID, null, fileKey.getPath(), null, "fileAccessed",
+                req.getRemoteAddr(), sessionID, "", fileKey.getPath(), "", "fileAccessed",
                 status);
     }
 

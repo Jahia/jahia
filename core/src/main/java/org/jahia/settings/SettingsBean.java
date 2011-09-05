@@ -180,6 +180,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean disableJsessionIdParameter = true;
     private String jsessionIdParameterName = "jsessionid";
 
+    private boolean fileServletStatisticsEnabled;
+    
     /**
      * Default constructor.
      *
@@ -330,6 +332,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             disableJsessionIdParameter = getBoolean("disableJsessionIdParameter", true);
             jsessionIdParameterName = getString("jsessionIdParameterName", "jsessionid");
+
+            fileServletStatisticsEnabled = getBoolean("jahia.fileServlet.statisticsEnabled", false);
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -911,5 +915,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public boolean isUseJstackForThreadDumps() {
         return useJstackForThreadDumps;
+    }
+
+    public boolean isFileServletStatisticsEnabled() {
+        return fileServletStatisticsEnabled;
     }
 }

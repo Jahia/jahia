@@ -28,7 +28,6 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
@@ -130,8 +129,9 @@ public class VisibilityTabItem extends EditEngineTabItem {
         ColumnConfig conditionStatus = new ColumnConfig("status", Messages.get("label.status"), 100);
         conditionStatus.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public Object render(GWTJahiaNode model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                if (model.get("conditionMatch") != null) {
-                    if (model.get("conditionMatch").equals(Boolean.TRUE)) {
+                Boolean match = model.get("conditionMatch");
+                if (match != null) {
+                    if (match.equals(Boolean.TRUE)) {
                         AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon("visibilityStatusGreen");
                         return icon.getHTML();
                     } else {
@@ -329,8 +329,9 @@ public class VisibilityTabItem extends EditEngineTabItem {
         oneFalse = false;
         oneUnknown = false;
         for (GWTJahiaNode model : conditionsStore.getModels()) {
-            if (model.get("conditionMatch") != null) {
-                if (model.get("conditionMatch").equals(Boolean.TRUE)) {
+            Boolean match = model.get("conditionMatch");
+            if (match != null) {
+                if (match.equals(Boolean.TRUE)) {
                     oneTrue = true;
                 } else {
                     oneFalse = true;

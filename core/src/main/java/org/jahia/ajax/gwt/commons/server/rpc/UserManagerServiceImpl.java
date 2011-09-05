@@ -103,11 +103,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                 GWTJahiaUser data;
                 while (iterator.hasNext()) {
                     user = (JahiaUser) iterator.next();
-                    String userName = user.getUsername();
-                    if (Constants.GUEST_USERNAME.equals(userName)) {
-                        JahiaResourceBundle rb = new JahiaResourceBundle(null, getUILocale(), SettingsBean.getInstance().getGuestUserResourceModuleName());
-                        userName = rb.get(SettingsBean.getInstance().getGuestUserResourceKey(), userName);
-                    }
+                    String userName = PrincipalViewHelper.getDisplayName(user);
                     data = new GWTJahiaUser(user.getUsername(), user.getUserKey(), userName);
                     Properties p = user.getProperties();
                     for (Object o : p.keySet()) {
@@ -153,11 +149,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                     while (iterator.hasNext()) {
                         group = (JahiaGroup) iterator.next();
                         if (!group.isHidden()) {
-                            String groupName = group.getGroupname();
-                            if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupName)) {
-                                JahiaResourceBundle rb = new JahiaResourceBundle(null, getUILocale(), SettingsBean.getInstance().getGuestGroupResourceModuleName());
-                                groupName = rb.get(SettingsBean.getInstance().getGuestGroupResourceKey(), groupName);
-                            }
+                            String groupName = PrincipalViewHelper.getDisplayName(group);
                             data = new GWTJahiaGroup(group.getGroupname(), group.getGroupKey(), groupName);
                             if (group.getSiteID() > 0) {
                                 JahiaSite jahiaSite = sitesService.getSite(group.getSiteID());

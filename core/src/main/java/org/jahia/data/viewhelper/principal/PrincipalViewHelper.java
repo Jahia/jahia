@@ -216,13 +216,11 @@ public class PrincipalViewHelper implements Serializable {
     }
 
     /**
-     * Construct a displayable principal name string
-     *
-     * @param p    The user object
-     * @param size The principal string size that should be displayed.
-     * @return The displayable principal string.
+     * Return a displayable name, using resource bundles for the guest user and group.
+     * @param p the principal for which to build the displayable name
+     * @return a String containing the displayable name for the user, ready for display in the user interface
      */
-    public static String getName(Principal p, Integer size) {
+    public static String getDisplayName(Principal p) {
         if (p instanceof JahiaUser) {
             JahiaUser jahiaUser = (JahiaUser) p;
             String userName = jahiaUser.getUsername();
@@ -230,7 +228,7 @@ public class PrincipalViewHelper implements Serializable {
                 JahiaResourceBundle rb = new JahiaResourceBundle(null, getLocale(), SettingsBean.getInstance().getGuestUserResourceModuleName());
                 userName = rb.get(SettingsBean.getInstance().getGuestUserResourceKey(), userName);
             }
-            return adjustStringSize(userName, size.intValue());
+            return userName;
         } else if (p instanceof JahiaGroup) {
             JahiaGroup jahiaGroup = (JahiaGroup) p;
             String groupName = jahiaGroup.getGroupname();
@@ -238,10 +236,22 @@ public class PrincipalViewHelper implements Serializable {
                 JahiaResourceBundle rb = new JahiaResourceBundle(null, getLocale(), SettingsBean.getInstance().getGuestGroupResourceModuleName());
                 groupName = rb.get(SettingsBean.getInstance().getGuestGroupResourceKey(), groupName);
             }
-            return adjustStringSize(groupName, size.intValue());
+            return groupName;
         } else {
-            return adjustStringSize("unsupported principal type", size.intValue());
+            return p.getName();
         }
+    }
+
+    /**
+     * Construct a displayable principal name string
+     *
+     * @param p    The user object
+     * @param size The principal string size that should be displayed.
+     * @return The displayable principal string.
+     */
+    public static String getName(Principal p, Integer size) {
+        String displayName = getDisplayName(p);
+        return adjustStringSize(displayName, size.intValue());
     }
 
     /**

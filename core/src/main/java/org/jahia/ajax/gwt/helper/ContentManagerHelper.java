@@ -45,6 +45,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
+import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -728,11 +729,7 @@ public class ContentManagerHelper {
                     if (g != null) {
                         ace.setHidden(g.isHidden());
                         ace.setPrincipalKey(g.getGroupKey());
-                        String groupName = g.getGroupname();
-                        if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupName)) {
-                            JahiaResourceBundle rb = new JahiaResourceBundle(null, uiLocale, SettingsBean.getInstance().getGuestGroupResourceModuleName());
-                            groupName = rb.get(SettingsBean.getInstance().getGuestGroupResourceKey(), groupName);
-                        }
+                        String groupName = PrincipalViewHelper.getDisplayName(g);
                         ace.setPrincipalDisplayName(groupName);
                     } else {
                         continue;
@@ -741,11 +738,7 @@ public class ContentManagerHelper {
                     JahiaUser u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal());
                     if (u != null) {
                         ace.setPrincipalKey(u.getUserKey());
-                        String userName = u.getUsername();
-                        if (Constants.GUEST_USERNAME.equals(userName)) {
-                            JahiaResourceBundle rb = new JahiaResourceBundle(null, uiLocale, SettingsBean.getInstance().getGuestUserResourceModuleName());
-                            userName = rb.get(SettingsBean.getInstance().getGuestUserResourceKey(), userName);
-                        }
+                        String userName = PrincipalViewHelper.getDisplayName(u);
                         ace.setPrincipalDisplayName(userName);
                     } else {
                         continue;
@@ -803,11 +796,7 @@ public class ContentManagerHelper {
                             }
                             if (g != null) {
                                 ace.setHidden(g.isHidden());
-                                String groupName = g.getGroupname();
-                                if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupName)) {
-                                    JahiaResourceBundle rb = new JahiaResourceBundle(null, uiLocale, SettingsBean.getInstance().getGuestGroupResourceModuleName());
-                                    groupName = rb.get(SettingsBean.getInstance().getGuestGroupResourceKey(), groupName);
-                                }
+                                String groupName = PrincipalViewHelper.getDisplayName(g);
                                 ace.setPrincipalDisplayName(groupName);
                             }
                         }

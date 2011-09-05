@@ -122,7 +122,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
         ListStore<GWTJahiaUser> store = new ListStore<GWTJahiaUser>(loader);
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-        columns.add(new ColumnConfig("userName", Messages.get("label.username", "User name"), 150));
+        columns.add(new ColumnConfig("display", Messages.get("label.username", "User name"), 150));
         columns.add(new ColumnConfig("j:lastName", Messages.get("org.jahia.admin.lastName.label", "Last name"), 130));
         columns.add(new ColumnConfig("j:firstName", Messages.get("org.jahia.admin.firstName.label", "First name"), 130));
 //        columns.add(new ColumnConfig("siteName", "Site name", 80));

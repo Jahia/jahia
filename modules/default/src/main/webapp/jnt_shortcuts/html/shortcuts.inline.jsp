@@ -21,7 +21,7 @@
     <ul>
         <c:if test="${renderContext.loggedIn}">
             <li>
-                <span class="currentUser"><fmt:message key="welcome"/>, <c:choose><c:when test="${not empty currentUser.properties['j:firstName']}">${currentUser.properties['j:firstName']} ${currentUser.properties['j:lastName']}</c:when><c:otherwise>${currentUser.username}</c:otherwise></c:choose><c:if test="${not empty currentAliasUser}">(&nbsp;<fmt:message key="as.user"/>&nbsp;${currentAliasUser.username})</c:if>:</span>
+                <span class="currentUser"><fmt:message key="welcome"/>, ${functions:fullName(currentUser)}<c:if test="${not empty currentAliasUser}">(&nbsp;<fmt:message key="as.user"/>&nbsp;${currentAliasUser.username})</c:if>:</span>
             </li>
             <li class="shortcuts-login">
                 <a href='<c:url value="${url.logout}"/>'><span><fmt:message key="logout"/></span></a>

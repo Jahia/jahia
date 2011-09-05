@@ -41,6 +41,7 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -55,6 +56,7 @@ import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -72,6 +74,7 @@ public abstract class AbstractView extends TopRightComponent {
     protected List<GWTJahiaNode> visibleSelection;
     protected ListStore<GWTJahiaNode> store;
     protected AbstractStoreSelectionModel<GWTJahiaNode> selectionModel;
+    protected ListStore<ModelData> typeStore = null;
 
     public AbstractView(final GWTManagerConfiguration config) {
         configuration = config;
@@ -115,6 +118,21 @@ public abstract class AbstractView extends TopRightComponent {
                     for (GWTJahiaNode node : store.getModels()) {
                         node.setParent((TreeModel) AbstractView.this.root);
                     }
+                }
+                if(typeStore!=null) {
+                    for (GWTJahiaNode o : gwtJahiaNodeListLoadResult.getData()) {
+                        BaseModelData data = new BaseModelData(){
+                            @Override
+                            public boolean equals(Object obj) {
+                                return get(GWTJahiaNode.PRIMARY_TYPE_LABEL).equals(((ModelData)obj).get(GWTJahiaNode.PRIMARY_TYPE_LABEL));
+                            }
+                        };
+                        data.set(GWTJahiaNode.PRIMARY_TYPE_LABEL, o.get(GWTJahiaNode.PRIMARY_TYPE_LABEL));
+                        if(!typeStore.contains(data)) {
+                            typeStore.add(data);
+                        }
+                    }
+                    typeStore.sort(GWTJahiaNode.PRIMARY_TYPE_LABEL, Style.SortDir.ASC);
                 }
             }
         };

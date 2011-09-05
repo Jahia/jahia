@@ -280,6 +280,8 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 col.setDataIndex("index");
             } else if ("name".equals(column.getKey()) || "displayName".equals(column.getKey())) {
                 col.setRenderer(NAME_RENDERER);
+            } else if(GWTJahiaNode.PRIMARY_TYPE_LABEL.equals(column.getKey())) {
+                col.setMenuDisabled(false);
             }
             add(col);
         }

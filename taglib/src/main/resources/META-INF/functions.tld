@@ -370,4 +370,35 @@
 			${functions:lookupUser('sergiy')} or ${functions:lookupUser('{ldap}john')}
 		</example>
 	</function>
+
+    <function>
+		<description>
+			Retrieve the displayable name for a principal object. For the moment this implementation only changes
+            the guest user and guest group names to be localized using resource bundle entries (see jahia.properties
+            for configuration of resource bundle name and key).
+		</description>
+		<name>displayName</name>
+		<function-class>org.jahia.data.viewhelper.principal.PrincipalViewHelper</function-class>
+        <function-signature>java.lang.String getDisplayName(java.security.Principal)</function-signature>
+        <example>
+			${functions:displayName(jahiaUser)}
+		</example>
+	</function>
+
+    <function>
+		<description>
+			Retrieve the full name or displayable for a principal object.
+            Builds the full user name, which is build the following way :
+            - for a JahiaGroup, simply calls getDisplayName(p)
+            - for a JahiaUser, if the firstName and lastName properties are defined, they are concatenated and this method
+            returns that result. If the properties don't exist, this is equivalent to getDisplayName(p)
+		</description>
+		<name>fullName</name>
+		<function-class>org.jahia.data.viewhelper.principal.PrincipalViewHelper</function-class>
+        <function-signature>java.lang.String getFullName(java.security.Principal)</function-signature>
+        <example>
+			${functions:fullName(jahiaUser)} or ${functions:fullName(jahiaGroup)}
+		</example>
+	</function>
+
 </taglib>

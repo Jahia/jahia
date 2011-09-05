@@ -216,6 +216,42 @@ public class PrincipalViewHelper implements Serializable {
     }
 
     /**
+     * Builds the full user name, which is build the following way :
+     * - for a JahiaGroup, simply calls getDisplayName(p)
+     * - for a JahiaUser, if the firstName and lastName properties are defined, they are concatenated and this method
+     * returns that result. If the properties don't exist, this is equivalent to getDisplayName(p)
+     * @param p
+     * @return
+     * @see org.jahia.data.viewhelper.principal.PrincipalViewHelper#getDisplayName(java.security.Principal)
+     */
+    public static String getFullName(Principal p) {
+        if (p instanceof JahiaGroup) {
+            return getDisplayName(p);
+        } else if (p instanceof JahiaUser) {
+            JahiaUser jahiaUser = (JahiaUser) p;
+            StringBuilder fullName = new StringBuilder();
+            String value = jahiaUser.getProperty("firstname");
+            if (StringUtils.isNotEmpty(value)) {
+                fullName.append(value);
+            }
+            value = jahiaUser.getProperty("lastname");
+            if (StringUtils.isNotEmpty(value)) {
+                if (fullName.length() > 0) {
+                    fullName.append(" ");
+                }
+                fullName.append(value);
+            }
+
+            if (fullName.length() == 0) {
+                fullName.append(getDisplayName(jahiaUser));
+            }
+            return fullName.toString();
+        } else {
+            return p.getName();
+        }
+    }
+
+    /**
      * Return a displayable name, using resource bundles for the guest user and group.
      * @param p the principal for which to build the displayable name
      * @return a String containing the displayable name for the user, ready for display in the user interface
@@ -224,22 +260,44 @@ public class PrincipalViewHelper implements Serializable {
         if (p instanceof JahiaUser) {
             JahiaUser jahiaUser = (JahiaUser) p;
             String userName = jahiaUser.getUsername();
-            if (Constants.GUEST_USERNAME.equals(userName)) {
-                JahiaResourceBundle rb = new JahiaResourceBundle(null, getLocale(), SettingsBean.getInstance().getGuestUserResourceModuleName());
-                userName = rb.get(SettingsBean.getInstance().getGuestUserResourceKey(), userName);
-            }
+            userName = getUserDisplayName(userName);
             return userName;
         } else if (p instanceof JahiaGroup) {
             JahiaGroup jahiaGroup = (JahiaGroup) p;
             String groupName = jahiaGroup.getGroupname();
-            if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupName)) {
-                JahiaResourceBundle rb = new JahiaResourceBundle(null, getLocale(), SettingsBean.getInstance().getGuestGroupResourceModuleName());
-                groupName = rb.get(SettingsBean.getInstance().getGuestGroupResourceKey(), groupName);
-            }
+            groupName = getGroupDisplayName(groupName);
             return groupName;
         } else {
             return p.getName();
         }
+    }
+
+    /**
+     * Returns the displayable name for a group based on the group name. This method will for the moment only use
+     * resource bundle to localized the guest group name.
+     * @param groupName the group name to localize
+     * @return the localized name for the group
+     */
+    public static String getGroupDisplayName(String groupName) {
+        if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupName)) {
+            JahiaResourceBundle rb = new JahiaResourceBundle(null, getLocale(), SettingsBean.getInstance().getGuestGroupResourceModuleName());
+            groupName = rb.get(SettingsBean.getInstance().getGuestGroupResourceKey(), groupName);
+        }
+        return groupName;
+    }
+
+    /**
+     * Returns the displayable name for a user based on the user name. This method will for the moment only use a
+     * resource bundle lookup to localize the guest user name.
+     * @param userName the user name to localize
+     * @return the localized user name
+     */
+    public static String getUserDisplayName(String userName) {
+        if (Constants.GUEST_USERNAME.equals(userName)) {
+            JahiaResourceBundle rb = new JahiaResourceBundle(null, getLocale(), SettingsBean.getInstance().getGuestUserResourceModuleName());
+            userName = rb.get(SettingsBean.getInstance().getGuestUserResourceKey(), userName);
+        }
+        return userName;
     }
 
     /**

@@ -124,7 +124,9 @@ public abstract class AbstractView extends TopRightComponent {
                         BaseModelData data = new BaseModelData(){
                             @Override
                             public boolean equals(Object obj) {
-                                return get(GWTJahiaNode.PRIMARY_TYPE_LABEL).equals(((ModelData)obj).get(GWTJahiaNode.PRIMARY_TYPE_LABEL));
+                                Object o1 = get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
+                                Object o2 = ((ModelData) obj).get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
+                                return o1.equals(o2);
                             }
                         };
                         data.set(GWTJahiaNode.PRIMARY_TYPE_LABEL, o.get(GWTJahiaNode.PRIMARY_TYPE_LABEL));

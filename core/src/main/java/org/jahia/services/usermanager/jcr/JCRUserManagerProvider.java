@@ -210,7 +210,13 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
             try {
                 JCRCallback<Boolean> deleteCallcback = new JCRCallback<Boolean>() {
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        Node node = jcrUser.getNode(session);
+                        Node node = null;
+                        try {
+                            node = jcrUser.getNode(session);
+                        } catch (ItemNotFoundException e) {
+                            // the user deletion in live is automated with jmix:autoPublish
+                            return true;
+                        }
                         if (node.isNodeType(Constants.JAHIAMIX_SYSTEMNODE)) {
                             return false;
                         }

@@ -30,41 +30,55 @@
  * between you and Jahia Limited. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.modules.actions;
+package org.jahia.services.content.rules;
+
+import javax.jcr.RepositoryException;
 
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.rules.BackgroundAction;
+import org.jahia.services.content.rules.BaseBackgroundAction;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.RepositoryException;
-
 /**
- * Background action that invalidates output caches for the node, having start/end date visibility condition.
+ * Background action that invalidates output caches for the node or its parents.
  * 
- * @author rincevent
+ * @author Sergiy Shyrkov
  * @since JAHIA 6.6
- * Created : 8/29/11
  */
-public class FlushVisibilityConditionOnDeleteBackgroundAction implements BackgroundAction {
-    private transient static Logger logger = LoggerFactory.getLogger(FlushVisibilityConditionOnDeleteBackgroundAction.class);
+public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
+
+    private static Logger logger = LoggerFactory.getLogger(FlushCacheOnNodeBackgroundAction.class);
+
     private ModuleCacheProvider cacheProvider;
+
+    private int startLevel;
+
+    private int levelsUp;
 
     public void setCacheProvider(ModuleCacheProvider cacheProvider) {
         this.cacheProvider = cacheProvider;
     }
 
-    public String getName() {
-        return "flushVisibilityOnDelete";
-    }
-
     public void executeBackgroundAction(JCRNodeWrapper node) {
         try {
-            cacheProvider.invalidate(node.getParent().getPath());
-            cacheProvider.invalidate(node.getParent().getParent().getPath());
+            JCRNodeWrapper currentNode = node;
+            for (int level = 0; level <= (startLevel + levelsUp); level++) {
+                if (level >= startLevel) {
+                    cacheProvider.invalidate(currentNode.getPath());
+                }
+                currentNode = currentNode.getParent();
+            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
+    }
+
+    public void setStartLevel(int startLevel) {
+        this.startLevel = startLevel;
+    }
+
+    public void setLevelsUp(int endLevel) {
+        this.levelsUp = endLevel;
     }
 }

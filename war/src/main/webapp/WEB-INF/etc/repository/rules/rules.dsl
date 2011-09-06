@@ -26,6 +26,7 @@
 [condition][]- it is in {path}=node.path matches "{path}/*"
 [condition][]- its name is not {name}=name != "{name}"
 [condition][]- its name is {name}=name == "{name}"
+[condition][]- its name matches "{namePattern}"=name matches "{namePattern}"
 [condition][]- the mimetype is not {mimetype}=mimeType != "{mimetype}"
 [condition][]- the mimetype is {mimetype}=mimeType == "{mimetype}"
 [condition][]- the mimetype matches {mimetype}=mimeType matches "{mimetype}"

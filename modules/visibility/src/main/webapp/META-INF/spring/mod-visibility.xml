@@ -2,20 +2,35 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-    <bean class="org.jahia.modules.actions.StartDateVisibilityConditionBackgroundActionImpl">
-        <property name="cacheProvider" ref="ModuleCacheProvider"/>
+    <bean id="abstractFlushCacheOnVisibilityNodeBackgroundAction" parent="abstractFlushCacheOnNodeBackgroundAction" abstract="true">
+        <property name="startLevel" value="2"/>
+        <property name="levelsUp" value="1"/>
     </bean>
-    <bean class="org.jahia.modules.actions.EndDateVisibilityConditionBackgroundActionImpl">
-        <property name="cacheProvider" ref="ModuleCacheProvider"/>
+    
+    <bean parent="abstractFlushCacheOnVisibilityNodeBackgroundAction">
+        <property name="name" value="startDateVisibilityAction"/>
     </bean>
-    <bean class="org.jahia.modules.actions.FlushVisibilityConditionOnDeleteAllBackgroundAction">
-        <property name="cacheProvider" ref="ModuleCacheProvider"/>
+    
+    <bean parent="abstractFlushCacheOnNodeBackgroundAction">
+        <property name="name" value="abstractFlushCacheOnVisibilityNodeBackgroundAction"/>
     </bean>
-    <bean class="org.jahia.modules.actions.FlushVisibilityConditionOnDeleteBackgroundAction">
-        <property name="cacheProvider" ref="ModuleCacheProvider"/>
+    
+    <bean parent="abstractFlushCacheOnNodeBackgroundAction">
+        <property name="name" value="flushVisibilityOnDeleteAll"/>
+        <property name="startLevel" value="0"/>
+        <property name="levelsUp" value="1"/>
     </bean>
+    
+    <bean parent="abstractFlushCacheOnNodeBackgroundAction">
+        <property name="name" value="flushVisibilityOnDelete"/>
+        <property name="startLevel" value="1"/>
+        <property name="levelsUp" value="1"/>
+    </bean>
+
     <bean class="org.jahia.modules.visibility.conditions.StartEndDateConditionRuleImpl">
         <property name="associatedNodeType" value="jnt:startEndDateCondition"/>
         <property name="requiredFieldNamesForTemplate">
@@ -35,6 +50,33 @@
                     </bean>
                 </entry>
             </map>
+        </property>
+    </bean>
+
+    <bean parent="jobSchedulingBean">
+        <property name="jobDetail">
+            <bean class="org.springframework.scheduling.quartz.JobDetailBean">
+                <property name="name" value="VisibilityActionPurgeJob" />
+                <property name="jobClass" value="org.jahia.modules.visibility.rules.VisibilityActionPurgeJob" />
+                <property name="group" value="Maintenance" />
+                <property name="description" value="Cancels (unschedules) and removes orphaned visibility action jobs in case the corresponding node is no longer present" />
+                <property name="jobDataAsMap">
+                    <map>
+                        <entry key="visibilityJobGroupNames">
+                            <set>
+                                <value>ActionJob.startDateVisibilityAction</value>
+                                <value>ActionJob.endDateVisibilityAction</value>
+                            </set>
+                        </entry>
+                    </map>
+                </property>
+            </bean>
+        </property>
+        <property name="trigger">
+            <bean class="org.quartz.CronTrigger">
+                <property name="name" value="VisibilityActionPurgeJobTrigger"/>
+                <property name="cronExpression" value="0 5 * * * ?"/><!-- execute every hour -->
+            </bean>
         </property>
     </bean>
 </beans>

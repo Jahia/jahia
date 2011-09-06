@@ -141,9 +141,67 @@ public class DeployTemplatesActionItem extends BaseActionItem {
             MenuItem item = new MenuItem(Messages.get("label.nosites", "No target sites"));
             item.setEnabled(false);
             menu.add(item);
+        } else {
+            MenuItem item = new MenuItem(Messages.get("label.deploy.on.all.sites", "Deploy on all sites with this templates set"));
+            addDeployAllListener(item,linker);
+            menu.add(item);
         }
         setSubMenu(menu);
         setEnabled(true);
+    }
+
+    private void addDeployAllListener(final MenuItem item, final Linker linker) {
+        item.addSelectionListener(new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                GWTJahiaNode node = linker.getSelectionContext().getMainNode();
+                String nodePath = node.getPath();
+
+                final String[] parts = nodePath.split("/");
+                nodePath = "/" + parts[1] + "/" + parts[2];
+                if ("templatesSet".equals(JahiaGWTParameters.getSiteNode().get("j:siteType"))) {
+                    if (sitesMap != null && sitesMap.containsKey(JahiaGWTParameters.getSiteKey())) {
+                        for (final GWTJahiaSite site : sitesMap.get(JahiaGWTParameters.getSiteKey())) {
+                            linker.loading(Messages.getWithArgs(
+                                    "org.jahia.admin.site.ManageTemplates.deploymentInProgressonSite",
+                                    "Your templates are being deployed on site {0}...",
+                                    new Object[]{site.getSiteName()}));
+                            deploy(nodePath, site, linker);
+                        }
+                    }
+                } else {
+                    List<String> dependencies = JahiaGWTParameters.getSiteNode().get("j:dependencies");
+                    for (GWTJahiaSite site : sites) {
+                        if (dependencies != null && dependencies.size() > 0) {
+                            if (!site.getInstalledModules().containsAll(dependencies)) {
+                                continue;
+                            }
+                            deploy(nodePath, site, linker);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void deploy(String nodePath, final GWTJahiaSite site, final Linker linker) {
+        JahiaContentManagementService.App.getInstance()
+    .deployTemplates(nodePath, "/sites/"+site.getSiteKey(), new BaseAsyncCallback() {
+        public void onApplicationFailure(Throwable caught) {
+            linker.loaded();
+            getSites(linker);
+            Info.display(Messages.get("label.templatesDeploy", "Deploy Templates"), Messages.getWithArgs(
+                    "org.jahia.admin.site.ManageTemplates.deploymentErroronsite",
+                    "Error during your templates deployment on site {0}", new Object[]{site.getSiteName()}));
+        }
+
+        public void onSuccess(Object result) {
+            linker.loaded();
+            Info.display(Messages.get("label.templatesDeploy", "Deploy Templates"), Messages.getWithArgs(
+                    "org.jahia.admin.site.ManageTemplates.templatesDeployedonsite",
+                    "Your templates deployment is successful on site {0}", new Object[]{site.getSiteName()}));
+        }
+    });
     }
 
     private void addDeployListener(final MenuItem item, final Linker linker, final String destinationPath) {

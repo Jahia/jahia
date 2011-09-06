@@ -53,6 +53,7 @@ import org.jahia.services.sites.SitesSettings;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import java.util.*;
@@ -197,6 +198,9 @@ public class JCRSiteNode extends JCRNodeDecorator {
     public int getID() {
         try {
             return (int) getProperty("j:siteId").getLong();
+        } catch (PathNotFoundException e) {
+            // ignore it as for template sets the ID is not present
+            return 0;
         } catch (RepositoryException e) {
             logger.error("Cannot get site property",e);
             return -1;

@@ -33,6 +33,7 @@ function jahiaCreateTreeItemSelector(fieldId, displayFieldId, baseUrl, root, nod
                                 'title' == valueType ? title : ('identifier' == valueType ? uuid : path);
                         if (displayFieldId.length > 0) {
                             document.getElementById(displayFieldId).value = title;
+                            document.getElementById(displayFieldId).innerHTML = title;
                         }
                     }
                     $.fancybox.close();

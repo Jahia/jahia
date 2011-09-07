@@ -74,7 +74,6 @@ public class DocumentConverterService implements ApplicationContextAware {
     static {
         DEF_PROPS.put("Hidden", true);
         DEF_PROPS.put("ReadOnly", true);
-
     }
 
     private Map<String, ?> defaultLoadProperties = DEF_PROPS;
@@ -115,8 +114,15 @@ public class DocumentConverterService implements ApplicationContextAware {
             }
             throw e;
         } finally {
-            if (logger.isInfoEnabled()) {
-                logger.info("Conversion took " + (System.currentTimeMillis() - startTime) + " ms");
+            if (logger.isDebugEnabled()) {
+                logger.debug(
+                        "Conversion from {} format to {} took {} ms",
+                        new String[] {
+                                inputFormat != null ? (inputFormat.getName() + " ("
+                                        + inputFormat.getMediaType() + ")") : "",
+                                outputFormat != null ? (outputFormat.getName() + " ("
+                                        + outputFormat.getMediaType() + ")") : "",
+                                String.valueOf(System.currentTimeMillis() - startTime) });
             }
         }
     }

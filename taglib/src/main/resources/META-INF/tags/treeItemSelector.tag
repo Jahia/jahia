@@ -41,6 +41,7 @@
 <template:addResources type="javascript" resources="treeselector.js"/>
 <c:set var="root" value="${functions:default(root, renderContext.site.path)}"/>
 <c:set var="displayIncludeChildren" value="${functions:default(displayIncludeChildren, 'true')}"/>
+<c:if test="${empty displayFieldId}"><c:set var="displayFieldId" value="${fieldId}-treeItemSelectorTrigger"/></c:if>
 <c:if test="${empty fieldIdIncludeChildren}"><c:set var="fieldIdIncludeChildren" value="${fieldId}_includeChildren"/></c:if>
 <%-- by default set includeChildren to 'true' to search in subnodes --%>
 <c:set var="includeChildren" value="${functions:default(includeChildren, 'true')}"/>

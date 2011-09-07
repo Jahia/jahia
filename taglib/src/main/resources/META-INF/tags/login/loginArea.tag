@@ -17,7 +17,7 @@
         <c:if test="${not empty redirectTo}">
             <input type="hidden" name="redirect" value="${redirectTo}"/>
         </c:if>
-        <c:if test="${empty redirectTo}">
+        <c:if test="${empty redirectTo && not empty renderContext && not empty renderContext.mainResource}">
             <input type="hidden" name="redirect" value="<c:url value='${url.base}${renderContext.mainResource.node.path}.html'/>"/>
         </c:if>
         <input type="hidden" name="<%=LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER%>" value="true"/>

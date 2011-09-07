@@ -132,23 +132,41 @@
                                         <c:url value='${url.basePreview}' var="baseURL"/>
                                     </c:otherwise>
                                 </c:choose>
-                                <c:set var="pickerTypeImage" value="${propertyDefinition.selectorOptions.type == 'image'}"/>
-                                <div class="fileSelector${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
-                                     jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
-                                     jeditabletreeselector:baseURL="${baseURL}"
-                                     jeditabletreeselector:root="${renderContext.site.path}"
-                                     jeditabletreeselector:nodetypes="${pickerTypeImage ? 'nt:folder,jmix:image,jnt:virtualsite' : 'nt:folder,nt:file,jnt:virtualsite'}"
-                                     jeditabletreeselector:selectablenodetypes="${pickerTypeImage ? 'jmix:image' : 'nt:file'}"
-                                     jeditabletreeselector:selectorLabel="<fmt:message key='label.show.file.picker'/>"
-                                     jeditabletreeselector:preview="true" jeditabletreeselector:previewPath="<c:url value='${url.files}'/>">
-                                    <span><fmt:message key="label.select.file"/></span>
-                                </div>
-                                <span><fmt:message key="label.or"/></span>
+                                <c:choose>
+                                    <c:when test="${propertyDefinition.selectorOptions.type eq 'page'}">
+                                        <div class="fileSelector${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
+                                             jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
+                                             jeditabletreeselector:baseURL="${baseURL}"
+                                             jeditabletreeselector:root="${renderContext.site.path}"
+                                             jeditabletreeselector:nodetypes="${'jnt:page'}"
+                                             jeditabletreeselector:selectablenodetypes="${'jnt:page'}"
+                                             jeditabletreeselector:selectorLabel="<fmt:message key='label.show.page.picker'/>"
+                                             jeditabletreeselector:preview="true" jeditabletreeselector:previewPath="<c:url value='${url.files}'/>">
+                                            <span><fmt:message key="label.select.page"/></span>
+                                        </div>
 
-                                <div class="file${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
-                                     jcr:url="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>">
-                                    <span><fmt:message key="add.file"/></span>
-                                </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:set var="pickerTypeImage" value="${propertyDefinition.selectorOptions.type == 'image'}"/>
+                                        <div class="fileSelector${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
+                                             jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
+                                             jeditabletreeselector:baseURL="${baseURL}"
+                                             jeditabletreeselector:root="${renderContext.site.path}"
+                                             jeditabletreeselector:nodetypes="${pickerTypeImage ? 'nt:folder,jmix:image,jnt:virtualsite' : 'nt:folder,nt:file,jnt:virtualsite'}"
+                                             jeditabletreeselector:selectablenodetypes="${pickerTypeImage ? 'jmix:image' : 'nt:file'}"
+                                             jeditabletreeselector:selectorLabel="<fmt:message key='label.show.file.picker'/>"
+                                             jeditabletreeselector:preview="true" jeditabletreeselector:previewPath="<c:url value='${url.files}'/>">
+                                            <span><fmt:message key="label.select.file"/></span>
+                                        </div>
+
+                                        <span><fmt:message key="label.or"/></span>
+
+                                        <div class="file${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
+                                             jcr:url="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>">
+                                            <span><fmt:message key="add.file"/></span>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:when>
                             <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
                                 <jcr:propertyInitializers var="options" nodeType="${type.name}"

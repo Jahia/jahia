@@ -3,6 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
     <bean class="org.jahia.modules.filter.SkinFilter">
+        <property name="description" value="Filter that add skins to the current resource."/>
         <property name="priority" value="45"/>
         <property name="applyOnNodeTypes" value="jmix:list"/>
         <property name="skipOnConfiguration" value="include,wrapper"/>

@@ -29,6 +29,7 @@
         <li><a href="jcrQuery.jsp">JCR query tool</a></li>
         <li><a href="modulesBrowser.jsp">Installed modules browser</a></li>
         <li><a href="definitionsBrowser.jsp">Installed definitions browser</a></li>
+        <li><a href="renderFilters.jsp">Render filters</a></li>
         <li><a href="jobadmin.jsp">Background job administration</a></li>
         <li><a href="search.jsp">Search engine management</a></li>
         <li><a href="dbQuery.jsp">DB query tool</a></li>

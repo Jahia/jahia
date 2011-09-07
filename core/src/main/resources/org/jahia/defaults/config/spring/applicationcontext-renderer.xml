@@ -31,11 +31,13 @@
 	<bean
 		class="org.jahia.services.render.filter.portlet.PlutoProcessActionFilter">
 		<property name="priority" value="-3" />
+        <property name="description" value="portlet rendering"/>
 		<property name="applyOnConfigurations" value="page" />
 	</bean>
 	<!--
 	<bean class="org.jahia.services.render.filter.SourceFormatterFilter">
 		<property name="priority" value="-2" />
+        <property name="description" value="HTML output formatting filter"/>
 		<property name="applyOnModes" value="live,preview" />
 		<property name="applyOnConfigurations" value="page" />
 		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
@@ -43,12 +45,14 @@
 	-->
 	<bean class="org.jahia.services.render.filter.ExternalizeHtmlFilter">
 		<property name="priority" value="-1" />
+        <property name="description" value="Render filter that 'externalizes' the HTML document by converting all local URLs into absolute, inlining external CSS styles, and rewriting URLs in CSS."/>
 		<property name="applyOnModes" value="live,preview" />
 		<property name="applyOnConfigurations" value="page" />
 		<property name="htmlExternalizationService" ref="HtmlExternalizationService" />
 	</bean>
 	<bean class="org.jahia.services.render.filter.StaticAssetsFilter">
 		<property name="priority" value="0" />
+        <property name="description" value="Render filter that 'injects' the static assets into the HEAD section of the rendered HTML document."/>
 		<property name="applyOnConfigurations" value="page,gwt" />
 		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
@@ -57,11 +61,13 @@
 	</bean>
 	<bean class="org.jahia.services.render.filter.MetricsLoggingFilter">
 		<property name="priority" value="3" />
+        <property name="description" value="Calls the logging service to log the display of a resource. Also initializes profiling information"/>
 		<property name="loggingService" ref="loggingService" />
 		<property name="skipOnConfiguration" value="include,wrapper" />
 	</bean>
     <bean
         class="org.jahia.services.render.filter.AreaResourceFilter">
+        <property name="description" value="Set attributes areaListResource and areaResource in the request"/>
         <property name="applyOnNodeTypes" value="jnt:area,jmix:list,jnt:mainResourceDisplay" />
         <property name="applyOnConfigurations" value="module,wrappedcontent" />
         <property name="priority" value="4" />
@@ -69,6 +75,7 @@
 
 	<bean class="org.jahia.services.render.filter.UserAgentFilter">
 		<property name="priority" value="6" />
+        <property name="description" value="Set templateType depending of the user agent"/>
 		<property name="applyOnModes" value="live,preview" />
 		<property name="applyOnConfigurations" value="page" />
 		<property name="userAgentMatchingRules">
@@ -83,15 +90,18 @@
 
     <bean class="org.jahia.services.render.filter.MarkedForDeletionFilter">
         <property name="priority" value="10" />
+        <property name="description" value="Filters out content in preview mode that is marked for deletion"/>
         <property name="applyOnModes" value="preview" />
     </bean>
 
 	<bean class="org.jahia.services.render.filter.BaseAttributesFilter">
 		<property name="priority" value="15" />
+        <property name="description" value="Stores the required request parameters before evaluating the template and restores original after."/>
 	</bean>
 	<bean
 		class="org.jahia.services.render.filter.URLSystemAttributesAppenderFilter">
 		<property name="priority" value="20" />
+        <property name="description" value="Defines attributes to keep in the links of a rendering when met in the urls"/>
 		<property name="applyOnConfigurations" value="page" />
 		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
 		<property name="skipOnAjaxRequest" value="true" />
@@ -108,6 +118,7 @@
 	<bean class="org.jahia.services.render.filter.URLFilter">
 		<constructor-arg ref="org.jahia.services.render.filter.URLTraverser" />
 		<property name="priority" value="21" />
+        <property name="description" value="Traverses the content and searches for URLs in the configured elements. Executes the list of configured visitors (ContextPlaceholdersReplacer, VanityUrlSetter and SiteParameterAdder) to modify the URL value."/>
 		<property name="applyOnConfigurations" value="page,gwt,module,wrappedcontent" />
 		<property name="handlers">
 			<list>
@@ -118,29 +129,35 @@
                     <property name="urlResolverFactory" ref="urlResolverFactory" />
 				</bean>
                 <bean class="org.jahia.services.render.filter.SiteParameterAdder" />
+                
 			</list>
 		</property>
 	</bean>
 
 	<bean class="org.jahia.services.render.filter.TemplateNodeFilter">
 		<property name="priority" value="22" />
+        <property name="description" value=" Looks for all registered wrappers in the resource and calls the associated scripts around the output. Output is made available to the wrapper script through the 'wrappedContent' request attribute."/>
 		<property name="applyOnConfigurations" value="wrappedcontent,page,gwt" />
 		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
 	</bean>
 
 	<bean class="org.jahia.services.render.filter.TemplatePermissionCheckFilter">
 		<property name="priority" value="28" />
+        <property name="description" value="Handles permissions set on the template"/>
 	</bean>
 	<bean class="org.jahia.services.render.filter.TemplateAttributesFilter">
 		<property name="priority" value="30" />
+        <property name="description" value="Module filter for parameter resolution."/>
 	</bean>
 	<bean class="org.jahia.services.render.filter.WrapperFilter">
 		<property name="priority" value="40" />
+        <property name="description" value="Adds a wrapper to a content"/>
 		<property name="skipOnConfiguration" value="include,wrapper" />
 		<property name="skipOnAjaxRequest" value="true" />
 	</bean>
 	<bean class="org.jahia.services.render.filter.TemplateScriptFilter">
 		<property name="priority" value="99" />
+        <property name="description" value="Executes the template script associated to the current resource. This is a final filter, subsequent filters will not be chained."/>
 	</bean>
 
     <bean id="org.jahia.services.render.filter.URLTraverser" class="org.jahia.services.render.filter.HtmlTagAttributeTraverser">
@@ -191,6 +208,7 @@
     </bean>
 
     <bean id="visibilityFilter" class="org.jahia.services.visibility.filters.VisibilityFilter">
+        <property name="description" value="Content visibility filter that conditionally filters out the content depending on the configured rules."/>
         <property name="visibilityService" ref="visibilityService"/>
         <property name="applyOnModes" value="preview"/>
         <property name="priority" value="29"/>

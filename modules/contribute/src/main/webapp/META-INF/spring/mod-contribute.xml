@@ -34,6 +34,7 @@
     </bean>
 
     <bean class="org.jahia.modules.contribute.filter.ListContributionFilter" >
+        <property name="description" value="Set contribution template for contentLists set as editable"/>
         <property name="renderService" ref="RenderService" />
         <property name="priority" value="5" />
         <property name="applyOnTemplateTypes" value="html" />
@@ -43,6 +44,7 @@
     </bean>
 
     <bean class="org.jahia.modules.contribute.filter.ContributeToolbarFilter">
+        <property name="description" value="Adds the contribution toolbar after body tag"/>
         <property name="renderService" ref="RenderService" />
         <property name="priority" value="2"/>
         <property name="applyOnTemplateTypes" value="html" />

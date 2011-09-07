@@ -157,7 +157,7 @@ public class RenderService {
             return "loop";
         }
 
-        String output = new RenderChain(filters, templateManagerService.getRenderFilters()).doFilter(context, resource);
+        String output = getRenderChainInstance().doFilter(context, resource);
 
         return output;
     }
@@ -215,6 +215,15 @@ public class RenderService {
             set.addAll(scriptResolver.getAllViewsSet());
         }
         return set;
+    }
+
+    /**
+     * Returns a new instance of the {@link RenderChain} with all filters.
+     * 
+     * @return a new instance of the {@link RenderChain} with all filters
+     */
+    public RenderChain getRenderChainInstance() {
+        return new RenderChain(filters, templateManagerService.getRenderFilters());
     }
 
     public SortedSet<View> getViewsSet(ExtendedNodeType nt) {

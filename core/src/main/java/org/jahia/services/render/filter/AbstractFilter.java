@@ -63,6 +63,27 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractFilter implements RenderFilter {
 
+    public static class AjaxRequestCondition implements ExecutionCondition {
+
+        /**
+         * Returns <code>true</code> if the condition matches the specified
+         * resource.
+         *
+         * @param renderContext Current RenderContext
+         * @param resource      Resource being displayed
+         * @return <code>true</code> if the condition matches the specified
+         *         resource
+         */
+        public boolean matches(RenderContext renderContext, Resource resource) {
+            return renderContext.isAjaxRequest();
+        }
+        
+        @Override
+        public String toString() {
+            return "is Ajax request";
+        }
+    }
+
     /**
      * Evaluates to <code>true</code> if any of the underlying conditions
      * evaluates to true.
@@ -86,6 +107,35 @@ public abstract class AbstractFilter implements RenderFilter {
                 }
             }
             return matches;
+        }
+        
+        @Override
+        public String toString() {
+            StringBuilder out = new StringBuilder();
+            for (ExecutionCondition cond : conditions) {
+                if (out.length() > 0) {
+                    out.append(" || ");
+                }
+                out.append("(").append(cond).append(")");
+            }
+            return out.toString();
+        }
+    }
+
+    public static class ConfigurationCondition implements ExecutionCondition {
+        private String conf;
+
+        public ConfigurationCondition(String conf) {
+            this.conf = conf;
+        }
+
+        public boolean matches(RenderContext renderContext, Resource resource) {
+            return (resource.getContextConfiguration().equals(conf));
+        }
+
+        @Override
+        public String toString() {
+            return "configuration == "  + conf;
         }
     }
 
@@ -112,17 +162,10 @@ public abstract class AbstractFilter implements RenderFilter {
         public boolean matches(RenderContext renderContext, Resource resource) {
             return (renderContext.getMainResource().getNode().getPath().equals(resource.getNode().getPath()));
         }
-    }
-
-    public static class ConfigurationCondition implements ExecutionCondition {
-        private String conf;
-
-        public ConfigurationCondition(String conf) {
-            this.conf = conf;
-        }
-
-        public boolean matches(RenderContext renderContext, Resource resource) {
-            return (resource.getContextConfiguration().equals(conf));
+        
+        @Override
+        public String toString() {
+            return "is main resource";
         }
     }
 
@@ -165,6 +208,11 @@ public abstract class AbstractFilter implements RenderFilter {
         public boolean matches(RenderContext renderContext, Resource resource) {
             return matches(renderContext, mode);
         }
+        
+        @Override
+        public String toString() {
+            return "mode == " + mode;
+        }
     }
 
     /**
@@ -185,6 +233,11 @@ public abstract class AbstractFilter implements RenderFilter {
 
         public String getValue(RenderContext renderContext, Resource resource) {
             return ((Script) renderContext.getRequest().getAttribute("script")).getView().getModule().getName();
+        }
+
+        @Override
+        public String toString() {
+            return "module " + super.toString();
         }
     }
 
@@ -218,6 +271,11 @@ public abstract class AbstractFilter implements RenderFilter {
 
             return matches;
         }
+    
+        @Override
+        public String toString() {
+            return "nodeTypeName == " + nodeTypeName;
+        }
     }
 
     /**
@@ -236,6 +294,11 @@ public abstract class AbstractFilter implements RenderFilter {
 
         public boolean matches(RenderContext renderContext, Resource resource) {
             return !condition.matches(renderContext, resource);
+        }
+
+        @Override
+        public String toString() {
+            return "not (" + condition + ")";
         }
     }
 
@@ -273,6 +336,11 @@ public abstract class AbstractFilter implements RenderFilter {
             return pattern != null ? pattern.matcher(getValue(renderContext, resource)).matches() : exactMatch.equals(
                     getValue(renderContext, resource));
         }
+
+        @Override
+        public String toString() {
+            return pattern != null ? ("matches " + pattern.pattern()) :  ("is " + exactMatch);
+        }
     }
 
     /**
@@ -293,6 +361,11 @@ public abstract class AbstractFilter implements RenderFilter {
 
         public String getValue(RenderContext renderContext, Resource resource) {
             return resource.getResolvedTemplate();
+        }
+
+        @Override
+        public String toString() {
+            return "template " + super.toString();
         }
     }
 
@@ -315,27 +388,18 @@ public abstract class AbstractFilter implements RenderFilter {
         public String getValue(RenderContext renderContext, Resource resource) {
             return resource.getTemplateType();
         }
-    }
 
-    public static class AjaxRequestCondition implements ExecutionCondition {
-
-        /**
-         * Returns <code>true</code> if the condition matches the specified
-         * resource.
-         *
-         * @param renderContext Current RenderContext
-         * @param resource      Resource being displayed
-         * @return <code>true</code> if the condition matches the specified
-         *         resource
-         */
-        public boolean matches(RenderContext renderContext, Resource resource) {
-            return renderContext.isAjaxRequest();
+        @Override
+        public String toString() {
+            return "template type " + super.toString();
         }
     }
 
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(AbstractFilter.class);
 
     private List<ExecutionCondition> conditions = new LinkedList<ExecutionCondition>();
+    
+    private String description;
     
     private boolean disabled;
     
@@ -360,19 +424,6 @@ public abstract class AbstractFilter implements RenderFilter {
         for (ExecutionCondition cond : conditions) {
             addCondition(cond);
         }
-    }
-
-    /**
-     * Get the priority number of the filter. Filter will be executed in order of priority, lower first.
-     *
-     * @return priority
-     */
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
     }
 
     /**
@@ -408,13 +459,96 @@ public abstract class AbstractFilter implements RenderFilter {
         return matches;
     }
 
+    public int compareTo(RenderFilter o) {
+        int i = getPriority() - o.getPriority();
+        return i != 0 ? i : getClass().getName().compareTo(o.getClass().getName());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this.getClass().getName().equals(obj.getClass().getName())) {
+            return this.getPriority()==((AbstractFilter)obj).getPriority();
+        }
+        return false; 
+    }
+
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
         return previousOut;
     }
 
+    public void finalize(RenderContext renderContext, Resource resource, RenderChain renderChain) {
+        // do nothing
+    }
+
+    /**
+     * Returns a text-based representation of filter conditions.
+     * 
+     * @return a text-based representation of filter conditions
+     */
+    public String getConditionsSummary() {
+        StringBuilder out = new StringBuilder();
+        if (conditions.isEmpty()) {
+            out.append("<none>");
+        }
+        boolean first = true;
+        for (ExecutionCondition cond : conditions) {
+            if (!first) {
+                out.append(" && ");
+            } else {
+                first = false;
+            }
+            out.append("(").append(cond).append(")");
+        }
+
+        return out.toString();
+    }
+
+    /**
+     * Returns a human-readable description of this filter.
+     * 
+     * @return a human-readable description of this filter
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Get the priority number of the filter. Filter will be executed in order of priority, lower first.
+     *
+     * @return priority
+     */
+    public int getPriority() {
+        return priority;
+    }
+
+    public void handleError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Handling exception {} in {}", e.getMessage(), resource.getNode().getPath());
+        }
+    }
+
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         return null;
+    }
+
+    /**
+     * Comma-separated list of resource configuration this filter will be executed for
+     * (all others are skipped).
+     *
+     * @param configurations comma-separated list of configurations this filter will
+     *                       be executed for (all others are skipped)
+     */
+    public void setApplyOnConfigurations(String configurations) {
+        if (configurations.contains(",")) {
+            AnyOfCondition condition = new AnyOfCondition();
+            for (String conf : configurations.split(",")) {
+                condition.add(new ConfigurationCondition(conf.trim()));
+            }
+            addCondition(0, condition);
+        } else {
+            addCondition(0, new ConfigurationCondition(configurations));
+        }
     }
 
     /**
@@ -427,6 +561,25 @@ public abstract class AbstractFilter implements RenderFilter {
     public void setApplyOnMainResource(boolean bool) {
         if (bool) {
             addCondition(new MainResourceCondition());
+        }
+    }
+
+    /**
+     * Comma-separated list of modes this filter will be executed for
+     * (all others are skipped).
+     *
+     * @param modes comma-separated list of modes this filter will
+     *              be executed for (all others are skipped)
+     */
+    public void setApplyOnModes(String modes) {
+        if (modes.contains(",")) {
+            AnyOfCondition condition = new AnyOfCondition();
+            for (String mode : modes.split(",")) {
+                condition.add(new ModeCondition(mode.trim()));
+            }
+            addCondition(0, condition);
+        } else {
+            addCondition(0, new ModeCondition(modes));
         }
     }
 
@@ -465,44 +618,6 @@ public abstract class AbstractFilter implements RenderFilter {
             addCondition(condition);
         } else {
             addCondition(new NodeTypeCondition(nodeTypes));
-        }
-    }
-
-    /**
-     * Comma-separated list of modes this filter will be executed for
-     * (all others are skipped).
-     *
-     * @param modes comma-separated list of modes this filter will
-     *              be executed for (all others are skipped)
-     */
-    public void setApplyOnModes(String modes) {
-        if (modes.contains(",")) {
-            AnyOfCondition condition = new AnyOfCondition();
-            for (String mode : modes.split(",")) {
-                condition.add(new ModeCondition(mode.trim()));
-            }
-            addCondition(0, condition);
-        } else {
-            addCondition(0, new ModeCondition(modes));
-        }
-    }
-
-    /**
-     * Comma-separated list of resource configuration this filter will be executed for
-     * (all others are skipped).
-     *
-     * @param configurations comma-separated list of configurations this filter will
-     *                       be executed for (all others are skipped)
-     */
-    public void setApplyOnConfigurations(String configurations) {
-        if (configurations.contains(",")) {
-            AnyOfCondition condition = new AnyOfCondition();
-            for (String conf : configurations.split(",")) {
-                condition.add(new ConfigurationCondition(conf.trim()));
-            }
-            addCondition(0, condition);
-        } else {
-            addCondition(0, new ConfigurationCondition(configurations));
         }
     }
 
@@ -555,8 +670,53 @@ public abstract class AbstractFilter implements RenderFilter {
         this.conditions.addAll(conditions);
     }
 
+    /**
+     * Sets a human-readable description of this filter.
+     * 
+     * @param description
+     *            a human-readable description of this filter
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
     public final void setRenderService(RenderService service) {
         this.service = service;
+    }
+
+    public void setSkipOnAjaxRequest(Boolean skip) {
+        if(skip) {
+            addCondition(new NotCondition(new AjaxRequestCondition()));
+        }
+    }
+
+    /**
+     * Comma-separated list of configuration names this filter won't be executed
+     * for.
+     *
+     * @param configurations comma-separated list of node type names this filter
+     *                       won't be executed for
+     */
+    public void setSkipOnConfiguration(String configurations) {
+        ExecutionCondition condition = null;
+        if (configurations.contains(",")) {
+            AnyOfCondition anyOf = new AnyOfCondition();
+            for (String configuration : configurations.split(",")) {
+                anyOf.add(new ConfigurationCondition(configuration.trim()));
+            }
+            condition = anyOf;
+        } else {
+            condition = new ConfigurationCondition(configurations);
+        }
+        addCondition(0, new NotCondition(condition));
     }
 
     /**
@@ -568,26 +728,6 @@ public abstract class AbstractFilter implements RenderFilter {
         if (bool) {
             addCondition(new NotCondition(new MainResourceCondition()));
         }
-    }
-
-    /**
-     * Comma-separated list of module names this filter won't be executed for.
-     *
-     * @param modules comma-separated list of module names this filter won't be
-     *                executed for
-     */
-    public void setSkipOnModules(String modules) {
-        ExecutionCondition condition = null;
-        if (modules.contains(",")) {
-            AnyOfCondition anyOf = new AnyOfCondition();
-            for (String module : modules.split(",")) {
-                anyOf.add(new ModuleCondition(module.trim()));
-            }
-            condition = anyOf;
-        } else {
-            condition = new ModuleCondition(modules);
-        }
-        addCondition(new NotCondition(condition));
     }
 
     /**
@@ -612,24 +752,23 @@ public abstract class AbstractFilter implements RenderFilter {
     }
 
     /**
-     * Comma-separated list of configuration names this filter won't be executed
-     * for.
+     * Comma-separated list of module names this filter won't be executed for.
      *
-     * @param configurations comma-separated list of node type names this filter
-     *                       won't be executed for
+     * @param modules comma-separated list of module names this filter won't be
+     *                executed for
      */
-    public void setSkipOnConfiguration(String configurations) {
+    public void setSkipOnModules(String modules) {
         ExecutionCondition condition = null;
-        if (configurations.contains(",")) {
+        if (modules.contains(",")) {
             AnyOfCondition anyOf = new AnyOfCondition();
-            for (String configuration : configurations.split(",")) {
-                anyOf.add(new ConfigurationCondition(configuration.trim()));
+            for (String module : modules.split(",")) {
+                anyOf.add(new ModuleCondition(module.trim()));
             }
             condition = anyOf;
         } else {
-            condition = new ConfigurationCondition(configurations);
+            condition = new ModuleCondition(modules);
         }
-        addCondition(0, new NotCondition(condition));
+        addCondition(new NotCondition(condition));
     }
 
     /**
@@ -694,79 +833,15 @@ public abstract class AbstractFilter implements RenderFilter {
         addCondition(new NotCondition(condition));
     }
 
-    public void setSkipOnAjaxRequest(Boolean skip) {
-        if(skip) {
-            addCondition(new NotCondition(new AjaxRequestCondition()));
-        }
-    }
-
-    public int compareTo(RenderFilter o) {
-        int i = getPriority() - o.getPriority();
-        return i != 0 ? i : getClass().getName().compareTo(o.getClass().getName());
-    }
-
-    /**
-     * Indicates whether some other object is "equal to" this one.
-     * <p/>
-     * The <code>equals</code> method implements an equivalence relation
-     * on non-null object references:
-     * <ul>
-     * <li>It is <i>reflexive</i>: for any non-null reference value
-     * <code>x</code>, <code>x.equals(x)</code> should return
-     * <code>true</code>.
-     * <li>It is <i>symmetric</i>: for any non-null reference values
-     * <code>x</code> and <code>y</code>, <code>x.equals(y)</code>
-     * should return <code>true</code> if and only if
-     * <code>y.equals(x)</code> returns <code>true</code>.
-     * <li>It is <i>transitive</i>: for any non-null reference values
-     * <code>x</code>, <code>y</code>, and <code>z</code>, if
-     * <code>x.equals(y)</code> returns <code>true</code> and
-     * <code>y.equals(z)</code> returns <code>true</code>, then
-     * <code>x.equals(z)</code> should return <code>true</code>.
-     * <li>It is <i>consistent</i>: for any non-null reference values
-     * <code>x</code> and <code>y</code>, multiple invocations of
-     * <tt>x.equals(y)</tt> consistently return <code>true</code>
-     * or consistently return <code>false</code>, provided no
-     * information used in <code>equals</code> comparisons on the
-     * objects is modified.
-     * <li>For any non-null reference value <code>x</code>,
-     * <code>x.equals(null)</code> should return <code>false</code>.
-     * </ul>
-     * <p/>
-     * The <tt>equals</tt> method for class <code>Object</code> implements
-     * the most discriminating possible equivalence relation on objects;
-     * that is, for any non-null reference values <code>x</code> and
-     * <code>y</code>, this method returns <code>true</code> if and only
-     * if <code>x</code> and <code>y</code> refer to the same object
-     * (<code>x == y</code> has the value <code>true</code>).
-     * <p/>
-     * Note that it is generally necessary to override the <tt>hashCode</tt>
-     * method whenever this method is overridden, so as to maintain the
-     * general contract for the <tt>hashCode</tt> method, which states
-     * that equal objects must have equal hash codes.
-     *
-     * @param obj the reference object with which to compare.
-     * @return <code>true</code> if this object is the same as the obj
-     *         argument; <code>false</code> otherwise.
-     * @see #hashCode()
-     * @see java.util.Hashtable
-     */
     @Override
-    public boolean equals(Object obj) {
-        if(this.getClass().getName().equals(obj.getClass().getName())) {
-            return this.getPriority()==((AbstractFilter)obj).getPriority();
+    public String toString() {
+        StringBuilder out = new StringBuilder();
+        if (description != null) {
+            out.append("Description: ").append(description).append("\n");
         }
-        return false; 
-    }
 
-    public void handleError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e) {
-        logger.debug("Handling exception {} in {}", e.getMessage(), resource.getNode().getPath());
-    }
+        out.append("Conditions: ").append(getConditionsSummary());
 
-    public void finalize(RenderContext renderContext, Resource resource, RenderChain renderChain) {
-    }
-
-    public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
+        return out.toString();
     }
 }

@@ -100,12 +100,6 @@
                                             String style = null;
                                             if (inactiveLanguageSet.contains(lang)) {
                                                 style = "color: #666666";
-                                            } else {
-                                                if (lang.equals(defaultLanguage)) {
-                                                    style = "font-weight: bold; color: blue;";
-                                                } else if (!inactiveLiveLanguageSet.contains(lang)) {
-                                                    style = "color: blue;";
-                                                }
                                             }
                                             pageContext.setAttribute("style", style != null ? " style=\"" + style + "\"" : null);
                                             %>

@@ -77,7 +77,7 @@ import java.util.*;
  * @since JAHIA 6.5
  *        Created : 7 juil. 2009
  */
-public class JCRUserManagerProvider extends JahiaUserManagerProvider implements ServletContextAware, ApplicationListener<ApplicationEvent> {
+public class JCRUserManagerProvider extends JahiaUserManagerProvider implements ServletContextAware, ApplicationListener<ContextInitializedEvent> {
     private static final String ROOT_PWD_RESET_FILE = "/WEB-INF/etc/config/root.pwd";
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRUserManagerProvider.class);
     private transient JCRTemplate jcrTemplate;
@@ -632,10 +632,8 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
         this.servletContext = servletContext;
     }
 
-    public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof ContextInitializedEvent) {
-            checkRootUserPwd();
-        }
+    public void onApplicationEvent(ContextInitializedEvent event) {
+        checkRootUserPwd();
     }
 
     /**

@@ -40,11 +40,14 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import static org.jahia.api.Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT;
+import static org.jahia.api.Constants.MARKED_FOR_DELETION_LOCK_TYPE;
+import static org.jahia.api.Constants.MARKED_FOR_DELETION_LOCK_USER;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -521,8 +524,12 @@ public class ContentManagerHelper {
             try {
                 nodeToDelete = currentUserSession.getNode(path);
                 if (!user.isRoot() && nodeToDelete.isLocked() && !nodeToDelete.getLockOwner().equals(user.getUsername())) {
-                    missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - locked by ")
+                    if (nodeToDelete.isNodeType(JAHIAMIX_MARKED_FOR_DELETION_ROOT) && nodeToDelete.hasPermission(Privilege.JCR_REMOVE_NODE)) {
+                        nodeToDelete.unmarkForDeletion();
+                    } else {
+                        missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - locked by ")
                             .append(nodeToDelete.getLockOwner()).toString());
+                    }
                 }
                 if (!nodeToDelete.hasPermission(Privilege.JCR_REMOVE_NODE)) {
                     missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - ACCESS DENIED").toString());

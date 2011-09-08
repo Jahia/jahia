@@ -792,6 +792,17 @@
         <property name="icon" value="undelete"/>
     </bean>
 
+    <bean id="Toolbar.Item.DeletePermanently" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem">
+                <property name="referenceTitleKey" value="label.deletePermanently"/>
+                <property name="permanentlyDelete" value="true"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.deletePermanently"/>
+        <property name="icon" value="delete"/>
+    </bean>
+
     <!-- new content action buttons  -->
     <bean id="Toolbar.Item.Copy" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">

@@ -51,6 +51,7 @@ import com.google.gwt.core.client.RunAsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -231,11 +232,28 @@ public class DeleteActionItem extends BaseActionItem {
                 updateTitle(getGwtToolbarItem().getTitle() + " : " + selection.get(0).getDisplayName());
             }
         }
-        setEnabled(lh.getMultipleSelection() != null
-                && lh.getMultipleSelection().size() > 0
-                && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
+        boolean enabled = selection != null && selection.size() > 0
                 && !lh.isSecondarySelection()
-                && !lh.isLocked());
+                && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions());
+        
+        if (enabled) {
+            if (permanentlyDelete) {
+                for (GWTJahiaNode gwtJahiaNode : selection) {
+                    enabled &= gwtJahiaNode.getAggregatedPublicationInfo().getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED;
+                    if (lh.isLocked()) {
+                        enabled &= gwtJahiaNode.getNodeTypes().contains(
+                                "jmix:markedForDeletionRoot");
+                    }
+                    if (!enabled) {
+                        break;
+                    }
+                }
+            } else {
+                enabled = !lh.isLocked();
+            }
+        }
+
+        setEnabled(enabled);
     }
 
     public void setPermanentlyDelete(boolean permanentlyDelete) {

@@ -33,6 +33,7 @@
         <li><a href="jobadmin.jsp">Background job administration</a></li>
         <li><a href="search.jsp">Search engine management</a></li>
         <li><a href="dbQuery.jsp">DB query tool</a></li>
+        <li><a href="groovyConsole.jsp">Groovy console</a></li>
     </ul>
 </fieldset>
 <fieldset>

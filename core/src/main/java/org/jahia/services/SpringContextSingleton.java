@@ -169,7 +169,23 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
      *             in case of a lookup error
      */
     public Resource[] getResources(String locationPatterns) throws IOException {
-        Resource[] allResources = resourcesCache.get(locationPatterns);
+        return getResources(locationPatterns, true);
+    }
+
+    /**
+     * Searches for Spring resource locations given the specified (pattern-based) location. Multiple locations can be provided separated by
+     * comma (or any delimiter, defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} ).
+     * 
+     * @param locationPatterns
+     *            (pattern-based) location to search for resources. Multiple locations can be provided separated by comma (or any delimiter,
+     *            defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} )
+     * @param useCache can we use lookup caches?
+     * @return an array of {@link Resource} objects found
+     * @throws IOException
+     *             in case of a lookup error
+     */
+    public Resource[] getResources(String locationPatterns, boolean useCache) throws IOException {
+        Resource[] allResources = useCache ? resourcesCache.get(locationPatterns) : null;
         if (allResources == null) {
             allResources = new Resource[0];
             for (String location : org.springframework.util.StringUtils.tokenizeToStringArray(
@@ -177,7 +193,9 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
                 allResources = (Resource[]) ArrayUtils.addAll(allResources,
                         context.getResources(location.trim()));
             }
-            resourcesCache.put(locationPatterns, allResources);
+            if (useCache) {
+                resourcesCache.put(locationPatterns, allResources);
+            }
         }
 
         return allResources;

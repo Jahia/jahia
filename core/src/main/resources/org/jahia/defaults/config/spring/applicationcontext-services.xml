@@ -213,4 +213,5 @@
         <!--<property name="imageMagickPath" value="C:\Programs\ImageMagick;C:\Programs\exiftool"/>-->
     <!--</bean>-->
 
+    <bean class="org.jahia.tools.patches.GroovyPatcher"/>
 </beans>

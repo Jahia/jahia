@@ -740,7 +740,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                                             if ("*".equals(propertyKey)) {
                                                 query.append(
                                                         "(CONTAINS(g.*,'" + propertyValue.replaceAll("%", "")
-                                                                + "') OR LOWER(u.[j:nodename]) LIKE '")
+                                                                + "') OR LOWER(g.[j:nodename]) LIKE '")
                                                     .append(propertyValue.toLowerCase()).append("') ");
                                             } else {
                                                 query.append("LOWER(g.[" + propertyKey.replaceAll("\\.", "\\\\.") + "])")

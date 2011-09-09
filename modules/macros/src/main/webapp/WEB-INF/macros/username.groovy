@@ -1,5 +1,7 @@
+import org.jahia.data.viewhelper.principal.PrincipalViewHelper
+
 if (currentUser.username.trim().equals("guest")) {
-    print "guest"
+    print PrincipalViewHelper.getUserDisplayName(currentUser.username.trim());
 } else {
     String property1 = currentUser.getProperty("j:firstName")
     if (property1 != null)

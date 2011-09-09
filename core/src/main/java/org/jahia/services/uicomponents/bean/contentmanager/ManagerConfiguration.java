@@ -93,7 +93,6 @@ public class ManagerConfiguration implements Serializable {
     private boolean searchInContent = true;    
 
     private String requiredPermission;
-    private boolean showOnlyNodesWithTemplates = false;
 
     public ManagerConfiguration() {
         tableColumns = new ArrayList<Column>();
@@ -300,13 +299,5 @@ public class ManagerConfiguration implements Serializable {
 
     public void setHiddenRegex(String hiddenRegex) {
         this.hiddenRegex = hiddenRegex;
-    }
-
-    public boolean isShowOnlyNodesWithTemplates() {
-        return showOnlyNodesWithTemplates;
-    }
-
-    public void setShowOnlyNodesWithTemplates(boolean showOnlyNodesWithTemplates) {
-        this.showOnlyNodesWithTemplates = showOnlyNodesWithTemplates;
     }
 }

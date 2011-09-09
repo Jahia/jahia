@@ -54,7 +54,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
-import com.google.gwt.user.client.ui.Image;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -66,7 +66,6 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 
@@ -117,7 +116,7 @@ public class PublicationManagerEngine extends Window {
         loader = factory.getLoader();
         List<ColumnConfig> columns = new LinkedList<ColumnConfig>();
         ColumnConfig config = new ColumnConfig("displayName", "Name", 150);
-        config.setRenderer(NodeColumnConfigList.NAME_TREEGRID_RENDERER);
+        config.setRenderer(new TreeGridCellRenderer());
         config.setSortable(false);
         columns.add(config);
         checkboxMap = new HashMap<String, LayoutContainer>();
@@ -270,8 +269,10 @@ public class PublicationManagerEngine extends Window {
                 ctn.setWidth(16);
                 ctn.setHeight(16);
                 p.add(ctn,td);
-                Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info.getStatus());
-                p.add(res, td);
+                Object res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info);
+                if (res instanceof Widget) {
+                    p.add((Widget) res, td);
+                }
                 if (info.isLocked()) {
                     p.add(StandardIconsProvider.STANDARD_ICONS.lock().createImage());
                     ctn.addStyleName("x-grid3-check-col-disabled");

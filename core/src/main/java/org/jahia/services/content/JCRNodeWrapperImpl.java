@@ -40,8 +40,6 @@
 
 package org.jahia.services.content;
 
-import static org.jahia.api.Constants.*;
-
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
 import org.apache.commons.lang.StringUtils;
@@ -51,7 +49,6 @@ import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.util.Text;
-import org.jahia.services.visibility.VisibilityService;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -108,7 +105,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     private static final String SHARED_REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME = "j:sharedRefNodeIdentifiers";
     private static final String SHARED_REFERENCE_PROPERTY_NAMES_PROPERTYNAME = "j:sharedRefPropertyNames";
     public static final String EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR = "___";
-    
+
     private Map<String, ExtendedPropertyDefinition> applicablePropertyDefinition = new HashMap<String, ExtendedPropertyDefinition>();
     private Map<String, Boolean> hasPropertyCache = new HashMap<String, Boolean>();
 
@@ -357,7 +354,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean grantRoles(String principalKey, Set<String> roles) throws RepositoryException {
-        Map<String, String> m = new HashMap<String, String>();
+        Map m = new HashMap<String, String>();
         for (String role : roles) {
             m.put(role, "GRANT");
         }
@@ -368,7 +365,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean denyRoles(String principalKey, Set<String> roles) throws RepositoryException {
-        Map<String, String> m = new HashMap<String, String>();
+        Map m = new HashMap<String, String>();
         for (String role : roles) {
             m.put(role, "DENY");
         }
@@ -1357,13 +1354,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
 	public JCRPropertyWrapper retrieveExternalReferenceProperty(String name,
 			ExtendedPropertyDefinition epd) throws RepositoryException {
+        Locale locale = getSession().getLocale();
         Property referenceProperty = null;
+        String refNodeIdentifierPropertyName = SHARED_REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME;
         String refPropertyNamesPropertyName = SHARED_REFERENCE_PROPERTY_NAMES_PROPERTYNAME;
         if (epd.isInternationalized()) {
             if (session.getLocale() == null) {
                 logger.warn("No locale passed, cannot remove reference for property " + name);
                 throw new PathNotFoundException(name);
             }
+            refNodeIdentifierPropertyName = REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME;
             refPropertyNamesPropertyName = REFERENCE_PROPERTY_NAMES_PROPERTYNAME;
         }
         referenceProperty = getProperty(refPropertyNamesPropertyName);
@@ -1940,12 +1940,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     private String findExternalReferenceIdFromPropertyName(String name, ExtendedPropertyDefinition epd) throws ItemNotFoundException, RepositoryException {
+        String refNodeIdentifierPropertyName = SHARED_REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME;
         String refPropertyNamesPropertyName = SHARED_REFERENCE_PROPERTY_NAMES_PROPERTYNAME;
         if (epd.isInternationalized()) {
             if (session.getLocale() == null) {
                 logger.warn("No locale passed, cannot find reference for property " + name);
                 return null;
             }
+            refNodeIdentifierPropertyName = REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME;
             refPropertyNamesPropertyName = REFERENCE_PROPERTY_NAMES_PROPERTYNAME;
         }
         Property referenceProperty = getProperty(refPropertyNamesPropertyName);
@@ -2169,9 +2171,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             NodeType[] mixin = objectNode.getMixinNodeTypes();
             for (NodeType aMixin : mixin) {
-                if (!Constants.forbiddenMixinToCopy.contains(aMixin.getName())) {
                 copy.addMixin(aMixin.getName());
-            }
             }
         } catch (RepositoryException e) {
             logger.error("Error adding mixin types to copy", e);
@@ -2198,7 +2198,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 } else {
                     source.copy(copy, source.getName(), allowsExternalSharedNodes, references);
                 }
-            } else if (!source.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
+            } else {
                 source.copy(copy, source.getName(), allowsExternalSharedNodes, references);
             }
         }
@@ -3307,17 +3307,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         final JCRSessionWrapper jcrSessionWrapper = getSession();
         try {
             if (Constants.LIVE_WORKSPACE.equals(jcrSessionWrapper.getWorkspace().getName())) {
-                boolean isLocaleDefined = jcrSessionWrapper.getLocale() != null;
-                if (isLocaleDefined) {
+                if (jcrSessionWrapper.getLocale() != null) {
                     if (objectNode.hasProperty("j:published") && !objectNode.getProperty("j:published").getBoolean()) {
                         return false;
                     }
                 }
-                boolean result = checkLanguageValidity(null);
-                if(result && isLocaleDefined) {
-                    result = VisibilityService.getInstance().matchesConditions(this);
-                }
-                return result;
+                return checkLanguageValidity(null);
             }
         } catch (RepositoryException e) {
             return false;
@@ -3540,154 +3535,5 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public void flushLocalCaches() {
         hasPropertyCache.clear();
-    }
-
-    public boolean canMarkForDeletion() throws RepositoryException {
-        JCRStoreProvider provider = getProvider();
-        if (!provider.isLockingAvailable() || !provider.isUpdateMixinAvailable()) {
-            return false;
-        }
-
-        for (String skipType : JCRContentUtils.getInstance().getUnsupportedMarkForDeletionNodeTypes()) {
-            if (isNodeType(skipType)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public boolean isMarkedForDeletion() throws RepositoryException {
-        return objectNode.isNodeType(JAHIAMIX_MARKED_FOR_DELETION);
-    }
-
-    public void markForDeletion(String comment) throws RepositoryException {
-        long timer = System.currentTimeMillis();
-        if (!canMarkForDeletion()) {
-            throw new UnsupportedRepositoryOperationException("Mark for deletion is not supported on this node !");
-        }
-        checkout();
-        if (!objectNode.isNodeType(JAHIAMIX_MARKED_FOR_DELETION)) {
-            // no mixin yet, add it
-            addMixin(JAHIAMIX_MARKED_FOR_DELETION);
-        }
-        if (!objectNode.isNodeType(JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
-            // no mixin for the root node of the deletion yet, add it
-            addMixin(JAHIAMIX_MARKED_FOR_DELETION_ROOT);
-        }
-
-        // store deletion info: user, date, comment
-        objectNode.setProperty(MARKED_FOR_DELETION_USER, session.getUserID());
-        objectNode.setProperty(MARKED_FOR_DELETION_DATE, Calendar.getInstance());
-        if (comment != null && comment.length() > 0) {
-            objectNode.setProperty(MARKED_FOR_DELETION_MESSAGE, comment);
-        }
-        
-        // mark all child nodes as deleted
-        markNodesForDeletion(this);
-
-        if (session.hasPendingChanges()) {
-            objectNode.getSession().save();
-        }
-        
-        lockAndStoreToken(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
-        
-        if (logger.isDebugEnabled()) {
-            logger.debug("markForDeletion for node {} took {} ms", getPath(),
-                    (System.currentTimeMillis() - timer));
-        }
-    }
-
-    private static void markNodesForDeletion(JCRNodeWrapper node) throws RepositoryException {
-        for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {
-            JCRNodeWrapper child = (JCRNodeWrapper) iterator.nextNode();
-            
-            child.getSession().checkout(child);
-
-            if (child.isNodeType(JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
-                // if by any chance the child node was already marked for deletion (root), remove the mixin
-                child.unlock(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
-                child.removeMixin(JAHIAMIX_MARKED_FOR_DELETION_ROOT);
-            }
-            // set mixin
-            if (!child.isNodeType(JAHIAMIX_MARKED_FOR_DELETION)) {
-                child.addMixin(JAHIAMIX_MARKED_FOR_DELETION);
-            }
-            
-            if (child.getSession().hasPendingChanges()) {
-                child.getSession().save();
-            }
-            
-            // set lock
-            child.lockAndStoreToken(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
-            
-            // recurse into children
-            markNodesForDeletion(child);
-        }
-    }
-
-    public void unmarkForDeletion() throws RepositoryException {
-        long timer = System.currentTimeMillis();
-        if (!canMarkForDeletion()) {
-            throw new UnsupportedRepositoryOperationException("Mark for deletion is not supported on this node !");
-        }
-
-        checkout();
-        
-        // remove lock
-        if (isNodeType("jmix:lockable")) {
-            try {
-                unlock(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
-            } catch (LockException ex) {
-                logger.warn("Node {} is not locked. Skipping during undelete operation.", getPath());
-            }
-        }
-
-        if (objectNode.isNodeType(JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
-            removeMixin(JAHIAMIX_MARKED_FOR_DELETION_ROOT);
-            if (objectNode.isNodeType(JAHIAMIX_MARKED_FOR_DELETION)) {
-                removeMixin(JAHIAMIX_MARKED_FOR_DELETION);
-            }
-            
-            // unmark all child nodes
-            unmarkNodesForDeletion(this);
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("unmarkForDeletion for node {} took {} ms", getPath(),
-                    (System.currentTimeMillis() - timer));
-        }
-    }
-    
-    private static void unmarkNodesForDeletion(JCRNodeWrapper node) throws RepositoryException {
-        for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {
-            JCRNodeWrapper child = (JCRNodeWrapper) iterator.nextNode();
-            
-            child.getSession().checkout(child);
-
-            // do unlock
-            if (child.isNodeType("jmix:lockable")) {
-                try {
-                    child.unlock(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
-                } catch (LockException ex) {
-                    logger.warn("Node {} is not locked. Skipping during undelete operation.",
-                            child.getPath());
-                }
-            }
-            
-            // remove mixin
-            if (child.isNodeType(JAHIAMIX_MARKED_FOR_DELETION)) {
-                child.removeMixin(JAHIAMIX_MARKED_FOR_DELETION);
-            }
-
-            // if the child node was before deleted, remove its root mixin
-            if (child.isNodeType(JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
-                child.removeMixin(JAHIAMIX_MARKED_FOR_DELETION_ROOT);
-            }
-            
-            
-            // recurse into children
-            unmarkNodesForDeletion(child);
-        }
     }
 }

@@ -3,9 +3,6 @@ Rendering filters
   Rendering filters are classes that can transform the output of a module.
   They work like standard servlet filters, except that they are executed independently for every
   module inclusion. Filters can be executed on all modules, or on some specific module or nodes.
-  
-  An overview of all currently registered filters can be viewed in a Jahia Tools area JSP when the Jahia
-  is running: {{{http://localhost:8080/tools/renderFilters.jsp} http://localhost:8080/tools/renderFilters.jsp}}.
 
 * Configuration
 

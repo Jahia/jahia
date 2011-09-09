@@ -40,8 +40,6 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.ModelData;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.lang.StringUtils;
@@ -57,6 +55,7 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Contribute;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRQueryNode;
@@ -66,7 +65,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.sites.SitesSettings;
-import org.jahia.services.visibility.VisibilityService;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
@@ -92,7 +91,6 @@ public class NavigationHelper {
 
     private JCRSessionFactory sessionFactory;
     private JCRVersionService jcrVersionService;
-    private VisibilityService visibilityService;
 
     private PublicationHelper publication;
     private WorkflowHelper workflow;
@@ -121,10 +119,6 @@ public class NavigationHelper {
         this.jcrVersionService = jcrVersionService;
     }
 
-    public void setVisibilityService(VisibilityService visibilityService) {
-        this.visibilityService = visibilityService;
-    }
-
     /**
      * like ls unix command on the folder
      *
@@ -139,14 +133,12 @@ public class NavigationHelper {
     public List<GWTJahiaNode> ls(GWTJahiaNode gwtParentNode, List<String> nodeTypes, List<String> mimeTypes,
                                  List<String> nameFilters, List<String> fields, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
-        return ls(gwtParentNode, nodeTypes, mimeTypes, nameFilters, fields, false, false, null, null, currentUserSession,
-                false);
+        return ls(gwtParentNode, nodeTypes, mimeTypes, nameFilters, fields, false, false, null, null, currentUserSession);
     }
 
     public List<GWTJahiaNode> ls(GWTJahiaNode gwtParentNode, List<String> nodeTypes, List<String> mimeTypes,
                                  List<String> nameFilters, List<String> fields, boolean checkSubChild,
-                                 boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex,
-                                 JCRSessionWrapper currentUserSession, boolean showOnlyNodesWithTemplates) throws GWTJahiaServiceException {
+                                 boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         JCRNodeWrapper node = null;
         try {
             node = currentUserSession.getNode(gwtParentNode != null ? gwtParentNode.getPath() : "/");
@@ -162,8 +154,7 @@ public class NavigationHelper {
         }
         final List<GWTJahiaNode> gwtNodeChildren = new ArrayList<GWTJahiaNode>();
         try {
-            getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, node, gwtNodeChildren, checkSubChild,
-                    displayHiddenTypes, hiddenTypes, hiddenRegex, showOnlyNodesWithTemplates);
+            getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, node, gwtNodeChildren, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex);
 
             return gwtNodeChildren;
         } catch (RepositoryException e) {
@@ -174,8 +165,7 @@ public class NavigationHelper {
 
     private void getMatchingChilds(List<String> nodeTypes, List<String> mimeTypes, List<String> nameFilters,
                                    List<String> fields, JCRNodeWrapper node, List<GWTJahiaNode> gwtNodeChildren,
-                                   boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes,
-                                   String hiddenRegex, boolean showOnlyNodesWithTemplates) throws RepositoryException, GWTJahiaServiceException {
+                                   boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex) throws RepositoryException, GWTJahiaServiceException {
         final NodeIterator nodesIterator;
         if(node instanceof JCRQueryNode) {
             final Query q = node.getSession().getWorkspace().getQueryManager().getQuery(node.getRealNode());
@@ -198,9 +188,7 @@ public class NavigationHelper {
             if (logger.isDebugEnabled()) {
                 logger.debug(new StringBuilder("processing ").append(childNode.getPath()).toString());
             }
-            if(showOnlyNodesWithTemplates && !JCRContentUtils.isADisplayableNode(childNode, new RenderContext(null, null, node.getSession().getUser()))){
-                continue;
-            }
+
             // in case of a folder, it allows to know if the node is selectable
             boolean hiddenType = false;
             if (!displayHiddenTypes) {
@@ -243,8 +231,7 @@ public class NavigationHelper {
                 }
                 gwtNodeChildren.add(gwtChildNode);
             } else if (checkSubChild && childNode.hasNodes()) {
-                getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, childNode, gwtNodeChildren, checkSubChild,
-                        displayHiddenTypes, hiddenTypes, hiddenRegex, showOnlyNodesWithTemplates);
+                getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, childNode, gwtNodeChildren, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex);
             }
         }
     }
@@ -399,7 +386,7 @@ public class NavigationHelper {
                             if (openPath.startsWith(node.getPath()) && !node.isExpandOnLoad() && !node.isFile()) {
                                 node.setExpandOnLoad(true);
                                 List<GWTJahiaNode> list = ls(node, nodeTypes, mimeTypes, filters, fields, checkSubChild,
-                                        displayHiddenTypes, hiddenTypes, hiddenRegex, currentUserSession, false);
+                                        displayHiddenTypes, hiddenTypes, hiddenRegex, currentUserSession);
                                 for (int j = 0; j < list.size(); j++) {
                                     node.insert(list.get(j), j);
                                     allNodes.add(list.get(j));
@@ -413,6 +400,9 @@ public class NavigationHelper {
                         logger.error(e.getMessage(), e);
                     }
                 }
+            }
+            if (selectedNodes == null || selectedNodes.isEmpty()) {
+                userNodes.get(0).setSelectedOnLoad(true);
             }
             return userNodes;
         } catch (RepositoryException e) {
@@ -824,11 +814,11 @@ public class NavigationHelper {
             Map<String, List<String>> infos = node.getLockInfos();
             if(!infos.isEmpty()) {
                 Map.Entry<String, List<String>> stringListEntry = infos.entrySet().iterator().next();
-                String lockTypeToken = stringListEntry.getValue().get(0);
-                JCRNodeLockType type = JCRContentUtils.getLockType(lockTypeToken);
-                if (JCRNodeLockType.USER != type) {
+                JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
+                        StringUtils.substringBefore(stringListEntry.getValue().get(0), ":"));
+                if(jahiaUser==null) {
                     infos.clear();
-                    infos.put(stringListEntry.getKey(),Arrays.asList("label.locked.by." + type.toString().toLowerCase()));
+                    infos.put(stringListEntry.getKey(),Arrays.asList("label.locked.by.workflow.process"));
                 }
             }
             n.setLockInfos(infos);
@@ -843,24 +833,6 @@ public class NavigationHelper {
         } catch (RepositoryException e) {
             logger.error("Error when getting lock", e);
         }
-
-        if (fields.contains(GWTJahiaNode.VISIBILITY_INFO)) {
-            Map<JCRNodeWrapper, Boolean> conditionMatchesDetails = visibilityService.getConditionMatchesDetails(node);
-            Map<GWTJahiaNode,ModelData> visibilityInfo = new HashMap<GWTJahiaNode, ModelData>();
-            for (Map.Entry<JCRNodeWrapper, Boolean> entry : conditionMatchesDetails.entrySet()) {
-                ModelData data = new BaseModelData();
-                data.set("matches",entry.getValue());
-                try {
-                    data.set("xtemplate",visibilityService.getConditions().get(entry.getKey().getPrimaryNodeTypeName()).getGWTDisplayTemplate(node.getSession().getLocale()));
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                }
-                visibilityInfo.put(getGWTJahiaNode(entry.getKey(),Arrays.asList("start","end")), data);
-            }
-            n.setVisibilityInfo(visibilityInfo);
-            n.setVisible(visibilityService.matchesConditions(node));
-        }
-
         n.setThumbnailsMap(new HashMap<String, String>());
         n.setVersioned(node.isVersioned());
         n.setLanguageCode(node.getLanguage());

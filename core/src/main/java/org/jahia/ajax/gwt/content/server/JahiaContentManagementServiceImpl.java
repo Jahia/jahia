@@ -40,9 +40,10 @@
 
 package org.jahia.ajax.gwt.content.server;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
@@ -86,6 +87,7 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.googledocs.GoogleDocsService;
@@ -96,8 +98,6 @@ import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.visibility.VisibilityConditionRule;
-import org.jahia.services.visibility.VisibilityService;
 import org.jahia.utils.EncryptionUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -315,14 +315,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public BasePagingLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, List<String> nodeTypes, List<String> mimeTypes,
-                                                     List<String> filters, List<String> fields, boolean checkSubChild,
-                                                     int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes,
-                                                     String hiddenRegex, boolean showOnlyNodesWithTemplates)
+                                                     List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex)
             throws GWTJahiaServiceException {
         List<GWTJahiaNode> filteredList = new ArrayList<GWTJahiaNode>();
         for (GWTJahiaNode n : navigation
-                .ls(parentNode, nodeTypes, mimeTypes, filters, fields, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex, retrieveCurrentSession(),
-                        showOnlyNodesWithTemplates)) {
+                .ls(parentNode, nodeTypes, mimeTypes, filters, fields, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex, retrieveCurrentSession())) {
             if (n.isMatchFilters()) {
                 filteredList.add(n);
             }
@@ -507,16 +504,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.clearAllLocks(path, processChildNodes, retrieveCurrentSession());
     }
 
-    public void markForDeletion(List<String> paths, String comment) throws GWTJahiaServiceException {
-        contentManager.deletePaths(paths, false, comment, getUser(), retrieveCurrentSession());
-    }
-
     public void deletePaths(List<String> paths) throws GWTJahiaServiceException {
-        contentManager.deletePaths(paths, true, null, getUser(), retrieveCurrentSession());
-    }
-
-    public void undeletePaths(List<String> paths) throws GWTJahiaServiceException {
-        contentManager.undeletePaths(paths, getUser(), retrieveCurrentSession());
+        contentManager.deletePaths(paths, getUser(), retrieveCurrentSession());
     }
 
     public String getAbsolutePath(String path) throws GWTJahiaServiceException {
@@ -697,22 +686,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         if (node.get("vanityMappings") != null) {
             saveUrlMappings(node, langCodeProperties.keySet(), (List<GWTJahiaUrlMapping>) node.get("vanityMappings"));
-        }
-        if (node.get("visibilityConditions") != null) {
-            List<GWTJahiaNode> visibilityConditions = (List<GWTJahiaNode>) node.get("visibilityConditions");
-            contentManager.saveVisibilityConditions(node, visibilityConditions, jcrSessionWrapper);
-            try {
-                for (GWTJahiaNode condition : visibilityConditions) {
-                    if (Boolean.TRUE.equals(condition.get("node-published") != null)) {
-                        publication.publish(Arrays.asList(jcrSessionWrapper.getNode(condition.getPath()).getIdentifier()));
-                    }
-                }
-                if (Boolean.TRUE.equals(node.get("conditions-published"))) {
-                    publication.publish(Arrays.asList(jcrSessionWrapper.getNode(node.getPath()+"/" + VisibilityService.NODE_NAME).getIdentifier()));
-                }
-            } catch (RepositoryException e) {
-                throw new GWTJahiaServiceException(e);
-            }
         }
         if (node.get("activeWorkflows") != null) {
             workflow.updateWorkflowRules(node,
@@ -1721,7 +1694,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public BasePagingLoadResult<GWTJahiaJobDetail> getJobs(int offset, int limit, String sortField, String sortDir,
                                                            List<String> groupNames) throws GWTJahiaServiceException {
-        // todo Proper pagination support would imply that we only load the job details that were requested. Also sorting is not at all supported for the moment.
+        // todo Proper pagination support would imply that we only load the job details that were requested. Also sorting is not at all supported for the moment. 
         JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
         List<GWTJahiaJobDetail> jobList =
                 schedulerHelper.getAllJobs(getLocale(), sessionWrapper.getUser(), new HashSet<String>(groupNames));
@@ -1983,10 +1956,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return contentDefinition.getNodeTypes(names, getUILocale());
     }
 
-    public List<GWTJahiaNodeType> getSubNodeTypes(List<String> names) throws GWTJahiaServiceException {
-        return contentDefinition.getSubNodeTypes(names, getUILocale());
-    }
-
     /**
      * Returns a list of node types with name and label populated that are the
      * sub-types of the specified base type.
@@ -1998,8 +1967,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type
      */
-    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getContentTypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement) throws GWTJahiaServiceException {
-        return contentDefinition.getContentTypes(baseTypes, new HashMap<String, Object>(), getUILocale(), includeSubTypes, displayStudioElement);
+    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement) throws GWTJahiaServiceException {
+        return contentDefinition.getSubNodetypes(baseTypes, new HashMap<String, Object>(), getUILocale(), includeSubTypes, displayStudioElement);
     }
 
     public GWTJahiaNodeType getWFFormForNodeAndNodeType(String formResourceName)
@@ -2016,56 +1985,4 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
 
-    public ModelData getVisibilityInformation(String path) throws GWTJahiaServiceException {
-        ModelData result = new BaseModelData();
-        try {
-            VisibilityService visibilityService = VisibilityService.getInstance();
-            Map<String, VisibilityConditionRule> conditionsClasses = visibilityService.getConditions();
-            List<GWTJahiaNodeType> types = new ArrayList<GWTJahiaNodeType>();
-            Map<String, List<String>> requiredFields = new HashMap<String, List<String>>();
-            for (Map.Entry<String, VisibilityConditionRule> entry : conditionsClasses.entrySet()) {
-                GWTJahiaNodeType type = getNodeType(entry.getKey());
-                type.set("xtemplate", entry.getValue().getGWTDisplayTemplate(getLocale()));
-                requiredFields.put(entry.getKey(), entry.getValue().getRequiredFieldNamesForTemplate());
-                types.add(type);
-            }
-            result.set("types", types);
-
-            JCRNodeWrapper node = retrieveCurrentSession().getNode(path);
-            Map<JCRNodeWrapper, Boolean> conditionMatchesDetails = visibilityService.getConditionMatchesDetails(node);
-
-            List<GWTJahiaNode> conditions = new ArrayList<GWTJahiaNode>();
-
-            for (Map.Entry<JCRNodeWrapper, Boolean> entry : conditionMatchesDetails.entrySet()) {
-                List<String> fields = new ArrayList<String>(Arrays.asList(GWTJahiaNode.PUBLICATION_INFO));
-                fields.addAll(requiredFields.get(entry.getKey().getPrimaryNodeTypeName()));
-
-                GWTJahiaNode jahiaNode = navigation.getGWTJahiaNode(entry.getKey(), fields);
-                jahiaNode.set("conditionMatch", entry.getValue());
-                conditions.add(jahiaNode);
-            }
-
-            result.set("conditions", conditions);
-            if (node.hasNode(VisibilityService.NODE_NAME)) {
-                JCRNodeWrapper conditionalVisibilityNode = node.getNode(VisibilityService.NODE_NAME);
-                result.set("j:forceMatchAllConditions", conditionalVisibilityNode.getProperty("j:forceMatchAllConditions").getValue().getBoolean());
-                String locale = node.getSession().getLocale().toString();
-                result.set("publicationInfo", publication.getAggregatedPublicationInfosByLanguage(conditionalVisibilityNode.getIdentifier(),
-                        Collections.singleton(locale), retrieveCurrentSession()).get(locale));
-            } else {
-                result.set("j:forceMatchAllConditions",false);
-            }
-            result.set("currentStatus", visibilityService.matchesConditions(node));
-            try {
-                JCRNodeWrapper liveNode = retrieveCurrentSession("live",null, false).getNodeByUUID(node.getIdentifier());
-                result.set("liveStatus", visibilityService.matchesConditions(liveNode));
-            } catch (RepositoryException e) {
-
-            }
-        } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(e);
-        }
-
-        return result;
-    }
 }

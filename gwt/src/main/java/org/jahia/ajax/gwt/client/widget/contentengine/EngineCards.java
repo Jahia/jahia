@@ -85,7 +85,6 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
 
     public EngineCards(EngineContainer mainContainer, Linker linker) {
         super(new BorderLayout());
-        setId("JahiaGxtEngineCards");
 
         final ListStore<BaseModelData> store = new ListStore<BaseModelData>();
         ColumnModel header = new ColumnModel(Arrays.asList(new ColumnConfig("header", Messages.get("label.workflow.multipleWorkflowsToStart","Warning : There are multiple workflow involved in this action"), 300)));

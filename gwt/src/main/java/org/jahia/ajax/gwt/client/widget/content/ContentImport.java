@@ -73,7 +73,6 @@ public class ContentImport extends Window {
         setSize(500, 150);
         setResizable(false);
         setModal(true);
-        setId("JahiaGxtContentImport");
         ButtonBar buttons = new ButtonBar();
 
         final FormPanel form = new FormPanel();

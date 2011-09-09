@@ -310,7 +310,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                 public String visit(String value, RenderContext context, Resource resource) {
                     if (StringUtils.isNotEmpty(value)) {
                         try {
-                            value = replacePlaceholdersByRefs(value, refs, property.getSession().getWorkspace().getName(), property.getSession().getLocale());
+                            value = replacePlaceholdersByRefs(value, refs, property.getSession().getWorkspace().getName());
                         } catch (RepositoryException e) {
                             throw new RuntimeException(e);
                         }
@@ -453,7 +453,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
     }
 
 
-    private String replacePlaceholdersByRefs(final String originalValue, final Map<Long, String> refs, final String workspaceName, Locale locale) throws RepositoryException {
+    private String replacePlaceholdersByRefs(final String originalValue, final Map<Long, String> refs, final String workspaceName) throws RepositoryException {
 
         String pathPart = originalValue;
         if (logger.isDebugEnabled()) {
@@ -480,7 +480,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
 
         final String path = "/" + pathPart;
 
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspaceName, locale, new JCRCallback<String>() {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspaceName, null, new JCRCallback<String>() {
             public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 String value = originalValue;
                 try {

@@ -4,7 +4,6 @@
 <%@ taglib prefix="workflow" uri="http://www.jahia.org/tags/workflow" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="utils" uri="http://www.jahia.org/tags/utilityLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
@@ -49,7 +48,7 @@
         <tr>
             <th width="1%">&nbsp;</th>
             <th width="5%">
-                <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentFolder,jnt:folder')}">
+                <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentFolder') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
                     <a title="parent" href="<c:url value='${url.base}${currentNode.parent.path}.html'/>"><img height="16" width="16"
                                                                                              border="0"
                                                                                              style="cursor: pointer;"
@@ -67,9 +66,6 @@
         <tbody>
         <c:forEach items="${moduleMap.currentList}" var="child" begin="${moduleMap.begin}" end="${moduleMap.end}"
                    varStatus="status">
-            <c:set var="markedForDeletion" value="${jcr:isNodeType(child, 'jmix:markedForDeletion')}"/>
-            <c:set var="markedForDeletionRoot" value="${jcr:isNodeType(child, 'jmix:markedForDeletionRoot')}"/>
-            <c:set var="nodeName" value="${!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.name}"/>
             <tr class="${status.count % 2 == 0 ? 'even' : 'odd'}">
                 <td align="center">
                     <input type="checkbox" name="${child.identifier}" ${child.locked ? 'disabled=true':''}/>
@@ -80,25 +76,19 @@
                 </td>
                 <td>
                     <c:if test="${child.locked}">
-                        <img height="16" width="16" border="0" title="<fmt:message key='label.locked'/>" alt="<fmt:message key='label.locked'/>"
+                        <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Supprimer"
                              src="<c:url value='${url.templatesPath}/default/images/icons/locked.gif'/>">
-                        <c:if test="${markedForDeletionRoot}">
-                            <fmt:message key="message.undelete.confirm" var="i18nUndeleteConfirm">
-                                <fmt:param value="${nodeName}"/>
-                            </fmt:message>
-                            <img height="16" width="16" border="0" style="cursor:pointer;" title="<fmt:message key='label.undelete'/>" alt="<fmt:message key='label.undelete'/>"
-                                 src="<c:url value='/icons/undelete.png'/>"
-                                onclick="if (confirm('${functions:escapeJavaScript(i18nUndeleteConfirm)}')) { deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',null,false); } return false;">
-                        </c:if>
                     </c:if>
 
-                    <c:if test="${markedForDeletion}">
-                        <span class="markedForDeletion">
+                    <c:if test="${jcr:isNodeType(child, 'jnt:contentFolder')}">
+                        <a href="<c:url value='${url.base}${child.path}.html'/>">
+                            ${fn:escapeXml(!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.name)}
+                        </a>
                     </c:if>
-                    <c:url value="${url.base}${child.path}.${not jcr:isNodeType(child, 'jnt:contentFolder') ? 'editContent.' : ''}html" var="childUrl"/>
-                    <a href="${childUrl}">${fn:escapeXml(nodeName)}</a>
-                    <c:if test="${markedForDeletion}">
-                        </span>
+                    <c:if test="${not jcr:isNodeType(child, 'jnt:contentFolder')}">
+                        <a href="<c:url value='${url.base}${child.path}.editContent.html'/>">
+                            ${fn:escapeXml(!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.name)}
+                        </a>
                     </c:if>
                 </td>
                 <td>

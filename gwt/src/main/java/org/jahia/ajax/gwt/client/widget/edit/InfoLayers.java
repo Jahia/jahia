@@ -54,8 +54,10 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 
@@ -92,15 +94,15 @@ public class InfoLayers {
         });
     }
 
-    public void addInfoLayer(Module module, final List<LayoutContainer> images, Listener<ComponentEvent> removeListener, boolean headerOnly, final String opacity) {
+    public void addInfoLayer(Module module, final List<AbstractImagePrototype> images, Listener<ComponentEvent> removeListener, boolean headerOnly, final String opacity) {
         addInfoLayer(module, null,null,null,images, removeListener, headerOnly, opacity);
     }
 
     public void addInfoLayer(Module module, String text, String textColor, String bgcolor, Listener<ComponentEvent> removeListener, boolean headerOnly, final String opacity) {
-        addInfoLayer(module, text,textColor,bgcolor,new ArrayList<LayoutContainer>(), removeListener, headerOnly, opacity);
+        addInfoLayer(module, text,textColor,bgcolor,new ArrayList<AbstractImagePrototype>(), removeListener, headerOnly, opacity);
     }
 
-    private void addInfoLayer(Module module, String text, String textColor, String bgcolor, final List<LayoutContainer> images,
+    private void addInfoLayer(Module module, String text, String textColor, String bgcolor, final List<AbstractImagePrototype> images,
                                 Listener<ComponentEvent> listener, boolean headerOnly, final String opacity) {
         LayoutContainer layoutContainer = new LayoutContainer();
         RootPanel.get().add(layoutContainer);
@@ -131,8 +133,8 @@ public class InfoLayers {
         }
         if (!images.isEmpty()) {
             layoutContainer.setLayout(new HBoxLayout());
-            for (LayoutContainer image : images) {
-                layoutContainer.add(image);
+            for (AbstractImagePrototype image : images) {
+                layoutContainer.add(image.createImage());
             }
         }
         if (bgcolor != null) {

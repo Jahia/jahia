@@ -46,7 +46,6 @@ import java.util.Set;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 
-import net.sf.ehcache.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.SpringContextSingleton;
@@ -128,11 +127,8 @@ public class ModuleCacheProvider implements InitializingBean {
      */
     @SuppressWarnings("unchecked")
     public void invalidate(String nodePath) {
-        Element element = dependenciesCache.get(nodePath);
-        if(element!=null) {
-            Set<String> deps = (Set<String>) element.getValue();
-            invalidateDependencies(deps);
-        }
+        Set<String> deps = (Set<String>) dependenciesCache.get(nodePath).getValue();
+        invalidateDependencies(deps);
     }
 
     private void invalidateDependencies(Set<String> deps) {

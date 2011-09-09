@@ -99,8 +99,6 @@ public class VFSContentStoreProviderTest {
     private static final String MULTIPLE_I18N_WEAKREFERENCE_PROPERTY_NAME = "test:multipleI18NNode";
     private static final String TEST_EXTERNAL_WEAKREFERENCE_NODE_TYPE = "test:externalWeakReference";
 
-    private static final String DELETION_MESSAGE = "Deleted in unit test";
-
     private static JahiaSite site;
 
     JCRSessionWrapper englishEditSession;
@@ -405,65 +403,6 @@ public class VFSContentStoreProviderTest {
 
         // TODO add tests for handling missing reference targets.
 
-        unMountDynamicMountPoint(jahiaRootUser);
-    }
-
-    @Test
-    public void testMarkForDeletion() throws Exception, RepositoryException, UnsupportedEncodingException {
-        ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext().getBean("ContentHubHelper");
-        JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
-        contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser);
-
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-
-        JCRNodeWrapper mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
-        assertNode(mountNode, 0);
-
-        String value = "This is a test";
-        String mimeType = "text/plain";
-
-        InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
-
-        String name1 = "test1_" + System.currentTimeMillis() + ".txt";
-        JCRNodeWrapper vfsTestFile1 = mountNode.uploadFile(name1, is, mimeType);
-
-        is = new ByteArrayInputStream(value.getBytes("UTF-8"));
-
-        String name2 = "test2_" + System.currentTimeMillis() + ".txt";
-        JCRNodeWrapper vfsTestFile2 = mountNode.uploadFile(name2, is, mimeType);
-
-        session.save();
-
-        getCleanSession();
-
-        JCRSiteNode siteNode = (JCRSiteNode) englishEditSession.getNode(SITECONTENT_ROOT_NODE);
-        vfsTestFile1 = getNode(englishEditSession, MOUNTS_DYNAMIC_MOUNT_POINT + "/" + name1);
-        assertFalse("Node should not allow mark for deletion", vfsTestFile1.canMarkForDeletion());
-
-        boolean unsupportedRepositoryOperation = false;
-        try {
-            vfsTestFile1.markForDeletion(DELETION_MESSAGE);
-        } catch (UnsupportedRepositoryOperationException uroe) {
-            unsupportedRepositoryOperation = true;
-        }
-        assertTrue("Mark for deletion should not be allowed", unsupportedRepositoryOperation);
-        englishEditSession.save();
-
-        assertFalse("jmix:markedForDeletionRoot set", vfsTestFile1.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
-        assertFalse("jmix:markedForDeletion set", vfsTestFile1.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
-        assertFalse("marked for deletion comment not set", DELETION_MESSAGE.equals(vfsTestFile1.getPropertyAsString(Constants.MARKED_FOR_DELETION_MESSAGE)));
-        assertFalse("j:deletionUser not set", vfsTestFile1.hasProperty(Constants.MARKED_FOR_DELETION_USER));
-        assertFalse("j:deletionDate not set", vfsTestFile1.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
-
-        unsupportedRepositoryOperation = false;
-        try {
-            vfsTestFile1.unmarkForDeletion();
-        } catch (UnsupportedRepositoryOperationException uroe) {
-            unsupportedRepositoryOperation = true;
-        }
-        assertTrue("Unmark for deletion should not be allowed", unsupportedRepositoryOperation);
-
-        unMountDynamicMountPoint(jahiaRootUser);
     }
 
     private JCRNodeWrapper getNode(JCRSessionWrapper session, String path) throws RepositoryException {

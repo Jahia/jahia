@@ -25,8 +25,6 @@
 [condition][]- it has the type {type}=types contains "{type}"
 [condition][]- it is in {path}=node.path matches "{path}/*"
 [condition][]- its name is not {name}=name != "{name}"
-[condition][]- its name is {name}=name == "{name}"
-[condition][]- its name matches "{namePattern}"=name matches "{namePattern}"
 [condition][]- the mimetype is not {mimetype}=mimeType != "{mimetype}"
 [condition][]- the mimetype is {mimetype}=mimeType == "{mimetype}"
 [condition][]- the mimetype matches {mimetype}=mimeType matches "{mimetype}"
@@ -34,7 +32,6 @@
 [condition][]- the parent has the type {type}=parent.types contains "{type}"
 [condition][]- the value is not "{value}"=stringValue != "{value}"
 [condition][]- the value is {value}=stringValue == {value}
-[condition][]- in {workspaceName} workspace=node.workspace == "{workspaceName}"
 [condition][]A search result hit is present=searchHit : JCRNodeHit ( )
 [condition][]- the node is of type {type}=type == "{type}"
 [consequence][]Append URL query-parameter "{parameterName}" with {parameterValue}=urlService.addURLQueryParameter(searchHit, "{parameterName}", {parameterValue});
@@ -73,7 +70,6 @@
 [consequence][]Tag the {node} with the {tag}=service.addNewTag(node, {tag}, drools);
 [consequence][]Execute the rule {ruleName} at {property} for the {node}=service.executeRuleLater(node, "{property}",{ruleName}, drools);
 [consequence][]Execute the action {actionName} at {property} on the {node}=service.executeActionLater(node, "{property}",{actionName}, drools);
-[consequence][]Execute the action {actionName} now on the {node}=service.executeActionNow(node,{actionName}, drools);
 [consequence][]Cancel execution of action {actionName} on the {node}=service.cancelActionExecution(node, {actionName}, drools);
 [consequence][]Schedule the background action {actionName} on the {node} using cron expression {cron}=service.scheduleAction(node, {actionName}, {cron}, drools);
 [consequence][]Publish the {node}=service.publishNode({node}, drools);

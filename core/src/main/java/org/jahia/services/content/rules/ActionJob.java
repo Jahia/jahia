@@ -51,17 +51,13 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 
-/**
- * Background job that executes a predefined action. 
- */
 public class ActionJob extends BackgroundJob {
 	
     public static final String NAME_PREFIX = "ACTION_JOB_"; 
     
-    private static transient Logger logger = LoggerFactory.getLogger(ActionJob.class);
+	private static transient Logger logger = LoggerFactory.getLogger(ActionJob.class);
 
     public static final String JOB_NODE_UUID = "node";
     public static final String JOB_ACTION_TO_EXECUTE = "actionToExecute";
@@ -84,16 +80,11 @@ public class ActionJob extends BackgroundJob {
                 BackgroundAction backgroundAction = (BackgroundAction) action;
                 final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
                 final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession();
-                try {
-                    JCRNodeWrapper node = jcrSessionWrapper.getNodeByUUID(map.getString(JOB_NODE_UUID));
-                    backgroundAction.executeBackgroundAction(node);
-                } catch (ItemNotFoundException e) {
-                    logger.warn("The node with UUID {} cannot be found in the repository. Skip executing background action.", map.getString(JOB_NODE_UUID));
-                    throw new JobExecutionException(e);
-                }
+                JCRNodeWrapper node = jcrSessionWrapper.getNodeByUUID(map.getString(JOB_NODE_UUID));
+                backgroundAction.executeBackgroundAction(node);
             } else {
-                throw new JobExecutionException("Background action with the name " + actionName + " is not found in the registry."
-                        + " Skip executing action.");
+				logger.error("Background action with the name {} is not found in the registry."
+				        + " Skip executing action.", actionName);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

@@ -37,7 +37,6 @@
     <bean class="org.jahia.services.render.filter.URLFilter">
         <constructor-arg ref="org.jahia.services.render.filter.URLTraverser" />
         <property name="priority" value="19" />
-        <property name="description" value="SEO URL filter"/>
         <property name="applyOnConfigurations" value="page,module,wrappedcontent" />
         <property name="applyOnModes" value="live"/>
         <property name="handlers">

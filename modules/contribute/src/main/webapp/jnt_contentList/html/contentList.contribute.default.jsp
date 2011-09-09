@@ -6,7 +6,7 @@
 <%@ taglib prefix="workflow" uri="http://www.jahia.org/tags/workflow" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="utils" uri="http://www.jahia.org/tags/utilityLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
@@ -53,16 +53,12 @@
     <c:forEach items="${moduleMap.currentList}" var="child" begin="${moduleMap.begin}" end="${moduleMap.end}"
                varStatus="status">
         <%-- only editorial contents are contribuable --%>
-        <c:if test="${jcr:isNodeType(child,'jmix:editorialContent')}">
+        <c:if test="${functions:isNodeType(child,'jmix:editorialContent')}">
             <c:if test="${jcr:hasPermission(currentNode, 'jcr:modifyProperties_default')}">
                 <%@include file="edit.jspf"%>
             </c:if>
             <%--<%@include file="workflow.jspf" %>--%>
-            <c:set var="markedForDeletion" value="${jcr:isNodeType(child, 'jmix:markedForDeletion')}"/>
-            <div id="edit-${child.identifier}"${markedForDeletion ? 'class="markedForDeletion"' : ''}>
-                <c:if test="${markedForDeletion}">
-                    <span class="markedForDeletionLabel"><fmt:message key="label.publication.markedfordeletion"/></span>
-                </c:if>
+            <div id="edit-${child.identifier}">
                 <template:module node="${child}"/>
             </div>
             <hr/>

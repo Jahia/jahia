@@ -394,7 +394,7 @@ public class VersioningTest {
             subPageEditNode = editSession.getNodeByUUID(subPageEditNodeIdentifier);
             editSession.checkout(subPageEditNode);
             editSession.checkout(stageNode);
-            subPageEditNode.markForDeletion("Page deleted in unit test");
+            subPageEditNode.remove();
             editSession.save();
 
             //Second publication

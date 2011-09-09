@@ -79,7 +79,6 @@ public abstract class BackgroundJob implements StatefulJob {
     public static final String STATUS_EXECUTING = "executing";
     public static final String STATUS_SUCCESSFUL = "successful";
     public static final String STATUS_FAILED = "failed";
-    public static final String STATUS_CANCELED = "canceled";
 
     public static JobDetail createJahiaJob(String desc, Class<? extends BackgroundJob> jobClass) {
         // jobdetail is non-volatile,durable,non-recoverable
@@ -135,12 +134,7 @@ public abstract class BackgroundJob implements StatefulJob {
             
         } catch (Exception e) {
             logger.error("Error executing job " + jobDetail.getKey(), e);
-            data.put(JOB_STATUS, STATUS_FAILED);
-            if (e instanceof JobExecutionException) {
-                throw (JobExecutionException) e;
-            } else {
-                throw new JobExecutionException(e);
-            }
+            throw new JobExecutionException(e);
         } finally {
             try {
             	this.postExecution(ctx);
@@ -148,7 +142,6 @@ public abstract class BackgroundJob implements StatefulJob {
 	            sessionFactory.setCurrentUser(null);
 	            sessionFactory.setCurrentLocale(null);
 	            sessionFactory.closeAllSessions();
-                ServicesRegistry.getInstance().getSchedulerService().triggerEndOfRequest();
             }
         }
     }

@@ -76,9 +76,10 @@ import java.util.List;
 public class VersioningTabItem extends EditEngineTabItem {
     private transient String locale;
 
-
-    public VersioningTabItem() {
+    @Override
+    public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
         setHandleCreate(false);
+        return super.create(engineTab, engine);
     }
 
     /**

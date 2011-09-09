@@ -818,42 +818,4 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     String getDisplayableName();
 
     AccessControlManager getAccessControlManager() throws RepositoryException;
-
-    /**
-     * Checks if this node can be marked for deletion. This will usually return false on repository implementations
-     * that do not support versioining or adding mixins, etc...
-     *
-     * @return true if the node suppors marking for deletion.
-     * @throws RepositoryException
-     */
-    boolean canMarkForDeletion() throws RepositoryException;
-
-    /**
-     * Returns true if this node is marked for deletion.
-     * 
-     * @return true if this node is marked for deletion.
-     * @throws RepositoryException
-     *             in case of a repository access error
-     */
-    boolean isMarkedForDeletion() throws RepositoryException;
-
-    /**
-     * Marks this node and all the sub-nodes for deletion. Additionally the deletion info is stored in this node, including the user, date
-     * and optional comment. This operation does not call session.save() after modifications.
-     * 
-     * @param comment
-     *            the deletion comment
-     * @throws RepositoryException
-     *             in case of repository access errors
-     */
-    void markForDeletion(String comment) throws RepositoryException;
-
-    /**
-     * Unmarks this node and all the sub-nodes for deletion. This operation does not call session.save() after modifications.
-     * 
-     * @throws RepositoryException
-     *             in case of repository access errors
-     */
-    void unmarkForDeletion() throws RepositoryException;
-
 }

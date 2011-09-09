@@ -104,7 +104,7 @@ public class PagesTabItem extends SidePanelTabItem {
 
         NodeColumnConfigList columns = new NodeColumnConfigList(config.getTreeColumns());
         columns.init();
-        columns.get(0).setRenderer(NodeColumnConfigList.NAME_TREEGRID_RENDERER);
+        columns.get(0).setRenderer(new TreeGridCellRenderer());
 
         pageTree = factory.getTreeGrid(new ColumnModel(columns));
 

@@ -89,8 +89,7 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private boolean displaySearchInFile = true;
     private boolean displaySearchInContent = true;
     private boolean searchInFile = true;
-    private boolean searchInContent = true;
-    private boolean showOnlyNodesWithTemplates = false;
+    private boolean searchInContent = true;    
 
 
     public GWTManagerConfiguration() {
@@ -332,13 +331,5 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     public void setHiddenRegex(String hiddenRegex) {
         this.hiddenRegex = hiddenRegex;
-    }
-
-    public boolean isShowOnlyNodesWithTemplates() {
-        return showOnlyNodesWithTemplates;
-    }
-
-    public void setShowOnlyNodesWithTemplates(boolean showOnlyNodesWithTemplates) {
-        this.showOnlyNodesWithTemplates = showOnlyNodesWithTemplates;
     }
 }

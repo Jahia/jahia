@@ -65,8 +65,10 @@ import java.util.Map;
  * Created : 10 mars 2010
  */
 public class Captcha extends JahiaController {
+    
+	private static final long serialVersionUID = -5265673214049135501L;
 	
-    private DefaultKaptcha captchaProducer;
+	private DefaultKaptcha captchaProducer;
 
     /**
      * Process the request and return a ModelAndView object which the DispatcherServlet
@@ -96,7 +98,7 @@ public class Captcha extends JahiaController {
             String capText = captchaProducer.createText();
     
             // store the text in the session
-            toks.get(token).put(Render.CAPTCHA, Arrays.asList(capText));
+            toks.get(token).put("jcrCaptcha", Arrays.asList(capText));
     
             // create the image with the text
             BufferedImage bi = captchaProducer.createImage(capText);

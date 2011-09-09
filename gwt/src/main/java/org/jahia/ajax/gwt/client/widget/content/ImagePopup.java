@@ -81,7 +81,7 @@ public class ImagePopup extends Window {
         setModal(true);
         setHeaderVisible(true);
         setAutoHide(false);
-        setId("JahiaGxtImagePopup");
+
         getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) { // TODO improve ratio button
                 double expectedHeight = Math.floor((getWidth())/ratio) ;

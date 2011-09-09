@@ -61,7 +61,6 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
@@ -103,14 +102,13 @@ public class RepositoryTab extends ContentPanel {
         factory.setSelectedPath(selectedPaths);
         factory.setHiddenTypes(config.getHiddenTypes());
         factory.setHiddenRegex(config.getHiddenRegex());
-        factory.setShowOnlyNodesWithTemplates(config.isShowOnlyNodesWithTemplates());
         factory.setSaveOpenPath(true);
         loader = factory.getLoader();
         store = factory.getStore();
 
         NodeColumnConfigList columns = new NodeColumnConfigList(config.getTreeColumns());
         columns.init();
-        columns.get(0).setRenderer(NodeColumnConfigList.NAME_TREEGRID_RENDERER);
+        columns.get(0).setRenderer(new TreeGridCellRenderer());
         m_tree = factory.getTreeGrid(new ColumnModel(columns));
         m_tree.setHideHeaders(true);
         m_tree.setIconProvider(ContentModelIconProvider.getInstance());
@@ -123,17 +121,15 @@ public class RepositoryTab extends ContentPanel {
         m_tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             public void selectionChanged(SelectionChangedEvent selectionChangedEvent) {
                 getLinker().onTreeItemSelected();
-                if (selectionChangedEvent.getSelection() != null && selectionChangedEvent.getSelection().size() > 0) {
-                    setExpanded(true);
-                }
             }
         });
+//        m_tree.init();
 
         setScrollMode(Style.Scroll.NONE);
         setHeading(repo.getTitle());
         getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
-                refresh(Linker.REFRESH_ALL);
+                refresh();
             }
         }));
         add(m_tree);
@@ -231,18 +227,12 @@ public class RepositoryTab extends ContentPanel {
 
     /**
      * Refresh
-     * @param flag
      */
-    public void refresh(int flag) {
-        boolean refresh = true;
-        if ((Linker.REFRESH_OPEN_FOLDER & flag) != 0) {
-            refresh = isExpanded();
-        }
-        if (refresh) {
-            store.removeAll();
-            factory.setDisplayHiddenTypes(getLinker()!=null&&getLinker().isDisplayHiddenTypes());
-            loader.load();
-        }
+    public void refresh() {
+//        init = true;
+        store.removeAll();
+        factory.setDisplayHiddenTypes(getLinker()!=null&&getLinker().isDisplayHiddenTypes());
+        loader.load();
     }
 
     /**
@@ -279,9 +269,9 @@ public class RepositoryTab extends ContentPanel {
     }
 
     /**
-     * remove selection
+     * deselecte on free search
      */
-    public void removeSelection() {
+    public void deselectOnFreeSearch() {
         m_tree.getSelectionModel().deselectAll();
     }
 

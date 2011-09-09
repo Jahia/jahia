@@ -71,17 +71,7 @@
 [jmix:versionInfo] mixin
 - j:checkinDate (date) hidden
 
-[jmix:conditionalVisibility] mixin
- - j:legacyRuleSettings (string) hidden indexed=no
- + j:conditionalVisibility (jnt:conditionalVisibility)
-
-[jnt:conditionalVisibility] > nt:base, jmix:observable, mix:versionable, mix:lastModified, jmix:lastPublished
- - j:forceMatchAllConditions (boolean) = false autocreated
- + * (jnt:condition)
-
-[jnt:condition] > nt:base, jmix:observable
-
-[jmix:basemetadata] > mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable, jmix:versionInfo, jmix:description, jmix:workflow, jmix:conditionalVisibility mixin
+[jmix:basemetadata] > mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable, jmix:versionInfo, jmix:description, jmix:workflow mixin
 
 [jmix:autoPublish] > jmix:observable mixin
 
@@ -518,13 +508,6 @@
 
 [jmix:templateMixin] mixin
 
-[jmix:markedForDeletion] mixin
-
-[jmix:markedForDeletionRoot] mixin
- - j:deletionUser (string) mandatory hidden indexed=no
- - j:deletionDate (date) mandatory hidden
- - j:deletionMessage (string) hidden indexed=no
-
 //---------------------------------------------------------
 // References and links
 //---------------------------------------------------------
@@ -591,7 +574,6 @@
 [jnt:externalLinkI18nImageReference] > jnt:externalLinkImageReference
  - j:node (weakreference,picker[type='image']) i18n < jmix:image 
  - j:url (string) i18n
-
 //---------------------------------------------------------
 // Caches
 //---------------------------------------------------------

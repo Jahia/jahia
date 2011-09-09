@@ -131,32 +131,16 @@ final class JahiaTemplatesPackageHandler {
                 templatePackage.setRulesDescriptorFile("META-INF/rules.dsl");
             }
         }
-
-        // check if there is a rules file
-        if (new File(file, "rules.drl").exists()) {
-            templatePackage.setRulesFile("rules.drl");
-            warnMetaInf("rules.drl", templatePackage.getRootFolder());
+        if (templatePackage.getRulesFiles().isEmpty()) {
+            // check if there is a rules file
+            if (new File(file, "rules.drl").exists()) {
+                templatePackage.setRulesFile("rules.drl");
+                warnMetaInf("rules.drl", templatePackage.getRootFolder());
+            }
+            if (new File(file, "META-INF/rules.drl").exists()) {
+                templatePackage.setRulesFile("META-INF/rules.drl");
+            }
         }
-        if (new File(file, "META-INF/rules.drl").exists()) {
-            templatePackage.setRulesFile("META-INF/rules.drl");
-        }
-        // check if there is a rules file
-        if (new File(file, "live-rules.drl").exists()) {
-            templatePackage.setRulesFile("live-rules.drl");
-            warnMetaInf("live-rules.drl", templatePackage.getRootFolder());
-        }
-        if (new File(file, "META-INF/live-rules.drl").exists()) {
-            templatePackage.setRulesFile("META-INF/live-rules.drl");
-        }
-        // check if there is a rules file
-        if (new File(file, "default-rules.drl").exists()) {
-            templatePackage.setRulesFile("default-rules.drl");
-            warnMetaInf("default-rules.drl", templatePackage.getRootFolder());
-        }
-        if (new File(file, "META-INF/default-rules.drl").exists()) {
-            templatePackage.setRulesFile("META-INF/default-rules.drl");
-        }
-
         if (templatePackage.getResourceBundleName() == null) {
             // check if there is a resource bundle file in the resources folder
             String rbName = templatePackage.getName().replace(' ', '_');

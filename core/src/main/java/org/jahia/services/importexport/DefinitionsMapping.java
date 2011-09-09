@@ -42,8 +42,6 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 
@@ -59,12 +57,23 @@ import java.util.regex.Pattern;
  *  User: toto Date: Oct 29, 2009 Time: 7:09:03 PM 
  */
 public class DefinitionsMapping {
-    private static Logger logger = LoggerFactory.getLogger(LegacyImportHandler.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(LegacyImportHandler.class);
 
-    @SuppressWarnings("unchecked")
     public DefinitionsMapping() {
-        metadataProperties = (Map<String, PropertyMapping>) SpringContextSingleton
-                .getBean("ImportDefinitionsMappingMetadata");
+        metadataProperties.put("jahia:defaultCategory", new PropertyMapping(
+                "jahia:defaultCategory", "jmix:categorized|j:defaultCategory"));
+        metadataProperties.put("jahia:keywords", new PropertyMapping("jahia:keywords",
+                "jmix:keywords|j:keywords"));
+        metadataProperties.put("jahia:description", new PropertyMapping("jahia:description",
+                "jmix:description|jcr:description"));        
+        metadataProperties.put("jahia:createdBy", new PropertyMapping("jahia:createdBy",
+                "mix:created|jcr:createdBy"));
+        metadataProperties.put("jahia:lastModifiedBy", new PropertyMapping("jahia:lastModifiedBy",
+                "mix:lastModified|jcr:lastModifiedBy"));
+        metadataProperties.put("jahia:lastPublishingDate", new PropertyMapping(
+                "jahia:lastPublishingDate", "jmix:lastPublished|j:lastPublished"));
+        metadataProperties.put("jahia:lastPublisher", new PropertyMapping("jahia:lastPublisher",
+                "jmix:lastPublished|j:lastPublishedBy"));
     }
 
     String WORD = "([\\w:#-]+)";
@@ -93,7 +102,7 @@ public class DefinitionsMapping {
     Pattern SET_PROPERTY_PATTERN = Pattern.compile(SET_PROPERTY);
 
     private Map<String, TypeMapping> types = new HashMap<String, TypeMapping>();
-    private Map<String, PropertyMapping> metadataProperties;
+    private Map<String, PropertyMapping> metadataProperties = new HashMap<String, PropertyMapping>();
 
     public void load(InputStream is) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -263,7 +272,10 @@ public class DefinitionsMapping {
 
     public String getMappedMetadataProperty(String name) {
         PropertyMapping n = metadataProperties.get(name);
-        return n != null ? n.getNewName() : name;
+        if (n == null) {
+            return name;
+        }
+        return n.getNewName();
     }
 
     public String getMappedPropertyValue(ExtendedNodeType type, String name, String value) {
@@ -383,7 +395,7 @@ public class DefinitionsMapping {
         }
     }
 
-    public static class Mapping {
+    class Mapping {
         List<Action> actions = new ArrayList<Action>();
         String originalName;
         String newName;
@@ -447,10 +459,10 @@ public class DefinitionsMapping {
         }        
     }
 
-    public static class PropertyMapping extends Mapping {
+    class PropertyMapping extends Mapping {
         Map<String, ValueMapping> values = new HashMap<String, ValueMapping>();
 
-        public PropertyMapping(String originalName, String newName) {
+        PropertyMapping(String originalName, String newName) {
             this.originalName = originalName;
             this.newName = newName;
         }

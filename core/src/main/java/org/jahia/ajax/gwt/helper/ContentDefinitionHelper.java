@@ -371,25 +371,6 @@ public class ContentDefinitionHelper {
         return null;
     }
 
-    public List<GWTJahiaNodeType> getSubNodeTypes(List<String> names, Locale uiLocale) {
-        try {
-            List<GWTJahiaNodeType> list = new ArrayList<GWTJahiaNodeType>();
-            for (String name : names) {
-                ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(name);
-                NodeTypeIterator nti = t.getSubtypes();
-                while (nti.hasNext()) {
-                    ExtendedNodeType type = (ExtendedNodeType) nti.next();
-                    GWTJahiaNodeType nodeType = getNodeType(type.getName(), uiLocale);
-                    list.add(nodeType);
-                }
-            }
-            return list;
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return null;
-    }
-
     /**
      * Returns a list of node types with name and label populated that are the
      * sub-types of the specified base type or that are allowed to be created in
@@ -405,7 +386,7 @@ public class ContentDefinitionHelper {
      *         created in the specified parent node (if the baseType parameter
      *         is null)
      */
-    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getContentTypes(List<String> baseTypes, Map<String, Object> ctx,
+    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(List<String> baseTypes, Map<String, Object> ctx,
                                                                          Locale uiLocale, boolean includeSubTypes, boolean displayStudioElement) {
         Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> map = new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
         NodeTypeRegistry registry = NodeTypeRegistry.getInstance();

@@ -43,7 +43,6 @@ package org.jahia.ajax.gwt.client.data.node;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.extjs.gxt.ui.client.data.ListLoadConfig;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -93,8 +92,6 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String WORKFLOW_INFOS = "workflowInfos";
     public static final String PRIMARY_TYPE_LABEL = "primaryTypeLabel";
     public static final String DEFAULT_LANGUAGE = "j:defaultLanguage";
-    public static final String VISIBILITY_INFO = "visibilityInfo";
-    public static final String IS_VISIBLE = "isVisible";
 
     public static final List<String> DEFAULT_FIELDS =
             Arrays.asList(ICON, TAGS, CHILDREN_INFO, "j:view", "j:width", "j:height", PUBLICATION_INFO);
@@ -361,22 +358,6 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return get(SITE_KEY);
     }
 
-    public void setVisibilityInfo(Map<GWTJahiaNode,ModelData> visible) {
-        set(VISIBILITY_INFO, visible);
-    }
-
-    public Map<GWTJahiaNode,ModelData> getVisibilityInfo() {
-        return get(VISIBILITY_INFO);
-    }
-
-    public void setVisible(Boolean visible) {
-        set(IS_VISIBLE, visible);
-    }
-
-    public Boolean isVisible() {
-        return get(IS_VISIBLE);
-    }
-
     public boolean isVersioned() {
         return versioned;
     }
@@ -531,9 +512,6 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     }
 
     public GWTJahiaPublicationInfo getAggregatedPublicationInfo() {
-        if (publicationInfos == null) {
-            return null;
-        }
         return publicationInfos.get(JahiaGWTParameters.getLanguage());
     }
 

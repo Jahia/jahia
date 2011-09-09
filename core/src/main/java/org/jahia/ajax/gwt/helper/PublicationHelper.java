@@ -418,23 +418,6 @@ public class PublicationHelper {
 
 
     /**
-     * Publish a node to live workspace immediately.
-     *
-     *
-     * @param uuids     uuids of the nodes to unpublish
-     * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
-     *          in case of any RepositoryException
-     */
-    public void publish(List<String> uuids) throws GWTJahiaServiceException {
-        try {
-            publicationService.publish(uuids, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null);
-        } catch (RepositoryException e) {
-            logger.error("repository exception", e);
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
-    }
-
-    /**
      * Unpublish a node from live workspace.
      * Referenced Node will not be unpublished.
      *

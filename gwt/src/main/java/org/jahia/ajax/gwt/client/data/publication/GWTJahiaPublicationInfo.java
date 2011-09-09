@@ -56,7 +56,6 @@ import java.util.*;
  * 
  */
 public class GWTJahiaPublicationInfo extends SerializableBaseModel {
-    private static final long serialVersionUID = -8549934950900000042L;
 
     public static final int PUBLISHED = 1;
     public static final int MODIFIED = 3;
@@ -68,13 +67,11 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
     public static final int CONFLICT = 9;
     public static final int MANDATORY_LANGUAGE_VALID = 10;
     public static final int DELETED = 11;
-    public static final int MARKED_FOR_DELETION = 12;
 
     public static Map<Integer,String> statusToLabel = new HashMap<Integer, String>();
 
     static {
         statusToLabel.put(GWTJahiaPublicationInfo.PUBLISHED,"published");
-        statusToLabel.put(GWTJahiaPublicationInfo.MARKED_FOR_DELETION,"markedfordeletion");
         statusToLabel.put(GWTJahiaPublicationInfo.MODIFIED,"modified");
         statusToLabel.put(GWTJahiaPublicationInfo.NOT_PUBLISHED,"notpublished");
         statusToLabel.put(GWTJahiaPublicationInfo.UNPUBLISHED,"unpublished");
@@ -200,13 +197,17 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         set("language", language);
     }
 
-    public static Image renderPublicationStatusImage(Integer status) {
-        String label= statusToLabel.get(status);
+    public static Object renderPublicationStatusImage(GWTJahiaPublicationInfo info) {
+        if (info != null) {
+            String label= statusToLabel.get(info.getStatus());
 
-        String title = Messages.get("label.publication." + label, label);
-        final Image image = ToolbarIconProvider.getInstance().getIcon("publication/" + label).createImage();
-        image.setTitle(title);
-        return image;
+            String title = Messages.get("label.publication." + label, label);
+            final Image image = ToolbarIconProvider.getInstance().getIcon("publication/" + label).createImage();
+            image.setTitle(title);
+            return image;
+        }
+
+        return "";
     }
 
     public static boolean canPublish(GWTJahiaNode node, GWTJahiaPublicationInfo info, final String language) {

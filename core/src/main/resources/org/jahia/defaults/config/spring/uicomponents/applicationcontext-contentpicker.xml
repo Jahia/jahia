@@ -31,8 +31,6 @@
                         -->
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Undelete"/>
-                        <ref bean="Toolbar.Item.DeletePermanently"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
@@ -71,8 +69,6 @@
 
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Undelete"/>
-                        <ref bean="Toolbar.Item.DeletePermanently"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
@@ -113,7 +109,6 @@
                 <value>icon,40,empty</value>
                 <value>name,*,label.name</value>
                 <value>size,140,label.size</value>
-                <value>publicationInfo,40</value>
             </list>
         </property>
     </bean>
@@ -150,8 +145,6 @@
                         -->
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Undelete"/>
-                        <ref bean="Toolbar.Item.DeletePermanently"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
@@ -188,8 +181,6 @@
                         <ref bean="Toolbar.Item.Unzip"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Undelete"/>
-                        <ref bean="Toolbar.Item.DeletePermanently"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
@@ -229,7 +220,6 @@
                 <value>icon,40,empty</value>
                 <value>name,*,label.name</value>
                 <value>size,140,label.size</value>
-                <value>publicationInfo,40</value>
             </list>
         </property>
     </bean>
@@ -257,8 +247,6 @@
                         -->
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Undelete"/>
-                        <ref bean="Toolbar.Item.DeletePermanently"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
@@ -290,8 +278,6 @@
                         <ref bean="Toolbar.Item.Unzip"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Undelete"/>
-                        <ref bean="Toolbar.Item.DeletePermanently"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
@@ -410,8 +396,6 @@
                         <ref bean="Toolbar.Item.NewPortlet"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Undelete"/>
-                        <ref bean="Toolbar.Item.DeletePermanently"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
@@ -431,8 +415,6 @@
                         <ref bean="Toolbar.Item.NewPortlet"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Undelete"/>
-                        <ref bean="Toolbar.Item.DeletePermanently"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
@@ -525,7 +507,6 @@
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>icon,40,empty</value>
                 <value>name,*,label.name</value>
-                <value>publicationInfo,40</value>
             </list>
         </property>
     </bean>
@@ -589,7 +570,6 @@
         <property name="searchInContent" value="true"/>
         <property name="searchInFile" value="true"/>   
         <property name="allowsMultipleSelection" value="false"/>
-        <property name="showOnlyNodesWithTemplates" value="true"/>
         <!-- accordion panels-->
         <property name="repositories">
             <list>
@@ -605,7 +585,6 @@
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>icon,40,empty</value>
                 <value>displayName,*,label.title</value>
-                <value>publicationInfo,40</value>
             </list>
         </property>
     </bean>
@@ -623,8 +602,6 @@
                         <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Undelete"/>
-                        <ref bean="Toolbar.Item.DeletePermanently"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
@@ -639,8 +616,6 @@
                         <ref bean="Toolbar.Item.NewCategory"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Undelete"/>
-                        <ref bean="Toolbar.Item.DeletePermanently"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>

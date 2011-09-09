@@ -54,8 +54,9 @@ public class HistoryTabItem extends EditEngineTabItem {
 
     private transient HistoryPanel historyPanel;
 
-    public HistoryTabItem() {
+    @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
         setHandleCreate(false);
+        return super.create(engineTab, engine);
     }
 
     @Override

@@ -470,7 +470,7 @@ public class PropertiesEditor extends FormPanel {
                         ((GWTJahiaPropertyDefinition) definition).isInternationalized());
                 if ((includeI18N && i18nProp) || (includeNonI18N && !i18nProp)) {
                     if (((definition.isHidden() || !displayHiddenProperties) && originalProperties.get(definition.getName()) != null) ||
-                            (dataType == null || dataType.isEmpty() || dataType.contains(definition.getDataType()))) {
+                            (dataType != null && (dataType.isEmpty() || dataType.contains(definition.getDataType())))) {
                         if (!definition.isProtected()) {
                             Field<?> f = fields.get(definition.getName());
                             GWTJahiaNodeProperty prop = currentProperties.get(definition.getName());
@@ -748,13 +748,5 @@ public class PropertiesEditor extends FormPanel {
             });
         }
 
-        @Override
-        public void addListener(EventType eventType, Listener<? extends BaseEvent> listener) {
-            if (eventType == Events.Change) {
-                field.addListener(eventType, listener);
-            } else {
-                super.addListener(eventType, listener);
-            }
-        }
     }
 }

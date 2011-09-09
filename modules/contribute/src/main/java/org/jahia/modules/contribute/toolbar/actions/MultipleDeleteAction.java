@@ -55,11 +55,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Action item for handling the deletion of multiple elements.
+ * 
  *
- * @author rincevent
+ * @author : rincevent
  * @since JAHIA 6.5
- * Created : 24 nov. 2010
+ *        Created : 24 nov. 2010
  */
 public class MultipleDeleteAction extends Action {
     private transient static Logger logger = Logger.getLogger(MultipleDeleteAction.class);
@@ -68,20 +68,11 @@ public class MultipleDeleteAction extends Action {
                                   JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         List<String> uuids = parameters.get(MultipleCopyAction.UUIDS);
         assert uuids != null && uuids.size()>0;
-        String mark = req.getParameter("markForDeletion");
-        String comment = req.getParameter("markForDeletionComment");
-        Boolean markForDeletion = mark != null && mark.length() > 0 ? Boolean.valueOf(mark) : null; 
         try {
             for (String uuid : uuids) {
                 JCRNodeWrapper node = session.getNodeByUUID(uuid);
                 session.checkout(node);
-                if (markForDeletion == null) {
-                    node.remove();
-                } else if (markForDeletion) {
-                    node.markForDeletion(comment);
-                } else {
-                    node.unmarkForDeletion();
-                }
+                node.remove();
             }
             session.save();
         } catch (RepositoryException e) {

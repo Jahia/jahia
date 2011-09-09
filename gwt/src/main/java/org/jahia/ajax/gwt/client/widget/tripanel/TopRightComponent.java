@@ -42,8 +42,6 @@ package org.jahia.ajax.gwt.client.widget.tripanel;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -67,16 +65,15 @@ public abstract class TopRightComponent extends LinkableComponent {
         return null;
     }
 
-    public List<GWTJahiaNode> getHiddenSelection() {
-        return null;
-    }
-
     public void selectNodes(List<GWTJahiaNode> nodes) {
     }
 
     public abstract void refresh();
 
+    public void setSelectPathAfterDataUpdate(String path) {
+    }
 
     public void clearSelection() {
     }
+
 }

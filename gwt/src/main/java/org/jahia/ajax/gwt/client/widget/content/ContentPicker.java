@@ -72,8 +72,6 @@ public class ContentPicker extends TriPanelBrowserLayout {
 
         JahiaGWTParameters.setSiteNode(config.getSiteNode());
 
-        setId("JahiaGxtContentPicker");
-        
         //setWidth("714px");
         setHeight("700px");
         if (types != null && types.size() > 0) {
@@ -132,6 +130,7 @@ public class ContentPicker extends TriPanelBrowserLayout {
             contentViews.getComponent().setContextMenu(actionContextMenu);
         }
         linker.handleNewSelection();
+
         pickedContent = (PickedContentView) bottomComponents;
     }
 

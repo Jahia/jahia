@@ -40,16 +40,10 @@
 
 package org.jahia.services.content.rules;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 import org.drools.spi.KnowledgeHelper;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.NodeType;
 
 /**
  * Represents a deleted node fact.
@@ -61,23 +55,12 @@ public class DeletedNodeFact implements NodeFact {
     private String path;
     private String identifier;
     private JCRSessionWrapper session;
-    private String name;
+
     private AddedNodeFact parent;
 
-    private String workspace;
-    private List<String> types;
-    
     public DeletedNodeFact(AddedNodeFact nodeWrapper, KnowledgeHelper drools) throws RepositoryException {
         path = nodeWrapper.getPath();
-        JCRNodeWrapper node = nodeWrapper.getNode();
-        workspace = node.getSession().getWorkspace().getName();
-
-        // collect types
-        types = new ArrayList<String>();
-        recurseOnTypes(types, node.getPrimaryNodeType());
-        recurseOnTypes(types, node.getMixinNodeTypes());
-        
-        node.remove();
+        nodeWrapper.getNode().remove();
         drools.retract(nodeWrapper);
 
         // should also retract properties and subnodes
@@ -86,8 +69,6 @@ public class DeletedNodeFact implements NodeFact {
     public DeletedNodeFact(AddedNodeFact parent, String path) throws RepositoryException {
         this.parent = parent;
         this.path = path;
-        this.name = StringUtils.substringAfterLast(path,"/");
-        workspace = parent.getNode().getSession().getWorkspace().getName();
     }
 
     public String toString() {
@@ -116,24 +97,5 @@ public class DeletedNodeFact implements NodeFact {
 
     public void setSession(JCRSessionWrapper session) {
         this.session = session;
-    }
-
-    public String getWorkspace() throws RepositoryException {
-        return workspace;
-    }
-    
-    public String getName() {
-        return name;
-    }
-    
-    public List<String> getTypes() throws RepositoryException {
-        return types;
-    }
-
-    private void recurseOnTypes(List<String> res, NodeType... nt) {
-        for (NodeType nodeType : nt) {
-            if (!res.contains(nodeType.getName())) res.add(nodeType.getName());
-            recurseOnTypes(res,nodeType.getSupertypes());
-        }
     }
 }

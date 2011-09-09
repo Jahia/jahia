@@ -52,12 +52,11 @@ import java.util.Collection;
  * Time: 2:53:01 PM
  * 
  */
-public class GWTJahiaGroup extends GWTJahiaValueDisplayBean implements GWTJahiaPrincipal {
+public class GWTJahiaGroup extends BaseModelData implements GWTJahiaPrincipal {
     public GWTJahiaGroup() {
     }
 
-    public GWTJahiaGroup(String groupName, String groupKey, String displayableName) {
-        super(groupKey, displayableName);
+    public GWTJahiaGroup(String groupName, String groupKey) {
         setGroupname(groupName);
         setGroupKey(groupKey) ;
     }

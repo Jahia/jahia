@@ -83,8 +83,9 @@ public class WorkflowTabItem extends EditEngineTabItem {
     private transient GWTJahiaWorkflowDefinition previousSelection = null;
     private transient Map<GWTJahiaWorkflowType, List<GWTJahiaWorkflowDefinition>> workflowRules;
 
-    public WorkflowTabItem() {
+    @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
         setHandleCreate(false);
+        return super.create(engineTab,engine);
     }
 
     @Override

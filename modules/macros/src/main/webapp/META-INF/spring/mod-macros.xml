@@ -4,7 +4,6 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
     <bean name="MacrosFilter" class="org.jahia.modules.macros.filter.MacrosFilter">
         <property name="priority" value="1" />
-        <property name="description" value="Render filter that searches for known macros in the generated HTML output and evaluates them"/>
         <property name="applyOnConfigurations" value="page" />
         <property name="applyOnTemplateTypes" value="html" />
         <property name="macrosRegexp"><value>##([a-zA-Z0-9_]*)(\(([^"]*)(\s*,\s*[^"]*)*\))?##</value></property>

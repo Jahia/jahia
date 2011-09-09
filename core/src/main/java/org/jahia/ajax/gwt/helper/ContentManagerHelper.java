@@ -40,15 +40,10 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import static org.jahia.api.Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT;
-import static org.jahia.api.Constants.MARKED_FOR_DELETION_LOCK_TYPE;
-import static org.jahia.api.Constants.MARKED_FOR_DELETION_LOCK_USER;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -73,7 +68,6 @@ import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.quartz.JobDataMap;
@@ -83,7 +77,6 @@ import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.query.Query;
 import javax.jcr.security.Privilege;
-
 import java.io.*;
 import java.util.*;
 import java.util.zip.ZipEntry;
@@ -500,14 +493,14 @@ public class ContentManagerHelper {
             JCRSiteNode targetSite = targetNode.getResolveSite();
             if (!sourceSite.equals(targetSite)) {
                 JCRSessionWrapper session = node.getSession();
-                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:template] as t where isdescendantnode(t, ['" + sourceSite.getPath() + "/templates'])", Query.JCR_SQL2);
+                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:template] as t where isdescendantnode(t, ['"+sourceSite.getPath() + "/templates'])", Query.JCR_SQL2);
                 NodeIterator ni = q.execute().getNodes();
                 while (ni.hasNext()) {
                     JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
                     try {
                         session.getUuidMapping().put(next.getIdentifier(), session.getNode(targetSite.getPath() + StringUtils.substringAfter(next.getPath(), sourceSite.getPath())).getIdentifier());
                     } catch (RepositoryException e) {
-                        logger.debug("No matching template for copy", e);
+                        logger.debug("No matching template for copy",e);
                     }
                 }
             }
@@ -516,7 +509,7 @@ public class ContentManagerHelper {
         return targetNode.getNode(name);
     }
 
-    public void deletePaths(List<String> paths, boolean permanentlyDelete, String comment, JahiaUser user, JCRSessionWrapper currentUserSession)
+    public void deletePaths(List<String> paths, JahiaUser user, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
         for (String path : paths) {
@@ -524,26 +517,17 @@ public class ContentManagerHelper {
             try {
                 nodeToDelete = currentUserSession.getNode(path);
                 if (!user.isRoot() && nodeToDelete.isLocked() && !nodeToDelete.getLockOwner().equals(user.getUsername())) {
-                    if (nodeToDelete.isNodeType(JAHIAMIX_MARKED_FOR_DELETION_ROOT) && nodeToDelete.hasPermission(Privilege.JCR_REMOVE_NODE)) {
-                        nodeToDelete.unmarkForDeletion();
-                    } else {
-                        missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - locked by ")
+                    missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - locked by ")
                             .append(nodeToDelete.getLockOwner()).toString());
-                    }
                 }
                 if (!nodeToDelete.hasPermission(Privilege.JCR_REMOVE_NODE)) {
                     missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - ACCESS DENIED").toString());
                 } else if (!getRecursedLocksAndFileUsages(nodeToDelete, missedPaths, user.getUsername())) {
-                    if (!permanentlyDelete && supportsMarkingForDeletion(nodeToDelete)) {
-                        nodeToDelete.markForDeletion(comment);
-                    } else {
-                        if (!nodeToDelete.getParent().isCheckedOut()) {
-                            nodeToDelete.getParent().checkout();
-                        }
-
-                        nodeToDelete.remove();
+                    if (!nodeToDelete.getParent().isCheckedOut()) {
+                        nodeToDelete.getParent().checkout();
                     }
 
+                    nodeToDelete.remove();
                     nodeToDelete.saveSession();
                 }
             } catch (PathNotFoundException e) {
@@ -559,48 +543,12 @@ public class ContentManagerHelper {
             }
         }
         if (missedPaths.size() > 0) {
-            StringBuilder errors = new StringBuilder(JahiaResourceBundle.getJahiaInternalResource("label.error.nodes.not.deleted", currentUserSession.getLocale(), "The following nodes could not be deleted:"));
+            StringBuilder errors = new StringBuilder(JahiaResourceBundle.getJahiaInternalResource("label.error.nodes.not.deleted", currentUserSession.getLocale()));
             for (String err : missedPaths) {
                 errors.append("\n").append(err);
             }
             throw new GWTJahiaServiceException(errors.toString());
         }
-    }
-
-    public void undeletePaths(List<String> paths, JahiaUser user, JCRSessionWrapper currentUserSession)
-            throws GWTJahiaServiceException {
-        List<String> missedPaths = new ArrayList<String>();
-        for (String path : paths) {
-            JCRNodeWrapper nodeToUndelete = null;
-            try {
-                nodeToUndelete = currentUserSession.getNode(path);
-                if (!nodeToUndelete.hasPermission(Privilege.JCR_REMOVE_NODE)) {
-                    missedPaths.add(new StringBuilder(nodeToUndelete.getPath()).append(" - ACCESS DENIED").toString());
-                } else {
-                    nodeToUndelete.unmarkForDeletion();
-                    nodeToUndelete.saveSession();
-                }
-            } catch (PathNotFoundException e) {
-                missedPaths.add(new StringBuilder(path).append(" could not be accessed : ")
-                        .append(e.toString()).toString());
-            } catch (AccessDeniedException e) {
-                missedPaths.add(new StringBuilder(nodeToUndelete != null ? nodeToUndelete.getPath() : "").append(" - ACCESS DENIED").toString());
-            } catch (RepositoryException e) {
-                logger.error("error", e);
-                throw new GWTJahiaServiceException(e);
-            }
-        }
-        if (missedPaths.size() > 0) {
-            StringBuilder errors = new StringBuilder(JahiaResourceBundle.getJahiaInternalResource("label.error.nodes.not.deleted", currentUserSession.getLocale(), "The following nodes could not be undeleted:"));
-            for (String err : missedPaths) {
-                errors.append("\n").append(err);
-            }
-            throw new GWTJahiaServiceException(errors.toString());
-        }
-    }
-
-    private boolean supportsMarkingForDeletion(JCRNodeWrapper nodeToDelete) throws RepositoryException {
-        return nodeToDelete.canMarkForDeletion();
     }
 
     public void rename(String path, String newName, JCRSessionWrapper currentUserSession)
@@ -723,11 +671,11 @@ public class ContentManagerHelper {
             Map<String, GWTJahiaNodeACE> map = new HashMap<String, GWTJahiaNodeACE>();
 
             JahiaGroupManagerService groupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-            for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext(); ) {
+            for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext();) {
                 String principal = iterator.next();
                 GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
                 ace.setPrincipalType(principal.charAt(0));
-                ace.setPrincipal(principal.substring(2)); // we set this even if we can't lookup the principal
+                ace.setPrincipal(principal.substring(2));
                 if (ace.getPrincipalType() == 'g') {
                     JahiaGroup g = groupManagerService.lookupGroup(node.getResolveSite().getID(), ace.getPrincipal());
                     if (g == null) {
@@ -736,8 +684,6 @@ public class ContentManagerHelper {
                     if (g != null) {
                         ace.setHidden(g.isHidden());
                         ace.setPrincipalKey(g.getGroupKey());
-                        String groupName = PrincipalViewHelper.getDisplayName(g);
-                        ace.setPrincipalDisplayName(groupName);
                     } else {
                         continue;
                     }
@@ -745,8 +691,6 @@ public class ContentManagerHelper {
                     JahiaUser u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal());
                     if (u != null) {
                         ace.setPrincipalKey(u.getUserKey());
-                        String userName = PrincipalViewHelper.getDisplayName(u);
-                        ace.setPrincipalDisplayName(userName);
                     } else {
                         continue;
                     }
@@ -786,7 +730,7 @@ public class ContentManagerHelper {
 
             if (aclInheritanceBreak) {
                 m = node.getParent().getAclEntries();
-                for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext(); ) {
+                for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext();) {
                     String principal = iterator.next();
                     GWTJahiaNodeACE ace = map.get(principal);
                     if (ace == null) {
@@ -794,7 +738,7 @@ public class ContentManagerHelper {
                         map.put(principal, ace);
                         aces.add(ace);
                         ace.setPrincipalType(principal.charAt(0));
-                        ace.setPrincipal(principal.substring(2)); // we set this even if we can't lookup the principal
+                        ace.setPrincipal(principal.substring(2));
                         if (ace.getPrincipalType() == 'g') {
                             JahiaGroup g = groupManagerService.lookupGroup(node.getResolveSite().getID(),
                                     ace.getPrincipal());
@@ -803,8 +747,6 @@ public class ContentManagerHelper {
                             }
                             if (g != null) {
                                 ace.setHidden(g.isHidden());
-                                String groupName = PrincipalViewHelper.getDisplayName(g);
-                                ace.setPrincipalDisplayName(groupName);
                             }
                         }
                         ace.setPermissions(new HashMap<String, Boolean>());
@@ -876,7 +818,7 @@ public class ContentManagerHelper {
     private boolean getRecursedLocksAndFileUsages(JCRNodeWrapper nodeToDelete, List<String> lockedNodes,
                                                   String username) throws GWTJahiaServiceException {
         try {
-            for (NodeIterator iterator = nodeToDelete.getNodes(); iterator.hasNext(); ) {
+            for (NodeIterator iterator = nodeToDelete.getNodes(); iterator.hasNext();) {
                 JCRNodeWrapper child = (JCRNodeWrapper) iterator.next();
                 getRecursedLocksAndFileUsages(child, lockedNodes, username);
                 if (lockedNodes.size() >= 10) {
@@ -885,11 +827,8 @@ public class ContentManagerHelper {
                 }
             }
             if (nodeToDelete.isLocked() && !nodeToDelete.getLockOwner().equals(username)) {
-                Set<JCRNodeLockType> lockTypes = JCRContentUtils.getLockTypes(nodeToDelete.getLockInfos());
-                if (lockTypes.size() != 1 || !lockTypes.contains(JCRNodeLockType.DELETION)) {
-                    lockedNodes.add(new StringBuilder(nodeToDelete.getPath()).append(" - locked by ")
-                            .append(nodeToDelete.getLockOwner()).toString());
-                }
+                lockedNodes.add(new StringBuilder(nodeToDelete.getPath()).append(" - locked by ")
+                        .append(nodeToDelete.getLockOwner()).toString());
             }
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
@@ -899,14 +838,19 @@ public class ContentManagerHelper {
 
     public void clearAllLocks(String path, boolean processChildNodes, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
+            JCRNodeWrapper node = currentUserSession.getNode(path);
             if (currentUserSession.getUser().isRoot()) {
-                JCRContentUtils.clearAllLocks(path, processChildNodes, currentUserSession);
+                node.clearAllLocks();
+                for (NodeIterator iterator = node.getNodes(); iterator.hasNext() && processChildNodes;) {
+                    JCRNodeWrapper child = (JCRNodeWrapper) iterator.next();
+                    clearAllLocks(child.getPath(),processChildNodes,currentUserSession);
+                }
             } else {
-                logger.error("Error when clearing all locks on node " + path);
+                logger.error("Error when clearing all locks on node " + node.getPath());
                 throw new GWTJahiaServiceException("Error when clearing all locks on node " + path + " with user " + currentUserSession.getUser().getUserKey());
             }
         } catch (RepositoryException e) {
-            logger.error("Repository error when clearing all locks on node " + path, e);
+            logger.error("Repository error when clearing all locks on node " + path,e);
             throw new GWTJahiaServiceException("Error when clearing all locks on node " + path + " with user " + currentUserSession.getUser().getUserKey());
         }
     }
@@ -1045,7 +989,7 @@ public class ContentManagerHelper {
             throws GWTJahiaServiceException {
         try {
             ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployTemplates(templatesPath, sitePath, currentUserSession.getUser().getUsername());
-            cacheHelper.flush(sitePath, true);
+            cacheHelper.flush(sitePath,true);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -1062,12 +1006,12 @@ public class ContentManagerHelper {
                 session.save();
                 templateSet.setProperty("j:siteType", siteType);
                 templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
-                templateSet.setProperty("j:title", key);
+                templateSet.setProperty("j:title",key);
 
                 String skeletons = MODULE_SKELETONS.replace("${type}", siteType);
                 HashMap<String, String> replacements = new HashMap<String, String>();
                 replacements.put("SITEKEY_PLACEHOLDER", shortName);
-                JCRContentUtils.importSkeletons(skeletons, "/templateSets", session, replacements);
+                JCRContentUtils.importSkeletons(skeletons, "/templateSets" , session, replacements);
 //                if (isTemplatesSet) {
 //                    templateSet.getNode("templates/base").setProperty("j:view", shortName);
 //                }
@@ -1087,7 +1031,7 @@ public class ContentManagerHelper {
 
                 List<GWTJahiaNode> result = copy(Arrays.asList("/templateSets/" + baseSet), "/templateSets", shortName, false, false, false, false, session);
                 siteType = session.getNode("/templateSets/" + baseSet).getProperty("j:siteType").getValue().getString();
-                session.getNode("/templateSets/" + shortName).setProperty("j:title", key);
+                session.getNode("/templateSets/" + shortName).setProperty("j:title",key);
 
                 boolean isTemplatesSet = "templatesSet".equals(siteType);
 
@@ -1269,48 +1213,4 @@ public class ContentManagerHelper {
         }
     }
 
-
-    public void saveVisibilityConditions(GWTJahiaNode node, List<GWTJahiaNode> conditions, JCRSessionWrapper session) throws GWTJahiaServiceException {
-        try {
-            JCRNodeWrapper parent = session.getNode(node.getPath());
-
-            if (!conditions.isEmpty() && !parent.hasNode(VisibilityService.NODE_NAME)) {
-                parent.addNode(VisibilityService.NODE_NAME, "jnt:conditionalVisibility");
-            }
-
-            String path = node.getPath() + "/" + VisibilityService.NODE_NAME;
-
-            for (GWTJahiaNode condition : conditions) {
-                List<GWTJahiaNodeProperty> props = (List<GWTJahiaNodeProperty>) condition.get("gwtproperties");
-                if (condition.get("new-node") != null) {
-                    GWTJahiaNode n = createNode(path, condition.getName(), condition.getNodeTypes().get(0), new ArrayList<String>(), props, session);
-                    condition.setUUID(n.getUUID());
-                    condition.setPath(n.getPath());
-                } else {
-                    JCRNodeWrapper jcrCondition = session.getNode(condition.getPath());
-                    properties.setProperties(jcrCondition, props);
-                }
-            }
-            session.save();
-            for (GWTJahiaNode condition : conditions) {
-                if (condition.get("node-removed") != null) {
-                    JCRNodeWrapper jcrCondition = session.getNode(condition.getPath());
-                    jcrCondition.remove();
-                }
-            }
-
-            if (parent.hasNode(VisibilityService.NODE_NAME)) {
-                JCRNodeWrapper wrapper = parent.getNode(VisibilityService.NODE_NAME);
-                if (node.get("node-visibility-forceMatchAllConditions") != null) {
-                    wrapper.setProperty("j:forceMatchAllConditions", (Boolean) node.get("node-visibility-forceMatchAllConditions"));
-                }
-                if (!wrapper.hasNodes()) {
-                    wrapper.markForDeletion("");
-                }
-            }
-            session.save();
-        } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(e);
-        }
-    }
 }

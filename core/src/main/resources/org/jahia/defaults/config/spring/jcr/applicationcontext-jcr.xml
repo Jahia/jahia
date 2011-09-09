@@ -82,7 +82,6 @@
                 <entry key="jnt:portletPreference"
                        value="org.jahia.services.applications.pluto.JahiaPortletPreference"/>
                 <entry key="jnt:user" value="org.jahia.services.content.decorator.JCRUserNode"/>
-                <entry key="jnt:group" value="org.jahia.services.content.decorator.JCRGroupNode"/>
             </map>
         </property>
         <property name="listeners">
@@ -112,18 +111,6 @@
                                     <entry key="notificationService"
                                            value-ref="org.jahia.services.content.rules.RulesNotificationService"/>
                                 </map>
-                            </property>
-                            <property name="filesAccepted">
-                                <list value-type="java.lang.String">
-                                    <value type="java.lang.String">rules.drl</value>
-                                    <value type="java.lang.String">default-rules.drl</value>
-                                </list>
-                            </property>
-                            <property name="operationTypes">
-                                <list value-type="java.lang.Integer">
-                                    <value type="java.lang.Integer">1</value>
-                                    <value type="java.lang.Integer">13</value>
-                                </list>
                             </property>
                         </bean>
                         <bean class="org.jahia.services.content.textextraction.TextExtractionListener">
@@ -161,48 +148,6 @@
                                     <entry key="extractionService"
                                            value-ref="org.jahia.services.content.rules.ExtractionService"/>
                                 </map>
-                            </property>
-                            <property name="filesAccepted">
-                                <list value-type="java.lang.String">
-                                    <value type="java.lang.String">rules.drl</value>
-                                </list>
-                            </property>
-                            <property name="operationTypes">
-                                <list value-type="java.lang.Integer">
-                                    <value type="java.lang.Integer">1</value>
-                                    <value type="java.lang.Integer">13</value>
-                                </list>
-                            </property>
-                        </bean>
-                        <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
-                            <property name="ruleFiles">
-                                <set/>
-                            </property>
-
-                            <property name="serverId" value="${cluster.node.serverId}"/>
-                            <property name="globalObjects">
-                                <map>
-                                    <entry key="service" value-ref="org.jahia.services.content.rules.Service"/>
-                                    <entry key="imageService"
-                                           value-ref="org.jahia.services.content.rules.ImageService"/>
-                                    <entry key="extractionService"
-                                           value-ref="org.jahia.services.content.rules.ExtractionService"/>
-                                    <entry key="notificationService"
-                                           value-ref="org.jahia.services.content.rules.RulesNotificationService"/>
-                                </map>
-                            </property>
-                            <property name="filesAccepted">
-                                <list value-type="java.lang.String">
-                                    <value type="java.lang.String">live-rules.drl</value>
-                                </list>
-                            </property>
-                            <property name="availableDuringPublish" value="true"/>
-                            <property name="operationTypes">
-                                <list value-type="java.lang.Integer">
-                                    <value type="java.lang.Integer">1</value>
-                                    <value type="java.lang.Integer">13</value>
-                                    <value type="java.lang.Integer">4</value>
-                                </list>
                             </property>
                         </bean>
                         <bean class="org.jahia.services.content.files.FileCacheListener">
@@ -253,8 +198,10 @@
     <bean id="jcrPublicationService" class="org.jahia.services.content.JCRPublicationService"
           factory-method="getInstance">
         <property name="sessionFactory" ref="jcrSessionFactory"/>
+        <property name="jcrVersionService" ref="jcrVersionService"/>
         <property name="loggingService" ref="loggingService"/>
     </bean>
+
 
     <bean id="jackrabbit" class="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository"
           init-method="start" destroy-method="stop" depends-on="JahiaTemplateManagerService">
@@ -372,7 +319,6 @@
     <bean id="JcrSessionFilter" class="org.jahia.bin.filters.jcr.JcrSessionFilter">
         <property name="authPipeline" ref="authPipeline"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
-        <property name="schedulerService" ref="SchedulerService"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>
 
@@ -393,55 +339,4 @@
         <value>j:lockTypes</value>
         <value>j:processId</value>
     </util:set>
-    
-    <util:map id="ImportDefinitionsMappingMetadata">
-        <entry key="jahia:defaultCategory">
-            <bean class="org.jahia.services.importexport.DefinitionsMapping$PropertyMapping">
-                <constructor-arg index="0" value="jahia:defaultCategory"/>
-                <constructor-arg index="1" value="jmix:categorized|j:defaultCategory"/>
-            </bean>
-        </entry>
-        <entry key="jahia:keywords">
-            <bean class="org.jahia.services.importexport.DefinitionsMapping$PropertyMapping">
-                <constructor-arg index="0" value="jahia:keywords"/>
-                <constructor-arg index="1" value="jmix:keywords|j:keywords"/>
-            </bean>
-        </entry>
-        <entry key="jahia:description">
-            <bean class="org.jahia.services.importexport.DefinitionsMapping$PropertyMapping">
-                <constructor-arg index="0" value="jahia:description"/>
-                <constructor-arg index="1" value="jmix:description|jcr:description"/>
-            </bean>
-        </entry>
-        <entry key="jahia:createdBy">
-            <bean class="org.jahia.services.importexport.DefinitionsMapping$PropertyMapping">
-                <constructor-arg index="0" value="jahia:createdBy"/>
-                <constructor-arg index="1" value="mix:created|jcr:createdBy"/>
-            </bean>
-        </entry>
-        <entry key="jahia:lastModifiedBy">
-            <bean class="org.jahia.services.importexport.DefinitionsMapping$PropertyMapping">
-                <constructor-arg index="0" value="jahia:lastModifiedBy"/>
-                <constructor-arg index="1" value="mix:lastModified|jcr:lastModifiedBy"/>
-            </bean>
-        </entry>
-        <entry key="jahia:lastPublishingDate">
-            <bean class="org.jahia.services.importexport.DefinitionsMapping$PropertyMapping">
-                <constructor-arg index="0" value="jahia:lastPublishingDate"/>
-                <constructor-arg index="1" value="jmix:lastPublished|j:lastPublished"/>
-            </bean>
-        </entry>
-        <entry key="jahia:lastPublisher">
-            <bean class="org.jahia.services.importexport.DefinitionsMapping$PropertyMapping">
-                <constructor-arg index="0" value="jahia:lastPublisher"/>
-                <constructor-arg index="1" value="jmix:lastPublished|j:lastPublishedBy"/>
-            </bean>
-        </entry>
-        <entry key="jahia:ruleSettings">
-            <bean class="org.jahia.services.importexport.DefinitionsMapping$PropertyMapping">
-                <constructor-arg index="0" value="jahia:ruleSettings"/>
-                <constructor-arg index="1" value="jmix:conditionalVisibility|j:legacyRuleSettings"/>
-            </bean>
-        </entry>
-    </util:map>
 </beans>

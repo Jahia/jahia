@@ -43,7 +43,6 @@ package org.jahia.taglibs.jcr.node;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
-import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.render.RenderContext;
@@ -379,7 +378,7 @@ public class JCRTagUtils {
         }
 
         if (name.length() == 0) {
-            name.append(PrincipalViewHelper.getUserDisplayName(userNode.getName()));
+            name.append(userNode.getName());
         }
 
         return name.toString();

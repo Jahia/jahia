@@ -192,7 +192,7 @@ public class UserGroupSelect extends Window {
         ListStore<GWTJahiaUser> store = new ListStore<GWTJahiaUser>(loader);
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-        columns.add(new ColumnConfig("display", Messages.get("label.username", "User name"), 120));
+        columns.add(new ColumnConfig("userName", Messages.get("label.username", "User name"), 120));
         columns.add(new ColumnConfig("j:lastName", Messages.get("org.jahia.admin.lastName.label", "Last name"), 140));
         columns.add(new ColumnConfig("j:firstName", Messages.get("org.jahia.admin.firstName.label", "First name"), 140));
 //        columns.add(new ColumnConfig("siteName", "Site name", 80));
@@ -272,7 +272,7 @@ public class UserGroupSelect extends Window {
         ListStore<GWTJahiaGroup> store = new ListStore<GWTJahiaGroup>(loader);
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-        columns.add(new ColumnConfig("display", "Group name", 240));
+        columns.add(new ColumnConfig("groupname", "Group name", 240));
         columns.add(new ColumnConfig("siteName", "Site name", 120));
         columns.add(new ColumnConfig("provider", "Provider", 120));
 

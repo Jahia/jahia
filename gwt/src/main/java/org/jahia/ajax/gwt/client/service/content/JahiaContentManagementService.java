@@ -43,7 +43,6 @@ package org.jahia.ajax.gwt.client.service.content;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -92,7 +91,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public GWTEditConfiguration getEditConfiguration(String path, String name) throws GWTJahiaServiceException;
 
-    public PagingLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean showOnlyNodesWithTemplates) throws GWTJahiaServiceException;
+    public PagingLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex) throws GWTJahiaServiceException;
 
     public List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex) throws GWTJahiaServiceException;
 
@@ -128,11 +127,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
      public void clearAllLocks(String path, boolean processChildNodes) throws GWTJahiaServiceException;
 
-    public void deletePaths(List<String> paths) throws GWTJahiaServiceException;
-
-    public void markForDeletion(List<String> paths, String comment) throws GWTJahiaServiceException;
-
-    public void undeletePaths(List<String> path) throws GWTJahiaServiceException;
+    public void deletePaths(List<String> path) throws GWTJahiaServiceException;
 
     public String getAbsolutePath(String path) throws GWTJahiaServiceException;
 
@@ -386,8 +381,6 @@ public interface JahiaContentManagementService extends RemoteService {
 
     List<GWTJahiaNodeType> getNodeTypes(List<String> names) throws GWTJahiaServiceException;
 
-    List<GWTJahiaNodeType> getSubNodeTypes(List<String> names) throws GWTJahiaServiceException;
-
     /**
      * Returns a list of node types with name and label populated that are the
      * sub-types of the specified base type.
@@ -398,12 +391,10 @@ public interface JahiaContentManagementService extends RemoteService {
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type
      */
-    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getContentTypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement) throws GWTJahiaServiceException;
+    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement) throws GWTJahiaServiceException;
 
     GWTJahiaNodeType getWFFormForNodeAndNodeType(String formResourceName)
             throws GWTJahiaServiceException;
-
-    public ModelData getVisibilityInformation(String path) throws GWTJahiaServiceException;
 
     // -------------------------- INNER CLASSES --------------------------
 

@@ -63,7 +63,6 @@ public class PublicationInfo implements Serializable {
     public static final int CONFLICT = 9;
     public static final int MANDATORY_LANGUAGE_VALID = 10;
     public static final int DELETED = 11;
-    public static final int MARKED_FOR_DELETION = 12;
 
     private transient Map<String, List<String>> allUuidsCache = new HashMap<String, List<String>>();
 

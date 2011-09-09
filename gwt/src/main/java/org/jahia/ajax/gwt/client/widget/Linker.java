@@ -54,13 +54,12 @@ import java.util.List;
  *        Created : 23 sept. 2009
  */
 public interface Linker {
-    public final static int REFRESH_ALL = 63;
+    public final static int REFRESH_ALL = 255;
     public final static int REFRESH_MAIN = 1;
     public final static int REFRESH_PAGES = 2;
     public final static int REFRESH_LAST_CONTENT = 4;
     public final static int REFRESH_FOLDERS = 8;
-    public final static int REFRESH_OPEN_FOLDER = 64;
-    public final static int REFRESH_MANAGER = 128;
+
     public final static int REFRESH_DEFINITIONS = 256;
 
     public void loaded();
@@ -71,7 +70,7 @@ public interface Linker {
 
     public void select(Object o);
 
-    public void setSelectPathAfterDataUpdate(List<String> paths);
+    public void setSelectPathAfterDataUpdate(String path);
 
     public LinkerSelectionContext getSelectionContext();
 

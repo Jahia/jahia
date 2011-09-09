@@ -141,14 +141,6 @@
         <property name="titleKey" value="label.showPublicationStatus"/>
     </bean>
 
-    <bean id="Toolbar.Item.ViewVisibilityStatus" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ViewIconStatusActionItem">
-                <property name="type" value="visibility"/>
-            </bean>
-        </property>
-        <property name="titleKey" value="label.showVisibilityStatus"/>
-    </bean>
 
     <bean id="Toolbar.Item.WorkflowStatusAction" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
@@ -276,9 +268,9 @@
 
     <bean id="Toolbar.Item.PreviewAsGuest" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CustomizedPreviewActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchModeActionItem"/>
         </property>
-        <property name="titleKey" value="label.preview.customized"/>
+        <property name="titleKey" value="label.preview.as.guest"/>
         <property name="icon" value="previewAsGuest"/>
         <property name="properties">
             <list>
@@ -777,29 +769,9 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem">
                 <property name="referenceTitleKey" value="label.remove"/>
-                <property name="permanentlyDelete" value="false"/>
             </bean>
         </property>
         <property name="titleKey" value="label.delete"/>
-        <property name="icon" value="delete"/>
-    </bean>
-
-    <bean id="Toolbar.Item.Undelete" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UndeleteActionItem"/>
-        </property>
-        <property name="titleKey" value="label.undelete"/>
-        <property name="icon" value="undelete"/>
-    </bean>
-
-    <bean id="Toolbar.Item.DeletePermanently" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem">
-                <property name="referenceTitleKey" value="label.deletePermanently"/>
-                <property name="permanentlyDelete" value="true"/>
-            </bean>
-        </property>
-        <property name="titleKey" value="label.deletePermanently"/>
         <property name="icon" value="delete"/>
     </bean>
 
@@ -1211,14 +1183,6 @@
         </property>
         <property name="titleKey" value="label.newExternalLink"/>
         <property name="icon" value="newExternalLink"/>
-    </bean>
-
-    <bean id="Toolbar.Item.ShowTrashboard" class="org.jahia.services.uicomponents.bean.toolbar.Item">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ShowTrashboardActionItem"/>
-        </property>
-        <property name="titleKey" value="label.showTrashboard"/>
-        <property name="icon" value="showTrashboard"/>
     </bean>
 
 </beans>

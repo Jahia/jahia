@@ -723,10 +723,4 @@
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
         <function-signature>java.util.List findAllowedNodesForPermission(java.lang.String,org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
     </function>
-    <function>
-        <description>check if the node as a renderable template associated with it (not a view a template).</description>
-        <name>isDisplayable</name>
-        <function-class>org.jahia.services.content.JCRContentUtils</function-class>
-        <function-signature>boolean isADisplayableNode(org.jahia.services.content.JCRNodeWrapper,org.jahia.services.render.RenderContext)</function-signature>
-    </function>
 </taglib>

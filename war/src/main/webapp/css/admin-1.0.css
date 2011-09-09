@@ -1363,9 +1363,6 @@ table.evenOddTable th.lastCol {
     border-right: 0;
 }
 
-table.evenOddTable tr.lastRow td {
-    border-bottom: 1px solid #D4D4D4;
-}
 tr.evenLine {
     background-color: #FFFFFF;
 }

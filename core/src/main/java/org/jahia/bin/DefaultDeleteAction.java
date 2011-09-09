@@ -40,7 +40,6 @@
 
 package org.jahia.bin;
 
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -57,36 +56,21 @@ public class DefaultDeleteAction extends Action {
 
     @Override
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-        JCRNodeWrapper node = session.getNode(urlResolver.getPath());
-        String url = null;
-        
-        String mark = req.getParameter(Render.MARK_FOR_DELETION);
-        if (mark != null && mark.length() > 0) {
-            if (Boolean.valueOf(mark)) {
-                // mark for deletion
-                node.markForDeletion(req.getParameter(Render.MARK_FOR_DELETION_MESSAGE));
-            } else {
-                // unmark the deletion
-                node.unmarkForDeletion();
-            }
-            url = node.getPath();
-        } else {
-            // do node deletion
-            Node parent = node.getParent();
-    
-            if (!parent.isCheckedOut()) {
-                parent.checkout();
-            }
-            if (!node.isCheckedOut()) {
-                node.checkout();
-            }
-            node.remove();
-            url = parent.getPath();
-        }
+        Node node = session.getNode(urlResolver.getPath());
+        Node parent = node.getParent();
 
+        if (!parent.isCheckedOut()) {
+            parent.checkout();
+        }
+        if (!node.isCheckedOut()) {
+            node.checkout();
+        }
+        node.remove();
         session.save();
-        
+        String url = parent.getPath();
+        session.save();
         final String requestWith = req.getHeader("x-requested-with");
+
 
         if (req.getHeader("accept").contains("application/json") && requestWith != null &&
                 requestWith.equals("XMLHttpRequest")) {

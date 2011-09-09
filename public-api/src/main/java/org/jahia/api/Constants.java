@@ -149,7 +149,7 @@ public class Constants {
 
     public static final String JAHIAMIX_REFERENCES_IN_FIELD = "jmix:referencesInField";
     public static final String JAHIA_REFERENCE_IN_FIELD_PREFIX = "j:referenceInField*";
-    
+        
     public static final String JAHIAMIX_TAGGED = "jmix:tagged";
 
     public static final String JAHIAMIX_EXTERNALREFERENCE = "jmix:externalReference";
@@ -253,22 +253,12 @@ public class Constants {
     public static final String JAHIA_SOURCE_TEMPLATE = "j:sourceTemplate";
     public static final String JAHIA_MODULE_TEMPLATE = "j:moduleTemplate";
 
-    public static final String JAHIAMIX_MARKED_FOR_DELETION = "jmix:markedForDeletion";
-    public static final String JAHIAMIX_MARKED_FOR_DELETION_ROOT = "jmix:markedForDeletionRoot";
-    public static final String MARKED_FOR_DELETION_LOCK_TYPE = "deletion";
-    public static final String MARKED_FOR_DELETION_LOCK_USER = " deletion ";
-    public static final String MARKED_FOR_DELETION_USER = "j:deletionUser";
-    public static final String MARKED_FOR_DELETION_DATE = "j:deletionDate";
-    public static final String MARKED_FOR_DELETION_MESSAGE = "j:deletionMessage";
-    
     public static final List<String> forbiddenPropertiesToCopy = Arrays.asList(PROCESSID,JCR_FROZENUUID,
             JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_UUID,JCR_BASEVERSION,JCR_MIXINTYPES,JCR_PRIMARYTYPE,
             JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT, JCR_CREATED, JCR_CREATEDBY, JAHIA_LOCKTYPES,
-            JAHIA_LOCKTOKEN, JCR_LOCKOWNER, JCR_LOCKISDEEP, JAHIA_SOURCE_TEMPLATE, PUBLISHED, MARKED_FOR_DELETION_DATE,
-            MARKED_FOR_DELETION_MESSAGE, MARKED_FOR_DELETION_USER);
+            JAHIA_LOCKTOKEN, JCR_LOCKOWNER, JCR_LOCKISDEEP, JAHIA_SOURCE_TEMPLATE, PUBLISHED);
 
-    public static final List<String> forbiddenMixinToCopy = Arrays.asList(JAHIAMIX_WORKFLOW, JAHIAMIX_MARKED_FOR_DELETION, JAHIAMIX_MARKED_FOR_DELETION_ROOT);
-
+    public static final List<String> forbiddenMixinToCopy = Arrays.asList(JAHIAMIX_WORKFLOW);
     public static final String JCR_LASTLOGINDATE = "lastLoginDate";
     public static final String J_ROLES = "j:roles";
     public static final String JAHIANT_PERMISSION = "jnt:permission";

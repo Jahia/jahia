@@ -43,6 +43,7 @@ package org.jahia.services.content.rules;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.slf4j.Logger;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -86,17 +87,11 @@ public class RulesListener extends DefaultEventListener {
 
     private ThreadLocal<Boolean> inRules = new ThreadLocal<Boolean>();
 
-    private List<File> dslFiles;
-    private Map<String, Object> globalObjects;
-
-    private List<String> filesAccepted;
-    private List<Integer> operationTypes;
+    private List<File> dslFiles = new LinkedList<File>();
+    private Map<String, Object> globalObjects = new LinkedHashMap<String, Object>();
 
     public RulesListener() {
         instances.add(this);
-        dslFiles = new LinkedList<File>();
-        globalObjects = new LinkedHashMap<String, Object>();
-        inRules = new ThreadLocal<Boolean>();
     }
 
     public static RulesListener getInstance(String workspace) {
@@ -111,6 +106,14 @@ public class RulesListener extends DefaultEventListener {
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED +
                 Event.PROPERTY_REMOVED;
+    }
+
+    public int getOperationTypes() {
+        return JCRObservationManager.SESSION_SAVE;
+    }
+
+    public Set<String> getRuleFiles() {
+        return ruleFiles;
     }
 
     private StatelessSession getStatelessSession(Map<String, Object> globals) {
@@ -249,7 +252,7 @@ public class RulesListener extends DefaultEventListener {
 
     public void onEvent(EventIterator eventIterator) {
         int operationType = ((JCREventIterator) eventIterator).getOperationType();
-        if (!operationTypes.contains(operationType)) {
+        if (operationType != JCRObservationManager.SESSION_SAVE && operationType != JCRObservationManager.IMPORT) {
             return;
         }
 
@@ -530,21 +533,5 @@ public class RulesListener extends DefaultEventListener {
 
     public static List<RulesListener> getInstances() {
         return instances;
-    }
-
-    public List<String> getFilesAccepted() {
-        return filesAccepted;
-    }
-
-    public void setFilesAccepted(List<String> fileAccepted) {
-        this.filesAccepted = fileAccepted;
-    }
-
-    public void setOperationTypes(List<Integer> operationTypes) {
-        this.operationTypes = operationTypes;
-    }
-
-    public List<Integer> getOperationTypes() {
-        return operationTypes;
     }
 }

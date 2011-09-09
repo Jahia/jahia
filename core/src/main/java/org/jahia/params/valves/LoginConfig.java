@@ -57,7 +57,7 @@ import org.springframework.context.ApplicationListener;
  * 
  * @author Sergiy Shyrkov
  */
-public class LoginConfig implements ApplicationListener<ContextInitializedEvent> {
+public class LoginConfig implements ApplicationListener<ApplicationEvent> {
 
     private static LoginConfig instance;
     
@@ -88,18 +88,21 @@ public class LoginConfig implements ApplicationListener<ContextInitializedEvent>
         return loginUrlProvider != null ? loginUrlProvider.getLoginUrl(request) : null;
     }
 
-    public void onApplicationEvent(ContextInitializedEvent event) {
-        Map<String, LoginUrlProvider> beansOfType = BeanFactoryUtils.beansOfTypeIncludingAncestors(
-                ((TemplatePackageApplicationContextLoader) event.getSource()).getContext(),
-                LoginUrlProvider.class);
-        if (!beansOfType.isEmpty()) {
-            for (LoginUrlProvider provider : beansOfType.values()) {
-                if (provider.hasCustomLoginUrl()) {
-                    logger.info("Using login URL provider {}", provider);
-                    loginUrlProvider = provider;
-                    return;
+    public void onApplicationEvent(ApplicationEvent event) {
+        if (event instanceof ContextInitializedEvent) {
+            Map<String, LoginUrlProvider> beansOfType = BeanFactoryUtils
+                    .beansOfTypeIncludingAncestors(((TemplatePackageApplicationContextLoader) event
+                            .getSource()).getContext(), LoginUrlProvider.class);
+            if (!beansOfType.isEmpty()) {
+                for (LoginUrlProvider provider : beansOfType.values()) {
+                    if (provider.hasCustomLoginUrl()) {
+                        logger.info("Using login URL provider {}", provider);
+                        loginUrlProvider = provider;
+                        return;
+                    }
                 }
             }
+
         }
     }
 }

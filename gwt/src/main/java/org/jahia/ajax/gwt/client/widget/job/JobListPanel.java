@@ -291,6 +291,7 @@ public class JobListPanel extends LayoutContainer {
         service.getAllJobGroupNames(new BaseAsyncCallback<List<String>>() {
 
             public void onSuccess(List<String> groupNames) {
+                //To change body of implemented methods use File | Settings | File Templates.
                 for (String groupName : groupNames) {
                     final CheckMenuItem groupActivated = new CheckMenuItem(Messages.get("label." + groupName + ".task", groupName));
                     groupActivated.setStateId(groupName);
@@ -302,6 +303,7 @@ public class JobListPanel extends LayoutContainer {
                     groupActivated.addListener(Events.CheckChange, new Listener<MenuEvent>() {
 
                         public void handleEvent(MenuEvent be) {
+                            //To change body of implemented methods use File | Settings | File Templates.
                             String groupName = groupActivated.getStateId();
                             if (groupActivated.isChecked()) {
                                 if (!activeGroupNames.contains(groupName)) {

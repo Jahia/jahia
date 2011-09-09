@@ -43,10 +43,6 @@ package org.jahia.ajax.gwt.commons.server.rpc;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
-import org.jahia.api.Constants;
-import org.jahia.services.usermanager.jcr.JCRUser;
-import org.jahia.settings.SettingsBean;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
@@ -103,8 +99,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                 GWTJahiaUser data;
                 while (iterator.hasNext()) {
                     user = (JahiaUser) iterator.next();
-                    String userName = PrincipalViewHelper.getDisplayName(user);
-                    data = new GWTJahiaUser(user.getUsername(), user.getUserKey(), userName);
+                    data = new GWTJahiaUser(user.getUsername(), user.getUserKey());
                     Properties p = user.getProperties();
                     for (Object o : p.keySet()) {
                         data.set((String) o, p.get(o));
@@ -149,8 +144,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                     while (iterator.hasNext()) {
                         group = (JahiaGroup) iterator.next();
                         if (!group.isHidden()) {
-                            String groupName = PrincipalViewHelper.getDisplayName(group);
-                            data = new GWTJahiaGroup(group.getGroupname(), group.getGroupKey(), groupName);
+                            data = new GWTJahiaGroup(group.getGroupname(), group.getGroupKey());
                             if (group.getSiteID() > 0) {
                                 JahiaSite jahiaSite = sitesService.getSite(group.getSiteID());
                                 if (jahiaSite != null) {

@@ -64,7 +64,6 @@ import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +85,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void getEditConfiguration(String path, String name, AsyncCallback<GWTEditConfiguration> async);
 
-    public void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean showOnlyNodesWithTemplates, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async) throws GWTJahiaServiceException;
+    public void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async) throws GWTJahiaServiceException;
 
     void getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, AsyncCallback<List<GWTJahiaNode>> async);
 
@@ -122,11 +121,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void clearAllLocks(String path, boolean processChildNodes, AsyncCallback async);
 
-    void deletePaths(List<String> paths, AsyncCallback async);
-
-    void markForDeletion(List<String> paths, String comment, AsyncCallback async);
-
-    void undeletePaths(List<String> path, AsyncCallback async);
+    void deletePaths(List<String> path, AsyncCallback async);
 
     void getAbsolutePath(String path, AsyncCallback<String> async);
 
@@ -331,13 +326,8 @@ public interface JahiaContentManagementServiceAsync {
 
     void getNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
 
-    void getSubNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
-
-    void getContentTypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement, AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>> async);
+    void getSubNodetypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement, AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>> async);
 
     void getWFFormForNodeAndNodeType(String formResourceName,
                                      AsyncCallback<GWTJahiaNodeType> asyncCallback);
-
-    void getVisibilityInformation(String path, AsyncCallback<ModelData> asyncCallback);
-
 }

@@ -37,7 +37,6 @@
     <bean name="NavigationHelper" class="org.jahia.ajax.gwt.helper.NavigationHelper">
         <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="jcrVersionService" ref="jcrVersionService"/>
-        <property name="visibilityService" ref="visibilityService"/>
         <property name="languages" ref="LanguagesHelper"/>
         <property name="publication" ref="PublicationHelper"/>
         <property name="workflow" ref="WorkflowHelper"/>

@@ -180,14 +180,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean disableJsessionIdParameter = true;
     private String jsessionIdParameterName = "jsessionid";
 
-    private String guestUserResourceModuleName;
-    private String guestUserResourceKey;
-
-    private String guestGroupResourceModuleName;
-    private String guestGroupResourceKey;
-    
     private boolean fileServletStatisticsEnabled;
-
+    
     /**
      * Default constructor.
      *
@@ -339,12 +333,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             disableJsessionIdParameter = getBoolean("disableJsessionIdParameter", true);
             jsessionIdParameterName = getString("jsessionIdParameterName", "jsessionid");
 
-            guestUserResourceModuleName = getString("guestUserResourceModuleName");
-            guestUserResourceKey = getString("guestUserResourceKey");
-
-            guestGroupResourceModuleName = getString("guestGroupResourceModuleName");
-            guestGroupResourceKey = getString("guestGroupResourceKey");
-            
             fileServletStatisticsEnabled = getBoolean("jahia.fileServlet.statisticsEnabled", false);
 
             settings.put("userManagementUserNamePattern", getString(
@@ -356,7 +344,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                     getString("default_templates_set"));
 
             settings.put("templates.modules.onError", getString("templates.modules.onError", "compact"));
-            
+
             settings.setFast(true);
             // If cluster is activated then try to expose some properties as system properties for JGroups
             boolean clusterActivated = getBoolean("cluster.activated",false);
@@ -833,30 +821,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public void setJsessionIdParameterName(String jsessionIdParameterName) {
         this.jsessionIdParameterName = jsessionIdParameterName;
-    }
-
-    public String getGuestUserResourceKey() {
-        return guestUserResourceKey;
-    }
-
-    public String getGuestUserResourceModuleName() {
-        return guestUserResourceModuleName;
-    }
-
-    public String getGuestGroupResourceModuleName() {
-        return guestGroupResourceModuleName;
-    }
-
-    public void setGuestGroupResourceModuleName(String guestGroupResourceModuleName) {
-        this.guestGroupResourceModuleName = guestGroupResourceModuleName;
-    }
-
-    public String getGuestGroupResourceKey() {
-        return guestGroupResourceKey;
-    }
-
-    public void setGuestGroupResourceKey(String guestGroupResourceKey) {
-        this.guestGroupResourceKey = guestGroupResourceKey;
     }
 
     /**

@@ -634,10 +634,6 @@ public class JCRSessionWrapper implements Session {
     public JahiaUser getAliasedUser() {
         return sessionFactory.getCurrentAliasedUser();
     }
-
-    public Calendar getPreviewDate() {
-        return sessionFactory.getCurrentPreviewDate();
-    }
     /**
      * Generates a document view export using a {@link org.apache.jackrabbit.commons.xml.DocumentViewExporter}
      * instance.

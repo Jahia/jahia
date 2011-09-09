@@ -8,7 +8,6 @@
         <property name="choiceListInitializers" ref="choiceListInitializers"/>
         <property name="staticAssetMapping" ref="org.jahia.services.render.StaticAssetMappingRegistry"/>
         <property name="workflowService" ref="workflowService"/>
-        <property name="visibilityService" ref="visibilityService"/>
 	</bean>
 
     <bean name="managerEditorConfigurerModules" class="org.springframework.beans.factory.config.CustomEditorConfigurer">

@@ -41,11 +41,6 @@
 package org.jahia.utils;
 
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Convenient date utility methods.
@@ -54,35 +49,10 @@ import org.apache.commons.lang.StringUtils;
  */
 public final class DateUtils {
 
-    private static final Map<String, Integer> DAYS;
     /** Default date pattern */
     public static final String DEFAULT_DATE_FORMAT = "dd.MM.yyyy";
-
     /** Default datetime pattern */
     public static final String DEFAULT_DATETIME_FORMAT = "dd.MM.yyyy HH:mm";
-
-    static {
-        DAYS = new HashMap<String, Integer>(7);
-        DAYS.put("monday", Calendar.MONDAY);
-        DAYS.put("tuesday", Calendar.TUESDAY);
-        DAYS.put("wednesday", Calendar.WEDNESDAY);
-        DAYS.put("thursday", Calendar.THURSDAY);
-        DAYS.put("friday", Calendar.FRIDAY);
-        DAYS.put("saturday", Calendar.SATURDAY);
-        DAYS.put("sunday", Calendar.SUNDAY);
-        DAYS.put("mon", Calendar.MONDAY);
-        DAYS.put("tue", Calendar.TUESDAY);
-        DAYS.put("wed", Calendar.WEDNESDAY);
-        DAYS.put("thu", Calendar.THURSDAY);
-        DAYS.put("fri", Calendar.FRIDAY);
-        DAYS.put("sat", Calendar.SATURDAY);
-        DAYS.put("sun", Calendar.SUNDAY);
-    }
-
-    public static String convertDayOfWeekToCron(Object dayOfWeek) {
-        System.out.println("object" + dayOfWeek);
-        return "test";
-    }
 
     /**
      * Returns the end of the day (23:59:59:999) for today.
@@ -119,7 +89,7 @@ public final class DateUtils {
     public static Calendar dayStart() {
         return dayStart(Calendar.getInstance());
     }
-    
+
     /**
      * Returns the start of the day (00:00:00:000) for the specified date.
      * 
@@ -138,48 +108,10 @@ public final class DateUtils {
     }
 
     /**
-     * Returns the {@link Calendar}'s day of week number, which corresponds to the provided day of week string. If the name is unknown,
-     * <code>null</code> is returned.
-     * 
-     * @param dayOfWeek
-     *            the day of week name
-     * @return the {@link Calendar}'s day of week number, which corresponds to the provided day of week string. If the name is unknown,
-     *         <code>null</code> is returned
-     */
-    public static Integer getDayOfWeek(String dayOfWeek) {
-        return dayOfWeek != null ? DAYS.get(dayOfWeek.toLowerCase()) : null;
-    }
-
-    /**
-     * Returns the the end of the day cron expression (Quartz scheduler) for the specified days of week.
-     * 
-     * @param daysOfWeek
-     *            the day of week list
-     * @return the the end of the day cron expression (Quartz scheduler) for the specified days of week
-     */
-    public static String getDayOfWeekEndCron(List<String> daysOfWeek) {
-        return "59 59 23 ? * "
-                + (daysOfWeek != null && !daysOfWeek.isEmpty() ? StringUtils.join(daysOfWeek, ',')
-                        : "*");
-    }
-
-    /**
-     * Returns the the start of the day cron expression (Quartz scheduler) for the specified days of week.
-     * 
-     * @param daysOfWeek
-     *            the day of week list
-     * @return the the start of the day cron expression (Quartz scheduler) for the specified days of week
-     */
-    public static String getDayOfWeekStartCron(List<String> daysOfWeek) {
-        return "1 0 0 ? * "
-                + (daysOfWeek != null && !daysOfWeek.isEmpty() ? StringUtils.join(daysOfWeek, ',')
-                        : "*");
-    }
-
-    /**
      * Initializes an instance of this class.
      */
     private DateUtils() {
         super();
     }
+
 }

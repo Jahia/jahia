@@ -224,7 +224,7 @@ public class EditLinker implements Linker {
 
     }
 
-    public void setSelectPathAfterDataUpdate(List<String> paths) {
+    public void setSelectPathAfterDataUpdate(String path) {
         // todo:implements
     }
 

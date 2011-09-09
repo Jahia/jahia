@@ -42,7 +42,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
-        <version>6.6.0.0-SNAPSHOT</version>
+        <version>6.5.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jahia.modules</groupId>
@@ -70,13 +70,13 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>6.6.0.0-SNAPSHOT</version>
+            <version>6.5.1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-            <version>6.6.0.0-SNAPSHOT</version>
+            <version>6.5.1.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -168,7 +168,6 @@
                 <module>skins</module>
                 <module>tasks</module>
                 <module>templates-system</module>
-                <module>visibility</module>
             </modules>
         </profile>
         <profile>
@@ -193,7 +192,6 @@
                 <module>tags</module>
                 <module>tasks</module>
                 <module>templates-system</module>
-                <module>visibility</module>
             </modules>
         </profile>
     </profiles>

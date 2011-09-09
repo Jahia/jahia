@@ -177,7 +177,6 @@
                 <viewWorkflowTab jcr:primaryType="jnt:permission"/>
                 <viewHistoryTab jcr:primaryType="jnt:permission"/>
                 <viewVersioningTab jcr:primaryType="jnt:permission"/>
-                <viewVisibilityTab jcr:primaryType="jnt:permission"/>
             </engineTabs>
         </editMode>
 

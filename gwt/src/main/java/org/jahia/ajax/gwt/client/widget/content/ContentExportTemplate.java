@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -72,7 +73,6 @@ public class ContentExportTemplate extends Window {
         setHeading(Messages.get("label.export"));
         setSize(500, 150);
         setResizable(false);
-        setId("JahiaGxtContentExportTemplate");
         ButtonBar buttons = new ButtonBar() ;
 
         setModal(true);

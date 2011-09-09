@@ -41,7 +41,6 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import java.io.Serializable;
-import java.util.List;
 
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
@@ -176,7 +175,7 @@ public class SidePanelTabItem implements Serializable {
             ctx.refresh(context);
         }
 
-        public void setSelectPathAfterDataUpdate(List<String> paths) {
+        public void setSelectPathAfterDataUpdate(String path) {
             // do nothing
         }
 

@@ -262,8 +262,8 @@ function invert(source, target, urlbase, callbackId, callbackUrl,callbackJS) {
 
 }
 
-function deleteNode(source, urlbase, callbackId, callbackUrl,callbackJS,markForDeletion,markForDeletionMessage) {
-    $.post(urlbase + source, {"jcrMethodToCall":"delete","jcrMarkForDeletion":markForDeletion,"jcrDeletionMessage":markForDeletionMessage},
+function deleteNode(source, urlbase, callbackId, callbackUrl,callbackJS) {
+    $.post(urlbase + source, {"jcrMethodToCall":"delete"},
         function(result) {
             jreplace(callbackId, callbackUrl,null, callbackJS);
         },

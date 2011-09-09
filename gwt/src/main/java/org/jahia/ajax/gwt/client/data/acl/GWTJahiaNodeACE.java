@@ -61,7 +61,6 @@ public class GWTJahiaNodeACE implements Serializable {
     private Map<String, Boolean> permissions;
     private Map<String, Boolean> inheritedPermissions;
     private boolean hidden = false;
-    private String principalDisplayName;
 
     public GWTJahiaNodeACE() {
     }
@@ -80,7 +79,6 @@ public class GWTJahiaNodeACE implements Serializable {
 
     public void setPrincipal(String principal) {
         this.principal = principal;
-        this.principalDisplayName = principal;
     }
 
     public String getPrincipalKey() {
@@ -131,18 +129,9 @@ public class GWTJahiaNodeACE implements Serializable {
         this.hidden = hidden;
     }
 
-    public String getPrincipalDisplayName() {
-        return principalDisplayName;
-    }
-
-    public void setPrincipalDisplayName(String principalDisplayName) {
-        this.principalDisplayName = principalDisplayName;
-    }
-
     public GWTJahiaNodeACE cloneObject() {
         GWTJahiaNodeACE clone = new GWTJahiaNodeACE();
         clone.setPrincipal(principal);
-        clone.setPrincipalDisplayName(principalDisplayName);
         clone.setPrincipalKey(principalKey);
         clone.setPrincipalType(principalType);
         clone.setInherited(isInherited);

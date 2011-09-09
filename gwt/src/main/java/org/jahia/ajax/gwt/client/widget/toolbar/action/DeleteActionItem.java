@@ -45,13 +45,11 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.MessageBox.MessageBoxType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -64,16 +62,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Action item responsible for deleting the content.
  * 
- * User: toto
- * Date: Sep 25, 2009
- * Time: 6:59:06 PM
- */
+* User: toto
+* Date: Sep 25, 2009
+* Time: 6:59:06 PM
+*/
 public class DeleteActionItem extends BaseActionItem {
-    
-    private boolean permanentlyDelete;
-    
+    public DeleteActionItem() {
+    }
     private String referenceTitleKey;
 
     public void setReferenceTitleKey(String referenceTitleKey) {
@@ -96,6 +92,19 @@ public class DeleteActionItem extends BaseActionItem {
 
                     final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
 
+                    if (lh.getSingleSelection() != null && lh.getSingleSelection().isReference()) {
+                        async.deletePaths(l, new BaseAsyncCallback<Object>() {
+                            public void onApplicationFailure(Throwable throwable) {
+                                Log.error(throwable.getMessage(), throwable);
+                                MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
+                            }
+
+                            public void onSuccess(Object o) {
+                                linker.refresh(EditLinker.REFRESH_ALL);
+                                linker.select(null);
+                            }
+                        });
+                    } else {
                         async.getUsages(l, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
                             public void onSuccess(List<GWTJahiaNodeUsage> result) {
                                 String icon = MessageBox.WARNING;
@@ -155,27 +164,17 @@ public class DeleteActionItem extends BaseActionItem {
                                 if(i>4) {
                                     message+="<br/>.<br/>.<br/>.";
                                 }
-                                if (i > 0) {
-                                    message+="<br/>";
-                                }
-                                if (permanentlyDelete) {
-                                    message+=Messages.get("message.remove.warning","<br/><span style=\"font-style:bold;color:red;\">Warning: this will erase the content definitively from the repository<br/>So it will not be displayed anymore anywere</span>");
-                                } else {
-                                    message += "<br/>" + Messages.get("label.comment","Comment") + ":";
-                                }
+                                message+=Messages.get("message.remove.warning","<br/><span style=\"font-style:bold;color:red;\">Warning: this will erase the content definitively from the repository<br/>So it will not be displayed anymore anywere</span>");
 
-                                final MessageBox box = new MessageBox();
+                                MessageBox box = new MessageBox();
                                 box.setTitle(Messages.get("label.information", "Information"));
                                 box.setMessage(message);
-                                if (!permanentlyDelete) {
-                                    box.setType(MessageBoxType.MULTIPROMPT);
-                                }
                                 box.setButtons(MessageBox.YESNO);
                                 box.setIcon(icon);
                                 box.addCallback(new Listener<MessageBoxEvent>() {
                                     public void handleEvent(MessageBoxEvent be) {
                                         if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
-                                            BaseAsyncCallback<Object> baseAsyncCallback = new BaseAsyncCallback<Object>() {
+                                            async.deletePaths(l, new BaseAsyncCallback<Object>() {
                                                 public void onApplicationFailure(Throwable throwable) {
                                                     Log.error(throwable.getMessage(), throwable);
                                                     MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
@@ -196,12 +195,7 @@ public class DeleteActionItem extends BaseActionItem {
                                                         linker.select(null);
                                                     }
                                                 }
-                                            };
-                                            if (permanentlyDelete) {
-                                                async.deletePaths(l, baseAsyncCallback);
-                                            } else {
-                                                async.markForDeletion(l, box.getTextArea().getValue(), baseAsyncCallback);
-                                            }
+                                            });
                                         }
                                     }
                                 });
@@ -213,6 +207,7 @@ public class DeleteActionItem extends BaseActionItem {
                                 com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
                             }
                         });
+                    }
                 }
             }
         });
@@ -232,32 +227,11 @@ public class DeleteActionItem extends BaseActionItem {
                 updateTitle(getGwtToolbarItem().getTitle() + " : " + selection.get(0).getDisplayName());
             }
         }
-        boolean enabled = selection != null && selection.size() > 0
+        setEnabled(lh.getMultipleSelection() != null
+                && lh.getMultipleSelection().size() > 0
+                && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
                 && !lh.isSecondarySelection()
-                && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions());
-        
-        if (enabled) {
-            if (permanentlyDelete) {
-                for (GWTJahiaNode gwtJahiaNode : selection) {
-                    enabled &= gwtJahiaNode.getAggregatedPublicationInfo().getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED;
-                    if (lh.isLocked()) {
-                        enabled &= gwtJahiaNode.getNodeTypes().contains(
-                                "jmix:markedForDeletionRoot");
-                    }
-                    if (!enabled) {
-                        break;
-                    }
-                }
-            } else {
-                enabled = !lh.isLocked();
-            }
-        }
-
-        setEnabled(enabled);
-    }
-
-    public void setPermanentlyDelete(boolean permanentlyDelete) {
-        this.permanentlyDelete = permanentlyDelete;
+                && !lh.isLocked());
     }
 
 

@@ -53,10 +53,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -82,14 +79,14 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
     private List<GWTColumn> columnList;
     private String autoExpand;
 
-    public static final GridCellRenderer<GWTJahiaNode> ICON_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+    private transient final GridCellRenderer<GWTJahiaNode> ICON_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
                              ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
             return ContentModelIconProvider.getInstance().getIcon(modelData).getHTML();
         }
     };
 
-    public static final GridCellRenderer<GWTJahiaNode> LOCKED_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+    private transient final GridCellRenderer<GWTJahiaNode> LOCKED_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
                              ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
             if (modelData.getLockInfos().containsKey(null) && (modelData.getLockInfos().size() == 1 || modelData.getLockInfos().containsKey(JahiaGWTParameters.getLanguage()))) {
@@ -102,7 +99,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
         }
     };
 
-    public static final GridCellRenderer<GWTJahiaNode> SIZE_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+    private transient final GridCellRenderer<GWTJahiaNode> SIZE_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
                              ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
             if (modelData.getSize() != null) {
@@ -114,7 +111,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
         }
     };
 
-    public static final GridCellRenderer<GWTJahiaNode> DATE_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+    private transient final GridCellRenderer<GWTJahiaNode> DATE_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
                              ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
             Date d = modelData.get(s);
@@ -127,21 +124,20 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
         }
     };
 
-    public static final GridCellRenderer<GWTJahiaNode> PUBLICATION_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+    private transient final GridCellRenderer<GWTJahiaNode> PUBLICATION_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex,
                              ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
             final GWTJahiaPublicationInfo info = node.getAggregatedPublicationInfo();
             HorizontalPanel p = new HorizontalPanel();
-            if (info != null) {
-                Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info.getStatus());
-                p.add(res);
-                return p;
+            Object res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info);
+            if (res instanceof Widget) {
+                p.add((Widget) res);
             }
-            return "";
+            return p;
         }
     };
 
-    public static final GridCellRenderer<GWTJahiaNode> VERSION_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+    private transient final GridCellRenderer<GWTJahiaNode> VERSION_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1,
                              ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
             List<GWTJahiaNodeVersion> versions = gwtJahiaNode.getVersions();
@@ -194,29 +190,6 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
             }
         }
     };
-
-    public static final GridCellRenderer<GWTJahiaNode> NAME_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
-        public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex,
-                             ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
-            Object v = node.get(property);
-            if (node.getNodeTypes().contains("jmix:markedForDeletion")) {
-                v = "<span class=\"markedForDeletion\">" + v + "</span>";
-            }
-            return v;
-        }
-    };
-
-    public static final TreeGridCellRenderer<GWTJahiaNode> NAME_TREEGRID_RENDERER = new TreeGridCellRenderer<GWTJahiaNode>() {
-        @Override
-        protected String getText(TreeGrid<GWTJahiaNode> gwtJahiaNodeTreeGrid, GWTJahiaNode model, String property, int rowIndex, int colIndex) {
-            String v = super.getText(gwtJahiaNodeTreeGrid, model, property, rowIndex, colIndex);
-            if (model.getNodeTypes().contains("jmix:markedForDeletion")) {
-                v = "<span class=\"markedForDeletion\">" + v + "</span>";
-            }
-            return v;
-        }
-    };
-
 
     public NodeColumnConfigList(List<GWTColumn> columnList) {
         this(columnList, false);
@@ -278,10 +251,6 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 col.setFixed(true);
                 col.setId("numberer");
                 col.setDataIndex("index");
-            } else if ("name".equals(column.getKey()) || "displayName".equals(column.getKey())) {
-                col.setRenderer(NAME_RENDERER);
-            } else if(GWTJahiaNode.PRIMARY_TYPE_LABEL.equals(column.getKey())) {
-                col.setMenuDisabled(false);
             }
             add(col);
         }

@@ -200,5 +200,4 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
 
         return allResources;
     }
-
 }

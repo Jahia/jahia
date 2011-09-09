@@ -41,26 +41,19 @@
 package org.jahia.ajax.gwt.client.widget.publication;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflow;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -84,13 +77,6 @@ import java.util.*;
  * Time: 3:32:00 PM
  */
 public class PublicationWorkflow implements CustomWorkflow {
-    public static final List<Integer> STATUS = Arrays.asList(GWTJahiaPublicationInfo.MARKED_FOR_DELETION,
-            GWTJahiaPublicationInfo.MODIFIED,
-            GWTJahiaPublicationInfo.NOT_PUBLISHED,
-            GWTJahiaPublicationInfo.UNPUBLISHED,
-            GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE,
-            GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID);
-
     private List<GWTJahiaPublicationInfo> publicationInfos;
 
     private static final long serialVersionUID = -4916142720074054130L;
@@ -102,59 +88,17 @@ public class PublicationWorkflow implements CustomWorkflow {
         this.publicationInfos = publicationInfos;
     }
 
-    public void initStartWorkflowDialog(GWTJahiaWorkflowDefinition workflow, WorkflowActionDialog dialog) {
-        initDialog(dialog);
+    public List<TabItem> getAdditionalTabs() {
+        List tabs = new ArrayList<TabItem>();
 
-        dialog.getButtonsBar().remove(dialog.getButtonsBar().getItem(0));
-        dialog.getButtonsBar().insert(getBypassWorkflowButton(workflow, dialog), 0);
-        dialog.getButtonsBar().insert(getStartWorkflowButton(workflow, dialog), 0);
-    }
-
-    public void initExecuteActionDialog(GWTJahiaWorkflow workflow, WorkflowActionDialog dialog) {
-        initDialog(dialog);
-    }
-
-    private void initDialog(WorkflowActionDialog dialog) {
         TabItem tab = new TabItem("Publication infos");
         tab.setLayout(new FitLayout());
+        tabs.add(tab);
 
         PublicationStatusGrid g = new PublicationStatusGrid(publicationInfos, true);
         tab.add(g);
 
-        dialog.getTabPanel().add(tab);
-
-        TabItem p = dialog.getTabPanel().getItem(0);
-        LayoutContainer layoutContainer = new LayoutContainer(new RowLayout());
-        layoutContainer.setStyleAttribute("margin","5px");
-
-        Map<Integer, Integer> results = new HashMap<Integer, Integer>();
-        for (GWTJahiaPublicationInfo info : publicationInfos) {
-            Integer status = info.getStatus();
-            if (status == GWTJahiaPublicationInfo.DELETED) {
-                status = GWTJahiaPublicationInfo.MARKED_FOR_DELETION;
-            }
-            if (!results.containsKey(status)) {
-                results.put(status, 1);
-            } else {
-                results.put(status, results.get(status) + 1);
-            }
-        }
-        int i = 0;
-        for (Integer status : STATUS) {
-            if (results.containsKey(status)) {
-                i++;
-                HorizontalPanel h = new HorizontalPanel();
-                h.add(GWTJahiaPublicationInfo.renderPublicationStatusImage(status));
-                final String labelKey = GWTJahiaPublicationInfo.statusToLabel.get(status);
-                h.add(new Text("&nbsp;" + Messages.get("label.publication." + labelKey, labelKey) + " : " +
-                        results.get(status) + " " +
-                        (results.get(status) > 1 ? Messages.get("label.items","Items") : Messages.get("label.item","Item"))));
-                layoutContainer.add(h);
-            }
-        }
-        if (i > 0) {
-            p.add(layoutContainer, new BorderLayoutData(Style.LayoutRegion.NORTH, 10 + i * 15));
-        }
+        return tabs;
     }
 
     public Button getStartWorkflowButton(final GWTJahiaWorkflowDefinition wf, final WorkflowActionDialog dialog) {

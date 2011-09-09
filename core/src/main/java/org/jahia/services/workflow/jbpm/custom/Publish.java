@@ -92,7 +92,7 @@ public class Publish implements ExternalActivityBehaviour {
         jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
         jobDataMap.put(PublicationJob.LOCK, "publication-process-" + execution.getProcessInstance().getId());
 
-        ServicesRegistry.getInstance().getSchedulerService().scheduleJobAtEndOfRequest(jobDetail);
+        ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
         execution.take("to end");
     }
 

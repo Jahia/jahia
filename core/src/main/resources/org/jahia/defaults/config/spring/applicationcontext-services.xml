@@ -212,11 +212,6 @@
     <!--<bean id="ImageService" class="org.jahia.services.image.ImageMagickImageService" factory-method="getInstance" init-method="init">-->
         <!--<property name="imageMagickPath" value="C:\Programs\ImageMagick;C:\Programs\exiftool"/>-->
     <!--</bean>-->
-    <bean id="visibilityService" class="org.jahia.services.visibility.VisibilityService" factory-method="getInstance">
-        <property name="conditions">
-            <map key-type="java.lang.String" value-type="org.jahia.services.visibility.VisibilityConditionRule"/>
-        </property>
-    </bean>
-    
+
     <bean class="org.jahia.tools.patches.GroovyPatcher"/>
 </beans>

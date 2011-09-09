@@ -351,7 +351,7 @@ public class AclEditor {
                     if (ace == null) {
                         ace = new GWTJahiaNodeACE();
                         ace.setPrincipalType('u');
-                        ace.setPrincipal(user.getDisplay());
+                        ace.setPrincipal(user.getUsername());
                         ace.setPrincipalKey(user.getUserKey());
                         ace.setPermissions(new HashMap<String, Boolean>());
                         ace.setInheritedPermissions(new HashMap<String, Boolean>());
@@ -379,7 +379,7 @@ public class AclEditor {
                     if (ace == null) {
                         ace = new GWTJahiaNodeACE();
                         ace.setPrincipalType('g');
-                        ace.setPrincipal(group.getDisplay());
+                        ace.setPrincipal(group.getGroupname());
                         ace.setPrincipalKey(group.getGroupKey());
                         ace.setPermissions(new HashMap<String, Boolean>());
                         ace.setInheritedPermissions(new HashMap<String, Boolean>());
@@ -609,7 +609,7 @@ public class AclEditor {
             return;
         }
         BaseModelData value = new BaseModelData();//Object[3 + available.size()];
-        value.set("principal", ace.getPrincipalDisplayName());
+        value.set("principal", ace.getPrincipal());
 
         String o = ace.getPrincipalType() + ace.getPrincipalKey();
         if (!items.contains(o)) {

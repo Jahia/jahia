@@ -50,8 +50,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
-import java.util.Arrays;
-
 /**
  * User: ktlili
  * Date: 4 d�c. 2008
@@ -98,7 +96,7 @@ public class PortletSaveAsCard extends PortletWizardCard {
         JahiaContentManagementService.App.getInstance().createPortletInstance(path, getGwtJahiaNewPortletInstance(), new BaseAsyncCallback<GWTJahiaNode>() {
             public void onSuccess(GWTJahiaNode result) {
                 if (getLinker() != null) {
-                    getLinker().setSelectPathAfterDataUpdate(Arrays.asList(result.getPath()));
+                    getLinker().setSelectPathAfterDataUpdate(result.getPath());
                     getLinker().refresh(Linker.REFRESH_MAIN);
                 }
                 getPortletWizardWindow().onPortletCreated();

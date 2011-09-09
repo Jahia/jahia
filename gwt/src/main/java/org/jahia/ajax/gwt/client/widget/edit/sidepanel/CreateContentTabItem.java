@@ -103,7 +103,7 @@ class CreateContentTabItem extends SidePanelTabItem {
             contentTypeTree.getStore().removeAll();
 
             JahiaContentManagementService.App.getInstance()
-                    .getContentTypes(baseType != null ? Arrays.asList(baseType.split(" ")) : null, true, displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+                    .getSubNodetypes(baseType != null ? Arrays.asList(baseType.split(" ")) : null, true, displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
                         public void onApplicationFailure(Throwable caught) {
                             MessageBox.alert(Messages.get("label.error", "Error"),
                                     "Unable to load content definitions. Cause: " + caught.getLocalizedMessage(), null);

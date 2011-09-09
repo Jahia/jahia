@@ -52,8 +52,6 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -81,10 +79,6 @@ public class PasteActionItem extends BaseActionItem {
         if (m != null) {
             linker.loading(Messages.get("statusbar.pasting.label"));
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
-            final List<String> copiedPaths = new ArrayList<String>();
-            for (GWTJahiaNode node : copyPasteEngine.getCopiedPaths()) {
-                copiedPaths.add(m.getPath() + "/" + node.getName());
-            }
             JahiaContentManagementService
                     .App.getInstance().paste(JCRClientUtils.getPathesList(copyPasteEngine.getCopiedPaths()), m.getPath(), null, copyPasteEngine.isCut(), new BaseAsyncCallback() {
                 public void onApplicationFailure(Throwable throwable) {
@@ -101,7 +95,6 @@ public class PasteActionItem extends BaseActionItem {
                         }
                     }
                     copyPasteEngine.onPastedPath();
-                    linker.setSelectPathAfterDataUpdate(copiedPaths);
                     linker.loaded();
                     if (refresh) {
                         linker.refresh(EditLinker.REFRESH_ALL);

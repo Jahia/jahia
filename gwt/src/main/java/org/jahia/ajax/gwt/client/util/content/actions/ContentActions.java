@@ -198,9 +198,9 @@ public class ContentActions {
                     }
 
                     public void onSuccess(GWTJahiaNode o) {
-                        linker.setSelectPathAfterDataUpdate(Arrays.asList(o.getPath()));
+                        linker.setSelectPathAfterDataUpdate(o.getPath());
                         linker.loaded();
-                        linker.refresh(Linker.REFRESH_ALL);
+                        linker.refresh(Linker.REFRESH_FOLDERS);
                     }
                 });
             }
@@ -227,7 +227,7 @@ public class ContentActions {
                 linker.loading(Messages.get("statusbar.newfoldering.label"));
                 JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, nodeType, null, null, null, null, new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode o) {
-                        linker.setSelectPathAfterDataUpdate(Arrays.asList(o.getPath()));
+                        linker.setSelectPathAfterDataUpdate(o.getPath());
                         linker.loaded();
                         linker.refresh(EditLinker.REFRESH_ALL);
                     }
@@ -272,7 +272,7 @@ public class ContentActions {
 
     public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, boolean includeSubTypes, final boolean displayStudioElement) {
         if (parent != null && !parent.isFile()) {
-            JahiaContentManagementService.App.getInstance().getContentTypes(nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, includeSubTypes, displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+            JahiaContentManagementService.App.getInstance().getSubNodetypes(nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, includeSubTypes, displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
                 public void onApplicationFailure(Throwable caught) {
                     MessageBox.alert(Messages.get("label.error", "Error"),
                             "Unable to load content definitions for base type '" + nodeTypes + "'. Cause: " + caught.getLocalizedMessage(),

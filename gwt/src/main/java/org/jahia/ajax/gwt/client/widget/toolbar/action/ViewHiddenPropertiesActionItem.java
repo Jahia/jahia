@@ -42,7 +42,6 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 
 /**
@@ -59,7 +58,7 @@ public class ViewHiddenPropertiesActionItem extends BaseActionItem {
     public void onComponentSelection() {
         if (linker instanceof ManagerLinker) {
             ((ManagerLinker) linker).setDisplayHiddenProperties(((CheckMenuItem) getMenuItem()).isChecked());
-            linker.refresh(Linker.REFRESH_ALL);
+            ((ManagerLinker) linker).refresh();
         }
     }
 }

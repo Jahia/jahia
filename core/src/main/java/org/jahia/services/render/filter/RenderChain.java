@@ -41,7 +41,6 @@
 package org.jahia.services.render.filter;
 
 import org.slf4j.Logger;
-import org.apache.commons.collections.list.UnmodifiableList;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
@@ -150,7 +149,7 @@ public class RenderChain {
                 if (filter.areConditionsMatched(renderContext, resource)) {
                 	long timer = System.currentTimeMillis();
                     out = filter.prepare(renderContext, resource, this);
-                    if (resource.getContextConfiguration().equals("page") && logger.isDebugEnabled()) { 
+                    if (logger.isDebugEnabled()) { 
 			logger.debug("{}: prepare filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
                     }
                 }
@@ -160,7 +159,7 @@ public class RenderChain {
                 if (filter.areConditionsMatched(renderContext, resource)) {
                 	long timer = System.currentTimeMillis();
                     out = filter.execute(out, renderContext, resource, this);
-                    if (resource.getContextConfiguration().equals("page") && logger.isDebugEnabled()) { 
+                    if (logger.isDebugEnabled()) { 
                     	logger.debug("{}: execute filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
                     }
                 }
@@ -185,7 +184,7 @@ public class RenderChain {
                     if (filter.areConditionsMatched(renderContext, resource)) {
                     	long timer = System.currentTimeMillis();
                         filter.finalize(renderContext, resource, this);
-                        if (resource.getContextConfiguration().equals("page") && logger.isDebugEnabled()) { 
+                        if (logger.isDebugEnabled()) { 
                         	logger.debug("{}: finalizing filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
                         }
                     }
@@ -214,15 +213,5 @@ public class RenderChain {
 
     public Object getPreviousValue(String key) {
         return oldPropertiesMap.get(key);
-    }
-
-    /**
-     * Returns an unmodifiable view of the list of filters, used by this chain.
-     * 
-     * @return an unmodifiable view of the list of filters, used by this chain
-     */
-    @SuppressWarnings("unchecked")
-    public List<RenderFilter> getFilters() {
-        return UnmodifiableList.decorate(filters);
     }
 }

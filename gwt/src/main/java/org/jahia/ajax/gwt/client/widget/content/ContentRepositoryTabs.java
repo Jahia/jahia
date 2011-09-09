@@ -268,9 +268,9 @@ public class ContentRepositoryTabs extends LeftComponent {
         }
     }
 
-    public void refresh(int flag) {
+    public void refresh() {
         for (RepositoryTab tab : repositories) {
-            tab.refresh(flag);
+            tab.refresh();
         }
     }
 

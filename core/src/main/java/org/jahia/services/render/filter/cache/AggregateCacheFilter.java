@@ -280,7 +280,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         try {
             if (cacheable) {
-                addReferencesToDependencies(resource);
+            	addReferencesToDependencies(resource);
                 String perUser = (String) renderContext.getRequest().getAttribute("perUser");
                 if (perUser != null) {
                     // This content must be cached by user as it is defined in the options panel
@@ -452,7 +452,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    private String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String, Serializable> moduleParams, String areaIdentifier, Stack<String> cacheKeyStack) {
+	private String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String, Serializable> moduleParams, String areaIdentifier, Stack<String> cacheKeyStack) {
         // aggregate content
         Source htmlContent = new Source(cachedContent);
         List<? extends Tag> esiIncludeTags = htmlContent.getAllStartTags("esi:include");

@@ -17,8 +17,7 @@
     <c:param name="files" value="${urlBasePlaceholders}"/>
     <c:param name="base" value="${urlBase}"/>
     <c:param name="root" value="${renderContext.site.path}"/>
-    <c:param name="type" value="content"/>
-    <c:param name="displayablenodeonly" value="true"/>
+    <c:param name="type" value="pages"/>
 </c:url>
 <template:addResources>
 <script type="text/javascript">

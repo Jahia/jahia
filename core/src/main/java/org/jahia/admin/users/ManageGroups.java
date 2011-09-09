@@ -786,8 +786,8 @@ public class ManageGroups extends AbstractAdministrationModule {
                 Principal obj = groupMembersEnum.nextElement();
                 // keep only out member of this jahiaSite...
                 if (obj instanceof JahiaUser) {
-                    JahiaUser grpMembers = (JahiaUser) obj;
-                    groupMembership.add(grpMembers.getUsername()); // Member name
+                    JahiaUser grpMember = (JahiaUser) obj;
+                    groupMembership.add(PrincipalViewHelper.getUserDisplayName(grpMember.getUsername())); // Member name
                     // Look for site name from membership
                     groupMembership.add("jahia server");
                 }

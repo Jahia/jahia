@@ -41,12 +41,7 @@
 package org.jahia.ajax.gwt.commons.server.rpc;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
-import org.jahia.api.Constants;
-import org.jahia.services.usermanager.jcr.JCRUser;
-import org.jahia.settings.SettingsBean;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
@@ -98,12 +93,12 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
             List<GWTJahiaUser> result = new ArrayList<GWTJahiaUser>();
             users = userManagerService.searchUsers(criterias);
             if (users != null) {
-                Iterator iterator = users.iterator();
+                Iterator<?> iterator = users.iterator();
                 JahiaUser user;
                 GWTJahiaUser data;
                 while (iterator.hasNext()) {
                     user = (JahiaUser) iterator.next();
-                    String userName = PrincipalViewHelper.getDisplayName(user);
+                    String userName = PrincipalViewHelper.getDisplayName(user, getUILocale());
                     data = new GWTJahiaUser(user.getUsername(), user.getUserKey(), userName);
                     Properties p = user.getProperties();
                     for (Object o : p.keySet()) {
@@ -141,15 +136,15 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
             List<GWTJahiaGroup> result = new ArrayList<GWTJahiaGroup>();
 
             for (Integer siteId : sites) {
-                Set groups = groupManagerService.searchGroups(siteId, criterias);
+                Set<JahiaGroup> groups = groupManagerService.searchGroups(siteId, criterias);
                 if (groups != null) {
-                    Iterator iterator = groups.iterator();
+                    Iterator<JahiaGroup> iterator = groups.iterator();
                     JahiaGroup group;
                     GWTJahiaGroup data;
                     while (iterator.hasNext()) {
                         group = (JahiaGroup) iterator.next();
                         if (!group.isHidden()) {
-                            String groupName = PrincipalViewHelper.getDisplayName(group);
+                            String groupName = PrincipalViewHelper.getDisplayName(group, getUILocale());
                             data = new GWTJahiaGroup(group.getGroupname(), group.getGroupKey(), groupName);
                             if (group.getSiteID() > 0) {
                                 JahiaSite jahiaSite = sitesService.getSite(group.getSiteID());
@@ -170,7 +165,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                 }
             });
             int size = result.size();
-            result = new ArrayList(result.subList(offset, Math.min(size, offset + limit)));
+            result = new ArrayList<GWTJahiaGroup>(result.subList(offset, Math.min(size, offset + limit)));
             BasePagingLoadResult<GWTJahiaGroup> pagingLoadResult = new BasePagingLoadResult<GWTJahiaGroup>(result, offset, size);
             return pagingLoadResult;
         } catch (Exception e) {

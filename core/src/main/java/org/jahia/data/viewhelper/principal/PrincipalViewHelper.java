@@ -52,8 +52,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.*;
-import org.jahia.services.usermanager.jcr.JCRGroup;
-import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -92,6 +90,8 @@ import java.util.*;
  */
 public class PrincipalViewHelper implements Serializable {
 
+    private static final long serialVersionUID = -3791113369394869324L;
+    
     public static final String PRINCIPAL = "Principal";
     public static final String PERMISSIONS = "Permissions";
     public static final String PROVIDER = "Provider";
@@ -114,12 +114,12 @@ public class PrincipalViewHelper implements Serializable {
         }
     };
 
-    private Map perms;
-    private Set inheritance;
+    private Map<Principal, Integer[]> perms;
+    private Set<Principal> inheritance;
 
-    private static Set selectBoxFieldsHeading = new HashSet();
-    private List selectBoxFieldsSize = new ArrayList();
-    private List selectBoxFieldsMethod = new ArrayList();
+    private static Set<String> selectBoxFieldsHeading = new HashSet<String>();
+    private List<Integer> selectBoxFieldsSize = new ArrayList<Integer>();
+    private List<Method> selectBoxFieldsMethod = new ArrayList<Method>();
 
     static {
         selectBoxFieldsHeading.add(PRINCIPAL);
@@ -257,15 +257,25 @@ public class PrincipalViewHelper implements Serializable {
      * @return a String containing the displayable name for the user, ready for display in the user interface
      */
     public static String getDisplayName(Principal p) {
+        return getDisplayName(p, null);
+    }
+    
+    /**
+     * Return a displayable name, using resource bundles for the guest user and group.
+     * @param p the principal for which to build the displayable name
+     * @param locale the locale to use for looking up resource bundle values 
+     * @return a String containing the displayable name for the user, ready for display in the user interface
+     */
+    public static String getDisplayName(Principal p, Locale locale) {
         if (p instanceof JahiaUser) {
             JahiaUser jahiaUser = (JahiaUser) p;
             String userName = jahiaUser.getUsername();
-            userName = getUserDisplayName(userName);
+            userName = getUserDisplayName(userName, locale);
             return userName;
         } else if (p instanceof JahiaGroup) {
             JahiaGroup jahiaGroup = (JahiaGroup) p;
             String groupName = jahiaGroup.getGroupname();
-            groupName = getGroupDisplayName(groupName);
+            groupName = getGroupDisplayName(groupName, locale);
             return groupName;
         } else {
             return p.getName();
@@ -275,12 +285,23 @@ public class PrincipalViewHelper implements Serializable {
     /**
      * Returns the displayable name for a group based on the group name. This method will for the moment only use
      * resource bundle to localized the guest group name.
-     * @param groupName the group name to localize
+     * @param groupName the group name to localize 
      * @return the localized name for the group
      */
     public static String getGroupDisplayName(String groupName) {
+        return getGroupDisplayName(groupName, null);
+    }
+
+    /**
+     * Returns the displayable name for a group based on the group name. This method will for the moment only use
+     * resource bundle to localized the guest group name.
+     * @param groupName the group name to localize
+     * @param locale the locale to use for looking up resource bundle values  
+     * @return the localized name for the group
+     */
+    public static String getGroupDisplayName(String groupName, Locale locale) {
         if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupName)) {
-            JahiaResourceBundle rb = new JahiaResourceBundle(null, getLocale(), SettingsBean.getInstance().getGuestGroupResourceModuleName());
+            JahiaResourceBundle rb = new JahiaResourceBundle(null, locale != null ? locale : getLocale(), SettingsBean.getInstance().getGuestGroupResourceModuleName());
             groupName = rb.get(SettingsBean.getInstance().getGuestGroupResourceKey(), groupName);
         }
         return groupName;
@@ -293,8 +314,19 @@ public class PrincipalViewHelper implements Serializable {
      * @return the localized user name
      */
     public static String getUserDisplayName(String userName) {
+        return getUserDisplayName(userName, null);
+    }
+    
+    /**
+     * Returns the displayable name for a user based on the user name. This method will for the moment only use a
+     * resource bundle lookup to localize the guest user name.
+     * @param userName the user name to localize
+     * @param locale the locale to use for looking up resource bundle values  
+     * @return the localized user name
+     */
+    public static String getUserDisplayName(String userName, Locale locale) {
         if (Constants.GUEST_USERNAME.equals(userName)) {
-            JahiaResourceBundle rb = new JahiaResourceBundle(null, getLocale(), SettingsBean.getInstance().getGuestUserResourceModuleName());
+            JahiaResourceBundle rb = new JahiaResourceBundle(null, locale != null ? locale : getLocale(), SettingsBean.getInstance().getGuestUserResourceModuleName());
             userName = rb.get(SettingsBean.getInstance().getGuestUserResourceKey(), userName);
         }
         return userName;
@@ -459,18 +491,12 @@ public class PrincipalViewHelper implements Serializable {
         } else {
             final JahiaGroup group = (JahiaGroup) p;
             // Find some group members for properties
-            final Iterator grpMembers = group.isPreloadedGroups() ? new EnumerationIterator(group.members()) : null;
+            final Iterator<?> grpMembers = group.isPreloadedGroups() ? new EnumerationIterator(group.members()) : null;
             final StringBuffer members = new StringBuffer().append("(");
             if (grpMembers != null) {
                 while (grpMembers.hasNext()) {
                     final Object obj = grpMembers.next();
-                    if (obj instanceof JahiaUser) {
-                        final JahiaUser tmpUser = (JahiaUser) obj;
-                        members.append(tmpUser.getUsername());
-                    } else {
-                        final JahiaGroup tmpGroup = (JahiaGroup) obj;
-                        members.append(tmpGroup.getGroupname());
-                    }
+                    members.append(getDisplayName((Principal)obj));
                     if (members.length() > size.intValue()) {
                         break;
                     }
@@ -523,7 +549,7 @@ public class PrincipalViewHelper implements Serializable {
     /**
      *
      */
-    public void setPermissions(Map perms) {
+    public void setPermissions(Map<Principal, Integer[]> perms) {
         this.perms = perms;
     }
 
@@ -535,7 +561,7 @@ public class PrincipalViewHelper implements Serializable {
         }
     }
 
-    public void setInheritance(Set inheritance) {
+    public void setInheritance(Set<Principal> inheritance) {
         this.inheritance = inheritance;
     }
 
@@ -552,7 +578,7 @@ public class PrincipalViewHelper implements Serializable {
      *                          - providers
      * @return a Properties object that contain the search criterium
      */
-    public static Set getSearchResult(ProcessingContext processingContext) {
+    public static Set<Principal> getSearchResult(ProcessingContext processingContext) {
 
         String searchString = processingContext.getParameter("searchString");
         String searchIn = processingContext.getParameter("searchIn");
@@ -576,7 +602,7 @@ public class PrincipalViewHelper implements Serializable {
      *                - providers
      * @return a Properties object that contain the search criterium
      */
-    public static Set getSearchResult(ServletRequest request) {
+    public static Set<Principal> getSearchResult(ServletRequest request) {
 
         String searchString = request.getParameter("searchString");
         final String searchIn = request.getParameter("searchIn");
@@ -587,7 +613,7 @@ public class PrincipalViewHelper implements Serializable {
         return getSearchResult(searchIn, searchString, searchInProps, storedOn, providers);
     }
 
-    public static Set getSearchResult(String searchIn, String searchString, String[] searchInProps, String storedOn,
+    public static Set<Principal> getSearchResult(String searchIn, String searchString, String[] searchInProps, String storedOn,
                                       String[] providers) {
         JahiaUserManagerService jahiaUserManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         final Properties searchParameters = new Properties();
@@ -641,7 +667,7 @@ public class PrincipalViewHelper implements Serializable {
      * @param siteID            The site ID containing the principal to search
      * @return a Properties object that contain the search criterium
      */
-    public static Set getGroupSearchResult(ProcessingContext processingContext, int siteID) {
+    public static Set<Principal> getGroupSearchResult(ProcessingContext processingContext, int siteID) {
 
         String searchString = processingContext.getParameter("searchString");
         String searchIn = processingContext.getParameter("searchIn");
@@ -666,7 +692,7 @@ public class PrincipalViewHelper implements Serializable {
      * @param siteID  The site ID containing the principal to search
      * @return a Properties object that contain the search criterium
      */
-    public static Set getGroupSearchResult(ServletRequest request, int siteID) {
+    public static Set<Principal> getGroupSearchResult(ServletRequest request, int siteID) {
 
         String searchString = request.getParameter("searchString");
         final String searchIn = request.getParameter("searchIn");
@@ -677,12 +703,12 @@ public class PrincipalViewHelper implements Serializable {
         return getGroupSearchResult(searchIn, siteID, searchString, searchInProps, storedOn, providers);
     }
 
-    public static Set getGroupSearchResult(String searchIn, int siteID, String searchString, String[] searchInProps,
+    public static Set<Principal> getGroupSearchResult(String searchIn, int siteID, String searchString, String[] searchInProps,
                                            String storedOn, String[] providers) {
         JahiaGroupManagerService jahiaGroupManagerService =
                 ServicesRegistry.getInstance().getJahiaGroupManagerService();
         final Properties searchParameters = new Properties();
-        final Set searchResults = new TreeSet<Principal>(PRINCIPAL_COMPARATOR);
+        final Set<Principal> searchResults = new TreeSet<Principal>(PRINCIPAL_COMPARATOR);
         if (searchIn == null) { // Necessary condition to say there is no formular.
             logger.debug("No formular transmited. Finding all Jahia DB users.");
             searchParameters.setProperty("*", "*");
@@ -706,7 +732,7 @@ public class PrincipalViewHelper implements Serializable {
             } else {
                 for (int i = 0; i < providers.length; i++) {
                     final String curServer = providers[i];
-                    final Set curSearchResults = jahiaGroupManagerService.
+                    final Set<JahiaGroup> curSearchResults = jahiaGroupManagerService.
                             searchGroups(curServer, siteID, searchParameters);
                     if (curSearchResults != null) {
                         searchResults.addAll(curSearchResults);
@@ -726,12 +752,12 @@ public class PrincipalViewHelper implements Serializable {
      *              from
      * @return a set of users without the Jahia Administrators
      */
-    public static Set removeJahiaAdministrators(Set users) {
-        final Set usersWithoutJahiaAdmin = new TreeSet(PRINCIPAL_COMPARATOR);
+    public static Set<Principal> removeJahiaAdministrators(Set<Principal> users) {
+        final Set<Principal> usersWithoutJahiaAdmin = new TreeSet<Principal>(PRINCIPAL_COMPARATOR);
         usersWithoutJahiaAdmin.addAll(users);
         final JahiaGroup jahiaAdminGroup = ServicesRegistry.getInstance().
                 getJahiaGroupManagerService().getAdministratorGroup(0);
-        final Iterator memberEnum = new EnumerationIterator(jahiaAdminGroup.members());
+        final Iterator<?> memberEnum = new EnumerationIterator(jahiaAdminGroup.members());
         while (memberEnum.hasNext()) {
             final Object curMemberObject = memberEnum.next();
             if (curMemberObject instanceof JahiaUser) {
@@ -741,14 +767,12 @@ public class PrincipalViewHelper implements Serializable {
         return usersWithoutJahiaAdmin;
     }
 
-    public static Set getUserGroupMembership(JahiaUser usr, int site) {
-        Set groups = new HashSet();
+    public static Set<JahiaGroup> getUserGroupMembership(JahiaUser usr, int site) {
+        Set<JahiaGroup> groups = new HashSet<JahiaGroup>();
         JahiaGroupManagerService jahiaGroupManagerService =
                 ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        List v = jahiaGroupManagerService.getUserMembership(usr);
-        Iterator en = v.iterator();
-        while (en.hasNext()) {
-            String gname = (String) en.next();
+        List<String> v = jahiaGroupManagerService.getUserMembership(usr);
+        for (String gname : v) {
             JahiaGroup g = jahiaGroupManagerService.lookupGroup(gname);
             if (g != null && (g.getSiteID() == site || g.getSiteID() == 0)) {
                 groups.add(g);

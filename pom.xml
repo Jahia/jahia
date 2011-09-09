@@ -58,7 +58,7 @@
         <jahia.manifest.vendor.id>org.jahia</jahia.manifest.vendor.id>
         <jahia.manifest.vendor.url>http://www.jahia.org</jahia.manifest.vendor.url>
         <jahia.manifest.vendor.email>info@jahia.org</jahia.manifest.vendor.email>
-        <jahia.svn.base.url>https://devtools.jahia.com/svn/jahia/trunk</jahia.svn.base.url>
+        <jahia.svn.base.url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-5-X-X-BRANCH</jahia.svn.base.url>
 
         <license.plugin.version>1.8.0</license.plugin.version>
         <javadoc.plugin.version>2.7</javadoc.plugin.version>
@@ -99,9 +99,9 @@
     </properties>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/trunk</url>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-5-X-X-BRANCH</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-5-X-X-BRANCH</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-5-X-X-BRANCH</url>
     </scm>
     <developers>
         <developer>

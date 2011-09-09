@@ -72,7 +72,7 @@
                     <c:if test="${not renderContext.loggedIn}">
                         <p class="field">
                             <label class="left" for="captcha"><fmt:message key="label.captcha"/></label>
-                            <template:captcha/>
+                            <template:captcha displayReloadLink="true"/>
                         </p>
                         <p class="field">
                             <label class="left" for="captcha"><fmt:message key="label.captcha.enter"/></label>

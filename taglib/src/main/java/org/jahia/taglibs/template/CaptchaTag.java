@@ -40,42 +40,102 @@
 
 package org.jahia.taglibs.template;
 
-import org.jahia.services.render.URLGenerator;
+import java.io.IOException;
 
-import javax.servlet.jsp.JspContext;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.jahia.services.render.URLGenerator;
 
 /**
- * Captcha tag
- * generate an image tag
- * <code><img src="captchaUrl" alt="captcha"/></code>
- * for catpcha validation
+ * Generates an image element with a captcha for validation: <code><img src="captchaUrl" alt="captcha"/></code>
  */
 public class CaptchaTag extends TagSupport {
+
+    private static final String DEF_VAR_VALUE = "captchaUrl";
+
+    private static final long serialVersionUID = -1357051391573555914L;
+
+    private boolean display = true;
+
+    private boolean displayReloadLink;
+
+    private String var = DEF_VAR_VALUE;
 
     @Override
     public int doEndTag() throws JspException {
         JspWriter out = pageContext.getOut();
 
         try {
-            String id = (String) pageContext.findAttribute("currentFormId");
+            URLGenerator urlGen = (URLGenerator) pageContext.findAttribute("url");
+            StringBuilder url = new StringBuilder();
+            String formId = (String) pageContext.findAttribute("currentFormId");
+            url.append(urlGen.getContext()).append(urlGen.getCaptcha())
+                    .append("?token=##formtoken(").append(formId).append(")##");
 
-            out.print("<img alt=\"captcha\" src=\"");
-            out.print(((URLGenerator)pageContext.findAttribute("url")).getContext());
-            out.print(((URLGenerator)pageContext.findAttribute("url")).getCaptcha());
-            out.print("?token=##formtoken("+id+")##\" />" );
+            if (StringUtils.isNotEmpty(var)) {
+                pageContext.setAttribute(var, url);
+            }
+            if (display) {
+                out.append("<img id=\"jahia-captcha-").append(formId)
+                        .append("\" alt=\"captcha\" src=\"").append(url).append("\" />");
+            }
+            if (displayReloadLink) {
+                out.append("&nbsp;")
+                        .append("<a href=\"#reload-captcha\" onclick=\"var captcha=document.getElementById('jahia-captcha-")
+                        .append(formId)
+                        .append("'); var captchaUrl=captcha.src; if (captchaUrl.indexOf('&tst=') != -1){"
+                                + "captchaUrl=captchaUrl.substring(0,captchaUrl.indexOf('&tst='));}"
+                                + "captchaUrl=captchaUrl+'&tst='+new Date().getTime();"
+                                + " captcha.src=captchaUrl; return false;\"><img src=\"")
+                        .append(urlGen.getContext())
+                        .append("/icons/refresh.png\" alt=\"refresh\"/></a>");
+            }
 
             pageContext.setAttribute("hasCaptcha", true, PageContext.REQUEST_SCOPE);
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            throw new JspException(e);
         }
 
         return EVAL_PAGE;
+    }
+
+    protected String getVar() {
+        return var;
+    }
+
+    protected boolean isDisplay() {
+        return display;
+    }
+
+    protected boolean isDisplayReloadLink() {
+        return displayReloadLink;
+    }
+
+    @Override
+    public void release() {
+        resetState();
+        super.release();
+    }
+
+    protected void resetState() {
+        display = true;
+        displayReloadLink = false;
+        var = DEF_VAR_VALUE;
+    }
+
+    public void setDisplay(boolean display) {
+        this.display = display;
+    }
+
+    public void setDisplayReloadLink(boolean displayReloadLink) {
+        this.displayReloadLink = displayReloadLink;
+    }
+
+    public void setVar(String var) {
+        this.var = var;
     }
 }

@@ -463,6 +463,27 @@
         <name>captcha</name>
         <tag-class>org.jahia.taglibs.template.CaptchaTag</tag-class>
         <body-content>JSP</body-content>
+        <attribute>
+            <description>If set to false the captach image won't be shown, but the generated Captcha image URL will be exposed into the page scope variabled, defined by var (since Jahia 6.6). [true]</description>
+            <name>display</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>If set to true an additional link (image) is generated to reload the current captcha image. Is only relevant when display attribute is true (since Jahia 6.6). [false]</description>
+            <name>displayReloadLink</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Name of the exported pageContext variable to hold the value of the Captcha URL (since Jahia 6.6). [captchaUrl]</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
     </tag>
     <tag-file>
     	<name>displayPagination</name>

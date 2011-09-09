@@ -44,7 +44,6 @@ import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
 
@@ -63,6 +62,8 @@ import java.util.*;
  */
 
 public class TokenizedFormTag extends BodyTagSupport {
+
+    private static final long serialVersionUID = -1427914171244787502L;
 
     @Override
     public int doStartTag() throws JspException {
@@ -124,6 +125,7 @@ public class TokenizedFormTag extends BodyTagSupport {
             outputDocument.insert(formTag.getEnd(), "<input type=\"hidden\" name=\"form-token\" value=\"##formtoken(" + id + ")##\"/>");
 
 
+            @SuppressWarnings("unchecked")
             Map<String,Map<String,List<String>>> forms = (Map<String, Map<String, List<String>>>) pageContext.getAttribute("form-parameter", PageContext.REQUEST_SCOPE);
             if (forms == null) {
                 forms = new HashMap<String, Map<String, List<String>>>();
@@ -143,11 +145,11 @@ public class TokenizedFormTag extends BodyTagSupport {
 
     @Override
     public void doInitBody() throws JspException {
-        super.doInitBody();    //To change body of overridden methods use File | Settings | File Templates.
+        super.doInitBody();
     }
 
     @Override
     public int doAfterBody() throws JspException {
-        return super.doAfterBody();    //To change body of overridden methods use File | Settings | File Templates.
+        return super.doAfterBody();
     }
 }

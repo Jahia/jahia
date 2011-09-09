@@ -334,7 +334,7 @@ public class GWTJahiaNodeTreeFactory {
                     try {
                         JahiaContentManagementService.App.getInstance()
                                 .lsLoad(gwtJahiaNode, nodeTypes, mimeTypes, filters, fields, checkSubchilds, -1, -1, displayHiddenTypes,
-                                        hiddenTypes, hiddenRegex,showOnlyNodesWithTemplates, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
+                                        hiddenTypes, hiddenRegex,false, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
                                             public void onSuccess(PagingLoadResult<GWTJahiaNode> result) {
                                                 listAsyncCallback.onSuccess(result.getData());
                                             }

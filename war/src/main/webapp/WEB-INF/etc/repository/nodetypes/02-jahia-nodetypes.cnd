@@ -545,7 +545,7 @@
  - j:alternateText (string) i18n
 
 [jnt:nodeLinkImageReference] > jnt:imageReference, jmix:link
- - j:linknode (weakreference) < jmix:droppableContent, jnt:page
+ - j:linknode (weakreference,picker[type='editoriallink']) < jmix:droppableContent, jnt:page
 
 [jnt:externalLinkImageReference] > jnt:imageReference, jmix:link
  - j:url (string)
@@ -557,7 +557,7 @@
  - j:node (weakreference,picker[type='contentfolder']) < jnt:contentFolder
 
 [jnt:nodeLink] > jnt:content, jmix:nodeReference, jmix:link, jmix:navMenuItem
- - j:node (weakreference) < jmix:droppableContent, jnt:page, jnt:contentFolder, jnt:folder
+ - j:node (weakreference,picker[type='editoriallink']) < jmix:droppableContent, jnt:page, jnt:contentFolder, jnt:folder
 
 [jnt:externalLink] > jnt:content, jmix:link, jmix:navMenuItem
  - j:url (string)

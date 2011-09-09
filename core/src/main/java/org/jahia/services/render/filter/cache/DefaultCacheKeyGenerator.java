@@ -50,10 +50,7 @@ import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.jahia.api.Constants;
 import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.Template;
@@ -282,8 +279,16 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                         "Userkey is empty while generating cache key for path " + path + " and nodepath = " + nodePath +
                         " checkrootpath = " + checkRootPath);
             }
-            Set<String> roles = ((JahiaAccessManager) ((JCRNodeWrapper) renderContext.getMainResource().getNode()).getAccessControlManager()).getRoles(
+            Resource mainResource = renderContext.getMainResource();
+            Set<String> roles;
+            if(mainResource!=null) {
+                roles = ((JahiaAccessManager) ((JCRNodeWrapper) mainResource.getNode()).getAccessControlManager()).getRoles(
                     path);
+            } else {
+                JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path);
+                roles = ((JahiaAccessManager) ((JCRNodeWrapper) node).getAccessControlManager()).getRoles(path);
+            }
+
             b = new StringBuilder();
             for (String g : roles) {
                 if (b.length() > 0) {

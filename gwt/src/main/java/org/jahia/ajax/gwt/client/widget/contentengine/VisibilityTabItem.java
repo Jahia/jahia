@@ -5,6 +5,8 @@ import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -12,6 +14,7 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.DualListField;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
@@ -23,6 +26,7 @@ import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -346,15 +350,48 @@ public class VisibilityTabItem extends EditEngineTabItem {
 
     public void addFieldListener(final PropertiesEditor pe, final Grid grid, final GWTJahiaNode conditionNode) {
         for (final Field<?> field : pe.getFields()) {
-            field.addListener(Events.Change, new Listener<BaseEvent>() {
-                public void handleEvent(BaseEvent be) {
-                    conditionNode.set(field.getName(), field.getValue());
-                    conditionNode.set("node-modified", Boolean.TRUE);
-                    changed = true;
-                    grid.getView().refresh(false);
-                    statusBar.update();
-                }
-            });
+            final Field f;
+            if (field instanceof PropertiesEditor.PropertyAdapterField) {
+                f = ((PropertiesEditor.PropertyAdapterField) field).getField();
+            } else {
+                f = field;
+            }
+            if (f instanceof DualListField) {
+                ((DualListField)f).getToList().getStore().addStoreListener(new StoreListener() {
+                    @Override
+                    public void handleEvent(StoreEvent e) {
+                        Object value;
+                        value = new ArrayList();
+                        List v = ((DualListField) f).getToList().getStore().getModels();
+                        for (Object o : v) {
+                            if (o instanceof GWTJahiaValueDisplayBean) {
+                                ((List)value).add(((GWTJahiaValueDisplayBean) o).getValue());
+                            } else {
+                                ((List)value).add(o);
+                            }
+                        }
+                        conditionNode.set(field.getName(), value);
+                        conditionNode.set("node-modified", Boolean.TRUE);
+                        changed = true;
+                        grid.getView().refresh(false);
+                        statusBar.update();
+                    }
+                });
+            } else {
+                field.addListener(Events.Change, new Listener<BaseEvent>() {
+                    public void handleEvent(BaseEvent be) {
+                        Object value = field.getValue();
+                        if (value instanceof GWTJahiaValueDisplayBean) {
+                            value = ((GWTJahiaValueDisplayBean)value).getValue();
+                        }
+                        conditionNode.set(field.getName(), value);
+                        conditionNode.set("node-modified", Boolean.TRUE);
+                        changed = true;
+                        grid.getView().refresh(false);
+                        statusBar.update();
+                    }
+                });
+            }
         }
     }
 

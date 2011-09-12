@@ -1221,4 +1221,10 @@
         <property name="icon" value="showTrashboard"/>
     </bean>
 
+    <bean id="Toolbar.ItemsGroup.NodeTypeFiltering" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NodeTypeTableViewFiltering"/>
+        </property>
+        <property name="titleKey" value="label.languages"/>
+    </bean>
 </beans>

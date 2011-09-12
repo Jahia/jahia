@@ -205,4 +205,8 @@ public class ContentViews extends TopRightComponent {
         tableView.clearSelection();
         thumbView.clearSelection();
     }
+
+    public TableView getTableView() {
+        return tableView;
+    }
 }

@@ -47,6 +47,8 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.dnd.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.util.Rectangle;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.grid.*;
@@ -62,6 +64,8 @@ import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
 
 import java.util.HashSet;
 import java.util.List;
@@ -104,15 +108,6 @@ public class TableView extends AbstractView {
             selectionModel.setSelectionMode(Style.SelectionMode.MULTI);
         } else {
             selectionModel.setSelectionMode(Style.SelectionMode.SINGLE);
-        }
-        if(configuration.getTableColumnKeys().contains(GWTJahiaNode.PRIMARY_TYPE_LABEL)) {
-            GridFilters filters = new GridFilters();
-            filters.setLocal(true);
-            typeStore = new ListStore<ModelData>();
-            ListFilter listFilter = new ListFilter(GWTJahiaNode.PRIMARY_TYPE_LABEL, typeStore);
-            listFilter.setDisplayProperty(GWTJahiaNode.PRIMARY_TYPE_LABEL);
-            filters.addFilter(listFilter);
-            m_grid.addPlugin(filters);
         }
         m_grid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
             public void handleEvent(GridEvent event) {

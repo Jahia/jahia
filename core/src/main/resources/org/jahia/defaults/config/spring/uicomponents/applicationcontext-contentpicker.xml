@@ -566,6 +566,7 @@
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.ItemsGroup.NodeTypeFiltering"/>
                     </list>
                 </property>
             </bean>
@@ -604,6 +605,7 @@
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>icon,40,empty</value>
                 <value>displayName,*,label.title</value>
+                <value>primaryTypeLabel,140,label.type</value>
                 <value>publicationInfo,40</value>
             </list>
         </property>
@@ -644,6 +646,7 @@
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.ItemsGroup.NodeTypeFiltering"/>
                     </list>
                 </property>
             </bean>
@@ -683,6 +686,7 @@
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>icon,40,empty</value>
                 <value>displayName,*,label.title</value>
+                <value>primaryTypeLabel,140,label.type</value>
                 <value>publicationInfo,40</value>
             </list>
         </property>

@@ -50,6 +50,7 @@ import com.extjs.gxt.ui.client.widget.selection.AbstractStoreSelectionModel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
@@ -60,11 +61,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 
  * User: toto
  * Date: Sep 27, 2010
  * Time: 6:27:01 PM
- * 
  */
 public abstract class AbstractView extends TopRightComponent {
     protected GWTJahiaNode root;
@@ -77,6 +76,17 @@ public abstract class AbstractView extends TopRightComponent {
     protected ListStore<ModelData> typeStore = null;
 
     public AbstractView(final GWTManagerConfiguration config) {
+        typeStore = new ListStore<ModelData>();
+        BaseModelData data = new BaseModelData() {
+            @Override
+            public boolean equals(Object obj) {
+                Object o1 = get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
+                Object o2 = ((ModelData) obj).get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
+                return o1.equals(o2);
+            }
+        };
+        data.set(GWTJahiaNode.PRIMARY_TYPE_LABEL, Messages.get("label.all","All"));
+        typeStore.add(data);
         configuration = config;
         // data proxy
         RpcProxy<PagingLoadResult<GWTJahiaNode>> privateProxy = new RpcProxy<PagingLoadResult<GWTJahiaNode>>() {
@@ -93,7 +103,7 @@ public abstract class AbstractView extends TopRightComponent {
                     JahiaContentManagementService.App.getInstance().lsLoad(root,
                             configuration.getAllNodeTypes(),
                             configuration.getMimeTypes(), configuration.getFilters(), configuration.getTableColumnKeys(),
-                            false, -1, -1,getLinker().isDisplayHiddenTypes() , configuration.getHiddenTypes(), configuration.getHiddenRegex(),configuration.isShowOnlyNodesWithTemplates(), listAsyncCallback);
+                            false, -1, -1, getLinker().isDisplayHiddenTypes(), configuration.getHiddenTypes(), configuration.getHiddenRegex(), configuration.isShowOnlyNodesWithTemplates(), listAsyncCallback);
                 } catch (org.jahia.ajax.gwt.client.service.GWTJahiaServiceException e) {
                     e.printStackTrace();
                 }
@@ -119,9 +129,9 @@ public abstract class AbstractView extends TopRightComponent {
                         node.setParent((TreeModel) AbstractView.this.root);
                     }
                 }
-                if(typeStore!=null) {
+                if (typeStore != null) {
                     for (GWTJahiaNode o : gwtJahiaNodeListLoadResult.getData()) {
-                        BaseModelData data = new BaseModelData(){
+                        BaseModelData data = new BaseModelData() {
                             @Override
                             public boolean equals(Object obj) {
                                 Object o1 = get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
@@ -130,7 +140,7 @@ public abstract class AbstractView extends TopRightComponent {
                             }
                         };
                         data.set(GWTJahiaNode.PRIMARY_TYPE_LABEL, o.get(GWTJahiaNode.PRIMARY_TYPE_LABEL));
-                        if(!typeStore.contains(data)) {
+                        if (!typeStore.contains(data)) {
                             typeStore.add(data);
                         }
                     }
@@ -159,7 +169,7 @@ public abstract class AbstractView extends TopRightComponent {
                 if (o1 instanceof String && o2 instanceof String) {
                     String s1 = (String) o1;
                     String s2 = (String) o2;
-                    return Collator.getInstance().localeCompare(s1,s2);
+                    return Collator.getInstance().localeCompare(s1, s2);
                 } else if (o1 instanceof Comparable && o2 instanceof Comparable) {
                     return ((Comparable) o1).compareTo(o2);
                 }
@@ -226,7 +236,8 @@ public abstract class AbstractView extends TopRightComponent {
         setContent(getLinker().getTreeSelection());
     }
 
-    @Override public void initWithLinker(final ManagerLinker linker) {
+    @Override
+    public void initWithLinker(final ManagerLinker linker) {
         super.initWithLinker(linker);
 
         selectionModel.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
@@ -253,5 +264,13 @@ public abstract class AbstractView extends TopRightComponent {
             visibleSelection.clear();
         }
 
+    }
+
+    public ListStore<GWTJahiaNode> getStore() {
+        return store;
+    }
+
+    public ListStore<ModelData> getTypeStore() {
+        return typeStore;
     }
 }

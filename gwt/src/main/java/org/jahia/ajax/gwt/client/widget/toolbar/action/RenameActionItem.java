@@ -50,6 +50,8 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
+import java.util.Arrays;
+
 /**
  * 
  * User: toto
@@ -70,14 +72,15 @@ public class RenameActionItem extends BaseActionItem {
             if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
                 final boolean folder = !selection.isFile();
                 JahiaContentManagementService.App.getInstance()
-                        .rename(selection.getPath(), newName, new BaseAsyncCallback() {
+                        .rename(selection.getPath(), newName, new BaseAsyncCallback<String>() {
                             public void onApplicationFailure(Throwable throwable) {
                                 Window.alert(
                                         Messages.get("failure.rename.label") + "\n" + throwable.getLocalizedMessage());
                                 linker.loaded();
                             }
 
-                            public void onSuccess(Object o) {
+                            public void onSuccess(String newPath) {
+                                linker.setSelectPathAfterDataUpdate(Arrays.asList(newPath));
                                 linker.loaded();
                                 if (folder) {
                                     linker.refresh(EditLinker.REFRESH_ALL);

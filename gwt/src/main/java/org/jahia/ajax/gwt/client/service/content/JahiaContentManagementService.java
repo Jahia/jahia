@@ -164,7 +164,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void checkExistence(String path) throws GWTJahiaServiceException;
 
-    public void rename(String path, String newName) throws GWTJahiaServiceException;
+    public String rename(String path, String newName) throws GWTJahiaServiceException;
 
     public void move(String sourcePath, String targetPath) throws GWTJahiaServiceException;
 

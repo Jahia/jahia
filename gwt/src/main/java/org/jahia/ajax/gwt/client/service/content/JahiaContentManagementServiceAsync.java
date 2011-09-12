@@ -158,7 +158,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void checkExistence(String path, AsyncCallback async);
 
-    void rename(String path, String newName, AsyncCallback async);
+    void rename(String path, String newName, AsyncCallback<String> async);
 
     void move(String sourcePath, String targetPath, AsyncCallback asyncCallback);
 

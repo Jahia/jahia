@@ -601,7 +601,7 @@ public class ContentManagerHelper {
         return nodeToDelete.canMarkForDeletion();
     }
 
-    public void rename(String path, String newName, JCRSessionWrapper currentUserSession)
+    public String rename(String path, String newName, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
@@ -633,6 +633,7 @@ public class ContentManagerHelper {
         }
         try {
             node.saveSession();
+            return node.getPath();
         } catch (RepositoryException e) {
             logger.error("error", e);
             throw new GWTJahiaServiceException(

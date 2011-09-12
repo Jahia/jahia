@@ -223,12 +223,12 @@ public class ContentRepositoryTabs extends LeftComponent {
             }
             String newName = Window.prompt("Enter the new name for " + (selection.isFile().booleanValue() ? "file " : "folder ") + selection.getName(), selection.getName());
             if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
-                service.rename(selection.getPath(), newName, new BaseAsyncCallback() {
+                service.rename(selection.getPath(), newName, new BaseAsyncCallback<String>() {
                     public void onApplicationFailure(Throwable throwable) {
                         Window.alert("Rename failed\n\n" + throwable.getLocalizedMessage());
                     }
 
-                    public void onSuccess(Object o) {
+                    public void onSuccess(String o) {
                         retrieveSavedSearch();
                     }
                 });

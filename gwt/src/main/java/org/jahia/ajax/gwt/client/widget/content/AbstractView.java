@@ -101,7 +101,7 @@ public abstract class AbstractView extends TopRightComponent {
                         listLoadConfig.setSortDir(store.getSortDir());
                     }
                     JahiaContentManagementService.App.getInstance().lsLoad(root,
-                            configuration.getAllNodeTypes(),
+                            configuration.getNodeTypes(),
                             configuration.getMimeTypes(), configuration.getFilters(), configuration.getTableColumnKeys(),
                             false, -1, -1, getLinker().isDisplayHiddenTypes(), configuration.getHiddenTypes(), configuration.getHiddenRegex(), configuration.isShowOnlyNodesWithTemplates(), listAsyncCallback);
                 } catch (org.jahia.ajax.gwt.client.service.GWTJahiaServiceException e) {

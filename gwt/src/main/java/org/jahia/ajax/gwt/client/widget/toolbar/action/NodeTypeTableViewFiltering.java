@@ -11,6 +11,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.content.AbstractView;
 import org.jahia.ajax.gwt.client.widget.content.ContentViews;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.content.TableView;
@@ -28,7 +29,7 @@ import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 public class NodeTypeTableViewFiltering extends BaseActionItem {
     private static final long serialVersionUID = 6115660301140902069L;
     protected transient ComboBox<ModelData> mainComponent;
-    protected transient TableView tableView;
+    protected transient AbstractView tableView;
 
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);
@@ -44,7 +45,7 @@ public class NodeTypeTableViewFiltering extends BaseActionItem {
                 TopRightComponent topRightComponent = managerLinker.getTopRightObject();
                 if (topRightComponent instanceof ContentViews) {
                     ContentViews contentViews = (ContentViews) topRightComponent;
-                    tableView = contentViews.getTableView();
+                    tableView = contentViews.getCurrentView();
                     mainComponent.setStore(tableView.getTypeStore());
                     tableView.getStore().addFilter(new StoreFilter<GWTJahiaNode>() {
                         public boolean select(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode parent,

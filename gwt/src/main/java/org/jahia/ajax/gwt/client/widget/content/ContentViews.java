@@ -206,7 +206,7 @@ public class ContentViews extends TopRightComponent {
         thumbView.clearSelection();
     }
 
-    public TableView getTableView() {
-        return tableView;
+    public AbstractView getCurrentView() {
+        return current;
     }
 }

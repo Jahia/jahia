@@ -284,7 +284,11 @@
 		                    <dependency>
 		                        <groupId>org.jahia.server</groupId>
 		                        <artifactId>jahia-impl</artifactId>
+<<<<<<< .working
 		                        <version>6.6.0.0-SNAPSHOT</version>
+=======
+		                        <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39056
 		                    </dependency>
 		                </dependencies>
 		                <executions>
@@ -358,7 +362,11 @@
 		                    <dependency>
 		                        <groupId>org.jahia.server</groupId>
 		                        <artifactId>jahia-impl</artifactId>
+<<<<<<< .working
 		                        <version>6.6.0.0-SNAPSHOT</version>
+=======
+		                        <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39056
 		                    </dependency>
 		                </dependencies>
 		                <executions>
@@ -886,7 +894,11 @@
                     <dependency>
                         <groupId>org.jahia.server</groupId>
                         <artifactId>jahia-impl</artifactId>
+<<<<<<< .working
                         <version>6.6.0.0-SNAPSHOT</version>
+=======
+                        <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39056
                     </dependency>
                 </dependencies>
                 <executions>

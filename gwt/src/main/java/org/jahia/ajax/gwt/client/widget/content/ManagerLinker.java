@@ -348,10 +348,12 @@ public class ManagerLinker implements Linker {
     }
 
     public void refresh(int flag) {
-        if ((Linker.REFRESH_ALL & flag) != 0) {
-            m_leftComponent.refresh(Linker.REFRESH_OPEN_FOLDER);
-        } else {
-            m_leftComponent.refresh(flag);
+        if (m_leftComponent != null) {
+            if ((Linker.REFRESH_ALL & flag) != 0) {
+                m_leftComponent.refresh(Linker.REFRESH_OPEN_FOLDER);
+            } else {
+                m_leftComponent.refresh(flag);
+            }
         }
         refreshTable();
     }

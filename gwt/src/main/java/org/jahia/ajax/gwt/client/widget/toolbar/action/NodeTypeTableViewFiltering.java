@@ -61,6 +61,7 @@ public class NodeTypeTableViewFiltering extends BaseActionItem {
                             return true;
                         }
                     });
+                    mainComponent.recalculate();
                 }
             }
         } else {

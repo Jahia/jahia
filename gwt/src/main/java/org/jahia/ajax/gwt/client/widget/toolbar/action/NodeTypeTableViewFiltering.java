@@ -47,9 +47,13 @@ public class NodeTypeTableViewFiltering extends BaseActionItem {
                     tableView = contentViews.getTableView();
                     mainComponent.setStore(tableView.getTypeStore());
                     tableView.getStore().addFilter(new StoreFilter<GWTJahiaNode>() {
-                        public boolean select(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode parent, GWTJahiaNode item, String property) {
-                            if (mainComponent.getValue() != null && !mainComponent.getValue().get(GWTJahiaNode.PRIMARY_TYPE_LABEL).equals(Messages.get("label.all", "All"))) {
-                                if (!mainComponent.getValue().get(GWTJahiaNode.PRIMARY_TYPE_LABEL).equals(item.get(GWTJahiaNode.PRIMARY_TYPE_LABEL))) {
+                        public boolean select(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode parent,
+                                              GWTJahiaNode item, String property) {
+                            ModelData value = mainComponent.getValue();
+                            if (value != null) {
+                                Object o = value.get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
+                                if (!o.equals(Messages.get("label.all", "All")) &&
+                                    !o.equals(item.get(GWTJahiaNode.PRIMARY_TYPE_LABEL))) {
                                     return false;
                                 }
                             }

@@ -23,11 +23,7 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
 		
 		if (permissions.hasNode("basic")) {
 			session.checkout(permissions);
-<<<<<<< .working
-			JCRNodeWrapper perm = permissions.getNode("full");
-=======
 			JCRNodeWrapper perm = permissions.getNode("basic");
->>>>>>> .merge-right.r39059
 			sysout << "Renaming " + perm.getPath() + " ...\n"
 			perm.rename("view-basic-wysiwyg-editor");
 			sysout << "... renamed to " + perm.getPath() + "\n"
@@ -37,11 +33,7 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
 		
 		if (permissions.hasNode("light")) {
 			session.checkout(permissions);
-<<<<<<< .working
-			JCRNodeWrapper perm = permissions.getNode("full");
-=======
 			JCRNodeWrapper perm = permissions.getNode("light");
->>>>>>> .merge-right.r39059
 			sysout << "Renaming " + perm.getPath() + " ...\n"
 			perm.rename("view-light-wysiwyg-editor");
 			sysout << "... renamed to " + perm.getPath() + "\n"

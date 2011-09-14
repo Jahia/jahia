@@ -151,7 +151,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private URLResolverFactory urlResolverFactory;
 
     private Integer sessionExpiryTime = null;
-    private Integer cookieExpirationInDays = 1;
+    private static Integer cookieExpirationInDays = 1;
 
     private Set<String> allowedMethods = new HashSet<String>();
 
@@ -328,16 +328,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         } else {
             performRedirect(null, null, req, resp, toParameterMapOfListOfString(req), false);
         }
-        if (req.getParameter(COOKIE_NAME) != null && req.getParameter(COOKIE_VALUE) != null) {
-            Cookie cookie = new Cookie(req.getParameter(COOKIE_NAME), req.getParameter(COOKIE_VALUE));
-            cookie.setMaxAge(60 * 60 * 24 * cookieExpirationInDays);
-            if (req.getParameter(COOKIE_PATH) != null)
-                cookie.setPath(req.getParameter(COOKIE_PATH));
-            else {
-                cookie.setPath("/");
-            }
-            resp.addCookie(cookie);
-        }
+        addCookie(req, resp);
         String sessionID = "";
         HttpSession httpSession = req.getSession(false);
         if (httpSession != null) {
@@ -347,6 +338,19 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(), sessionID,
                     node.getIdentifier(), urlResolver.getPath(), node.getPrimaryNodeType().getName(), "nodeUpdated",
                     new JSONObject(req.getParameterMap()).toString());
+        }
+    }
+
+    public static void addCookie(HttpServletRequest req, HttpServletResponse resp) {
+        if (req.getParameter(COOKIE_NAME) != null && req.getParameter(COOKIE_VALUE) != null) {
+            Cookie cookie = new Cookie(req.getParameter(COOKIE_NAME), req.getParameter(COOKIE_VALUE));
+            cookie.setMaxAge(60 * 60 * 24 * cookieExpirationInDays);
+            if (req.getParameter(COOKIE_PATH) != null)
+                cookie.setPath(req.getParameter(COOKIE_PATH));
+            else {
+                cookie.setPath("/");
+            }
+            resp.addCookie(cookie);
         }
     }
 
@@ -950,7 +954,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if (result != null) {
             if (result.getResultCode() < 300) {
                 resp.setStatus(result.getResultCode());
-                
+                addCookie(req,resp);
                 if (result.getJson() != null && 
                         ("json".equals(parameters.get(RETURN_CONTENTTYPE) != null ? parameters.get(RETURN_CONTENTTYPE).get(0) : "") 
                                 || req.getHeader("accept") != null && req.getHeader("accept").contains("application/json"))) {

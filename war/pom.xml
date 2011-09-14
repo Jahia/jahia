@@ -211,14 +211,14 @@
                 <dependency>
                     <groupId>org.jahia.extensions</groupId>
                     <artifactId>jucb-connectors</artifactId>
-                    <version>1.1-SNAPSHOT</version>
+                    <version>2.3-SNAPSHOT</version>
                     <type>war</type>
                 </dependency>
 
                 <dependency>
                     <groupId>org.jahia.extensions</groupId>
                     <artifactId>jucb-connectors-config</artifactId>
-                    <version>1.1-SNAPSHOT</version>
+                    <version>2.3-SNAPSHOT</version>
                     <type>war</type>
                 </dependency>
             </dependencies>
@@ -233,14 +233,14 @@
                             <overlays>
                                 <overlay>
                                     <artifactId>jucb-connectors</artifactId>
-                                    <version>1.1-SNAPSHOT</version>
+                                    <version>2.3-SNAPSHOT</version>
 									<excludes>
 										<exclude>WEB-INF/web.xml</exclude>
 									</excludes>
                                 </overlay>
                                 <overlay>
                                     <artifactId>jucb-connectors-config</artifactId>
-                                    <version>1.1-SNAPSHOT</version>
+                                    <version>2.3-SNAPSHOT</version>
 									<excludes>
 										<exclude>WEB-INF/web.xml</exclude>
 									</excludes>

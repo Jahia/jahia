@@ -92,13 +92,12 @@ import org.jahia.services.usermanager.jcr.JCRGroup;
 public class ManageGroups extends AbstractAdministrationModule {
 
     private static final String JSP_PATH = JahiaAdministration.JSP_PATH;
-
+    private static final String GROUP_MEMBERS = "org.jahia.admin.manage.groups.group.members";
     private static JahiaUserManagerService uMgr;
     private static JahiaGroupManagerService gMgr;
     private JahiaSite jahiaSite;
     private String groupMessage = "";
     private boolean isError = true;
-    private static Set<Principal> groupMembers; // Contain the group members of the selected group list
 
     ProcessingContext jParams;
 
@@ -258,6 +257,7 @@ public class ManageGroups extends AbstractAdministrationModule {
         session.setAttribute("jahiaDisplayMessage", Jahia.COPYRIGHT);
         session.setAttribute("groupMessage", groupMessage);
         session.setAttribute("isError", isError);
+        session.removeAttribute(GROUP_MEMBERS);
         doRedirect(request, response, session, JSP_PATH + "admin.jsp");
         groupMessage = "";
         isError = true;
@@ -403,7 +403,8 @@ public class ManageGroups extends AbstractAdministrationModule {
                 request.setAttribute("groupMembers", new HashSet<JahiaUser>()); //usersViewHelper.getUserListForDisplay(groupMembers));
             }
         } else {
-            groupMembers = getGroupMembers(groupToEdit, jahiaSite.getID());
+            Set<Principal> groupMembers = getGroupMembers(groupToEdit, jahiaSite.getID());
+            session.setAttribute(GROUP_MEMBERS,groupMembers);
             // display the edit form with initial values
             request.setAttribute("groupMembers", groupMembers); //usersViewHelper.getUserListForDisplay(groupMembers));
         }
@@ -484,6 +485,7 @@ public class ManageGroups extends AbstractAdministrationModule {
         // Update group members
         if (candidateMembers.size() > 0) {
             try { // FIXME : Is here a way to optmize these pointer to method ?
+                Set<Principal> groupMembers = (Set<Principal>) session.getAttribute(GROUP_MEMBERS);
                 // Is there any new members to the original groupMembers
                 addRemoveGroupMembers(groupMembers, candidateMembers,
                         JahiaGroup.class.getMethod("addMember", new Class[]{Principal.class}), grp, jParams);
@@ -494,12 +496,14 @@ public class ManageGroups extends AbstractAdministrationModule {
                 logger.debug("Error ", nsme);
             }
         } else {
+            Set<Principal> groupMembers = (Set<Principal>) session.getAttribute(GROUP_MEMBERS);
             // No member in the select box, all members have to be removed
             for (Iterator<Principal> it = groupMembers.iterator(); it.hasNext();) {
                 Principal jahiaUser = it.next();
                 grp.removeMember(jahiaUser);
             }
         }
+        session.removeAttribute(GROUP_MEMBERS);
         groupMessage = getMessage("label.group");
         groupMessage += " [" + groupName + "] ";
         groupMessage += getMessage("message.successfully.updated");

@@ -285,6 +285,14 @@
 }
 
 /****************************************************************************/
+.bodywrapper .deleted-overlay {
+	overflow: hidden;
+    background :#eaeaea url(images/deleted-overlay.png) top left;
+	color:#f00;
+	border: 1px dashed #ccc;
+	font-weight:bold;
+}
+
 .bodywrapper .area {
 	height:200px;
 	overflow: hidden;

@@ -114,21 +114,24 @@ public class SearchHelper {
     /**
      * Search by Serach bean (used by the advanced search)
      *
+     *
+     *
      * @param search
      * @param limit
      * @param offset
+     * @param showOnlyNodesWithTemplates
      * @param currentUserSession
      * @return
      * @throws GWTJahiaServiceException
      */
-    public List<GWTJahiaNode> search(GWTJahiaSearchQuery search, int limit, int offset, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> search(GWTJahiaSearchQuery search, int limit, int offset, boolean showOnlyNodesWithTemplates, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             Query q = createQuery(search, limit, offset, currentUserSession);
             if (logger.isDebugEnabled()) {
                 logger.debug("Executing query: " + q.getStatement());
             }
             return navigation.executeQuery(q, search.getNodeTypes(), search.getMimeTypes(), search.getFilters(), Arrays.asList(GWTJahiaNode.ICON,
-                    GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.PRIMARY_TYPE_LABEL));
+                    GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.PRIMARY_TYPE_LABEL), showOnlyNodesWithTemplates);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -174,7 +177,7 @@ public class SearchHelper {
         try {
             Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(searchString,Query.JCR_SQL2);
             q.setLimit(limit);
-            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters,fields);
+            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters,fields, false);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

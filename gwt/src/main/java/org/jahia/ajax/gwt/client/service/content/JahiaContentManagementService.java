@@ -104,7 +104,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths) throws GWTJahiaServiceException;
 
-    public PagingLoadResult<GWTJahiaNode> search(GWTJahiaSearchQuery search, int limit, int offset) throws GWTJahiaServiceException;
+    public PagingLoadResult<GWTJahiaNode> search(GWTJahiaSearchQuery search, int limit, int offset, boolean showOnlyNodesWithTemplates) throws GWTJahiaServiceException;
 
     public List<GWTJahiaNode> search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters) throws GWTJahiaServiceException;
 

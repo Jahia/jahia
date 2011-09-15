@@ -315,7 +315,7 @@ public class ContentSearchForm extends ContentPanel implements AbstractView.Cont
         int limit = 500;
         int offset = 0;
         Log.debug(searchField.getValue() + "," + pagePickerField.getValue() + "," + langPickerField.getValue() + "," + inNameField.getValue() + "," + inTagField.getValue());
-        JahiaContentManagementService.App.getInstance().search(gwtJahiaSearchQuery, limit, offset, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
+        JahiaContentManagementService.App.getInstance().search(gwtJahiaSearchQuery, limit, offset, config.isShowOnlyNodesWithTemplates(), new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
             public void onSuccess(PagingLoadResult<GWTJahiaNode> gwtJahiaNodePagingLoadResult) {
                 linker.getTopRightObject().setProcessedContent(gwtJahiaNodePagingLoadResult.getData(), ContentSearchForm.this);
                 linker.loaded();

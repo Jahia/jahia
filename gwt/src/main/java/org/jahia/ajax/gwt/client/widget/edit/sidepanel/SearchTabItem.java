@@ -293,7 +293,7 @@ class SearchTabItem extends SidePanelTabItem {
         }
 
         Log.debug(searchField.getValue() + "," + pagePickerField.getValue() + "," + langPickerField.getValue());
-        JahiaContentManagementService.App.getInstance().search(gwtJahiaSearchQuery, limit, offset, callback);
+        JahiaContentManagementService.App.getInstance().search(gwtJahiaSearchQuery, limit, offset, false, callback);
 
     }
 

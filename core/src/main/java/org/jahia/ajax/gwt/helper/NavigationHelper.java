@@ -179,7 +179,7 @@ public class NavigationHelper {
         final NodeIterator nodesIterator;
         if(node instanceof JCRQueryNode) {
             final Query q = node.getSession().getWorkspace().getQueryManager().getQuery(node.getRealNode());
-            List<GWTJahiaNode> gwtJahiaNodes = executeQuery(q, nodeTypes, mimeTypes, nameFilters, fields);
+            List<GWTJahiaNode> gwtJahiaNodes = executeQuery(q, nodeTypes, mimeTypes, nameFilters, fields, showOnlyNodesWithTemplates);
             gwtNodeChildren.addAll(gwtJahiaNodes);
             return;
         } else {
@@ -681,11 +681,11 @@ public class NavigationHelper {
 
     public List<GWTJahiaNode> executeQuery(Query q, List<String> nodeTypesToApply, List<String> mimeTypesToMatch,
                                            List<String> filtersToApply) throws RepositoryException {
-        return executeQuery(q, nodeTypesToApply, mimeTypesToMatch, filtersToApply, GWTJahiaNode.DEFAULT_FIELDS);
+        return executeQuery(q, nodeTypesToApply, mimeTypesToMatch, filtersToApply, GWTJahiaNode.DEFAULT_FIELDS, false);
     }
 
     public List<GWTJahiaNode> executeQuery(Query q, List<String> nodeTypesToApply, List<String> mimeTypesToMatch,
-                                           List<String> filtersToApply, List<String> fields)
+                                           List<String> filtersToApply, List<String> fields, boolean showOnlyNodesWithTemplates)
             throws RepositoryException {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         Set<String> addedIds = new HashSet<String>();
@@ -721,6 +721,10 @@ public class NavigationHelper {
                     }
                     boolean matchFilter =
                             matchesFilters(n.getName(), filtersToApply) && matchesMimeTypeFilters(n, mimeTypesToMatch);
+                    if(showOnlyNodesWithTemplates && !JCRContentUtils.isADisplayableNode(n, new RenderContext(null, null, n.getSession().getUser()))){
+                        continue;
+                    }
+
                     if ((matchFilter || hasNodes) && addedIds.add(n.getIdentifier())) {
                         GWTJahiaNode node = getGWTJahiaNode(n, fields);
                         node.setMatchFilters(matchFilter);

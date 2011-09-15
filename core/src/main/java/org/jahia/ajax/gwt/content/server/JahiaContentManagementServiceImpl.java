@@ -425,10 +425,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         getSession().setAttribute(NavigationHelper.SAVED_OPEN_PATHS + repositoryType, paths);
     }
 
-    public BasePagingLoadResult<GWTJahiaNode> search(GWTJahiaSearchQuery searchQuery, int limit, int offset)
+    public BasePagingLoadResult<GWTJahiaNode> search(GWTJahiaSearchQuery searchQuery, int limit, int offset, boolean showOnlyNodesWithTemplates)
             throws GWTJahiaServiceException {
         // To do: find a better war to handle total size
-        List<GWTJahiaNode> result = search.search(searchQuery, 0, 0, retrieveCurrentSession());
+        List<GWTJahiaNode> result = search.search(searchQuery, 0, 0, showOnlyNodesWithTemplates, retrieveCurrentSession());
         int size = result.size();
         result = new ArrayList<GWTJahiaNode>(result.subList(offset, Math.min(size, offset + limit)));
         return new BasePagingLoadResult<GWTJahiaNode>(result, offset, size);
@@ -662,8 +662,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         try {
             JCRNodeWrapper nodeWrapper = jcrSessionWrapper.getNodeByUUID(node.getUUID());
-            if (!nodeWrapper.getName().equals(node.getName())) {
-                String name = contentManager.findAvailableName(nodeWrapper.getParent(), node.getName());
+            if (!nodeWrapper.getName().equals(JCRContentUtils.escapeLocalNodeName(node.getName()))) {
+                String name = contentManager.findAvailableName(nodeWrapper.getParent(), JCRContentUtils.escapeLocalNodeName(node.getName()));
                 nodeWrapper.rename(name);
                 jcrSessionWrapper.save();
                 node.setName(name);

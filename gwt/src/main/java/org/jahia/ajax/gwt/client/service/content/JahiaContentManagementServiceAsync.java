@@ -98,7 +98,7 @@ public interface JahiaContentManagementServiceAsync {
 
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths, AsyncCallback async);
 
-    void search(GWTJahiaSearchQuery search, int limit, int offset, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
+    void search(GWTJahiaSearchQuery search, int limit, int offset, boolean showOnlyNodesWithTemplates, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
 
     void search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, AsyncCallback<List<GWTJahiaNode>> async);
 

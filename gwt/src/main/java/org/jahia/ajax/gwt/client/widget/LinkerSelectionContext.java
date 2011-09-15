@@ -155,7 +155,7 @@ public class LinkerSelectionContext {
             } else if (mainNode != null) {
                 parent = mainNode;
             }
-            parentWriteable = PermissionsUtils.isPermitted("jcr:addChildNodes",  parent) && !parent.isLocked();
+            parentWriteable = parent != null && PermissionsUtils.isPermitted("jcr:addChildNodes",  parent) && !parent.isLocked();
             lockable &= node.isLockable();
             locked &= node.isLocked();
 

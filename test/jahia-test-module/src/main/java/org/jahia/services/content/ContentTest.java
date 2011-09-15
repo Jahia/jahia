@@ -544,7 +544,7 @@ public class ContentTest {
             gwtJahiaSearchQuery.setPages(null);
             gwtJahiaSearchQuery.setLanguage(null);
             SearchHelper searchHelper = (SearchHelper) SpringContextSingleton.getInstance().getContext().getBean("SearchHelper");
-            List<GWTJahiaNode> result = searchHelper.search(gwtJahiaSearchQuery, 0, 0, session);
+            List<GWTJahiaNode> result = searchHelper.search(gwtJahiaSearchQuery, 0, 0, false, session);
             assertEquals("Invalid number of results for query ", 1, result.size());
             String path = result.iterator().next().getPath();
             assertEquals(providerRoot + " : Wrong file found ('" + path + "' instead of '" + testFile.getPath() + "')",

@@ -57,7 +57,6 @@ import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -74,6 +73,7 @@ public abstract class AbstractView extends TopRightComponent {
     protected ListStore<GWTJahiaNode> store;
     protected AbstractStoreSelectionModel<GWTJahiaNode> selectionModel;
     protected ListStore<ModelData> typeStore = null;
+    protected ContentSource contentSource = null;
 
     public AbstractView(final GWTManagerConfiguration config) {
         typeStore = new ListStore<ModelData>();
@@ -129,24 +129,9 @@ public abstract class AbstractView extends TopRightComponent {
                         node.setParent((TreeModel) AbstractView.this.root);
                     }
                 }
-                if (typeStore != null) {
-                    for (GWTJahiaNode o : gwtJahiaNodeListLoadResult.getData()) {
-                        BaseModelData data = new BaseModelData() {
-                            @Override
-                            public boolean equals(Object obj) {
-                                Object o1 = get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
-                                Object o2 = ((ModelData) obj).get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
-                                return o1.equals(o2);
-                            }
-                        };
-                        data.set(GWTJahiaNode.PRIMARY_TYPE_LABEL, o.get(GWTJahiaNode.PRIMARY_TYPE_LABEL));
-                        if (!typeStore.contains(data)) {
-                            typeStore.add(data);
-                        }
-                    }
-                    typeStore.sort(GWTJahiaNode.PRIMARY_TYPE_LABEL, Style.SortDir.ASC);
-                }
+                updateTypeStore(gwtJahiaNodeListLoadResult.getData());
             }
+
         };
 
         store = new ListStore<GWTJahiaNode>(loader) {
@@ -176,6 +161,26 @@ public abstract class AbstractView extends TopRightComponent {
                 return 0;
             }
         }));
+    }
+
+    private void updateTypeStore(List<GWTJahiaNode> nodes) {
+        if (typeStore != null) {
+            for (GWTJahiaNode o : nodes) {
+                BaseModelData data = new BaseModelData() {
+                    @Override
+                    public boolean equals(Object obj) {
+                        Object o1 = get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
+                        Object o2 = ((ModelData) obj).get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
+                        return o1.equals(o2);
+                    }
+                };
+                data.set(GWTJahiaNode.PRIMARY_TYPE_LABEL, o.get(GWTJahiaNode.PRIMARY_TYPE_LABEL));
+                if (!typeStore.contains(data)) {
+                    typeStore.add(data);
+                }
+            }
+            typeStore.sort(GWTJahiaNode.PRIMARY_TYPE_LABEL, Style.SortDir.ASC);
+        }
     }
 
     public List<GWTJahiaNode> getSelection() {
@@ -215,13 +220,15 @@ public abstract class AbstractView extends TopRightComponent {
         }
     }
 
-    public void setProcessedContent(Object content) {
+    public void setProcessedContent(Object content, ContentSource source) {
         clearTable();
         if (content != null) {
             List<GWTJahiaNode> gwtJahiaNodes = (List<GWTJahiaNode>) content;
             store.add(gwtJahiaNodes);
+            updateTypeStore(gwtJahiaNodes);
             getLinker().onTableItemSelected();
         }
+        this.contentSource = source;
     }
 
     public void selectNodes(List<GWTJahiaNode> nodes) {
@@ -233,7 +240,11 @@ public abstract class AbstractView extends TopRightComponent {
     }
 
     public void refresh() {
-        setContent(getLinker().getTreeSelection());
+        if (contentSource != null) {
+            contentSource.refreshTable();
+        } else {
+            setContent(getLinker().getTreeSelection());
+        }
     }
 
     @Override
@@ -272,5 +283,9 @@ public abstract class AbstractView extends TopRightComponent {
 
     public ListStore<ModelData> getTypeStore() {
         return typeStore;
+    }
+
+    public interface ContentSource {
+        public void refreshTable();
     }
 }

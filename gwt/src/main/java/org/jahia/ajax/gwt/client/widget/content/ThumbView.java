@@ -190,8 +190,8 @@ public class ThumbView extends AbstractView {
         view.setContextMenu(menu);
     }
 
-    public void setProcessedContent(Object content) {
-        super.setProcessedContent(content);
+    public void setProcessedContent(Object content, ContentSource source) {
+        super.setProcessedContent(content, source);
         if (content != null) {
             sort();
         }

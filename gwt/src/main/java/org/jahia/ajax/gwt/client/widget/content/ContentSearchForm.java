@@ -67,15 +67,13 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 
-import java.util.List;
-
 /**
  * Form for searching repository content.
  * User: ktlili
  * Date: Feb 18, 2010
  * Time: 11:17:49 AM
  */
-public class ContentSearchForm extends ContentPanel {
+public class ContentSearchForm extends ContentPanel implements AbstractView.ContentSource {
     private TextField<String> searchField;
     private ContentPickerField pagePickerField;
     private ComboBox<GWTJahiaLanguage> langPickerField;
@@ -319,17 +317,21 @@ public class ContentSearchForm extends ContentPanel {
         Log.debug(searchField.getValue() + "," + pagePickerField.getValue() + "," + langPickerField.getValue() + "," + inNameField.getValue() + "," + inTagField.getValue());
         JahiaContentManagementService.App.getInstance().search(gwtJahiaSearchQuery, limit, offset, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
             public void onSuccess(PagingLoadResult<GWTJahiaNode> gwtJahiaNodePagingLoadResult) {
-                linker.getTopRightObject().setProcessedContent(gwtJahiaNodePagingLoadResult.getData());
+                linker.getTopRightObject().setProcessedContent(gwtJahiaNodePagingLoadResult.getData(), ContentSearchForm.this);
                 linker.loaded();
             }
 
             public void onApplicationFailure(Throwable throwable) {
                 Log.debug("error while searching nodes due to:", throwable);
-                linker.getTopRightObject().setProcessedContent(null);
+                linker.getTopRightObject().setProcessedContent(null, ContentSearchForm.this);
                 linker.loaded();
             }
         });
 
+    }
+
+    public void refreshTable() {
+        doSearch();
     }
 
     /**

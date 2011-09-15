@@ -60,6 +60,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -126,7 +127,8 @@ public class SearchHelper {
             if (logger.isDebugEnabled()) {
                 logger.debug("Executing query: " + q.getStatement());
             }
-            return navigation.executeQuery(q, search.getNodeTypes(), search.getMimeTypes(), search.getFilters());
+            return navigation.executeQuery(q, search.getNodeTypes(), search.getMimeTypes(), search.getFilters(), Arrays.asList(GWTJahiaNode.ICON,
+                    GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.PRIMARY_TYPE_LABEL));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

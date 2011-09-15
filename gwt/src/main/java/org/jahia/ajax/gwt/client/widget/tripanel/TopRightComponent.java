@@ -41,6 +41,7 @@
 package org.jahia.ajax.gwt.client.widget.tripanel;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.content.AbstractView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +59,7 @@ public abstract class TopRightComponent extends LinkableComponent {
 
     // this method provides a way to add already processed content
 
-    public void setProcessedContent(Object content) {
+    public void setProcessedContent(Object content, AbstractView.ContentSource source) {
     }
 
     public abstract void clearTable();

@@ -154,9 +154,9 @@ public class ContentViews extends TopRightComponent {
         }
     }
 
-    public void setProcessedContent(Object content) {
+    public void setProcessedContent(Object content, AbstractView.ContentSource source) {
         if (current != null) {
-            current.setProcessedContent(content);
+            current.setProcessedContent(content, source);
         }
     }
 

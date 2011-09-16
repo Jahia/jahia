@@ -364,6 +364,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         String implementationVersionStr = null;
         String depends = null;
         Calendar packageTimestamp = Calendar.getInstance();
+        // TODO there are still some bugs in the generated paths, we must fix the list !
         Map<String,String> deployedFiles = new TreeMap<String,String>();
         try {
             JarFile jarFile = new JarFile(templateWar);

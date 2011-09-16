@@ -51,6 +51,7 @@ package org.jahia.data.templates;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.Version;
 
 import java.io.File;
 import java.util.*;
@@ -124,6 +125,10 @@ public class JahiaTemplatesPackage {
      */
     private List<String> resourceBundleHierarchy = new LinkedList<String>();
     private List<String> rulesDescriptorFiles = new LinkedList<String>();
+
+    private long buildNumber;
+
+    private Version version;
 
     /**
      * Return the template name
@@ -232,7 +237,7 @@ public class JahiaTemplatesPackage {
      * @return unmodifiable list of available templates
      */
     public List<JahiaTemplateDef> getTemplates() {
-        checkForCahnges();
+        checkForChanges();
         return templateListReadOnly;
     }
 
@@ -366,11 +371,11 @@ public class JahiaTemplatesPackage {
      *         keyed by the template name
      */
     public Map<String, JahiaTemplateDef> getTemplateMap() {
-        checkForCahnges();
+        checkForChanges();
         return templatesReadOnly;
     }
 
-    private void checkForCahnges() {
+    private void checkForChanges() {
         if (changesMade) {
             List<JahiaTemplateDef> tmpList = new LinkedList<JahiaTemplateDef>();
             tmpList.addAll(templates.values());
@@ -490,5 +495,21 @@ public class JahiaTemplatesPackage {
      */
     public Set<JahiaTemplatesPackage> getDependencies() {
         return dependencies;
+    }
+
+    public long getBuildNumber() {
+        return buildNumber;
+    }
+
+    public void setBuildNumber(long buildNumber) {
+        this.buildNumber = buildNumber;
+    }
+
+    public Version getVersion() {
+        return version;
+    }
+
+    public void setVersion(Version version) {
+        this.version = version;
     }
 }

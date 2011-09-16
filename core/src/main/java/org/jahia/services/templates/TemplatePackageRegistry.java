@@ -452,7 +452,7 @@ class TemplatePackageRegistry {
                 }
             }
         }
-        logger.info("Registered "+templatePackage.getName());
+        logger.info("Registered "+templatePackage.getName() + " version=" + templatePackage.getVersion());
     }
 
 	public void unregister(JahiaTemplatesPackage templatePackage) {

@@ -280,7 +280,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
 
     public void registerTemplatePackages() {
         File templatesRoot = new File(settingsBean.getJahiaTemplatesDiskPath());
-        logger.info("Scanning templates directory (" + templatesRoot + ") for deployed packages...");
+        logger.info("Scanning module directory (" + templatesRoot + ") for deployed packages...");
         if (templatesRoot.isDirectory()) {
             File[] dirs = templatesRoot.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
 
@@ -295,20 +295,20 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
 
            templatePackageRegistry.register(getOrderedPackages(remaining).values());
         }
-        logger.info("...finished scanning templates directory. Found "
+        logger.info("...finished scanning module directory. Found "
                 + templatePackageRegistry.getAvailablePackagesCount() + " template packages.");
     }
 
     public JahiaTemplatesPackage getPackage(File templateDir) {
-        logger.debug("Reading the templates set under " + templateDir);
+        logger.debug("Reading the module in " + templateDir);
         JahiaTemplatesPackage pkg = JahiaTemplatesPackageHandler.build(templateDir);
         if (pkg != null) {
-            logger.debug("Template package found: " + pkg.getName());
+            logger.debug("Module package found: " + pkg.getName());
             if (isValidPackage(pkg)) {
                 return pkg;
             }
         } else {
-            logger.warn("Unable to read template package from the directory " + templateDir);
+            logger.warn("Unable to read module package from the directory " + templateDir);
         }
         return null;
     }
@@ -322,8 +322,8 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     public void deploySharedTemplatePackages() {
         File sharedTemplates = new File(settingsBean.getJahiaSharedTemplatesDiskPath());
 
-        logger.info("Scanning shared templates directory (" + sharedTemplates
-                + ") for new or updated template set packages ...");
+        logger.info("Scanning shared modules directory (" + sharedTemplates
+                + ") for new or updated modules set packages ...");
 
         File[] warFiles = getPackageFiles(sharedTemplates);
 
@@ -332,16 +332,19 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             deployPackage(templateWar);
         }
 
-        logger.info("...finished scanning shared templates directory.");
+        logger.info("...finished scanning shared modules directory.");
     }
 
     private void deployPackage(File templateWar) {
         String packageName = null;
         String rootFolder = null;
+        String implementationVersionStr = null;
+        List<File> deployedFiles = new ArrayList<File>();
         try {
             JarFile jarFile = new JarFile(templateWar);
             packageName = (String) jarFile.getManifest().getMainAttributes().get(new Attributes.Name("package-name"));
             rootFolder = (String) jarFile.getManifest().getMainAttributes().get(new Attributes.Name("root-folder"));
+            implementationVersionStr = (String) jarFile.getManifest().getMainAttributes().get(new Attributes.Name("Implementation-Version"));
             jarFile.close();
         } catch (IOException e) {
             logger.warn("Cannot read MANIFEST file from " + templateWar, e);
@@ -356,22 +359,24 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), rootFolder);
         if (tmplRootFolder.exists()) {
             if (FileUtils.isFileNewer(templateWar, tmplRootFolder)) {
-                logger.debug("Older version of the template package '" + packageName + "' already deployed. Deleting it.");
+                logger.debug("Older version of the module package '" + packageName + "' already deployed. Deleting it.");
                 try {
                     FileUtils.deleteDirectory(tmplRootFolder);
                 } catch (IOException e) {
-                    logger.error("Unable to delete the template set directory " + tmplRootFolder
+                    logger.error("Unable to delete the module directory " + tmplRootFolder
                             + ". Skipping deployment.", e);
                 }
             }
         }
         if (!tmplRootFolder.exists()) {
-            logger.info("Start deploying new template package '" + packageName + "'");
+            logger.info("Start deploying new module package '" + packageName + "' version=" + implementationVersionStr );
 
             tmplRootFolder.mkdirs();
 
             try {
                 new JahiaArchiveFileHandler(templateWar.getPath()).unzip(tmplRootFolder.getAbsolutePath(), TEMPLATE_FILTER);
+                Collection<File> unzippedFiles = FileUtils.listFiles(tmplRootFolder, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+                deployedFiles.addAll(unzippedFiles);
             } catch (Exception e) {
                 logger.error("Cannot unzip file: " + templateWar, e);
                 return;
@@ -384,6 +389,8 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                     if (classesFolder.list().length > 0) {
                         logger.info("Deploying classes for module " + packageName);
                         FileUtils.copyDirectory(classesFolder, new File(settingsBean.getClassDiskPath()));
+                        Collection<File> classesFiles = FileUtils.listFiles(classesFolder, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+                        deployedFiles.addAll(classesFiles);
                     }
                     FileUtils.deleteDirectory(new File(tmplRootFolder, "WEB-INF/classes"));
                 }
@@ -398,6 +405,8 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                     if (libFolder.list().length > 0) {
                         logger.info("Deploying JARs for module " + packageName);
                         FileUtils.copyDirectory(libFolder, new File(servletContext.getRealPath("/WEB-INF/lib")));
+                        Collection<File> libFiles = FileUtils.listFiles(libFolder, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+                        deployedFiles.addAll(libFiles);
                     }
                     FileUtils.deleteDirectory(new File(tmplRootFolder, "WEB-INF/lib"));
                 }
@@ -421,7 +430,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     }
 
     private void performInitialImport(final JahiaTemplatesPackage pack) {
-        logger.info("Starting import for the template package '" + pack.getName() + "' including: "
+        logger.info("Starting import for the module package '" + pack.getName() + "' including: "
                 + pack.getInitialImports());
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
@@ -458,7 +467,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         }
 
 
-        logger.info("... finished initial import for template package '" + pack.getName() + "'.");
+        logger.info("... finished initial import for module package '" + pack.getName() + "'.");
         
     }
 

@@ -53,6 +53,7 @@ import org.apache.commons.io.IOCase;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -214,6 +215,7 @@ final class JahiaTemplatesPackageHandler {
                 IOUtils.closeQuietly(manifestStream);
                 String packageName = (String) manifest.getMainAttributes().get(new Attributes.Name("package-name"));
                 String rootFolder = (String) manifest.getMainAttributes().get(new Attributes.Name("root-folder"));
+                String implementationVersionStr = (String) manifest.getMainAttributes().get(new Attributes.Name("Implementation-Version"));
                 if (packageName == null) {
                     packageName = file.getName();
                 }
@@ -247,6 +249,9 @@ final class JahiaTemplatesPackageHandler {
 
                 templatePackage.setName(packageName);
                 templatePackage.setRootFolder(rootFolder);
+                if (implementationVersionStr != null) {
+                    templatePackage.setVersion(new Version(implementationVersionStr));
+                }
 
                 String moduleType = (String) manifest.getMainAttributes().get(new Attributes.Name("module-type"));
                 if (moduleType != null) {
@@ -256,7 +261,7 @@ final class JahiaTemplatesPackageHandler {
         } catch (IOException ioe) {
             logger
                     .warn(
-                            "Failed extracting template package data from META-INF/MANIFEST.MF file for package "
+                            "Failed extracting module package data from META-INF/MANIFEST.MF file for package "
                                     + file, ioe);
         }
 

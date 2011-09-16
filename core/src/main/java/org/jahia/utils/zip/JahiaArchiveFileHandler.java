@@ -54,6 +54,7 @@ import org.jahia.exceptions.JahiaArchiveFileException;
 import org.jahia.exceptions.JahiaException;
 
 import java.io.*;
+import java.util.*;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -81,7 +82,7 @@ public class JahiaArchiveFileHandler {
     /**
      * Constructor
      *
-     * @param (String) path, the full path to the file
+     * @param path, the full path to the file
      * @exception IOException
      */
     public JahiaArchiveFileHandler (String path)
@@ -173,24 +174,26 @@ public class JahiaArchiveFileHandler {
     /**
      * Decompress the file in a given folder
      *
-     * @param (String) path
+     * @param path
      */
-    public void unzip (String path)
+    public Map<String,String> unzip (String path)
         throws JahiaException {
-        unzip(path, true);
+        return unzip(path, true);
     }
 
-    public void unzip(String path, PathFilter pathFilter) throws JahiaException {
-        unzip(path, true, pathFilter, null);
+    public Map<String,String> unzip(String path, PathFilter pathFilter) throws JahiaException {
+        return unzip(path, true, pathFilter, null);
     }
 
-    public void unzip (String path, boolean overwrite)
+    public Map<String,String> unzip (String path, boolean overwrite)
     throws JahiaException {
-        unzip(path, overwrite, PathFilter.ALL, null);
+        return unzip(path, overwrite, PathFilter.ALL, null);
     }
     
-    public void unzip (String path, boolean overwrite, PathFilter pathFilter, String pathPrefix)
+    public Map<String,String> unzip (String path, boolean overwrite, PathFilter pathFilter, String pathPrefix)
         throws JahiaException {
+
+        Map<String,String> unzippedFiles = new TreeMap<String,String>();
 
         pathFilter = pathFilter != null ? pathFilter : PathFilter.ALL;
 
@@ -211,12 +214,15 @@ public class JahiaArchiveFileHandler {
 
                     zeName = ze.getName();
 
-                    destPath = path + File.separator + genPathFile(zeName);
+                    String filePath = genPathFile(zeName);
+
+                    destPath = path + File.separator + filePath;
 
                     File fo = new File(destPath);
 
                     if (pathFilter.accept(pathPrefix != null ? pathPrefix + "/"
                             + zeName : zeName)) {
+                        unzippedFiles.put(filePath, fo.getAbsolutePath());
                         if (ze.isDirectory()) {
                             fo.mkdirs();
                         } else if (overwrite || !fo.exists()) {
@@ -246,6 +252,7 @@ public class JahiaArchiveFileHandler {
                                      JahiaException.ERROR_SEVERITY, ioe);
 
         }
+        return unzippedFiles;
 
     }
 
@@ -253,7 +260,7 @@ public class JahiaArchiveFileHandler {
      * Extract an entry of file type in the jar file
      * Return a File Object reference to the uncompressed file
      *
-     * @param (String) entryName, the entry name
+     * @param entryName, the entry name
      * @return (File) fo, a File Handler to the file ( It's a temporary file )
      */
     public File extractFile (String entryName)
@@ -314,8 +321,8 @@ public class JahiaArchiveFileHandler {
      * Extract an entry in a gived folder. If this entry is a directory,
      * all its contents are extracted too.
      *
-     * @param (String) entryName, the name of an entry in the jar
-     * @param (String) destPath, the path to the destination folder
+     * @param entryName, the name of an entry in the jar
+     * @param destPath, the path to the destination folder
      */
     public void extractEntry (String entryName,
                               String destPath)
@@ -421,7 +428,7 @@ public class JahiaArchiveFileHandler {
     /**
      * Return an entry in the jar file of the gived name or null if not found
      *
-     * @param (String) entryName the entry name
+     * @param entryName the entry name
      * @return (ZipEntry) the entry
      */
     public ZipEntry getEntry (String entryName) {

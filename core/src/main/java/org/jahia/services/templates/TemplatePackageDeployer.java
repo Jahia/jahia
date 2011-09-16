@@ -53,6 +53,10 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRObservationManager;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 import org.slf4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.importexport.ImportExportService;
@@ -65,13 +69,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.web.context.ServletContextAware;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
@@ -335,11 +333,37 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         logger.info("...finished scanning shared modules directory.");
     }
 
-    private void deployPackage(File templateWar) {
+    private class TracingFileFilter implements FileFilter {
+
+        private Map<String,String> copiedFiles = new TreeMap<String,String>();
+        private File sourceDir;
+        private File destDir;
+
+        public TracingFileFilter(File sourceDir, File destDir) {
+            this.sourceDir = sourceDir;
+            this.destDir = destDir;
+        }
+
+        public boolean accept(File file) {
+            String sourceDirAbsPath = sourceDir.getAbsolutePath();
+            if (file.getAbsolutePath().startsWith(sourceDirAbsPath)) {
+                String fileRelativePath = file.getAbsolutePath().substring(sourceDirAbsPath.length());
+                String fileDestPath = destDir.getAbsolutePath() + fileRelativePath;
+                copiedFiles.put(fileRelativePath, fileDestPath);
+            }
+            return true;
+        }
+
+        public Map<String,String> getCopiedFiles() {
+            return copiedFiles;
+        }
+    }
+
+    private Map<String,String> deployPackage(File templateWar) {
         String packageName = null;
         String rootFolder = null;
         String implementationVersionStr = null;
-        List<File> deployedFiles = new ArrayList<File>();
+        Map<String,String> deployedFiles = new TreeMap<String,String>();
         try {
             JarFile jarFile = new JarFile(templateWar);
             packageName = (String) jarFile.getManifest().getMainAttributes().get(new Attributes.Name("package-name"));
@@ -374,12 +398,12 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             tmplRootFolder.mkdirs();
 
             try {
-                new JahiaArchiveFileHandler(templateWar.getPath()).unzip(tmplRootFolder.getAbsolutePath(), TEMPLATE_FILTER);
-                Collection<File> unzippedFiles = FileUtils.listFiles(tmplRootFolder, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-                deployedFiles.addAll(unzippedFiles);
+                JahiaArchiveFileHandler archiveFileHandler = new JahiaArchiveFileHandler(templateWar.getPath());
+                Map<String,String> unzippedFiles = archiveFileHandler.unzip(tmplRootFolder.getAbsolutePath(), TEMPLATE_FILTER);
+                deployedFiles.putAll(unzippedFiles);
             } catch (Exception e) {
                 logger.error("Cannot unzip file: " + templateWar, e);
-                return;
+                return deployedFiles;
             }
             
             // deploy classes
@@ -388,9 +412,9 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 if (classesFolder.exists()) {
                     if (classesFolder.list().length > 0) {
                         logger.info("Deploying classes for module " + packageName);
-                        FileUtils.copyDirectory(classesFolder, new File(settingsBean.getClassDiskPath()));
-                        Collection<File> classesFiles = FileUtils.listFiles(classesFolder, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-                        deployedFiles.addAll(classesFiles);
+                        TracingFileFilter tracingFileFilter = new TracingFileFilter(classesFolder, new File(settingsBean.getClassDiskPath()));
+                        FileUtils.copyDirectory(classesFolder, new File(settingsBean.getClassDiskPath()), tracingFileFilter);
+                        deployedFiles.putAll(tracingFileFilter.getCopiedFiles());
                     }
                     FileUtils.deleteDirectory(new File(tmplRootFolder, "WEB-INF/classes"));
                 }
@@ -404,9 +428,9 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 if (libFolder.exists()) {
                     if (libFolder.list().length > 0) {
                         logger.info("Deploying JARs for module " + packageName);
-                        FileUtils.copyDirectory(libFolder, new File(servletContext.getRealPath("/WEB-INF/lib")));
-                        Collection<File> libFiles = FileUtils.listFiles(libFolder, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-                        deployedFiles.addAll(libFiles);
+                        TracingFileFilter tracingFileFilter = new TracingFileFilter(libFolder, new File(servletContext.getRealPath("/WEB-INF/lib")));
+                        FileUtils.copyDirectory(libFolder, new File(servletContext.getRealPath("/WEB-INF/lib")), tracingFileFilter);
+                        deployedFiles.putAll(tracingFileFilter.getCopiedFiles());
                     }
                     FileUtils.deleteDirectory(new File(tmplRootFolder, "WEB-INF/lib"));
                 }
@@ -425,9 +449,57 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 initialImports.add(pack);
             }
 
+            File metaInfFolder = new File(tmplRootFolder, "META-INF");
+            if (!metaInfFolder.exists()) {
+                metaInfFolder.mkdirs();
+            }
+            createInstallationXMLfile(new File(metaInfFolder, "installed.xml"), deployedFiles);
+
             logger.info("Package '" + packageName + "' successfully deployed");
         }
+        return deployedFiles;
     }
+
+    /**
+     * Create the fix descriptor as a XML file into the specified save location.
+     */
+    private void createInstallationXMLfile(File installedFile, Map<String,String> deployedFiles) {
+        FileOutputStream os = null;
+        try {
+            os = new FileOutputStream(installedFile);
+            Document description = getDOM(deployedFiles);
+            XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
+            out.output(description, os);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (os != null)
+                    os.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private Document getDOM(Map<String,String> deployedFiles) {
+        Element moduleElement = new Element("module");
+
+        // TODO we should add module metadata here
+
+        Element installedFiles = new Element("installed");
+        for (Map.Entry<String,String> deployedFile : deployedFiles.entrySet()) {
+            Element deployedFileElement = new Element("file");
+            deployedFileElement.setAttribute("source", deployedFile.getKey());
+            deployedFileElement.setAttribute("destination", deployedFile.getValue());
+            installedFiles.addContent(deployedFileElement);
+        }
+
+        moduleElement.addContent(installedFiles);
+
+        return new Document(moduleElement);
+    }
+
 
     private void performInitialImport(final JahiaTemplatesPackage pack) {
         logger.info("Starting import for the module package '" + pack.getName() + "' including: "

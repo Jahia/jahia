@@ -13,7 +13,7 @@ if (type == '') {
     type = 'content';
 }
 var displayablenodeonly = getUrlParam('displayablenodeonly');
-alert(displayablenodeonly);
+
 $(document).ready(function() {
     var queryString = "nodeTypes=" +
       encodeURIComponent(type == 'pages' ? 'jnt:page' : (type == 'images' ? 'nt:folder,jmix:image,jnt:virtualsite' : (type == 'files' ? 'nt:folder,nt:file,jnt:virtualsite' : 'jnt:content,jnt:page,jnt:virtualsite'))) +

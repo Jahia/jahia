@@ -12,9 +12,9 @@
 	<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
 	</c:if>
 	<json:property name="text" value="${not empty title ? title.string : currentNode.name}"/>
-	<c:if test="${empty selectableNodeTypes || jcr:isNodeType(currentNode, selectableNodeTypes)}">
+	<c:if test="${(empty selectableNodeTypes || jcr:isNodeType(currentNode, selectableNodeTypes)) and (empty param.displayablenodeonly or (param.displayablenodeonly eq 'true' and jcr:isDisplayable(currentNode, renderContext)))}">
 		<json:property name="classes" value="selectable"/>
-	</c:if>
+    </c:if>
 	<json:property name="hasChildren" value="${not empty nodeTypes ? jcr:hasChildrenOfType(currentNode, nodeTypes) : currentNode.nodes.size > 0}"/>
 </json:object>
 </c:if>

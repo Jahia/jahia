@@ -362,12 +362,14 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         String packageName = null;
         String rootFolder = null;
         String implementationVersionStr = null;
+        String depends = null;
         Calendar packageTimestamp = Calendar.getInstance();
         Map<String,String> deployedFiles = new TreeMap<String,String>();
         try {
             JarFile jarFile = new JarFile(templateWar);
             packageName = (String) jarFile.getManifest().getMainAttributes().get(new Attributes.Name("package-name"));
             rootFolder = (String) jarFile.getManifest().getMainAttributes().get(new Attributes.Name("root-folder"));
+            depends = jarFile.getManifest().getMainAttributes().getValue("depends");
             long manifestTime = jarFile.getEntry("META-INF/MANIFEST.MF").getTime();
             packageTimestamp.setTimeInMillis(manifestTime);
             implementationVersionStr = (String) jarFile.getManifest().getMainAttributes().get(new Attributes.Name("Implementation-Version"));
@@ -456,7 +458,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 metaInfFolder.mkdirs();
             }
             createDeploymentXMLFile(new File(metaInfFolder, "deployed.xml"), deployedFiles,
-                    packageName, rootFolder, implementationVersionStr, packageTimestamp);
+                    templateWar, packageName, depends, rootFolder, implementationVersionStr, packageTimestamp);
 
             logger.info("Package '" + packageName + "' successfully deployed");
         }
@@ -465,11 +467,11 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     /**
      * Create the fix descriptor as a XML file into the specified save location.
      */
-    private void createDeploymentXMLFile(File installedFile, Map<String, String> deployedFiles, String packageName, String rootFolder, String implementationVersionStr, Calendar packageTimestamp) {
+    private void createDeploymentXMLFile(File installedFile, Map<String, String> deployedFiles, File packageWar, String packageName, String depends, String rootFolder, String implementationVersionStr, Calendar packageTimestamp) {
         FileOutputStream os = null;
         try {
             os = new FileOutputStream(installedFile);
-            Document description = getDOM(deployedFiles, packageName, rootFolder, implementationVersionStr, packageTimestamp);
+            Document description = getDOM(deployedFiles, packageWar, packageName, depends, rootFolder, implementationVersionStr, packageTimestamp);
             XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
             out.output(description, os);
         } catch (Exception e) {
@@ -484,17 +486,26 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         }
     }
 
-    private Document getDOM(Map<String,String> deployedFiles, String packageName, String rootFolder, String implementationVersionStr, Calendar packageTimestamp) {
+    private Document getDOM(Map<String,String> deployedFiles, File packageWar, String packageName, String depends, String rootFolder, String implementationVersionStr, Calendar packageTimestamp) {
         Element moduleElement = new Element("module");
 
         moduleElement.addContent(new Element("name").setText(packageName));
+        if (depends != null) {
+            moduleElement.addContent(new Element("depends").setText(depends));
+        }
         moduleElement.addContent(new Element("rootFolder").setText(rootFolder));
-        moduleElement.addContent(new Element("version").setText(implementationVersionStr));
+        if (implementationVersionStr != null) {
+            moduleElement.addContent(new Element("version").setText(implementationVersionStr));
+        }
         String iso8601BuildTimestamp = ISO8601.format(packageTimestamp);
         moduleElement.addContent(new Element("build-timestamp").setText(iso8601BuildTimestamp));
         Calendar nowCalendar = Calendar.getInstance();
         String iso8601DeploymentTimestamp = ISO8601.format(nowCalendar);
         moduleElement.addContent(new Element("deployment-timestamp").setText(iso8601DeploymentTimestamp));
+        Element packageElement = new Element("package");
+        packageElement.setAttribute("name", packageWar.getName());
+        packageElement.setAttribute("path", packageWar.getAbsolutePath());
+        moduleElement.addContent(packageElement);
 
         Element installedFiles = new Element("deployed");
         for (Map.Entry<String,String> deployedFile : deployedFiles.entrySet()) {

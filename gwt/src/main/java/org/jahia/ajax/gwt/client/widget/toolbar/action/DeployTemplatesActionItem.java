@@ -142,7 +142,8 @@ public class DeployTemplatesActionItem extends BaseActionItem {
             item.setEnabled(false);
             menu.add(item);
         } else {
-            MenuItem item = new MenuItem(Messages.get("label.deploy.on.all.sites", "Deploy on all sites with this templates set"));
+            MenuItem item = new MenuItem(Messages.get("label.deploy."+JahiaGWTParameters.getSiteNode().get("j:siteType")+".on.all.sites",
+                    Messages.get("label.deploy.module.on.all.sites", "Deploy on all sites with this module")));
             addDeployAllListener(item,linker);
             menu.add(item);
         }

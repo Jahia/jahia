@@ -63,6 +63,9 @@ import java.util.Map;
  * Toolbar action item to copy template to selected site
  */
 public class DeployTemplatesActionItem extends BaseActionItem {
+
+    private static final long serialVersionUID = -2706399091331664331L;
+
     private static List<DeployTemplatesActionItem> instances = new ArrayList<DeployTemplatesActionItem>();
 
     private transient List<GWTJahiaSite> sites = new ArrayList<GWTJahiaSite>();
@@ -109,14 +112,14 @@ public class DeployTemplatesActionItem extends BaseActionItem {
         final Menu menu = new Menu();
 
         menu.removeAll();
-
+        
         if ("templatesSet".equals(JahiaGWTParameters.getSiteNode().get("j:siteType"))) {
             if (sitesMap != null && sitesMap.containsKey(JahiaGWTParameters.getSiteKey())) {
                 for (GWTJahiaSite site : sitesMap.get(JahiaGWTParameters.getSiteKey())) {
                     MenuItem item = new MenuItem(site.getSiteKey());
                     addDeployListener(item, linker, "/sites/" + site.getSiteKey());
                     item.setData("site",site);
-                    menu.add(item);
+                    addItemToMenu(item, menu);
                 }
             }
         } else {
@@ -134,27 +137,33 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                 MenuItem item = new MenuItem(label);
                 addDeployListener(item, linker, "/sites/" + site.getSiteKey());
                 item.setData("site",site);
-                menu.add(item);
+                addItemToMenu(item, menu);
             }
         }
         if (menu.getItems().isEmpty()) {
             MenuItem item = new MenuItem(Messages.get("label.nosites", "No target sites"));
             item.setEnabled(false);
             menu.add(item);
-        } else {
-            MenuItem item = new MenuItem(Messages.get("label.deploy."+JahiaGWTParameters.getSiteNode().get("j:siteType")+".on.all.sites",
-                    Messages.get("label.deploy.module.on.all.sites", "Deploy on all sites with this module")));
-            addDeployAllListener(item,linker);
-            menu.add(item);
         }
         setSubMenu(menu);
         setEnabled(true);
+    }
+    
+    private void addItemToMenu(MenuItem item, Menu menu) {
+        if (menu.getItems().isEmpty()) {
+            MenuItem firstItem = new MenuItem(Messages.get("label.deploy."+JahiaGWTParameters.getSiteNode().get("j:siteType")+".on.all.sites",
+                    Messages.get("label.deploy.module.on.all.sites", "Deploy on all sites with this module")));
+            addDeployAllListener(firstItem,linker);
+            menu.add(firstItem);
+        }
+        menu.add(item);
     }
 
     private void addDeployAllListener(final MenuItem item, final Linker linker) {
         item.addSelectionListener(new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
+                boolean noDeployment = true;
                 GWTJahiaNode node = linker.getSelectionContext().getMainNode();
                 String nodePath = node.getPath();
 
@@ -164,9 +173,10 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                     if (sitesMap != null && sitesMap.containsKey(JahiaGWTParameters.getSiteKey())) {
                         for (final GWTJahiaSite site : sitesMap.get(JahiaGWTParameters.getSiteKey())) {
                             linker.loading(Messages.getWithArgs(
-                                    "org.jahia.admin.site.ManageTemplates.deploymentInProgressonSite",
-                                    "Your templates are being deployed on site {0}...",
+                                    "org.jahia.admin.site.ManageTemplates.deploymentInProgressOnSite",
+                                    "Deployment in progress on site {0}...",
                                     new Object[]{site.getSiteName()}));
+                            noDeployment = false;
                             deploy(nodePath, site, linker);
                         }
                     }
@@ -177,9 +187,21 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                             if (!site.getInstalledModules().containsAll(dependencies)) {
                                 continue;
                             }
+                        }
+                        if (site.getInstalledModules().contains(JahiaGWTParameters.getSiteKey())) {
+                            linker.loading(Messages.getWithArgs(
+                                    "org.jahia.admin.site.ManageTemplates.deploymentInProgressOnSite",
+                                    "Deployment in progress on site {0}...",
+                                    new Object[]{site.getSiteName()}));
+                            noDeployment = false;
                             deploy(nodePath, site, linker);
                         }
                     }
+                }
+                if (noDeployment) {
+                    Info.display(Messages.get("label.templatesDeploy", "Deploy"), Messages.get(
+                            "info.noDeployment.noSite.with."+JahiaGWTParameters.getSiteNode().get("j:siteType"),
+                            Messages.get("info.noDeployment.noSite.with.module", "No deployment was done, as no site was found having this module.")));
                 }
             }
         });
@@ -187,20 +209,20 @@ public class DeployTemplatesActionItem extends BaseActionItem {
 
     private void deploy(String nodePath, final GWTJahiaSite site, final Linker linker) {
         JahiaContentManagementService.App.getInstance()
-    .deployTemplates(nodePath, "/sites/"+site.getSiteKey(), new BaseAsyncCallback() {
+    .deployTemplates(nodePath, "/sites/"+site.getSiteKey(), new BaseAsyncCallback<Object>() {
         public void onApplicationFailure(Throwable caught) {
             linker.loaded();
             getSites(linker);
-            Info.display(Messages.get("label.templatesDeploy", "Deploy Templates"), Messages.getWithArgs(
-                    "org.jahia.admin.site.ManageTemplates.deploymentErroronsite",
-                    "Error during your templates deployment on site {0}", new Object[]{site.getSiteName()}));
+            Info.display(Messages.get("label.templatesDeploy", "Deploy"), Messages.getWithArgs(
+                    "org.jahia.admin.site.ManageTemplates.deploymentErrorOnSite",
+                    "Error during deployment on site {0}", new Object[]{site.getSiteName()}));
         }
 
         public void onSuccess(Object result) {
             linker.loaded();
-            Info.display(Messages.get("label.templatesDeploy", "Deploy Templates"), Messages.getWithArgs(
-                    "org.jahia.admin.site.ManageTemplates.templatesDeployedonsite",
-                    "Your templates deployment is successful on site {0}", new Object[]{site.getSiteName()}));
+            Info.display(Messages.get("label.templatesDeploy", "Deploy"), Messages.getWithArgs(
+                    "org.jahia.admin.site.ManageTemplates.templatesDeployedOnSite",
+                    "Deployment was successful on site {0}", new Object[]{site.getSiteName()}));
         }
     });
     }
@@ -214,13 +236,16 @@ public class DeployTemplatesActionItem extends BaseActionItem {
 
                 final String[] parts = nodePath.split("/");
                 nodePath = "/" + parts[1] + "/" + parts[2];
-                linker.loading(Messages.get("org.jahia.admin.site.ManageTemplates.deploymentInProgress", "Your templates are being deployed..."));
+                linker.loading(Messages.get("org.jahia.admin.site.ManageTemplates.deploymentInProgress", 
+                        "Deployment in progress..."));
                 JahiaContentManagementService.App.getInstance()
-                        .deployTemplates(nodePath, destinationPath, new BaseAsyncCallback() {
+                        .deployTemplates(nodePath, destinationPath, new BaseAsyncCallback<Object>() {
                             public void onApplicationFailure(Throwable caught) {
                                 linker.loaded();
                                 getSites(linker);
-                                Info.display(Messages.get("label.templatesDeploy", "Deploy Templates"), Messages.get("org.jahia.admin.site.ManageTemplates.deploymentError", "Error during your templates deployment"));
+                                Info.display(Messages.get("label.templatesDeploy", "Deploy"), 
+                                        Messages.get("org.jahia.admin.site.ManageTemplates.deploymentError", 
+                                                "Error during deployment"));
                             }
 
                             public void onSuccess(Object result) {
@@ -230,7 +255,9 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                                     site.getInstalledModules().add(parts[2]);
                                     item.setText(item.getText()+" *");
                                 }
-                                Info.display(Messages.get("label.templatesDeploy", "Deploy Templates"), Messages.get("org.jahia.admin.site.ManageTemplates.templatesDeployed", "Your templates deployment is successful"));
+                                Info.display(Messages.get("label.templatesDeploy", "Deploy"), 
+                                        Messages.get("org.jahia.admin.site.ManageTemplates.templatesDeployed", 
+                                                "Deployment was successful"));
                             }
                         });
             }

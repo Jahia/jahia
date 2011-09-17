@@ -349,7 +349,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             String sourceDirAbsPath = sourceDir.getAbsolutePath() + File.separator;
             if (file.getAbsolutePath().startsWith(sourceDirAbsPath)) {
                 String fileRelativePath = file.getAbsolutePath().substring(sourceDirAbsPath.length());
-                String fileDestPath = destDir.getAbsolutePath() + fileRelativePath;
+                String fileDestPath = destDir.getAbsolutePath() + File.separator + fileRelativePath;
                 String referenceDirPath = referenceDir.getAbsolutePath() + File.separator;
                 String referencePath = fileRelativePath;
                 if (file.getAbsolutePath().startsWith(referenceDirPath)) {

@@ -335,20 +335,27 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     private class TracingFileFilter implements FileFilter {
 
         private Map<String,String> copiedFiles = new TreeMap<String,String>();
+        private File referenceDir;
         private File sourceDir;
         private File destDir;
 
-        public TracingFileFilter(File sourceDir, File destDir) {
+        public TracingFileFilter(File sourceDir, File destDir, File referenceDir) {
             this.sourceDir = sourceDir;
             this.destDir = destDir;
+            this.referenceDir = referenceDir;
         }
 
         public boolean accept(File file) {
-            String sourceDirAbsPath = sourceDir.getAbsolutePath();
+            String sourceDirAbsPath = sourceDir.getAbsolutePath() + File.separator;
             if (file.getAbsolutePath().startsWith(sourceDirAbsPath)) {
                 String fileRelativePath = file.getAbsolutePath().substring(sourceDirAbsPath.length());
                 String fileDestPath = destDir.getAbsolutePath() + fileRelativePath;
-                copiedFiles.put(fileRelativePath, fileDestPath);
+                String referenceDirPath = referenceDir.getAbsolutePath() + File.separator;
+                String referencePath = fileRelativePath;
+                if (file.getAbsolutePath().startsWith(referenceDirPath)) {
+                    referencePath = file.getAbsolutePath().substring(referenceDirPath.length());
+                }
+                copiedFiles.put(referencePath, fileDestPath);
             }
             return true;
         }
@@ -364,7 +371,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         String implementationVersionStr = null;
         String depends = null;
         Calendar packageTimestamp = Calendar.getInstance();
-        // TODO there are still some bugs in the generated paths, we must fix the list !
+        // TODO there are still some bugs in the generated paths, we must fix the list, maybe exclude directories ?
         Map<String,String> deployedFiles = new TreeMap<String,String>();
         try {
             JarFile jarFile = new JarFile(templateWar);
@@ -417,7 +424,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 if (classesFolder.exists()) {
                     if (classesFolder.list().length > 0) {
                         logger.info("Deploying classes for module " + packageName);
-                        TracingFileFilter tracingFileFilter = new TracingFileFilter(classesFolder, new File(settingsBean.getClassDiskPath()));
+                        TracingFileFilter tracingFileFilter = new TracingFileFilter(classesFolder, new File(settingsBean.getClassDiskPath()), tmplRootFolder);
                         FileUtils.copyDirectory(classesFolder, new File(settingsBean.getClassDiskPath()), tracingFileFilter);
                         deployedFiles.putAll(tracingFileFilter.getCopiedFiles());
                     }
@@ -433,7 +440,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 if (libFolder.exists()) {
                     if (libFolder.list().length > 0) {
                         logger.info("Deploying JARs for module " + packageName);
-                        TracingFileFilter tracingFileFilter = new TracingFileFilter(libFolder, new File(servletContext.getRealPath("/WEB-INF/lib")));
+                        TracingFileFilter tracingFileFilter = new TracingFileFilter(libFolder, new File(servletContext.getRealPath("/WEB-INF/lib")), tmplRootFolder);
                         FileUtils.copyDirectory(libFolder, new File(servletContext.getRealPath("/WEB-INF/lib")), tracingFileFilter);
                         deployedFiles.putAll(tracingFileFilter.getCopiedFiles());
                     }

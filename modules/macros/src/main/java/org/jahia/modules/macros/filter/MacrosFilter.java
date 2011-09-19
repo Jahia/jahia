@@ -104,7 +104,7 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
         while (matcher.find()) {
             evaluated = true;
             String macroName = matcher.group(1);
-            String[] macro = getMarco(macroName);
+            String[] macro = getMacro(macroName);
             if (macro != null) {
                 try {
                     // execute macro
@@ -155,7 +155,7 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
         return bindings;
     }
 
-    protected String[] getMarco(String macroName) {
+    protected String[] getMacro(String macroName) {
         String[] macro = scriptCache.get(macroName);
 
         if (macro != null) {

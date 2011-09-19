@@ -534,15 +534,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             JCRPublicationService.getInstance().publishByInfoList(tree, "default", "live", null);
         }
 
-        JCRPropertyWrapper installedModules = destinationNode.getProperty("j:installedModules");
-        Value[] values = installedModules.getValues();
-        for (Value value : values) {
-            if (value.getString().equals(originalNode.getName())) {
-                return;
-            }
-        }
-        destinationNode.checkout();
-        installedModules.addValue(originalNode.getName());
+        addDependencyValue(originalNode, destinationNode, "j:installedModules");
+        addDependencyValue(originalNode, destinationNode, "j:dependencies");
+
         session.save();
         try {
             List<String> modules = siteService.getSiteByKey(destinationNode.getName()).getInstalledModules();
@@ -552,6 +546,23 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         } catch (JahiaException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+    }
+
+    private boolean addDependencyValue(JCRNodeWrapper originalNode, JCRNodeWrapper destinationNode, String propertyName) throws RepositoryException {
+        if (destinationNode.hasProperty(propertyName)) {
+            JCRPropertyWrapper installedModules = destinationNode.getProperty(propertyName);
+            Value[] values = installedModules.getValues();
+            for (Value value : values) {
+                if (value.getString().equals(originalNode.getName())) {
+                    return true;
+                }
+            }
+            destinationNode.checkout();
+            installedModules.addValue(originalNode.getName());
+        } else {
+            destinationNode.setProperty(propertyName, new String[] {originalNode.getName()});
+        }
+        return false;
     }
 
     public void synchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session, String moduleName,

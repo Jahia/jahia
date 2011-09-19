@@ -457,6 +457,10 @@
  - j:dependencies (string) multiple protected hidden nofulltext
  + * (nt:base)
 
+[jnt:versionInfo] > nt:base
+ - j:version
+ - j:deployementDate (date)
+
 //---------------------------------------------------------
 // Imports
 //---------------------------------------------------------

@@ -47,6 +47,7 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.*;
 import org.apache.jackrabbit.util.ISO8601;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRObservationManager;
@@ -73,10 +74,7 @@ import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 
-import javax.jcr.ImportUUIDBehavior;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
@@ -254,7 +252,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     private Timer watchdog;
 
     private List<JahiaTemplatesPackage> initialImports = new LinkedList<JahiaTemplatesPackage>();
-    
+
     private TemplatePackageApplicationContextLoader contextLoader;
 
     private ServletContext servletContext;
@@ -375,8 +373,9 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         Map<String,String> deployedFiles = new TreeMap<String,String>();
         try {
             JarFile jarFile = new JarFile(templateWar);
-            packageName = (String) jarFile.getManifest().getMainAttributes().get(new Attributes.Name("package-name"));
-            rootFolder = (String) jarFile.getManifest().getMainAttributes().get(new Attributes.Name("root-folder"));
+            Attributes mainAttributes = jarFile.getManifest().getMainAttributes();
+            packageName = (String) mainAttributes.get(new Attributes.Name("package-name"));
+            rootFolder = (String) mainAttributes.get(new Attributes.Name("root-folder"));
             depends = jarFile.getManifest().getMainAttributes().getValue("depends");
             long manifestTime = jarFile.getEntry("META-INF/MANIFEST.MF").getTime();
             packageTimestamp.setTimeInMillis(manifestTime);
@@ -417,7 +416,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 logger.error("Cannot unzip file: " + templateWar, e);
                 return;
             }
-            
+
             // deploy classes
             try {
                 File classesFolder = new File(tmplRootFolder, "WEB-INF/classes");
@@ -457,9 +456,11 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             }
 
             JahiaTemplatesPackage pack = JahiaTemplatesPackageHandler.build(tmplRootFolder);
-            if (!pack.getInitialImports().isEmpty()) {
-                initialImports.add(pack);
-            }
+
+            initialImports.add(pack);
+//            if (!pack.getInitialImports().isEmpty()) {
+//                initialImports.add(pack);
+//            }
 
             File metaInfFolder = new File(tmplRootFolder, "META-INF");
             if (!metaInfFolder.exists()) {
@@ -535,6 +536,8 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    initRepository(session, pack);
+                    if (!pack.getInitialImports().isEmpty()) {
                         cleanTemplates(pack.getRootFolder(), session);
                         for (String imp : pack.getInitialImports()) {
                             String targetPath = "/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
@@ -557,7 +560,8 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                                 logger.error("Unable to import content for package '" + pack.getName() + "' from file " + imp
                                         + ". Cause: " + e.getMessage(), e);
                             }
-                }
+                        }
+                    }
                     return null;
                 }
             });
@@ -570,6 +574,38 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         logger.info("... finished initial import for module package '" + pack.getName() + "'.");
         
     }
+
+    private void initRepository(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
+        if (!session.nodeExists("/templateSets")) {
+            session.getRootNode().addNode("templateSets", "jnt:templateSets");
+        }
+        JCRNodeWrapper modules = session.getNode("/templateSets");
+        JCRNodeWrapper m;
+        if (!modules.hasNode(pack.getRootFolder())) {
+            m = modules.addNode(pack.getRootFolder(), "jnt:virtualsite");
+            m.setProperty("j:title", pack.getName());
+            m.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(pack.getName())});
+            m.setProperty("j:siteType","module");
+        } else {
+            m = modules.getNode(pack.getRootFolder());
+        }
+        JCRNodeWrapper v;
+        if (!m.hasNode("j:versionInfo")) {
+            v = m.addNode("j:versionInfo", "jnt:versionInfo" );
+        } else {
+            v = m.getNode("j:versionInfo");
+        }
+        if (v.hasProperty("j:version")) {
+            String s = v.getProperty("j:version").getString();
+            if (s.equals(pack.getVersion().toString())) {
+                // same version
+            }
+        }
+        v.setProperty("j:version", pack.getVersion().toString());
+        v.setProperty("j:deployementDate", new GregorianCalendar());
+        session.save();
+    }
+
 
     public void performInitialImport() {
         if (!initialImports.isEmpty()) {

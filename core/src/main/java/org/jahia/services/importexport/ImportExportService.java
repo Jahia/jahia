@@ -74,6 +74,7 @@ public interface ImportExportService {
     String INCLUDE_SITE_INFOS = "siteinfos";
     String INCLUDE_ALL_FILES = "allfiles";
     String INCLUDE_DEFINITIONS = "definitions";
+    String INCLUDE_LIVE_EXPORT = "includeLive";
     String VIEW_CONTENT = "content";
     String VIEW_VERSION = "version";
     String VIEW_METADATA = "metadata";

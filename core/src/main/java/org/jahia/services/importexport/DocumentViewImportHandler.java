@@ -116,8 +116,10 @@ public class DocumentViewImportHandler extends DefaultHandler {
     private JCRSessionWrapper session;
     private Map<String, String> placeHoldersMap = new HashMap<String, String>();
 
+    private boolean importUserGeneratedContent = false;
+
     private List<String> noSubNodesImport = Arrays.asList("jnt:importDropBox", "jnt:referencesKeeper");
-    private List<String> noUpdateTypes = Arrays.asList("jnt:virtualsitesFolder", "jnt:usersFolder", "jnt:groupsFolder");
+    private List<String> noUpdateTypes = Arrays.asList("jnt:virtualsitesFolder", "jnt:usersFolder", "jnt:groupsFolder", "jnt:user");
 
     public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, String siteKey) throws IOException {
         this(session, rootPath, null, null, siteKey);
@@ -182,6 +184,11 @@ public class DocumentViewImportHandler extends DefaultHandler {
             }
         }
 
+        if ("live".equals(atts.getValue("j:originWS")) && !importUserGeneratedContent) {
+            error ++;
+            return;
+        }
+
         String decodedLocalName = ISO9075.decode(localName);
 
         for (Map.Entry<Pattern, String> entry : replacements.entrySet()) {
@@ -244,6 +251,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
             } catch (PathNotFoundException e) {
                 isValid = false;
             }
+            if (("live".equals(atts.getValue("j:originWS")) == importUserGeneratedContent)) {
             if (!isValid || child.getDefinition().allowsSameNameSiblings()) {
                 if (nodes.peek().hasPermission("jcr:addChildNodes")) {
                     if ("jnt:acl".equals(pt) && !nodes.peek().isNodeType("jmix:accessControlled")) {
@@ -355,6 +363,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     }
                 }
             }
+            }
             if (child == null) {
                 error++;
             } else {
@@ -416,7 +425,6 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 }
             } else if (attrName.equals(Constants.JCR_UUID)) {
                 uuidMapping.put(attrValue, child.getIdentifier());
-            } else if (attrName.equals("j:password") && child.hasProperty("j:password")) {
             } else {
                 for (Map.Entry<Pattern, String> entry : replacements.entrySet()) {
                     attrValue = entry.getKey().matcher(attrValue).replaceAll(entry.getValue());
@@ -600,6 +608,14 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     public void setNoUpdateTypes(List<String> noUpdateTypes) {
         this.noUpdateTypes = noUpdateTypes;
+    }
+
+    public boolean isImportUserGeneratedContent() {
+        return importUserGeneratedContent;
+    }
+
+    public void setImportUserGeneratedContent(boolean importUserGeneratedContent) {
+        this.importUserGeneratedContent = importUserGeneratedContent;
     }
 
     public void setReplacements(Map<String, String> replacements) {

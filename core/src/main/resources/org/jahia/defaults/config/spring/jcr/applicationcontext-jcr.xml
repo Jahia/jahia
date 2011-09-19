@@ -379,11 +379,12 @@
     <util:set id="DocumentViewImportHandler.propertiesToSkip">
         <value>jcr:primaryType</value>
         <value>j:share</value>
+        <value>j:originWS</value>
         <value>jcr:mixinTypes</value>
         <value>j:siteId</value>
-        <value>j:lastPublished</value>
-        <value>j:lastPublishedBy</value>
-        <value>j:published</value>
+        <!--<value>j:lastPublished</value>-->
+        <!--<value>j:lastPublishedBy</value>-->
+        <!--<value>j:published</value>-->
         <value>jcr:created</value>
         <value>jcr:createdBy</value>
         <value>jcr:mimeType</value>

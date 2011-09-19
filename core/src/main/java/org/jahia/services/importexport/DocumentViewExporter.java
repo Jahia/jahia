@@ -79,7 +79,7 @@ public class DocumentViewExporter {
     private JCRNodeWrapper rootNode;
     private Stack<String> stack;
 
-    private List<String> excluded = Arrays.asList("jcr:predecessors", "j:originWS", "j:nodename", "jcr:versionHistory", "jcr:baseVersion", "jcr:isCheckedOut");
+    private List<String> propertiestoIgnore = Arrays.asList("jcr:predecessors", "j:nodename", "jcr:versionHistory", "jcr:baseVersion", "jcr:isCheckedOut");
 
     public DocumentViewExporter(JCRSessionWrapper session, ContentHandler ch, boolean skipBinary, boolean noRecurse) {
         this.session = session;
@@ -207,7 +207,7 @@ public class DocumentViewExporter {
             for (String prop : sortedProps) {
                 try {
                     Property property = node.getRealNode().getProperty(prop);
-                    if ((property.getType() != PropertyType.BINARY || !skipBinary) && !excluded.contains(property.getName())) {
+                    if ((property.getType() != PropertyType.BINARY || !skipBinary) && !propertiestoIgnore.contains(property.getName())) {
                         String key = property.getName();
                         String prefix = null;
                         String localname = key;
@@ -303,5 +303,11 @@ public class DocumentViewExporter {
         ch.endElement("", qualifiedName, qualifiedName);
     }
 
+    public List<String> getPropertiestoIgnore() {
+        return propertiestoIgnore;
+    }
 
+    public void setPropertiestoIgnore(List<String> propertiestoIgnore) {
+        this.propertiestoIgnore = propertiestoIgnore;
+    }
 }

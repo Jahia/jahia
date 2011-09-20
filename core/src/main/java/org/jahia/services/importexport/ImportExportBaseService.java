@@ -396,6 +396,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 List<String> l = new ArrayList<String>(exporter.getPropertiestoIgnore());
                 l.remove("jcr:uuid");
                 exporter.setPropertiestoIgnore(l);
+                if (rootNode.getSession().getWorkspace().getName().equals(Constants.EDIT_WORKSPACE)) {
+                    exporter.setPublicationStatusSession(jcrStoreService.getSessionFactory().getCurrentUserSession("live"));
+                }
             }
             exporter.setTypesToIgnore(typesToIgnore);
             exporter.export(rootNode, sortedNodes);

@@ -473,7 +473,6 @@ public class DocumentViewImportHandler extends DefaultHandler implements ImportU
                 if (logger.isDebugEnabled()) {
                     logger.debug("Skipping property {}", attrName);
                 }
-            } else if (attrName.equals(Constants.JCR_UUID)) {
             } else {
                 for (Map.Entry<Pattern, String> entry : replacements.entrySet()) {
                     attrValue = entry.getKey().matcher(attrValue).replaceAll(entry.getValue());

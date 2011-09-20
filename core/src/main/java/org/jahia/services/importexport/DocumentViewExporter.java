@@ -44,6 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.value.ValueHelper;
+import org.jahia.services.content.JCRPublicationService;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -70,6 +71,7 @@ public class DocumentViewExporter {
     private static final String NS_URI = "http://www.w3.org/2000/xmlns/";
 
     private JCRSessionWrapper session;
+    private JCRSessionWrapper publicationStatusSession;
     private ContentHandler ch;
     private boolean noRecurse;
     private boolean skipBinary;
@@ -107,6 +109,9 @@ public class DocumentViewExporter {
         this.typesToIgnore = typesToIgnore;
     }
 
+    public void setPublicationStatusSession(JCRSessionWrapper publicationStatusSession) {
+        this.publicationStatusSession = publicationStatusSession;
+    }
 
     public void export(JCRNodeWrapper node) throws SAXException, RepositoryException {
         TreeSet<JCRNodeWrapper> set = new TreeSet<JCRNodeWrapper>();
@@ -243,7 +248,10 @@ public class DocumentViewExporter {
                 } catch (RepositoryException e) {
                     logger.error("Cannot export property",e);
                 }
-
+            }
+            if (publicationStatusSession != null) {
+                String s = Integer.toString(JCRPublicationService.getInstance().getStatus(node, publicationStatusSession, null));
+                atts.addAttribute(prefixes.get("j"), "publicationStatus", "j:publicationStatus", CDATA, s);
             }
 
             String encodedName = ISO9075.encode(node.getName());

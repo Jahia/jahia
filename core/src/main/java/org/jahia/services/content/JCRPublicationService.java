@@ -1028,85 +1028,17 @@ public class JCRPublicationService extends JahiaService {
             }
         }
 
-        JCRNodeWrapper publishedNode = null;
-        try {
-            publishedNode = destinationSession.getNodeByUUID(uuid);
-        } catch (ItemNotFoundException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("No live node for staging node " + node.getPath());
-            }
-        }
-        if (!node.checkLanguageValidity(languages)) {
-            info.setStatus(PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE);
-            for (String language : languages) {
-                Locale locale = LanguageCodeConverters.getLocaleFromCode(language);
-                if (node.checkI18nAndMandatoryPropertiesForLocale(locale)) {
-                    info.setStatus(PublicationInfo.MANDATORY_LANGUAGE_VALID);
-                }
-            }
-        } else if (node.hasProperty("j:published") && !node.getProperty("j:published").getBoolean()) {
-            info.setStatus(PublicationInfo.UNPUBLISHED);
-        } else if (publishedNode == null) {
-            try {
-                try {
-                    destinationSession.getNodeByUUID(node.getParent().getUUID()).getNode(node.getName());
-                } catch (UnsupportedRepositoryOperationException e) {
-                }
-                // Conflict , a node exists in live !
-                info.setStatus(PublicationInfo.CONFLICT);
-                if(languages == null || languages.isEmpty()) {
-                    info.setCanPublish(true,"");
-                } else {
-                    for (String language : languages) {
-                        info.setCanPublish(false,language);
-                    }
-                }
-                return info;
-            } catch (ItemNotFoundException e) {
-            } catch (PathNotFoundException e) {
-            }
-
-            info.setStatus(PublicationInfo.NOT_PUBLISHED);
-            if (node.isNodeType(JAHIANT_TRANSLATION)) {
-                boolean hasProperty = false;
-                final PropertyIterator iterator = node.getProperties();
-                while (iterator.hasNext() && !hasProperty) {
-                    Property property = (Property) iterator.next();
-                    hasProperty = ((ExtendedPropertyDefinition)property.getDefinition()).isInternationalized();
-                }
-                if (!hasProperty) {
-                    info.setStatus(PublicationInfo.PUBLISHED);
-                }
-            }
-        } else {
-            if (node.hasProperty("jcr:mergeFailed") || publishedNode.hasProperty("jcr:mergeFailed")) {
-                info.setStatus(PublicationInfo.CONFLICT);
-            } else if (node.getLastModifiedAsDate() == null) {
-                // No modification date - node is published
-                info.setStatus(PublicationInfo.PUBLISHED);
+        info.setStatus(getStatus(node, destinationSession, languages));
+        if (info.getStatus() == PublicationInfo.CONFLICT) {
+            if(languages == null || languages.isEmpty()) {
+                info.setCanPublish(true,"");
             } else {
-                Date modProp = node.getLastModifiedAsDate();
-                Date pubProp = node.getLastPublishedAsDate();
-                Date liveModProp = publishedNode.getLastModifiedAsDate();
-                if (modProp == null || pubProp == null || liveModProp == null) {
-                    logger.warn(info.getUuid() + " : Some property is null : " + modProp + "/" + pubProp + "/" +
-                            liveModProp);
-                    info.setStatus(PublicationInfo.MODIFIED);
-                } else {
-                    long mod = modProp.getTime();
-                    long pub = pubProp.getTime();
-                    if (mod > pub) {
-                        info.setStatus(PublicationInfo.MODIFIED);
-                    } else {
-                        info.setStatus(PublicationInfo.PUBLISHED);
-                    }
-                }
-                if (node.isNodeType("jmix:markedForDeletion")) {
-                    info.setStatus(PublicationInfo.MARKED_FOR_DELETION);
+                for (String language : languages) {
+                    info.setCanPublish(false,language);
                 }
             }
+            return info;
         }
-
         if (node.hasProperty(JAHIA_LOCKTYPES)) {
             Value[] lockTypes = node.getProperty(JAHIA_LOCKTYPES).getValues();
             for (Value lockType : lockTypes) {
@@ -1163,6 +1095,83 @@ public class JCRPublicationService extends JahiaService {
             }
         }
         return info;
+    }
+
+    public int getStatus(JCRNodeWrapper node, JCRSessionWrapper destinationSession, Set<String> languages) throws RepositoryException {
+        int status;
+        JCRNodeWrapper publishedNode = null;
+        try {
+            publishedNode = destinationSession.getNodeByUUID(node.getIdentifier());
+        } catch (ItemNotFoundException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("No live node for staging node " + node.getPath());
+            }
+        }
+
+        if (!node.checkLanguageValidity(languages)) {
+            status = PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE;
+            for (String language : languages) {
+                Locale locale = LanguageCodeConverters.getLocaleFromCode(language);
+                if (node.checkI18nAndMandatoryPropertiesForLocale(locale)) {
+                    status = PublicationInfo.MANDATORY_LANGUAGE_VALID;
+                }
+            }
+        } else if (node.hasProperty("j:published") && !node.getProperty("j:published").getBoolean()) {
+            status = PublicationInfo.UNPUBLISHED;
+        } else if (publishedNode == null) {
+            try {
+                try {
+                    destinationSession.getNodeByUUID(node.getParent().getUUID()).getNode(node.getName());
+                } catch (UnsupportedRepositoryOperationException e) {
+                }
+                // Conflict , a node exists in live !
+                status = PublicationInfo.CONFLICT;
+                return status;
+            } catch (ItemNotFoundException e) {
+            } catch (PathNotFoundException e) {
+            }
+
+            status = PublicationInfo.NOT_PUBLISHED;
+            if (node.isNodeType(JAHIANT_TRANSLATION)) {
+                boolean hasProperty = false;
+                final PropertyIterator iterator = node.getProperties();
+                while (iterator.hasNext() && !hasProperty) {
+                    Property property = (Property) iterator.next();
+                    hasProperty = ((ExtendedPropertyDefinition)property.getDefinition()).isInternationalized();
+                }
+                if (!hasProperty) {
+                    status = PublicationInfo.PUBLISHED;
+                }
+            }
+        } else {
+            if (node.hasProperty("jcr:mergeFailed") || publishedNode.hasProperty("jcr:mergeFailed")) {
+                status = PublicationInfo.CONFLICT;
+            } else if (node.getLastModifiedAsDate() == null) {
+                // No modification date - node is published
+                status = PublicationInfo.PUBLISHED;
+            } else {
+                Date modProp = node.getLastModifiedAsDate();
+                Date pubProp = node.getLastPublishedAsDate();
+                Date liveModProp = publishedNode.getLastModifiedAsDate();
+                if (modProp == null || pubProp == null || liveModProp == null) {
+                    logger.warn(node.getIdentifier() + " : Some property is null : " + modProp + "/" + pubProp + "/" +
+                            liveModProp);
+                    status = PublicationInfo.MODIFIED;
+                } else {
+                    long mod = modProp.getTime();
+                    long pub = pubProp.getTime();
+                    if (mod > pub) {
+                        status = PublicationInfo.MODIFIED;
+                    } else {
+                        status = PublicationInfo.PUBLISHED;
+                    }
+                }
+                if (node.isNodeType("jmix:markedForDeletion")) {
+                    status = PublicationInfo.MARKED_FOR_DELETION;
+                }
+            }
+        }
+        return status;
     }
 
     private boolean canPublish(JCRNodeWrapper node, String language) {

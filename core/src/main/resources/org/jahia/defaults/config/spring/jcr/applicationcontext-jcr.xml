@@ -377,6 +377,8 @@
     </bean>
 
     <util:set id="DocumentViewImportHandler.propertiesToSkip">
+        <value>jcr:uuid</value>
+        <value>j:publicationStatus</value>
         <value>jcr:primaryType</value>
         <value>j:share</value>
         <value>j:originWS</value>

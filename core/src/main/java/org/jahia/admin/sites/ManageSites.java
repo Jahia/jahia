@@ -72,11 +72,12 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.services.importexport.NoCloseZipInputStream;
+import org.jahia.services.importexport.ValidationResult;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.render.URLGenerator;
@@ -1836,34 +1837,58 @@ public class ManageSites extends AbstractAdministrationModule {
         } else if (filename.endsWith("systemsite.zip")) {
             importInfos.put("type", "files");
         } else {
-            ZipEntry z;
-            ZipInputStream zis2 = new ZipInputStream(new BufferedInputStream(new FileInputStream(i)));
+            org.jahia.utils.zip.ZipEntry z;
+            NoCloseZipInputStream zis2 = new NoCloseZipInputStream(
+                    new BufferedInputStream(new FileInputStream(i)));
+
             boolean isSite = false;
             boolean isLegacySite = false;
-            while ((z = zis2.getNextEntry()) != null) {
-                if ("site.properties".equals(z.getName())) {
-                    Properties p = new Properties();
-                    p.load(zis2);
-                    zis2.closeEntry();
-                    importInfos.putAll(p);
+            try {
+                while ((z = zis2.getNextEntry()) != null) {
+                    if ("site.properties".equals(z.getName())) {
+                        Properties p = new Properties();
+                        p.load(zis2);
+                        importInfos.putAll(p);
 
-                    importInfos.put("templates", "");
-                    if (importInfos.containsKey("templatePackageName")) {
-                        JahiaTemplateManagerService templateManager =
-                                ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-                        JahiaTemplatesPackage pack = templateManager.getTemplatePackageByFileName((String) importInfos.get("templatePackageName"));
-                        if (pack == null) {
-                            pack = templateManager.getTemplatePackage((String) importInfos.get("templatePackageName"));
+                        importInfos.put("templates", "");
+                        if (importInfos.containsKey("templatePackageName")) {
+                            JahiaTemplateManagerService templateManager = ServicesRegistry
+                                    .getInstance()
+                                    .getJahiaTemplateManagerService();
+                            JahiaTemplatesPackage pack = templateManager
+                                    .getTemplatePackageByFileName((String) importInfos
+                                            .get("templatePackageName"));
+                            if (pack == null) {
+                                pack = templateManager
+                                        .getTemplatePackage((String) importInfos
+                                                .get("templatePackageName"));
+                            }
+                            if (pack != null) {
+                                importInfos
+                                        .put("templates", pack.getFileName());
+                            }
                         }
-                        if (pack != null) {
-                            importInfos.put("templates", pack.getFileName());
+                        importInfos.put("oldsitekey",
+                                importInfos.get("sitekey"));
+                        isSite = true;
+                    } else if (z.getName().startsWith("export_")) {
+                        isLegacySite = true;
+                    } else if (z.getName().contains("repository.xml")
+                            || z.getName().contains("live-repository.xml")) {
+                        try {
+                            ValidationResult validationResult = ImportExportBaseService.getInstance()
+                                    .validateImportFile(
+                                            JCRSessionFactory.getInstance()
+                                                    .getCurrentUserSession(),
+                                            zis2);
+                        } catch (Exception e) {
+                            logger.error("Error when validating import file", e);
                         }
                     }
-                    importInfos.put("oldsitekey", importInfos.get("sitekey"));
-                    isSite = true;
-                } else if (z.getName().startsWith("export_")) {
-                    isLegacySite = true;
+                    zis2.closeEntry();
                 }
+            } finally {
+                zis2.reallyClose();
             }
             importInfos.put("isSite", Boolean.valueOf(isSite));
             // todo import ga parameters
@@ -1885,15 +1910,23 @@ public class ManageSites extends AbstractAdministrationModule {
                         String siteKey = (String) importInfos.get("sitekey");
                         boolean valid = isSiteKeyValid(siteKey);
                         importInfos.put("siteKeyInvalid", !valid);
-						importInfos.put("siteKeyExists", valid
-						        && ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteKey) != null);
-                        String serverName = (String) importInfos.get("siteservername");
+                        importInfos.put("siteKeyExists",
+                                valid
+                                        && ServicesRegistry.getInstance()
+                                                .getJahiaSitesService()
+                                                .getSiteByKey(siteKey) != null);
+                        String serverName = (String) importInfos
+                                .get("siteservername");
                         valid = isServerNameValid(serverName);
                         importInfos.put("siteServerNameInvalid", !valid);
-						importInfos.put("siteServerNameExists",
-						        valid
-						                && !URLGenerator.isLocalhost(serverName)
-						                && ServicesRegistry.getInstance().getJahiaSitesService().getSite(serverName) != null);
+                        importInfos.put(
+                                "siteServerNameExists",
+                                valid
+                                        && !URLGenerator
+                                                .isLocalhost(serverName)
+                                        && ServicesRegistry.getInstance()
+                                                .getJahiaSitesService()
+                                                .getSite(serverName) != null);
                     } catch (JahiaException e) {
                         logger.error("Error while preparing site import", e);
                     }

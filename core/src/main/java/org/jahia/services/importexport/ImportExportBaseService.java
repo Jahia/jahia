@@ -1225,6 +1225,25 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             });
         }
     }
+    
+    /**
+     * Validates a JCR content import file in document format and returns expected failures. 
+     * 
+     * @param session
+     * @param is
+     * @return
+     */
+    public ValidationResult validateImportFile(JCRSessionWrapper session, InputStream is) {
+        DocumentViewValidationHandler documentViewValidationHandler = new DocumentViewValidationHandler(session);
+        documentViewValidationHandler.setNoRoot(true);
+        handleImport(is, documentViewValidationHandler);
+        
+        ValidationResult result = new ValidationResult();
+        result.setMissingNodetypes(documentViewValidationHandler.getMissingNodetypes());
+        result.setMissingMixins(documentViewValidationHandler.getMissingMixins());
+        
+        return result;
+    }
 
     public void importZip(String parentNodePath, File file, boolean noRoot, JCRSessionWrapper session)
             throws IOException, RepositoryException, JahiaException {
@@ -1311,7 +1330,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
     }
 
-	private void setObserverInterval(long observerInterval) {
-    	this.observerInterval = observerInterval;
+    private void setObserverInterval(long observerInterval) {
+        this.observerInterval = observerInterval;
     }
 }

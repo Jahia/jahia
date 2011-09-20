@@ -592,8 +592,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         }
 
-        if (sizes.containsKey(LIVE_REPOSITORY_XML)) {
-            // Import repository content
+        boolean importLive = sizes.containsKey(LIVE_REPOSITORY_XML);
+        if (importLive) {
+            // Import live content
             zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
             try {
                 while (true) {
@@ -636,7 +637,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     String name = zipentry.getName();
                     if (name.equals(REPOSITORY_XML)) {
                         DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, null, file, fileList, (site != null ? site.getSiteKey(): null));
-
+                        if (importLive) {
+                            // Restore publication status
+                            Set<String> props = new HashSet<String>(documentViewImportHandler.getPropertiesToSkip());
+                            props.remove("j:lastPublished");
+                            props.remove("j:lastPublishedBy");
+                            props.remove("j:published");
+                            documentViewImportHandler.setPropertiesToSkip(props);
+                        }
                         documentViewImportHandler.setReferences(references);
                         documentViewImportHandler.setNoRoot(true);
 
@@ -657,8 +665,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             pathMapping.put("/", "/sites/"+site.getSiteKey()+"/files/");
         }
 
-        if (sizes.containsKey(LIVE_REPOSITORY_XML)) {
-            // Import repository content
+        if (importLive) {
+            // Import user generated content
             zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
             try {
                 while (true) {

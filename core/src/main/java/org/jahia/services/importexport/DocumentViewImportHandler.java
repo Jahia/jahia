@@ -99,7 +99,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
     private Map<String, List<String>> references = new HashMap<String, List<String>>();
 
     private Map<Pattern, String> replacements = Collections.emptyMap();
-    
+
     private Set<String> propertiesToSkip = Collections.emptySet();
 
     private String currentFilePath = null;
@@ -627,6 +627,10 @@ public class DocumentViewImportHandler extends DefaultHandler {
                this.replacements.put(Pattern.compile(repl.getKey()), repl.getValue());
             }
         }
+    }
+
+    public Set<String> getPropertiesToSkip() {
+        return propertiesToSkip;
     }
 
     public void setPropertiesToSkip(Set<String> propertiesToSkip) {

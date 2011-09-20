@@ -88,7 +88,7 @@ public class Export extends JahiaController implements ServletContextAware {
     }
 
     private String cleanupXsl;
-    
+
     private ImportExportService importExportService;
 
     private String templatesCleanupXsl;
@@ -174,6 +174,9 @@ public class Export extends JahiaController implements ServletContextAware {
                     params.put(ImportExportService.INCLUDE_TEMPLATES, Boolean.TRUE);
                     params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
                     params.put(ImportExportService.INCLUDE_DEFINITIONS, Boolean.TRUE);
+                    if (request.getParameter("live") != null) {
+                        params.put(ImportExportService.INCLUDE_LIVE_EXPORT, Boolean.TRUE);
+                    }
                     params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
                     params.put(ImportExportService.XSL_PATH, cleanupXsl);
 

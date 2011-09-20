@@ -158,7 +158,8 @@
         </thead>
         <form name="main" method="POST">
             <input type="hidden" name="do" value="sites"/><input type="hidden" name="sub" value="multipledelete"/><input
-                type="hidden" name="exportformat" value="site"/>
+                type="hidden" name="exportformat" value="site"/> <input
+                type="hidden" name="live" value="true"/>
             <tbody>
             <%
                 JahiaSite site = null;

@@ -392,6 +392,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         } else {
             DocumentViewExporter exporter = new DocumentViewExporter(rootNode.getSession(), dw, skipBinary, noRecurse);
             typesToIgnore.add("rep:system");
+            if (params.containsKey(INCLUDE_LIVE_EXPORT)) {
+                List<String> l = new ArrayList<String>(exporter.getPropertiestoIgnore());
+                l.remove("jcr:uuid");
+                exporter.setPropertiestoIgnore(l);
+            }
             exporter.setTypesToIgnore(typesToIgnore);
             exporter.export(rootNode, sortedNodes);
         }
@@ -593,6 +598,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
 
         boolean importLive = sizes.containsKey(LIVE_REPOSITORY_XML);
+        List<String> liveUuids = null;
         if (importLive) {
             // Import live content
             zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
@@ -613,7 +619,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         ReferencesHelper.resolveCrossReferences(session, references);
                         session.save(JCRObservationManager.IMPORT);
 
-                        ServicesRegistry.getInstance().getJCRPublicationService().publishByMainId(session.getNode(site.getJCRLocalPath()).getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
+                        liveUuids = documentViewImportHandler.getUuids();
+
+                        ServicesRegistry.getInstance().getJCRPublicationService().publish(documentViewImportHandler.getUuids(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null);
 
                         break;
                     }
@@ -644,11 +652,22 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                             props.remove("j:lastPublishedBy");
                             props.remove("j:published");
                             documentViewImportHandler.setPropertiesToSkip(props);
+                            documentViewImportHandler.setEnforceUuid(true);
+                            documentViewImportHandler.setUuidBehavior(DocumentViewImportHandler.IMPORT_UUID_COLLISION_MOVE_EXISTING);
                         }
                         documentViewImportHandler.setReferences(references);
                         documentViewImportHandler.setNoRoot(true);
 
                         handleImport(zis, documentViewImportHandler);
+
+                        if (importLive) {
+                            liveUuids.removeAll(documentViewImportHandler.getUuids());
+                            Collections.reverse(liveUuids);
+                            for (String uuid : liveUuids) {
+                                // Uuids have been imported in live but not in default : need to be removed
+                                session.getNodeByIdentifier(uuid).remove();
+                            }
+                        }
                         session.save(JCRObservationManager.IMPORT);
                         break;
                     }

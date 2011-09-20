@@ -78,8 +78,10 @@ import java.util.regex.Pattern;
  * Date: 11 févr. 2008
  * Time: 16:38:38
  */
-public class DocumentViewImportHandler extends DefaultHandler {
+public class DocumentViewImportHandler extends DefaultHandler implements ImportUUIDBehavior {
     private static Logger logger = LoggerFactory.getLogger(DocumentViewImportHandler.class);
+
+    public static final int IMPORT_UUID_COLLISION_MOVE_EXISTING = 4;
 
     private int maxBatch = 5000;
     private int batchCount = 0;
@@ -117,9 +119,12 @@ public class DocumentViewImportHandler extends DefaultHandler {
     private Map<String, String> placeHoldersMap = new HashMap<String, String>();
 
     private boolean importUserGeneratedContent = false;
+    private boolean enforceUuid = false;
 
     private List<String> noSubNodesImport = Arrays.asList("jnt:importDropBox", "jnt:referencesKeeper");
     private List<String> noUpdateTypes = Arrays.asList("jnt:virtualsitesFolder", "jnt:usersFolder", "jnt:groupsFolder", "jnt:user");
+
+    private List<String> uuids = new ArrayList<String>();
 
     public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, String siteKey) throws IOException {
         this(session, rootPath, null, null, siteKey);
@@ -173,19 +178,19 @@ public class DocumentViewImportHandler extends DefaultHandler {
             return;
         }
 
-        batchCount ++;
+        batchCount++;
 
         if (batchCount > maxBatch) {
             try {
                 session.save();
                 batchCount = 0;
             } catch (RepositoryException e) {
-                throw new SAXException("Cannot save batch",e);
+                throw new SAXException("Cannot save batch", e);
             }
         }
 
         if ("live".equals(atts.getValue("j:originWS")) && !importUserGeneratedContent) {
-            error ++;
+            error++;
             return;
         }
 
@@ -227,8 +232,8 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
             String pt = atts.getValue(Constants.JCR_PRIMARYTYPE);
 
-            if (pathMapping.containsKey(path+"/")) {
-                path = StringUtils.substringBeforeLast(pathMapping.get(path+"/"), "/");
+            if (pathMapping.containsKey(path + "/")) {
+                path = StringUtils.substringBeforeLast(pathMapping.get(path + "/"), "/");
             }
 
             if (Constants.JAHIANT_VIRTUALSITE.equals(pt) && siteKey != null) {
@@ -247,34 +252,49 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 if (child.hasPermission("jcr:versionManagement") && child.isVersioned() && !child.isCheckedOut()) {
                     session.getWorkspace().getVersionManager().checkout(child.getPath());
                 }
-
             } catch (PathNotFoundException e) {
                 isValid = false;
             }
-            if (("live".equals(atts.getValue("j:originWS")) == importUserGeneratedContent)) {
-            if (!isValid || child.getDefinition().allowsSameNameSiblings()) {
-                if (nodes.peek().hasPermission("jcr:addChildNodes")) {
-                    if ("jnt:acl".equals(pt) && !nodes.peek().isNodeType("jmix:accessControlled")) {
-                        nodes.peek().addMixin("jmix:accessControlled");
-                    }
-                    Calendar created = null;
-                    String createdBy = null;
-                    Calendar lastModified = null;
-                    String lastModifiedBy = null;
-                    if (!StringUtils.isEmpty(atts.getValue("jcr:created"))) {
-                        created = ISO8601.parse(atts.getValue("jcr:created"));
-                    }
-                    if (!StringUtils.isEmpty(atts.getValue("jcr:lastModified"))) {
-                        lastModified = ISO8601.parse(atts.getValue("jcr:lastModified"));
-                    }
-                    if (!StringUtils.isEmpty(atts.getValue("jcr:createdBy"))) {
-                        createdBy = atts.getValue("jcr:createdBy");
-                    }
-                    if (!StringUtils.isEmpty(atts.getValue("jcr:lastModifiedBy"))) {
-                        lastModifiedBy = atts.getValue("jcr:lastModifiedBy");
-                    }
 
-                    String uuid = atts.getValue("jcr:uuid");
+            if (("live".equals(atts.getValue("j:originWS")) == importUserGeneratedContent)) {
+                String originalUuid = atts.getValue("jcr:uuid");
+                String uuid = originalUuid;
+                if (uuid != null && uuidMapping.containsKey(uuid)) {
+                    uuid = uuidMapping.get(uuid);
+                } else if (enforceUuid) {
+                    uuid = null;
+                }
+
+                if (isValid && enforceUuid && uuid != null) {
+                    if (!child.getIdentifier().equals(uuid)) {
+                        child.remove();
+                        isValid = false;
+                    }
+                }
+
+                if (!isValid || child.getDefinition().allowsSameNameSiblings()) {
+                    isValid = false;
+                    if (nodes.peek().hasPermission("jcr:addChildNodes")) {
+                        if ("jnt:acl".equals(pt) && !nodes.peek().isNodeType("jmix:accessControlled")) {
+                            nodes.peek().addMixin("jmix:accessControlled");
+                        }
+                        Calendar created = null;
+                        String createdBy = null;
+                        Calendar lastModified = null;
+                        String lastModifiedBy = null;
+                        if (!StringUtils.isEmpty(atts.getValue("jcr:created"))) {
+                            created = ISO8601.parse(atts.getValue("jcr:created"));
+                        }
+                        if (!StringUtils.isEmpty(atts.getValue("jcr:lastModified"))) {
+                            lastModified = ISO8601.parse(atts.getValue("jcr:lastModified"));
+                        }
+                        if (!StringUtils.isEmpty(atts.getValue("jcr:createdBy"))) {
+                            createdBy = atts.getValue("jcr:createdBy");
+                        }
+                        if (!StringUtils.isEmpty(atts.getValue("jcr:lastModifiedBy"))) {
+                            lastModifiedBy = atts.getValue("jcr:lastModifiedBy");
+                        }
+
 //                    String share = atts.getValue("j:share");
 //                    if (!StringUtils.isEmpty(uuid) && uuidMapping.containsKey(uuid)) {
 //                        child = nodes.peek().clone(session.getNodeByUUID(uuidMapping.get(uuid)), decodedQName);
@@ -287,82 +307,112 @@ public class DocumentViewImportHandler extends DefaultHandler {
 //                        }
 //                        child = nodes.peek().clone(session.getNode(share), decodedQName);
 //                    } else {
-                    if (!StringUtils.isEmpty(uuid)) {
-                        switch (uuidBehavior) {
-                            case ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW:
-                                try {
-                                    JCRNodeWrapper node = session.getNodeByUUID(uuid);
-                                    if (node.isNodeType("mix:shareable")) {
-                                        // ..
-                                    } else {
-                                        throw new ItemExistsException(uuid);
+                        if (!StringUtils.isEmpty(uuid)) {
+                            switch (uuidBehavior) {
+                                case IMPORT_UUID_COLLISION_THROW:
+                                    try {
+                                        JCRNodeWrapper node = session.getNodeByUUID(uuid);
+                                        if (node.isNodeType("mix:shareable")) {
+                                            // ..
+                                        } else {
+                                            throw new ItemExistsException(uuid);
+                                        }
+                                    } catch (ItemNotFoundException e) {
                                     }
-                                } catch (ItemNotFoundException e) {
-                                }
-                            case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING:
-                                try {
-                                    JCRNodeWrapper node = session.getNodeByUUID(uuid);
-                                    // make sure conflicting node is not importTargetNode or an ancestor thereof
-                                    if (nodes.peek().getPath().startsWith(node.getPath())) {
-                                        String msg = "cannot remove ancestor node";
-                                        logger.debug(msg);
-                                        throw new ConstraintViolationException(msg);
+                                case IMPORT_UUID_COLLISION_REMOVE_EXISTING:
+                                    try {
+                                        JCRNodeWrapper node = session.getNodeByUUID(uuid);
+                                        // make sure conflicting node is not importTargetNode or an ancestor thereof
+                                        if (nodes.peek().getPath().startsWith(node.getPath())) {
+                                            String msg = "cannot remove ancestor node";
+                                            logger.debug(msg);
+                                            throw new ConstraintViolationException(msg);
+                                        }
+                                        // remove conflicting
+                                        node.remove();
+                                    } catch (ItemNotFoundException e) {
                                     }
-                                    // remove conflicting
-                                    node.remove();
-                                } catch (ItemNotFoundException e) {
+                                    break;
+                                case IMPORT_UUID_COLLISION_REPLACE_EXISTING:
+                                    throw new UnsupportedOperationException();
+
+                                case IMPORT_UUID_CREATE_NEW:
+                                    uuid = null;
+
+                                    break;
+                                case IMPORT_UUID_COLLISION_MOVE_EXISTING:
+                                    try {
+                                        JCRNodeWrapper node = session.getNodeByUUID(uuid);
+                                        // make sure conflicting node is not importTargetNode or an ancestor thereof
+                                        if (nodes.peek().getPath().startsWith(node.getPath())) {
+                                            String msg = "cannot move ancestor node";
+                                            logger.debug(msg);
+                                            throw new ConstraintViolationException(msg);
+                                        }
+                                        if (!node.getPath().equals(path)) {
+                                            // move conflicting
+                                            session.move(node.getPath(), path);
+                                            node = session.getNodeByUUID(uuid);
+                                        }
+                                        child = node;
+                                        isValid = true;
+                                    } catch (ItemNotFoundException e) {
+                                    }
+                                    break;
+                            }
+                        }
+                        if (!isValid) {
+                            nodes.peek().checkout();
+                            try {
+                                child = nodes.peek().addNode(decodedQName, pt, uuid, created, createdBy, lastModified, lastModifiedBy);
+                            } catch (ConstraintViolationException e) {
+                                if (pathes.size() <= 2 && nodes.peek().getName().equals(decodedQName) && nodes.peek().getPrimaryNodeTypeName().equals(pt)) {
+                                    session.getPathMapping().put("/" + decodedQName, nodes.peek().getPath().equals("/") ? "" : nodes.peek().getPath());
+                                    return;
+                                } else {
+                                    throw e;
                                 }
-                                break;
-                            case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING:
-                                throw new UnsupportedOperationException();
-
-                            case ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW:
-                                uuid = null;
+                            }
                         }
-                    }
-                    nodes.peek().checkout();
-                    try {
-                        child = nodes.peek().addNode(decodedQName, pt, uuid, created, createdBy, lastModified, lastModifiedBy);
-                    } catch (ConstraintViolationException e) {
-                        if (pathes.size() <= 2 && nodes.peek().getName().equals(decodedQName) && nodes.peek().getPrimaryNodeTypeName().equals(pt)) {
-                            session.getPathMapping().put("/" + decodedQName, nodes.peek().getPath().equals("/") ? "" : nodes.peek().getPath());
-                            return;
-                        } else {
-                            throw e;
-                        }
-                    }
-                    addMixins(child, atts);
 
-                    boolean contentFound = findContent();
-
-                    if (contentFound) {
-                        if (child.isFile()) {
-                            String mime = atts.getValue(Constants.JCR_MIMETYPE);
-                            child.getFileContent().uploadFile(zis, mime);
-                            zis.close();
-                        } else {
-                            child.setProperty(Constants.JCR_DATA, session.getValueFactory().createBinary(zis));
-                            child.setProperty(Constants.JCR_MIMETYPE, atts.getValue(Constants.JCR_MIMETYPE));
-                            child.setProperty(Constants.JCR_LASTMODIFIED, Calendar.getInstance());
-                            zis.close();
-                        }
-                    }
-
-                    setAttributes(child, atts);
-
-                    if (child.isFile() && currentFilePath == null) {
-                        currentFilePath = child.getPath();
-                    }
-//                    }
-                }
-            } else {
-                if (child.hasPermission("jcr:modifyProperties") && child.isCheckedOut()) {
-                    if (!noUpdateTypes.contains(child.getPrimaryNodeType().getName())) {
                         addMixins(child, atts);
+
+                        boolean contentFound = findContent();
+
+                        if (contentFound) {
+                            if (child.isFile()) {
+                                String mime = atts.getValue(Constants.JCR_MIMETYPE);
+                                child.getFileContent().uploadFile(zis, mime);
+                                zis.close();
+                            } else {
+                                child.setProperty(Constants.JCR_DATA, session.getValueFactory().createBinary(zis));
+                                child.setProperty(Constants.JCR_MIMETYPE, atts.getValue(Constants.JCR_MIMETYPE));
+                                child.setProperty(Constants.JCR_LASTMODIFIED, Calendar.getInstance());
+                                zis.close();
+                            }
+                        }
+
                         setAttributes(child, atts);
+                        uuids.add(child.getIdentifier());
+
+                        if (child.isFile() && currentFilePath == null) {
+                            currentFilePath = child.getPath();
+                        }
+//                    }
+                    }
+                } else {
+                    if (child.hasPermission("jcr:modifyProperties") && child.isCheckedOut()) {
+                        if (!noUpdateTypes.contains(child.getPrimaryNodeType().getName())) {
+                            addMixins(child, atts);
+                            setAttributes(child, atts);
+                            uuids.add(child.getIdentifier());
+                        }
                     }
                 }
-            }
+                uuidMapping.put(originalUuid, child.getIdentifier());
+                if (nodes.peek().getPrimaryNodeType().hasOrderableChildNodes() && nodes.peek().hasPermission("jcr:write")) {
+                    nodes.peek().orderBefore(decodedQName,null);
+                }
             }
             if (child == null) {
                 error++;
@@ -424,7 +474,6 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     logger.debug("Skipping property {}", attrName);
                 }
             } else if (attrName.equals(Constants.JCR_UUID)) {
-                uuidMapping.put(attrValue, child.getIdentifier());
             } else {
                 for (Map.Entry<Pattern, String> entry : replacements.entrySet()) {
                     attrValue = entry.getKey().matcher(attrValue).replaceAll(entry.getValue());
@@ -618,13 +667,21 @@ public class DocumentViewImportHandler extends DefaultHandler {
         this.importUserGeneratedContent = importUserGeneratedContent;
     }
 
+    public boolean isEnforceUuid() {
+        return enforceUuid;
+    }
+
+    public void setEnforceUuid(boolean enforceUuid) {
+        this.enforceUuid = enforceUuid;
+    }
+
     public void setReplacements(Map<String, String> replacements) {
         if (replacements == null || replacements.isEmpty()) {
             this.replacements = Collections.emptyMap();
         } else {
             this.replacements = new HashMap<Pattern, String>(replacements.size());
             for (Map.Entry<String, String> repl : replacements.entrySet()) {
-               this.replacements.put(Pattern.compile(repl.getKey()), repl.getValue());
+                this.replacements.put(Pattern.compile(repl.getKey()), repl.getValue());
             }
         }
     }
@@ -639,5 +696,13 @@ public class DocumentViewImportHandler extends DefaultHandler {
         } else {
             this.propertiesToSkip = propertiesToSkip;
         }
+    }
+
+    public List<String> getUuids() {
+        return uuids;
+    }
+
+    public void setUuids(List<String> uuids) {
+        this.uuids = uuids;
     }
 }

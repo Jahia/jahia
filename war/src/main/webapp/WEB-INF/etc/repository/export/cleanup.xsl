@@ -9,7 +9,6 @@
             <xsl:when test="name()='jcr:primaryType'">
                 <xsl:copy/>
             </xsl:when>
-            <xsl:when test="name()='jcr:uuid'"/>
             <xsl:when test="name()='j:fullpath'"/>
             <xsl:when test="name()='j:movedFrom'"/>
             <xsl:when test="name()='j:siteId'"/>

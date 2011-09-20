@@ -174,7 +174,7 @@ public class Export extends JahiaController implements ServletContextAware {
                     params.put(ImportExportService.INCLUDE_TEMPLATES, Boolean.TRUE);
                     params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
                     params.put(ImportExportService.INCLUDE_DEFINITIONS, Boolean.TRUE);
-                    if (request.getParameter("live") != null) {
+                    if (request.getParameter("live") == null || Boolean.valueOf(request.getParameter("live"))) {
                         params.put(ImportExportService.INCLUDE_LIVE_EXPORT, Boolean.TRUE);
                     }
                     params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);

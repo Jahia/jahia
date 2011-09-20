@@ -11,7 +11,9 @@
 <%@ page import="java.io.File" %>
 <%@ page import="org.jahia.bin.Export" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <c:set var="defaultSet" value="acme.zip"/>
 <%
     Iterator sitesList = (Iterator) request.getAttribute("sitesList");
@@ -25,41 +27,66 @@
     }
     stretcherToOpen = 0; %>
 <% if (sitesList != null && sitesList.hasNext()) { %>
+<jsp:useBean id="now" class="java.util.Date" />
 <script type="text/javascript">
-    function selectSite(selectedSite) {
-        if (selectedSite) {
-            if (document.main.sitebox.length) {
-                for (var i = 0; i < document.main.sitebox.length; i++) {
-                    document.main.sitebox[i].checked = (document.main.sitebox[i].value == selectedSite);
-                }
+    function forSites(callback) {
+        if (document.main.sitebox.length) {
+            for (var i = 0; i < document.main.sitebox.length; i++) {
+            	if (callback(document.main.sitebox[i])) {
+            		return;
+            	} 
             }
-            else {
-                document.main.sitebox.checked = true;
-            }
+        } else {
+        	callback(document.main.sitebox); 
         }
+    }
+    function selectSite(selectedSite, doSelect) {
+    	doSelect = typeof doSelect != 'undefined' ? doSelect : true;
+    	forSites(function(site) {
+			site.checked =  ('<all>' == selectedSite || site.value == selectedSite) ? doSelect : !doSelect;
+    	});
+    	updateSelectedSites();
+    }
+    function checkAnySelected() {
+    	var anySelected = false;
+    	forSites(function(site) {
+    		if (site.checked) {
+    			anySelected = true;
+        		return true;
+    		}
+    	});
+        if (!anySelected) {
+    		<fmt:message key="org.jahia.admin.site.ManageSites.noSiteSpecified.label" var="i18nNoSiteSelected"/>
+    		alert('${functions:escapeJavaScript(i18nNoSiteSelected)}');
+        }
+		return anySelected;
     }
     function copyTemplateToVarFolder(selectedTemplate) {
     }
 
-    function sendExportForm(selectedSite) {
-        selectSite(selectedSite);
-        document.main.action = '<%=request.getContextPath() + Export.getExportServletPath()%>/default/' + (selectedSite ? selectedSite + '_' : '') + '<%= "export_" + new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(new Date()) + ".zip"%>';
+    function sendExportForm(stagingOnly) {
+    	if (!checkAnySelected()) {
+    		return;
+    	}
+    	document.getElementById('live').value = stagingOnly ? 'false' : 'true';
+    	var name = null;
+    	forSites(function(site) {
+    		if (site.checked) {
+        		if (name != null) {
+        			name = 'sites';
+        			return true;
+        		}
+        		name = site.value;
+    		}
+    	});
+    	if (stagingOnly) {
+    		name += '_staging';
+    	}
+        document.main.action = '<%=request.getContextPath() + Export.getExportServletPath()%>/default/' + name + '_export_<fmt:formatDate value="${now}" pattern="yyyy-MM-dd-HH-mm"/>.zip';
         document.main.submit();
     }
 
-    function sendExportSitesForm() {
-        if (document.main.sitebox.length) {
-            for (var i = 0; i < document.main.sitebox.length; i++) {
-                document.main.sitebox[i].checked = true;
-            }
-        }
-        document.main.action = '<%=request.getContextPath() + Export.getExportServletPath()%>/default/sites_' + '<%= "export_" + new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(new Date()) + ".zip"%>';
-        document.main.submit();
-    }
-
-
-    function sendDeleteForm(selectedSite) {
-        selectSite(selectedSite);
+    function sendDeleteForm() {
         document.main.action = '<%=request.getContextPath()+JahiaAdministration.getServletPath()%>';
         document.main.submit();
     }
@@ -68,6 +95,20 @@
         document.jahiaAdmin.submit();
     }
 
+    function updateSelectedSites() {
+    	var allSelected = true;
+    	if (document.main.sitebox.length) {
+            for (var i = 0; i < document.main.sitebox.length; i++) {
+            	if (!document.main.sitebox[i].checked) {
+            		allSelected = false;
+            		break;
+            	}
+            }
+        } else {
+        	allSelected = document.main.sitebox.checked;
+        }
+    	document.getElementById('allsitebox').checked = allSelected;
+    }
 </script>
 <div id="topTitle">
     <h1>Jahia</h1>
@@ -94,6 +135,9 @@
     <div class="object-title"><fmt:message key="label.virtualSitesManagement"/>
     </div>
 </div>
+<fmt:message key="org.jahia.admin.site.ManageSites.exportsites.label" var="i18nExport"/>
+<fmt:message key="org.jahia.admin.site.ManageSites.doYouWantToContinue.label" var="i18nContinue"/>
+<c:set var="i18nConfirmExport" value="${functions:escapeJavaScript(i18nExport)}${fn:endsWith(i18nExport, '.') ? '' : '.'} ${functions:escapeJavaScript(i18nContinue)}"/>
 <div class="content-body">
     <div id="operationMenu">
                     <span class="dex-PushButton">
@@ -104,18 +148,18 @@
                     </span>
                     <span class="dex-PushButton">
                       <span class="first-child">
-                        <a class="ico-export" href="javascript:sendExportSitesForm()" alt="<fmt:message key="org.jahia.admin.site.ManageSites.exportall.label"/>"><fmt:message key="org.jahia.admin.site.ManageSites.exportall.label"/></a>
+                        <a class="ico-export" href="#export" onclick="if (checkAnySelected() && confirm('${i18nConfirmExport}')) { sendExportForm(); } return false;"><fmt:message key="label.export"/></a>
                       </span>
                     </span>
                     <span class="dex-PushButton">
                       <span class="first-child">
-                        <a class="ico-export" href="javascript:sendExportForm()"><fmt:message key="org.jahia.admin.site.ManageSites.exportsites.label"/></a>
+                        <a class="ico-export-staging" href="#exportStaging" onclick="if (checkAnySelected() && confirm('${i18nConfirmExport}')) { sendExportForm(true); } return false;"><fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</a>
                       </span>
                     </span>
                     <span class="dex-PushButton">
                       <span class="first-child">
                         <a class="ico-siteDelete" class="operationLink"
-                           href="javascript:sendDeleteForm()"><fmt:message key="org.jahia.admin.site.ManageSites.deletesites.label"/></a>
+                           href="#delete" onclick="if (checkAnySelected()) { sendDeleteForm(); } return false;"><fmt:message key="label.delete"/></a>
                       </span>
                     </span>
     </div>
@@ -134,15 +178,15 @@
         <thead>
         <tr>
             <th width="5%">
-                &nbsp;
+                <input type="checkbox" name="allsitebox" id="allsitebox" value="true" onchange="selectSite('&lt;all&gt;', this.checked)"/>
             </th>
             <th width="3%">
                 &nbsp;
             </th>
-            <th width="30%">
+            <th width="28%">
                 <fmt:message key="label.name"/>
             </th>
-            <th width="12%" style="white-space: nowrap">
+            <th width="10%" style="white-space: nowrap">
                 <fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/>
             </th>
             <th width="20%">
@@ -151,7 +195,7 @@
             <th width="20%">
                 <fmt:message key="org.jahia.admin.site.ManageSites.templateSet.label"/>
             </th>
-            <th width="10%" class="lastCol">
+            <th width="14%" class="lastCol">
                 <fmt:message key="label.action"/>
             </th>
         </tr>
@@ -159,7 +203,7 @@
         <form name="main" method="POST">
             <input type="hidden" name="do" value="sites"/><input type="hidden" name="sub" value="multipledelete"/><input
                 type="hidden" name="exportformat" value="site"/> <input
-                type="hidden" name="live" value="true"/>
+                type="hidden" name="live" id="live" value="true"/>
             <tbody>
             <%
                 JahiaSite site = null;
@@ -173,7 +217,7 @@
                     lineCounter++; %>
             <tr class="<%=lineClass%>">
                 <td>
-                    <input type="checkbox" name="sitebox" value="<%=site.getSiteKey()%>">
+                    <input type="checkbox" name="sitebox" value="<%=site.getSiteKey()%>" onchange="updateSelectedSites();"/>
                 </td>
                 <td align="center">
                     <%
@@ -210,17 +254,27 @@
                             alt="<fmt:message key='label.edit'/>"
                             title="<fmt:message key='label.edit'/>" width="16"
                             height="16" border="0" style="cursor: pointer;"/></a>&nbsp;<a href="#delete"
-                                                                                          onclick="sendDeleteForm('<%=site.getSiteKey()%>'); return false;"
+                                                                                          onclick="selectSite('<%=site.getSiteKey()%>'); sendDeleteForm(); return false;"
                                                                                           title="<fmt:message key='label.delete'/>"><img
                         src="<%=URL%>images/icons/admin/adromeda/delete.png"
                         alt="<fmt:message key='label.delete'/>"
                         title="<fmt:message key='label.delete'/>" width="16"
                         height="16" border="0" style="cursor: pointer;"/></a>&nbsp;
-                    <a href="#export" onclick="sendExportForm('<%=site.getSiteKey()%>'); return false;"
-                       title="<fmt:message key='label.export'/>"><img
-                            src="<%=URL%>images/icons/admin/adromeda/export1.png"
-                            alt="<fmt:message key='label.export'/>"
-                            title="<fmt:message key='label.export'/>"
+                    <fmt:message var="i18nExport" key="label.export"/>
+                    <c:set var="i18nExport" value="${fn:escapeXml(i18nExport)}"/>
+                    <a href="#export" onclick="selectSite('<%=site.getSiteKey()%>'); if (confirm('${i18nConfirmExport}')) { sendExportForm(); } return false;"
+                       title="${i18nExport}"><img
+                            src="<c:url value='/css/images/andromeda/icons/export1.png'/>"
+                            alt="${i18nExport}"
+                            title="${i18nExport}"
+                            width="16" height="16" border="0" style="cursor: pointer;"/></a>
+                    <c:set var="i18nExportStaging"><fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</c:set>
+                    <c:set var="i18nExportStaging" value="${fn:escapeXml(i18nExportStaging)}"/>
+                    <a href="#export" onclick="selectSite('<%=site.getSiteKey()%>'); if (confirm('${i18nConfirmExport}')) { sendExportForm(true); } return false;"
+                       title="${i18nExportStaging}"><img
+                            src="<c:url value='/css/images/andromeda/icons/export2.png'/>"
+                            alt="${i18nExportStaging}"
+                            title="${i18nExportStaging}"
                             width="16" height="16" border="0" style="cursor: pointer;"/></a>
                 </td>
             </tr>

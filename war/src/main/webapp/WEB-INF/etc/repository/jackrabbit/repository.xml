@@ -153,4 +153,16 @@
         <param name="onWorkspaceInconsistency" value="${jahia.jackrabbit.onWorkspaceInconsistency}"/>
     </SearchIndex>
 
+    <DataStore class="org.apache.jackrabbit.core.data.FileDataStore">
+        <param name="path" value="${rep.home}/datastore"/>
+        <param name="minRecordLength" value="1024"/>
+    </DataStore>
+
+    <DataStore class="org.apache.jackrabbit.core.data.db.DbDataStore">
+        <param name="dataSourceName" value="jahiaDS" />
+        <param name="schemaObjectPrefix" value="jr_"/>
+        <param name="schemaCheckEnabled" value="false"/>
+        <param name="copyWhenReading" value="true"/>
+        <param name="minRecordLength" value="1024"/>
+    </DataStore>
 </Repository>

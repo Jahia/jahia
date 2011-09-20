@@ -20,6 +20,9 @@ drop table JR_J_JOURNAL;
 drop table JR_J_GLOBAL_REVISION;
 drop table JR_J_LOCAL_REVISIONS;
 
+# DbDataStore
+drop table JR_DATASTORE;
+
 # DbFileSystem - global
 create table JR_FSG_FSENTRY (FSENTRY_PATH varchar(2048) not null, FSENTRY_NAME varchar(255) not null, FSENTRY_DATA blob(100M), FSENTRY_LASTMOD bigint not null, FSENTRY_LENGTH bigint not null);
 create unique index JR_FSG_FSENTRY_IDX on JR_FSG_FSENTRY (FSENTRY_PATH, FSENTRY_NAME);
@@ -48,3 +51,6 @@ create unique index JR_J_GLOBAL_REVISION_IDX on JR_J_GLOBAL_REVISION (REVISION_I
 create table JR_J_LOCAL_REVISIONS (JOURNAL_ID varchar(255) NOT NULL, REVISION_ID BIGINT NOT NULL);
 # Inserting the one and only revision counter record now helps avoiding race conditions;
 insert into JR_J_GLOBAL_REVISION VALUES(0);
+
+# DbDataStore
+create table JR_DATASTORE (ID VARCHAR(255) PRIMARY KEY, LENGTH BIGINT, LAST_MODIFIED BIGINT, DATA BLOB);

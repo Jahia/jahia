@@ -8,7 +8,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta name="robots" content="noindex, nofollow"/>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-1.0.css" type="text/css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-1.1.css" type="text/css"/>
     <title><fmt:message key="label.error.maintenance.title"/></title>
 </head>
 <body class="login">

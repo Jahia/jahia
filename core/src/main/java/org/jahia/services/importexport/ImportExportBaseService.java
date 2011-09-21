@@ -1238,11 +1238,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         documentViewValidationHandler.setNoRoot(true);
         handleImport(is, documentViewValidationHandler);
         
-        ValidationResult result = new ValidationResult();
-        result.setMissingNodetypes(documentViewValidationHandler.getMissingNodetypes());
-        result.setMissingMixins(documentViewValidationHandler.getMissingMixins());
-        
-        return result;
+        return new ValidationResult(
+                documentViewValidationHandler.getMissingNodetypes(),
+                documentViewValidationHandler.getMissingMixins());
     }
 
     public void importZip(String parentNodePath, File file, boolean noRoot, JCRSessionWrapper session)

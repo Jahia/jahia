@@ -45,23 +45,88 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An instance of this class is being returned when validating JCR document view import files and
- * contains information about expected import failures.     
+ * An instance of this class is being returned when validating JCR document view import files and contains information about expected import
+ * failures.
  */
 public class ValidationResult {
-    
-    private Map<String, List<String>> missingNodetypes = new HashMap<String, List<String>>();
+
     private Map<String, List<String>> missingMixins = new HashMap<String, List<String>>();
-    
+
+    private Map<String, List<String>> missingNodetypes = new HashMap<String, List<String>>();
+
     public ValidationResult() {
         super();
     }
 
     /**
-     * @return a Map with missing nodetypes as keys and as value a list of element paths having it as primary type  
+     * Initializes an instance of this class.
+     * 
+     * @param missingNodetypes
+     * @param missingMixins
+     */
+    public ValidationResult(Map<String, List<String>> missingNodetypes,
+            Map<String, List<String>> missingMixins) {
+        this();
+        this.missingNodetypes = missingNodetypes;
+        this.missingMixins = missingMixins;
+    }
+
+    /**
+     * Initializes an instance of this class, merging the two validation results into one.
+     * 
+     * @param result1
+     *            the first validation result instance to be merged
+     * @param result2
+     *            the second validation result instance to be merged
+     */
+    public ValidationResult(ValidationResult result1, ValidationResult result2) {
+        this();
+        missingNodetypes.putAll(result1.getMissingNodetypes());
+        missingMixins.putAll(result1.getMissingMixins());
+        for (Map.Entry<String, List<String>> item : result2.getMissingNodetypes().entrySet()) {
+            if (missingNodetypes.containsKey(item.getKey())) {
+                missingNodetypes.get(item.getKey()).addAll(item.getValue());
+            } else {
+                missingNodetypes.put(item.getKey(), item.getValue());
+            }
+        }
+        for (Map.Entry<String, List<String>> item : result2.getMissingMixins().entrySet()) {
+            if (missingMixins.containsKey(item.getKey())) {
+                missingMixins.get(item.getKey()).addAll(item.getValue());
+            } else {
+                missingMixins.put(item.getKey(), item.getValue());
+            }
+        }
+    }
+
+    /**
+     * @return a Map with missing mixin types as keys and as value a list of element paths having that mixin type in the import
+     */
+    public Map<String, List<String>> getMissingMixins() {
+        return missingMixins;
+    }
+
+    /**
+     * @return a Map with missing nodetypes as keys and as value a list of element paths having it as primary type
      */
     public Map<String, List<String>> getMissingNodetypes() {
         return missingNodetypes;
+    }
+
+    /**
+     * Returns <code>true</code> if the current validation result is successful, meaning no missing nodetypes and mixins were detected.
+     * 
+     * @return <code>true</code> if the current validation result is successful, meaning no missing nodetypes and mixins were detected
+     */
+    public boolean isSuccessful() {
+        return missingNodetypes.isEmpty() && missingMixins.isEmpty();
+    }
+
+    /**
+     * @param missingMixins
+     */
+    public void setMissingMixins(Map<String, List<String>> missingMixins) {
+        this.missingMixins = missingMixins;
     }
 
     /**
@@ -71,18 +136,16 @@ public class ValidationResult {
         this.missingNodetypes = missingNodetypes;
     }
 
-    /**
-     * @return a Map with missing mixin types as keys and as value a list of element paths having that mixin type in the import  
-     */
-    public Map<String, List<String>> getMissingMixins() {
-        return missingMixins;
-    }
+    @Override
+    public String toString() {
+        StringBuilder out = new StringBuilder(128);
+        out.append("[result=").append(isSuccessful() ? "successful" : "failure");
+        if (!isSuccessful()) {
+            out.append(", missingNodetypes=").append(missingNodetypes);
+            out.append(", missingMixins=").append(missingMixins);
+        }
+        out.append("]");
 
-    /**
-     * @param missingMixins
-     */
-    public void setMissingMixins(Map<String, List<String>> missingMixins) {
-        this.missingMixins = missingMixins;
+        return out.toString();
     }
-   
 }

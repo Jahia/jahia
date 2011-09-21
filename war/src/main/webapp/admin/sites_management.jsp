@@ -177,7 +177,7 @@
     <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0" width="100%">
         <thead>
         <tr>
-            <th width="5%">
+            <th width="5%" style="text-align: center;">
                 <input type="checkbox" name="allsitebox" id="allsitebox" value="true" onchange="selectSite('&lt;all&gt;', this.checked)"/>
             </th>
             <th width="3%">
@@ -216,7 +216,7 @@
                     }
                     lineCounter++; %>
             <tr class="<%=lineClass%>">
-                <td>
+                <td align="center">
                     <input type="checkbox" name="sitebox" value="<%=site.getSiteKey()%>" onchange="updateSelectedSites();"/>
                 </td>
                 <td align="center">
@@ -286,7 +286,7 @@
     </table>
 
     <!-- prepackaged site -->
-    <% pageContext.setAttribute("files", new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles()); %>
+    <% pageContext.setAttribute("files", new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "prepackagedSites").listFiles()); %>
     <c:if test="${not empty files}">
     <div class="head headtop">
         <div class="object-title">
@@ -314,14 +314,15 @@
                     </select>
                     </td>
                     <td>
-                                            
-                	                    <span class="dex-PushButton">
-                                          <span class="first-child">
-                                            <a class="ico-import"
-                                               href="javascript:{showWorkInProgress();document.siteImportPrepackaged.submit();}"><fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.proceed"/></a>
-                                          </span>
-                                        </span>
-
+                        <input type="checkbox" id="validityCheckOnImportDemo" name="validityCheckOnImport" value="true" checked="checked"/>&nbsp;<label for="validityCheckOnImportDemo" title="<fmt:message key='label.import.validate'/>"><fmt:message key="label.validate"/></label>
+                    </td>
+                    <td>
+                        <span class="dex-PushButton">
+                            <span class="first-child">
+                                <a class="ico-import"
+                                    href="javascript:{showWorkInProgress();document.siteImportPrepackaged.submit();}"><fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.proceed"/></a>
+                            </span>
+                        </span>
                     </td>
                 </tr>
             </table>
@@ -348,15 +349,14 @@
             <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
                 <tr>
                     <td>
-
-
-
                         <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/>&nbsp;
                     </td>
                     <td>
                         :&nbsp;<input type="file" name="import" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
                     </td>
-                    <td>&nbsp;</td>
+                    <td>
+                        <input type="checkbox" id="validityCheckOnImport" name="validityCheckOnImport" value="true" checked="checked"/>&nbsp;<label for="validityCheckOnImport" title="<fmt:message key='label.import.validate'/>"><fmt:message key="label.validate"/></label>
+                    </td>
                 </tr><tr>
                 <td>
                     <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileinput"/>&nbsp;
@@ -460,6 +460,9 @@ else { %>
                                                 </select>
                                                 </td>
                                                 <td>
+                                                    <input type="checkbox" id="validityCheckOnImportDemo" name="validityCheckOnImport" value="true" checked="checked"/>&nbsp;<label for="validityCheckOnImportDemo" title="<fmt:message key='label.import.validate'/>"><fmt:message key="label.validate"/></label>
+                                                </td>
+                                                <td>
                                             
                 	                    <span class="dex-PushButton">
                                           <span class="first-child">
@@ -493,15 +496,14 @@ else { %>
                                         <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
                                             <tr>
                                                 <td>
-
-
-
                                                     <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/>&nbsp;
                                                 </td>
                                                 <td>
                                                     :&nbsp;<input type="file" name="import" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
                                                 </td>
-                                                <td>&nbsp;</td>
+                                                <td>
+                                                    <input type="checkbox" id="validityCheckOnImport" name="validityCheckOnImport" value="true" checked="checked"/>&nbsp;<label for="validityCheckOnImport" title="<fmt:message key='label.import.validate'/>"><fmt:message key="label.validate"/></label>
+                                                </td>
                                             </tr><tr>
                                             <td>
                                                 <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileinput"/>&nbsp;

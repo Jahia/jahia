@@ -1828,6 +1828,7 @@ public class ManageSites extends AbstractAdministrationModule {
         importInfos.put("importFile", i);
         importInfos.put("importFileName", filename);
         importInfos.put("selected", Boolean.TRUE);
+        boolean doValidate = Boolean.valueOf(jParams.getParameter("validityCheckOnImport"));
         final Properties exportProps = (Properties) jParams.getAttribute("exportProps");
         if (exportProps != null) {
             importInfos.put("originatingJahiaRelease", exportProps.getProperty("JahiaRelease"));
@@ -1873,14 +1874,30 @@ public class ManageSites extends AbstractAdministrationModule {
                         isSite = true;
                     } else if (z.getName().startsWith("export_")) {
                         isLegacySite = true;
-                    } else if (z.getName().contains("repository.xml")
-                            || z.getName().contains("live-repository.xml")) {
+                    } else if (doValidate && (z.getName().contains("repository.xml")
+                            || z.getName().contains("live-repository.xml"))) {
                         try {
+                            long timer = System.currentTimeMillis();
                             ValidationResult validationResult = ImportExportBaseService.getInstance()
                                     .validateImportFile(
                                             JCRSessionFactory.getInstance()
                                                     .getCurrentUserSession(),
                                             zis2);
+                            logger.info(
+                                    "Import {}/{} validated in {} ms: {}",
+                                    new String[] { filename, z.getName(),
+                                            String.valueOf((System.currentTimeMillis() - timer)),
+                                            validationResult.toString() });
+                            if (!validationResult.isSuccessful()) {
+                                if (importInfos.containsKey("validationResult")) {
+                                    // merge results
+                                    importInfos.put("validationResult", new ValidationResult(
+                                            (ValidationResult) importInfos.get("validationResult"),
+                                            validationResult));
+                                } else {
+                                    importInfos.put("validationResult", validationResult);
+                                }
+                            }
                         } catch (Exception e) {
                             logger.error("Error when validating import file", e);
                         }

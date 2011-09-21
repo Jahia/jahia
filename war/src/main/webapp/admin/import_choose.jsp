@@ -30,32 +30,16 @@
     final String readmefilePath = response.encodeURL(new StringBuffer().append(request.getContextPath()).append("/html/startup/readme.html").toString());
     stretcherToOpen   = 0; %>
 <script type="text/javascript">
-    <!--
+    function sendForm(){
+    	setWaitingCursor();
+        document.main.submit();
+    }
 
-function sendForm(){
-    <%if(isInstall){%>
-          var openrf = document.getElementById('openReadmeFile');
-          if(openrf != null && openrf.checked){
-              openReadmeFile();
-          }
-          <%}%>
-          setWaitingCursor();
-          document.main.submit();
-      }
-
-
-      function openReadmeFile() {
-           var params = "width=1100,height=500,left=0,top=0,resizable=yes,scrollbars=yes,status=no";
-           window.open('<%=readmefilePath%>', 'Readme', params);
-      }
-
-      function setWaitingCursor() {
-          if (typeof workInProgressOverlay != 'undefined') {
-             workInProgressOverlay.launch();
-          }
-      }
-
-      -->
+	function setWaitingCursor() {
+    	if (typeof workInProgressOverlay != 'undefined') {
+        	workInProgressOverlay.launch();
+		}
+	}
 </script>
 <div id="topTitle">
     <h1>Jahia</h1>
@@ -99,6 +83,7 @@ function sendForm(){
                     <input type="hidden" name="do" value="sites"/>
                     <input type="hidden" name="sub" value="processimport"/>
                     <tbody>
+                    <c:set var="importPossible" value="false"/>
                     <%
                         int lineCounter = 0;
                         for (Iterator iterator = importsInfosSorted.iterator(); iterator.hasNext();) {
@@ -114,13 +99,24 @@ function sendForm(){
                             }
                             lineCounter++;
                     %>
-
+                    <c:set var="importPossible" value="${importPossible || empty infos.validationResult}"/>
                     <tr class="<%=lineClass%>">
                         <td<%if(importsInfos.size()==1){ %> style="display:none;"<%} %> align="center">
-                            <input type="checkbox" name="<%=file.getName()%>selected" value="on"${not empty infos.selected ? 'checked' : ''}>
+                            <input type="checkbox" name="<%=file.getName()%>selected" value="on"${not empty infos.selected && empty infos.validationResult ? 'checked' : ''}${not empty infos.validationResult ? ' disabled="disabled"' : ''}/>
                         </td>
                         <td>
                             <% if ("site".equals(fileType)) { %>
+                            <c:if test="${not empty infos.validationResult}">
+                                <c:set var="checks" value="${infos.validationResult}"/>
+                                <fieldset class="error">
+                                <legend>
+                                <fmt:message key="failure.import.missingNodetypes">
+                                    <fmt:param value="${fn:length(checks.missingNodetypes)}"/>
+                                    <fmt:param value="${fn:length(checks.missingMixins)}"/>
+                                </fmt:message>
+                                </legend>
+                                </fieldset>
+                            </c:if>
                             <table border="0" cellpadding="0" width="100%">
                                 <tr>
                                     <td>
@@ -200,11 +196,13 @@ function sendForm(){
               <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="label.backToMenu"/></a>
             </span>
           </span><%} %>
+          <c:if test="${importPossible}">
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-ok" href='javascript:sendForm();'><fmt:message key="label.doImport"/></a>
             </span>
           </span>
+          </c:if>
 </div>
 
 </div>

@@ -82,9 +82,6 @@
                         <ref bean="Toolbar.Item.Crop"/>
                         <ref bean="Toolbar.Item.Resize"/>
                         <ref bean="Toolbar.Item.Rotate"/>
-                        <!--
-                        <ref bean="Toolbar.ItemsGroup.Menu.GoogleDocs"/>
-                        -->
                     </list>
                 </property>
             </bean>
@@ -197,9 +194,6 @@
                         <ref bean="Toolbar.Item.Crop"/>
                         <ref bean="Toolbar.Item.Resize"/>
                         <ref bean="Toolbar.Item.Rotate"/>
-                        <!--
-                        <ref bean="Toolbar.ItemsGroup.Menu.GoogleDocs"/>
-                        -->
                     </list>
                 </property>
             </bean>
@@ -296,9 +290,6 @@
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
-                        <!--
-                        <ref bean="Toolbar.ItemsGroup.Menu.GoogleDocs"/>
-                        -->
                     </list>
                 </property>
             </bean>

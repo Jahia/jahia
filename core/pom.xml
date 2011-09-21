@@ -1008,46 +1008,11 @@
 	    </dependency>
         <!-- end of JODConverter dependencies -->
         
-        <!-- Google Data API -->
-		<dependency>
-			<groupId>com.google.gdata</groupId>
-			<artifactId>gdata-client</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.gdata</groupId>
-			<artifactId>gdata-client-meta</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.gdata</groupId>
-			<artifactId>gdata-core</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.gdata</groupId>
-			<artifactId>gdata-media</artifactId>
-			<version>1.0</version>
-		</dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>r06</version>
         </dependency>
-        <!-- end of Google Data API -->
-        
-        <!-- Google Docs API -->
-		<dependency>
-			<groupId>com.google.gdata</groupId>
-			<artifactId>gdata-docs</artifactId>
-			<version>3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.gdata</groupId>
-			<artifactId>gdata-docs-meta</artifactId>
-			<version>3.0</version>
-		</dependency>
-        <!-- end of Google Docs API -->
         
         <!-- Apache Shiro -->
         <dependency>

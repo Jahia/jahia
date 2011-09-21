@@ -283,10 +283,6 @@ public interface JahiaContentManagementServiceAsync {
 
     void getWorkflowRules(String path, AsyncCallback<Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>>> async);
 
-    void getGoogleDocsExportFormats(String nodeIdentifier, AsyncCallback<List<String>> async);
-
-    void synchronizeWithGoogleDocs(String nodeIdentifier, AsyncCallback<Void> async);
-
     void flush(String path, AsyncCallback<Void> asyncCallback);
 
     void flushAll(AsyncCallback<Void> asyncCallback);

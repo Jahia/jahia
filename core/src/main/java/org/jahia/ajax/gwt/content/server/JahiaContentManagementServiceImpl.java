@@ -47,7 +47,6 @@ import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
@@ -78,7 +77,6 @@ import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
 import org.jahia.bin.Export;
 import org.jahia.bin.Jahia;
-import org.jahia.bin.googledocs.GoogleDocsEditor;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -88,9 +86,6 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.googledocs.GoogleDocsService;
-import org.jahia.services.googledocs.GoogleDocsService.GoogleDocsExportFormats;
-import org.jahia.services.googledocs.GoogleDocsServiceFactory;
 import org.jahia.services.htmlvalidator.Result;
 import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
@@ -100,7 +95,6 @@ import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.utils.EncryptionUtils;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 
 import javax.jcr.*;
@@ -109,7 +103,6 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
-import java.io.InputStream;
 import java.text.Collator;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -144,16 +137,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private SeoHelper seo;
     private UIConfigHelper uiConfig;
     private int sessionPollingFrequency;
-    private GoogleDocsExportFormats googleDocsExportFormats;
-    private GoogleDocsServiceFactory googleDocsServiceFactory;
     private CacheHelper cacheHelper;
     private SchedulerHelper schedulerHelper;
     private UIConfigHelper uiConfigHelper;
     private JCRContentUtils jcrContentUtils;
-
-    public void setGoogleDocsServiceFactory(GoogleDocsServiceFactory googleDocsServiceFactory) {
-        this.googleDocsServiceFactory = googleDocsServiceFactory;
-    }
 
     public void setAcl(ACLHelper acl) {
         this.acl = acl;
@@ -1588,66 +1575,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throws GWTJahiaServiceException {
         JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
         return workflow.getWorkflowRules(path, sessionWrapper, sessionWrapper.getLocale());
-    }
-
-    public void setGoogleDocsExportFormats(GoogleDocsExportFormats googleDocsExportFormats) {
-        this.googleDocsExportFormats = googleDocsExportFormats;
-    }
-
-    public List<String> getGoogleDocsExportFormats(String nodeIdentifier) throws GWTJahiaServiceException {
-        try {
-            JCRNodeWrapper node = retrieveCurrentSession().getNodeByIdentifier(nodeIdentifier);
-            return googleDocsExportFormats.getExportFormats(node.getFileContent().getContentType());
-        } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
-    }
-
-    public void synchronizeWithGoogleDocs(String nodeIdentifier) throws GWTJahiaServiceException {
-        try {
-            JCRSessionWrapper session = retrieveCurrentSession();
-            JCRNodeWrapper node = session.getNodeByIdentifier(nodeIdentifier);
-            String uri = GoogleDocsEditor.getDocumentUriBeingEdited(getSession());
-            if (uri == null) {
-                throw new GWTJahiaServiceException(
-                        JahiaResourceBundle.getJahiaInternalResource("message.googleDocs.synchronize.documentNotFound",
-                                getLocale(), "No document currently being edited in Google Docs can be found."));
-            }
-            try {
-                GoogleDocsService googleDocsService =
-                        googleDocsServiceFactory.getDocsService(getRequest(), getResponse());
-                InputStream content = googleDocsService.downloadFile(uri);
-                try {
-                    JCRNodeWrapper parent = node.getParent();
-                    session.checkout(parent);
-                    parent.uploadFile(node.getName(), content, node.getFileContent().getContentType());
-                    session.save();
-                } finally {
-                    IOUtils.closeQuietly(content);
-                    String docId = null;
-                    if (uri.contains("docId=")) {
-                        docId = StringUtils.substringBetween(uri, "docId=", "&");
-                    } else if (uri.contains("key=")) {
-                        docId = StringUtils.substringBetween(uri, "key=", "&");
-                    } else if (uri.contains("id=")) {
-                        docId = StringUtils.substringBetween(uri, "id=", "&");
-                    }
-                    if (docId != null) {
-                        try {
-                            googleDocsService.delete(docId);
-                        } catch (Exception e) {
-                            logger.warn("Unable to delete document '" + docId + "' from Google Docs", e);
-                        }
-                    } else {
-                        logger.warn("Unable to retrieve document ID from the URI: " + uri);
-                    }
-                }
-            } catch (Exception e) {
-                throw new GWTJahiaServiceException(e.getMessage());
-            }
-        } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
     }
 
     /**

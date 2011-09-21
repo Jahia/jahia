@@ -43,7 +43,6 @@ package org.jahia.ajax.gwt.client.service.content;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -288,10 +287,6 @@ public interface JahiaContentManagementService extends RemoteService {
     Set<String> compareAcl(GWTJahiaNodeACL nodeAcl, List<GWTJahiaNode> reference) throws GWTJahiaServiceException;
 
     public Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>> getWorkflowRules(String path) throws GWTJahiaServiceException;
-
-    List<String> getGoogleDocsExportFormats(String nodeIdentifier) throws GWTJahiaServiceException;
-
-    void synchronizeWithGoogleDocs(String nodeIdentifier) throws GWTJahiaServiceException;
 
     void flush(String path) throws GWTJahiaServiceException;
 

@@ -48,10 +48,6 @@
         <property name="uiConfigHelper" ref="UiConfigHelper"/>
         <property name="image" ref="ImageHelper"/>
         <property name="JCRContentUtils" ref="JCRContentUtils"/>
-        <!--
-        <property name="googleDocsExportFormats" ref="GoogleDocsExportFormats"/>
-        <property name="googleDocsServiceFactory" ref="GoogleDocsServiceFactory"/>
-        -->
     </bean>
 
     <bean name="toolbarServiceController" parent="abstractServiceController">

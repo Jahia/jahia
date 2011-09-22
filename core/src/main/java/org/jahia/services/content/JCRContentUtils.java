@@ -90,6 +90,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 /**
  * Utility class for accessing and manipulation JCR properties.
@@ -97,6 +98,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Sergiy Shyrkov
  */
 public final class JCRContentUtils {
+    
+    public static final Pattern COLON_PATTERN = Pattern.compile(":", Pattern.LITERAL);
     
     private  static final Map<String, Boolean> iconsPresence = new ConcurrentHashMap<String, Boolean>(512,0.8f,32);
     private static JCRContentUtils instance;
@@ -586,12 +589,12 @@ public final class JCRContentUtils {
     }    
 
     public static String getIcon(ExtendedNodeType type) throws RepositoryException {
-        String icon = getIconsFolder(type) + type.getName().replace(':', '_');
+        String icon = getIconsFolder(type) + replaceColon(type.getName());
         if (check(icon)) {
             return icon;
         }
         for (ExtendedNodeType nodeType : type.getSupertypes()) {
-            icon = getIconsFolder(nodeType) + nodeType.getName().replace(':', '_');
+            icon = getIconsFolder(nodeType) + replaceColon(nodeType.getName());
             if (check(icon)) {
                 return icon;
             }
@@ -1359,5 +1362,9 @@ public final class JCRContentUtils {
         } catch (Exception e) {
             return false;
         }
+    }
+    
+    public static String replaceColon(String name) {
+        return name != null ? COLON_PATTERN.matcher(name).replaceAll("_") : name;
     }
 }

@@ -76,9 +76,11 @@ public class DocumentViewExporter {
     private boolean noRecurse;
     private boolean skipBinary;
     private Set<String> typesToIgnore = new HashSet<String>();
+    private Set<String> externalReferences = new HashSet<String>();
     private Map<String, String> prefixes;
     private HashMap<String, String> exportedShareable;
     private JCRNodeWrapper rootNode;
+    private List<JCRNodeWrapper> nodesList;
     private Stack<String> stack;
 
     private List<String> propertiestoIgnore = Arrays.asList("jcr:predecessors", "j:nodename", "jcr:versionHistory", "jcr:baseVersion", "jcr:isCheckedOut", "jcr:uuid");
@@ -124,10 +126,14 @@ public class DocumentViewExporter {
 
         ch.startDocument();
 
-        for (Iterator<JCRNodeWrapper> iterator = nodes.iterator(); iterator.hasNext();) {
-            JCRNodeWrapper node = iterator.next();
-            exportNode(node);
+        nodesList = new ArrayList<JCRNodeWrapper>(nodes);
+        for (int i = 0; i<nodesList.size(); i++) {
+            exportNode(nodesList.get(i));
         }
+//        for (Iterator<JCRNodeWrapper> iterator = nodes.iterator(); iterator.hasNext();) {
+//            JCRNodeWrapper node = iterator.next();
+//            exportNode(node);
+//        }
         while (!stack.isEmpty()) {
             String end = stack.pop();
             String name = end.substring(end.lastIndexOf('/') + 1);
@@ -158,7 +164,7 @@ public class DocumentViewExporter {
                 while (!stack.isEmpty() && !parentpath.startsWith(stack.peek())) {
                     String end = stack.pop();
                     if (stack.isEmpty()) {
-                        throw new RepositoryException("Node not in path");
+                        throw new RepositoryException("Node not in path : " + node.getPath());
                     }
                     String name = end.substring(end.lastIndexOf('/') + 1);
                     String encodedName = ISO9075.encode(name);
@@ -184,9 +190,9 @@ public class DocumentViewExporter {
                     }
                     String encodedName = ISO9075.encode(name);
                     String currentpath = peek + "/" + name;
-                    String pt = session.getNode(currentpath).getPrimaryNodeTypeName();
+//                    String pt = session.getNode(currentpath).getPrimaryNodeTypeName();
                     AttributesImpl atts = new AttributesImpl();
-                    atts.addAttribute(Name.NS_JCR_URI, "primaryType", "jcr:primaryType", CDATA, pt);
+//                    atts.addAttribute(Name.NS_JCR_URI, "primaryType", "jcr:primaryType", CDATA, pt);
                     startElement(encodedName, atts);
                     stack.push(currentpath);
                 }
@@ -275,7 +281,27 @@ public class DocumentViewExporter {
     private String getValue(Value v) throws RepositoryException {
         if (v.getType() == PropertyType.REFERENCE || v.getType() == PropertyType.WEAKREFERENCE) {
             try {
-                return ISO9075.encodePath(session.getNodeByUUID(v.getString()).getPath()); 
+                JCRNodeWrapper reference = session.getNodeByUUID(v.getString());
+                String path = reference.getPath();
+                boolean root = rootNode.getPath().equals("/");
+                if (!root && !path.startsWith(rootNode.getPath()+"/") && !path.equals(rootNode.getPath())) {
+                    externalReferences.add(v.getString());
+                } else if (!typesToIgnore.contains(reference.getPrimaryNodeTypeName())) {
+                    boolean foundInExportedNodes = false;
+
+                    for (JCRNodeWrapper node : nodesList) {
+                        if (path.startsWith(node.getPath()+"/") || path.equals(node.getPath())) {
+                            foundInExportedNodes = true;
+                            break;
+                        }
+                    }
+                    if (!foundInExportedNodes) {
+                        nodesList.add(reference);
+                    }
+
+                    path = path.substring(rootNode.getPath().length() + (root ? 0 : 1));
+                }
+                return ISO9075.encodePath(path);
             } catch (ItemNotFoundException e) {
                 return "";
             }
@@ -317,5 +343,17 @@ public class DocumentViewExporter {
 
     public void setPropertiestoIgnore(List<String> propertiestoIgnore) {
         this.propertiestoIgnore = propertiestoIgnore;
+    }
+
+    public Set<String> getExternalReferences() {
+        return externalReferences;
+    }
+
+    public void setExternalReferences(Set<String> externalReferences) {
+        this.externalReferences = externalReferences;
+    }
+
+    public List<JCRNodeWrapper> getNodesList() {
+        return nodesList;
     }
 }

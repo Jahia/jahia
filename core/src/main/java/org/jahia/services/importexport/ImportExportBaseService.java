@@ -49,6 +49,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.slf4j.Logger;
@@ -261,55 +262,76 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 break;
             }
         }
-        if (!systemFound) {
-            anEntry = new ZipEntry("systemsite.zip");
-            zout.putNextEntry(anEntry);
-            exportSystemSite(zout, params);
-        }
+//        if (!systemFound) {
+//            anEntry = new ZipEntry("systemsite.zip");
+//            zout.putNextEntry(anEntry);
+//            exportSystemSite(zout, params);
+//        }
+
+        Set<String> externalReferences = new HashSet<String>();
 
         for (JahiaSite jahiaSite : sites) {
             anEntry = new ZipEntry(jahiaSite.getSiteKey() + ".zip");
             zout.putNextEntry(anEntry);
-            exportSite(jahiaSite, zout, params);
+            exportSite(jahiaSite, zout, externalReferences, params);
         }
 
         JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
 
-        // export shared files -->
-        Set<JCRNodeWrapper> files = new HashSet<JCRNodeWrapper>();
-        try {
-            files.add(session.getNode("/users"));
-        } catch (RepositoryException e) {
-            e.printStackTrace();
-            throw new IOException(e.getMessage());
-        }
-
-        zout.putNextEntry(new ZipEntry("users.zip"));
-        ZipOutputStream zzout = new ZipOutputStream(zout);
         Set<String> tti = new HashSet<String>();
         tti.add(Constants.JAHIANT_VIRTUALSITE);
-        try {
-            exportNodesWithBinaries(session.getRootNode(), files, zzout, tti, params);
-        } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        tti.add(Constants.JAHIANT_USER);
+
+        if (params.containsKey(INCLUDE_USERS)) {
+            // export users
+            zout.putNextEntry(new ZipEntry("users.zip"));
+            ZipOutputStream zzout = new ZipOutputStream(zout);
+
+            try {
+                exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/users")), zzout, tti, externalReferences, params);
+            } catch (Exception e) {
+                logger.error("Cannot export",e);
+            }
+            zzout.finish();
         }
-        zzout.finish();
+
+        Set<JCRNodeWrapper> refs = new HashSet<JCRNodeWrapper>();
+        for (String reference : externalReferences) {
+            JCRNodeWrapper node = session.getNodeByUUID(reference);
+            if (!tti.contains(node.getPrimaryNodeTypeName())) {
+                refs.add(node);
+            }
+        }
+        if (!refs.isEmpty()) {
+            zout.putNextEntry(new ZipEntry("references.zip"));
+            ZipOutputStream zzout = new ZipOutputStream(zout);
+            try {
+                exportNodesWithBinaries(session.getRootNode(), refs, zzout, tti, externalReferences, params);
+            } catch (Exception e) {
+                logger.error("Cannot export",e);
+            }
+            zzout.finish();
+        }
+
+
         zout.finish();
     }
 
-    private void exportSite(final JahiaSite site, OutputStream out, Map<String, Object> params)
+    private void exportSite(final JahiaSite site, OutputStream out, Set<String> externalReferences, Map<String, Object> params)
             throws JahiaException, RepositoryException, SAXException, IOException, JDOMException {
         ZipOutputStream zout = new ZipOutputStream(out);
 
         zout.putNextEntry(new ZipEntry(SITE_PROPERTIES));
         exportSiteInfos(zout, site);
         final JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
-        Set<JCRNodeWrapper> nodes = Collections.singleton(session.getNode("/sites/"+
-                site.getSiteKey()));
+        JCRNodeWrapper node = session.getNode("/sites/" +
+                site.getSiteKey());
+        Set<JCRNodeWrapper> nodes = Collections.singleton(node);
         final HashSet<String> tti = new HashSet<String>();
         tti.add("jnt:templatesFolder");
+        tti.add(Constants.JAHIANT_USER);
         exportNodesWithBinaries(session.getRootNode(), nodes, zout, tti,
-                params);
+                externalReferences, params);
         zout.finish();
     }
 
@@ -328,7 +350,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         final HashSet<String> tti = new HashSet<String>();
         tti.add("jnt:templatesFolder");
-        exportNodesWithBinaries(session.getRootNode(), nodes, zout, tti, params);
+        exportNodesWithBinaries(session.getRootNode(), nodes, zout, tti, null, params);
         zout.finish();
     }
 
@@ -336,17 +358,17 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         ZipOutputStream zout = new ZipOutputStream(out);
         Set<JCRNodeWrapper> nodes = new HashSet<JCRNodeWrapper>();
         nodes.add(node);
-        exportNodesWithBinaries(exportRoot == null ? node : exportRoot, nodes, zout, new HashSet<String>(),params);
+        exportNodesWithBinaries(exportRoot == null ? node : exportRoot, nodes, zout, new HashSet<String>(), null, params);
         zout.finish();
     }
 
     public void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException {
         TreeSet<JCRNodeWrapper> nodes = new TreeSet<JCRNodeWrapper>();
         nodes.add(node);
-        exportNodes(exportRoot == null ? node : exportRoot, nodes, out, new HashSet<String>(), params);
+        exportNodes(exportRoot == null ? node : exportRoot, nodes, out, new HashSet<String>(), null, params);
     }
 
-    private void exportNodesWithBinaries(JCRNodeWrapper rootNode, Set<JCRNodeWrapper> nodes, ZipOutputStream zout, Set<String> typesToIgnore, Map<String, Object> params)
+    private void exportNodesWithBinaries(JCRNodeWrapper rootNode, Set<JCRNodeWrapper> nodes, ZipOutputStream zout, Set<String> typesToIgnore, Set<String> externalReferences, Map<String, Object> params)
             throws SAXException, IOException, RepositoryException, JDOMException {
         TreeSet<JCRNodeWrapper> sortedNodes = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
             public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
@@ -357,7 +379,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
 //        final String xsl = (String) params.get(XSL_PATH);
         zout.putNextEntry(new ZipEntry(REPOSITORY_XML));
-        exportNodes(rootNode, sortedNodes, zout, typesToIgnore, params);
+        exportNodes(rootNode, sortedNodes, zout, typesToIgnore, externalReferences, params);
         zout.closeEntry();
         exportNodesBinary(rootNode, sortedNodes, zout, typesToIgnore, "/content");
         if (params.containsKey(INCLUDE_LIVE_EXPORT)) {
@@ -365,19 +387,22 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             rootNode = liveSession.getNodeByIdentifier(rootNode.getIdentifier());
             sortedNodes.clear();
             for (JCRNodeWrapper node : nodes) {
-                sortedNodes.add(liveSession.getNodeByIdentifier(node.getIdentifier()));
+                try {
+                    sortedNodes.add(liveSession.getNodeByIdentifier(node.getIdentifier()));
+                } catch (ItemNotFoundException e) {
+                }
             }
 
             zout.putNextEntry(new ZipEntry(LIVE_REPOSITORY_XML));
 
-            exportNodes(rootNode, sortedNodes, zout, typesToIgnore, params);
+            exportNodes(rootNode, sortedNodes, zout, typesToIgnore, externalReferences, params);
             zout.closeEntry();
             exportNodesBinary(rootNode, sortedNodes, zout, typesToIgnore, "/live-content");
         }
     }
 
     private void exportNodes(JCRNodeWrapper rootNode, TreeSet<JCRNodeWrapper> sortedNodes, OutputStream outputStream,
-                             Set<String> typesToIgnore, Map<String, Object> params)
+                             Set<String> typesToIgnore, Set<String> externalReferences, Map<String, Object> params)
             throws IOException, RepositoryException, SAXException, JDOMException {
         final String xsl = (String) params.get(XSL_PATH);
         final boolean skipBinary = !Boolean.FALSE.equals(params.get(SKIP_BINARY));
@@ -395,6 +420,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             exporter.export(rootNode);
         } else {
             DocumentViewExporter exporter = new DocumentViewExporter(rootNode.getSession(), dw, skipBinary, noRecurse);
+            if (externalReferences != null) {
+                exporter.setExternalReferences(externalReferences);
+            }
             typesToIgnore.add("rep:system");
             if (params.containsKey(INCLUDE_LIVE_EXPORT)) {
                 List<String> l = new ArrayList<String>(exporter.getPropertiestoIgnore());
@@ -406,6 +434,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
             exporter.setTypesToIgnore(typesToIgnore);
             exporter.export(rootNode, sortedNodes);
+
+            sortedNodes.addAll(exporter.getNodesList());
         }
 
         dw.flush();
@@ -448,7 +478,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                             if (root.getPath().equals("/")) {
                                 path = basepath + path;
                             } else {
-                                path = path.substring(root.getParent().getPath().length());
+                                path = basepath + path.substring(root.getParent().getPath().length());
                             }
                             String name = JCRContentUtils.replaceColon(child.getName());
                             if (child.getName().equals("jcr:content")) {
@@ -619,6 +649,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
                         documentViewImportHandler.setReferences(references);
                         documentViewImportHandler.setNoRoot(true);
+                        documentViewImportHandler.setBaseFilesPath("/live-content");
 
                         handleImport(zis, documentViewImportHandler);
                         session.save(JCRObservationManager.IMPORT);
@@ -651,7 +682,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     if (zipentry == null) break;
                     String name = zipentry.getName();
                     if (name.equals(REPOSITORY_XML)) {
-                        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, null, file, fileList, (site != null ? site.getSiteKey(): null));
+                        String jcrLocalPath = null;site.getJCRLocalPath();
+//                        if (infos.get("BuildNumber") != null && Integer.parseInt((String) infos.get("BuildNumber")) >= 39122) {
+//                            jcrLocalPath = site.getJCRLocalPath();
+//                        }
+                        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, jcrLocalPath, file, fileList, (site != null ? site.getSiteKey(): null));
                         if (importLive) {
                             // Restore publication status
                             Set<String> props = new HashSet<String>(documentViewImportHandler.getPropertiesToSkip());
@@ -707,6 +742,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         documentViewImportHandler.setImportUserGeneratedContent(true);
                         documentViewImportHandler.setReferences(references);
                         documentViewImportHandler.setNoRoot(true);
+                        documentViewImportHandler.setBaseFilesPath("/live-content");
 
                         handleImport(zis, documentViewImportHandler);
                         liveSession.save(JCRObservationManager.IMPORT);
@@ -964,6 +1000,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         inactiveLiveLanguages.clear();
         final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
         mandatoryLanguages.clear();
+
+        String templateSet = p.getProperty("templatePackageName");
+        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+        try {
+            templateManagerService.deployTemplates("/templateSets/" + templateSet, "/sites/" + site.getSiteKey(), JCRSessionFactory.getInstance().getCurrentUser().getUsername());
+        } catch (RepositoryException e) {
+            logger.error("Cannot deploy module "+templateSet,e);
+        }
+
         String defaultLanguage = null;
         String lowestRankLanguage = null;
         int currentRank = 0;
@@ -1008,9 +1053,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     value) && sitesService.getDefaultSite() == null) {
                 sitesService.setDefaultSite(site);
             } else if (firstKey.equals("installedModules")) {
-                if (!site.getInstalledModules().contains(value)) {
+                if (!site.getInstalledModules().contains(value) && !templateSet.equals(value)) {
                     try {
-                        ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployTemplates("/templateSets/"+value, "/sites/"+site.getSiteKey(), JCRSessionFactory.getInstance().getCurrentUser().getUsername());
+                        templateManagerService.deployTemplates("/templateSets/" + value, "/sites/" + site.getSiteKey(), JCRSessionFactory.getInstance().getCurrentUser().getUsername());
                     } catch (RepositoryException e) {
                         logger.error("Cannot deploy module "+value,e);
                     }

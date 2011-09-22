@@ -64,6 +64,8 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.WebUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -75,6 +77,8 @@ import org.springframework.web.servlet.ModelAndView;
  *        Created : 2 avr. 2010
  */
 public class Export extends JahiaController implements ServletContextAware {
+    private static Logger logger = LoggerFactory.getLogger(Export.class);
+
     public static final String CLEANUP = "cleanup";
 
     private static final String CONTROLLER_MAPPING = "/export";
@@ -177,6 +181,9 @@ public class Export extends JahiaController implements ServletContextAware {
                     if (request.getParameter("live") == null || Boolean.valueOf(request.getParameter("live"))) {
                         params.put(ImportExportService.INCLUDE_LIVE_EXPORT, Boolean.TRUE);
                     }
+//                    if (request.getParameter("users") == null || Boolean.valueOf(request.getParameter("users"))) {
+                        params.put(ImportExportService.INCLUDE_USERS, Boolean.TRUE);
+//                    }
                     params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
                     params.put(ImportExportService.XSL_PATH, cleanupXsl);
 
@@ -215,6 +222,7 @@ public class Export extends JahiaController implements ServletContextAware {
 
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
+            logger.error("Cannot export", e);
             DefaultErrorHandler.getInstance().handle(e, request, response);
         }
 

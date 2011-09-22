@@ -89,7 +89,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private NoCloseZipInputStream zis;
     private ZipEntry nextEntry;
     private List<String> fileList = new ArrayList<String>();
-
+    private String baseFilesPath = "/content";
     private Stack<JCRNodeWrapper> nodes = new Stack<JCRNodeWrapper>();
 
     private Map<String, String> uuidMapping;
@@ -373,7 +373,6 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
                         setAttributes(child, atts);
                         uuids.add(child.getIdentifier());
-
                         if (child.isFile() && currentFilePath == null) {
                             currentFilePath = child.getPath();
                         }
@@ -381,7 +380,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     }
                 } else {
                     if (child.hasPermission("jcr:modifyProperties") && child.isCheckedOut()) {
-                        if (!noUpdateTypes.contains(child.getPrimaryNodeType().getName())) {
+                        if (!noUpdateTypes.contains(child.getPrimaryNodeType().getName()) && atts.getValue("jcr:primaryType") != null) {
                             addMixins(child, atts);
                             setAttributes(child, atts);
                             uuids.add(child.getIdentifier());
@@ -482,6 +481,14 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         String[] values = attrValue.split(" ");
                         for (String value : values) {
                             if (!StringUtils.isEmpty(value)) {
+                                if (!value.startsWith("/")) {
+                                    String rootPath = nodes.firstElement().getPath();
+                                    if (rootPath.equals("/")) {
+                                        value = "/" + value;
+                                    } else {
+                                        value = rootPath + "/" + value;
+                                    }
+                                }
                                 for (Map.Entry<String, String> entry : pathMapping.entrySet()) {
                                     if (value.startsWith(entry.getKey())) {
                                         value = entry.getValue() + StringUtils.substringAfter(value, entry.getKey());
@@ -530,7 +537,12 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         } else {
             path =JCRContentUtils.replaceColon(path);
         }
-        int fileIndex = fileList.indexOf(path);
+        int fileIndex = fileList.indexOf(baseFilesPath + path);
+        if (fileIndex == -1 && path.startsWith("/content")) {
+            // Case of root node export - root node has been renamed to "content" during export
+            path = path.substring("/content".length());
+            fileIndex = fileList.indexOf(baseFilesPath + path);
+        }
         if (fileIndex != -1) {
             if (fileList.indexOf("/" + nextEntry.getName().replace('\\', '/')) > fileIndex) {
                 zis.reallyClose();
@@ -538,7 +550,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             }
             do {
                 nextEntry = zis.getNextEntry();
-            } while (!("/" + nextEntry.getName().replace('\\', '/')).equals(path));
+            } while (!("/" + nextEntry.getName().replace('\\', '/')).equals(baseFilesPath + path));
 
             return true;
         }
@@ -581,6 +593,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 if (!w.hasNode(Constants.JCR_CONTENT) || !w.getNode(Constants.JCR_CONTENT).hasProperty(Constants.JCR_DATA)) {
                     logger.warn("Cannot find the file content for the node " + w.getPath()
                             + ". Skipping importing it.");
+                    uuids.remove(w.getIdentifier());
                     w.remove();
                 }
             } catch (RepositoryException e) {
@@ -682,5 +695,13 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
     public void setUuids(List<String> uuids) {
         this.uuids = uuids;
+    }
+
+    public String getBaseFilesPath() {
+        return baseFilesPath;
+    }
+
+    public void setBaseFilesPath(String baseFilesPath) {
+        this.baseFilesPath = baseFilesPath;
     }
 }

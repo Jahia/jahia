@@ -94,7 +94,7 @@ public class MissingNodetypesValidator implements ImportValidator {
     public void validate(String decodedLocalName, String decodedQName,
             String currentPath, Attributes atts) {
         String pt = atts.getValue(Constants.JCR_PRIMARYTYPE);
-        if (!isTypeExisting(pt, false)) {
+        if (pt != null && !isTypeExisting(pt, false)) {
             missingNodetypes.get(pt).add(currentPath);
         }
         String m = atts.getValue(Constants.JCR_MIXINTYPES);

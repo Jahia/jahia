@@ -774,6 +774,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      */
     public boolean isTemplatePresent(String templatePath) {
         // TODO implement me
-        return false;
+        return true;
     }
 }

@@ -44,6 +44,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * An instance of this class is being returned when validating JCR document view import files and contains information about expected import
  * failures.
@@ -143,7 +145,8 @@ public class MissingNodetypesValidationResult implements ValidationResult {
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder(128);
-        out.append("[result=").append(isSuccessful() ? "successful" : "failure");
+        out.append("[").append(StringUtils.substringAfterLast(getClass().getName(), "."))
+                .append("=").append(isSuccessful() ? "successful" : "failure");
         if (!isSuccessful()) {
             out.append(", missingNodetypes=").append(missingNodetypes);
             out.append(", missingMixins=").append(missingMixins);

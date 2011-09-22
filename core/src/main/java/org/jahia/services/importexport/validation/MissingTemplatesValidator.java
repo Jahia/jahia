@@ -40,13 +40,18 @@
 
 package org.jahia.services.importexport.validation;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 
 /**
@@ -57,25 +62,57 @@ import org.xml.sax.Attributes;
  */
 public class MissingTemplatesValidator implements ImportValidator {
 
-    private Set<String> checked = new HashSet<String>();
+    private static final Logger logger = LoggerFactory.getLogger(MissingTemplatesValidator.class);
+
+    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/sites/[^/]*/templates/(.*)");
+
+    private Map<String, Boolean> checked = new HashMap<String, Boolean>();
+
     private Map<String, Set<String>> missing = new TreeMap<String, Set<String>>();
+    private JahiaTemplateManagerService templateManagerService;
 
     public ValidationResult getResult() {
         return new MissingTemplatesValidationResult(missing);
     }
 
-    public void validate(String decodedLocalName, String decodedQName,
-            String currentPath, Attributes atts) {
+    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
+        this.templateManagerService = templateManagerService;
+    }
+
+    public void validate(String decodedLocalName, String decodedQName, String currentPath,
+            Attributes atts) {
         String templateAttr = atts.getValue("j:templateNode");
         if (StringUtils.isEmpty(templateAttr)) {
+            // no template attribute
             return;
         }
-        
-        // TODO impement me!
-        
-        if (false && !checked.contains(templateAttr)) {
-            missing.put(templateAttr, new TreeSet<String>());
-            checked.add(templateAttr);
+
+        Matcher matcher = TEMPLATE_PATTERN.matcher(templateAttr);
+        String templatePath = matcher.matches() ? matcher.group(1) : null;
+        if (StringUtils.isEmpty(templatePath)) {
+            logger.warn("j:templateNode value '{}' does not seem well-formed. Skipping.",
+                    templateAttr);
+            return;
+        }
+
+        templatePath = "/" + templatePath;
+
+        if (checked.containsKey(templatePath)) {
+            // we have already checked that template
+            if (!checked.get(templatePath)) {
+                // the template is missing -> add the path to the set
+                missing.get(templatePath).add(currentPath);
+            }
+        } else {
+            // not yet checked -> do check it
+            if (!templateManagerService.isTemplatePresent(templatePath)) {
+                checked.put(templatePath, Boolean.FALSE);
+                TreeSet<String> pathes = new TreeSet<String>();
+                pathes.add(currentPath);
+                missing.put(templatePath, pathes);
+            } else {
+                checked.put(templatePath, Boolean.TRUE);
+            }
         }
     }
 }

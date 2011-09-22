@@ -453,7 +453,9 @@
         <property name="validators">
             <list>
                 <bean class="org.jahia.services.importexport.validation.MissingNodetypesValidator"/>
-                <bean class="org.jahia.services.importexport.validation.MissingTemplatesValidator"/>
+                <bean class="org.jahia.services.importexport.validation.MissingTemplatesValidator">
+                    <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
+                </bean>
             </list>
         </property>
     </bean>

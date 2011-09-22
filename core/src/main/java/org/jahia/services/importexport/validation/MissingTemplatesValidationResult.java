@@ -44,6 +44,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Represents a validation result, containing missing templates in the content to be imported.
  * 
@@ -114,7 +116,8 @@ public class MissingTemplatesValidationResult implements ValidationResult {
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder(128);
-        out.append("[result=").append(isSuccessful() ? "successful" : "failure");
+        out.append("[").append(StringUtils.substringAfterLast(getClass().getName(), "."))
+                .append("=").append(isSuccessful() ? "successful" : "failure");
         if (!isSuccessful()) {
             out.append(", missingTemplates=").append(missing);
         }

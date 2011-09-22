@@ -56,9 +56,6 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.utils.zip.ZipEntry;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
-import com.google.common.collect.ImmutableSet;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -78,7 +75,7 @@ import java.util.regex.Pattern;
  * Date: 11 févr. 2008
  * Time: 16:38:38
  */
-public class DocumentViewImportHandler extends DefaultHandler implements ImportUUIDBehavior {
+public class DocumentViewImportHandler extends BaseDocumentViewHandler implements ImportUUIDBehavior {
     private static Logger logger = LoggerFactory.getLogger(DocumentViewImportHandler.class);
 
     public static final int IMPORT_UUID_COLLISION_MOVE_EXISTING = 4;
@@ -94,7 +91,6 @@ public class DocumentViewImportHandler extends DefaultHandler implements ImportU
     private List<String> fileList = new ArrayList<String>();
 
     private Stack<JCRNodeWrapper> nodes = new Stack<JCRNodeWrapper>();
-    private Stack<String> pathes = new Stack<String>();
 
     private Map<String, String> uuidMapping;
     private Map<String, String> pathMapping;
@@ -110,12 +106,10 @@ public class DocumentViewImportHandler extends DefaultHandler implements ImportU
 
     private int error = 0;
 
-    private boolean noRoot = false;
     private boolean resolveReferenceAtEnd = true;
 
     private int uuidBehavior = ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW;
 
-    private JCRSessionWrapper session;
     private Map<String, String> placeHoldersMap = new HashMap<String, String>();
 
     private boolean importUserGeneratedContent = false;
@@ -132,9 +126,9 @@ public class DocumentViewImportHandler extends DefaultHandler implements ImportU
 
     @SuppressWarnings("unchecked")
     public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, File archive, List<String> fileList, String siteKey) throws IOException {
+        super(session);
         JCRNodeWrapper node = null;
         try {
-            this.session = session;
             this.uuidMapping = session.getUuidMapping();
             this.pathMapping = session.getPathMapping();
             if (rootPath == null) {
@@ -150,26 +144,11 @@ public class DocumentViewImportHandler extends DefaultHandler implements ImportU
             throw new IOException();
         }
         nodes.add(node);
-        pathes.add("");
 
         this.archive = archive;
         this.fileList = fileList;
         this.siteKey = siteKey;
         setPropertiesToSkip((Set<String>) SpringContextSingleton.getBean("DocumentViewImportHandler.propertiesToSkip"));
-    }
-
-    public void startPrefixMapping(String prefix, String uri)
-            throws SAXException {
-        try {
-            NamespaceRegistry nsRegistry = session.getWorkspace().getNamespaceRegistry();
-            Set<String> prefixes = ImmutableSet.copyOf(nsRegistry.getPrefixes());
-            if (!prefixes.contains(prefix)) {
-                nsRegistry.registerNamespace(prefix, uri);
-                session.setNamespacePrefix(prefix, uri);
-            }
-        } catch (RepositoryException re) {
-            throw new SAXException(re);
-        }
     }
 
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {

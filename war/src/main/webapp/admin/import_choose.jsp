@@ -28,8 +28,7 @@
     }
     final boolean isInstall = session.getAttribute(JahiaAdministration.CLASS_NAME + "redirectToJahia") != null;
     final String readmefilePath = response.encodeURL(new StringBuffer().append(request.getContextPath()).append("/html/startup/readme.html").toString());
-    stretcherToOpen   = 0;
-    pageContext.setAttribute("lineBreak", "\n"); %>
+    stretcherToOpen   = 0; %>
 <script type="text/javascript">
     function sendForm(){
     	setWaitingCursor();
@@ -113,62 +112,7 @@
                         <td>
                             <% if ("site".equals(fileType)) { %>
                             <c:if test="${not empty infos.validationResult}">
-                                <c:set var="checks" value="${infos.validationResult}"/>
-                                <fmt:message key="failure.import.missingNodetypes" var="errorSummary">
-                                    <fmt:param value="${fn:length(checks.missingNodetypes)}"/>
-                                    <fmt:param value="${fn:length(checks.missingMixins)}"/>
-                                </fmt:message>
-                                <div style="display: block">
-                                    <span style="color: red">${fn:escapeXml(errorSummary)}</span>&nbsp;
-                                    <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp" value="${fn:escapeXml(i18nHelp)}"/>
-                                    <a href="#details" onclick="toggle('validationErrorsDetails'); return false;" title="${i18nHelp}"><img src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16" height="16" alt="${i18nHelp}" title="${i18nHelp}"></a>
-                                </div>
-                                <div id="validationErrorsDetails" style="display: none">
-                                    <c:if test="${not empty checks.missingNodetypes}">
-                                    <p><fmt:message key="label.import.missingNodetypes"/></p>
-                                    <ul>
-                                        <c:forEach var="nt" items="${checks.missingNodetypes}">
-                                            <li>${fn:escapeXml(nt.key)}
-                                                <ul>
-                                                    <c:forEach var="path" items="${nt.value}" begin="0" end="2">
-                                                        <li>${fn:escapeXml(path)}</li>
-                                                    </c:forEach>
-                                                    <c:if test="${fn:length(nt.value) > 3}">
-                                                        <c:set var="all">
-                                                        <c:forEach var="path" items="${nt.value}">
-                                                            ${path}${lineBreak}
-                                                        </c:forEach>
-                                                        </c:set>
-                                                        <li><a href="#showAll" onclick="alert('${functions:escapeJavaScript(all)}'); return false;">...&lt;<fmt:message key="label.all"/>&gt;</a></li>
-                                                    </c:if>
-                                                </ul>
-                                            </li>
-                                        </c:forEach>
-                                    </ul>
-                                    </c:if>
-                                    <c:if test="${not empty checks.missingMixins}">
-                                    <p><fmt:message key="label.import.missingMixins"/></p>
-                                    <ul>
-                                        <c:forEach var="nt" items="${checks.missingMixins}">
-                                            <li>${fn:escapeXml(nt.key)}
-                                                <ul>
-                                                    <c:forEach var="path" items="${nt.value}" begin="0" end="2">
-                                                        <li>${fn:escapeXml(path)}</li>
-                                                    </c:forEach>
-                                                    <c:if test="${fn:length(nt.value) > 3}">
-                                                        <c:set var="all">
-                                                        <c:forEach var="path" items="${nt.value}">
-                                                            ${path}${lineBreak}
-                                                        </c:forEach>
-                                                        </c:set>
-                                                        <li><a href="#showAll" onclick="alert('${functions:escapeJavaScript(all)}'); return false;">...&lt;<fmt:message key="label.all"/>&gt;</a></li>
-                                                    </c:if>
-                                                </ul>
-                                            </li>
-                                        </c:forEach>
-                                    </ul>
-                                    </c:if>
-                                </div>
+                            <%@ include file="/admin/import_validation.jspf" %>
                             </c:if>
                             <table border="0" cellpadding="0" width="100%">
                                 <tr>

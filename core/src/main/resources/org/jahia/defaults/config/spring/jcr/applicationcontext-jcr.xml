@@ -447,4 +447,14 @@
             </bean>
         </entry>
     </util:map>
+    
+    <bean id="DocumentViewValidationHandler" class="org.jahia.services.importexport.validation.DocumentViewValidationHandler" scope="prototype">
+        <property name="noRoot" value="true"/>
+        <property name="validators">
+            <list>
+                <bean class="org.jahia.services.importexport.validation.MissingNodetypesValidator"/>
+                <bean class="org.jahia.services.importexport.validation.MissingTemplatesValidator"/>
+            </list>
+        </property>
+    </bean>
 </beans>

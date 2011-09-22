@@ -60,6 +60,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryService;
 import org.jahia.services.content.*;
@@ -68,6 +69,8 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.JahiaCndReader;
 import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
+import org.jahia.services.importexport.validation.DocumentViewValidationHandler;
+import org.jahia.services.importexport.validation.ValidationResults;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.utils.zip.ZipEntry;
@@ -94,7 +97,8 @@ import java.util.regex.Pattern;
 
 /**
  * Service used to perform all import/export operations for content and documents.
- * User: toto
+ * 
+ * @author Thomas Draier
  */
 public class ImportExportBaseService extends JahiaService implements ImportExportService {
 
@@ -1227,20 +1231,22 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
     
     /**
-     * Validates a JCR content import file in document format and returns expected failures. 
+     * Validates a JCR content import file in document format and returns expected failures.
      * 
      * @param session
+     *            current JCR session instance
      * @param is
-     * @return
+     *            the input stream with a JCR content in document format
+     * @return the validation result
+     * @since Jahia 6.6
      */
-    public ValidationResult validateImportFile(JCRSessionWrapper session, InputStream is) {
-        DocumentViewValidationHandler documentViewValidationHandler = new DocumentViewValidationHandler(session);
-        documentViewValidationHandler.setNoRoot(true);
+    public ValidationResults validateImportFile(JCRSessionWrapper session, InputStream is) {
+        DocumentViewValidationHandler documentViewValidationHandler = (DocumentViewValidationHandler) SpringContextSingleton
+                .getBean("DocumentViewValidationHandler");
+        documentViewValidationHandler.setSession(session);
         handleImport(is, documentViewValidationHandler);
-        
-        return new ValidationResult(
-                documentViewValidationHandler.getMissingNodetypes(),
-                documentViewValidationHandler.getMissingMixins());
+
+        return documentViewValidationHandler.getResults();
     }
 
     public void importZip(String parentNodePath, File file, boolean noRoot, JCRSessionWrapper session)

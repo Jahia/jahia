@@ -38,25 +38,21 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.importexport;
+package org.jahia.services.importexport.validation;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * An instance of this class is being returned when validating JCR document view import files and contains information about expected import
  * failures.
  */
-public class ValidationResult {
+public class MissingNodetypesValidationResult implements ValidationResult {
 
-    private Map<String, List<String>> missingMixins = new HashMap<String, List<String>>();
+    private Map<String, Set<String>> missingMixins = new TreeMap<String, Set<String>>();
 
-    private Map<String, List<String>> missingNodetypes = new HashMap<String, List<String>>();
-
-    public ValidationResult() {
-        super();
-    }
+    private Map<String, Set<String>> missingNodetypes = new TreeMap<String, Set<String>>();
 
     /**
      * Initializes an instance of this class.
@@ -64,9 +60,9 @@ public class ValidationResult {
      * @param missingNodetypes
      * @param missingMixins
      */
-    public ValidationResult(Map<String, List<String>> missingNodetypes,
-            Map<String, List<String>> missingMixins) {
-        this();
+    public MissingNodetypesValidationResult(Map<String, Set<String>> missingNodetypes,
+            Map<String, Set<String>> missingMixins) {
+        super();
         this.missingNodetypes = missingNodetypes;
         this.missingMixins = missingMixins;
     }
@@ -79,18 +75,19 @@ public class ValidationResult {
      * @param result2
      *            the second validation result instance to be merged
      */
-    public ValidationResult(ValidationResult result1, ValidationResult result2) {
-        this();
+    protected MissingNodetypesValidationResult(MissingNodetypesValidationResult result1,
+            MissingNodetypesValidationResult result2) {
+        super();
         missingNodetypes.putAll(result1.getMissingNodetypes());
         missingMixins.putAll(result1.getMissingMixins());
-        for (Map.Entry<String, List<String>> item : result2.getMissingNodetypes().entrySet()) {
+        for (Map.Entry<String, Set<String>> item : result2.getMissingNodetypes().entrySet()) {
             if (missingNodetypes.containsKey(item.getKey())) {
                 missingNodetypes.get(item.getKey()).addAll(item.getValue());
             } else {
                 missingNodetypes.put(item.getKey(), item.getValue());
             }
         }
-        for (Map.Entry<String, List<String>> item : result2.getMissingMixins().entrySet()) {
+        for (Map.Entry<String, Set<String>> item : result2.getMissingMixins().entrySet()) {
             if (missingMixins.containsKey(item.getKey())) {
                 missingMixins.get(item.getKey()).addAll(item.getValue());
             } else {
@@ -102,14 +99,14 @@ public class ValidationResult {
     /**
      * @return a Map with missing mixin types as keys and as value a list of element paths having that mixin type in the import
      */
-    public Map<String, List<String>> getMissingMixins() {
+    public Map<String, Set<String>> getMissingMixins() {
         return missingMixins;
     }
 
     /**
      * @return a Map with missing nodetypes as keys and as value a list of element paths having it as primary type
      */
-    public Map<String, List<String>> getMissingNodetypes() {
+    public Map<String, Set<String>> getMissingNodetypes() {
         return missingNodetypes;
     }
 
@@ -122,17 +119,24 @@ public class ValidationResult {
         return missingNodetypes.isEmpty() && missingMixins.isEmpty();
     }
 
+    public ValidationResult merge(ValidationResult toBeMergedWith) {
+        return toBeMergedWith == null || toBeMergedWith.isSuccessful()
+                || !(toBeMergedWith instanceof MissingNodetypesValidationResult) ? this
+                : new MissingNodetypesValidationResult(this,
+                        (MissingNodetypesValidationResult) toBeMergedWith);
+    }
+
     /**
      * @param missingMixins
      */
-    public void setMissingMixins(Map<String, List<String>> missingMixins) {
+    public void setMissingMixins(Map<String, Set<String>> missingMixins) {
         this.missingMixins = missingMixins;
     }
 
     /**
      * @param missingNodetypes
      */
-    public void setMissingNodetypes(Map<String, List<String>> missingNodetypes) {
+    public void setMissingNodetypes(Map<String, Set<String>> missingNodetypes) {
         this.missingNodetypes = missingNodetypes;
     }
 

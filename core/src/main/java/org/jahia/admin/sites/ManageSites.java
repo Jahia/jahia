@@ -77,7 +77,8 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.NoCloseZipInputStream;
-import org.jahia.services.importexport.ValidationResult;
+import org.jahia.services.importexport.validation.ValidationResult;
+import org.jahia.services.importexport.validation.ValidationResults;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.render.URLGenerator;
@@ -1874,28 +1875,28 @@ public class ManageSites extends AbstractAdministrationModule {
                         isSite = true;
                     } else if (z.getName().startsWith("export_")) {
                         isLegacySite = true;
-                    } else if (doValidate && (z.getName().contains("repository.xml")
-                            || z.getName().contains("live-repository.xml"))) {
+                    } else if (doValidate && z.getName().contains("repository.xml")) {
                         try {
                             long timer = System.currentTimeMillis();
-                            ValidationResult validationResult = ImportExportBaseService.getInstance()
+                            ValidationResults validationResults = ImportExportBaseService
+                                    .getInstance()
                                     .validateImportFile(
-                                            JCRSessionFactory.getInstance()
-                                                    .getCurrentUserSession(),
+                                            JCRSessionFactory.getInstance().getCurrentUserSession(),
                                             zis2);
                             logger.info(
                                     "Import {}/{} validated in {} ms: {}",
                                     new String[] { filename, z.getName(),
                                             String.valueOf((System.currentTimeMillis() - timer)),
-                                            validationResult.toString() });
-                            if (!validationResult.isSuccessful()) {
+                                            validationResults.toString() });
+                            if (!validationResults.isSuccessful()) {
                                 if (importInfos.containsKey("validationResult")) {
                                     // merge results
-                                    importInfos.put("validationResult", new ValidationResult(
-                                            (ValidationResult) importInfos.get("validationResult"),
-                                            validationResult));
+                                    importInfos.put("validationResult",
+                                            ((ValidationResults) importInfos
+                                                    .get("validationResult"))
+                                                    .merge(validationResults));
                                 } else {
-                                    importInfos.put("validationResult", validationResult);
+                                    importInfos.put("validationResult", validationResults);
                                 }
                             }
                         } catch (Exception e) {

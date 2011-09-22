@@ -74,10 +74,12 @@ public class TriPanelBrowserLayout extends ContentPanel {
 
     public void initWidgets(Component leftTree, Component topTable, Component bottomTabs, Component topToolbar, Component statusBar) {
         if (topToolbar != null) {
+            topToolbar.setId("JahiaGxtManagerToolbar");
             setTopComponent(topToolbar);
         }
 
         if (statusBar != null) {
+            statusBar.setId("JahiaGxtManagerStatusbar");
             setBottomComponent(statusBar);
         }
 
@@ -86,12 +88,14 @@ public class TriPanelBrowserLayout extends ContentPanel {
         eastPanels.setLayout(new BorderLayout());
         if (bottomTabs != null) {
             centerData.setSplit(true);
+            bottomTabs.setId("JahiaGxtManagerBottomTabs");
             eastPanels.add(bottomTabs, centerData);
         }
 
         if (topTable != null) {
 
             northData.setSplit(true);
+            topTable.setId("JahiaGxtManagerTobTable");
             eastPanels.add(topTable, northData);
         }
 
@@ -103,11 +107,14 @@ public class TriPanelBrowserLayout extends ContentPanel {
         if (leftTree != null) {
             westData.setSplit(true);
             westData.setCollapsible(true);
+            leftTree.setId("JahiaGxtManagerLeftTree");
             layout.add(leftTree, westData);
         }
 
         layout.add(eastPanels, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
+        layout.setId("JahiaGxtManagerMain");
+        
         // layout is the main widget contained in the viewport
         add(layout);
 

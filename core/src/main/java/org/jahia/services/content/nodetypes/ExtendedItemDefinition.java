@@ -49,6 +49,7 @@ import javax.jcr.version.OnParentVersionAction;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 
@@ -186,9 +187,9 @@ public class ExtendedItemDefinition implements ItemDefinition {
 
     public String getResourceBundleKey(ExtendedNodeType nodeType) {
         if(nodeType==null)
-            return (getDeclaringNodeType().getName() + "." + getName()).replace(':', '_');
+            return JCRContentUtils.replaceColon((getDeclaringNodeType().getName() + "." + getName()));
         else
-            return (nodeType.getName() + "." + getName()).replace(':', '_');
+            return JCRContentUtils.replaceColon((nodeType.getName() + "." + getName()));
     }
 
     public String getLabel(Locale locale) {
@@ -197,7 +198,7 @@ public class ExtendedItemDefinition implements ItemDefinition {
             JahiaTemplatesPackage aPackage = getDeclaringNodeType().getTemplatePackage();
             label = new JahiaResourceBundle(getResourceBundleId(), locale, aPackage!=null ? aPackage.getName(): null, JahiaTemplatesRBLoader
                     .getInstance(Thread.currentThread().getContextClassLoader(), null)).getString(
-                    getResourceBundleKey(), getName().replace(':', '_'));
+                    getResourceBundleKey(), JCRContentUtils.replaceColon(getName()));
             labels.put(locale, label);
         }
         return label;

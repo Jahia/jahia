@@ -450,7 +450,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                             } else {
                                 path = path.substring(root.getParent().getPath().length());
                             }
-                            String name = child.getName().replace(":", "_");
+                            String name = JCRContentUtils.replaceColon(child.getName());
                             if (child.getName().equals("jcr:content")) {
                                 name = node.getName();
                             }

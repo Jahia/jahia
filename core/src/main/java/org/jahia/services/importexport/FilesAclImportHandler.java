@@ -46,6 +46,7 @@ import org.jahia.utils.zip.ZipEntry;
 import org.slf4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -370,7 +371,7 @@ public class FilesAclImportHandler extends DefaultHandler {
             nextEntry = zis.getNextEntry();
         }
 
-        path = path.replace(":", "_");
+        path = JCRContentUtils.replaceColon(path);
 
         int fileIndex = fileList.indexOf(path);
         if (fileIndex != -1) {

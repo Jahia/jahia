@@ -44,6 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -246,7 +247,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                 }
                 JahiaResourceBundle rb = new JahiaResourceBundle(null, locale, view.getModule().getName());
 
-                String displayName = rb.get(declaringPropertyDefinition.getResourceBundleKey() + "." + view.getKey().replace(':', '_'),
+                String displayName = rb.get(declaringPropertyDefinition.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(view.getKey()),
                         view.getKey());
                 ChoiceListValue c =  new ChoiceListValue(displayName, map, new ValueImpl(view.getKey(), PropertyType.STRING, false));
                 try {

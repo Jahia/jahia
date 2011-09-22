@@ -59,9 +59,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.URLResolverFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.lucene.queryParser.QueryParser;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -82,10 +84,7 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class Find extends BaseFindController {
 
-    /** The serialVersionUID. */
-    private static final long serialVersionUID = -3537001082179204764L;
-
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Find.class);
+    private static Logger logger = LoggerFactory.getLogger(Find.class);
 
     private int defaultDepthLimit = 1;
 
@@ -252,7 +251,7 @@ public class Find extends BaseFindController {
         while (stringMap.hasNext()) {
             JCRPropertyWrapper propertyWrapper = (JCRPropertyWrapper) stringMap.next();
             final int type = propertyWrapper.getType();
-            final String name = escapeColon ? propertyWrapper.getName().replace(":", "_") : propertyWrapper.getName();
+            final String name = escapeColon ? JCRContentUtils.replaceColon(propertyWrapper.getName()) : propertyWrapper.getName();
             if (type == PropertyType.BINARY) {
                 continue;
             }
@@ -369,7 +368,7 @@ public class Find extends BaseFindController {
         for (String column : columns) {
             try {
                 Value value = row.getValue(column);
-                jsonObject.put(escapeColon ? column.replace(":", "_") : column, value != null ? value.getString() : value);
+                jsonObject.put(escapeColon ? JCRContentUtils.replaceColon(column) : column, value != null ? value.getString() : value);
             } catch (ItemNotFoundException infe) {
                 logger.warn("No value found for column " + column);
             } catch (PathNotFoundException pnfe) {

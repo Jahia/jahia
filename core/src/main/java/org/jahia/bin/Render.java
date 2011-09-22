@@ -52,6 +52,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.applications.pluto.JahiaPortalURLParserImpl;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -361,7 +362,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         while (stringMap.hasNext()) {
             JCRPropertyWrapper propertyWrapper = (JCRPropertyWrapper) stringMap.next();
             final int type = propertyWrapper.getType();
-            final String name = propertyWrapper.getName().replace(":", "_");
+            final String name = JCRContentUtils.replaceColon(propertyWrapper.getName());
             if (!Constants.forbiddenPropertiesToSerialize.contains(propertyWrapper.getDefinition().getName())) {
                 if (type == PropertyType.WEAKREFERENCE || type == PropertyType.REFERENCE) {
                     if (!propertyWrapper.isMultiple()) {

@@ -43,6 +43,7 @@ package org.jahia.services.content.nodetypes;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
+import org.jahia.services.content.JCRContentUtils;
 
 import javax.jcr.PropertyType;
 import javax.jcr.Value;
@@ -370,10 +371,10 @@ public class JahiaCndReaderLegacy {
                 ctnListTypeName += "List";
                 String append = "";
                 if (listNodeDef.getSelectorOptions().get("availableTypes")!=null) {
-                    append+= listNodeDef.getSelectorOptions().get("availableTypes").replace(':','_');
+                    append+= JCRContentUtils.replaceColon(listNodeDef.getSelectorOptions().get("availableTypes"));
                 }
                 if (listNodeDef.getSelectorOptions().get("addMixin")!=null) {
-                    append+= listNodeDef.getSelectorOptions().get("addMixin").replace(':','_');
+                    append+= JCRContentUtils.replaceColon(listNodeDef.getSelectorOptions().get("addMixin"));
                 }
                 if (append.length()>0) {
                     ctnListTypeName += Integer.toHexString(append.hashCode());

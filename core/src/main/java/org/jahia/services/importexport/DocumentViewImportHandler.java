@@ -528,7 +528,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             String[] p = path.split("/");
             path = path.replace("/jcr:content", "/" + p[p.length - 2]);
         } else {
-            path = path.replace(":", "_");
+            path =JCRContentUtils.replaceColon(path);
         }
         int fileIndex = fileList.indexOf(path);
         if (fileIndex != -1) {

@@ -43,6 +43,7 @@ package org.jahia.services.render.scripting;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
@@ -128,25 +129,20 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     }
 
     private View resolveView(Resource resource, RenderContext context, List<ExtendedNodeType> nodeTypeList, ArrayList<String> searchedLocations) {
-//        for (String template : resource.getTemplates()) {
         String template = resource.getResolvedTemplate();
             for (ExtendedNodeType st : nodeTypeList) {
-                SortedSet<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
-                        st.getAlias().replace(":", "_"), context);
+                Set<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(
+                        JCRContentUtils.replaceColon(st.getAlias()));
                 View res = resolveView(resource, context, template, st, sortedPackages, searchedLocations);
                 if (res != null) {
                     return res;
                 }
             }
-//        }
         return null;
     }
 
-    private View resolveView(Resource resource, RenderContext context, String template, ExtendedNodeType st, SortedSet<JahiaTemplatesPackage> sortedPackages, ArrayList<String> searchedLocations) {
+    private View resolveView(Resource resource, RenderContext context, String template, ExtendedNodeType st, Set<JahiaTemplatesPackage> sortedPackages, ArrayList<String> searchedLocations) {
         for (JahiaTemplatesPackage aPackage : sortedPackages) {
-//            if ("siteLayout".equals(aPackage.getModuleType()) && (context.getSite() == null || !aPackage.getName().equals(context.getSite().getTemplatePackageName()))) {
-//                continue;
-//            }
             String currentTemplatePath = aPackage.getRootFolderPath();
             String templatePath = getTemplatePath(resource.getTemplateType(), template, st, currentTemplatePath, searchedLocations);
             if (templatePath != null) {
@@ -165,7 +161,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
 
         for (String currentFileExtension : scriptExtensionsOrdering) {
             String templatePath = n + (template.equals("default") ? "" : "." + template) + "." + currentFileExtension;
-            String modulePath = currentTemplatePath + "/" + nt.getAlias().replace(':', '_') + "/" + templateType + "/" + templatePath;
+            String modulePath = currentTemplatePath + "/" + JCRContentUtils.replaceColon(nt.getAlias()) + "/" + templateType + "/" + templatePath;
             try {
                 searchedLocations.add(modulePath);
                 if (resourcesCache.containsKey(modulePath)) {
@@ -179,7 +175,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                     if (templateType.contains("-")) {
                         int lastDash = templateType.lastIndexOf("-");
                         String simplerTemplateType = templateType.substring(0, lastDash);
-                        String simplerModulePath = currentTemplatePath + "/" + nt.getAlias().replace(':', '_') + "/" + simplerTemplateType + "/" + templatePath;
+                        String simplerModulePath = currentTemplatePath + "/" + JCRContentUtils.replaceColon(nt.getAlias()) + "/" + simplerTemplateType + "/" + templatePath;
                         if (JahiaContextLoaderListener.getServletContext().getResource(simplerModulePath) != null) {
                             resourcesCache.put(simplerModulePath, Boolean.TRUE);
                             return simplerModulePath;
@@ -283,7 +279,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         Collections.reverse(nodeTypeList);
 
         for (ExtendedNodeType type : nodeTypeList) {
-            List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(type.getName().replace(":", "_"));
+            Set<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(JCRContentUtils.replaceColon(type.getName()));
             for (JahiaTemplatesPackage aPackage : packages) {
                 getViewsSet(type, views, templateType, aPackage.getRootFolder(), aPackage);
             }
@@ -293,7 +289,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     }
 
     private void getViewsSet(ExtendedNodeType nt, Map<String, View> views, String templateType, String currentTemplatePath, JahiaTemplatesPackage tplPackage) {
-        String path = currentTemplatePath + "/" + nt.getAlias().replace(':', '_') + "/" + templateType;
+        String path = currentTemplatePath + "/" + JCRContentUtils.replaceColon(nt.getAlias()) + "/" + templateType;
 
         File f = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath() + "/" + path);
         if (f.exists()) {

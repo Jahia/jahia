@@ -43,6 +43,7 @@ package org.jahia.services.content.nodetypes.initializers;
 import org.apache.commons.io.IOUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
@@ -58,6 +59,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Script-based choice list initializer implementation.
@@ -84,8 +86,8 @@ public class ScriptChoiceListInitializerImpl implements ChoiceListInitializer {
                 byName = null;
             }
             if (byName != null) {
-                final List<JahiaTemplatesPackage> forModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(
-                        epd.getDeclaringNodeType().getName().replace(":", "_"));
+                final Set<JahiaTemplatesPackage> forModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(
+                        JCRContentUtils.replaceColon(epd.getDeclaringNodeType().getName()));
                 final Bindings bindings = byName.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("values", values);
                 for (JahiaTemplatesPackage template : forModule) {

@@ -50,6 +50,7 @@ import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 
@@ -838,7 +839,7 @@ public class ExtendedNodeType implements NodeType {
     public String getLabel(Locale locale) {
         String label = labels.get(locale);
         if (label == null) {
-            String key = getName().replace(':', '_');
+            String key = JCRContentUtils.replaceColon(getName());
             String tpl = getTemplatePackage() != null ? getTemplatePackage().getName() : null;
             label = new JahiaResourceBundle(getResourceBundleId(), locale, tpl, JahiaTemplatesRBLoader
                     .getInstance(Thread.currentThread().getContextClassLoader(), tpl)).getString(key, StringUtils.substringAfter(getName(),":"));
@@ -850,7 +851,7 @@ public class ExtendedNodeType implements NodeType {
     public String getDescription(Locale locale) {
         String description = descriptions.get(locale);
         if (description == null) {
-            String key = getName().replace(':', '_') + "_description";
+            String key = JCRContentUtils.replaceColon(getName()) + "_description";
             String tpl = getTemplatePackage() != null ? getTemplatePackage().getName() : null;
             description = new JahiaResourceBundle(getResourceBundleId(), locale, tpl, JahiaTemplatesRBLoader
                     .getInstance(Thread.currentThread().getContextClassLoader(), tpl)).getString(key, "");

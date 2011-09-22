@@ -446,7 +446,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
             // remove all unsupported characters
             pageKey = pageKey.replace('/', '_');
-            pageKey = pageKey.replace(':', '_');
+            pageKey = JCRContentUtils.replaceColon(pageKey);
             pageKey = pageKey.replace('[', '_');
             pageKey = pageKey.replace(']', '_');
 

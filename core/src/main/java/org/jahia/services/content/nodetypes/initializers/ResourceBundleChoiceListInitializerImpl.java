@@ -42,6 +42,7 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
@@ -71,7 +72,7 @@ public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListR
             List<ChoiceListValue> l = new ArrayList<ChoiceListValue>();
             String[] constr = epd.getValueConstraints();
             for (String s : constr) {
-                ChoiceListValue bean = new ChoiceListValue(rb.get(epd.getResourceBundleKey() + "." + s.replace(':', '_'), s), new HashMap<String, Object>(),
+                ChoiceListValue bean = new ChoiceListValue(rb.get(epd.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(s), s), new HashMap<String, Object>(),
                                                            new ValueImpl(s, PropertyType.STRING, false));
 
                 l.add(bean);
@@ -80,7 +81,7 @@ public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListR
         } else {
             for (ChoiceListValue choiceListValue : values) {
                 final String displayName = choiceListValue.getDisplayName();
-                choiceListValue.setDisplayName(rb.get(epd.getResourceBundleKey() + "." + displayName.replace(':', '_'),
+                choiceListValue.setDisplayName(rb.get(epd.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(displayName),
                                                       displayName));
             }
             return values;
@@ -102,7 +103,7 @@ public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListR
         JahiaResourceBundle rb = new JahiaResourceBundle(null, locale, getTemplatePackageName(propDef));
 
         return rb
-                .get(propDef.getResourceBundleKey() + "." + propValue.replace(':', '_'), propValue);
+                .get(propDef.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(propValue), propValue);
     }
 
     private String getTemplatePackageName(ExtendedPropertyDefinition definition) {

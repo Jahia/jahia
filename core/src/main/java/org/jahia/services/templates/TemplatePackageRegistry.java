@@ -76,9 +76,17 @@ import java.util.*;
  */
 class TemplatePackageRegistry {
 
-	private static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatePackageRegistry.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatePackageRegistry.class);
     
     private final static String MODULES_ROOT_PATH = "modules.";
+
+    private static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
+        public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
+            if (o1.isDefault()) return 99;
+            if (o2.isDefault()) return -99;
+            return o1.getName().compareTo(o2.getName());
+        }
+    };
 
     static class ModuleRegistry implements BeanPostProcessor {
 
@@ -221,7 +229,7 @@ class TemplatePackageRegistry {
 
     private Map<String, JahiaTemplatesPackage> registry = new TreeMap<String, JahiaTemplatesPackage>();
     private Map<String, JahiaTemplatesPackage> fileNameRegistry = new TreeMap<String, JahiaTemplatesPackage>();
-    private Map<String, List<JahiaTemplatesPackage>> packagesPerModule = new HashMap<String, List<JahiaTemplatesPackage>>();
+    private Map<String, Set<JahiaTemplatesPackage>> packagesPerModule = new HashMap<String, Set<JahiaTemplatesPackage>>();
     private List<RenderFilter> filters = new LinkedList<RenderFilter>();
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
     private Map<String,Action> actions;
@@ -290,7 +298,7 @@ class TemplatePackageRegistry {
         return registry.size();
     }
 
-    public Map<String, List<JahiaTemplatesPackage>> getPackagesPerModule() {
+    public Map<String, Set<JahiaTemplatesPackage>> getPackagesPerModule() {
         return packagesPerModule;
     }
 
@@ -445,7 +453,7 @@ class TemplatePackageRegistry {
             if (file.isDirectory()) {
                 String key = file.getName();
                 if (!packagesPerModule.containsKey(key)) {
-                    packagesPerModule.put(key, new ArrayList<JahiaTemplatesPackage>());
+                    packagesPerModule.put(key, new TreeSet<JahiaTemplatesPackage>(TEMPLATE_PACKAGE_COMPARATOR));
                 }
                 if (!packagesPerModule.get(key).contains(templatePackage)) {
                     packagesPerModule.get(key).add(templatePackage);

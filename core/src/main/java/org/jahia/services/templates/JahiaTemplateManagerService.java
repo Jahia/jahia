@@ -96,14 +96,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    private static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
-        public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
-            if (o1.isDefault()) return 99;
-            if (o2.isDefault()) return -99;
-            return o1.getName().compareTo(o2.getName());
-        }
-    };
-
     private static Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
 
     private TemplatePackageDeployer templatePackageDeployer;
@@ -138,30 +130,25 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     /**
-     * Returns a sorted list of all available template packages having templates for a module.
+     * Returns a sorted set of all available template packages having templates for a module.
      *
-     * @return a sorted list of all available template packages
+     * @return a sorted set of all available template packages
+     * @deprecated since Jahia 6.6 use {@link #getAvailableTemplatePackagesForModule(String)} instead
      */
-    public SortedSet<JahiaTemplatesPackage> getSortedAvailableTemplatePackagesForModule(String moduleName, final RenderContext context) {
-        List<JahiaTemplatesPackage> r = templatePackageRegistry.getPackagesPerModule().get(moduleName);
-        Comparator<JahiaTemplatesPackage> packageComparator = TEMPLATE_PACKAGE_COMPARATOR;
-        SortedSet<JahiaTemplatesPackage> sortedPackages = new TreeSet<JahiaTemplatesPackage>(
-                packageComparator);
-        if (r != null) {
-            sortedPackages.addAll(r);
-        }
-        return sortedPackages;
+    @Deprecated
+    public Set<JahiaTemplatesPackage> getSortedAvailableTemplatePackagesForModule(String moduleName, final RenderContext context) {
+        return getAvailableTemplatePackagesForModule(moduleName);
     }
 
     /**
-     * Returns a list of all available template packages having templates for a module.
+     * Returns a set of all available template packages having templates for a module.
      *
-     * @return a list of all available template packages
+     * @return a set of all available template packages
      */
-    public List<JahiaTemplatesPackage> getAvailableTemplatePackagesForModule(String moduleName) {
-        List<JahiaTemplatesPackage> r = templatePackageRegistry.getPackagesPerModule().get(moduleName);
+    public Set<JahiaTemplatesPackage> getAvailableTemplatePackagesForModule(String moduleName) {
+        Set<JahiaTemplatesPackage> r = templatePackageRegistry.getPackagesPerModule().get(moduleName);
         if (r == null) {
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
         return r;
     }
@@ -328,7 +315,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         // scan the directory for templates
         templatePackageDeployer.registerTemplatePackages();
 
-        // TODO validate template sets: count, package dependencies etc.
+        // validate template sets: count, package dependencies etc.
         templatePackageRegistry.validate();
 
         // start template package watcher
@@ -595,7 +582,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             return;
         }
 
-        logger.debug("Synchronizing node : " + destinationNode.getPath() + ", update=" + doUpdate + "/remove=" + doRemove + "/children=" + doChildren);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Synchronizing node : " + destinationNode.getPath() + ", update=" + doUpdate + "/remove=" + doRemove + "/children=" + doChildren);
+        }
 
         // Set for jnt:template nodes : declares if the template was originally created with that module, false otherwise
 //        boolean isCurrentModule = (!destinationNode.hasProperty("j:moduleTemplate") && moduleName == null) || (destinationNode.hasProperty("j:moduleTemplate") && destinationNode.getProperty("j:moduleTemplate").getString().equals(moduleName));
@@ -776,4 +765,15 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         references.get(value).add(destinationNode.getIdentifier() + "/" + property.getName());
     }
 
+    /**
+     * Checks if the specified template is available.
+     * 
+     * @param templatePath
+     *            the path of the template to be checked
+     * @return <code>true</code> if the specified template is present; <code>false</code> otherwise.
+     */
+    public boolean isTemplatePresent(String templatePath) {
+        // TODO implement me
+        return false;
+    }
 }

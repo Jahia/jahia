@@ -68,7 +68,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -786,7 +787,7 @@ public class ManageUsers extends AbstractAdministrationModule {
                 return;
             }
             String csvSeparator = jParams.getParameter("csvSeparator");
-            CSVReader csvReader = new CSVReader(new InputStreamReader(fileItem.getInputStream()), csvSeparator.charAt(0));
+            CSVReader csvReader = new CSVReader(new InputStreamReader(fileItem.getInputStream(), "UTF-8"), csvSeparator.charAt(0));
             // the first line contains the column names;
             String[] headerElements = csvReader.readNext();
             List<String> headerElementList = Arrays.asList(headerElements);

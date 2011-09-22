@@ -64,7 +64,7 @@ public class MissingTemplatesValidator implements ImportValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(MissingTemplatesValidator.class);
 
-    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/sites/[^/]*/templates/(.*)");
+    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/?sites/[^/]*/templates/(.*)");
 
     private Map<String, Boolean> checked = new HashMap<String, Boolean>();
 

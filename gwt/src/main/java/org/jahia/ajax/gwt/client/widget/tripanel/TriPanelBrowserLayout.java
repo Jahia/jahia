@@ -112,7 +112,9 @@ public class TriPanelBrowserLayout extends ContentPanel {
         }
 
         layout.add(eastPanels, new BorderLayoutData(Style.LayoutRegion.CENTER));
-
+        
+        layout.setId("JahiaGxtManagerMain");
+        
         layout.setId("JahiaGxtManagerMain");
         
         // layout is the main widget contained in the viewport

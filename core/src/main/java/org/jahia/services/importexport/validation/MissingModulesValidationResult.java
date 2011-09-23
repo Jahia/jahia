@@ -40,53 +40,24 @@
 
 package org.jahia.services.importexport.validation;
 
-import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Represents a validation result, containing missing templates in the content to be imported.
+ * Represents a validation result, containing missing modules in the content to be imported.
  * 
  * @author Sergiy Shyrkov
  * @since Jahia 6.6
  */
-public class MissingTemplatesValidationResult implements ValidationResult {
+public class MissingModulesValidationResult implements ValidationResult {
 
-    private Map<String, Set<String>> missing = new TreeMap<String, Set<String>>();
+    private Set<String> missing = new TreeSet<String>();
 
     private String targetTemplateSet;
 
     private boolean targetTemplateSetPresent;
-
-    private Map<String, Integer> templateSetsMissingCounts = Collections.emptyMap();
-
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param missing
-     *            missing templates information
-     * @param targetTemplateSet
-     *            the template set from the import file
-     * @param targetTemplateSetPresent
-     *            is template set from import file present on the system?
-     * @param templateSetsMissingCounts
-     *            if the target template set is not present on the system we verify templates against all available template sets and check
-     *            how many are missing in each of them
-     */
-    public MissingTemplatesValidationResult(Map<String, Set<String>> missing,
-            String targetTemplateSet, boolean targetTemplateSetPresent,
-            Map<String, Integer> templateSetsMissingCounts) {
-        super();
-        this.missing = missing;
-        this.targetTemplateSet = targetTemplateSet;
-        this.targetTemplateSetPresent = targetTemplateSetPresent;
-        if (templateSetsMissingCounts != null) { 
-            this.templateSetsMissingCounts = templateSetsMissingCounts;
-        }
-    }
 
     /**
      * Initializes an instance of this class, merging the two validation results into one.
@@ -96,31 +67,48 @@ public class MissingTemplatesValidationResult implements ValidationResult {
      * @param result2
      *            the second validation result instance to be merged
      */
-    protected MissingTemplatesValidationResult(MissingTemplatesValidationResult result1,
-            MissingTemplatesValidationResult result2) {
+    protected MissingModulesValidationResult(MissingModulesValidationResult result1,
+            MissingModulesValidationResult result2) {
         super();
-        missing.putAll(result1.getMissingTemplates());
         targetTemplateSet = result1.getTargetTemplateSet();
         targetTemplateSetPresent = result1.isTargetTemplateSetPresent();
         if (targetTemplateSetPresent && !result2.isTargetTemplateSetPresent()) {
             targetTemplateSet = result2.getTargetTemplateSet();
             targetTemplateSetPresent = false;
         }
-        for (Map.Entry<String, Set<String>> item : result2.getMissingTemplates().entrySet()) {
-            if (missing.containsKey(item.getKey())) {
-                missing.get(item.getKey()).addAll(item.getValue());
-            } else {
-                missing.put(item.getKey(), item.getValue());
-            }
-        }
+        missing.addAll(result1.getMissingModules());
+        missing.addAll(result2.getMissingModules());
     }
 
     /**
-     * Returns a Map with missing templates as keys and as value a list of element paths having that template in the import.
+     * Initializes an instance of this class.
      * 
-     * @return a Map with missing templates as keys and as value a list of element paths having that template in the import
+     * @param missingModules
+     *            missing modules information
+     * @param targetTemplateSet
+     *            the template set from the import file
+     * @param targetTemplateSetPresent
+     *            is template set from import file present on the system?
+     * @param templateSetsMissingCounts
+     *            if the target template set is not present on the system we verify templates against all available template sets and check
+     *            how many are missing in each of them
      */
-    public Map<String, Set<String>> getMissingTemplates() {
+    public MissingModulesValidationResult(Set<String> missingModules, String targetTemplateSet,
+            boolean targetTemplateSetPresent) {
+        super();
+        if (missing != null) {
+            this.missing.addAll(missingModules);
+        }
+        this.targetTemplateSet = targetTemplateSet;
+        this.targetTemplateSetPresent = targetTemplateSetPresent;
+    }
+
+    /**
+     * Returns a set with missing modules.
+     * 
+     * @return a set with missing modules
+     */
+    public Set<String> getMissingModules() {
         return missing;
     }
 
@@ -134,27 +122,16 @@ public class MissingTemplatesValidationResult implements ValidationResult {
     }
 
     /**
-     * If the target template set is not present on the system we verify templates against all available template sets and check how many
-     * are missing in each of them. This method returns in this case a map, with template set names as keys and missing count as values. If
-     * the target template set if found, the check against all other template sets is not done and this method returns an empty map.
-     * 
-     * @return a map, with template set names as keys and missing count as values
-     */
-    public Map<String, Integer> getTemplateSetsMissingCounts() {
-        return templateSetsMissingCounts;
-    }
-
-    /**
      * Returns <code>true</code> if the current validation result is successful, meaning no missing templates were detected.
      * 
      * @return <code>true</code> if the current validation result is successful, meaning no missing templates were detected
      */
     public boolean isSuccessful() {
-        return missing.isEmpty();
+        return isTargetTemplateSetPresent() && missing.isEmpty();
     }
 
     public boolean isTargetTemplateSetPresent() {
-        return targetTemplateSetPresent;
+        return targetTemplateSet == null || targetTemplateSetPresent;
     }
 
     /**
@@ -164,9 +141,9 @@ public class MissingTemplatesValidationResult implements ValidationResult {
      */
     public ValidationResult merge(ValidationResult toBeMergedWith) {
         return toBeMergedWith == null || toBeMergedWith.isSuccessful()
-                || !(toBeMergedWith instanceof MissingTemplatesValidationResult) ? this
-                : new MissingTemplatesValidationResult(this,
-                        (MissingTemplatesValidationResult) toBeMergedWith);
+                || !(toBeMergedWith instanceof MissingModulesValidationResult) ? this
+                : new MissingModulesValidationResult(this,
+                        (MissingModulesValidationResult) toBeMergedWith);
     }
 
     @Override
@@ -174,10 +151,11 @@ public class MissingTemplatesValidationResult implements ValidationResult {
         StringBuilder out = new StringBuilder(128);
         out.append("[").append(StringUtils.substringAfterLast(getClass().getName(), "."))
                 .append("=").append(isSuccessful() ? "successful" : "failure");
-        out.append(", targetTemplateSet=").append(targetTemplateSet);
-        out.append(", targetTemplateSetPresent=").append(targetTemplateSetPresent);
-        out.append(", templateSetsMissingCounts=").append(templateSetsMissingCounts);
-        out.append(", missingTemplates=").append(missing);
+        if (!isSuccessful()) {
+            out.append(", targetTemplateSet=").append(targetTemplateSet);
+            out.append(", targetTemplateSetPresent=").append(targetTemplateSetPresent);
+            out.append(", missingModules=").append(missing);
+        }
         out.append("]");
 
         return out.toString();

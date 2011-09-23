@@ -102,7 +102,7 @@ public class DocumentViewValidationHandler extends BaseDocumentViewHandler {
 
             pathes.push(pathes.peek() + "/" + decodedQName);
 
-            if (noRoot && pathes.size() <= 2) {
+            if (noRoot && pathes.size() <= 3) {
                 return;
             }
 

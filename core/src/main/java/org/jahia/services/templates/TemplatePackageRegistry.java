@@ -340,6 +340,26 @@ class TemplatePackageRegistry {
     }
 
     /**
+     * Returns the requested template package or <code>null</code> if the package with the specified JCR node name is not registered in the
+     * repository.
+     * 
+     * @param nodeName
+     *            the corresponding JCR node name to search for
+     * @return the requested template package or <code>null</code> if the package with the specified JCR node name is not registered in the
+     *         repository
+     */
+    public JahiaTemplatesPackage lookupByNodeName(String nodeName) {
+        if (nodeName == null || registry == null)
+            return null;
+        for (JahiaTemplatesPackage pkg : registry.values()) {
+            if (nodeName.equals(pkg.getRootFolder())) {
+                return pkg;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns the requested template package or <code>null</code> if the
      * package with the specified file name is not registered in the repository.
      *

@@ -42,6 +42,7 @@ package org.jahia.services.templates;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
@@ -71,10 +72,18 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.xml.sax.SAXException;
 
+import com.google.common.collect.ImmutableSet;
+
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.query.InvalidQueryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Template and template set deployment and management service.
@@ -82,6 +91,8 @@ import java.util.*;
  * @author Sergiy Shyrkov
  */
 public class JahiaTemplateManagerService extends JahiaService implements ApplicationListener<ApplicationEvent> {
+
+    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/templateSets/[^/]*/templates/(.*)");
 
     /**
      * This event is fired when a template module is re-deployed (in runtime, not on the server startup).
@@ -267,6 +278,20 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      */
     public JahiaTemplatesPackage getTemplatePackage(String packageName) {
         return templatePackageRegistry.lookup(packageName);
+    }
+
+    /**
+     * Returns the requested template package for the specified JCR node name or
+     * <code>null</code> if the package with the specified name is not
+     * registered in the repository.
+     *
+     * @param nodeName the JCR node name to search for
+     * @return the requested template package or <code>null</code> if the
+     *         package with the specified name is not registered in the
+     *         repository
+     */
+    public JahiaTemplatesPackage getTemplatePackageByNodeName(String nodeName) {
+        return templatePackageRegistry.lookupByNodeName(nodeName);
     }
 
     /**
@@ -766,14 +791,163 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     /**
-     * Checks if the specified template is available.
+     * Checks if the specified template is available either in the requested template set or in one of the deployed modules.
      * 
      * @param templatePath
      *            the path of the template to be checked
-     * @return <code>true</code> if the specified template is present; <code>false</code> otherwise.
+     * @param templateSetName
+     *            the name of the target template set
+     * @return <code>true</code> if the specified template is present; <code>false</code> otherwise
      */
-    public boolean isTemplatePresent(String templatePath) {
-        // TODO implement me
-        return true;
+    public boolean isTemplatePresent(String templatePath, String templateSetName) {
+        return isTemplatePresent(templatePath, ImmutableSet.of(templateSetName));
+    }
+
+    /**
+     * Checks if the specified template is available either in one of the requested template sets or modules.
+     * 
+     * @param templatePath
+     *            the path of the template to be checked
+     * @param templateSetNames
+     *            the set of template sets and modules we should check for the presence of the specified template
+     * @return <code>true</code> if the specified template is present; <code>false</code> otherwise
+     */
+    public boolean isTemplatePresent(final String templatePath, final Set<String> templateSetNames) {
+        long timer = System.currentTimeMillis();
+        if (logger.isDebugEnabled()) {
+            logger.debug("Checking presense of the template {} in modules {}", templatePath,
+                    templateSetNames);
+        }
+
+        if (StringUtils.isEmpty(templatePath)) {
+            throw new IllegalArgumentException("Template path is either null or empty");
+        }
+        if (templateSetNames == null || templateSetNames.isEmpty()) {
+            throw new IllegalArgumentException("The template/module set to check is empty");
+        }
+
+        boolean present = true;
+        try {
+            present = JCRTemplate.getInstance().doExecuteWithSystemSession(
+                    new JCRCallback<Boolean>() {
+                        public Boolean doInJCR(JCRSessionWrapper session)
+                                throws RepositoryException {
+                            return isTemplatePresent(templatePath, templateSetNames, session);
+                        }
+                    });
+        } catch (RepositoryException e) {
+            logger.error("Unable to check presence of the template '" + templatePath
+                    + "' in the modules '" + templateSetNames + "'. Cause: " + e.getMessage(), e);
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug(
+                    "Template {} {} in modules {} in {} ms",
+                    new String[] { templatePath, present ? "found" : "cannot be found",
+                            templateSetNames.toString(),
+                            String.valueOf(System.currentTimeMillis() - timer) });
+        }
+
+        return present;
+    }
+
+    private boolean isTemplatePresent(String templatePath, Set<String> templateSetNames,
+            JCRSessionWrapper session) throws InvalidQueryException, ValueFormatException,
+            PathNotFoundException, RepositoryException {
+
+        boolean found = false;
+        QueryManager queryManager = session.getWorkspace().getQueryManager();
+        if (queryManager == null) {
+            return true;
+        }
+
+        StringBuilder query = new StringBuilder(256);
+        query.append("select * from [jnt:template] as t inner join ["
+                + Constants.JAHIANT_VIRTUALSITE
+                + "]"
+                + " as ts on isdescendantnode(t, ts) where isdescendantnode(ts, '/templateSets') and"
+                + " localname(t)='");
+        query.append(StringUtils.substringAfterLast(templatePath, "/")).append("' and (");
+
+        boolean first = true;
+        for (String module : templateSetNames) {
+            if (!first) {
+                query.append(" OR ");
+            } else {
+                first = false;
+            }
+            query.append("localname(ts)='").append(module).append("'");
+
+        }
+        query.append(")");
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Executing query {}", query.toString());
+        }
+        for (NodeIterator nodes = queryManager.createQuery(query.toString(), Query.JCR_SQL2)
+                .execute().getNodes(); nodes.hasNext();) {
+            JCRNodeWrapper node = (JCRNodeWrapper) nodes.nextNode();
+            Matcher matcher = TEMPLATE_PATTERN.matcher(node.getPath());
+            String pathToCheck = matcher.matches() ? matcher.group(1) : null;
+            if (StringUtils.isEmpty(pathToCheck)) {
+                continue;
+            }
+            pathToCheck = "/" + pathToCheck;
+            if (templatePath.equals(pathToCheck)) {
+                // got it
+                found = true;
+                break;
+            } else {
+                String basePath = null;
+                JCRNodeWrapper folder = JCRContentUtils
+                        .getParentOfType(node, "jnt:templatesFolder");
+                if (folder != null && folder.hasProperty("j:rootTemplatePath")) {
+                    basePath = folder.getProperty("j:rootTemplatePath").getString();
+                }
+                if (StringUtils.isNotEmpty(basePath) && !"/".equals(basePath)
+                        && templatePath.equals(basePath + pathToCheck)) {
+                    // matched it considering the base path
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        return found;
+    }
+
+    /**
+     * Returns a set of existing template sets that are available for site creation.
+     * 
+     * @return a set of existing template sets that are available for site creation
+     */
+    public Set<String> getTemplateSetNames() {
+        try {
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(
+                    new JCRCallback<Set<String>>() {
+                        public Set<String> doInJCR(JCRSessionWrapper session)
+                                throws RepositoryException {
+                            QueryManager qm = session.getWorkspace().getQueryManager();
+                            if (qm == null) {
+                                return Collections.emptySet();
+                            }
+                            Set<String> templateSets = new TreeSet<String>();
+                            for (NodeIterator nodes = qm
+                                    .createQuery(
+                                            "select * from [jnt:virtualsite]"
+                                                    + " where ischildnode('/templateSets')"
+                                                    + " and localname() <> 'templates-system'"
+                                                    + " and [j:siteType] = 'templatesSet'",
+                                            Query.JCR_SQL2).execute().getNodes(); nodes.hasNext();) {
+                                templateSets.add(nodes.nextNode().getName());
+                            }
+
+                            return templateSets;
+                        }
+                    });
+        } catch (RepositoryException e) {
+            logger.error("Unable to get template set names. Cause: " + e.getMessage(), e);
+            return Collections.emptySet();
+        }
     }
 }

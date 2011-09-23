@@ -88,7 +88,6 @@
                     <input type="hidden" name="do" value="sites"/>
                     <input type="hidden" name="sub" value="processimport"/>
                     <tbody>
-                    <c:set var="importPossible" value="false"/>
                     <%
                         int lineCounter = 0;
                         for (Iterator iterator = importsInfosSorted.iterator(); iterator.hasNext();) {
@@ -104,10 +103,9 @@
                             }
                             lineCounter++;
                     %>
-                    <c:set var="importPossible" value="${importPossible || empty infos.validationResult}"/>
                     <tr class="<%=lineClass%>">
                         <td<%if(importsInfos.size()==1){ %> style="display:none;"<%} %> align="center">
-                            <input type="checkbox" name="<%=file.getName()%>selected" value="on"${not empty infos.selected && empty infos.validationResult ? 'checked' : ''}${not empty infos.validationResult ? ' disabled="disabled"' : ''}/>
+                            <input type="checkbox" name="<%=file.getName()%>selected" value="on"${not empty infos.selected && empty infos.validationResult ? 'checked' : ''}/>
                         </td>
                         <td>
                             <% if ("site".equals(fileType)) { %>
@@ -154,8 +152,19 @@
                                         <fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;
                                     </td>
                                     <td>
-                                        <select name="<%=siteKey + "templates"%>">
-
+                                        <select name="<%=siteKey%>templates">
+                                            <c:if test="${not empty requestScope.templateSetsMissingCounts}">
+                                                <c:forEach var="tmplSet" items="${requestScope.templateSetsMissingCounts}">
+                                                    <c:if test="${tmplSet.value > 0}">
+                                                        <fmt:message key="label.import.templatesMissing" var="i18nMissingTemplates">
+                                                            <fmt:param value="${tmplSet.value}"/>
+                                                        </fmt:message>
+                                                        <c:set var="i18nMissingTemplates" value=" (${fn:escapeXml(i18nMissingTemplates)})"/>
+                                                    </c:if>
+                                                    <option value="${tmplSet.key}"${infos.templates==tmplSet.key ? 'selected="selected"' : ''}${not empty i18nMissingTemplates ? 'style="color: #ADB7BD"' : ''}>${tmplSet.key}${i18nMissingTemplates}</option>
+                                                </c:forEach>
+                                            </c:if>
+                                            <c:if test="${empty requestScope.templateSetsMissingCounts}">
                                             <% if (tpls != null)
                                                 for (Iterator iterator1 = tpls.iterator(); iterator1.hasNext();) {
                                                     JCRNodeWrapper pack = (JCRNodeWrapper) iterator1.next();
@@ -164,6 +173,7 @@
 
                                             <%
                                                     } %>
+                                            </c:if>
                                         </select>
                                     </td>
                                 </tr>
@@ -193,13 +203,11 @@
               <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="label.backToMenu"/></a>
             </span>
           </span><%} %>
-          <c:if test="${importPossible}">
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-ok" href='javascript:sendForm();'><fmt:message key="label.doImport"/></a>
             </span>
           </span>
-          </c:if>
 </div>
 
 </div>

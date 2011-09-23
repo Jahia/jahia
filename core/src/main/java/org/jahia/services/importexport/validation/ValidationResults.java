@@ -133,8 +133,9 @@ public class ValidationResults {
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder(128);
-        out.append("[result=").append(isSuccessful() ? "successful" : "failure");
+        out.append("[overall result=").append(isSuccessful() ? "successful" : "failure");
         if (!isSuccessful()) {
+            out.append(", details=[");
             boolean first = true;
             for (ValidationResult result : results) {
                 if (!first) {
@@ -142,8 +143,9 @@ public class ValidationResults {
                 } else {
                     first = false;
                 }
-                out.append(result);
+                out.append(result); 
             }
+            out.append("]");
         }
         out.append("]");
 

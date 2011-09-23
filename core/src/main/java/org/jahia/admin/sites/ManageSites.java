@@ -77,7 +77,6 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.NoCloseZipInputStream;
-import org.jahia.services.importexport.validation.ValidationResult;
 import org.jahia.services.importexport.validation.ValidationResults;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;

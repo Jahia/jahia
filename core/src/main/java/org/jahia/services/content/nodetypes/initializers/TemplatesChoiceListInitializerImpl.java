@@ -237,8 +237,6 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                     ((StringUtils.isEmpty(param) && view.getProperties().get("type") == null) ||
                             param.equals(view.getProperties().get("type"))) &&
                     !view.getKey().startsWith("wrapper.") && !view.getKey().contains("hidden.")
-//                    && (site == null || !"siteLayout".equals(template.getModule().getModuleType()) ||
-//                            template.getModule().getName().equals(site.getTemplatePackageName()))
                     ) {
                 HashMap<String, Object> map = new HashMap<String, Object>();
                 Properties properties = view.getProperties();

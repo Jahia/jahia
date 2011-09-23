@@ -252,11 +252,6 @@ final class JahiaTemplatesPackageHandler {
                 if (implementationVersionStr != null) {
                     templatePackage.setVersion(new Version(implementationVersionStr));
                 }
-
-                String moduleType = (String) manifest.getMainAttributes().get(new Attributes.Name("module-type"));
-                if (moduleType != null) {
-                    templatePackage.setModuleType(moduleType);
-                }
             }
         } catch (IOException ioe) {
             logger

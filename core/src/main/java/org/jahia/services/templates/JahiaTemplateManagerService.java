@@ -497,8 +497,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     ImportExportBaseService
                             .getInstance().exportZip(session.getNode("/templateSets/" + moduleName), session.getRootNode(),
                             new FileOutputStream(importFile), params);
-                } catch (JahiaException e) {
-                    logger.error(e.getMessage(), e);
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 } catch (SAXException e) {

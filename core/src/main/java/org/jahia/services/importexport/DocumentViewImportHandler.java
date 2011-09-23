@@ -83,8 +83,6 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private int maxBatch = 5000;
     private int batchCount = 0;
 
-    private String siteKey;
-
     private File archive;
     private NoCloseZipInputStream zis;
     private ZipEntry nextEntry;
@@ -120,12 +118,12 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
     private List<String> uuids = new ArrayList<String>();
 
-    public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, String siteKey) throws IOException {
-        this(session, rootPath, null, null, siteKey);
+    public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath) throws IOException {
+        this(session, rootPath, null, null);
     }
 
     @SuppressWarnings("unchecked")
-    public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, File archive, List<String> fileList, String siteKey) throws IOException {
+    public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, File archive, List<String> fileList) throws IOException {
         super(session);
         JCRNodeWrapper node = null;
         try {
@@ -147,7 +145,6 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
         this.archive = archive;
         this.fileList = fileList;
-        this.siteKey = siteKey;
         setPropertiesToSkip((Set<String>) SpringContextSingleton.getBean("DocumentViewImportHandler.propertiesToSkip"));
     }
 
@@ -215,11 +212,6 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 path = StringUtils.substringBeforeLast(pathMapping.get(path + "/"), "/");
             }
 
-            if (Constants.JAHIANT_VIRTUALSITE.equals(pt) && siteKey != null) {
-                decodedQName = siteKey;
-                pathMapping.put(path + "/", "/sites/" + siteKey + "/");
-                path = "/sites/" + siteKey;
-            }
             if (noSubNodesImport.contains(pt)) {
                 ignorePath = path;
             }

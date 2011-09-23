@@ -48,6 +48,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.importexport.validation.*;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
@@ -70,8 +71,6 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.JahiaCndReader;
 import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
-import org.jahia.services.importexport.validation.DocumentViewValidationHandler;
-import org.jahia.services.importexport.validation.ValidationResults;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.utils.zip.ZipEntry;
@@ -242,7 +241,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     public void exportSites(OutputStream outputStream, Map<String, Object> params, List<JahiaSite> sites)
-            throws JahiaException, RepositoryException, IOException, SAXException, JDOMException {
+            throws RepositoryException, IOException, SAXException, JDOMException {
         ZipOutputStream zout = new ZipOutputStream(outputStream);
 
         ZipEntry anEntry = new ZipEntry(EXPORT_PROPERTIES);
@@ -253,20 +252,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         bw.write("BuildNumber = " + Jahia.getBuildNumber() + "\n");
         bw.write("ExportDate = " + new SimpleDateFormat(ImportExportService.DATE_FORMAT).format(new Date()) + "\n");
         bw.flush();
-
-        // Add system site for export
-        boolean systemFound = false;
-        for (JahiaSite jahiaSite : sites) {
-            if (jahiaSite.getSiteKey().equals("systemsite")) {
-                systemFound = true;
-                break;
-            }
-        }
-//        if (!systemFound) {
-//            anEntry = new ZipEntry("systemsite.zip");
-//            zout.putNextEntry(anEntry);
-//            exportSystemSite(zout, params);
-//        }
 
         Set<String> externalReferences = new HashSet<String>();
 
@@ -318,7 +303,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private void exportSite(final JahiaSite site, OutputStream out, Set<String> externalReferences, Map<String, Object> params)
-            throws JahiaException, RepositoryException, SAXException, IOException, JDOMException {
+            throws RepositoryException, SAXException, IOException, JDOMException {
         ZipOutputStream zout = new ZipOutputStream(out);
 
         zout.putNextEntry(new ZipEntry(SITE_PROPERTIES));
@@ -335,26 +320,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         zout.finish();
     }
 
-    private void exportSystemSite(OutputStream out, Map<String, Object> params)
-            throws JahiaException, RepositoryException, SAXException, IOException, JDOMException {
-        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
-
-        ZipOutputStream zout = new ZipOutputStream(out);
-
-        final JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
-        Set<JCRNodeWrapper> nodes = new HashSet<JCRNodeWrapper>();
-        nodes.add(session.getNode("/sites/" + site.getSiteKey() + "/files"));
-        nodes.add(session.getNode("/sites/" + site.getSiteKey() + "/contents"));
-        nodes.add(session.getNode("/sites/" + site.getSiteKey() + "/portlets"));
-        nodes.add(session.getNode("/sites/" + site.getSiteKey() + "/categories"));
-
-        final HashSet<String> tti = new HashSet<String>();
-        tti.add("jnt:templatesFolder");
-        exportNodesWithBinaries(session.getRootNode(), nodes, zout, tti, null, params);
-        zout.finish();
-    }
-
-    public void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException {
+    public void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, JDOMException {
         ZipOutputStream zout = new ZipOutputStream(out);
         Set<JCRNodeWrapper> nodes = new HashSet<JCRNodeWrapper>();
         nodes.add(node);
@@ -362,7 +328,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         zout.finish();
     }
 
-    public void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException {
+    public void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, JDOMException {
         TreeSet<JCRNodeWrapper> nodes = new TreeSet<JCRNodeWrapper>();
         nodes.add(node);
         exportNodes(exportRoot == null ? node : exportRoot, nodes, out, new HashSet<String>(), null, params);
@@ -515,35 +481,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             p.setProperty("installedModules."+(i++), s1);
         }
 
-
-        // get all jahiaGAprofiles
-//        final String cntProfile = s.getSettings().getProperty("profileCnt_" + s.getSiteKey());
-//        if (cntProfile != null) {
-//            p.setProperty("profileCnt_" + s.getSiteKey(), cntProfile);
-//        }
-//        Iterator<Object> it = s.getSettings().keySet().iterator();
-//        while (it.hasNext()) {
-//            String key = (String) it.next();
-//            if (key.startsWith("jahiaGAprofile")) {
-//                String jahiaProfileName = (String) s.getSettings().get(key);
-//                p.setProperty(key, jahiaProfileName);
-//                Iterator<Object> it2 = s.getSettings().keySet().iterator();
-//                while (it2.hasNext()) {
-//                    String gaProp = (String) it2.next();
-//                    if (gaProp.startsWith(jahiaProfileName)) {
-//                        if (gaProp.endsWith("gaPassword")) {
-//                            if (SettingsBean.getInstance().isGmailPasswordExported()) {
-//                                p.setProperty(gaProp, (String) s.getSettings().get(gaProp));
-//                            } else {
-//                                p.setProperty(gaProp, "");
-//                            }
-//                        }
-//                        p.setProperty(gaProp, (String) s.getSettings().get(gaProp));
-//                    }
-//                }
-//            }
-//        }
-
         Set<String> v = s.getLanguages();
         for (String sls : v) {
             p.setProperty("language." + sls + ".activated", s.getInactiveLiveLanguages().contains(sls) ? "false" : "true");
@@ -553,17 +490,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             p.setProperty("language." + sls + ".disabledCompletely", "true");
         }
 
-
-//        Properties settings = s.getSettings();
-//
-//        for (Iterator<Object> iterator = settings.keySet().iterator(); iterator.hasNext();) {
-//            String s1 = (String) iterator.next();
-//            if (JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY.equals(s1)
-//                    || s1.startsWith("prod_") || s1.startsWith("html_")
-//                    || s1.startsWith("wai_") || s1.startsWith("url_")) {
-//                p.setProperty(s1, settings.getProperty(s1));
-//            }
-//        }
         if (s.isDefault()) {
             p.setProperty("defaultSite", "true");
         }
@@ -634,47 +560,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         }
 
-        boolean importLive = sizes.containsKey(LIVE_REPOSITORY_XML);
-        List<String> liveUuids = null;
-        if (importLive) {
-            // Import live content
-            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
-            try {
-                while (true) {
-                    ZipEntry zipentry = zis.getNextEntry();
-                    if (zipentry == null) break;
-                    String name = zipentry.getName();
-                    if (name.equals(LIVE_REPOSITORY_XML)) {
-                        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, null, file, fileList, (site != null ? site.getSiteKey(): null));
-
-                        documentViewImportHandler.setReferences(references);
-                        documentViewImportHandler.setNoRoot(true);
-                        documentViewImportHandler.setBaseFilesPath("/live-content");
-
-                        handleImport(zis, documentViewImportHandler);
-                        session.save(JCRObservationManager.IMPORT);
-
-                        ReferencesHelper.resolveCrossReferences(session, references);
-                        session.save(JCRObservationManager.IMPORT);
-
-                        liveUuids = documentViewImportHandler.getUuids();
-
-                        ServicesRegistry.getInstance().getJCRPublicationService().publish(documentViewImportHandler.getUuids(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null);
-
-                        break;
-                    }
-                    zis.closeEntry();
-
-                }
-            } catch (Exception e) {
-                logger.error("Cannot import", e);
-            } finally {
-                zis.reallyClose();
-            }
-        }
-
         if (sizes.containsKey(REPOSITORY_XML)) {
-            // Import repository content
+            // Parse import file to detect sites
             zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
             try {
                 while (true) {
@@ -682,80 +569,38 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     if (zipentry == null) break;
                     String name = zipentry.getName();
                     if (name.equals(REPOSITORY_XML)) {
-                        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, null, file, fileList, (site != null ? site.getSiteKey(): null));
-                        if (importLive) {
-                            // Restore publication status
-                            Set<String> props = new HashSet<String>(documentViewImportHandler.getPropertiesToSkip());
-                            props.remove("j:lastPublished");
-                            props.remove("j:lastPublishedBy");
-                            props.remove("j:published");
-                            documentViewImportHandler.setPropertiesToSkip(props);
-                            documentViewImportHandler.setEnforceUuid(true);
-                            documentViewImportHandler.setUuidBehavior(DocumentViewImportHandler.IMPORT_UUID_COLLISION_MOVE_EXISTING);
-                        }
-                        documentViewImportHandler.setReferences(references);
-                        documentViewImportHandler.setNoRoot(true);
+                        DocumentViewValidationHandler h = new DocumentViewValidationHandler();
+                        h.setSession(session);
+                        List<ImportValidator> validators = new ArrayList<ImportValidator>();
+                        SitesValidator sitesValidator = new SitesValidator();
+                        validators.add(sitesValidator);
+                        h.setValidators(validators);
+                        handleImport(zis, h);
 
-                        handleImport(zis, documentViewImportHandler);
-
-                        if (importLive) {
-                            liveUuids.removeAll(documentViewImportHandler.getUuids());
-                            Collections.reverse(liveUuids);
-                            for (String uuid : liveUuids) {
-                                // Uuids have been imported in live but not in default : need to be removed
-                                session.getNodeByIdentifier(uuid).remove();
+                        Map<String,Properties> sites = ((SitesValidatorResult)sitesValidator.getResult()).getSitesProperties();
+                        if (sites.size() == 1) {
+                            // There should be only one site to import here, multiple sites import is not supported by this method !
+                            for (String s : sites.keySet()) {
+                                // Map to the new sitekey
+                                pathMapping.put("/sites/"+ s + "/", "/sites/"+site.getSiteKey()+"/");
                             }
                         }
-                        session.save(JCRObservationManager.IMPORT);
+
+                        if (!sizes.containsKey(SITE_PROPERTIES)) {
+                            //todo : site properties can be removed and properties get from here
+                        }
                         break;
                     }
                     zis.closeEntry();
                 }
-            } catch (Exception e) {
-                logger.error("Cannot import", e);
             } finally {
                 zis.reallyClose();
             }
+
+            importZip(null,file,true, session);
         } else {
             // No repository descriptor - prepare to import files directly
-            pathMapping = session.getPathMapping();
             pathMapping.put("/", "/sites/"+site.getSiteKey()+"/files/");
-        }
-
-        if (importLive) {
-            // Import user generated content
-            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
-            try {
-                while (true) {
-                    ZipEntry zipentry = zis.getNextEntry();
-                    if (zipentry == null) break;
-                    String name = zipentry.getName();
-                    if (name.equals(LIVE_REPOSITORY_XML)) {
-                        JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live",null,null);
-
-                        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(liveSession, null, file, fileList, (site != null ? site.getSiteKey(): null));
-
-                        documentViewImportHandler.setImportUserGeneratedContent(true);
-                        documentViewImportHandler.setReferences(references);
-                        documentViewImportHandler.setNoRoot(true);
-                        documentViewImportHandler.setBaseFilesPath("/live-content");
-
-                        handleImport(zis, documentViewImportHandler);
-                        liveSession.save(JCRObservationManager.IMPORT);
-
-//                        ReferencesHelper.resolveCrossReferences(liveSession, references);
-//                        liveSession.save(JCRObservationManager.IMPORT);
-
-                        break;
-                    }
-                    zis.closeEntry();
-
-                }
-            } catch (Exception e) {
-                logger.error("Cannot import", e);
-            } finally {
-                zis.reallyClose();
-            }
         }
 
         NodeTypeRegistry reg = NodeTypeRegistry.getInstance();
@@ -1251,7 +1096,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     }
 
-    public void importZip(final String parentNodePath, final File file, final boolean noRoot) throws IOException, RepositoryException, JahiaException {
+    public void importZip(final String parentNodePath, final File file, final boolean noRoot) throws IOException, RepositoryException {
         if (JCRSessionFactory.getInstance().getCurrentUser() != null) {
             JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null,null,null);
             importZip(parentNodePath, file, noRoot, session);
@@ -1261,8 +1106,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     try {
                         importZip(parentNodePath, file, noRoot, session);
                     } catch (IOException e) {
-                        throw new RepositoryException(e);
-                    } catch (JahiaException e) {
                         throw new RepositoryException(e);
                     }
                     return null;
@@ -1291,7 +1134,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     public void importZip(String parentNodePath, File file, boolean noRoot, JCRSessionWrapper session)
-            throws IOException, RepositoryException, JahiaException {
+            throws IOException, RepositoryException {
         Map<String, Long> sizes = new HashMap<String, Long>();
         List<String> fileList = new ArrayList<String>();
 
@@ -1300,33 +1143,125 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         getFileList(file, sizes, fileList);
         NoCloseZipInputStream zis;
 
-//        if (sizes.containsKey(REPOSITORY_XML)) {
-        // Import repository content
-        zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
-        try {
-            while (true) {
-                ZipEntry zipentry = zis.getNextEntry();
-                if (zipentry == null) break;
-                String name = zipentry.getName();
-                if (name.equals(REPOSITORY_XML)) {
-                    DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList, null);
+        boolean importLive = sizes.containsKey(LIVE_REPOSITORY_XML);
+        List<String> liveUuids = null;
+        if (importLive) {
+            // Import live content
+            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
+            try {
+                while (true) {
+                    ZipEntry zipentry = zis.getNextEntry();
+                    if (zipentry == null) break;
+                    String name = zipentry.getName();
+                    if (name.equals(LIVE_REPOSITORY_XML)) {
+                        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList);
 
-                    documentViewImportHandler.setReferences(references);
-                    documentViewImportHandler.setNoRoot(noRoot);
+                        documentViewImportHandler.setReferences(references);
+                        documentViewImportHandler.setNoRoot(noRoot);
+                        documentViewImportHandler.setBaseFilesPath("/live-content");
 
-                    handleImport(zis, documentViewImportHandler);
-                    session.save(JCRObservationManager.IMPORT);
-                } else if (name.endsWith(".xml")) {
-                    importXML(parentNodePath, zis, false);
+                        handleImport(zis, documentViewImportHandler);
+                        session.save(JCRObservationManager.IMPORT);
+
+                        ReferencesHelper.resolveCrossReferences(session, references);
+                        session.save(JCRObservationManager.IMPORT);
+
+                        liveUuids = documentViewImportHandler.getUuids();
+
+                        ServicesRegistry.getInstance().getJCRPublicationService().publish(documentViewImportHandler.getUuids(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null);
+
+                        break;
+                    }
+                    zis.closeEntry();
+
                 }
-                zis.closeEntry();
+            } catch (Exception e) {
+                logger.error("Cannot import", e);
+            } finally {
+                zis.reallyClose();
             }
-        } finally {
-            zis.reallyClose();
         }
-//        }
 
-        session.save(JCRObservationManager.IMPORT);
+        if (sizes.containsKey(REPOSITORY_XML)) {
+            // Import repository content
+            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
+            try {
+                while (true) {
+                    ZipEntry zipentry = zis.getNextEntry();
+                    if (zipentry == null) break;
+                    String name = zipentry.getName();
+                    if (name.equals(REPOSITORY_XML)) {
+                        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList);
+                        if (importLive) {
+                            // Restore publication status
+                            Set<String> props = new HashSet<String>(documentViewImportHandler.getPropertiesToSkip());
+                            props.remove("j:lastPublished");
+                            props.remove("j:lastPublishedBy");
+                            props.remove("j:published");
+                            documentViewImportHandler.setPropertiesToSkip(props);
+                            documentViewImportHandler.setEnforceUuid(true);
+                            documentViewImportHandler.setUuidBehavior(DocumentViewImportHandler.IMPORT_UUID_COLLISION_MOVE_EXISTING);
+                        }
+                        documentViewImportHandler.setReferences(references);
+                        documentViewImportHandler.setNoRoot(noRoot);
+
+                        handleImport(zis, documentViewImportHandler);
+
+                        if (importLive) {
+                            liveUuids.removeAll(documentViewImportHandler.getUuids());
+                            Collections.reverse(liveUuids);
+                            for (String uuid : liveUuids) {
+                                // Uuids have been imported in live but not in default : need to be removed
+                                session.getNodeByIdentifier(uuid).remove();
+                            }
+                        }
+                        session.save(JCRObservationManager.IMPORT);
+                        break;
+                    }
+                    zis.closeEntry();
+                }
+            } catch (Exception e) {
+                logger.error("Cannot import", e);
+            } finally {
+                zis.reallyClose();
+            }
+        }
+
+        if (importLive) {
+            // Import user generated content
+            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
+            try {
+                while (true) {
+                    ZipEntry zipentry = zis.getNextEntry();
+                    if (zipentry == null) break;
+                    String name = zipentry.getName();
+                    if (name.equals(LIVE_REPOSITORY_XML)) {
+                        JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live",null,null);
+
+                        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(liveSession, parentNodePath, file, fileList);
+
+                        documentViewImportHandler.setImportUserGeneratedContent(true);
+                        documentViewImportHandler.setReferences(references);
+                        documentViewImportHandler.setNoRoot(noRoot);
+                        documentViewImportHandler.setBaseFilesPath("/live-content");
+
+                        handleImport(zis, documentViewImportHandler);
+                        liveSession.save(JCRObservationManager.IMPORT);
+
+//                        ReferencesHelper.resolveCrossReferences(liveSession, references);
+//                        liveSession.save(JCRObservationManager.IMPORT);
+
+                        break;
+                    }
+                    zis.closeEntry();
+
+                }
+            } catch (Exception e) {
+                logger.error("Cannot import", e);
+            } finally {
+                zis.reallyClose();
+            }
+        }
     }
 
     private void getFileList(File file, Map<String, Long> sizes, List<String> fileList) throws IOException {

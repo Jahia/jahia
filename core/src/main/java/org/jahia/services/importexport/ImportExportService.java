@@ -106,7 +106,7 @@ public interface ImportExportService {
      * @throws SAXException
      */
     void exportSites(OutputStream outputStream, Map<String, Object> params, List<JahiaSite> sites)
-            throws JahiaException, RepositoryException, IOException, SAXException, JDOMException;
+            throws RepositoryException, IOException, SAXException, JDOMException;
 
     /**
      * Export JCR node as xml
@@ -119,7 +119,7 @@ public interface ImportExportService {
      * @throws SAXException
      * @throws IOException
      */
-    void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException;
+    void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, JDOMException;
 
     /**
      * Export JCR content along with binaries into a zip
@@ -132,7 +132,7 @@ public interface ImportExportService {
      * @throws SAXException
      * @throws IOException
      */
-    void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException;
+    void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, JDOMException;
 
     // Import
 
@@ -169,8 +169,7 @@ public interface ImportExportService {
      * @throws RepositoryException
      * @throws JahiaException
      */
-    void importZip(String parentNodePath, File file, boolean noRoot) throws IOException, RepositoryException,
-            JahiaException;
+    void importZip(String parentNodePath, File file, boolean noRoot) throws IOException, RepositoryException;
 
     /**
      * Performs an import of the ZIP file. The format of XML files will be detected, as if they were imported with
@@ -184,8 +183,7 @@ public interface ImportExportService {
      * @throws RepositoryException
      * @throws JahiaException
      */
-    void importZip(String parentNodePath, File file, boolean noRoot, JCRSessionWrapper session) throws IOException, RepositoryException,
-            JahiaException;
+    void importZip(String parentNodePath, File file, boolean noRoot, JCRSessionWrapper session) throws IOException, RepositoryException;
 
 
     /**

@@ -453,7 +453,7 @@ public class JCRSessionWrapper implements Session {
             // versioning not supported
         }
 
-        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(this, path, null);
+        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(this, path);
         documentViewImportHandler.setNoRoot(noRoot);
         documentViewImportHandler.setUuidBehavior(uuidBehavior);
         documentViewImportHandler.setReplacements(replacements);

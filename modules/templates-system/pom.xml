@@ -85,7 +85,6 @@
 		                    <Specification-Version>${project.version}</Specification-Version>
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
-                            <module-type>siteLayout</module-type>
                             <depends>Default Jahia Templates, Jahia Grid Pages</depends>
                             <root-folder>${project.artifactId}</root-folder>
                         </manifestEntries>

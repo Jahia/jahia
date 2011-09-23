@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Validator that gets the list of all sites and sites properties from the xml import file
+ * Validator that gets the list of all sites and sites properties from the xml import file.
  */
 public class SitesValidator implements ImportValidator {
 

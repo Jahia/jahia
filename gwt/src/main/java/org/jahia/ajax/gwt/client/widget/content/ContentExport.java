@@ -94,7 +94,16 @@ public class ContentExport extends Window {
         b.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                com.google.gwt.user.client.Window.Location.assign(result + ".zip?cleanup=simple");
+                com.google.gwt.user.client.Window.Location.assign(result + ".zip?live=false&cleanup=simple");
+            }
+        });
+        addButton(b);
+
+        b = new Button(Messages.get("label.exportZipWithLive", "ZIP"));
+        b.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                com.google.gwt.user.client.Window.Location.assign(result + ".zip?live=true&cleanup=simple");
             }
         });
         addButton(b);

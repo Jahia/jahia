@@ -215,6 +215,9 @@ public class Export extends JahiaController implements ServletContextAware {
                 } else if ("simple".equals(request.getParameter(CLEANUP))) {
                     params.put(ImportExportService.XSL_PATH, cleanupXsl);
                 }
+                if (request.getParameter("live") == null || Boolean.valueOf(request.getParameter("live"))) {
+                    params.put(ImportExportService.INCLUDE_LIVE_EXPORT, Boolean.TRUE);
+                }
                 OutputStream outputStream = response.getOutputStream();
                 importExportService.exportZip(node, exportRoot, outputStream, params);
                 outputStream.close();

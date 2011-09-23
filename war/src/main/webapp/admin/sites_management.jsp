@@ -25,9 +25,11 @@
     if (jData != null) {
         jParams = jData.getProcessingContext();
     }
-    stretcherToOpen = 0; %>
+    stretcherToOpen = 0;
+    pageContext.setAttribute("exportPath", Export.getExportServletPath());%>
 <% if (sitesList != null && sitesList.hasNext()) { %>
-<jsp:useBean id="now" class="java.util.Date" />
+<jsp:useBean id="nowDate" class="java.util.Date" />
+<fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd-HH-mm" var="now"/>
 <script type="text/javascript">
     function forSites(callback) {
         if (document.main.sitebox.length) {
@@ -82,7 +84,7 @@
     	if (stagingOnly) {
     		name += '_staging';
     	}
-        document.main.action = '<%=request.getContextPath() + Export.getExportServletPath()%>/default/' + name + '_export_<fmt:formatDate value="${now}" pattern="yyyy-MM-dd-HH-mm"/>.zip';
+        document.main.action = '<%=request.getContextPath() %>${exportPath}/default/' + name + '_export_${now}.zip';
         document.main.submit();
     }
 
@@ -165,8 +167,7 @@
     </div>
 </div>
 <div class="head headtop">
-    <div class="object-title"><fmt:message key="org.jahia.admin.site.ManageSites.virtualSitesListe.label"/>
-    </div>
+    <div class="object-title"><fmt:message key="org.jahia.admin.site.ManageSites.virtualSitesListe.label"/>&nbsp;(${sitesListSize})</div>
 </div>
 <div  class="content-item-noborder">
     <% if (warningMsg != "" && !sub.equals("prepareimport")) { %>
@@ -207,10 +208,10 @@
             <tbody>
             <%
                 JahiaSite site = null;
+                String lineClass = "oddLine";
                 int lineCounter = 0;
                 while (sitesList.hasNext()) {
                     site = (JahiaSite) sitesList.next();
-                    String lineClass = "oddLine";
                     if (lineCounter % 2 == 0) {
                         lineClass = "evenLine";
                     }
@@ -284,6 +285,39 @@
         </form>
 
     </table>
+
+    <div class="head headtop">
+        <div class="object-title">${fn:escapeXml(systemSite.title)}</div>
+    </div>
+    <div  class="content-item">
+        <p><fmt:message key="label.export"/>&nbsp;
+        <fmt:message var="i18nExport" key="label.export"/>
+        <c:set var="i18nExport" value="${fn:escapeXml(i18nExport)}"/>
+        <c:url var="urlExportSystem" value="${exportPath}/default/systemsite_export_${now}.zip">
+            <c:param name="exportformat" value="site"/>
+            <c:param name="sitebox" value="systemsite"/>
+        </c:url>
+        <c:url var="urlExportSystemStaging" value="${exportPath}/default/systemsite_staging_export_${now}.zip">
+            <c:param name="exportformat" value="site"/>
+            <c:param name="sitebox" value="systemsite"/>
+            <c:param name="live" value="false"/>
+        </c:url>
+        <a href="${urlExportSystem}" onclick="return confirm('${i18nConfirmExport}');" target="_blank"
+           title="${i18nExport}"><img
+                src="<c:url value='/css/images/andromeda/icons/export1.png'/>"
+                alt="${i18nExport}"
+                title="${i18nExport}"
+                width="16" height="16" border="0" style="cursor: pointer;"/></a>
+        <c:set var="i18nExportStaging"><fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</c:set>
+        <c:set var="i18nExportStaging" value="${fn:escapeXml(i18nExportStaging)}"/>
+        <a href="${urlExportSystemStaging}" onclick="return confirm('${i18nConfirmExport}');" target="_blank"
+           title="${i18nExportStaging}"><img
+                src="<c:url value='/css/images/andromeda/icons/export2.png'/>"
+                alt="${i18nExportStaging}"
+                title="${i18nExportStaging}"
+                width="16" height="16" border="0" style="cursor: pointer;"/></a>
+        </p>
+    </div>
 
     <!-- prepackaged site -->
     <% pageContext.setAttribute("files", new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "prepackagedSites").listFiles()); %>
@@ -431,6 +465,39 @@ else { %>
                                     </table>
                                 </div>
 
+                                <div class="head headtop">
+                                    <div class="object-title">${fn:escapeXml(systemSite.title)}</div>
+                                </div>
+                                <div  class="content-item">
+                                    <p><fmt:message key="label.export"/>&nbsp;
+                                    <fmt:message var="i18nExport" key="label.export"/>
+                                    <c:set var="i18nExport" value="${fn:escapeXml(i18nExport)}"/>
+                                    <c:url var="urlExportSystem" value="${exportPath}/default/systemsite_export_${now}.zip">
+                                        <c:param name="exportformat" value="site"/>
+                                        <c:param name="sitebox" value="systemsite"/>
+                                    </c:url>
+                                    <c:url var="urlExportSystemStaging" value="${exportPath}/default/systemsite_staging_export_${now}.zip">
+                                        <c:param name="exportformat" value="site"/>
+                                        <c:param name="sitebox" value="systemsite"/>
+                                        <c:param name="live" value="false"/>
+                                    </c:url>
+                                    <a href="${urlExportSystem}" onclick="return confirm('${i18nConfirmExport}');" target="_blank"
+                                       title="${i18nExport}"><img
+                                            src="<c:url value='/css/images/andromeda/icons/export1.png'/>"
+                                            alt="${i18nExport}"
+                                            title="${i18nExport}"
+                                            width="16" height="16" border="0" style="cursor: pointer;"/></a>
+                                    <c:set var="i18nExportStaging"><fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</c:set>
+                                    <c:set var="i18nExportStaging" value="${fn:escapeXml(i18nExportStaging)}"/>
+                                    <a href="${urlExportSystemStaging}" onclick="return confirm('${i18nConfirmExport}');" target="_blank"
+                                       title="${i18nExportStaging}"><img
+                                            src="<c:url value='/css/images/andromeda/icons/export2.png'/>"
+                                            alt="${i18nExportStaging}"
+                                            title="${i18nExportStaging}"
+                                            width="16" height="16" border="0" style="cursor: pointer;"/></a>
+                                    </p>
+                                </div>
+
                                 <% pageContext.setAttribute("files", new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles()); %>
                                 <c:if test="${not empty files}">
                                 <!-- prepackaged site -->
@@ -440,7 +507,6 @@ else { %>
                                     </div>
                                 </div>
                                 <div  class="content-item">
-
                                     <form name="siteImportPrepackaged"
                                           action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=prepareimport")%>'
                                           method="post"

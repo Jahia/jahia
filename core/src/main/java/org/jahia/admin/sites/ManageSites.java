@@ -265,6 +265,8 @@ public class ManageSites extends AbstractAdministrationModule {
                 Collections.sort(sortedSites, JahiaSite.getTitleComparator());
             }
             request.setAttribute("sitesList", sortedSites.iterator());
+            request.setAttribute("sitesListSize", Integer.valueOf(sortedSites.size()));
+            request.setAttribute("systemSite", sMgr.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY));
             if (sortedSites.size() == 0) {
                 JahiaSite newJahiaSite = (JahiaSite) session.getAttribute(CLASS_NAME + "newJahiaSite");
 

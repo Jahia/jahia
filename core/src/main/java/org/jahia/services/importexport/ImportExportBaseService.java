@@ -682,11 +682,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     if (zipentry == null) break;
                     String name = zipentry.getName();
                     if (name.equals(REPOSITORY_XML)) {
-                        String jcrLocalPath = null;site.getJCRLocalPath();
-//                        if (infos.get("BuildNumber") != null && Integer.parseInt((String) infos.get("BuildNumber")) >= 39122) {
-//                            jcrLocalPath = site.getJCRLocalPath();
-//                        }
-                        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, jcrLocalPath, file, fileList, (site != null ? site.getSiteKey(): null));
+                        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, null, file, fileList, (site != null ? site.getSiteKey(): null));
                         if (importLive) {
                             // Restore publication status
                             Set<String> props = new HashSet<String>(documentViewImportHandler.getPropertiesToSkip());

@@ -30,7 +30,7 @@ $(document).ready(function() {
 		preview:type == 'images',
 		previewPath:files,
 		callback: function (uuid, path, title) {
-		    window.opener.CKEDITOR.tools.callFunction(funcNum, files + path + (type == 'pages' ? '.html' : ''));
+		    window.opener.CKEDITOR.tools.callFunction(funcNum, files + path + (type == 'pages' || displayablenodeonly == 'true' ? '.html' : ''));
 		    window.close();
 		}
     }, {}));

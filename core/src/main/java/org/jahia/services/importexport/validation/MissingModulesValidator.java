@@ -104,9 +104,11 @@ public class MissingModulesValidator implements ImportValidator {
                         .getTemplatePackageByNodeName(targetTemplateSet) != null;
 
                 // validate modules
-                for (String module : modules) {
-                    if (templateManagerService.getTemplatePackageByNodeName(module) == null) {
-                        missingModules.add(module);
+                if (modules != null) {
+                    for (String module : modules) {
+                        if (templateManagerService.getTemplatePackageByNodeName(module) == null) {
+                            missingModules.add(module);
+                        }
                     }
                 }
             } else {

@@ -46,8 +46,11 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.taglibs.standard.tag.common.fmt.SetLocaleSupport;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.importexport.ImportExportService;
+import org.jahia.services.importexport.validation.*;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.slf4j.Logger;
@@ -83,6 +86,7 @@ import javax.jcr.query.Query;
 import javax.jcr.security.Privilege;
 
 import java.io.*;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -642,24 +646,60 @@ public class ContentManagerHelper {
         }
     }
 
-    public void importContent(String parentPath, String fileKey, boolean asynchronously) throws GWTJahiaServiceException {
+    public void importContent(String parentPath, String fileKey, boolean asynchronously, JCRSessionWrapper session) throws GWTJahiaServiceException {
         try {
-            if (!asynchronously) {
-                ImportJob.importContent(parentPath, fileKey);
+            GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
+            ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
+            JCRNodeWrapper parent = session.getNode(parentPath);
+            ValidationResults results = importExport.validateImportFile(session, item.getStream(), item.getContentType(), parent.getResolveSite());
+
+            if (results.isSuccessful()) {
+                if (!asynchronously) {
+                    ImportJob.importContent(parentPath, fileKey);
+                } else {
+                    // let's schedule an import job.
+                    JobDetail jobDetail = BackgroundJob.createJahiaJob("Import file " + FilenameUtils.getName(item.getOriginalFileName()), ImportJob.class);
+                    JobDataMap jobDataMap;
+                    jobDataMap = jobDetail.getJobDataMap();
+
+                    jobDataMap.put(ImportJob.DESTINATION_PARENT_PATH, parentPath);
+                    jobDataMap.put(ImportJob.FILE_KEY, fileKey);
+                    jobDataMap.put(ImportJob.FILENAME, FilenameUtils.getName(item.getOriginalFileName()));
+
+                    ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
+
+                }
             } else {
-                // let's schedule an import job.
-                GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
-
-                JobDetail jobDetail = BackgroundJob.createJahiaJob("Import file " + FilenameUtils.getName(item.getOriginalFileName()), ImportJob.class);
-                JobDataMap jobDataMap;
-                jobDataMap = jobDetail.getJobDataMap();
-
-                jobDataMap.put(ImportJob.DESTINATION_PARENT_PATH, parentPath);
-                jobDataMap.put(ImportJob.FILE_KEY, fileKey);
-                jobDataMap.put(ImportJob.FILENAME, FilenameUtils.getName(item.getOriginalFileName()));
-
-                ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
-
+                StringBuffer buffer = new StringBuffer();
+                for (ValidationResult result : results.getResults()) {
+                    if (!result.isSuccessful()) {
+                        if (result instanceof MissingModulesValidationResult) {
+                            MissingModulesValidationResult missingModule = ((MissingModulesValidationResult)result);
+                            if (missingModule.isTargetTemplateSetPresent()) {
+                                String message = JahiaResourceBundle.getJahiaInternalResource("failure.import.missingTemplateSet",session.getLocale());
+                                message = MessageFormat.format(message, missingModule.getTargetTemplateSet());
+                                buffer.append(message);
+                            }
+                            if (!missingModule.getMissingModules().isEmpty()) {
+                                String message = JahiaResourceBundle.getJahiaInternalResource("failure.import.missingModules",session.getLocale());
+                                message = MessageFormat.format(message, missingModule.getMissingModules().size());
+                                message += missingModule.getMissingModules();
+                                buffer.append(message);
+                            }
+                        } else if (result instanceof MissingNodetypesValidationResult) {
+                            String message = JahiaResourceBundle.getJahiaInternalResource("failure.import.missingNodetypes",session.getLocale());
+                            message = MessageFormat.format(message, ((MissingNodetypesValidationResult)result).getMissingNodetypes(),((MissingNodetypesValidationResult)result).getMissingMixins());
+                            buffer.append(message);
+                        } else if (result instanceof MissingTemplatesValidationResult) {
+                            MissingTemplatesValidationResult missingTemplates = ((MissingTemplatesValidationResult)result);
+                            String message = JahiaResourceBundle.getJahiaInternalResource("failure.import.missingTemplates",session.getLocale());
+                            message = MessageFormat.format(message, missingTemplates.getMissingTemplates().size());
+                            message += missingTemplates.getMissingTemplates().keySet();
+                            buffer.append(message);
+                        }
+                    }
+                }
+                throw new GWTJahiaServiceException(buffer.toString());
             }
         } catch (Exception e) {
             logger.error("Error when importing", e);

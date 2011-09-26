@@ -45,6 +45,8 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.importexport.validation.ValidationResults;
 import org.jahia.services.sites.JahiaSite;
 import org.jdom.JDOMException;
 import org.xml.sax.SAXException;
@@ -185,6 +187,19 @@ public interface ImportExportService {
      */
     void importZip(String parentNodePath, File file, boolean noRoot, JCRSessionWrapper session) throws IOException, RepositoryException;
 
+    /**
+     * Validates a JCR content import file in document format and returns expected failures.
+     *
+     *
+     * @param session
+     *            current JCR session instance
+     * @param is
+     *            the input stream with a JCR content in document format
+     * @param siteNode
+     * @return the validation result
+     * @since Jahia 6.6
+     */
+    ValidationResults validateImportFile(JCRSessionWrapper session, InputStream is, String contentType, JCRSiteNode siteNode);
 
     /**
      * Import a full site zip into a newly created site.

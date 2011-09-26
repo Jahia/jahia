@@ -48,6 +48,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.validation.*;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -1116,7 +1117,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     
     /**
      * Validates a JCR content import file in document format and returns expected failures.
-     * 
+     *
      * @param session
      *            current JCR session instance
      * @param is
@@ -1124,14 +1125,37 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
      * @return the validation result
      * @since Jahia 6.6
      */
-    public ValidationResults validateImportFile(JCRSessionWrapper session, InputStream is) {
+    public ValidationResults validateImportFile(JCRSessionWrapper session, InputStream is, String contentType, JCRSiteNode siteNode) {
         DocumentViewValidationHandler documentViewValidationHandler = (DocumentViewValidationHandler) SpringContextSingleton
                 .getBean("DocumentViewValidationHandler");
-        documentViewValidationHandler.setSession(session);
-        handleImport(is, documentViewValidationHandler);
-
+        documentViewValidationHandler.setSite(siteNode);
+        if (contentType.equals("application/zip")) {
+            NoCloseZipInputStream zis = new NoCloseZipInputStream(new BufferedInputStream(is));
+            try {
+                ZipEntry zipentry = zis.getNextEntry();
+                while (zipentry != null) {
+                    if (zipentry.getName().endsWith("xml")) {
+                        documentViewValidationHandler.setSession(session);
+                        handleImport(zis, documentViewValidationHandler);
+                    }
+                    zipentry = zis.getNextEntry();
+                }
+            } catch (IOException e) {
+                logger.error("Cannot import", e);
+            } finally {
+                try {
+                    zis.reallyClose();
+                } catch (IOException e) {
+                    logger.error("Cannot import", e);
+                }
+            }
+        } else {
+            documentViewValidationHandler.setSession(session);
+            handleImport(is, documentViewValidationHandler);
+        }
         return documentViewValidationHandler.getResults();
     }
+
 
     public void importZip(String parentNodePath, File file, boolean noRoot, JCRSessionWrapper session)
             throws IOException, RepositoryException {

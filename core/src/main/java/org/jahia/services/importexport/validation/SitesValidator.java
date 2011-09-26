@@ -1,6 +1,7 @@
 package org.jahia.services.importexport.validation;
 
 import org.jahia.api.Constants;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.xml.sax.Attributes;
 
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class SitesValidator implements ImportValidator {
         return new SitesValidatorResult(sitesProperties);
     }
 
-    public void validate(String decodedLocalName, String decodedQName, String currentPath, Attributes atts) {
+    public void validate(String decodedLocalName, String decodedQName, String currentPath, JCRSiteNode siteNode, Attributes atts) {
 
         String pt = atts.getValue(Constants.JCR_PRIMARYTYPE);
 

@@ -297,6 +297,22 @@ public class JCRSiteNode extends JCRNodeDecorator {
         return templateFolder;
     }
 
+    public List<String> getInstalledModules() {
+        List<String> modules = new ArrayList<String>();
+        try {
+            if (hasProperty("j:installedModules")) {
+                Value[] v = getProperty("j:installedModules").getValues();
+                for (int i = 0; i < v.length; i++) {
+                    Value value = v[i];
+                    modules.add(value.getString());
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property", e);
+        }
+        return modules;
+    }
+
     /**
      * Returns the corresponding template set name of this virtual site.
      *

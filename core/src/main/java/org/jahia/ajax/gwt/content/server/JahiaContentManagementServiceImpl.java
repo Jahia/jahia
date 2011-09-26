@@ -1053,7 +1053,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void importContent(String parentPath, String fileKey, Boolean asynchronously)
             throws GWTJahiaServiceException {
-        contentManager.importContent(parentPath, fileKey, asynchronously);
+        contentManager.importContent(parentPath, fileKey, asynchronously, retrieveCurrentSession());
     }
 
     public Map<String,GWTJahiaWorkflowDefinition> getWorkflowDefinitions(List<String> workflowDefinitionIds) throws GWTJahiaServiceException {

@@ -44,6 +44,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.jackrabbit.util.ISO9075;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.BaseDocumentViewHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -58,6 +59,16 @@ import org.xml.sax.SAXException;
 public class DocumentViewValidationHandler extends BaseDocumentViewHandler {
 
     private List<ImportValidator> validators = Collections.emptyList();
+
+    private JCRSiteNode site;
+
+    public JCRSiteNode getSite() {
+        return site;
+    }
+
+    public void setSite(JCRSiteNode site) {
+        this.site = site;
+    }
 
     public void endDocument() throws SAXException {
     }
@@ -102,12 +113,8 @@ public class DocumentViewValidationHandler extends BaseDocumentViewHandler {
 
             pathes.push(pathes.peek() + "/" + decodedQName);
 
-            if (noRoot && pathes.size() <= 3) {
-                return;
-            }
-
             for (ImportValidator validator : validators) {
-                validator.validate(decodedLocalName, decodedQName, pathes.peek(), atts);
+                validator.validate(decodedLocalName, decodedQName, pathes.peek(), site, atts);
             }
         } catch (Exception re) {
             throw new SAXException(re);

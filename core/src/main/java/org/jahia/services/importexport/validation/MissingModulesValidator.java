@@ -47,6 +47,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +83,7 @@ public class MissingModulesValidator implements ImportValidator {
     }
 
     public void validate(String decodedLocalName, String decodedQName, String currentPath,
-            Attributes atts) {
+                         JCRSiteNode siteNode, Attributes atts) {
         if (done) {
             return;
         }

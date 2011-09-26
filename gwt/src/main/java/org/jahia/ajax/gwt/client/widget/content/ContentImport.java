@@ -116,8 +116,8 @@ public class ContentImport extends Window {
         JahiaContentManagementService.App.getInstance().importContent(path, value.toString(), asynchronously, new BaseAsyncCallback() {
 
             public void onApplicationFailure(Throwable caught) {
-                com.google.gwt.user.client.Window.alert(Messages.get("fm_fail") + "\n" + caught.getLocalizedMessage());
-                Log.error(Messages.get("fm_fail"), caught);
+                com.google.gwt.user.client.Window.alert(Messages.get("label.error") + "\n" + caught.getLocalizedMessage());
+                Log.error(Messages.get("label.error"), caught);
                 hide();
             }
 

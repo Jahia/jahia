@@ -1883,7 +1883,7 @@ public class ManageSites extends AbstractAdministrationModule {
                                     .getInstance()
                                     .validateImportFile(
                                             JCRSessionFactory.getInstance().getCurrentUserSession(),
-                                            zis2);
+                                            zis2, "application/xml", null);
                             logger.info(
                                     "Import {}/{} validated in {} ms: {}",
                                     new String[] { filename, z.getName(),

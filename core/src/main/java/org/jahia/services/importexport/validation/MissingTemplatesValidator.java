@@ -40,23 +40,13 @@
 
 package org.jahia.services.importexport.validation;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,15 +164,20 @@ public class MissingTemplatesValidator implements ImportValidator {
     }
 
     public void validate(String decodedLocalName, String decodedQName, String currentPath,
-            Attributes atts) {
+            JCRSiteNode siteNode, Attributes atts) {
         if (Constants.JAHIANT_VIRTUALSITE.equals(StringUtils.defaultString(atts
                 .getValue(Constants.JCR_PRIMARYTYPE)))) {
             // we got the site element -> read the dependencies
             readDependencies(atts.getValue("j:dependencies"));
         }
         if (dependencies.isEmpty()) {
-            // we do not have module dependencies -> skip
-            return;
+            if (siteNode == null) {
+                // we do not have module dependencies -> skip
+                return;
+            } else {
+                dependencies = new HashSet<String>(siteNode.getInstalledModules());
+                targetTemplateSetPresent = true;
+            }
         }
 
         String templateAttr = atts.getValue("j:templateNode");

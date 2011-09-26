@@ -57,6 +57,7 @@ public class PortletWizardWindow extends AddContentWizardWindow {
     public PortletWizardWindow(Linker linker, GWTJahiaNode parentNode) {
         super(linker, parentNode);
         setWidth(750);
+        setId("JahiaGXTPortletWizardWindow");
     }
 
     public PortletWizardWindow() {

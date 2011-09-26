@@ -59,7 +59,7 @@ import org.springframework.beans.factory.InitializingBean;
 /**
  * Convenient Spring bean to schedule background RAM as well as persistent jobs.
  * 
- * @author C�dric Mailleux
+ * @author Cedric Mailleux
  * @author Sergiy Shyrkov
  * @since JAHIA 6.5
  */

@@ -51,49 +51,48 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Background task that purges completed jobs based on the configured
- * expiration.
+ * Background task that purges completed jobs based on the configured expiration.
  * 
  * @author Sergiy Shyrkov
  */
 public class JobHistoryPurgeJob extends BackgroundJob {
 
-	private static final Logger logger = LoggerFactory.getLogger(JobHistoryPurgeJob.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobHistoryPurgeJob.class);
 
-	@Override
-	public void executeJahiaJob(JobExecutionContext ctx) throws Exception {
-		JobDataMap jobDataMap = ctx.getJobDetail().getJobDataMap();
-		@SuppressWarnings("unchecked")
-		Map<String, Long> purgeStrategyData = (Map<String, Long>) jobDataMap.get("purgeStrategy");
-		if (purgeStrategyData.isEmpty()) {
-			logger.info("No purge strategy configured. Skip execution of this task.");
-			return;
-		}
-		logger.info("Loaded the following purge strategy\n{}", purgeStrategyData);
+    @Override
+    public void executeJahiaJob(JobExecutionContext ctx) throws Exception {
+        JobDataMap jobDataMap = ctx.getJobDetail().getJobDataMap();
+        @SuppressWarnings("unchecked")
+        Map<String, Long> purgeStrategyData = (Map<String, Long>) jobDataMap.get("purgeStrategy");
+        if (purgeStrategyData.isEmpty()) {
+            logger.info("No purge strategy configured. Skip execution of this task.");
+            return;
+        }
+        logger.info("Loaded the following purge strategy\n{}", purgeStrategyData);
 
-		Map<Pattern, Long> purgeStrategy = new LinkedHashMap<Pattern, Long>(
-		        purgeStrategyData.size());
+        Map<Pattern, Long> purgeStrategy = new LinkedHashMap<Pattern, Long>(
+                purgeStrategyData.size());
 
-		for (Map.Entry<String, Long> entry : purgeStrategyData.entrySet()) {
-			purgeStrategy.put(Pattern.compile(entry.getKey()), entry.getValue());
-		}
-		boolean purgeWithNoEndDate = jobDataMap.containsKey("purgeWithNoEndDate") ? jobDataMap
-		        .getBooleanValueFromString("purgeWithNoEndDate") : true;
-		ServicesRegistry.getInstance().getSchedulerService()
-		        .deleteAllCompletedJobs(purgeStrategy, purgeWithNoEndDate);
-	}
+        for (Map.Entry<String, Long> entry : purgeStrategyData.entrySet()) {
+            purgeStrategy.put(Pattern.compile(entry.getKey()), entry.getValue());
+        }
+        boolean purgeWithNoEndDate = jobDataMap.containsKey("purgeWithNoEndDate") ? jobDataMap
+                .getBooleanValueFromString("purgeWithNoEndDate") : true;
+        ServicesRegistry.getInstance().getSchedulerService()
+                .deleteAllCompletedJobs(purgeStrategy, purgeWithNoEndDate);
+    }
 
-	protected Long getAge(String jobName, String jobGroup, Map<Pattern, Long> purgeStrategy) {
-		Long expiration = null;
-		String key = jobGroup + "." + jobName;
-		for (Map.Entry<Pattern, Long> purgeEntry : purgeStrategy.entrySet()) {
-			if (purgeEntry.getKey().matcher(key).matches()) {
-				expiration = purgeEntry.getValue();
-				break;
-			}
-		}
+    protected Long getAge(String jobName, String jobGroup, Map<Pattern, Long> purgeStrategy) {
+        Long expiration = null;
+        String key = jobGroup + "." + jobName;
+        for (Map.Entry<Pattern, Long> purgeEntry : purgeStrategy.entrySet()) {
+            if (purgeEntry.getKey().matcher(key).matches()) {
+                expiration = purgeEntry.getValue();
+                break;
+            }
+        }
 
-		return expiration;
-	}
+        return expiration;
+    }
 
 }

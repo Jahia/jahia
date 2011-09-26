@@ -51,7 +51,7 @@ import java.util.Date;
 /**
  * This is a wrapper for interface {@link javax.jcr.Value} to allow more types of properties.
  *
- * @author C�dric Mailleux
+ * @author Cedric Mailleux
  * @since 6.1
  */
 public interface JCRValueWrapper extends Value {

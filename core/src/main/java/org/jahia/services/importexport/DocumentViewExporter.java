@@ -56,6 +56,8 @@ import org.xml.sax.helpers.AttributesImpl;
 import javax.jcr.*;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Handler for export in a document view format.
@@ -69,6 +71,9 @@ public class DocumentViewExporter {
     
     private static final String CDATA = "CDATA";
     private static final String NS_URI = "http://www.w3.org/2000/xmlns/";
+
+    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/sites/[^/]*/templates/(.*)");
+
 
     private JCRSessionWrapper session;
     private JCRSessionWrapper publicationStatusSession;
@@ -283,25 +288,35 @@ public class DocumentViewExporter {
             try {
                 JCRNodeWrapper reference = session.getNodeByUUID(v.getString());
                 String path = reference.getPath();
-                boolean root = rootNode.getPath().equals("/");
-                if (!root && !path.startsWith(rootNode.getPath()+"/") && !path.equals(rootNode.getPath())) {
-                    externalReferences.add(v.getString());
-                } else if (!typesToIgnore.contains(reference.getPrimaryNodeTypeName())) {
-                    boolean foundInExportedNodes = false;
 
-                    for (JCRNodeWrapper node : nodesList) {
-                        if (path.startsWith(node.getPath()+"/") || path.equals(node.getPath())) {
-                            foundInExportedNodes = true;
-                            break;
+                Matcher matcher = TEMPLATE_PATTERN.matcher(path);
+                if (matcher.matches()) {
+                    path = "$currentSite/templates/"+matcher.group(1);
+
+                } else {
+                    boolean root = rootNode.getPath().equals("/");
+                    if (!root && !path.startsWith(rootNode.getPath()+"/") && !path.equals(rootNode.getPath())) {
+                        externalReferences.add(v.getString());
+                    } else if (!typesToIgnore.contains(reference.getPrimaryNodeTypeName())) {
+                        boolean foundInExportedNodes = false;
+
+                        for (JCRNodeWrapper node : nodesList) {
+                            if (path.startsWith(node.getPath()+"/") || path.equals(node.getPath())) {
+                                foundInExportedNodes = true;
+                                break;
+                            }
+                        }
+                        if (!foundInExportedNodes) {
+                            nodesList.add(reference);
+                        }
+                        if (rootNode.getPath().equals(path)) {
+                            path = "#/";
+                        } else {
+                            path = "#" + path.substring(rootNode.getPath().length() + (root ? -1 : 0));
                         }
                     }
-                    if (!foundInExportedNodes) {
-                        nodesList.add(reference);
-                    }
-
-                    path = path.substring(rootNode.getPath().length() + (root ? 0 : 1));
                 }
-                return ISO9075.encodePath(path);
+                return path;
             } catch (ItemNotFoundException e) {
                 return "";
             }

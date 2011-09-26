@@ -473,7 +473,15 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         String[] values = attrValue.split(" ");
                         for (String value : values) {
                             if (!StringUtils.isEmpty(value)) {
-                                if (!value.startsWith("/")) {
+                                if (value.startsWith("$currentSite")) {
+                                    value = nodes.peek().getResolveSite().getPath() + value.substring(12);
+                                } else if (value.startsWith("#")) {
+                                    value = value.substring(1);
+                                    String rootPath = nodes.firstElement().getPath();
+                                    if (!rootPath.equals("/")) {
+                                        value = rootPath + value;
+                                    }
+                                } else if (!value.startsWith("/")) {
                                     String rootPath = nodes.firstElement().getPath();
                                     if (rootPath.equals("/")) {
                                         value = "/" + value;

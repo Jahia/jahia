@@ -68,7 +68,7 @@ public class MissingTemplatesValidator implements ImportValidator {
         }
     };
 
-    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/?sites/[^/]*/templates/(.*)");
+    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("(#?/sites/[^/]*|\\$currentSite)/templates/(.*)");
 
     private Set<String> availableTemplateSets;
 
@@ -187,7 +187,8 @@ public class MissingTemplatesValidator implements ImportValidator {
         }
 
         Matcher matcher = TEMPLATE_PATTERN.matcher(templateAttr);
-        String templatePath = matcher.matches() ? matcher.group(1) : null;
+
+        String templatePath = matcher.matches() ? matcher.group(2) : null;
         if (StringUtils.isEmpty(templatePath)) {
             logger.warn("j:templateNode value '{}' does not seem well-formed. Skipping.",
                     templateAttr);

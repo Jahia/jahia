@@ -701,6 +701,8 @@ public class ContentManagerHelper {
                 }
                 throw new GWTJahiaServiceException(buffer.toString());
             }
+        } catch (GWTJahiaServiceException e) {
+            throw e;
         } catch (Exception e) {
             logger.error("Error when importing", e);
             throw new GWTJahiaServiceException(e.getMessage());

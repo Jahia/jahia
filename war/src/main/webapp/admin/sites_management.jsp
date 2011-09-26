@@ -27,9 +27,12 @@
     }
     stretcherToOpen = 0;
     pageContext.setAttribute("exportPath", Export.getExportServletPath());%>
-<% if (sitesList != null && sitesList.hasNext()) { %>
 <jsp:useBean id="nowDate" class="java.util.Date" />
+<fmt:message key="org.jahia.admin.site.ManageSites.exportsites.label" var="i18nExport"/>
+<fmt:message key="org.jahia.admin.site.ManageSites.doYouWantToContinue.label" var="i18nContinue"/>
+<c:set var="i18nConfirmExport" value="${functions:escapeJavaScript(i18nExport)}${fn:endsWith(i18nExport, '.') ? '' : '.'} ${functions:escapeJavaScript(i18nContinue)}"/>
 <fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd-HH-mm" var="now"/>
+<% if (sitesList != null && sitesList.hasNext()) { %>
 <script type="text/javascript">
     function forSites(callback) {
         if (document.main.sitebox.length) {
@@ -137,9 +140,6 @@
     <div class="object-title"><fmt:message key="label.virtualSitesManagement"/>
     </div>
 </div>
-<fmt:message key="org.jahia.admin.site.ManageSites.exportsites.label" var="i18nExport"/>
-<fmt:message key="org.jahia.admin.site.ManageSites.doYouWantToContinue.label" var="i18nContinue"/>
-<c:set var="i18nConfirmExport" value="${functions:escapeJavaScript(i18nExport)}${fn:endsWith(i18nExport, '.') ? '' : '.'} ${functions:escapeJavaScript(i18nContinue)}"/>
 <div class="content-body">
     <div id="operationMenu">
                     <span class="dex-PushButton">

@@ -40,43 +40,9 @@
 
 package org.jahia.services.content;
 
-import static org.jahia.api.Constants.*;
-
-import com.google.common.collect.ImmutableSet;
-import org.apache.commons.collections.map.UnmodifiableMap;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.CharUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.util.ISO9075;
-import org.apache.jackrabbit.util.Text;
-import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.decorator.JCRPortletNode;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.RenderService;
-import org.jahia.services.render.Template;
-import org.jahia.services.sites.JahiaSitesBaseService;
-import org.jahia.utils.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-
-import com.ibm.icu.text.Normalizer;
-
-import javax.jcr.*;
-import javax.jcr.nodetype.ItemDefinition;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NodeTypeIterator;
-import javax.jcr.nodetype.PropertyDefinition;
-import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.Query;
+import static org.jahia.api.Constants.EDIT_WORKSPACE;
+import static org.jahia.api.Constants.LIVE_WORKSPACE;
+import static org.jahia.api.Constants.MARKED_FOR_DELETION_LOCK_USER;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -88,9 +54,72 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
+
+import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.InvalidSerializedDataException;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.NamespaceRegistry;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.PropertyType;
+import javax.jcr.RangeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
+import javax.jcr.ValueFactory;
+import javax.jcr.ValueFormatException;
+import javax.jcr.nodetype.ItemDefinition;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.NodeTypeIterator;
+import javax.jcr.nodetype.PropertyDefinition;
+import javax.jcr.query.InvalidQueryException;
+import javax.jcr.query.Query;
+
+import org.apache.commons.collections.map.UnmodifiableMap;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.CharUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.SessionImpl;
+import org.apache.jackrabbit.core.data.GarbageCollector;
+import org.apache.jackrabbit.util.ISO9075;
+import org.apache.jackrabbit.util.Text;
+import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.decorator.JCRPortletNode;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderService;
+import org.jahia.services.render.Template;
+import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.utils.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
+
+import com.google.common.collect.ImmutableSet;
+import com.ibm.icu.text.Normalizer;
 
 /**
  * Utility class for accessing and manipulation JCR properties.
@@ -106,6 +135,22 @@ public final class JCRContentUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(JCRContentUtils.class);
     
+    public static void callDataStoreGarbageCollector() throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                GarbageCollector gc = ((SessionImpl) session.getProviderSession(session
+                        .getNode("/").getProvider())).createDataStoreGarbageCollector();
+                try {
+                    gc.mark();
+                    gc.sweep();
+                } finally {
+                    gc.close();
+                }
+                return null;
+            }
+        });
+    }
+    
     public static boolean check(String icon) {
         Boolean present = iconsPresence.get(icon);
         if (present == null) {
@@ -119,7 +164,7 @@ public final class JCRContentUtils {
         }
         return present;
     }
-    
+
     /**
      * Removes all locks on the current node and optionally on its children.
      * 
@@ -231,7 +276,7 @@ public final class JCRContentUtils {
     public static File downloadFileContent(JCRNodeWrapper node) throws IOException {
         return downloadFileContent(node, File.createTempFile("data", null));
     }
-
+    
     /**
      * Downloads the JCR content to a specified file. 
      * @param node the JCR node with the file content 
@@ -266,7 +311,7 @@ public final class JCRContentUtils {
         String encodedPrefix = originalPrefix.replace(":", "\\3A");
         return encodedPrefix;
     }
-    
+
     public static String escapeLocalNodeName(String name) {
         name = name.trim();
         StringBuilder buffer = new StringBuilder(name.length() * 2);
@@ -474,7 +519,7 @@ public final class JCRContentUtils {
             throws RepositoryException {
         return node.getName();
     }
-
+    
     /**
      * Returns a node path, composed using only content object keys, i.e.
      * 
@@ -510,8 +555,8 @@ public final class JCRContentUtils {
         }
         
         return path.toString();
-    }
-    
+    }    
+
     public static NodeIterator getDescendantNodes(JCRNodeWrapper node, String type) {
         try {
             return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where isdescendantnode(sel,['"+node.getPath()+"'])",
@@ -522,8 +567,8 @@ public final class JCRContentUtils {
             logger.error("Error while retrieving nodes", e);
         }
         return NodeIteratorImpl.EMPTY;
-    }    
-
+    }
+    
     /**
      * Get the node or property display name depending on the locale
      *
@@ -573,8 +618,8 @@ public final class JCRContentUtils {
             }
         }
         return null;
-    }
-    
+    }    
+
     public static String getExpandedName(String name, NamespaceRegistry namespaceRegistry) throws RepositoryException {
         if (!name.startsWith("{")) {
             if (name.contains(":")) {
@@ -586,8 +631,8 @@ public final class JCRContentUtils {
         }
         
         return name;
-    }    
-
+    }
+    
     public static String getIcon(ExtendedNodeType type) throws RepositoryException {
         String icon = getIconsFolder(type) + replaceColon(type.getName());
         if (check(icon)) {
@@ -601,7 +646,7 @@ public final class JCRContentUtils {
         }
         return null;
     }
-    
+
     public static String getIcon(JCRNodeWrapper f) throws RepositoryException {
         String folder = JCRContentUtils.getIconsFolder(f.getPrimaryNodeType());
         if (f.isFile()) {
@@ -814,7 +859,7 @@ public final class JCRContentUtils {
         }
         return result;
     }
-
+    
     private static ExtendedPropertyDefinition getPropertyDefExtension(
             PropertyDefinition propDef) {
         try {
@@ -826,7 +871,7 @@ public final class JCRContentUtils {
         }
         return null;
     }
-    
+
     public static PropertyDefinition getPropertyDefinition(NodeType type,
             String property) throws RepositoryException {
         PropertyDefinition foundDefintion = null;
@@ -1015,6 +1060,18 @@ public final class JCRContentUtils {
         importSkeletons(skeletonLocations, targetPath, session, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, replacements);
     }
 
+    public static boolean isADisplayableNode(JCRNodeWrapper node, RenderContext context) {
+        Template template = null;
+        JCRNodeWrapper currentNode = node;
+        try {
+            template = RenderService.getInstance().resolveTemplate(new org.jahia.services.render.Resource(currentNode,
+                    "html", null, org.jahia.services.render.Resource.CONFIGURATION_PAGE), context);
+            return template!=null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     /**
      * Returns <code>true</code> if the node is locked and cannot be edited by current user.
      * 
@@ -1122,6 +1179,7 @@ public final class JCRContentUtils {
         return (!name.startsWith(" ") && !name.endsWith(" ") && name.matches("([^\\*:/\\\\<>|?\"])*"));
     }
 
+
     /**
      * Validates if the specified name is a valid JCR workspace (either <code>default</code> or <code>live</code>).
      * 
@@ -1148,7 +1206,6 @@ public final class JCRContentUtils {
                 || LIVE_WORKSPACE.equals(workspace);
     }
 
-
     /**
      * Small utility method to help with proper namespace registration in all JCR providers.
      * @param session
@@ -1165,6 +1222,11 @@ public final class JCRContentUtils {
         }
 
     }
+
+    public static String replaceColon(String name) {
+        return name != null ? COLON_PATTERN.matcher(name).replaceAll("_") : name;
+    }
+
 
     /**
      * Returns the number of elements in the provided iterator.
@@ -1231,8 +1293,7 @@ public final class JCRContentUtils {
     public static String stringToJCRPathExp(String str) {
         return ISO9075.encode(Text.escapeIllegalJcrChars(str));
     }
-
-
+    
     /**
      * Convert a string to a JCR search expression literal, suitable for use in
      * jcr:contains() (inside XPath) or contains (SQL2). The characters - and " have
@@ -1250,7 +1311,7 @@ public final class JCRContentUtils {
         // in one of the combinations \" or \-
         return stringToQueryLiteral(Text.escapeIllegalXpathSearchChars(str));
     }
-
+    
     /**
      * Convert a string to a literal, suitable for inclusion
      * in a query. See JSR-283 spec v2.0, Sec. 4.6.6.19.
@@ -1274,7 +1335,7 @@ public final class JCRContentUtils {
     public static String unescapeLocalNodeName(final String encodedLocalName) {
         return Text.unescapeIllegalJcrChars(encodedLocalName);
     }
-    
+
     private Map<String, String> fileExtensionIcons;
     
     private Map<String, List<String>> mimeTypes;
@@ -1315,7 +1376,7 @@ public final class JCRContentUtils {
     public String generateNodeName(JCRNodeWrapper parent, String defaultLanguage, ExtendedNodeType nodeType) {
         return getNameGenerationHelper().generatNodeName(parent, defaultLanguage, nodeType);
     }
-    
+
     /**
      * Returns a mapping between file extensions and corresponding icons.
      * 
@@ -1340,31 +1401,15 @@ public final class JCRContentUtils {
         return nameGenerationHelper;
     }
 
-    public void setNameGenerationHelper(NameGenerationHelper nameGenerationHelper) {
-        this.nameGenerationHelper = nameGenerationHelper;
-    }
-
     public Set<String> getUnsupportedMarkForDeletionNodeTypes() {
         return unsupportedMarkForDeletionNodeTypes;
     }
-
-    public void setUnsupportedMarkForDeletionNodeTypes(Set<String> unsupportedMarkForDeletionNodeTypes) {
-        this.unsupportedMarkForDeletionNodeTypes = unsupportedMarkForDeletionNodeTypes;
-    }
-
-    public static boolean isADisplayableNode(JCRNodeWrapper node, RenderContext context) {
-        Template template = null;
-        JCRNodeWrapper currentNode = node;
-        try {
-            template = RenderService.getInstance().resolveTemplate(new org.jahia.services.render.Resource(currentNode,
-                    "html", null, org.jahia.services.render.Resource.CONFIGURATION_PAGE), context);
-            return template!=null;
-        } catch (Exception e) {
-            return false;
-        }
+    
+    public void setNameGenerationHelper(NameGenerationHelper nameGenerationHelper) {
+        this.nameGenerationHelper = nameGenerationHelper;
     }
     
-    public static String replaceColon(String name) {
-        return name != null ? COLON_PATTERN.matcher(name).replaceAll("_") : name;
+    public void setUnsupportedMarkForDeletionNodeTypes(Set<String> unsupportedMarkForDeletionNodeTypes) {
+        this.unsupportedMarkForDeletionNodeTypes = unsupportedMarkForDeletionNodeTypes;
     }
 }

@@ -44,6 +44,10 @@ import org.apache.jackrabbit.api.JackrabbitRepository;
 import org.apache.jackrabbit.commons.AbstractRepository;
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
+import org.jahia.settings.SettingsBean;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.ServletContextAware;
 
@@ -56,8 +60,8 @@ import java.io.IOException;
  * Date: Feb 9, 2009
  * Time: 11:21:20 AM
  */
-public class SpringJackrabbitRepository extends AbstractRepository implements JackrabbitRepository, ServletContextAware {
-
+public class SpringJackrabbitRepository extends AbstractRepository implements JackrabbitRepository, ServletContextAware, ApplicationContextAware {
+    
     private JackrabbitRepository repository;
 
     private transient Thread hook;
@@ -67,6 +71,14 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
 
     private String servletContextAttributeName;
     private ServletContext servletContext;
+
+    private boolean useDataStore;
+
+    private ApplicationContext applicationContext;
+
+    private String dataStoreGarbageCollectorBeanId;
+    
+    private SettingsBean settings;
 
     public Resource getConfigFile() {
         return configFile;
@@ -107,7 +119,9 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
     protected JackrabbitRepository createRepository()
             throws RepositoryException, IOException {
         RepositoryConfig config = RepositoryConfig.create(configFile.getFile().toString(), homeDir.getFile().toString());
-        return JahiaRepositoryImpl.create(new JahiaRepositoryConfig(config));
+        JahiaRepositoryConfig jahiaConfig = new JahiaRepositoryConfig(config);
+        useDataStore = jahiaConfig.getDataStore() != null;
+        return JahiaRepositoryImpl.create(jahiaConfig);
     }
 
 
@@ -126,6 +140,11 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
             }
         };
         Runtime.getRuntime().addShutdownHook(hook);
+        
+        if (settings.isProcessingServer() && useDataStore && dataStoreGarbageCollectorBeanId != null && dataStoreGarbageCollectorBeanId.length() > 0) {
+            // this schedules the background job
+            applicationContext.getBean(dataStoreGarbageCollectorBeanId);
+        }
     }
 
     public void stop() {
@@ -185,6 +204,18 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
         } catch (IllegalStateException e) {
             // ignore. exception is thrown when hook itself calls shutdown
         }
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    public void setDataStoreGarbageCollectorBeanId(String dataStoreGarbageCollectorBeanId) {
+        this.dataStoreGarbageCollectorBeanId = dataStoreGarbageCollectorBeanId;
+    }
+
+    public void setSettings(SettingsBean settings) {
+        this.settings = settings;
     }
 
 }

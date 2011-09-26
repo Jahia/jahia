@@ -262,6 +262,9 @@
         <property name="homeDir" value="${jahia.jackrabbit.home}"/>
         <property name="servletContextAttributeName"
                   value="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository"/>
+        <!-- the ID of the Spring bean with the definition of a background job for DataStore garbage collection -->
+        <property name="dataStoreGarbageCollectorBeanId" value="DataStoreGarbageCollectorJob"/>
+        <property name="settings" ref="settingsBean"/>
     </bean>
 
     <bean id="rbInitializer"

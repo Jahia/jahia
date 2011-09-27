@@ -495,14 +495,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                                     if (!rootPath.equals("/")) {
                                         value = rootPath + value;
                                     }
-                                } else if (!value.startsWith("/")) {
-                                    String rootPath = nodes.firstElement().getPath();
-                                    if (rootPath.equals("/")) {
-                                        value = "/" + value;
-                                    } else {
-                                        value = rootPath + "/" + value;
-                                    }
-                                }
+                                } 
                                 for (Map.Entry<String, String> entry : pathMapping.entrySet()) {
                                     if (value.startsWith(entry.getKey())) {
                                         value = entry.getValue() + StringUtils.substringAfter(value, entry.getKey());

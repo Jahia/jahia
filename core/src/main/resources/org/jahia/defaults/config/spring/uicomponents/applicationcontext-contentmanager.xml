@@ -646,7 +646,7 @@
     </bean>
 
 
-    <!-- file manager -->
+    <!-- repository explorer -->
     <bean id="repositoryexplorer" parent="abstractmanager">
         <property name="requiredPermission" value="repositoryExplorer"/>
         <property name="nodeTypes" value="nt:base"/>
@@ -841,7 +841,6 @@
                 <value>mix:created.jcr:createdBy,100</value>
             </list>
         </property>
-
     </bean>
 
     <bean id="editorialcontentmanager" parent="abstractmanager">
@@ -1164,6 +1163,113 @@
         </property>
     </bean>
 
+    <!-- component manager -->
+    <bean id="componentmanager" parent="abstractmanager">
+        <property name="requiredPermission" value="componentManager"/>
+        <property name="nodeTypes">
+            <list>
+                <value>jnt:component</value>
+                <value>jnt:componentFolder</value>
+            </list>
+        </property>
+        <property name="folderTypes">
+            <list>
+                <value>jnt:virtualsite</value>
+                <value>jnt:componentFolder</value>
+            </list>
+        </property>        
+        <property name="hiddenRegex" value="^j:.*"/>
+        <property name="hiddenTypes">
+            <list>
+                <value>jnt:acl</value>
+            </list>
+        </property>
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.edit"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.DeletePermanently"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey"
+                                      value="viewMenu.label"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Refresh"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.ListView"/>
+                                    <ref bean="Toolbar.Item.ThumbsView"/>
+                                    <ref bean="Toolbar.Item.Detailedview"/>
+                                    <ref bean="Toolbar.Item.ViewHiddenTypes"/>
+                                    <ref bean="Toolbar.Item.ViewHiddenProperties"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Export"/>
+                        <ref bean="Toolbar.Item.Import"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="true"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="false"/>
+        <property name="searchInContent" value="true"/>
+        <property name="searchInFile" value="false"/>
+
+        <!-- accordion -->
+        <property name="repositories">
+            <list>
+                <ref bean="repository.components"/>
+            </list>
+        </property>
+        
+        <!-- tabs -->
+        <property name="engineTabs">
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <ref bean="Engine.Tab.Info"/>
+                <ref bean="Engine.Tab.Content"/>
+                <ref bean="Engine.Tab.Metadata"/>
+                <ref bean="Engine.Tab.LiveRoles"/>
+                <ref bean="Engine.Tab.EditRoles"/>
+                <ref bean="Engine.Tab.Usages"/>
+            </list>
+        </property>
+
+        <!-- table columns-->
+        <property name="treeColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name,*,label.title</value>
+            </list>
+        </property>
+
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>index,23</value>
+                <value>icon,40,empty</value>
+                <value>name,*,label.name</value>
+                <value>mix:title.jcr:title,100,label.title</value>
+            </list>
+        </property>
+    </bean>
+
     <!-- accordion -->
     <bean id="repository.global" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="globalRepository"/>
@@ -1308,6 +1414,11 @@
         </property>
     </bean>
 
+    <bean id="repository.components" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="componentRepository"/>
+        <property name="paths" value="/templateSets"/>
+        <property name="titleKey" value="repository.componentRepository.label"/>
+    </bean>
 
     <bean id="ContentManagerAccessCheckFilter" class="org.jahia.bin.filters.ContentManagerAccessCheckFilter">
         <property name="defaultContentManager" value="repositoryexplorer"/>

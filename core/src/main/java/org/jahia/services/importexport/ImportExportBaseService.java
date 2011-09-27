@@ -330,7 +330,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     public void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, JDOMException {
-        TreeSet<JCRNodeWrapper> nodes = new TreeSet<JCRNodeWrapper>();
+        TreeSet<JCRNodeWrapper> nodes = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
+            public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
+                return o1.getPath().compareTo(o2.getPath());
+            }
+        });
         nodes.add(node);
         exportNodes(exportRoot == null ? node : exportRoot, nodes, out, new HashSet<String>(), null, params);
     }

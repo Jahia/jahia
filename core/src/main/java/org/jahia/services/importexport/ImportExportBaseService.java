@@ -1206,49 +1206,48 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         }
 
-        if (sizes.containsKey(REPOSITORY_XML)) {
-            // Import repository content
-            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
-            try {
-                while (true) {
-                    ZipEntry zipentry = zis.getNextEntry();
-                    if (zipentry == null) break;
-                    String name = zipentry.getName();
-                    if (name.equals(REPOSITORY_XML)) {
-                        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList);
-                        if (importLive) {
-                            // Restore publication status
-                            Set<String> props = new HashSet<String>(documentViewImportHandler.getPropertiesToSkip());
-                            props.remove("j:lastPublished");
-                            props.remove("j:lastPublishedBy");
-                            props.remove("j:published");
-                            documentViewImportHandler.setPropertiesToSkip(props);
-                            documentViewImportHandler.setEnforceUuid(true);
-                            documentViewImportHandler.setUuidBehavior(DocumentViewImportHandler.IMPORT_UUID_COLLISION_MOVE_EXISTING);
-                        }
-                        documentViewImportHandler.setReferences(references);
-                        documentViewImportHandler.setNoRoot(noRoot);
-
-                        handleImport(zis, documentViewImportHandler);
-
-                        if (importLive) {
-                            liveUuids.removeAll(documentViewImportHandler.getUuids());
-                            Collections.reverse(liveUuids);
-                            for (String uuid : liveUuids) {
-                                // Uuids have been imported in live but not in default : need to be removed
-                                session.getNodeByIdentifier(uuid).remove();
-                            }
-                        }
-                        session.save(JCRObservationManager.IMPORT);
-                        break;
+        // Import repository content
+        zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
+        try {
+            while (true) {
+                ZipEntry zipentry = zis.getNextEntry();
+                if (zipentry == null) break;
+                String name = zipentry.getName();
+                if (name.equals(REPOSITORY_XML)) {
+                    DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList);
+                    if (importLive) {
+                        // Restore publication status
+                        Set<String> props = new HashSet<String>(documentViewImportHandler.getPropertiesToSkip());
+                        props.remove("j:lastPublished");
+                        props.remove("j:lastPublishedBy");
+                        props.remove("j:published");
+                        documentViewImportHandler.setPropertiesToSkip(props);
+                        documentViewImportHandler.setEnforceUuid(true);
+                        documentViewImportHandler.setUuidBehavior(DocumentViewImportHandler.IMPORT_UUID_COLLISION_MOVE_EXISTING);
                     }
-                    zis.closeEntry();
+                    documentViewImportHandler.setReferences(references);
+                    documentViewImportHandler.setNoRoot(noRoot);
+
+                    handleImport(zis, documentViewImportHandler);
+
+                    if (importLive) {
+                        liveUuids.removeAll(documentViewImportHandler.getUuids());
+                        Collections.reverse(liveUuids);
+                        for (String uuid : liveUuids) {
+                            // Uuids have been imported in live but not in default : need to be removed
+                            session.getNodeByIdentifier(uuid).remove();
+                        }
+                    }
+                    session.save(JCRObservationManager.IMPORT);
+                } else if (name.endsWith(".xml") && !name.equals(REPOSITORY_XML) && !name.equals(LIVE_REPOSITORY_XML)) {
+                    importXML(parentNodePath, zis, false);
                 }
-            } catch (Exception e) {
-                logger.error("Cannot import", e);
-            } finally {
-                zis.reallyClose();
+                zis.closeEntry();
             }
+        } catch (Exception e) {
+            logger.error("Cannot import", e);
+        } finally {
+            zis.reallyClose();
         }
 
         if (importLive) {

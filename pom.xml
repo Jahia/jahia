@@ -81,6 +81,7 @@
         <!-- Jahia Maven plugin version and default settings -->
         <jahia.plugin.version>2.55</jahia.plugin.version>
         <!-- common settings -->
+        <jahia.configure.useDataStore>true</jahia.configure.useDataStore>
 		<jahia.configure.storeFilesInDB>false</jahia.configure.storeFilesInDB>
 		<jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
         <jahia.deploy.processingServer>true</jahia.deploy.processingServer>

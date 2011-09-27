@@ -62,19 +62,27 @@ import org.slf4j.LoggerFactory;
  */
 public class ComponentRegistry {
 
+    private static final String JMIX_DROPPABLE_CONTENT = "jmix:droppableContent";
+
+    private static final String JNT_COMPONENT = "jnt:component";
+
+    private static final String JNT_COMPONENT_FOLDER = "jnt:componentFolder";
+
     private static Logger logger = LoggerFactory.getLogger(ComponentRegistry.class);
+
+    private static final String NODE_COMPONENTS = "components";
 
     private TemplatePackageRegistry templatePackageRegistry;
 
-    private boolean componentExists(JCRNodeWrapper components, String name,
+    private JCRNodeWrapper findComponent(JCRNodeWrapper components, String name,
             JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {
         if (components.hasNode(name)) {
-            return true;
+            return components.getNode(name);
         }
-        boolean found = false;
+        JCRNodeWrapper found = null;
         for (NodeIterator ni = components.getNodes(); ni.hasNext();) {
-            if (componentExists((JCRNodeWrapper) ni.nextNode(), name, session)) {
-                found = true;
+            found = findComponent((JCRNodeWrapper) ni.nextNode(), name, session);
+            if (found != null) {
                 break;
             }
         }
@@ -88,20 +96,6 @@ public class ComponentRegistry {
         // "select * from [jmix:droppableContent] where localname()='" + name
         // + "' and isdescendantnode('" + components.getPath() + "')",
         // Query.JCR_SQL2).execute().getNodes().hasNext();
-    }
-
-    protected void componentSynchro(JCRNodeWrapper source, JCRNodeWrapper destination,
-            boolean newNode, JCRSessionWrapper session) {
-        long timer = System.currentTimeMillis();
-        if (logger.isDebugEnabled()) {
-            logger.debug("Start synchronizing components from {} into {}", source.getPath(),
-                    destination.getPath());
-        }
-
-        logger.info(
-                "Components synchronized from {} into {} in {} ms",
-                new String[] { source.getPath(), destination.getPath(),
-                        String.valueOf(System.currentTimeMillis() - timer) });
     }
 
     /**
@@ -161,31 +155,31 @@ public class ComponentRegistry {
 
         if (modules.hasNode(pkg.getRootFolder())) {
             JCRNodeWrapper module = modules.getNode(pkg.getRootFolder());
-            boolean newDeployment = !module.hasNode("components");
-            JCRNodeWrapper components = newDeployment ? module.addNode("components",
-                    "jnt:componentFolder") : module.getNode("components");
+            boolean newDeployment = !module.hasNode(NODE_COMPONENTS);
+            JCRNodeWrapper components = newDeployment ? module.addNode(NODE_COMPONENTS,
+                    JNT_COMPONENT_FOLDER) : module.getNode(NODE_COMPONENTS);
             for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(pkg.getName()); nti
                     .hasNext();) {
                 ExtendedNodeType nt = (ExtendedNodeType) nti.nextNodeType();
-                if (!nt.isMixin() && !"jmix:droppableContent".equals(nt.getName())
-                        && nt.isNodeType("jmix:droppableContent")) {
+                if (!nt.isMixin() && !JMIX_DROPPABLE_CONTENT.equals(nt.getName())
+                        && nt.isNodeType(JMIX_DROPPABLE_CONTENT)) {
                     String name = nt.getName();
                     if (logger.isDebugEnabled()) {
                         logger.debug("Detected component type {}", name);
                     }
-                    if (newDeployment || !componentExists(components, name, session)) {
+                    if (newDeployment || findComponent(components, name, session) == null) {
                         JCRNodeWrapper folder = components;
                         for (ExtendedNodeType st : nt.getSupertypes()) {
-                            if (st.isMixin() && !st.getName().equals("jmix:droppableContent")
-                                    && st.isNodeType("jmix:droppableContent")) {
+                            if (st.isMixin() && !st.getName().equals(JMIX_DROPPABLE_CONTENT)
+                                    && st.isNodeType(JMIX_DROPPABLE_CONTENT)) {
                                 folder = components.hasNode(st.getName()) ? components.getNode(st
                                         .getName()) : components.addNode(st.getName(),
-                                        "jnt:componentFolder");
+                                        JNT_COMPONENT_FOLDER);
                                 break;
                             }
                         }
                         if (!folder.hasNode(name)) {
-                            JCRNodeWrapper comp = folder.addNode(name, "jnt:component");
+                            JCRNodeWrapper comp = folder.addNode(name, JNT_COMPONENT);
                             count++;
                             if (logger.isDebugEnabled()) {
                                 logger.debug("Created component node {}", comp.getPath());

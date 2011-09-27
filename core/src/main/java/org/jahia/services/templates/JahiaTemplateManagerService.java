@@ -115,6 +115,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     private JahiaSitesService siteService;
 
+    private ComponentRegistry componentRegistry;
+
     public void setSiteService(JahiaSitesService siteService) {
         this.siteService = siteService;
     }
@@ -373,7 +375,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             templatePackageDeployer.performInitialImport();
             
             // do register components
-            templatePackageDeployer.registerComponents();
+            componentRegistry.registerComponents();
         } else if (event instanceof TemplatePackageRedeployedEvent) {
             // flush resource bundle cache
             JahiaTemplatesRBLoader.clearCache();
@@ -597,6 +599,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 }
 
                 templatesSynchro(child, node, session, references, newNode, false, true, moduleName, child.isNodeType("jnt:templatesFolder"));
+                
+                if ("components".equals(child.getName()) && child.isNodeType("jnt:componentFolder")) {
+                    componentRegistry.componentSynchro(child, node, newNode, session);
+                }
             }
         }
     }
@@ -867,7 +873,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 + Constants.JAHIANT_VIRTUALSITE
                 + "]"
                 + " as ts on isdescendantnode(t, ts) where isdescendantnode(ts, '/templateSets') and"
-                + " localname(t)='");
+                + " name(t)='");
         query.append(StringUtils.substringAfterLast(templatePath, "/")).append("' and (");
 
         boolean first = true;
@@ -877,7 +883,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             } else {
                 first = false;
             }
-            query.append("localname(ts)='").append(module).append("'");
+            query.append("name(ts)='").append(module).append("'");
 
         }
         query.append(")");
@@ -937,7 +943,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                                     .createQuery(
                                             "select * from [jnt:virtualsite]"
                                                     + " where ischildnode('/templateSets')"
-                                                    + " and localname() <> 'templates-system'"
+                                                    + " and name() <> 'templates-system'"
                                                     + " and [j:siteType] = 'templatesSet'",
                                             Query.JCR_SQL2).execute().getNodes(); nodes.hasNext();) {
                                 templateSets.add(nodes.nextNode().getName());
@@ -950,5 +956,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             logger.error("Unable to get template set names. Cause: " + e.getMessage(), e);
             return Collections.emptySet();
         }
+    }
+
+    public void setComponentRegistry(ComponentRegistry componentRegistry) {
+        this.componentRegistry = componentRegistry;
     }
 }

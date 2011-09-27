@@ -40,6 +40,37 @@
 
 package org.jahia.services.templates;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.TreeMap;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+
+import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
+import javax.servlet.ServletContext;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -48,42 +79,27 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRObservationManager;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.DocumentViewImportHandler;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
-import org.slf4j.Logger;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.zip.ExclusionWildcardFilter;
 import org.jahia.utils.zip.JahiaArchiveFileHandler;
 import org.jahia.utils.zip.PathFilter;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
+import org.slf4j.Logger;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.web.context.ServletContextAware;
-
-import java.io.*;
-import java.util.*;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
-
-import javax.jcr.*;
-import javax.jcr.nodetype.NodeTypeIterator;
-import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-import javax.servlet.ServletContext;
 
 /**
  * Template package deployer service.
@@ -727,132 +743,5 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
 
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
-    }
-
-    /**
-     * Performs the registration of the components from modules into JCR tree.
-     */
-    public void registerComponents() {
-        long timer = System.currentTimeMillis();
-        logger.info("Start registering UI dpoppable components...");
-        int newComponents = 0;
-        try {
-            newComponents = JCRTemplate.getInstance().doExecuteWithSystemSession(
-                    new JCRCallback<Integer>() {
-                        public Integer doInJCR(JCRSessionWrapper session)
-                                throws RepositoryException {
-                            int count = 0;
-                            for (JahiaTemplatesPackage pkg : templatePackageRegistry
-                                    .getAvailablePackages()) {
-                                count = count + registerComponents(pkg, session);
-                            }
-                            if (count > 0) {
-                                session.save();
-                            }
-                            return count;
-                        }
-                    });
-        } catch (Exception e) {
-            logger.error("Error registering components. Cause: " + e.getMessage(), e);
-        }
-        if (newComponents > 0) {
-            logger.info("Registered {} new component(s) in {} ms.", newComponents,
-                    (System.currentTimeMillis() - timer));
-        } else {
-            logger.info("No new components detected. Done in {} ms.",
-                    (System.currentTimeMillis() - timer));
-        }
-    }
-
-    /**
-     * Performs the registration of the components from the specified module into JCR tree.
-     * 
-     * @param pkg
-     *            the module package
-     * @param session
-     *            current JCR session
-     * @throws RepositoryException
-     *             in case of a JCR error
-     */
-    private int registerComponents(JahiaTemplatesPackage pkg, JCRSessionWrapper session)
-            throws RepositoryException {
-        int count = 0;
-        JCRNodeWrapper modules = null;
-        if (!session.nodeExists("/templateSets")) {
-            modules = session.getRootNode().addNode("templateSets", "jnt:templateSets");
-        } else {
-            modules = session.getNode("/templateSets");
-        }
-
-        if (modules.hasNode(pkg.getRootFolder())) {
-            JCRNodeWrapper module = modules.getNode(pkg.getRootFolder());
-            boolean newDeployment = !module.hasNode("components");
-            JCRNodeWrapper components = newDeployment ? module.addNode("components",
-                    "jnt:componentFolder") : module.getNode("components");
-            for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(pkg.getName()); nti
-                    .hasNext();) {
-                ExtendedNodeType nt = (ExtendedNodeType) nti.nextNodeType();
-                if (!nt.isMixin() && !"jmix:droppableContent".equals(nt.getName())
-                        && nt.isNodeType("jmix:droppableContent")) {
-                    String name = nt.getName();
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Detected component type {}", name);
-                    }
-                    if (newDeployment || !componentExists(components, name, session)) {
-                        JCRNodeWrapper folder = components;
-                        for (ExtendedNodeType st : nt.getSupertypes()) {
-                            if (st.isMixin() && !st.getName().equals("jmix:droppableContent")
-                                    && st.isNodeType("jmix:droppableContent")) {
-                                folder = components.hasNode(st.getName()) ? components.getNode(st
-                                        .getName()) : components.addNode(st.getName(),
-                                        "jnt:componentFolder");
-                                break;
-                            }
-                        }
-                        if (!folder.hasNode(name)) {
-                            JCRNodeWrapper comp = folder.addNode(name, "jnt:component");
-                            count++;
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("Created component node {}", comp.getPath());
-                            }
-                        }
-                    } else {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Component {} already exists", name);
-                        }
-                    }
-                }
-            }
-        } else {
-            logger.warn("Unable to find module node for path {}."
-                    + " Skip registering components for module {}.",
-                    modules.getPath() + "/" + pkg.getRootFolder(), pkg.getName());
-        }
-
-        return count;
-    }
-
-    private boolean componentExists(JCRNodeWrapper components, String name,
-            JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {
-        if (components.hasNode(name)) {
-            return true;
-        }
-        boolean found = false;
-        for (NodeIterator ni = components.getNodes(); ni.hasNext();) {
-            if (componentExists((JCRNodeWrapper) ni.nextNode(), name, session)) {
-                found = true;
-                break;
-            }
-        }
-
-        return found;
-//traversal seems 10x faster than the query below
-//        return session
-//                .getWorkspace()
-//                .getQueryManager()
-//                .createQuery(
-//                        "select * from [jmix:droppableContent] where localname()='" + name
-//                                + "' and isdescendantnode('" + components.getPath() + "')",
-//                        Query.JCR_SQL2).execute().getNodes().hasNext();
     }
 }

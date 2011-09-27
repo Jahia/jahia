@@ -515,13 +515,11 @@
 
 // @since Jahia 6.6
 [jnt:componentFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, mix:title, jmix:list
- orderable
  + * (jnt:component)
  + * (jnt:componentFolder)
 
 // @since Jahia 6.6
 [jnt:component] > nt:base, jmix:nodenameInfo, jmix:basemetadata, mix:title
- orderable
 
 //---------------------------------------------------------
 // Other mixins

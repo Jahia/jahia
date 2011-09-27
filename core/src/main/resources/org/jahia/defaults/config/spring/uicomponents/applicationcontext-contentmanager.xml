@@ -1256,7 +1256,7 @@
         <!-- table columns-->
         <property name="treeColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,*,label.title</value>
+                <value>name,*,label.name</value>
             </list>
         </property>
 
@@ -1264,7 +1264,7 @@
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>index,23</value>
                 <value>icon,40,empty</value>
-                <value>name,150,label.name</value>
+                <value>name,200,label.name</value>
                 <value>mix:title.jcr:title,*,label.title</value>
             </list>
         </property>

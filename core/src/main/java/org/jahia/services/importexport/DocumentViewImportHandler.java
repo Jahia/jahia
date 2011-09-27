@@ -80,6 +80,12 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
     public static final int IMPORT_UUID_COLLISION_MOVE_EXISTING = 4;
 
+    public static final int ROOT_BEHAVIOUR_IGNORE = 0;
+    public static final int ROOT_BEHAVIOUR_REPLACE = 1;
+    public static final int ROOT_BEHAVIOUR_RENAME = 2;
+
+    private int rootBehavior = ROOT_BEHAVIOUR_REPLACE;
+
     private int maxBatch = 5000;
     private int batchCount = 0;
 
@@ -178,9 +184,17 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
         String decodedQName = qName.replace(localName, decodedLocalName);
 
+        if (rootBehavior == ROOT_BEHAVIOUR_RENAME && pathes.size() <= 1 && !pathMapping.containsKey(pathes.peek() + "/" + decodedQName)) {
+            String newName = JCRContentUtils.findAvailableNodeName(nodes.peek(), decodedQName);
+            if (!decodedQName.equals(newName)) {
+                pathMapping.put(nodes.peek().getPath() + "/" + decodedQName + "/", nodes.peek().getPath() + "/" + newName + "/");
+                decodedQName = newName;
+            }
+        }
+
         pathes.push(pathes.peek() + "/" + decodedQName);
 
-        if (noRoot && pathes.size() <= 2) {
+        if (rootBehavior == ROOT_BEHAVIOUR_IGNORE && pathes.size() <= 2) {
             session.getPathMapping().put("/" + decodedQName, nodes.peek().getPath().equals("/") ? "" : nodes.peek().getPath());
             return;
         }
@@ -626,8 +640,8 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         this.references = references;
     }
 
-    public void setNoRoot(boolean noRoot) {
-        this.noRoot = noRoot;
+    public void setRootBehavior(int rootBehavior) {
+        this.rootBehavior = rootBehavior;
     }
 
     public void setUuidBehavior(int uuidBehavior) {

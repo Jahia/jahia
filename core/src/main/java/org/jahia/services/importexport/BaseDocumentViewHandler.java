@@ -60,8 +60,6 @@ import com.google.common.collect.ImmutableSet;
  */
 public abstract class BaseDocumentViewHandler extends DefaultHandler {
     
-    protected boolean noRoot;
-
     protected Stack<String> pathes = new Stack<String>();
 
     protected JCRSessionWrapper session;
@@ -73,10 +71,6 @@ public abstract class BaseDocumentViewHandler extends DefaultHandler {
     public BaseDocumentViewHandler(JCRSessionWrapper session) {
         this();
         setSession(session);
-    }
-
-    public void setNoRoot(boolean noRoot) {
-        this.noRoot = noRoot;
     }
 
     public void setSession(JCRSessionWrapper session) {

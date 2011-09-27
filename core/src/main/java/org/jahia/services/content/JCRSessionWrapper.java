@@ -434,15 +434,15 @@ public class JCRSessionWrapper implements Session {
     public void importXML(String path, InputStream inputStream, int uuidBehavior)
             throws IOException, PathNotFoundException, ItemExistsException, ConstraintViolationException,
             VersionException, InvalidSerializedDataException, LockException, RepositoryException {
-        importXML(path, inputStream, uuidBehavior, false);
+        importXML(path, inputStream, uuidBehavior, DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE);
     }
 
-    public void importXML(String path, InputStream inputStream, int uuidBehavior, boolean noRoot)
+    public void importXML(String path, InputStream inputStream, int uuidBehavior, int rootBehavior)
             throws IOException, InvalidSerializedDataException, RepositoryException {
-        importXML(path, inputStream, uuidBehavior, noRoot, null);
+        importXML(path, inputStream, uuidBehavior, rootBehavior, null);
     }
 
-    public void importXML(String path, InputStream inputStream, int uuidBehavior, boolean noRoot, Map<String,String> replacements)
+    public void importXML(String path, InputStream inputStream, int uuidBehavior, int rootBehavior, Map<String,String> replacements)
             throws IOException, InvalidSerializedDataException, RepositoryException {
         JCRNodeWrapper node = getNode(path);
         try {
@@ -454,7 +454,7 @@ public class JCRSessionWrapper implements Session {
         }
 
         DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(this, path);
-        documentViewImportHandler.setNoRoot(noRoot);
+        documentViewImportHandler.setRootBehavior(rootBehavior);
         documentViewImportHandler.setUuidBehavior(uuidBehavior);
         documentViewImportHandler.setReplacements(replacements);
         try {

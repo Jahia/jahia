@@ -147,7 +147,7 @@ public interface ImportExportService {
      *            imported
      * @param content
      *            the XML content stream
-     * @param noRoot Ignore root xml element - can be used to import multiple nodes in the same node, using one single
+     * @param rootBehavior Ignore root xml element - can be used to import multiple nodes in the same node, using one single
      *          import
      * @throws IOException
      *             in case of read/write errors
@@ -156,7 +156,7 @@ public interface ImportExportService {
      * @throws JahiaException
      *             in case of errors during categories import
      */
-    void importXML(String parentNodePath, InputStream content, boolean noRoot) throws IOException, RepositoryException,
+    void importXML(String parentNodePath, InputStream content, int rootBehavior) throws IOException, RepositoryException,
             JahiaException;
 
     /**
@@ -165,13 +165,13 @@ public interface ImportExportService {
      *
      * @param parentNodePath
      * @param file
-     * @param noRoot Ignore root xml element - can be used to import multiple nodes in the same node, using one single
+     * @param rootBehavior Ignore root xml element - can be used to import multiple nodes in the same node, using one single
      *          import
      * @throws IOException
      * @throws RepositoryException
      * @throws JahiaException
      */
-    void importZip(String parentNodePath, File file, boolean noRoot) throws IOException, RepositoryException;
+    void importZip(String parentNodePath, File file, int rootBehavior) throws IOException, RepositoryException;
 
     /**
      * Performs an import of the ZIP file. The format of XML files will be detected, as if they were imported with
@@ -179,13 +179,13 @@ public interface ImportExportService {
      *
      * @param parentNodePath
      * @param file
-     * @param noRoot Ignore root xml element - can be used to import multiple nodes in the same node, using one single
+     * @param rootBehavior Ignore root xml element - can be used to import multiple nodes in the same node, using one single
      *          import
      * @throws IOException
      * @throws RepositoryException
      * @throws JahiaException
      */
-    void importZip(String parentNodePath, File file, boolean noRoot, JCRSessionWrapper session) throws IOException, RepositoryException;
+    void importZip(String parentNodePath, File file, int rootBehavior, JCRSessionWrapper session) throws IOException, RepositoryException;
 
     /**
      * Validates a JCR content import file in document format and returns expected failures.

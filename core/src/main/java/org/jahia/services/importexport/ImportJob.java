@@ -141,14 +141,14 @@ public class ImportJob extends BackgroundJob {
         try {
             if ("application/zip".equals(contentType)) {
                 try {
-                    importExport.importZip(parentPath, item.getFile(), false);
+                    importExport.importZip(parentPath, item.getFile(), DocumentViewImportHandler.ROOT_BEHAVIOUR_RENAME);
                 } finally {
                     item.dispose();
                 }
             } else if ("application/xml".equals(contentType) || "text/xml".equals(contentType)) {
                 InputStream is = item.getStream();
                 try {
-                    importExport.importXML(parentPath, is, false);
+                    importExport.importXML(parentPath, is, DocumentViewImportHandler.ROOT_BEHAVIOUR_RENAME);
                 } finally {
                     IOUtils.closeQuietly(is);
                     item.dispose();

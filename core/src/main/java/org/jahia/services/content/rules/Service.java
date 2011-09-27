@@ -45,6 +45,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.slf4j.Logger;
@@ -233,7 +234,7 @@ public class Service extends JahiaService {
         } else if (name.endsWith(".xml")) {
             JCRSessionWrapper session = node.getNode().getSession();
             try {
-                session.importXML("/", node.getNode().getFileContent().downloadFile(), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                session.importXML("/", node.getNode().getFileContent().downloadFile(), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE);
                 session.save();
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
@@ -251,7 +252,7 @@ public class Service extends JahiaService {
                 throw new FileNotFoundException("Unable to locate resource at the specified path: " + path);
             }
             JCRSessionWrapper session = targetNode.getNode().getSession();
-            session.importXML(targetNode.getPath(), is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+            session.importXML(targetNode.getPath(), is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE);
             session.save();
         } catch (Exception e) {
             logger.error("Error reading content of file " + path, e);

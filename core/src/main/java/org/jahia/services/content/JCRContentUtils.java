@@ -109,6 +109,7 @@ import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Template;
@@ -1026,7 +1027,7 @@ public final class JCRContentUtils {
             InputStream is = null;
             try {
                 is = resource.getInputStream();
-                session.importXML(targetPath, is, importUUIDBehavior, true, replacements);
+                session.importXML(targetPath, is, importUUIDBehavior, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, replacements);
             } finally {
                 IOUtils.closeQuietly(is);
             }

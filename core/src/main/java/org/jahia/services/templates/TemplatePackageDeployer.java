@@ -55,6 +55,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.Format;
@@ -552,12 +553,12 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                                     InputStream is = null;
                                     try {
                                         is = new BufferedInputStream(new FileInputStream(importFile));
-                                        session.importXML(targetPath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                                        session.importXML(targetPath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE);
                                     } finally {
                                         IOUtils.closeQuietly(is);
                                     }
                                 } else {
-                                    importExportService.importZip(targetPath, importFile, true,session);
+                                    importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE,session);
                                 }
                                 session.save(JCRObservationManager.IMPORT);
                             } catch (Exception e) {

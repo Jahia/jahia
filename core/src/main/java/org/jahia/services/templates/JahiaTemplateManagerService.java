@@ -371,6 +371,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         if (event instanceof ContextInitializedEvent) {
             // perform initial imports if any
             templatePackageDeployer.performInitialImport();
+            
+            // do register components
+            templatePackageDeployer.registerComponents();
         } else if (event instanceof TemplatePackageRedeployedEvent) {
             // flush resource bundle cache
             JahiaTemplatesRBLoader.clearCache();

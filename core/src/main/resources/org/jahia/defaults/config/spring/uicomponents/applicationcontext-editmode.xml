@@ -608,7 +608,7 @@
                 <ref bean="Toolbar.Item.CategoryManager"/>
                 <ref bean="Toolbar.Item.TagManager"/>
                 <ref bean="Toolbar.Item.SiteManager"/>
-                <ref bean="Toolbar.Item.ComponentManager"/>
+                <ref bean="Toolbar.Item.SiteComponentManager"/>
             </list>
         </property>
     </bean>

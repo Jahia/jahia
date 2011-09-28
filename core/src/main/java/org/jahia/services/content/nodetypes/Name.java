@@ -43,6 +43,7 @@ package org.jahia.services.content.nodetypes;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRContentUtils;
 
 /**
  * 
@@ -84,7 +85,7 @@ public class Name {
             }
         }
         if (localName == null) {
-            String s[] = qualifiedName.split(":");
+            String s[] = JCRContentUtils.COLON_PATTERN.split(qualifiedName);
             if (s.length == 2) {
                 prefix = s[0];
                 localName = s[1];

@@ -309,6 +309,12 @@
                     <property name="icon" value="tab-createcontent"/>
                     <property name="tabItem">
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.CreateContentTabItem">
+                            <property name="paths">
+                                <list>
+                                    <!--<value>$site/components/*</value>-->
+                                    <value>/templateSets/*</value>
+                                </list>
+                            </property>
                             <property name="displayStudioElement" value="true"/>
                         </bean>
                     </property>

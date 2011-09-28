@@ -272,24 +272,24 @@ public class ContentActions {
 
     public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, boolean includeSubTypes, final boolean displayStudioElement) {
         if (parent != null && !parent.isFile()) {
-            JahiaContentManagementService.App.getInstance().getContentTypes(nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, includeSubTypes, displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
-                public void onApplicationFailure(Throwable caught) {
-                    MessageBox.alert(Messages.get("label.error", "Error"),
-                            "Unable to load content definitions for base type '" + nodeTypes + "'. Cause: " + caught.getLocalizedMessage(),
-                            null);
-                }
-
-                public void onSuccess(
-                        Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
-                    if (result.size() == 1 && result.values().iterator().next().size() == 1) {
-                        EngineLoader.showCreateEngine(linker, parent,
-                                result.values().iterator().next().iterator().next(), new HashMap<String, GWTJahiaNodeProperty>(),
-                                null, false);
-                    } else {
-                        new ContentTypeWindow(linker, parent, result, false).show();
-                    }
-                }
-            });
+//            JahiaContentManagementService.App.getInstance().getContentTypes(nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, includeSubTypes, displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+//                public void onApplicationFailure(Throwable caught) {
+//                    MessageBox.alert(Messages.get("label.error", "Error"),
+//                            "Unable to load content definitions for base type '" + nodeTypes + "'. Cause: " + caught.getLocalizedMessage(),
+//                            null);
+//                }
+//
+//                public void onSuccess(
+//                        Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
+//                    if (result.size() == 1 && result.values().iterator().next().size() == 1) {
+//                        EngineLoader.showCreateEngine(linker, parent,
+//                                result.values().iterator().next().iterator().next(), new HashMap<String, GWTJahiaNodeProperty>(),
+//                                null, false);
+//                    } else {
+                        new ContentTypeWindow(linker, parent, nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, includeSubTypes, displayStudioElement, false).show();
+//                    }
+//                }
+//            });
         }
     }
 

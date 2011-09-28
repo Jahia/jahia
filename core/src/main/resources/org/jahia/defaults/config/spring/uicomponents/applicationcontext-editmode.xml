@@ -315,6 +315,11 @@
                     <property name="icon" value="tab-createcontent"/>
                     <property name="tabItem">
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.CreateContentTabItem">
+                            <property name="paths">
+                                <list>
+                                    <value>$site/components/*</value>
+                                </list>
+                            </property>
                         </bean>
                     </property>
                     <property name="requiredPermission" value="createSelector"/>

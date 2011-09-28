@@ -72,26 +72,26 @@ public class PasteReferenceActionItem extends BaseActionItem  {
 
     public void onComponentSelection() {
         if (CopyPasteEngine.getInstance().getCopiedPaths().size() == 1) {
-        JahiaContentManagementService.App.getInstance().getNodeTypes(allowedRefs, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
-            public void onApplicationFailure(Throwable caught) {
-                Window.alert("Cannot retrieve node type "+allowedRefs+". Cause: " + caught.getLocalizedMessage());
-                Log.error("Cannot retrieve node type "+allowedRefs+". Cause: " + caught.getLocalizedMessage(), caught);
-            }
-
-            public void onSuccess(List<GWTJahiaNodeType> result) {
+//        JahiaContentManagementService.App.getInstance().getNodeTypes(allowedRefs, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
+//            public void onApplicationFailure(Throwable caught) {
+//                Window.alert("Cannot retrieve node type "+allowedRefs+". Cause: " + caught.getLocalizedMessage());
+//                Log.error("Cannot retrieve node type "+allowedRefs+". Cause: " + caught.getLocalizedMessage(), caught);
+//            }
+//
+//            public void onSuccess(List<GWTJahiaNodeType> result) {
                 GWTJahiaNode copiedNode = CopyPasteEngine.getInstance().getCopiedPaths().get(0);
                 Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(2);
                 props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title", new GWTJahiaNodePropertyValue(copiedNode.getDisplayName(), GWTJahiaNodePropertyType.STRING)));
                 props.put("j:node", new GWTJahiaNodeProperty("j:node", new GWTJahiaNodePropertyValue(copiedNode, GWTJahiaNodePropertyType.WEAKREFERENCE)));
-                if (result.size() == 1) {
-                    EngineLoader.showCreateEngine(linker, linker.getSelectionContext().getSingleSelection(), result.get(0), props, copiedNode.getName(), false);
-                } else {
-                    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> m = new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
-                    m.put(null, result);
-                    new ContentTypeWindow(linker, linker.getSelectionContext().getSingleSelection(), m, props, copiedNode.getName(), false).show();
-                }
-            }
-        });
+//                if (result.size() == 1) {
+//                    EngineLoader.showCreateEngine(linker, linker.getSelectionContext().getSingleSelection(), result.get(0), props, copiedNode.getName(), false);
+//                } else {
+//                    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> m = new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
+//                    m.put(null, result);
+                    new ContentTypeWindow(linker, linker.getSelectionContext().getSingleSelection(), allowedRefs, false, true, props, copiedNode.getName(), false).show();
+//                }
+//            }
+//        });
         } else {
             ContentActions.pasteReference(linker);
         }

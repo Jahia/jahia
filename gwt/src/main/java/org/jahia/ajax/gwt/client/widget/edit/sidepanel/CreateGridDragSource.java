@@ -44,6 +44,7 @@ import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeGridDragSource;
 
@@ -55,18 +56,23 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeGridDragSource;
  * 
  */
 public class CreateGridDragSource extends EditModeGridDragSource {
-    public CreateGridDragSource(Grid<GWTJahiaNodeType> grid) {
+    public CreateGridDragSource(Grid<GWTJahiaNode> grid) {
         super(grid);
     }
 
     @Override
     protected void onDragStart(DNDEvent e) {
-        e.setCancelled(false);
+        Object nodeType = grid.getSelectionModel().getSelectedItem().get("componentNodeType");
+        if (nodeType != null) {
+            e.setCancelled(false);
 
-        e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.CREATE_CONTENT_SOURCE_TYPE);
-        e.getStatus().setData(EditModeDNDListener.SOURCE_NODETYPE, grid.getSelectionModel().getSelectedItem());
-        e.setOperation(DND.Operation.COPY);
+            e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.CREATE_CONTENT_SOURCE_TYPE);
+            e.getStatus().setData(EditModeDNDListener.SOURCE_NODETYPE, nodeType);
+            e.setOperation(DND.Operation.COPY);
 
-        super.onDragStart(e);
+            super.onDragStart(e);
+        } else {
+            e.setCancelled(true);
+        }
     }
 }

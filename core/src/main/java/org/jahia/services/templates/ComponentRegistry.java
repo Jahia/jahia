@@ -158,39 +158,17 @@ public class ComponentRegistry {
             boolean newDeployment = !module.hasNode(NODE_COMPONENTS);
             JCRNodeWrapper components = newDeployment ? module.addNode(NODE_COMPONENTS,
                     JNT_COMPONENT_FOLDER) : module.getNode(NODE_COMPONENTS);
+
+            if (pkg.getRootFolder().equals("default")) {
+                for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes("system-jahia"); nti
+                        .hasNext();) {
+                    count = registerComponent(session, count, newDeployment, components, nti);
+                }
+            }
+
             for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(pkg.getName()); nti
                     .hasNext();) {
-                ExtendedNodeType nt = (ExtendedNodeType) nti.nextNodeType();
-                if (!nt.isMixin() && !JMIX_DROPPABLE_CONTENT.equals(nt.getName())
-                        && nt.isNodeType(JMIX_DROPPABLE_CONTENT)) {
-                    String name = nt.getName();
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Detected component type {}", name);
-                    }
-                    if (newDeployment || findComponent(components, name, session) == null) {
-                        JCRNodeWrapper folder = components;
-                        for (ExtendedNodeType st : nt.getSupertypes()) {
-                            if (st.isMixin() && !st.getName().equals(JMIX_DROPPABLE_CONTENT)
-                                    && st.isNodeType(JMIX_DROPPABLE_CONTENT)) {
-                                folder = components.hasNode(st.getName()) ? components.getNode(st
-                                        .getName()) : components.addNode(st.getName(),
-                                        JNT_COMPONENT_FOLDER);
-                                break;
-                            }
-                        }
-                        if (!folder.hasNode(name)) {
-                            JCRNodeWrapper comp = folder.addNode(name, JNT_COMPONENT);
-                            count++;
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("Created component node {}", comp.getPath());
-                            }
-                        }
-                    } else {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Component {} already exists", name);
-                        }
-                    }
-                }
+                count = registerComponent(session, count, newDeployment, components, nti);
             }
         } else {
             logger.warn("Unable to find module node for path {}."
@@ -198,6 +176,41 @@ public class ComponentRegistry {
                     modules.getPath() + "/" + pkg.getRootFolder(), pkg.getName());
         }
 
+        return count;
+    }
+
+    private int registerComponent(JCRSessionWrapper session, int count, boolean newDeployment, JCRNodeWrapper components, NodeTypeIterator nti) throws RepositoryException {
+        ExtendedNodeType nt = (ExtendedNodeType) nti.nextNodeType();
+        if (!nt.isMixin() && !JMIX_DROPPABLE_CONTENT.equals(nt.getName())
+                && nt.isNodeType(JMIX_DROPPABLE_CONTENT)) {
+            String name = nt.getName();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Detected component type {}", name);
+            }
+            if (newDeployment || findComponent(components, name, session) == null) {
+                JCRNodeWrapper folder = components;
+                for (ExtendedNodeType st : nt.getSupertypes()) {
+                    if (st.isMixin() && !st.getName().equals(JMIX_DROPPABLE_CONTENT)
+                            && st.isNodeType(JMIX_DROPPABLE_CONTENT)) {
+                        folder = components.hasNode(st.getName()) ? components.getNode(st
+                                .getName()) : components.addNode(st.getName(),
+                                JNT_COMPONENT_FOLDER);
+                        break;
+                    }
+                }
+                if (!folder.hasNode(name)) {
+                    JCRNodeWrapper comp = folder.addNode(name, JNT_COMPONENT);
+                    count++;
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Created component node {}", comp.getPath());
+                    }
+                }
+            } else {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Component {} already exists", name);
+                }
+            }
+        }
         return count;
     }
 

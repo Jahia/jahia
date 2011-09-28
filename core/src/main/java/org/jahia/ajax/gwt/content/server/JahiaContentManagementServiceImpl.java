@@ -322,6 +322,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 filteredList = new ArrayList<GWTJahiaNode>(filteredList.subList(offset, Math.min(length-1,offset+limit)));
             }
         }
+        addComponentNodeTypeInfo(fields, filteredList);
         return new BasePagingLoadResult<GWTJahiaNode>(filteredList, offset, length);
     }
 
@@ -336,9 +337,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             logger.debug("retrieving open paths for " + paths + " :\n" + openPaths);
         }
 
-        return navigation
+        List<GWTJahiaNode> result = navigation
                 .retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, getSite(),
                         retrieveCurrentSession(), getLocale());
+        addComponentNodeTypeInfo(fields, result);
+        return result;
     }
 
     public List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes,
@@ -351,8 +354,25 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         if (logger.isDebugEnabled()) {
             logger.debug("retrieving open paths for " + paths + " :\n" + openPaths);
         }
-        return navigation.retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, getSite(),
+        List<GWTJahiaNode> result = navigation.retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, getSite(),
                         retrieveCurrentSession(), getLocale(), checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex);
+        addComponentNodeTypeInfo(fields, result);
+        return result;
+    }
+
+    private void addComponentNodeTypeInfo(List<String> fields, List<GWTJahiaNode> result) throws GWTJahiaServiceException {
+        if (fields.contains("componentNodeType")) {
+            List<ModelData> allNodes = new ArrayList<ModelData>(result);
+            for (int i = 0; i < allNodes.size() ; i++) {
+                GWTJahiaNode node = (GWTJahiaNode) allNodes.get(i);
+
+                if (node.getNodeTypes().contains("jnt:component") || node.getNodeTypes().contains("jnt:componentFolder")) {
+                    GWTJahiaNodeType type = contentDefinition.getNodeType(node.getName(), getUILocale());
+                    node.set("componentNodeType", type);
+                }
+                allNodes.addAll(node.getChildren());
+            }
+        }
     }
 
     public List<GWTJahiaNode> getNodes(List<String> paths, List<String> fields) {

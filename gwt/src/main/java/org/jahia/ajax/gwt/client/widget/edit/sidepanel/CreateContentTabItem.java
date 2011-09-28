@@ -40,21 +40,15 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeTree;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Side panel tab that allows creation of new content items using drag and drop.
@@ -68,12 +62,19 @@ class CreateContentTabItem extends SidePanelTabItem {
     private transient CreateGridDragSource gridDragSource;
     private boolean displayStudioElement = false;
     private String baseType = null;
+    private List<String> paths;
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
         tab.setLayout(new FitLayout());
 
-        contentTypeTree = new ContentTypeTree(null);
+        if (baseType != null) {
+            contentTypeTree = new ContentTypeTree(Arrays.asList(baseType.split(" ")), null, true, displayStudioElement);
+        } else if (paths != null) {
+            contentTypeTree = new ContentTypeTree(paths, null, true, displayStudioElement);
+        } else {
+            contentTypeTree = new ContentTypeTree(null, true, displayStudioElement);
+        }
 
         refresh(Linker.REFRESH_DEFINITIONS);
 
@@ -97,22 +98,16 @@ class CreateContentTabItem extends SidePanelTabItem {
         this.baseType = baseType;
     }
 
+    public void setPaths(List<String> paths) {
+        this.paths = paths;
+    }
+
     @Override
     public void refresh(int flag) {
-        if ((flag & Linker.REFRESH_DEFINITIONS) != 0) {
-            contentTypeTree.getStore().removeAll();
-
-            JahiaContentManagementService.App.getInstance()
-                    .getContentTypes(baseType != null ? Arrays.asList(baseType.split(" ")) : null, true, displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
-                        public void onApplicationFailure(Throwable caught) {
-                            MessageBox.alert(Messages.get("label.error", "Error"),
-                                    "Unable to load content definitions. Cause: " + caught.getLocalizedMessage(), null);
-                        }
-
-                        public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
-                            contentTypeTree.filldataStore(result);
-                        }
-                    });
+        if ((flag & Linker.REFRESH_COMPONENTS) != 0) {
+            contentTypeTree.fillStore();
+//            contentTypeTree.getFactory().getStore().removeAll();
+//            contentTypeTree.getFactory().getLoader().load();
         }
     }
 }

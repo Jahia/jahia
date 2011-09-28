@@ -396,13 +396,22 @@ public class NavigationHelper {
                     try {
                         for (int i = 0; i < allNodes.size(); i++) {
                             GWTJahiaNode node = allNodes.get(i);
-                            if (openPath.startsWith(node.getPath()) && !node.isExpandOnLoad() && !node.isFile()) {
-                                node.setExpandOnLoad(true);
-                                List<GWTJahiaNode> list = ls(node, nodeTypes, mimeTypes, filters, fields, checkSubChild,
-                                        displayHiddenTypes, hiddenTypes, hiddenRegex, currentUserSession, false);
-                                for (int j = 0; j < list.size(); j++) {
-                                    node.insert(list.get(j), j);
-                                    allNodes.add(list.get(j));
+                            if (!node.isExpandOnLoad() && !node.isFile()) {
+                                boolean matchPath;
+                                if (openPath.endsWith("*")) {
+                                    String p = StringUtils.substringBeforeLast(openPath, "*");
+                                    matchPath = node.getPath().startsWith(p) || p.startsWith(node.getPath());
+                                } else {
+                                    matchPath = openPath.startsWith(node.getPath());
+                                }
+                                if (matchPath) {
+                                    node.setExpandOnLoad(true);
+                                    List<GWTJahiaNode> list = ls(node, nodeTypes, mimeTypes, filters, fields, checkSubChild,
+                                            displayHiddenTypes, hiddenTypes, hiddenRegex, currentUserSession, false);
+                                    for (int j = 0; j < list.size(); j++) {
+                                        node.insert(list.get(j), j);
+                                        allNodes.add(list.get(j));
+                                    }
                                 }
                             }
                             if (selectedNodes != null && selectedNodes.contains(node.getPath())) {

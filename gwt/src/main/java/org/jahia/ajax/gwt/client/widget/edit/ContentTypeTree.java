@@ -44,24 +44,32 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Layout;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.StoreFilterField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.*;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 
@@ -71,44 +79,68 @@ import java.util.Map;
  *        Created : 21 déc. 2009
  */
 public class ContentTypeTree extends LayoutContainer {
-    private TreeGrid<GWTJahiaNodeType> treeGrid;
-    private TreeStore<GWTJahiaNodeType> store;
-	private StoreFilterField<GWTJahiaNodeType> filter;
+    private TreeGrid<GWTJahiaNode> treeGrid;
+	private StoreFilterField<GWTJahiaNode> nameFilterField;
+    private List<String> paths;
+    private List<String> types;
+    private boolean includeSubTypes = false;
+    private boolean displayStudioElement = false;
 
-    public ContentTypeTree(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> types) {
-        store = new TreeStore<GWTJahiaNodeType>();
+    private TreeStore<GWTJahiaNode> store;
+
+//    private GWTJahiaNodeTreeFactory factory;
+
+    public ContentTypeTree(List<String> types, boolean includeSubTypes, boolean displayStudioElement) {
+        this(Arrays.asList("$site/components/*"), types, includeSubTypes, displayStudioElement);
+    }
+
+    public ContentTypeTree(List<String> paths, List<String> types, boolean includeSubTypes, boolean displayStudioElement) {
+        this.paths = paths;
+        this.types = types;
+        this.includeSubTypes = includeSubTypes;
+        this.displayStudioElement = displayStudioElement;
+
         setBorders(false);
-        filldataStore(types);
+
         ColumnConfig name = new ColumnConfig("label", "Label", 400);
         name.setRenderer(new WidgetTreeGridCellRenderer() {
             @Override
             public Widget getWidget(ModelData modelData, String s, ColumnData columnData, int i, int i1,
                                     ListStore listStore, Grid grid) {
-                Label label = new Label((String) modelData.get(s));
-                GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) modelData;
+                Label label;
+                GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) modelData.get("componentNodeType");
                 HorizontalPanel panel = new HorizontalPanel();
 //                panel.setWidth(width - 40);
                 panel.setTableWidth("100%");
                 TableData tableData;
                 if (gwtJahiaNodeType != null) {
+                    label = new Label((String) gwtJahiaNodeType.get(s));
                     tableData = new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.MIDDLE);
                     tableData.setWidth("5%");
                     panel.add(ContentModelIconProvider.getInstance().getIcon(gwtJahiaNodeType).createImage());
                     tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
                     tableData.setWidth("95%");
+                    if (!"".equals(gwtJahiaNodeType.getDescription())) {
+                        panel.setToolTip(gwtJahiaNodeType.getDescription());
+                    }
                 } else {
+                    label = new Label((String) modelData.get("displayName"));
                     tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
                     tableData.setWidth("100%");
                 }
                 panel.add(label, tableData);
-                if (!"".equals(gwtJahiaNodeType.getDescription())) { panel.setToolTip(gwtJahiaNodeType.getDescription()); }
                 panel.layout();
                 return panel;
             }
         });
-        treeGrid = new TreeGrid<GWTJahiaNodeType>(store, new ColumnModel(Arrays.asList(name)));
+//        ColumnConfig name1 = new ColumnConfig("name", "Name", 200);
+//        treeGrid = factory.getTreeGrid(new ColumnModel(Arrays.asList(name,name1)));
+
+        store = new TreeStore<GWTJahiaNode>();
+
+        treeGrid = new TreeGrid<GWTJahiaNode>(store, new ColumnModel(Arrays.asList(name)));
         treeGrid.setBorders(true);
-        treeGrid.setAutoExpandColumn("label");
+        treeGrid.setAutoExpandColumn("name");
         treeGrid.getTreeView().setRowHeight(25);
         treeGrid.getTreeView().setForceFit(true);
         treeGrid.getTreeView().setBufferEnabled(true);
@@ -121,53 +153,87 @@ public class ContentTypeTree extends LayoutContainer {
         
         setBorders(false);
         
-		filter = new StoreFilterField<GWTJahiaNodeType>() {
+		nameFilterField = new StoreFilterField<GWTJahiaNode>() {
 			@Override
-			protected boolean doSelect(Store<GWTJahiaNodeType> store, GWTJahiaNodeType parent,
-			        GWTJahiaNodeType record, String property, String filter) {
-				String name = record.getLabel();
+			protected boolean doSelect(Store<GWTJahiaNode> store, GWTJahiaNode parent,
+			        GWTJahiaNode record, String property, String filter) {
+
+
+				if (record.getNodeTypes().contains("jnt:componentFolder")) {
+                    return false;
+                }
+                String name = record.getName();
 				name = name.toLowerCase();
 				return name.contains(filter.toLowerCase());
 			}
 		};
-		filter.bind(store);
-        filter.setHeight(18);
+		nameFilterField.bind(store);
+        nameFilterField.setHeight(18);
 
-        add(filter, new BorderLayoutData(Style.LayoutRegion.NORTH,22));
+        if (types != null) {
+            StoreFilter<GWTJahiaNode> typesFilter = new StoreFilter<GWTJahiaNode>() {
+                public boolean select(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode parent, GWTJahiaNode item, String property) {
+                    if (item.getNodeTypes().contains("jnt:componentFolder")) {
+                        return false;
+                    }
+                    GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) item.get("componentNodeType");
+                    if (gwtJahiaNodeType != null) {
+                        if (ContentTypeTree.this.types.contains(gwtJahiaNodeType.getName())) {
+                            return true;
+                        }
+                        if (ContentTypeTree.this.includeSubTypes) {
+                            HashSet<String> set = new HashSet<String>(gwtJahiaNodeType.getSuperTypes());
+                            set.retainAll(ContentTypeTree.this.types);
+                            return !set.isEmpty();
+                        }
+                    }
+
+                    return false;
+                }
+            };
+            store.addFilter(typesFilter);
+        }
+        if (!displayStudioElement) {
+            StoreFilter<GWTJahiaNode> studioFilter = new StoreFilter<GWTJahiaNode>() {
+                public boolean select(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode parent, GWTJahiaNode item, String property) {
+                    GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) item.get("componentNodeType");
+                    if (gwtJahiaNodeType != null) {
+                        if (gwtJahiaNodeType.getSuperTypes().contains("jmix:studioOnly")) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            };
+            store.addFilter(studioFilter);
+        }
+
+
+        add(nameFilterField, new BorderLayoutData(Style.LayoutRegion.NORTH,22));
         add(treeGrid, new BorderLayoutData(Style.LayoutRegion.CENTER));
         setScrollMode(Style.Scroll.AUTOY);
+
+        fillStore();
     }
 
-    public void filldataStore(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> types) {
-        if (types != null) {
-            if (types.get(null) != null || types.size() == 1) {
-                for (Map.Entry<GWTJahiaNodeType, List<GWTJahiaNodeType>> entry : types.entrySet()) {
-                    for (GWTJahiaNodeType gwtJahiaNodeType : entry.getValue()) {
-                        store.add(gwtJahiaNodeType, true);
+    public void fillStore() {
+        store.removeAll();
+        JahiaContentManagementService.App.getInstance().getRoot(paths, Arrays.asList("jnt:componentFolder", "jnt:component"), null, null, Arrays.asList("name", "componentNodeType"), null,Arrays.asList("*"),
+                true, false, null, null, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                    public void onSuccess(List<GWTJahiaNode> result) {
+                        store.add(result, true);
+                        store.applyFilters(null);
                     }
                 }
-            } else {
-                for (Map.Entry<GWTJahiaNodeType, List<GWTJahiaNodeType>> entry : types.entrySet()) {
-                    store.add(entry.getKey(), true);
-                    for (GWTJahiaNodeType gwtJahiaNodeType : entry.getValue()) {
-                        store.add(entry.getKey(), gwtJahiaNodeType, true);
-                    }
-                }
-            }
-            store.sort("label", Style.SortDir.ASC);
-        }
+        );
     }
 
-    public TreeGrid<GWTJahiaNodeType> getTreeGrid() {
+    public TreeGrid<GWTJahiaNode> getTreeGrid() {
         return treeGrid;
     }
 
-    public TreeStore<GWTJahiaNodeType> getStore() {
-        return store;
-    }
-
-    public StoreFilterField<GWTJahiaNodeType> getFilter() {
-    	return filter;
+    public StoreFilterField<GWTJahiaNode> getNameFilterField() {
+    	return nameFilterField;
     }
 
 }

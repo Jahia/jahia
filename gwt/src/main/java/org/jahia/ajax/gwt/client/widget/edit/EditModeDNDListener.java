@@ -157,14 +157,14 @@ public class EditModeDNDListener extends DNDListener {
             if (referenceType != null) {
                 status.setData(OPERATION_CALLED, "true");
                 final GWTJahiaNode selectedNode = sourceNodes.get(0);
-                JahiaContentManagementService.App.getInstance()
-                        .getNodeTypes(referenceType, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
-                            public void onApplicationFailure(Throwable caught) {
-                                Window.alert("Cannot retrieve node type. Cause: " + caught.getLocalizedMessage());
-                                Log.error("Cannot retrieve node type. Cause: " + caught.getLocalizedMessage(), caught);
-                            }
-
-                            public void onSuccess(List<GWTJahiaNodeType> result) {
+//                JahiaContentManagementService.App.getInstance()
+//                        .getNodeTypes(referenceType, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
+//                            public void onApplicationFailure(Throwable caught) {
+//                                Window.alert("Cannot retrieve node type. Cause: " + caught.getLocalizedMessage());
+//                                Log.error("Cannot retrieve node type. Cause: " + caught.getLocalizedMessage(), caught);
+//                            }
+//
+//                            public void onSuccess(List<GWTJahiaNodeType> result) {
                                 Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(2);
                                 props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title",
                                         new GWTJahiaNodePropertyValue(selectedNode.getDisplayName(),
@@ -172,18 +172,18 @@ public class EditModeDNDListener extends DNDListener {
                                 props.put("j:node", new GWTJahiaNodeProperty("j:node",
                                         new GWTJahiaNodePropertyValue(selectedNode,
                                                 GWTJahiaNodePropertyType.WEAKREFERENCE)));
-                                if (result.size() == 1) {
-                                    EngineLoader.showCreateEngine(editLinker, targetNode, result.get(0), props,
-                                            selectedNode.getName(), false);
-                                } else {
-                                    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> m =
-                                            new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
-                                    m.put(null, result);
-                                    new ContentTypeWindow(editLinker, targetNode, m, props, selectedNode.getName(), false)
+//                                if (result.size() == 1) {
+//                                    EngineLoader.showCreateEngine(editLinker, targetNode, result.get(0), props,
+//                                            selectedNode.getName(), false);
+//                                } else {
+//                                    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> m =
+//                                            new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
+//                                    m.put(null, result);
+                                    new ContentTypeWindow(editLinker, targetNode, referenceType, false, true, props, selectedNode.getName(), false)
                                             .show();
-                                }
-                            }
-                        });
+//                                }
+//                            }
+//                        });
             } else if (SIMPLEMODULE_TYPE.equals(sourceType)) {
                 // Item move
                 GWTJahiaNode selectedNode = sourceNodes.get(0);
@@ -230,14 +230,14 @@ public class EditModeDNDListener extends DNDListener {
             if (referenceType != null) {
                 status.setData(OPERATION_CALLED, "true");
                 final GWTJahiaNode selectedNode = sourceNodes.get(0);
-                JahiaContentManagementService.App.getInstance()
-                        .getNodeTypes(referenceType, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
-                            public void onApplicationFailure(Throwable caught) {
-                                Window.alert("Cannot retrieve node type. Cause: " + caught.getLocalizedMessage());
-                                Log.error("Cannot retrieve node type. Cause: " + caught.getLocalizedMessage(), caught);
-                            }
-
-                            public void onSuccess(List<GWTJahiaNodeType> result) {
+//                JahiaContentManagementService.App.getInstance()
+//                        .getNodeTypes(referenceType, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
+//                            public void onApplicationFailure(Throwable caught) {
+//                                Window.alert("Cannot retrieve node type. Cause: " + caught.getLocalizedMessage());
+//                                Log.error("Cannot retrieve node type. Cause: " + caught.getLocalizedMessage(), caught);
+//                            }
+//
+//                            public void onSuccess(List<GWTJahiaNodeType> result) {
                                 Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(2);
                                 props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title",
                                         new GWTJahiaNodePropertyValue(selectedNode.getDisplayName(),
@@ -245,18 +245,18 @@ public class EditModeDNDListener extends DNDListener {
                                 props.put("j:node", new GWTJahiaNodeProperty("j:node",
                                         new GWTJahiaNodePropertyValue(selectedNode,
                                                 GWTJahiaNodePropertyType.WEAKREFERENCE)));
-                                if (result.size() == 1) {
-                                    EngineLoader.showCreateEngine(editLinker, targetNode, result.get(0), props,
-                                            selectedNode.getName(), true);
-                                } else {
-                                    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> m =
-                                            new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
-                                    m.put(null, result);
-                                    new ContentTypeWindow(editLinker, targetNode, m, props, selectedNode.getName(), true)
+//                                if (result.size() == 1) {
+//                                    EngineLoader.showCreateEngine(editLinker, targetNode, result.get(0), props,
+//                                            selectedNode.getName(), true);
+//                                } else {
+//                                    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> m =
+//                                            new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
+//                                    m.put(null, result);
+                                    new ContentTypeWindow(editLinker, targetNode, referenceType, false, true, props, selectedNode.getName(), true)
                                             .show();
-                                }
-                            }
-                        });
+//                                }
+//                            }
+//                        });
                 //            } else if (CONTENT_SOURCE_TYPE.equals(sourceType)) {
                 //                // Drop into an existing module
                 //                List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);

@@ -59,6 +59,7 @@ public interface Linker {
     public final static int REFRESH_PAGES = 2;
     public final static int REFRESH_LAST_CONTENT = 4;
     public final static int REFRESH_FOLDERS = 8;
+    public final static int REFRESH_COMPONENTS = 16;
     public final static int REFRESH_OPEN_FOLDER = 64;
     public final static int REFRESH_MANAGER = 128;
     public final static int REFRESH_DEFINITIONS = 256;

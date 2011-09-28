@@ -77,11 +77,11 @@ public class ContentTypeWindow extends Window {
     private Button cancel;
     private ContentTypeTree contentTypeTree;
 
-    public ContentTypeWindow(final Linker linker, GWTJahiaNode parent, Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> types, boolean createInParentAndMoveBefore) {
-        this(linker, parent, types, new HashMap<String, GWTJahiaNodeProperty>(), null, createInParentAndMoveBefore);
+    public ContentTypeWindow(final Linker linker, GWTJahiaNode parent, List<String> types, boolean includeSubType, boolean displayStudioElements, boolean createInParentAndMoveBefore) {
+        this(linker, parent, types, includeSubType, displayStudioElements, new HashMap<String, GWTJahiaNodeProperty>(), null, createInParentAndMoveBefore);
     }
 
-    public ContentTypeWindow(final Linker linker, GWTJahiaNode parent, Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> types, final Map<String, GWTJahiaNodeProperty> props, final String nodeName, final boolean createInParentAndMoveBefore) {
+    public ContentTypeWindow(final Linker linker, GWTJahiaNode parent, List<String> types, boolean includeSubType, boolean displayStudioElements, final Map<String, GWTJahiaNodeProperty> props, final String nodeName, final boolean createInParentAndMoveBefore) {
         this.linker = linker;
         this.parentNode = parent;
         setLayout(new FitLayout());
@@ -91,7 +91,7 @@ public class ContentTypeWindow extends Window {
         setResizable(true);
         setModal(true);
         setMaximizable(true);
-        contentTypeTree = new ContentTypeTree(types);
+        contentTypeTree = new ContentTypeTree(types, includeSubType, displayStudioElements);
         TreeGrid treeGrid = contentTypeTree.getTreeGrid();
         treeGrid.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
         treeGrid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
@@ -105,7 +105,7 @@ public class ContentTypeWindow extends Window {
         });
 
         add(contentTypeTree);
-        setFocusWidget(contentTypeTree.getFilter());
+        setFocusWidget(contentTypeTree.getNameFilterField());
         contentTypeTree.layout(true);
         layout();
 
@@ -122,7 +122,11 @@ public class ContentTypeWindow extends Window {
         ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                final GWTJahiaNodeType contentTypeModelData = contentTypeTree.getTreeGrid().getSelectionModel().getSelectedItem();
+                GWTJahiaNode selectedItem = contentTypeTree.getTreeGrid().getSelectionModel().getSelectedItem();
+                GWTJahiaNodeType contentTypeModelData = null;
+                if (selectedItem != null) {
+                    contentTypeModelData = (GWTJahiaNodeType) selectedItem.get("componentNodeType");
+                }
                 if (contentTypeModelData != null && !contentTypeModelData.isMixin()) {
                     final GWTJahiaNodeType gwtJahiaNodeType = contentTypeModelData;
                     if (gwtJahiaNodeType != null) {

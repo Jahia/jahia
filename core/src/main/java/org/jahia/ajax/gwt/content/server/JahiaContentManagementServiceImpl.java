@@ -366,7 +366,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             for (int i = 0; i < allNodes.size() ; i++) {
                 GWTJahiaNode node = (GWTJahiaNode) allNodes.get(i);
 
-                if (node.getNodeTypes().contains("jnt:component") || node.getNodeTypes().contains("jnt:componentFolder")) {
+                if (node.getInheritedNodeTypes().contains("jnt:component") || node.getNodeTypes().contains("jnt:componentFolder") || node.getNodeTypes().contains("jnt:component")) {
                     GWTJahiaNodeType type = contentDefinition.getNodeType(node.getName(), getUILocale());
                     node.set("componentNodeType", type);
                 }

@@ -65,6 +65,7 @@ public class ComponentRegistry {
     private static final String JMIX_DROPPABLE_CONTENT = "jmix:droppableContent";
 
     private static final String JNT_COMPONENT = "jnt:component";
+    private static final String JNT_SIMPLE_COMPONENT = "jnt:simpleComponent";
 
     private static final String JNT_COMPONENT_FOLDER = "jnt:componentFolder";
 
@@ -199,7 +200,7 @@ public class ComponentRegistry {
                     }
                 }
                 if (!folder.hasNode(name)) {
-                    JCRNodeWrapper comp = folder.addNode(name, JNT_COMPONENT);
+                    JCRNodeWrapper comp = folder.addNode(name, JNT_SIMPLE_COMPONENT);
                     count++;
                     if (logger.isDebugEnabled()) {
                         logger.debug("Created component node {}", comp.getPath());

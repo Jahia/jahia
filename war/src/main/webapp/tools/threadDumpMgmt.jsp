@@ -40,7 +40,7 @@
        <a
         href="http://java.net/projects/tda/downloads/download/webstart/tda.jnlp"
         title="Launch the current TDA 2.2 release from the browser (requires Java Webstart). Disclaimer: this is an external program from http://java.net/projects/tda/"
-        target="_blank">Launch Thread Dump Analyzer</a>
+        target="_blank" onclick="return confirm('This will launch the current TDA 2.2 release from the browser (requires Java Webstart).\nDisclaimer: this is an external program from http://java.net/projects/tda/\nWould you like to continue?');">Launch Thread Dump Analyzer</a>
     </li>
 </ul>
 <p>

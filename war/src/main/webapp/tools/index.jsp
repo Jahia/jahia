@@ -46,11 +46,12 @@
     </ul>
 </fieldset>
 <fieldset>
-    <legend>Test</legend>
+    <legend>Miscellaneous</legend>
     <ul>
         <li><a href="docConverter.jsp">Document converter</a></li>
         <li><a href="textExtractor.jsp">Document text extractor</a></li>
         <li><a href="wcagChecker.jsp">WCAG checker</a></li>
+        <li><a href="pwdEncrypt.jsp">Password encryption</a></li>
     </ul>
 </fieldset>
 <p>&copy; Copyright 2002-2011 Jahia Solutions Group SA - All rights reserved.</p> 

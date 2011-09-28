@@ -18,6 +18,8 @@ import org.jahia.ajax.gwt.client.widget.content.TableView;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
+import java.util.Arrays;
+
 
 /**
  * Class for filtering the table view of a manager/picker based on its nodetype
@@ -47,6 +49,9 @@ public class NodeTypeTableViewFiltering extends BaseActionItem {
                     ContentViews contentViews = (ContentViews) topRightComponent;
                     tableView = contentViews.getCurrentView();
                     mainComponent.setStore(tableView.getTypeStore());
+                    if (mainComponent.getSelection() == null || (mainComponent.getSelection() != null && mainComponent.getSelection().size() == 0)) {
+                        mainComponent.setSelection(Arrays.asList(tableView.getTypeStore().getAt(0)));
+                    }
                     tableView.getStore().addFilter(new StoreFilter<GWTJahiaNode>() {
                         public boolean select(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode parent,
                                               GWTJahiaNode item, String property) {

@@ -40,6 +40,10 @@
 
 package org.jahia.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import org.apache.commons.codec.binary.Base64;
 import org.jasypt.digest.ByteDigester;
 import org.jasypt.digest.PooledByteDigester;
@@ -130,5 +134,30 @@ public final class EncryptionUtils {
      */
     private EncryptionUtils() {
         super();
+    }
+
+    public static void main(String[] args) {
+        System.out.println("\nJahia 6.6 Password Encryption Tool");
+        System.out
+                .println("Copyright 2002-2011 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved\n");
+        String password = null;
+        if (args.length > 0) {
+            password = args[0];
+        } else {
+            while (password == null || password.length() == 0) {
+                System.out
+                        .print("Provide a password you would like to encrypt (SHA-1 + Base64): ");
+                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                try {
+                    password = br.readLine();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (password != null && password.length() > 0) {
+            System.out.println("Encrypted password for \"" + password + "\" is: "
+                    + sha1DigestLegacy(password));
+        }
     }
 }

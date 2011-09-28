@@ -61,13 +61,13 @@ public final class EncryptionUtils {
         if (sha1DigesterLegacy == null) {
             synchronized (EncryptionUtils.class) {
                 if (sha1DigesterLegacy == null) {
-                    // StandardByteDigester digister = new StandardByteDigester();
-                    PooledByteDigester digister = new PooledByteDigester();
-                    digister.setAlgorithm("SHA-1");
-                    digister.setSaltSizeBytes(0);
-                    digister.setIterations(1);
-                    digister.setPoolSize(4);
-                    sha1DigesterLegacy = digister;
+                    // StandardByteDigester digester = new StandardByteDigester();
+                    PooledByteDigester digester = new PooledByteDigester();
+                    digester.setAlgorithm("SHA-1");
+                    digester.setSaltSizeBytes(0);
+                    digester.setIterations(1);
+                    digester.setPoolSize(4);
+                    sha1DigesterLegacy = digester;
                 }
             }
         }

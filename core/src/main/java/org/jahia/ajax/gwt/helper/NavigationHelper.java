@@ -323,66 +323,9 @@ public class NavigationHelper {
                                            JCRSessionWrapper currentUserSession, Locale uiLocale, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex)
             throws GWTJahiaServiceException {
         try {
-            final List<GWTJahiaNode> userNodes = new ArrayList<GWTJahiaNode>();
-
             logger.debug("open paths for getRoot : " + openPaths);
 
-            for (String path : paths) {
-                // replace $user and $site by the right values
-                String displayName = "";
-                if (site != null && path.contains("$site/") || path.equals("$site")) {
-                    path = path.replace("$site", site.getPath());
-                    displayName = site.getSiteKey();
-                }
-                if (path.contains("$systemsite/") || path.equals("$systemsite")) {
-                    String systemSiteKey = JCRContentUtils.getSystemSitePath();
-                    path = path.replace("$systemsite", systemSiteKey);
-                    try {
-                        displayName = site.getSession().getNode(path).getDisplayableName();
-                    } catch (PathNotFoundException e) {
-                        displayName = StringUtils.substringAfterLast(systemSiteKey, "/");
-                    }
-                }
-                if (site != null && path.contains("$sites")) {
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            final JCRNodeWrapper parent = site.getParent();
-                            NodeIterator nodes = parent.getNodes();
-                            while (nodes.hasNext()) {
-                                JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodes.next();
-                                userNodes.add(getGWTJahiaNode(nodeWrapper));
-                            }
-                            return null;
-                        }
-                    });
-                }
-                if (path.contains("$user")) {
-                    path = path.replace("$user", currentUserSession.getUser().getLocalPath());
-                    displayName = JahiaResourceBundle
-                            .getJahiaInternalResource("label.personalFolder", uiLocale, "label.personalFolder");
-                }
-                if (path.startsWith("/")) {
-                    if (path.endsWith("/*")) {
-                        NodeIterator ni =
-                                currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")).getNodes();
-                        while (ni.hasNext()) {
-                            GWTJahiaNode node = getGWTJahiaNode((JCRNodeWrapper) ni.next(), fields);
-                            if (displayName != "") {
-                                node.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
-                            }
-                            userNodes.add(node);
-                        }
-                    } else {
-                        GWTJahiaNode root = getNode(path, fields, currentUserSession);
-                        if (root != null) {
-                            if (displayName != "") {
-                                root.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
-                            }
-                            userNodes.add(root);
-                        }
-                    }
-                }
-            }
+            final List<GWTJahiaNode> userNodes = retrieveRoot(paths, fields, site, uiLocale, currentUserSession);
             List<GWTJahiaNode> allNodes = new ArrayList<GWTJahiaNode>(userNodes);
             if (selectedNodes != null) {
                 if (openPaths == null) {
@@ -428,6 +371,70 @@ public class NavigationHelper {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
+    }
+
+    public List<GWTJahiaNode> retrieveRoot(List<String> paths, List<String> fields, final JCRSiteNode site, Locale uiLocale, JCRSessionWrapper currentUserSession) throws RepositoryException, GWTJahiaServiceException {
+        final List<GWTJahiaNode> userNodes = new ArrayList<GWTJahiaNode>();
+
+        for (String path : paths) {
+            // replace $user and $site by the right values
+            String displayName = "";
+            if (site != null && path.contains("$site/") || path.equals("$site")) {
+                path = path.replace("$site", site.getPath());
+                if (!path.endsWith("*")) {
+                    displayName = site.getSiteKey();
+                }
+            }
+            if (path.contains("$systemsite/") || path.equals("$systemsite")) {
+                String systemSiteKey = JCRContentUtils.getSystemSitePath();
+                path = path.replace("$systemsite", systemSiteKey);
+                try {
+                    displayName = site.getSession().getNode(path).getDisplayableName();
+                } catch (PathNotFoundException e) {
+                    displayName = StringUtils.substringAfterLast(systemSiteKey, "/");
+                }
+            }
+            if (site != null && path.contains("$sites")) {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        final JCRNodeWrapper parent = site.getParent();
+                        NodeIterator nodes = parent.getNodes();
+                        while (nodes.hasNext()) {
+                            JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodes.next();
+                            userNodes.add(getGWTJahiaNode(nodeWrapper));
+                        }
+                        return null;
+                    }
+                });
+            }
+            if (path.contains("$user")) {
+                path = path.replace("$user", currentUserSession.getUser().getLocalPath());
+                displayName = JahiaResourceBundle
+                        .getJahiaInternalResource("label.personalFolder", uiLocale, "label.personalFolder");
+            }
+            if (path.startsWith("/")) {
+                if (path.endsWith("/*")) {
+                    NodeIterator ni =
+                            currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")).getNodes();
+                    while (ni.hasNext()) {
+                        GWTJahiaNode node = getGWTJahiaNode((JCRNodeWrapper) ni.next(), fields);
+                        if (displayName != "") {
+                            node.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
+                        }
+                        userNodes.add(node);
+                    }
+                } else {
+                    GWTJahiaNode root = getNode(path, fields, currentUserSession);
+                    if (root != null) {
+                        if (displayName != "") {
+                            root.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
+                        }
+                        userNodes.add(root);
+                    }
+                }
+            }
+        }
+        return userNodes;
     }
 
     public List<GWTJahiaNode> getMountpoints(JCRSessionWrapper currentUserSession) {

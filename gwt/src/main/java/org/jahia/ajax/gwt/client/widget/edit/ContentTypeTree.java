@@ -81,25 +81,9 @@ import java.util.List;
 public class ContentTypeTree extends LayoutContainer {
     private TreeGrid<GWTJahiaNode> treeGrid;
 	private StoreFilterField<GWTJahiaNode> nameFilterField;
-    private List<String> paths;
-    private List<String> types;
-    private boolean includeSubTypes = false;
-    private boolean displayStudioElement = false;
-
     private TreeStore<GWTJahiaNode> store;
 
-//    private GWTJahiaNodeTreeFactory factory;
-
-    public ContentTypeTree(List<String> types, boolean includeSubTypes, boolean displayStudioElement) {
-        this(Arrays.asList("$site/components/*"), types, includeSubTypes, displayStudioElement);
-    }
-
-    public ContentTypeTree(List<String> paths, List<String> types, boolean includeSubTypes, boolean displayStudioElement) {
-        this.paths = paths;
-        this.types = types;
-        this.includeSubTypes = includeSubTypes;
-        this.displayStudioElement = displayStudioElement;
-
+    public ContentTypeTree() {
         setBorders(false);
 
         ColumnConfig name = new ColumnConfig("label", "Label", 400);
@@ -110,7 +94,6 @@ public class ContentTypeTree extends LayoutContainer {
                 Label label;
                 GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) modelData.get("componentNodeType");
                 HorizontalPanel panel = new HorizontalPanel();
-//                panel.setWidth(width - 40);
                 panel.setTableWidth("100%");
                 TableData tableData;
                 if (gwtJahiaNodeType != null) {
@@ -133,8 +116,6 @@ public class ContentTypeTree extends LayoutContainer {
                 return panel;
             }
         });
-//        ColumnConfig name1 = new ColumnConfig("name", "Name", 200);
-//        treeGrid = factory.getTreeGrid(new ColumnModel(Arrays.asList(name,name1)));
 
         store = new TreeStore<GWTJahiaNode>();
 
@@ -170,59 +151,22 @@ public class ContentTypeTree extends LayoutContainer {
 		nameFilterField.bind(store);
         nameFilterField.setHeight(18);
 
-        if (types != null) {
-            StoreFilter<GWTJahiaNode> typesFilter = new StoreFilter<GWTJahiaNode>() {
-                public boolean select(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode parent, GWTJahiaNode item, String property) {
-                    if (item.getNodeTypes().contains("jnt:componentFolder")) {
-                        return false;
-                    }
-                    GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) item.get("componentNodeType");
-                    if (gwtJahiaNodeType != null) {
-                        if (ContentTypeTree.this.types.contains(gwtJahiaNodeType.getName())) {
-                            return true;
-                        }
-                        if (ContentTypeTree.this.includeSubTypes) {
-                            HashSet<String> set = new HashSet<String>(gwtJahiaNodeType.getSuperTypes());
-                            set.retainAll(ContentTypeTree.this.types);
-                            return !set.isEmpty();
-                        }
-                    }
-
-                    return false;
-                }
-            };
-            store.addFilter(typesFilter);
-        }
-        if (!displayStudioElement) {
-            StoreFilter<GWTJahiaNode> studioFilter = new StoreFilter<GWTJahiaNode>() {
-                public boolean select(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode parent, GWTJahiaNode item, String property) {
-                    GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) item.get("componentNodeType");
-                    if (gwtJahiaNodeType != null) {
-                        if (gwtJahiaNodeType.getSuperTypes().contains("jmix:studioOnly")) {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-            };
-            store.addFilter(studioFilter);
-        }
-
-
         add(nameFilterField, new BorderLayoutData(Style.LayoutRegion.NORTH,22));
         add(treeGrid, new BorderLayoutData(Style.LayoutRegion.CENTER));
         setScrollMode(Style.Scroll.AUTOY);
 
-        fillStore();
     }
 
-    public void fillStore() {
+    public void fillStore(List<GWTJahiaNode> nodes) {
+        store.add(nodes, true);
+    }
+
+    public void fillStore(List<String> paths, List<String> types, boolean includeSubTypes, boolean displayStudioElement) {
         store.removeAll();
-        JahiaContentManagementService.App.getInstance().getRoot(paths, Arrays.asList("jnt:componentFolder", "jnt:component"), null, null, Arrays.asList("name", "componentNodeType"), null,Arrays.asList("*"),
-                true, false, null, null, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+        JahiaContentManagementService.App.getInstance().getContentTypesAsTree(paths, types, Arrays.asList("name"), includeSubTypes, displayStudioElement,
+                new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> result) {
                         store.add(result, true);
-                        store.applyFilters(null);
                     }
                 }
         );

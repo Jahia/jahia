@@ -40,20 +40,14 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.Window;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
@@ -72,26 +66,11 @@ public class PasteReferenceActionItem extends BaseActionItem  {
 
     public void onComponentSelection() {
         if (CopyPasteEngine.getInstance().getCopiedPaths().size() == 1) {
-//        JahiaContentManagementService.App.getInstance().getNodeTypes(allowedRefs, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
-//            public void onApplicationFailure(Throwable caught) {
-//                Window.alert("Cannot retrieve node type "+allowedRefs+". Cause: " + caught.getLocalizedMessage());
-//                Log.error("Cannot retrieve node type "+allowedRefs+". Cause: " + caught.getLocalizedMessage(), caught);
-//            }
-//
-//            public void onSuccess(List<GWTJahiaNodeType> result) {
-                GWTJahiaNode copiedNode = CopyPasteEngine.getInstance().getCopiedPaths().get(0);
-                Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(2);
-                props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title", new GWTJahiaNodePropertyValue(copiedNode.getDisplayName(), GWTJahiaNodePropertyType.STRING)));
-                props.put("j:node", new GWTJahiaNodeProperty("j:node", new GWTJahiaNodePropertyValue(copiedNode, GWTJahiaNodePropertyType.WEAKREFERENCE)));
-//                if (result.size() == 1) {
-//                    EngineLoader.showCreateEngine(linker, linker.getSelectionContext().getSingleSelection(), result.get(0), props, copiedNode.getName(), false);
-//                } else {
-//                    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> m = new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
-//                    m.put(null, result);
-                    new ContentTypeWindow(linker, linker.getSelectionContext().getSingleSelection(), allowedRefs, false, true, props, copiedNode.getName(), false).show();
-//                }
-//            }
-//        });
+            GWTJahiaNode copiedNode = CopyPasteEngine.getInstance().getCopiedPaths().get(0);
+            Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(2);
+            props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title", new GWTJahiaNodePropertyValue(copiedNode.getDisplayName(), GWTJahiaNodePropertyType.STRING)));
+            props.put("j:node", new GWTJahiaNodeProperty("j:node", new GWTJahiaNodePropertyValue(copiedNode, GWTJahiaNodePropertyType.WEAKREFERENCE)));
+            ContentTypeWindow.createContent(linker, copiedNode.getName(), allowedRefs, props, linker.getSelectionContext().getSingleSelection(), true, true, false);
         } else {
             ContentActions.pasteReference(linker);
         }

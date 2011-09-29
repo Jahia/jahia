@@ -68,13 +68,8 @@ class CreateContentTabItem extends SidePanelTabItem {
         super.create(config);
         tab.setLayout(new FitLayout());
 
-        if (baseType != null) {
-            contentTypeTree = new ContentTypeTree(Arrays.asList(baseType.split(" ")), null, true, displayStudioElement);
-        } else if (paths != null) {
-            contentTypeTree = new ContentTypeTree(paths, null, true, displayStudioElement);
-        } else {
-            contentTypeTree = new ContentTypeTree(null, true, displayStudioElement);
-        }
+        contentTypeTree = new ContentTypeTree();
+        contentTypeTree.fillStore(paths, baseType != null ? Arrays.asList(baseType.split(" ")) : null, true, displayStudioElement);
 
         refresh(Linker.REFRESH_DEFINITIONS);
 
@@ -105,9 +100,7 @@ class CreateContentTabItem extends SidePanelTabItem {
     @Override
     public void refresh(int flag) {
         if ((flag & Linker.REFRESH_COMPONENTS) != 0) {
-            contentTypeTree.fillStore();
-//            contentTypeTree.getFactory().getStore().removeAll();
-//            contentTypeTree.getFactory().getLoader().load();
+            contentTypeTree.fillStore(paths, baseType != null ? Arrays.asList(baseType.split(" ")) : null, true, displayStudioElement);
         }
     }
 }

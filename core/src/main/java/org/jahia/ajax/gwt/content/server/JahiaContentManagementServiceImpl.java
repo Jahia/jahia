@@ -322,26 +322,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 filteredList = new ArrayList<GWTJahiaNode>(filteredList.subList(offset, Math.min(length-1,offset+limit)));
             }
         }
-        addComponentNodeTypeInfo(fields, filteredList);
         return new BasePagingLoadResult<GWTJahiaNode>(filteredList, offset, length);
-    }
-
-    public List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes,
-                                      List<String> filters, List<String> fields, List<String> selectedNodes,
-                                      List<String> openPaths) throws GWTJahiaServiceException {
-        if (openPaths == null || openPaths.size() == 0) {
-            openPaths = getOpenPathsForRepository(paths.toString());
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("retrieving open paths for " + paths + " :\n" + openPaths);
-        }
-
-        List<GWTJahiaNode> result = navigation
-                .retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, getSite(),
-                        retrieveCurrentSession(), getLocale());
-        addComponentNodeTypeInfo(fields, result);
-        return result;
     }
 
     public List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes,
@@ -356,23 +337,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         List<GWTJahiaNode> result = navigation.retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, getSite(),
                         retrieveCurrentSession(), getLocale(), checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex);
-        addComponentNodeTypeInfo(fields, result);
         return result;
-    }
-
-    private void addComponentNodeTypeInfo(List<String> fields, List<GWTJahiaNode> result) throws GWTJahiaServiceException {
-        if (fields.contains("componentNodeType")) {
-            List<ModelData> allNodes = new ArrayList<ModelData>(result);
-            for (int i = 0; i < allNodes.size() ; i++) {
-                GWTJahiaNode node = (GWTJahiaNode) allNodes.get(i);
-
-                if (node.getInheritedNodeTypes().contains("jnt:component") || node.getNodeTypes().contains("jnt:componentFolder") || node.getNodeTypes().contains("jnt:component")) {
-                    GWTJahiaNodeType type = contentDefinition.getNodeType(node.getName(), getUILocale());
-                    node.set("componentNodeType", type);
-                }
-                allNodes.addAll(node.getChildren());
-            }
-        }
     }
 
     public List<GWTJahiaNode> getNodes(List<String> paths, List<String> fields) {
@@ -1948,6 +1913,19 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getContentTypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement) throws GWTJahiaServiceException {
         return contentDefinition.getContentTypes(baseTypes, new HashMap<String, Object>(), getUILocale(), includeSubTypes, displayStudioElement);
     }
+
+    public List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> fields,
+                                                    boolean includeSubTypes, boolean displayStudioElement) throws GWTJahiaServiceException {
+        List<GWTJahiaNode> result = contentDefinition.getContentTypesAsTree(paths, nodeTypes, fields, includeSubTypes, displayStudioElement, getSite(), getUILocale(), retrieveCurrentSession());
+        return result;
+    }
+
+//    private List<GWTJahiaNode> addComponentNodeTypeInfo(List<String> fields, List<GWTJahiaNode> list) throws GWTJahiaServiceException {
+//        List<GWTJahiaNode> filteredList = new ArrayList<GWTJahiaNode>();
+//        if (fields.contains("componentNodeType")) {
+//        }
+//    }
+//
 
     public GWTJahiaNodeType getWFFormForNodeAndNodeType(String formResourceName)
             throws GWTJahiaServiceException {

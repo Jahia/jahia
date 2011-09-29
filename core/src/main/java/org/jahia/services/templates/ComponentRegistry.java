@@ -165,6 +165,14 @@ public class ComponentRegistry {
                     logger.debug("Component {} already exists", name);
                 }
             }
+        } else if (!nt.isMixin()) {
+            JCRNodeWrapper folder = components.hasNode("nonDroppableComponents") ?
+                    components.getNode("nonDroppableComponents") : components.addNode("nonDroppableComponents",
+                    JNT_COMPONENT_FOLDER);
+            if (!folder.hasNode(nt.getName())) {
+                folder.addNode(nt.getName(), JNT_SIMPLE_COMPONENT);
+                created = true;
+            }
         }
         return created;
     }

@@ -45,7 +45,10 @@ import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.*;
 import org.apache.jackrabbit.value.StringValue;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -744,5 +747,74 @@ public class ContentDefinitionHelper {
         return items;
     }
 
+
+    public List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> fields, boolean includeSubTypes, boolean displayStudioElement, final JCRSiteNode site,
+                                                    Locale uiLocale, JCRSessionWrapper session)
+            throws GWTJahiaServiceException {
+        try {
+            GWTJahiaNode root = new GWTJahiaNode();
+            List<GWTJahiaNode> allNodes = new ArrayList<GWTJahiaNode>();
+            allNodes.add(root);
+            int found = 0;
+            GWTJahiaNode lastAdded = null;
+            for (int i = 0; i < allNodes.size(); i++) {
+                GWTJahiaNode node = allNodes.get(i);
+
+                List<GWTJahiaNode> list;
+                if (node == root) {
+                    list = navigation.retrieveRoot(paths, fields, site, uiLocale, session);
+                } else {
+                    list = navigation.ls(node, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
+                            false, null, null, session, false);
+                }
+
+                for (int j = 0; j < list.size(); j++) {
+                    GWTJahiaNode child = list.get(j);
+                    GWTJahiaNodeType type = getNodeType(child.getName(), uiLocale);
+                    child.set("componentNodeType", type);
+                    if (child.getInheritedNodeTypes().contains("jnt:component") && nodeTypes != null && type != null) {
+                        if (includeSubTypes) {
+                            HashSet<String> set = new HashSet<String>(type.getSuperTypes());
+                            set.add(type.getName());
+                            set.retainAll(nodeTypes);
+                            if (!set.isEmpty()) {
+                                node.add(child);
+                                allNodes.add(child);
+                                lastAdded = child;
+                                found ++;
+                            }
+                        } else {
+                            if (nodeTypes.contains(type.getName())) {
+                                node.add(child);
+                                allNodes.add(child);
+                                lastAdded = child;
+                                found ++;
+                            }
+                        }
+                    } else {
+                        node.add(child);
+                        allNodes.add(child);
+                    }
+                }
+                node.setExpandOnLoad(false);
+            }
+            if (found == 1) {
+                return Arrays.asList(lastAdded);
+            } else {
+                for (int i = allNodes.size()-1; i > 0 ; i--) {
+                    GWTJahiaNode node = allNodes.get(i);
+                    if (node.getInheritedNodeTypes().contains("jnt:component") || node.get("hasDescendants") != null) {
+                        node.getParent().set("hasDescendants", Boolean.TRUE);
+                    } else  if (!node.getInheritedNodeTypes().contains("jnt:component") && node.get("hasDescendants") == null) {
+                        node.getParent().remove(node);
+                    }
+                }
+                return new ArrayList(root.getChildren());
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
 
 }

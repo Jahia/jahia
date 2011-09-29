@@ -48,16 +48,13 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
-import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
@@ -272,24 +269,7 @@ public class ContentActions {
 
     public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, boolean includeSubTypes, final boolean displayStudioElement) {
         if (parent != null && !parent.isFile()) {
-//            JahiaContentManagementService.App.getInstance().getContentTypes(nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, includeSubTypes, displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
-//                public void onApplicationFailure(Throwable caught) {
-//                    MessageBox.alert(Messages.get("label.error", "Error"),
-//                            "Unable to load content definitions for base type '" + nodeTypes + "'. Cause: " + caught.getLocalizedMessage(),
-//                            null);
-//                }
-//
-//                public void onSuccess(
-//                        Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
-//                    if (result.size() == 1 && result.values().iterator().next().size() == 1) {
-//                        EngineLoader.showCreateEngine(linker, parent,
-//                                result.values().iterator().next().iterator().next(), new HashMap<String, GWTJahiaNodeProperty>(),
-//                                null, false);
-//                    } else {
-                        new ContentTypeWindow(linker, parent, nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, includeSubTypes, displayStudioElement, false).show();
-//                    }
-//                }
-//            });
+            ContentTypeWindow.createContent(linker, null, nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, new HashMap<String, GWTJahiaNodeProperty>(), parent, includeSubTypes, displayStudioElement, false);
         }
     }
 

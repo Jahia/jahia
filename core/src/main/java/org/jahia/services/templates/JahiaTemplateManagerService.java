@@ -557,7 +557,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         addDependencyValue(originalNode, destinationNode, "j:installedModules");
-        addDependencyValue(originalNode, destinationNode, "j:dependencies");
 
         session.save();
         try {

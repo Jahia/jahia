@@ -847,7 +847,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
         mandatoryLanguages.clear();
 
-        String templateSet = p.getProperty("templatePackageName");
+        String templateSet = site.getTemplatePackageName(); 
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         try {
             templateManagerService.deployTemplates("/templateSets/" + templateSet, "/sites/" + site.getSiteKey(), JCRSessionFactory.getInstance().getCurrentUser().getUsername());

@@ -533,7 +533,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public void deployTemplates(final String templatesPath, final String sitePath, JCRSessionWrapper session) throws RepositoryException {
         HashMap<String, List<String>> references = new HashMap<String, List<String>>();
 
-        JCRNodeWrapper originalNode = session.getNode(templatesPath);
+        JCRNodeWrapper originalNode = null;
+        try {
+            originalNode = session.getNode(templatesPath);
+        } catch (PathNotFoundException e) {
+            logger.warn("Cannot find module for path {}. Skipping deployment to site {}.",
+                    templatesPath, sitePath);
+            return;
+        }
         JCRNodeWrapper destinationNode = session.getNode(sitePath);
 
         String moduleName = originalNode.getName();

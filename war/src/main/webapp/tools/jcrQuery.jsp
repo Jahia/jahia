@@ -36,6 +36,16 @@
                     'transitionOut' : 'none'
                 });
     });
+    function go(id1, value1, id2, value2, id3, value3) {
+    	document.getElementById(id1).value=value1;
+    	if (id2) {
+    		document.getElementById(id2).value=value2;
+    	}
+    	if (id3) {
+    		document.getElementById(id3).value=value3;
+    	}
+    	document.getElementById('navigateForm').submit();
+    }
 </script>
 </head>
 <c:set var="workspace" value="${functions:default(fn:escapeXml(param.workspace), 'default')}"/>
@@ -43,6 +53,7 @@
 <c:set var="lang" value="${functions:default(fn:escapeXml(param.lang), 'JCR-SQL2')}"/>
 <c:set var="limit" value="${functions:default(fn:escapeXml(param.limit), '20')}"/>
 <c:set var="offset" value="${functions:default(fn:escapeXml(param.offset), '0')}"/>
+<c:set var="showActions" value="${functions:default(fn:escapeXml(param.showActions), 'false')}"/>
 <%
 Locale currentLocale = LanguageCodeConverters.languageCodeToLocale((String) pageContext.getAttribute("locale"));
 pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(Locale.ENGLISH));
@@ -59,9 +70,17 @@ pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(L
             </c:forEach>
         </select>
     </legend>
+    <fieldset style="position: absolute; right: 20px;">
+        <legend><strong>Settings</strong></legend>
+            <input id="cbActions" type="checkbox" ${showActions ? 'checked="checked"' : ''}
+                onchange="go('showActions', '${!showActions}')"/>&nbsp;<label for="cbActions">Show actions</label>
+    </fieldset>
     <form id="navigateForm" action="?" method="get">
         <input type="hidden" name="workspace" id="workspace" value="${workspace}"/>
         <input type="hidden" name="locale" id="locale" value="${locale}"/>
+        <input type="hidden" name="showActions" id="showActions" value="${showActions}"/>
+        <input type="hidden" name="action" id="action" value=""/>
+        <input type="hidden" name="target" id="target" value=""/>
         <textarea rows="3" cols="75" name="query" id="query"
             onkeyup="if ((event || window.event).keyCode == 13 && (event || window.event).ctrlKey) document.getElementById('navigateForm').submit();"
         >${not empty param.query ? param.query : 'SELECT * FROM [nt:file]'}</textarea>
@@ -89,6 +108,17 @@ pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(L
 <%
 JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
 JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"), currentLocale, Locale.ENGLISH);
+%>
+<c:if test="${param.action == 'delete' && not empty param.target}">
+	<% JCRNodeWrapper target = jcrSession.getNodeByIdentifier(request.getParameter("target"));
+       pageContext.setAttribute("target", target);
+       jcrSession.checkout(target.getParent());    
+       target.remove();
+       jcrSession.save();
+    %>
+   	<p style="color: blue">Node <strong>${fn:escapeXml(target.path)}</strong> deleted successfully</p>
+</c:if>
+<%
 try {
     String query = request.getParameter("query");
     Long limit = Long.valueOf(StringUtils.defaultIfEmpty(request.getParameter("limit"), "20"));
@@ -112,6 +142,9 @@ try {
     <li>
         <a title="Open in JCR Browser" href="<c:url value='/tools/jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true'/>" target="_blank"><strong>${fn:escapeXml(not empty node.displayableName ? node.name : '<root>')}</strong></a> (${fn:escapeXml(node.nodeTypes)})
         <a title="Open in Repository Explorer" href="<c:url value='/engines/manager.jsp?selectedPaths=${node.path}&workspace=${workspace}'/>" target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt="open" title="Open in Repository Explorer"></a>
+        <c:if test="${showActions}">
+        	&nbsp;<a href="#delete" onclick='var nodeName="${node.name}"; if (!confirm("You are about to delete the node \"" + nodeName + "\" with all child nodes. Continue?")) return false; go("action", "delete", "target", "${node.identifier}"); return false;' title="Delete"><img src="<c:url value='/icons/delete.png'/>" height="16" width="16" title="Delete" border="0"/></a>
+        </c:if>
         <br/>
         <strong>Path: </strong>${fn:escapeXml(node.path)}<br/>
         <strong>ID: </strong>${fn:escapeXml(node.identifier)}<br/>

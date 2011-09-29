@@ -75,7 +75,6 @@
         <th>Name</th>
         <th>Description</th>
         <th>Root Folder</th>
-        <th>Type</th>
         <th>Dependencies</th>
         <th>Definitions</th>
         <th>Rules</th>
@@ -89,7 +88,6 @@
             <td><a name="${package.name}" href="definitionsBrowser.jsp?#${package.name}">${package.name}</a></td>
             <td>${package.description}</td>
             <td>${package.rootFolderPath}</td>
-            <td>${package.moduleType}</td>
             <td>
                 <ol>
                     <c:forEach items="${package.dependencies}" var="dep">

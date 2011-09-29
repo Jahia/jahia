@@ -105,18 +105,19 @@
                     %>
                     <tr class="<%=lineClass%>">
                         <td<%if(importsInfos.size()==1){ %> style="display:none;"<%} %> align="center">
-                            <input type="checkbox" name="<%=file.getName()%>selected" value="on"${not empty infos.selected ? 'checked' : ''}/>
+                            <input type="checkbox" name="<%=file.getName()%>selected" value="on"${not empty infos.selected ? ' checked="checked"' : ''}/>
                         </td>
                         <td>
                             <% if ("site".equals(fileType)) { %>
                             <c:if test="${not empty infos.validationResult}">
+                            <c:set var="validationErrorsPresent" value="true"/>
                             <%@ include file="/admin/import_validation.jspf" %>
                             </c:if>
                             <table border="0" cellpadding="0" width="100%">
                                 <tr>
                                     <td>
                                         <fmt:message key="org.jahia.admin.site.ManageSites.siteTitle.label"/>*&nbsp;<c:if test="${infos.siteTitleInvalid}">
-                                        <div class="error">
+                                        <div class="error" style="font-weight: bold;">
                                             <fmt:message key="org.jahia.admin.warningMsg.completeRequestInfo.label"/>
                                         </div></c:if>
                                     </td>
@@ -127,7 +128,7 @@
                                 <tr>
                                     <td>
                                         <fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/>*&nbsp;<c:if test="${infos.siteServerNameInvalid || infos.siteServerNameExists}">
-                                        <div class="error">
+                                        <div class="error" style="font-weight: bold;">
                                             <fmt:message key="${empty infos.siteservername ? 'org.jahia.admin.warningMsg.completeRequestInfo.label' : (infos.siteServerNameInvalid ? 'org.jahia.admin.warningMsg.invalidServerName.label' : 'org.jahia.admin.warningMsg.chooseAnotherServerName.label')}"/>
                                         </div></c:if>
                                     </td>
@@ -138,7 +139,7 @@
                                 <tr>
                                     <td>
                                         <fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/>*&nbsp;<c:if test="${infos.siteKeyInvalid || infos.siteKeyExists}">
-                                        <div class="error">
+                                        <div class="error" style="font-weight: bold;">
                                             <fmt:message key="${empty infos.sitekey ? 'org.jahia.admin.warningMsg.completeRequestInfo.label' : (infos.siteKeyInvalid ? 'org.jahia.admin.warningMsg.onlyLettersDigitsUnderscore.label' : 'org.jahia.admin.warningMsg.chooseAnotherSiteKey.label')}"/>
                                         </div></c:if>
                                     </td>
@@ -185,6 +186,11 @@
                         </td>
                     </tr>
                     <%} %>
+                    <c:if test="${validationErrorsPresent}">
+                    <tr>
+                        <td colspan="2" class="error"><fmt:message key="failure.import.incomplete"/></td>
+                    </tr>
+                    </c:if>
                     </tbody>
                 </form>
             </table>
@@ -205,7 +211,15 @@
           </span><%} %>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href='javascript:sendForm();'><fmt:message key="label.doImport"/></a>
+                <c:if test="${not validationErrorsPresent}">
+                    <a class="ico-ok" href='javascript:sendForm();'><fmt:message key="label.doImport"/></a>
+                </c:if>
+                <c:if test="${validationErrorsPresent}">
+                    <fmt:message key="failure.import.incomplete" var="i18nValidationError"/>
+                    <fmt:message key="org.jahia.admin.site.ManageSites.doYouWantToContinue.label" var="i18nContinue"/>
+                    <c:set var="i18nConfirm" value="${functions:escapeJavaScript(i18nValidationError)} ${functions:escapeJavaScript(i18nContinue)}"/>
+                    <a class="ico-ok" href="#import" onclick="if (confirm('${i18nConfirm}')) { sendForm(); } return false;"><fmt:message key="label.doImport"/></a>
+                </c:if>
             </span>
           </span>
 </div>

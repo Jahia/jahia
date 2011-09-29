@@ -76,12 +76,12 @@ function go(id1, value1, id2, value2, id3, value3) {
         onkeypress="if ((event || window.event).keyCode == 13) go('path', this.value);" />
     &nbsp;<a href="#go"
         onclick='var path=document.getElementById("goToPath").value; if (path.length > 0) { go("path", path); } return false;' title="Got to the node with path">
-        <img src="${pageContext.request.contextPath}/icons/refresh.png" height="16" width="16" title="Got to the node with path" border="0" style="vertical-align: middle;"/>
+        <img src="<c:url value='/icons/refresh.png'/>" height="16" width="16" title="Got to the node with path" border="0" style="vertical-align: middle;"/>
     </a>
     <label for="goToUuid">UUID: </label>
     <input type="text" id="goToUuid" name="goToUuid" value=""
         onkeypress="if ((event || window.event).keyCode == 13) go('uuid', this.value);" />
-    &nbsp;<a href="#go" onclick='var uuid=document.getElementById("goToUuid").value; if (uuid.length > 0) { go("uuid", uuid); } return false;' title="Got to the node with UUID"><img src="${pageContext.request.contextPath}/icons/search.png" height="16" width="16" title="Got to the node with UUID" border="0" style="vertical-align: middle;"/></a>
+    &nbsp;<a href="#go" onclick='var uuid=document.getElementById("goToUuid").value; if (uuid.length > 0) { go("uuid", uuid); } return false;' title="Got to the node with UUID"><img src="<c:url value='/icons/search.png'/>" height="16" width="16" title="Got to the node with UUID" border="0" style="vertical-align: middle;"/></a>
 </fieldset>
  
 <fieldset>
@@ -175,11 +175,11 @@ function go(id1, value1, id2, value2, id3, value3) {
         <c:if test="${showActions}">
             <p>
             <c:if test="${!node.locked}">
-                <img src="${pageContext.request.contextPath}/icons/lock.png" height="16" width="16" border="0" style="vertical-align: middle;" alt=" "/>&nbsp;<a href="#lock" onclick="if (confirm('You are about to put a lock on this node. Continue?')) {go('action', 'lock');} return false;" title="Put a lock on this node">lock node</a>
+                <img src="<c:url value='/icons/lock.png'/>" height="16" width="16" border="0" style="vertical-align: middle;" alt=" "/>&nbsp;<a href="#lock" onclick="if (confirm('You are about to put a lock on this node. Continue?')) {go('action', 'lock');} return false;" title="Put a lock on this node">lock node</a>
             </c:if>
             <c:if test="${node.locked}">
-                <img src="${pageContext.request.contextPath}/icons/unlock.png" height="16" width="16" border="0" style="vertical-align: middle;" alt=" "/>&nbsp;<a href="#unlock" onclick="if (confirm('You are about to remove all locks on this node. Continue?')) {go('action', 'unlock');} return false;" title="Clean all locks on this node">unlock node</a>
-                <img src="${pageContext.request.contextPath}/icons/unlock.png" height="16" width="16" border="0" style="vertical-align: middle;" alr=" "/>&nbsp;<a href="#unlockTree" onclick="if (confirm('You are about to remove all locks on this node and its children. Continue?')) {go('action', 'unlockTree');} return false;" title="Clean all locks on this node and its children">unlock tree</a>
+                <img src="<c:url value='/icons/unlock.png'/>" height="16" width="16" border="0" style="vertical-align: middle;" alt=" "/>&nbsp;<a href="#unlock" onclick="if (confirm('You are about to remove all locks on this node. Continue?')) {go('action', 'unlock');} return false;" title="Clean all locks on this node">unlock node</a>
+                <img src="<c:url value='/icons/unlock.png'/>" height="16" width="16" border="0" style="vertical-align: middle;" alr=" "/>&nbsp;<a href="#unlockTree" onclick="if (confirm('You are about to remove all locks on this node and its children. Continue?')) {go('action', 'unlockTree');} return false;" title="Clean all locks on this node and its children">unlock tree</a>
             </c:if>
             </p>
         </c:if>
@@ -187,7 +187,7 @@ function go(id1, value1, id2, value2, id3, value3) {
         <strong>Path:&nbsp;</strong>${fn:escapeXml(node.path)}<br/>
         <strong>ID:&nbsp;</strong>${fn:escapeXml(node.identifier)}<br/>
         <strong>Type:&nbsp;</strong>${fn:escapeXml(node.primaryNodeTypeName)}<br/>
-        <strong>Mixins:&nbsp;</strong>[<c:forEach items="${node.mixinNodeTypes}" var="mixin" varStatus="status">${status.index > 0 ? ", " : ""}${mixin.name}<c:if test="${showActions}">&nbsp;<a href="#remove" onclick="if (confirm('You are about to remove mixin ${mixin.name} from the node. Continue?')) {go('action', 'removeMixin', 'value', '${mixin.name}');} return false;"><img src="${pageContext.request.contextPath}/icons/delete.png" height="16" width="16" title="Delete mixin" border="0" style="vertical-align: middle;"/></a></c:if></c:forEach>]
+        <strong>Mixins:&nbsp;</strong>[<c:forEach items="${node.mixinNodeTypes}" var="mixin" varStatus="status">${status.index > 0 ? ", " : ""}${mixin.name}<c:if test="${showActions}">&nbsp;<a href="#remove" onclick="if (confirm('You are about to remove mixin ${mixin.name} from the node. Continue?')) {go('action', 'removeMixin', 'value', '${mixin.name}');} return false;"><img src="<c:url value='/icons/delete.png'/>" height="16" width="16" title="Delete mixin" border="0" style="vertical-align: middle;"/></a></c:if></c:forEach>]
         <c:if test="${showActions}">
             <% pageContext.setAttribute("mixins", JCRContentUtils.getAssignableMixins(node)); %>
             <select id="mixins" name="mixins">
@@ -198,7 +198,7 @@ function go(id1, value1, id2, value2, id3, value3) {
             <button onclick="var newMixin=document.getElementById('mixins').value; if (confirm('You are about to add mixin ' + newMixin + ' to the node. Continue?')) {go('action', 'addMixin', 'value', newMixin);} return false;">add</button>
         </c:if>
         <c:if test="${jcr:isNodeType(node, 'nt:file')}">
-            <br/><strong>File:&nbsp;</strong><a target="_blank" href="<c:url value='${node.url}' context='/'/>" title="download"><img src="${pageContext.request.contextPath}/icons/download.png" height="16" width="16" title="download" border="0" style="vertical-align: middle;"/></a>
+            <br/><strong>File:&nbsp;</strong><a target="_blank" href="<c:url value='${node.url}' context='/'/>" title="download"><img src="<c:url value='/icons/download.png'/>" height="16" width="16" title="download" border="0" style="vertical-align: middle;"/></a>
         </c:if>
     </p>
     <p><strong>Properties:&nbsp;</strong><a href="#properties" onclick="go('showProperties', ${showProperties ? 'false' : 'true'}); return false;">${showProperties ? 'hide' : 'show'}</a></p>
@@ -275,13 +275,13 @@ function go(id1, value1, id2, value2, id3, value3) {
                     <c:if test="${showActions}">
                         &nbsp;|
                         <c:if test="${jcr:isNodeType(child, 'nt:file')}">
-                            &nbsp;<a target="_blank" href="<c:url value='${child.url}' context='/'/>" title="download"><img src="${pageContext.request.contextPath}/icons/download.png" height="16" width="16" title="download" border="0" style="vertical-align: middle;"/></a>
+                            &nbsp;<a target="_blank" href="<c:url value='${child.url}' context='/'/>" title="download"><img src="<c:url value='/icons/download.png'/>" height="16" width="16" title="download" border="0" style="vertical-align: middle;"/></a>
                         </c:if>
-                        &nbsp;<a target="_blank" href="<c:url value='/cms/export/${workspace}${child.path}.xml?cleanup=simple'/>" title="Exaport as XML"><img src="${pageContext.request.contextPath}/icons/import.png" height="16" width="16" title="Export as XML" border="0" style="vertical-align: middle;"/></a>
-                        &nbsp;<a target="_blank" href="<c:url value='/cms/export/${workspace}${child.path}.zip?cleanup=simple'/>" title="Exaport as ZIP"><img src="${pageContext.request.contextPath}/icons/zip.png" height="16" width="16" title="Export as ZIP" border="0" style="vertical-align: middle;"/></a>
+                        &nbsp;<a target="_blank" href="<c:url value='/cms/export/${workspace}${child.path}.xml?cleanup=simple'/>" title="Exaport as XML"><img src="<c:url value='/icons/import.png'/>" height="16" width="16" title="Export as XML" border="0" style="vertical-align: middle;"/></a>
+                        &nbsp;<a target="_blank" href="<c:url value='/cms/export/${workspace}${child.path}.zip?cleanup=simple'/>" title="Exaport as ZIP"><img src="<c:url value='/icons/zip.png'/>" height="16" width="16" title="Export as ZIP" border="0" style="vertical-align: middle;"/></a>
                         |&nbsp;
-                        &nbsp;<a href="#rename" onclick='var name=prompt("Please provide a new name for the node:", "${child.name}"); if (name != null & name != "${child.name}") { go("action", "rename", "target", "${child.identifier}", "value", name);} return false;' title="Rename"><img src="${pageContext.request.contextPath}/icons/editContent.png" height="16" width="16" title="Rename" border="0" style="vertical-align: middle;"/></a>
-                        &nbsp;<a href="#delete" onclick='var nodeName="${child.name}"; if (!confirm("You are about to delete the node " + nodeName + " with all child nodes. Continue?")) return false; go("action", "delete", "target", "${child.identifier}"); return false;' title="Delete"><img src="${pageContext.request.contextPath}/icons/delete.png" height="16" width="16" title="Delete" border="0" style="vertical-align: middle;"/></a>
+                        &nbsp;<a href="#rename" onclick='var name=prompt("Please provide a new name for the node:", "${child.name}"); if (name != null & name != "${child.name}") { go("action", "rename", "target", "${child.identifier}", "value", name);} return false;' title="Rename"><img src="<c:url value='/icons/editContent.png'/>" height="16" width="16" title="Rename" border="0" style="vertical-align: middle;"/></a>
+                        &nbsp;<a href="#delete" onclick='var nodeName="${child.name}"; if (!confirm("You are about to delete the node " + nodeName + " with all child nodes. Continue?")) return false; go("action", "delete", "target", "${child.identifier}"); return false;' title="Delete"><img src="<c:url value='/icons/delete.png'/>" height="16" width="16" title="Delete" border="0" style="vertical-align: middle;"/></a>
                     </c:if>
                 </li>
             </c:forEach>

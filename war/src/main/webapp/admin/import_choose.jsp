@@ -105,7 +105,7 @@
                     %>
                     <tr class="<%=lineClass%>">
                         <td<%if(importsInfos.size()==1){ %> style="display:none;"<%} %> align="center">
-                            <input type="checkbox" name="<%=file.getName()%>selected" value="on"${not empty infos.selected && empty infos.validationResult ? 'checked' : ''}/>
+                            <input type="checkbox" name="<%=file.getName()%>selected" value="on"${not empty infos.selected ? 'checked' : ''}/>
                         </td>
                         <td>
                             <% if ("site".equals(fileType)) { %>

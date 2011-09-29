@@ -333,6 +333,7 @@
               action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=prepareimport")%>'
               method="post"
               enctype="multipart/form-data">
+            <input type="hidden" name="validityCheckOnImport" value="true"/>
             <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
                 <tr>
                     <td>
@@ -346,9 +347,6 @@
                             <option value='${file.path}'${file.name == defaultSet ? ' selected="selected"' : ''}>${fn:escapeXml(label)}</option>
                         </c:forEach>
                     </select>
-                    </td>
-                    <td>
-                        <input type="checkbox" id="validityCheckOnImportDemo" name="validityCheckOnImport" value="true" checked="checked"/>&nbsp;<label for="validityCheckOnImportDemo" title="<fmt:message key='label.import.validate'/>"><fmt:message key="label.validate"/></label>
                     </td>
                     <td>
                         <span class="dex-PushButton">
@@ -380,6 +378,7 @@
               action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=prepareimport")%>'
               method="post"
               enctype="multipart/form-data">
+            <input type="hidden" name="validityCheckOnImport" value="true"/>
             <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
                 <tr>
                     <td>
@@ -387,9 +386,6 @@
                     </td>
                     <td>
                         :&nbsp;<input type="file" name="import" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
-                    </td>
-                    <td>
-                        <input type="checkbox" id="validityCheckOnImport" name="validityCheckOnImport" value="true" checked="checked"/>&nbsp;<label for="validityCheckOnImport" title="<fmt:message key='label.import.validate'/>"><fmt:message key="label.validate"/></label>
                     </td>
                 </tr><tr>
                 <td>
@@ -511,6 +507,7 @@ else { %>
                                           action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=prepareimport")%>'
                                           method="post"
                                           enctype="multipart/form-data">
+                                        <input type="hidden" name="validityCheckOnImport" value="true"/>
                                         <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
                                             <tr>
                                                 <td>
@@ -524,9 +521,6 @@ else { %>
                                                         <option value='${file.path}'${file.name == defaultSet ? ' selected="selected"' : ''}>${fn:escapeXml(label)}</option>
                                                     </c:forEach>
                                                 </select>
-                                                </td>
-                                                <td>
-                                                    <input type="checkbox" id="validityCheckOnImportDemo" name="validityCheckOnImport" value="true" checked="checked"/>&nbsp;<label for="validityCheckOnImportDemo" title="<fmt:message key='label.import.validate'/>"><fmt:message key="label.validate"/></label>
                                                 </td>
                                                 <td>
                                             
@@ -559,6 +553,7 @@ else { %>
                                           action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=prepareimport")%>'
                                           method="post"
                                           enctype="multipart/form-data">
+                                        <input type="hidden" name="validityCheckOnImport" value="true"/>
                                         <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
                                             <tr>
                                                 <td>
@@ -566,9 +561,6 @@ else { %>
                                                 </td>
                                                 <td>
                                                     :&nbsp;<input type="file" name="import" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
-                                                </td>
-                                                <td>
-                                                    <input type="checkbox" id="validityCheckOnImport" name="validityCheckOnImport" value="true" checked="checked"/>&nbsp;<label for="validityCheckOnImport" title="<fmt:message key='label.import.validate'/>"><fmt:message key="label.validate"/></label>
                                                 </td>
                                             </tr><tr>
                                             <td>

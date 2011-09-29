@@ -806,6 +806,7 @@
                 <ref bean="Engine.Tab.Options"/>
                 <ref bean="Engine.Tab.LiveRoles"/>
                 <ref bean="Engine.Tab.EditRoles"/>
+                <ref bean="Engine.Tab.ComponentRights"/>
                 <ref bean="Engine.Tab.Usages"/>
                 <ref bean="Engine.Tab.Versioning"/>
                 <ref bean="Engine.Tab.Visibility"/>
@@ -1271,6 +1272,15 @@
         <property name="repositories">
             <list>
                 <ref bean="repository.siteComponents"/>
+            </list>
+        </property>
+        <!-- tabs -->
+        <property name="engineTabs">
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <ref bean="Engine.Tab.Info"/>
+                <ref bean="Engine.Tab.Content"/>
+                <ref bean="Engine.Tab.Metadata"/>
+                <ref bean="Engine.Tab.ComponentRights"/>
             </list>
         </property>
     </bean>

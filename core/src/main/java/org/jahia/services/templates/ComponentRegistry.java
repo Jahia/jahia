@@ -40,11 +40,17 @@
 
 package org.jahia.services.templates;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.query.InvalidQueryException;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.tika.io.IOUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -52,6 +58,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,16 +71,37 @@ public class ComponentRegistry {
 
     private static final String JMIX_DROPPABLE_CONTENT = "jmix:droppableContent";
 
-    private static final String JNT_COMPONENT = "jnt:component";
-    private static final String JNT_SIMPLE_COMPONENT = "jnt:simpleComponent";
+    protected static final String JNT_COMPONENT_FOLDER = "jnt:componentFolder";
 
-    private static final String JNT_COMPONENT_FOLDER = "jnt:componentFolder";
+    private static final String JNT_SIMPLE_COMPONENT = "jnt:simpleComponent";
 
     private static Logger logger = LoggerFactory.getLogger(ComponentRegistry.class);
 
     private static final String NODE_COMPONENTS = "components";
 
+    private String componentsSkeleton;
+
     private TemplatePackageRegistry templatePackageRegistry;
+
+    protected void applyComponentsSkeleton(JCRNodeWrapper componentsNode, JCRSessionWrapper session)
+            throws RepositoryException {
+        if (StringUtils.isEmpty(componentsSkeleton)) {
+            return;
+        }
+
+        ByteArrayInputStream is = null;
+        try {
+            is = new ByteArrayInputStream(componentsSkeleton.getBytes("UTF-8"));
+            session.importXML(componentsNode.getPath(), is,
+                    ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW,
+                    DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, null);
+        } catch (IOException e) {
+            logger.error(
+                    "Unable to import the components folder skeleton. Cause: " + e.getMessage(), e);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
 
     private JCRNodeWrapper findComponent(JCRNodeWrapper components, String name,
             JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {
@@ -99,6 +127,41 @@ public class ComponentRegistry {
         // Query.JCR_SQL2).execute().getNodes().hasNext();
     }
 
+    private int registerComponent(JCRSessionWrapper session, int count, boolean newDeployment, JCRNodeWrapper components, NodeTypeIterator nti) throws RepositoryException {
+        ExtendedNodeType nt = (ExtendedNodeType) nti.nextNodeType();
+        if (!nt.isMixin() && !JMIX_DROPPABLE_CONTENT.equals(nt.getName())
+                && nt.isNodeType(JMIX_DROPPABLE_CONTENT)) {
+            String name = nt.getName();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Detected component type {}", name);
+            }
+            if (newDeployment || findComponent(components, name, session) == null) {
+                JCRNodeWrapper folder = components;
+                for (ExtendedNodeType st : nt.getSupertypes()) {
+                    if (st.isMixin() && !st.getName().equals(JMIX_DROPPABLE_CONTENT)
+                            && st.isNodeType(JMIX_DROPPABLE_CONTENT)) {
+                        folder = components.hasNode(st.getName()) ? components.getNode(st
+                                .getName()) : components.addNode(st.getName(),
+                                JNT_COMPONENT_FOLDER);
+                        break;
+                    }
+                }
+                if (!folder.hasNode(name)) {
+                    JCRNodeWrapper comp = folder.addNode(name, JNT_SIMPLE_COMPONENT);
+                    count++;
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Created component node {}", comp.getPath());
+                    }
+                }
+            } else {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Component {} already exists", name);
+                }
+            }
+        }
+        return count;
+    }
+    
     /**
      * Performs the registration of the components from modules into JCR tree.
      */
@@ -157,8 +220,22 @@ public class ComponentRegistry {
         if (modules.hasNode(pkg.getRootFolder())) {
             JCRNodeWrapper module = modules.getNode(pkg.getRootFolder());
             boolean newDeployment = !module.hasNode(NODE_COMPONENTS);
-            JCRNodeWrapper components = newDeployment ? module.addNode(NODE_COMPONENTS,
-                    JNT_COMPONENT_FOLDER) : module.getNode(NODE_COMPONENTS);
+            JCRNodeWrapper components = newDeployment ?  module.addNode(NODE_COMPONENTS, JNT_COMPONENT_FOLDER) : module.getNode(NODE_COMPONENTS);
+            if (newDeployment) {
+                ByteArrayInputStream is = null;
+                try {
+                    is = new ByteArrayInputStream(componentsSkeleton.getBytes("UTF-8"));
+                    session.importXML(components.getPath(), is,
+                            ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW,
+                            DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, null);
+                } catch (IOException e) {
+                    logger.error(
+                            "Unable to import the components folder skeleton. Cause: "
+                                    + e.getMessage(), e);
+                } finally {
+                    IOUtils.closeQuietly(is);
+                }
+            }
 
             if (pkg.getRootFolder().equals("default")) {
                 for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes("system-jahia"); nti
@@ -180,39 +257,8 @@ public class ComponentRegistry {
         return count;
     }
 
-    private int registerComponent(JCRSessionWrapper session, int count, boolean newDeployment, JCRNodeWrapper components, NodeTypeIterator nti) throws RepositoryException {
-        ExtendedNodeType nt = (ExtendedNodeType) nti.nextNodeType();
-        if (!nt.isMixin() && !JMIX_DROPPABLE_CONTENT.equals(nt.getName())
-                && nt.isNodeType(JMIX_DROPPABLE_CONTENT)) {
-            String name = nt.getName();
-            if (logger.isDebugEnabled()) {
-                logger.debug("Detected component type {}", name);
-            }
-            if (newDeployment || findComponent(components, name, session) == null) {
-                JCRNodeWrapper folder = components;
-                for (ExtendedNodeType st : nt.getSupertypes()) {
-                    if (st.isMixin() && !st.getName().equals(JMIX_DROPPABLE_CONTENT)
-                            && st.isNodeType(JMIX_DROPPABLE_CONTENT)) {
-                        folder = components.hasNode(st.getName()) ? components.getNode(st
-                                .getName()) : components.addNode(st.getName(),
-                                JNT_COMPONENT_FOLDER);
-                        break;
-                    }
-                }
-                if (!folder.hasNode(name)) {
-                    JCRNodeWrapper comp = folder.addNode(name, JNT_SIMPLE_COMPONENT);
-                    count++;
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Created component node {}", comp.getPath());
-                    }
-                }
-            } else {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Component {} already exists", name);
-                }
-            }
-        }
-        return count;
+    public void setComponentsSkeleton(String componentsSkeleton) {
+        this.componentsSkeleton = componentsSkeleton;
     }
 
     public void setTemplatePackageRegistry(TemplatePackageRegistry tmplPackageRegistry) {

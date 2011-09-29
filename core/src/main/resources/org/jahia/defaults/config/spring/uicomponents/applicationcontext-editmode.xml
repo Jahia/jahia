@@ -884,6 +884,22 @@
         </property>
     </bean>
 
+    <bean id="Engine.Tab.ComponentRights" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="roles"/>
+        <property name="titleKey" value="label.engineTab.componentRights"/>
+        <property name="requiredPermission" value="viewComponentRightsTab"/>
+        <property name="tabItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.RolesTabItem">
+                <property name="roleGroups">
+                    <set>
+                        <value>component-role</value>
+                    </set>
+                </property>
+                <property name="canBreakInheritance"><value>true</value></property>
+            </bean>
+        </property>
+    </bean>
+
     <bean id="Engine.Tab.RequiredPermissions" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="permissions"/>
         <property name="titleKey" value="label.engineTab.permissions"/>

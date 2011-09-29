@@ -589,11 +589,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
                 JCRNodeWrapper node;
                 boolean newNode = false;
-                if (destinationNode.hasNode(child.getName())) {
-                    node = destinationNode.getNode(child.getName());
+                String childName = child.getName();
+                if (destinationNode.hasNode(childName)) {
+                    node = destinationNode.getNode(childName);
                 } else {
                     session.checkout(destinationNode);
-                    node = destinationNode.addNode(child.getName(), child.getPrimaryNodeTypeName());
+                    String primaryNodeTypeName = child.getPrimaryNodeTypeName();
+                    node = destinationNode.addNode(childName, primaryNodeTypeName);
+                    if (childName.equals("components") && primaryNodeTypeName.equals(ComponentRegistry.JNT_COMPONENT_FOLDER)) {
+                        componentRegistry.applyComponentsSkeleton(node, session);
+                    }
                     session.save();
                     newNode = true;
                 }

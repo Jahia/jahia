@@ -129,7 +129,7 @@
  - j:dependencies (weakreference) protected hidden multiple < jnt:role
  - j:privilegedAccess (boolean)
  - j:hidden (boolean) protected hidden
- - j:roleGroup (string,choicelist[resourceBundle]) < 'live-role','edit-role'
+ - j:roleGroup (string,choicelist[resourceBundle]) < 'live-role','edit-role','component-role'
 
 [jnt:roles] > nt:base, mix:versionable, jmix:autoPublish, jmix:observable
  + * (jnt:role)

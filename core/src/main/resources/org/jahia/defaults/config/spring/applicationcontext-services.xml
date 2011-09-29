@@ -136,6 +136,15 @@
     
     <bean id="ComponentRegistry" class="org.jahia.services.templates.ComponentRegistry">
         <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
+        <property name="componentsSkeleton">
+            <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+                <components xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal" jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:componentFolder">
+                  <j:acl j:inherit="false" jcr:primaryType="jnt:acl">
+                    <GRANT_g_site-privileged j:aceType="GRANT" j:principal="g:site-privileged" j:protected="false" j:roles="component-manager" jcr:primaryType="jnt:ace" />
+                  </j:acl>
+                </components>]]>
+           </value>
+        </property>
     </bean>
 
     <bean id="TemplatePackageApplicationContextLoader"

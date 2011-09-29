@@ -217,7 +217,7 @@
                 <c:if test="${validationErrorsPresent}">
                     <fmt:message key="failure.import.incomplete" var="i18nValidationError"/>
                     <fmt:message key="org.jahia.admin.site.ManageSites.doYouWantToContinue.label" var="i18nContinue"/>
-                    <c:set var="i18nConfirm" value="${functions:escapeJavaScript(i18nValidationError)} ${functions:escapeJavaScript(i18nContinue)}"/>
+                    <c:set var="i18nConfirm" value="${functions:escapeJavaScript(i18nValidationError)}\n${functions:escapeJavaScript(i18nContinue)}"/>
                     <a class="ico-ok" href="#import" onclick="if (confirm('${i18nConfirm}')) { sendForm(); } return false;"><fmt:message key="label.doImport"/></a>
                 </c:if>
             </span>

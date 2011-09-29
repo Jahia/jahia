@@ -85,7 +85,6 @@ public class AclEditor {
     private ListStore<ModelData> store;
     private boolean canBreakInheritance = false;
     private Button breakinheritanceItem;
-    private Set<String> roleGroups;
     private boolean readOnly = false;
     private List<String> displayedRoles;
     private boolean displayInheritanceColumn = true;
@@ -95,9 +94,8 @@ public class AclEditor {
     public AclEditor(GWTJahiaNodeACL acl, String aclContext, Set<String> roleGroups) {
         this.originalAcl = acl;
         this.context = aclContext;
-        this.roleGroups = roleGroups;
         final Map<String, List<String>> map = acl.getAvailablePermissions();
-        if (this.roleGroups == null || this.roleGroups.isEmpty()) {
+        if (roleGroups == null || roleGroups.isEmpty()) {
             displayedRoles = new ArrayList<String>();
             if (map != null && !map.isEmpty()) {
                 for (List<String> l : map.values()) {
@@ -107,7 +105,7 @@ public class AclEditor {
         } else {
             displayedRoles = new ArrayList<String>();
             if (map != null && !map.isEmpty()) {
-                for (String group : this.roleGroups) {
+                for (String group : roleGroups) {
                     if (map.containsKey(group)) {
                         displayedRoles.addAll(map.get(group));
                     }
@@ -125,10 +123,6 @@ public class AclEditor {
 
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
-    }
-
-    public void setRoleGroups(Set<String> roleGroups) {
-        this.roleGroups = roleGroups;
     }
 
     public String getAddUsersLabel() {
@@ -165,9 +159,9 @@ public class AclEditor {
         ColumnConfig col = new ColumnConfig("icon", 30);
         col.setSortable(false);
         col.setFixed(true);
-        col.setRenderer(new GridCellRenderer() {
+        col.setRenderer(new GridCellRenderer<ModelData>() {
             public Object render(final ModelData model, final String perm, ColumnData config, final int rowIndex, final int colIndex,
-                                 ListStore listStore, final Grid grid) {
+                                 ListStore<ModelData> listStore, final Grid<ModelData> grid) {
                 GWTJahiaNodeACE ace = model.get("ace");
                 Image html;
                 if (ace.getPrincipalType() == 'u') {
@@ -181,9 +175,9 @@ public class AclEditor {
         columns.add(col);
 
         // name of the princial
-        col = new ColumnConfig("principal", getResource("label.user"), 200);
+        col = new ColumnConfig("principal", Messages.get("label.user", "User") + " / " + Messages.get("label.group", "Group"), 200);
         columns.add(col);
-        // column break in heritance
+        // column break inheritance
         if (displayInheritanceColumn) {
             col = new ColumnConfig("inheritance", Messages.get("label.inherited"), 300);
             col.setAlignment(Style.HorizontalAlignment.LEFT);
@@ -210,7 +204,6 @@ public class AclEditor {
         }
         // add a column per available permission
         for (String s : displayedRoles) {
-            final int i = columns.size();
             final String columnName;
             if (acl.getPermissionLabels() != null) {
                 columnName = acl.getPermissionLabels().get(s);
@@ -227,9 +220,9 @@ public class AclEditor {
             }
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             col.setSortable(false);
-            col.setRenderer(new GridCellRenderer() {
+            col.setRenderer(new GridCellRenderer<ModelData>() {
                 public Object render(final ModelData model, final String perm, ColumnData config, final int rowIndex, final int colIndex,
-                                     ListStore listStore, final Grid grid) {
+                                     ListStore<ModelData> listStore, final Grid<ModelData> grid) {
                     final GWTJahiaNodeACE ace = model.get("ace");
                     Boolean permValue = ace.getPermissions().get(perm);
                     Boolean inPermValue = Boolean.TRUE.equals(ace.getInheritedPermissions().get(perm)) && !acl.isBreakAllInheritance();
@@ -457,7 +450,7 @@ public class AclEditor {
     }
 
     /**
-     * Build loacl remove button
+     * Build local remove button
      *
      * @param item
      * @param ace
@@ -535,7 +528,7 @@ public class AclEditor {
                     CheckBox chb = (CheckBox) grid.getView().getWidget(row, i);
                     String perm = grid.getColumnModel().getColumn(i).getId();
                     Boolean v = ace.getInheritedPermissions().get(perm);
-                    chb.setChecked(Boolean.TRUE.equals(v));
+                    chb.setValue(Boolean.TRUE.equals(v));
                 }
                 ace.setInherited(true);
                 LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(row, 2);

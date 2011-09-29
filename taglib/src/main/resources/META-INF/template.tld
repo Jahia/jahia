@@ -471,7 +471,7 @@
             <type>boolean</type>
         </attribute>
         <attribute>
-            <description>If set to true an additional link (image) is generated to reload the current captcha image. Is only relevant when display attribute is true (since Jahia 6.6). [false]</description>
+            <description>If set to true (default) or not specified, an additional link (image) is generated to reload the current captcha image. Is only relevant when display attribute is true (since Jahia 6.6). [true]</description>
             <name>displayReloadLink</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

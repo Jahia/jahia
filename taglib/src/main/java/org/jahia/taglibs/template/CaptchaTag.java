@@ -61,7 +61,7 @@ public class CaptchaTag extends TagSupport {
 
     private boolean display = true;
 
-    private boolean displayReloadLink;
+    private boolean displayReloadLink = true;
 
     private String var = DEF_VAR_VALUE;
 
@@ -123,7 +123,7 @@ public class CaptchaTag extends TagSupport {
 
     protected void resetState() {
         display = true;
-        displayReloadLink = false;
+        displayReloadLink = true;
         var = DEF_VAR_VALUE;
     }
 

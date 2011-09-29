@@ -503,6 +503,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                 siteNode.setProperty("j:templatesSet", templatePackage);
                                 siteNode.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(templatePackage)} );
 
+                                ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployTemplates("/templateSets/default", "/sites/" + siteKey1, session);
                                 ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployTemplates("/templateSets/" + templatePackage, "/sites/"+siteKey1, session);
                             }
                         }

@@ -5,6 +5,7 @@
 <%@page import="java.io.StringWriter"%>
 <%@page import="java.util.Locale"%>
 <%@page import="org.apache.commons.lang.StringUtils"%>
+<%@page import="javax.jcr.ItemNotFoundException"%>
 <%@page import="javax.jcr.query.Query"%>
 <%@page import="javax.jcr.query.QueryManager"%>
 <%@page import="javax.jcr.query.QueryResult"%>
@@ -110,13 +111,23 @@ JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstanc
 JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"), currentLocale, Locale.ENGLISH);
 %>
 <c:if test="${param.action == 'delete' && not empty param.target}">
-	<% JCRNodeWrapper target = jcrSession.getNodeByIdentifier(request.getParameter("target"));
-       pageContext.setAttribute("target", target);
-       jcrSession.checkout(target.getParent());    
-       target.remove();
-       jcrSession.save();
+	<% 
+       try {
+           JCRNodeWrapper target = jcrSession.getNodeByIdentifier(request.getParameter("target"));
+           pageContext.setAttribute("target", target);
+           jcrSession.checkout(target.getParent());    
+           target.remove();
+           jcrSession.save();
+       } catch (ItemNotFoundException e) {
+           // not found
+       }
     %>
-   	<p style="color: blue">Node <strong>${fn:escapeXml(target.path)}</strong> deleted successfully</p>
+    <c:if test="${not empty target}">
+   	    <p style="color: blue">Node <strong>${fn:escapeXml(target.path)}</strong> deleted successfully</p>
+    </c:if>
+    <c:if test="${empty target}">
+        <p style="color: red">Node with identifier <strong>${fn:escapeXml(param.target)}</strong> cannot be found</p>
+    </c:if>
 </c:if>
 <%
 try {

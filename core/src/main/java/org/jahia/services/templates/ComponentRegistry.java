@@ -70,6 +70,10 @@ import org.slf4j.LoggerFactory;
 public class ComponentRegistry {
 
     private static final String JMIX_DROPPABLE_CONTENT = "jmix:droppableContent";
+    
+    protected static final String JMIX_STUDIO_ONLY = "jmix:studioOnly";
+
+    protected static final String JNT_COMPONENT = "jnt:component";
 
     protected static final String JNT_COMPONENT_FOLDER = "jnt:componentFolder";
 
@@ -127,8 +131,8 @@ public class ComponentRegistry {
         // Query.JCR_SQL2).execute().getNodes().hasNext();
     }
 
-    private int registerComponent(JCRSessionWrapper session, int count, boolean newDeployment, JCRNodeWrapper components, NodeTypeIterator nti) throws RepositoryException {
-        ExtendedNodeType nt = (ExtendedNodeType) nti.nextNodeType();
+    private boolean registerComponent(JCRSessionWrapper session, boolean newDeployment, JCRNodeWrapper components, ExtendedNodeType nt) throws RepositoryException {
+        boolean created = false;
         if (!nt.isMixin() && !JMIX_DROPPABLE_CONTENT.equals(nt.getName())
                 && nt.isNodeType(JMIX_DROPPABLE_CONTENT)) {
             String name = nt.getName();
@@ -148,7 +152,10 @@ public class ComponentRegistry {
                 }
                 if (!folder.hasNode(name)) {
                     JCRNodeWrapper comp = folder.addNode(name, JNT_SIMPLE_COMPONENT);
-                    count++;
+                    if (nt.isNodeType(JMIX_STUDIO_ONLY)) {
+                        comp.addMixin(JMIX_STUDIO_ONLY);
+                    }
+                    created = true;
                     if (logger.isDebugEnabled()) {
                         logger.debug("Created component node {}", comp.getPath());
                     }
@@ -159,7 +166,7 @@ public class ComponentRegistry {
                 }
             }
         }
-        return count;
+        return created;
     }
     
     /**
@@ -220,33 +227,23 @@ public class ComponentRegistry {
         if (modules.hasNode(pkg.getRootFolder())) {
             JCRNodeWrapper module = modules.getNode(pkg.getRootFolder());
             boolean newDeployment = !module.hasNode(NODE_COMPONENTS);
-            JCRNodeWrapper components = newDeployment ?  module.addNode(NODE_COMPONENTS, JNT_COMPONENT_FOLDER) : module.getNode(NODE_COMPONENTS);
-            if (newDeployment) {
-                ByteArrayInputStream is = null;
-                try {
-                    is = new ByteArrayInputStream(componentsSkeleton.getBytes("UTF-8"));
-                    session.importXML(components.getPath(), is,
-                            ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW,
-                            DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, null);
-                } catch (IOException e) {
-                    logger.error(
-                            "Unable to import the components folder skeleton. Cause: "
-                                    + e.getMessage(), e);
-                } finally {
-                    IOUtils.closeQuietly(is);
-                }
-            }
+            JCRNodeWrapper components = newDeployment ? module.addNode(NODE_COMPONENTS,
+                    JNT_COMPONENT_FOLDER) : module.getNode(NODE_COMPONENTS);
 
             if (pkg.getRootFolder().equals("default")) {
                 for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes("system-jahia"); nti
                         .hasNext();) {
-                    count = registerComponent(session, count, newDeployment, components, nti);
+                    if (registerComponent(session, newDeployment, components, (ExtendedNodeType) nti.nextNodeType())) {
+                        count++;
+                    }
                 }
             }
 
             for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(pkg.getName()); nti
                     .hasNext();) {
-                count = registerComponent(session, count, newDeployment, components, nti);
+                if (registerComponent(session, newDeployment, components, (ExtendedNodeType) nti.nextNodeType())) {
+                    count++;
+                }
             }
         } else {
             logger.warn("Unable to find module node for path {}."

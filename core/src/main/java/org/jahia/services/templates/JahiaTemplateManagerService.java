@@ -709,6 +709,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         while (ni.hasNext()) {
             JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
+            if (child.isNodeType(ComponentRegistry.JMIX_STUDIO_ONLY)
+                    && (child.isNodeType(ComponentRegistry.JNT_COMPONENT) || child
+                            .isNodeType(ComponentRegistry.JNT_COMPONENT_FOLDER))) {
+                // we do not deploy components which are dedicated for the Studio only
+                continue;
+            }
             boolean isTemplateNode = child.isNodeType("jnt:template");
             boolean isPageNode = child.isNodeType("jnt:page");
 

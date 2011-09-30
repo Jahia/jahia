@@ -1180,6 +1180,12 @@ public class XMLWriter extends XMLFilterImpl
             case '&':
                 write("&amp;");
                 break;
+            case '\n':
+                write("&#010;");
+                break;
+            case '\r':
+                write("&#013;");
+                break;
             case '<':
                 write("&lt;");
                 break;

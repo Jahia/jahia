@@ -187,13 +187,13 @@
             <th width="28%">
                 <fmt:message key="label.name"/>
             </th>
-            <th width="10%" style="white-space: nowrap">
+            <th width="7%">
                 <fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/>
             </th>
             <th width="20%">
                 <fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/>
             </th>
-            <th width="20%">
+            <th width="23%">
                 <fmt:message key="org.jahia.admin.site.ManageSites.templateSet.label"/>
             </th>
             <th width="14%" class="lastCol">

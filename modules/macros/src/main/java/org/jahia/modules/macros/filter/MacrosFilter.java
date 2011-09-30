@@ -82,6 +82,7 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
     private Pattern macrosPattern;
     private Map<String, String[]> scriptCache;
     private ScriptEngineUtils scriptEngineUtils;
+    private boolean replaceByErrorMessageOnMissingMacros = true;
     public void afterPropertiesSet() throws Exception {
         scriptCache = new LinkedHashMap<String, String[]>();
         if (macroLookupPath == null || !macroLookupPath.contains("{macro}")) {
@@ -120,11 +121,12 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
                     logger.warn("Error during execution of macro "+macroName+" with message "+ e.getMessage(), e);
                     previousOut = matcher.replaceFirst(macroName);
                 }
-            } else {
+                matcher = macrosPattern.matcher(previousOut);
+            } else if(replaceByErrorMessageOnMissingMacros) {
                 previousOut = matcher.replaceFirst("macro " + macroName + " not found");
-                logger.warn("Unknonwn macro '{}'", macroName);
+                logger.warn("Unknown macro '{}'", macroName);
+                matcher = macrosPattern.matcher(previousOut);
             }
-            matcher = macrosPattern.matcher(previousOut);
         }
 
         if (evaluated && logger.isDebugEnabled()) {
@@ -158,7 +160,7 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
     protected String[] getMacro(String macroName) {
         String[] macro = scriptCache.get(macroName);
 
-        if (macro != null) {
+        if (macro != null || (!replaceByErrorMessageOnMissingMacros && scriptCache.containsKey(macroName))) {
             return macro;
         }
 
@@ -180,9 +182,14 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
             }
 
             if (script == null) {
-                logger.warn("No macro script found for macro \"{}\" using lookup \"{}\".",
+                logger.info("No macro script found for macro \"{}\" using lookup \"{}\".",
                         macroName, lookup);
+                if(!replaceByErrorMessageOnMissingMacros) {
+                    scriptCache.put(macroName, macro);
+                }
                 return null;
+            } else {
+                logger.info("Macro script found for macro \"{}\" using lookup \"{}\".",macroName, lookup);
             }
 
             if (logger.isDebugEnabled()) {
@@ -220,5 +227,8 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
     public void setScriptEngineUtils(ScriptEngineUtils scriptEngineUtils) {
         this.scriptEngineUtils = scriptEngineUtils;
     }
-    
+
+    public void setReplaceByErrorMessageOnMissingMacros(boolean replaceByErrorMessageOnMissingMacros) {
+        this.replaceByErrorMessageOnMissingMacros = replaceByErrorMessageOnMissingMacros;
+    }
 }

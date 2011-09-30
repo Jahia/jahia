@@ -275,6 +275,14 @@ class TemplatePackageRegistry {
         return fileNameRegistry.containsKey(fileName);
     }
 
+    public Set<String> getPackageNames() {
+        return registry.keySet();
+    }
+
+    public Set<String> getPackageFileNames() {
+        return fileNameRegistry.keySet();
+    }
+
     /**
      * Returns a list of all available template packages.
      *
@@ -447,9 +455,12 @@ class TemplatePackageRegistry {
         	sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + sourcePack.getRootFolder() + "." + sourcePack.getResourceBundleName());
             }
             for (String s : sourcePack.getDepends()) {
-                JahiaTemplatesPackage depenedncy = lookup(s);
-                if (!depenedncy.isDefault() && depenedncy.getResourceBundleName() != null) { 
-                    sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + depenedncy.getRootFolder() + "." + depenedncy.getResourceBundleName());
+                JahiaTemplatesPackage dependency = lookup(s);
+                if (dependency == null) {
+                    dependency = lookupByFileName(s);
+                }
+                if (!dependency.isDefault() && dependency.getResourceBundleName() != null) {
+                    sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + dependency.getRootFolder() + "." + dependency.getResourceBundleName());
                 }
             }
             if (!sourcePack.isDefault()) {
@@ -530,6 +541,9 @@ class TemplatePackageRegistry {
     private void computeDependencies(Set<JahiaTemplatesPackage> dependencies,  JahiaTemplatesPackage pack) {
         for (String depends : pack.getDepends()) {
             JahiaTemplatesPackage dependentPack = registry.get(depends);
+            if (dependentPack == null) {
+                dependentPack = fileNameRegistry.get(depends);
+            }
             if (!dependencies.contains(dependentPack)) {
                 dependencies.add(dependentPack);
                 computeDependencies(dependencies, dependentPack);

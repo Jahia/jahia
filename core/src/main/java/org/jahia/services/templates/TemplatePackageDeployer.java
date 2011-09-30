@@ -48,16 +48,7 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 
@@ -662,11 +653,18 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
 
     private Map<String, JahiaTemplatesPackage> getOrderedPackages(List<JahiaTemplatesPackage> remaining) {
         LinkedHashMap<String, JahiaTemplatesPackage> toDeploy = new LinkedHashMap<String, JahiaTemplatesPackage>();
+        Set<String> folderNames = new HashSet<String>();
         while (!remaining.isEmpty()) {
             List<JahiaTemplatesPackage> newRemaining = new LinkedList<JahiaTemplatesPackage>();
             for (JahiaTemplatesPackage pack : remaining) {
-                if (pack.getDepends().isEmpty() || toDeploy.keySet().containsAll(pack.getDepends()) || templatePackageRegistry.containsAll(pack.getDepends())) {
+                Set<String> allDeployed = new HashSet<String>(templatePackageRegistry.getPackageNames());
+                allDeployed.addAll(templatePackageRegistry.getPackageFileNames());
+                allDeployed.addAll(toDeploy.keySet());
+                allDeployed.addAll(folderNames);
+
+                if (pack.getDepends().isEmpty() || allDeployed.containsAll(pack.getDepends())) {
                     toDeploy.put(pack.getName(), pack);
+                    folderNames.add(pack.getRootFolder());
                 } else {
                     newRemaining.add(pack);
                 }

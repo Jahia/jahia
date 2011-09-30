@@ -117,6 +117,8 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private Map<String, String> placeHoldersMap = new HashMap<String, String>();
 
     private boolean importUserGeneratedContent = false;
+    private int ugcLevel = 0;
+
     private boolean enforceUuid = false;
 
     private List<String> noSubNodesImport = Arrays.asList("jnt:importDropBox", "jnt:referencesKeeper");
@@ -171,9 +173,13 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             }
         }
 
-        if ("live".equals(atts.getValue("j:originWS")) && !importUserGeneratedContent) {
-            error++;
-            return;
+        if ("live".equals(atts.getValue("j:originWS"))) {
+            if (importUserGeneratedContent) {
+                ugcLevel++;
+            } else {
+                error++;
+                return;
+            }
         }
 
         String decodedLocalName = ISO9075.decode(localName);
@@ -192,12 +198,13 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             }
         }
 
-        pathes.push(pathes.peek() + "/" + decodedQName);
-
-        if (rootBehavior == ROOT_BEHAVIOUR_IGNORE && pathes.size() <= 2) {
+        if (rootBehavior == ROOT_BEHAVIOUR_IGNORE && pathes.size() <= 1) {
             session.getPathMapping().put("/" + decodedQName, nodes.peek().getPath().equals("/") ? "" : nodes.peek().getPath());
+            pathes.push("");
             return;
         }
+
+        pathes.push(pathes.peek() + "/" + decodedQName);
 
         try {
 
@@ -213,8 +220,8 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 path = nodes.peek().getPath() + "/" + decodedQName;
             }
 
-            if (pathes.peek().startsWith("/content/users/") && "jnt:user".equals(atts.getValue("jcr:primaryType"))) {
-                Matcher m = Pattern.compile("/content/users/([^/]+)").matcher(pathes.peek());
+            if (pathes.peek().startsWith("/users/") && "jnt:user".equals(atts.getValue("jcr:primaryType"))) {
+                Matcher m = Pattern.compile("/users/([^/]+)").matcher(pathes.peek());
                 if (m.matches()) {
                     path = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));
                 }
@@ -241,7 +248,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 isValid = false;
             }
 
-            if (("live".equals(atts.getValue("j:originWS")) == importUserGeneratedContent)) {
+            if (!importUserGeneratedContent || ugcLevel > 0) {
                 String originalUuid = atts.getValue("jcr:uuid");
                 String uuid = originalUuid;
                 if (uuid != null && uuidMapping.containsKey(uuid)) {
@@ -583,6 +590,9 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         if (error > 0) {
             error--;
             return;
+        }
+        if (ugcLevel > 0) {
+            ugcLevel--;
         }
 
         JCRNodeWrapper w = nodes.pop();

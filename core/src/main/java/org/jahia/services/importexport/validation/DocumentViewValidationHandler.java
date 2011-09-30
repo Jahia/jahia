@@ -44,7 +44,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.jackrabbit.util.ISO9075;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.BaseDocumentViewHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -56,21 +55,17 @@ import org.xml.sax.SAXException;
  * @author Sergiy Shyrkov
  * @since Jahia 6.6
  */
-public class DocumentViewValidationHandler extends BaseDocumentViewHandler {
+public class DocumentViewValidationHandler extends BaseDocumentViewHandler implements
+        ModuleDependencyAware {
+
+    private List<String> modules = Collections.emptyList();
+
+    private String templateSetName;
 
     private List<ImportValidator> validators = Collections.emptyList();
 
-    private JCRSiteNode site;
-
-    public JCRSiteNode getSite() {
-        return site;
-    }
-
-    public void setSite(JCRSiteNode site) {
-        this.site = site;
-    }
-
     public void endDocument() throws SAXException {
+        // do nothing
     }
 
     public void endElement(String uri, String localName, String qName) throws SAXException {
@@ -94,10 +89,33 @@ public class DocumentViewValidationHandler extends BaseDocumentViewHandler {
         return results;
     }
 
+    public void initDependencies(String templateSetName, List<String> modules) {
+        this.templateSetName = templateSetName;
+        if (modules != null) {
+            this.modules = modules;
+        } else {
+            this.modules = Collections.emptyList();
+        }
+        initValidators();
+    }
+
+    private void initValidators() {
+        if (!validators.isEmpty() && templateSetName != null) {
+            for (ImportValidator validator : validators) {
+                if (validator instanceof ModuleDependencyAware) {
+                    ((ModuleDependencyAware) validator).initDependencies(templateSetName, modules);
+                }
+            }
+        }
+    }
+
     public void setValidators(List<ImportValidator> validators) {
         if (validators != null) {
             this.validators = validators;
+        } else {
+            validators = Collections.emptyList();
         }
+        initValidators();
     }
 
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
@@ -114,7 +132,7 @@ public class DocumentViewValidationHandler extends BaseDocumentViewHandler {
             pathes.push(pathes.peek() + "/" + decodedQName);
 
             for (ImportValidator validator : validators) {
-                validator.validate(decodedLocalName, decodedQName, pathes.peek(), site, atts);
+                validator.validate(decodedLocalName, decodedQName, pathes.peek(), atts);
             }
         } catch (Exception re) {
             throw new SAXException(re);

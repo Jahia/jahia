@@ -50,7 +50,6 @@ import java.util.TreeSet;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 
 import org.jahia.api.Constants;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.xml.sax.Attributes;
 
@@ -92,8 +91,8 @@ public class MissingNodetypesValidator implements ImportValidator {
         return new MissingNodetypesValidationResult(missingNodetypes, missingMixins);
     }
 
-    public void validate(String decodedLocalName, String decodedQName,
-                         String currentPath, JCRSiteNode siteNode, Attributes atts) {
+    public void validate(String decodedLocalName, String decodedQName, String currentPath,
+            Attributes atts) {
         String pt = atts.getValue(Constants.JCR_PRIMARYTYPE);
         if (pt != null && !isTypeExisting(pt, false)) {
             missingNodetypes.get(pt).add(currentPath);

@@ -1840,6 +1840,7 @@ public class ManageSites extends AbstractAdministrationModule {
         } else if (filename.endsWith("systemsite.zip")) {
             importInfos.put("type", "files");
         } else {
+            List<String> installedModules = readInstalledModules(i);
             org.jahia.utils.zip.ZipEntry z;
             NoCloseZipInputStream zis2 = new NoCloseZipInputStream(
                     new BufferedInputStream(new FileInputStream(i)));
@@ -1883,7 +1884,7 @@ public class ManageSites extends AbstractAdministrationModule {
                                     .getInstance()
                                     .validateImportFile(
                                             JCRSessionFactory.getInstance().getCurrentUserSession(),
-                                            zis2, "application/xml", null);
+                                            zis2, "application/xml", installedModules);
                             logger.info(
                                     "Import {}/{} validated in {} ms: {}",
                                     new String[] { filename, z.getName(),
@@ -1956,6 +1957,42 @@ public class ManageSites extends AbstractAdministrationModule {
 
         }
         return importInfos;
+    }
+
+    private List<String> readInstalledModules(File i) throws IOException {
+        List<String> modules = new LinkedList<String>();
+        org.jahia.utils.zip.ZipEntry z;
+        NoCloseZipInputStream zis2 = new NoCloseZipInputStream(new BufferedInputStream(
+                new FileInputStream(i)));
+
+        try {
+            while ((z = zis2.getNextEntry()) != null) {
+                try {
+                    if ("site.properties".equals(z.getName())) {
+                        Properties p = new Properties();
+                        p.load(zis2);
+                        Map<Integer, String> im = new TreeMap<Integer, String>();
+                        for (Object k : p.keySet()) {
+                            String key = String.valueOf(k);
+                            if (key.startsWith("installedModules.")) {
+                                try {
+                                    im.put(Integer.valueOf(StringUtils.substringAfter(key, ".")),
+                                            p.getProperty(key));
+                                } catch (NumberFormatException e) {
+                                    logger.warn("Unable to parse installed module from key {}", key);
+                                }
+                            }
+                        }
+                        modules.addAll(im.values());
+                    }
+                } finally {
+                    zis2.closeEntry();
+                }
+            }
+        } finally {
+            zis2.reallyClose();
+        }
+        return modules;
     }
 
     private void processFileImport(HttpServletRequest request, HttpServletResponse response, HttpSession session)

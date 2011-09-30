@@ -40,7 +40,6 @@
 
 package org.jahia.services.importexport.validation;
 
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.xml.sax.Attributes;
 
 /**
@@ -60,16 +59,16 @@ public interface ImportValidator {
 
     /**
      * Performs the validation of the element.
-     *
+     * 
      * @param decodedLocalName
      *            the decoded local name of the element
      * @param decodedQName
      *            the decoded fully qualified name of the element
      * @param currentPath
- *            current path
-     * @param siteNode
+     *            current path
      * @param atts
+     *            the set of element attributes
      */
     public abstract void validate(String decodedLocalName, String decodedQName, String currentPath,
-                                  JCRSiteNode siteNode, Attributes atts);
+            Attributes atts);
 }

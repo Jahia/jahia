@@ -40,17 +40,14 @@
 
 package org.jahia.services.importexport.validation;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 
 /**
@@ -59,13 +56,13 @@ import org.xml.sax.Attributes;
  * @author Sergiy Shyrkov
  * @since Jahia 6.6
  */
-public class MissingModulesValidator implements ImportValidator {
-
-    private static final Logger logger = LoggerFactory.getLogger(MissingModulesValidator.class);
+public class MissingModulesValidator implements ImportValidator, ModuleDependencyAware {
 
     private boolean done;
 
     private Set<String> missingModules = new TreeSet<String>();
+
+    private List<String> modules = Collections.emptyList();
 
     private String targetTemplateSet;
 
@@ -78,46 +75,40 @@ public class MissingModulesValidator implements ImportValidator {
                 targetTemplateSetPresent);
     }
 
+    public void initDependencies(String templateSetName, List<String> modules) {
+        this.targetTemplateSet = templateSetName;
+        this.modules = modules;
+    }
+
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
         this.templateManagerService = templateManagerService;
     }
 
     public void validate(String decodedLocalName, String decodedQName, String currentPath,
-                         JCRSiteNode siteNode, Attributes atts) {
+            Attributes atts) {
         if (done) {
             return;
         }
 
         if (Constants.JAHIANT_VIRTUALSITE.equals(StringUtils.defaultString(atts
                 .getValue(Constants.JCR_PRIMARYTYPE)))) {
-            // we got the site element -> read the dependencies
-            String dependencyAttr = atts.getValue("j:dependencies");
+            // we got the site element -> check the dependencies
 
-            if (StringUtils.isNotEmpty(dependencyAttr)) {
-                targetTemplateSet = StringUtils.substringBefore(dependencyAttr, " ");
-                Set<String> modules = null;
-                if (dependencyAttr.contains(" ")) {
-                    modules = new HashSet<String>(Arrays.asList(StringUtils.split(StringUtils
-                            .substringAfter(dependencyAttr, " "))));
-                }
-                // validate if we have the template set deployed
-                targetTemplateSetPresent = templateManagerService
-                        .getTemplatePackageByNodeName(targetTemplateSet) != null;
+            // validate if we have the template set deployed
+            targetTemplateSetPresent = templateManagerService
+                    .getTemplatePackageByNodeName(targetTemplateSet) != null;
 
-                // validate modules
-                if (modules != null) {
-                    for (String module : modules) {
-                        if (templateManagerService.getTemplatePackageByNodeName(module) == null) {
-                            missingModules.add(module);
-                        }
+            // validate modules
+            if (modules != null) {
+                for (String module : modules) {
+                    if (templateManagerService.getTemplatePackageByNodeName(module) == null) {
+                        missingModules.add(module);
                     }
                 }
-            } else {
-                logger.warn("The j:dependencies attribute on the site element is either not present or empty."
-                        + " Unable to read site module dependencies." + " Skip validation.");
             }
 
             done = true;
         }
     }
+
 }

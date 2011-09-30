@@ -40,13 +40,22 @@
 
 package org.jahia.services.importexport.validation;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +67,7 @@ import org.xml.sax.Attributes;
  * @author Sergiy Shyrkov
  * @since Jahia 6.6
  */
-public class MissingTemplatesValidator implements ImportValidator {
+public class MissingTemplatesValidator implements ImportValidator, ModuleDependencyAware {
 
     private static final Logger logger = LoggerFactory.getLogger(MissingTemplatesValidator.class);
 
@@ -68,7 +77,8 @@ public class MissingTemplatesValidator implements ImportValidator {
         }
     };
 
-    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("(#?/sites/[^/]*|\\$currentSite)/templates/(.*)");
+    private static final Pattern TEMPLATE_PATTERN = Pattern
+            .compile("(#?/sites/[^/]*|\\$currentSite)/templates/(.*)");
 
     private Set<String> availableTemplateSets;
 
@@ -113,6 +123,11 @@ public class MissingTemplatesValidator implements ImportValidator {
                 targetTemplateSetPresent, templateSetsMissingCounts);
     }
 
+    public void initDependencies(String templateSetName, List<String> modules) {
+        targetTemplateSet = templateSetName;
+        this.modules = new LinkedHashSet<String>(modules);
+    }
+
     private boolean isTemplatePresent(String templatePath) {
         if (targetTemplateSetPresent) {
             return templateManagerService.isTemplatePresent(templatePath, dependencies);
@@ -139,13 +154,15 @@ public class MissingTemplatesValidator implements ImportValidator {
         }
     }
 
-    private void readDependencies(String dependencyAttr) {
-        if (StringUtils.isNotEmpty(dependencyAttr)) {
-            targetTemplateSet = StringUtils.substringBefore(dependencyAttr, " ");
-            if (dependencyAttr.contains(" ")) {
-                modules = new LinkedHashSet<String>(Arrays.asList(StringUtils.split(StringUtils
-                        .substringAfter(dependencyAttr, " "))));
-            }
+    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
+        this.templateManagerService = templateManagerService;
+    }
+
+    public void validate(String decodedLocalName, String decodedQName, String currentPath,
+            Attributes atts) {
+        if (Constants.JAHIANT_VIRTUALSITE.equals(StringUtils.defaultString(atts
+                .getValue(Constants.JCR_PRIMARYTYPE)))) {
+            // we have the site element -> initialize dependencies
             dependencies = new LinkedHashSet<String>(modules.size() + 1);
             dependencies.add(targetTemplateSet);
             dependencies.addAll(modules);
@@ -153,31 +170,9 @@ public class MissingTemplatesValidator implements ImportValidator {
             // validate if we have the template set deployed
             targetTemplateSetPresent = templateManagerService
                     .getTemplatePackageByNodeName(targetTemplateSet) != null;
-        } else {
-            logger.warn("The j:dependencies attribute on the site element is either not present or empty."
-                    + " Unable to read site module dependencies." + " Skip validation.");
-        }
-    }
-
-    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
-        this.templateManagerService = templateManagerService;
-    }
-
-    public void validate(String decodedLocalName, String decodedQName, String currentPath,
-            JCRSiteNode siteNode, Attributes atts) {
-        if (Constants.JAHIANT_VIRTUALSITE.equals(StringUtils.defaultString(atts
-                .getValue(Constants.JCR_PRIMARYTYPE)))) {
-            // we got the site element -> read the dependencies
-            readDependencies(atts.getValue("j:dependencies"));
         }
         if (dependencies.isEmpty()) {
-            if (siteNode == null) {
-                // we do not have module dependencies -> skip
-                return;
-            } else {
-                dependencies = new HashSet<String>(siteNode.getInstalledModules());
-                targetTemplateSetPresent = true;
-            }
+            return;
         }
 
         String templateAttr = atts.getValue("j:templateNode");

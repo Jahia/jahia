@@ -46,7 +46,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.taglibs.standard.tag.common.fmt.SetLocaleSupport;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.ImportExportService;
@@ -651,7 +650,8 @@ public class ContentManagerHelper {
             GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
             ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
             JCRNodeWrapper parent = session.getNode(parentPath);
-            ValidationResults results = importExport.validateImportFile(session, item.getStream(), item.getContentType(), parent.getResolveSite());
+            JCRSiteNode resolveSite = parent.getResolveSite();
+            ValidationResults results = importExport.validateImportFile(session, item.getStream(), item.getContentType(), resolveSite != null ? resolveSite.getInstalledModules() : null);
 
             if (results.isSuccessful()) {
                 if (!asynchronously) {

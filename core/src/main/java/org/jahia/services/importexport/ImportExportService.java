@@ -41,11 +41,9 @@
  package org.jahia.services.importexport;
 
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.validation.ValidationResults;
 import org.jahia.services.sites.JahiaSite;
 import org.jdom.JDOMException;
@@ -195,11 +193,12 @@ public interface ImportExportService {
      *            current JCR session instance
      * @param is
      *            the input stream with a JCR content in document format
-     * @param siteNode
+     * @param contentType the content type for the content
+     * @param installedModules the list of installed modules, where the first element is a template set name
      * @return the validation result
      * @since Jahia 6.6
      */
-    ValidationResults validateImportFile(JCRSessionWrapper session, InputStream is, String contentType, JCRSiteNode siteNode);
+    ValidationResults validateImportFile(JCRSessionWrapper session, InputStream is, String contentType, List<String> installedModules);
 
     /**
      * Import a full site zip into a newly created site.

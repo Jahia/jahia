@@ -1126,20 +1126,27 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
      *            current JCR session instance
      * @param is
      *            the input stream with a JCR content in document format
+     * @param contentType the content type for the content
+     * @param installedModules the list of installed modules, where the first element is a template set name
      * @return the validation result
      * @since Jahia 6.6
      */
-    public ValidationResults validateImportFile(JCRSessionWrapper session, InputStream is, String contentType, JCRSiteNode siteNode) {
+    public ValidationResults validateImportFile(JCRSessionWrapper session, InputStream is, String contentType, List<String> installedModules) {
         DocumentViewValidationHandler documentViewValidationHandler = (DocumentViewValidationHandler) SpringContextSingleton
                 .getBean("DocumentViewValidationHandler");
-        documentViewValidationHandler.setSite(siteNode);
+        if (installedModules != null && !installedModules.isEmpty()) {
+            documentViewValidationHandler.initDependencies(
+                    installedModules.get(0),
+                    installedModules.size() > 1 ? installedModules.subList(1,
+                            installedModules.size()) : null);
+        }
+        documentViewValidationHandler.setSession(session);
         if (contentType.equals("application/zip")) {
             NoCloseZipInputStream zis = new NoCloseZipInputStream(new BufferedInputStream(is));
             try {
                 ZipEntry zipentry = zis.getNextEntry();
                 while (zipentry != null) {
                     if (zipentry.getName().endsWith("xml")) {
-                        documentViewValidationHandler.setSession(session);
                         handleImport(zis, documentViewValidationHandler);
                     }
                     zipentry = zis.getNextEntry();
@@ -1154,7 +1161,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
             }
         } else {
-            documentViewValidationHandler.setSession(session);
             handleImport(is, documentViewValidationHandler);
         }
         return documentViewValidationHandler.getResults();

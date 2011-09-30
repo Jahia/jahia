@@ -83,8 +83,14 @@ public class UnpublicationWorkflow implements CustomWorkflow {
         initDialog(dialog);
 
         dialog.getButtonsBar().remove(dialog.getButtonsBar().getItem(0));
-        dialog.getButtonsBar().insert(getBypassWorkflowButton(workflow, dialog), 0);
-        dialog.getButtonsBar().insert(getStartWorkflowButton(workflow, dialog), 0);
+        Button button = getBypassWorkflowButton(workflow, dialog);
+        if(button!=null) {
+            dialog.getButtonsBar().insert(button, 0);
+        }
+        button = getStartWorkflowButton(workflow, dialog);
+        if (button!=null) {
+            dialog.getButtonsBar().insert(button, 0);
+        }
     }
 
     public void initExecuteActionDialog(GWTJahiaWorkflow workflow, WorkflowActionDialog dialog) {

@@ -143,9 +143,9 @@ public class ContentTypeTree extends LayoutContainer {
 				if (record.getNodeTypes().contains("jnt:componentFolder")) {
                     return false;
                 }
-                String name = record.getName();
-				name = name.toLowerCase();
-				return name.contains(filter.toLowerCase());
+
+                String s = filter.toLowerCase();
+                return record.getName().toLowerCase().contains(s) || record.getDisplayName().toLowerCase().contains(s);
 			}
 		};
 		nameFilterField.bind(store);

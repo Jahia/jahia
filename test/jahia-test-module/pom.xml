@@ -180,6 +180,16 @@
             <artifactId>jahia-impl</artifactId>
             <version>6.6.0.0-SNAPSHOT</version>
             <scope>provided</scope>
+            <exclusions>
+            	<exclusion>
+                    <groupId>xml-apis</groupId>
+            		<artifactId>xml-apis</artifactId>
+            	</exclusion>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
@@ -211,7 +221,7 @@
         <dependency>
             <groupId>org.jbpm.jbpm4</groupId>
             <artifactId>jbpm-test-base</artifactId>
-            <version>4.3</version>
+            <version>4.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -282,11 +292,35 @@
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
             <version>4.0.1</version>
+            <exclusions>
+            	<exclusion>
+            		<artifactId>bcmail-jdk14</artifactId>
+            		<groupId>bouncycastle</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>bctsp-jdk14</artifactId>
+            		<groupId>org.bouncycastle</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>bcprov-jdk14</artifactId>
+            		<groupId>bouncycastle</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>xml-apis</artifactId>
+            		<groupId>xml-apis</groupId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy</artifactId>
             <version>1.7.7</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>

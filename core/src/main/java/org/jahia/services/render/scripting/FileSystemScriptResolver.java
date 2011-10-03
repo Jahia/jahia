@@ -267,7 +267,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         Collections.reverse(nodeTypeList);
 
         List<String> installedModules = null;
-        if (site != null) {
+        if (site != null && site.getPath().startsWith("/sites/")) {
             installedModules = site.getInstalledModules();
         }
 

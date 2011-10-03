@@ -159,7 +159,11 @@ public class ContentTypeWindow extends Window {
     }
 
     public static void createContent(final Linker linker, final String name, final List<String> nodeTypes, final Map<String, GWTJahiaNodeProperty> props, final GWTJahiaNode targetNode, boolean includeSubTypes, final boolean createInParentAndMoveBefore) {
-        JahiaContentManagementService.App.getInstance().getContentTypesAsTree(Arrays.asList("$site/components/*"), nodeTypes, Arrays.asList("name"), includeSubTypes, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+        String contentPath = "$site/components/*";
+        if ("studiomode".equals(linker.getConfig().getName())) {
+            contentPath = "/templateSets/*";
+        }
+        JahiaContentManagementService.App.getInstance().getContentTypesAsTree(Arrays.asList(contentPath), nodeTypes, Arrays.asList("name"), includeSubTypes, new BaseAsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> result) {
                 if (result.size() == 1 && result.get(0).getChildren().isEmpty()) {
                     EngineLoader.showCreateEngine(linker, targetNode, (GWTJahiaNodeType) result.get(0).get("componentNodeType"), props,

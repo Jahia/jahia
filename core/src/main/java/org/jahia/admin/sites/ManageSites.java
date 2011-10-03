@@ -2144,6 +2144,7 @@ public class ManageSites extends AbstractAdministrationModule {
     }
 
     private TreeMap<String, JCRNodeWrapper> getTemplatesSets() throws RepositoryException {
+        JahiaTemplateManagerService managerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         TreeMap<String, JCRNodeWrapper> orderedTemplateSets = new TreeMap<String, JCRNodeWrapper>();
         final JCRNodeWrapper templatesSet =
                 JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode("/templateSets");
@@ -2152,7 +2153,9 @@ public class ManageSites extends AbstractAdministrationModule {
             JCRNodeWrapper node = (JCRNodeWrapper) templates.next();
             if (!node.getName().equals("templates-system") && node.hasProperty("j:siteType") &&
                     node.getProperty("j:siteType").getString().equals("templatesSet")) {
-                orderedTemplateSets.put(node.getName(), node);
+                if (managerService.getTemplatePackageByFileName(node.getName()) != null) {
+                    orderedTemplateSets.put(node.getName(), node);
+                }
             }
         }
         return orderedTemplateSets;

@@ -962,7 +962,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                                                     + " and name() <> 'templates-system'"
                                                     + " and [j:siteType] = 'templatesSet'",
                                             Query.JCR_SQL2).execute().getNodes(); nodes.hasNext();) {
-                                templateSets.add(nodes.nextNode().getName());
+                                Node node = nodes.nextNode();
+                                if (getTemplatePackageByFileName(node.getName()) != null) {
+                                    templateSets.add(node.getName());
+                                }
                             }
 
                             return templateSets;

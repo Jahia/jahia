@@ -397,19 +397,50 @@ public class JCRTagUtils {
         if (typelistValues == null && areaNode != null && areaNode.hasProperty("j:contributeTypes")) {
             typelistValues = areaNode.getProperty("j:contributeTypes").getValues();
         }
+
+        List<JCRNodeWrapper> components = new ArrayList<JCRNodeWrapper>();
+
+        List<String> typeList = new ArrayList<String>();
         if (typelistValues != null) {
             for (Value value : typelistValues) {
-                ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(value.getString());
-                if (!t.isAbstract() && !t.isMixin()) {
-                    types.add(t);
-                }
-                for (ExtendedNodeType sub : t.getSubtypesAsList()) {
-                    if (!sub.isAbstract() && !sub.isMixin()) {
-                        types.add(sub);
+                typeList.add(value.getString());
+            }
+
+            components.add(node.getResolveSite().getNode("components"));
+            for (int i = 0; i < components.size(); i++) {
+                JCRNodeWrapper n = components.get(i);
+                if (n.isNodeType("jnt:componentFolder")) {
+                    NodeIterator nodeIterator = n.getNodes();
+                    while (nodeIterator.hasNext()) {
+                        JCRNodeWrapper next = (JCRNodeWrapper) nodeIterator.next();
+                        components.add(next);
+                    }
+                } else if (n.isNodeType("jnt:simpleComponent")) {
+                    ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(n.getName());
+                    for (String s : typeList) {
+                        if (t.isNodeType(s)) {
+                            types.add(t);
+                            break;
+                        }
                     }
                 }
             }
         }
+
+//        if (typelistValues != null) {
+//            for (Value value : typelistValues) {
+//                ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(value.getString());
+//
+//                if (!t.isAbstract() && !t.isMixin() && node.getResolveSite().getInstalledModules().contains(t.getTemplatePackage().getRootFolder())) {
+//                    types.add(t);
+//                }
+//                for (ExtendedNodeType sub : t.getSubtypesAsList()) {
+//                    if (!sub.isAbstract() && !sub.isMixin() && node.getResolveSite().getInstalledModules().contains(t.getTemplatePackage().getRootFolder())) {
+//                        types.add(sub);
+//                    }
+//                }
+//            }
+//        }
 
         String[] constraints = ConstraintsHelper.getConstraints(node).split(" ");
         List<ExtendedNodeType> finaltypes = new ArrayList<ExtendedNodeType>();

@@ -30,11 +30,13 @@
                 <value>org.jahia.services.content.AutoSplittingTest</value>
                 <value>org.jahia.services.content.ContentTest</value>
                 <value>org.jahia.services.content.CrawlingPageVisitorTest</value>
+                <value>org.jahia.services.content.MarkForDeletionTest</value>
                 <value>org.jahia.services.content.MultiLanguageTest</value>
                 <value>org.jahia.services.content.interceptor.HtmlFilteringInterceptorTest</value>
                 <value>org.jahia.services.content.interceptor.URLInterceptorTest</value>
                 <value>org.jahia.services.content.impl.vfs.VFSContentStoreProviderTest</value>
                 <value>org.jahia.services.htmlvalidator.WAIValidatorTest</value>
+                <value>org.jahia.services.importexport.ImportExportTest</value>
                 <value>org.jahia.services.logging.ServiceLoggingTest</value>
                 <value>org.jahia.services.notification.CamelNotificationServiceTest</value>
                 <value>org.jahia.services.notification.HtmlExternalizationServiceTest</value>
@@ -43,6 +45,7 @@
                 <value>org.jahia.services.query.IndexOptionsTest</value>
                 <value>org.jahia.services.query.QueryModificationTest</value>
                 <value>org.jahia.services.query.QueryResultTest</value>
+                <value>org.jahia.services.render.JSessionIDTest</value>
                 <value>org.jahia.services.render.filter.ConditionalFilterTest</value>
                 <value>org.jahia.services.render.filter.EmailObfuscatorFilterTest</value>
                 <value>org.jahia.services.render.filter.URLFilterTest</value>

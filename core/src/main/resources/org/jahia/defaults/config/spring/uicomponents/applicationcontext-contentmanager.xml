@@ -1234,6 +1234,7 @@
         <property name="displaySearchInTag" value="false"/>
         <property name="searchInContent" value="true"/>
         <property name="searchInFile" value="false"/>
+        <property name="enableDragAndDrop" value="false"/>
 
         <!-- accordion -->
         <property name="repositories">

@@ -270,6 +270,7 @@ public class UIConfigHelper {
                 gwtConfig.setHiddenRegex(config.getHiddenRegex());
                 gwtConfig.setHiddenTypes(config.getHiddenTypes());
                 gwtConfig.setDefaultView(config.getDefaultView());
+                gwtConfig.setEnableDragAndDrop(config.isEnableDragAndDrop());
                 gwtConfig.setEnableFileDoubleClick(config.isEnableFileDoubleClick());
                 gwtConfig.setAllowsMultipleSelection(config.isAllowsMultipleSelection());
                 gwtConfig.setExpandRoot(config.isExpandRoot());

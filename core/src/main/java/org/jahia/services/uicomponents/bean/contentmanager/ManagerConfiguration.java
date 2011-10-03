@@ -72,6 +72,7 @@ public class ManagerConfiguration implements Serializable {
     private String hiddenRegex;
 
     private String defaultView;
+    private boolean enableDragAndDrop = true;
     private boolean enableFileDoubleClick = true;
     private boolean allowsMultipleSelection = true;
 
@@ -172,6 +173,14 @@ public class ManagerConfiguration implements Serializable {
 
     public void setDefaultView(String defaultView) {
         this.defaultView = defaultView;
+    }
+
+    public boolean isEnableDragAndDrop() {
+        return enableDragAndDrop;
+    }
+
+    public void setEnableDragAndDrop(boolean enableDragAndDrop) {
+        this.enableDragAndDrop = enableDragAndDrop;
     }
 
     public boolean isEnableFileDoubleClick() {

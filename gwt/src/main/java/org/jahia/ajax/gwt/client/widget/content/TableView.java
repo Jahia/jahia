@@ -139,15 +139,18 @@ public class TableView extends AbstractView {
     @Override
     public void initWithLinker(ManagerLinker linker) {
         super.initWithLinker(linker);
-        GridDragSource source = new GridDragSource(m_grid) {
-            @Override protected void onDragDrop(DNDEvent e) {
-            }
-        };
-        source.addDNDListener(linker.getDndListener());
+        if (getLinker().getDndListener() != null) {
+            GridDragSource source = new GridDragSource(m_grid) {
+                @Override
+                protected void onDragDrop(DNDEvent e) {
+                }
+            };
+            source.addDNDListener(linker.getDndListener());
 
-        GridDropTarget target = new MyGridDropTarget(m_grid);
-        target.setAllowSelfAsSource(true);
-        target.addDNDListener(linker.getDndListener());
+            GridDropTarget target = new MyGridDropTarget(m_grid);
+            target.setAllowSelfAsSource(true);
+            target.addDNDListener(linker.getDndListener());
+        }
     }
 
     public void setContextMenu(Menu menu) {
@@ -194,7 +197,7 @@ public class TableView extends AbstractView {
                         showInsert(event, row);
 
                         if (after) {
-                            activeItem = grid.getStore().getAt(idx+1);
+                            activeItem = grid.getStore().getAt(idx + 1);
                             before = true;
                         } else {
                             activeItem = grid.getStore().getAt(idx);
@@ -213,7 +216,7 @@ public class TableView extends AbstractView {
                 before = false;
                 insertIndex = 0;
                 if (feedback == DND.Feedback.INSERT) {
-                    showInsert(event, (Element) grid.getView().getRow(grid.getStore().getCount()-1));
+                    showInsert(event, (Element) grid.getView().getRow(grid.getStore().getCount() - 1));
                 }
             }
             if (!before) {
@@ -243,11 +246,11 @@ public class TableView extends AbstractView {
 
                 if (activeItem != null) {
                     final GWTJahiaNode target = (GWTJahiaNode) activeItem;
-                        if (before) {
-                            JahiaContentManagementService.App.getInstance().moveOnTopOf(source.getPath(), target.getPath(), callback);
-                        } else {
-                            JahiaContentManagementService.App.getInstance().moveAtEnd(source.getPath(), target.getPath(), callback);
-                        }
+                    if (before) {
+                        JahiaContentManagementService.App.getInstance().moveOnTopOf(source.getPath(), target.getPath(), callback);
+                    } else {
+                        JahiaContentManagementService.App.getInstance().moveAtEnd(source.getPath(), target.getPath(), callback);
+                    }
                 } else {
                     final GWTJahiaNode target = root;
                     JahiaContentManagementService.App.getInstance().moveAtEnd(source.getPath(), target.getPath(), callback);

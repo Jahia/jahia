@@ -118,8 +118,9 @@ public class ManagerLinker implements Linker {
      * Set up linker (callback for each member).
      */
     protected void registerLinker() {
-
-        dndListener = new DNDListener();
+        if (config.isEnableDragAndDrop()) {
+            dndListener = new DNDListener();
+        }
         if (m_bottomBar != null) {
             m_bottomBar.initWithLinker(this);
         }

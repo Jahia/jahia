@@ -78,6 +78,7 @@ public class RepositoryTab extends ContentPanel {
     private ContentRepositoryTabs folderTreeContainer;
     private TreeGrid<GWTJahiaNode> m_tree;
     private GWTJahiaNodeTreeFactory factory;
+
     /**
      * Constructor
      *
@@ -143,63 +144,65 @@ public class RepositoryTab extends ContentPanel {
      * init
      */
     public void init() {
-        factory.setDisplayHiddenTypes(getLinker()!=null&&getLinker().isDisplayHiddenTypes());
+        factory.setDisplayHiddenTypes(getLinker() != null && getLinker().isDisplayHiddenTypes());
         loader.load();
 
-        TreeGridDragSource source = new TreeGridDragSource(m_tree) {
-            @Override
-            protected void onDragStart(DNDEvent e) {
-                super.onDragStart(e);
-                List<BaseTreeModel> l = e.getData();
-                List<GWTJahiaNode> r = new ArrayList<GWTJahiaNode>();
-                for (BaseTreeModel model : l) {
-                    r.add((GWTJahiaNode) model.get("model"));
+        if (getLinker().getDndListener() != null) {
+            TreeGridDragSource source = new TreeGridDragSource(m_tree) {
+                @Override
+                protected void onDragStart(DNDEvent e) {
+                    super.onDragStart(e);
+                    List<BaseTreeModel> l = e.getData();
+                    List<GWTJahiaNode> r = new ArrayList<GWTJahiaNode>();
+                    for (BaseTreeModel model : l) {
+                        r.add((GWTJahiaNode) model.get("model"));
+                    }
+                    e.setData(r);
                 }
-                e.setData(r);
-            }
-        };
-        source.addDNDListener(getLinker().getDndListener());
+            };
+            source.addDNDListener(getLinker().getDndListener());
 
-        TreeGridDropTarget target = new TreeGridDropTarget(m_tree) {
-            @Override
-            protected void handleInsert(DNDEvent dndEvent, TreeGrid.TreeNode treeNode) {
-                handleAppend(dndEvent, treeNode);
-            }
+            TreeGridDropTarget target = new TreeGridDropTarget(m_tree) {
+                @Override
+                protected void handleInsert(DNDEvent dndEvent, TreeGrid.TreeNode treeNode) {
+                    handleAppend(dndEvent, treeNode);
+                }
 
-            @Override
-            protected void handleAppend(DNDEvent event, TreeGrid.TreeNode item) {
-                super.handleAppend(event, item);
-                final List<GWTJahiaNode> list = (List<GWTJahiaNode>) event.getData();
-                for (GWTJahiaNode source : list) {
-                    final GWTJahiaNode target = (GWTJahiaNode) activeItem.getModel();
-                    if (target.getPath().startsWith(source.getPath()) || source.getPath().equals(target.getPath()+"/"+source.getName())) {
-                        event.getStatus().setStatus(false);
-                    } else {
-                        final Set<String> constraints = new HashSet(source.getInheritedNodeTypes());
-                        constraints.addAll(source.getNodeTypes());
-                        constraints.retainAll(target.getChildConstraints());
-                        if (constraints.isEmpty()) {
+                @Override
+                protected void handleAppend(DNDEvent event, TreeGrid.TreeNode item) {
+                    super.handleAppend(event, item);
+                    final List<GWTJahiaNode> list = (List<GWTJahiaNode>) event.getData();
+                    for (GWTJahiaNode source : list) {
+                        final GWTJahiaNode target = (GWTJahiaNode) activeItem.getModel();
+                        if (target.getPath().startsWith(source.getPath()) || source.getPath().equals(target.getPath() + "/" + source.getName())) {
                             event.getStatus().setStatus(false);
+                        } else {
+                            final Set<String> constraints = new HashSet(source.getInheritedNodeTypes());
+                            constraints.addAll(source.getNodeTypes());
+                            constraints.retainAll(target.getChildConstraints());
+                            if (constraints.isEmpty()) {
+                                event.getStatus().setStatus(false);
+                            }
                         }
                     }
                 }
-            }
 
-            @Override
-            protected void handleAppendDrop(DNDEvent dndEvent, TreeGrid.TreeNode treeNode) {
-                if (dndEvent.getStatus().getStatus()) {
-                    ContentActions.move(getLinker(), (List<GWTJahiaNode>) dndEvent.getData(), (GWTJahiaNode) treeNode.getModel());
-                    loader.load();
+                @Override
+                protected void handleAppendDrop(DNDEvent dndEvent, TreeGrid.TreeNode treeNode) {
+                    if (dndEvent.getStatus().getStatus()) {
+                        ContentActions.move(getLinker(), (List<GWTJahiaNode>) dndEvent.getData(), (GWTJahiaNode) treeNode.getModel());
+                        loader.load();
+                    }
                 }
-            }
 
-            @Override
-            protected void handleInsertDrop(DNDEvent event, TreeGrid.TreeNode item, int index) {
-            }
-        };
-        target.setFeedback(DND.Feedback.BOTH);
-        target.setAllowSelfAsSource(true);
-        target.setAutoExpand(true);
+                @Override
+                protected void handleInsertDrop(DNDEvent event, TreeGrid.TreeNode item, int index) {
+                }
+            };
+            target.setFeedback(DND.Feedback.BOTH);
+            target.setAllowSelfAsSource(true);
+            target.setAutoExpand(true);
+        }
     }
 
     /**
@@ -212,7 +215,7 @@ public class RepositoryTab extends ContentPanel {
         if (getSelectedItem() != null && openItem.getPath().startsWith(getSelectedItem().getPath())) {
             if (m_tree.isExpanded(getSelectedItem())) {
                 GWTJahiaNode gItem = store.findModel((GWTJahiaNode) item);
-                Log.debug("expand: " + gItem.getPath());                
+                Log.debug("expand: " + gItem.getPath());
                 m_tree.getSelectionModel().select(gItem, false);
             } else {
                 m_tree.addListener(Events.Expand, new Listener<TreeGridEvent>() {
@@ -221,7 +224,7 @@ public class RepositoryTab extends ContentPanel {
 
                         GWTJahiaNode gItem = store.findModel((GWTJahiaNode) item);
                         Log.debug("expand: " + gItem.getPath());
-                        m_tree.getSelectionModel().select(gItem, false);                        
+                        m_tree.getSelectionModel().select(gItem, false);
                     }
                 });
                 m_tree.setExpanded(getSelectedItem(), true);
@@ -231,6 +234,7 @@ public class RepositoryTab extends ContentPanel {
 
     /**
      * Refresh
+     *
      * @param flag
      */
     public void refresh(int flag) {
@@ -240,7 +244,7 @@ public class RepositoryTab extends ContentPanel {
         }
         if (refresh) {
             store.removeAll();
-            factory.setDisplayHiddenTypes(getLinker()!=null&&getLinker().isDisplayHiddenTypes());
+            factory.setDisplayHiddenTypes(getLinker() != null && getLinker().isDisplayHiddenTypes());
             loader.load();
         }
     }

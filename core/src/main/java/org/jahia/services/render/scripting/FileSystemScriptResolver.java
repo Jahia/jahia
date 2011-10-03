@@ -44,6 +44,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
@@ -82,7 +83,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     private List<String> scriptExtensionsOrdering;
 
     private static Map<String, Boolean> resourcesCache = new ConcurrentHashMap<String, Boolean>();
-    private static Map<ExtendedNodeType, SortedSet<View>> viewSetCache = new ConcurrentHashMap<ExtendedNodeType, SortedSet<View>>();
+    private static Map<String, SortedSet<View>> viewSetCache = new ConcurrentHashMap<String, SortedSet<View>>();
 
     public List<String> getScriptExtensionsOrdering() {
         return scriptExtensionsOrdering;
@@ -92,24 +93,24 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         this.scriptExtensionsOrdering = scriptExtensionsOrdering;
     }
 
-    protected View resolveView(Resource resource, final RenderContext context, ArrayList<String> searchedLocations) throws RepositoryException {
+    protected View resolveView(Resource resource, ArrayList<String> searchedLocations) throws RepositoryException {
         if (resource.getResourceNodeType() != null) {
             ExtendedNodeType nt = resource.getResourceNodeType();
             List<ExtendedNodeType> nodeTypeList = getNodeTypeList(nt);
-            return resolveView(resource, context, nodeTypeList, searchedLocations);
+            return resolveView(resource, nodeTypeList, searchedLocations);
         }
 
         ExtendedNodeType nt = resource.getNode().getPrimaryNodeType();
         List<ExtendedNodeType> nodeTypeList = getNodeTypeList(nt);
 
-        View res = resolveView(resource, context, nodeTypeList, searchedLocations);
+        View res = resolveView(resource, nodeTypeList, searchedLocations);
         if (res != null) {
             return res;
         }
 
         List<ExtendedNodeType> mixinNodeTypes = Arrays.asList(resource.getNode().getMixinNodeTypes());
         if (mixinNodeTypes.size() > 0) {
-            res = resolveView(resource, context, mixinNodeTypes, searchedLocations);
+            res = resolveView(resource, mixinNodeTypes, searchedLocations);
             if (res != null) {
                 return res;
             }
@@ -128,12 +129,12 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         return nodeTypeList;
     }
 
-    private View resolveView(Resource resource, RenderContext context, List<ExtendedNodeType> nodeTypeList, ArrayList<String> searchedLocations) {
+    private View resolveView(Resource resource, List<ExtendedNodeType> nodeTypeList, ArrayList<String> searchedLocations) {
         String template = resource.getResolvedTemplate();
             for (ExtendedNodeType st : nodeTypeList) {
                 Set<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(
                         JCRContentUtils.replaceColon(st.getAlias()));
-                View res = resolveView(resource, context, template, st, sortedPackages, searchedLocations);
+                View res = resolveView(resource, template, st, sortedPackages, searchedLocations);
                 if (res != null) {
                     return res;
                 }
@@ -141,7 +142,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         return null;
     }
 
-    private View resolveView(Resource resource, RenderContext context, String template, ExtendedNodeType st, Set<JahiaTemplatesPackage> sortedPackages, ArrayList<String> searchedLocations) {
+    private View resolveView(Resource resource, String template, ExtendedNodeType st, Set<JahiaTemplatesPackage> sortedPackages, ArrayList<String> searchedLocations) {
         for (JahiaTemplatesPackage aPackage : sortedPackages) {
             String currentTemplatePath = aPackage.getRootFolderPath();
             String templatePath = getTemplatePath(resource.getTemplateType(), template, st, currentTemplatePath, searchedLocations);
@@ -189,10 +190,10 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         return null;
     }
 
-    public Script resolveScript(Resource resource, RenderContext context) throws TemplateNotFoundException {
+    public Script resolveScript(Resource resource) throws TemplateNotFoundException {
         try {
             ArrayList<String> searchLocations = new ArrayList<String>();
-            View resolvedTemplate = resolveView(resource, context, searchLocations);
+            View resolvedTemplate = resolveView(resource, searchLocations);
             if (resolvedTemplate == null) {
                 throw new TemplateNotFoundException("Unable to find the template for resource " + resource + " by looking in " + searchLocations);
             }
@@ -208,13 +209,14 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         }
     }
 
-    public boolean hasView(ExtendedNodeType nt, String key) {
+    public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site) {
         SortedSet<View> t = null;
-        if (viewSetCache.containsKey(nt)) {
-            t = viewSetCache.get(nt);
+        String cacheKey = nt.getName() + (site != null ? site.getSiteKey() : "");
+        if (viewSetCache.containsKey(cacheKey)) {
+            t = viewSetCache.get(cacheKey);
         } else {
-            t = getViewsSet(nt);
-            viewSetCache.put(nt, t);
+            t = getViewsSet(nt, site);
+            viewSetCache.put(cacheKey, t);
         }
         for (View view : t) {
             if (view.getKey().equals(key)) {
@@ -222,20 +224,6 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
             }
         }
         return false;
-    }
-
-    public SortedSet<View> getAllViewsSet() {
-        Map<String, View> views = new HashMap<String, View>();
-
-        String templateType = "html";
-
-        List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages();
-        for (JahiaTemplatesPackage aPackage : packages) {
-            getAllViewsSet(views, templateType, aPackage.getRootFolder(), aPackage);
-        }
-        getAllViewsSet(views, templateType, "default", null);
-
-        return new TreeSet<View>(views.values());
     }
 
     private void getAllViewsSet(Map<String, View> views, String templateType, String currentTemplatePath, JahiaTemplatesPackage tplPackage) {
@@ -268,7 +256,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     }
 
 
-    public SortedSet<View> getViewsSet(ExtendedNodeType nt) {
+    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site) {
         Map<String, View> views = new HashMap<String, View>();
 
         List<ExtendedNodeType> nodeTypeList = new ArrayList<ExtendedNodeType>(Arrays.asList(nt.getSupertypes()));
@@ -278,10 +266,17 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
 
         Collections.reverse(nodeTypeList);
 
+        List<String> installedModules = null;
+        if (site != null) {
+            installedModules = site.getInstalledModules();
+        }
+
         for (ExtendedNodeType type : nodeTypeList) {
             Set<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(JCRContentUtils.replaceColon(type.getName()));
             for (JahiaTemplatesPackage aPackage : packages) {
-                getViewsSet(type, views, templateType, aPackage.getRootFolder(), aPackage);
+                if (installedModules == null || installedModules.contains(aPackage.getRootFolder())) {
+                    getViewsSet(type, views, templateType, aPackage.getRootFolder(), aPackage);
+                }
             }
             getViewsSet(type, views, templateType, "default", null);
         }

@@ -176,7 +176,7 @@ public class RenderService {
      */
     public Script resolveScript(Resource resource, RenderContext context) throws RepositoryException, TemplateNotFoundException {
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            Script s = scriptResolver.resolveScript(resource, context);
+            Script s = scriptResolver.resolveScript(resource);
             if (s != null) {
                 return s;
             }
@@ -187,11 +187,11 @@ public class RenderService {
 
     public boolean hasView(JCRNodeWrapper node, String key) {
         try {
-            if (hasView(node.getPrimaryNodeType(), key)) {
+            if (hasView(node.getPrimaryNodeType(), key, node.getResolveSite())) {
                 return true;
             }
             for (ExtendedNodeType type : node.getMixinNodeTypes()) {
-                if (hasView(type, key)) {
+                if (hasView(type, key, node.getResolveSite())) {
                     return true;
                 }
             }
@@ -200,21 +200,14 @@ public class RenderService {
         }
         return false;
     }
-    public boolean hasView(ExtendedNodeType nt, String key) {
+
+    public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site) {
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            if (scriptResolver.hasView(nt, key)) {
+            if (scriptResolver.hasView(nt, key, site)) {
                 return true;
             }
         }
         return false;
-    }
-
-    public SortedSet<View> getAllViewsSet() {
-        SortedSet<View> set = new TreeSet<View>();
-        for (ScriptResolver scriptResolver : scriptResolvers) {
-            set.addAll(scriptResolver.getAllViewsSet());
-        }
-        return set;
     }
 
     /**
@@ -226,10 +219,10 @@ public class RenderService {
         return new RenderChain(filters, templateManagerService.getRenderFilters());
     }
 
-    public SortedSet<View> getViewsSet(ExtendedNodeType nt) {
+    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site) {
         SortedSet<View> set = new TreeSet<View>();
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            set.addAll(scriptResolver.getViewsSet(nt));
+            set.addAll(scriptResolver.getViewsSet(nt, site));
         }
         return set;
     }

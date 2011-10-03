@@ -242,7 +242,7 @@ public class TemplateHelper {
 //                set.addAll(getTemplatesSet(c));
 //            }
 //        } else {
-        set = renderService.getViewsSet(nt);
+        set = renderService.getViewsSet(nt, node.getResolveSite());
 //        }
         for (View view : set) {
             final String key = view.getKey();

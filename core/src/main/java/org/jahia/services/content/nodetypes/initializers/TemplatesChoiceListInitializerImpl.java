@@ -42,6 +42,7 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRContentUtils;
@@ -76,14 +77,19 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
         if (context == null) {
             return new ArrayList<ChoiceListValue>();
         }
-
         JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
         ExtendedNodeType realNodeType = (ExtendedNodeType) context.get("contextType");
         String propertyName = context.containsKey("dependentProperties") ? ((List<String>)context.get("dependentProperties")).get(0) : null;
 
+        JCRSiteNode site = null;
+
         SortedSet<View> views = new TreeSet<View>();
 
         try {
+            if (node != null) {
+                site = node.getResolveSite();
+            }
+
             final List<String> nodeTypeList = new ArrayList<String>();
             String nextParam = "";
             if (param.contains(",")) {
@@ -161,6 +167,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                 JCRNodeWrapper parent;
                 if (node == null) {
                     parent = (JCRNodeWrapper) context.get("contextParent");
+                    site = parent.getResolveSite();
                 } else {
                     parent = node.getParent();
                 }
@@ -203,7 +210,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
 
             for (String s : nodeTypeList) {
                 SortedSet<View> viewsSet = RenderService.getInstance().getViewsSet(
-                        NodeTypeRegistry.getInstance().getNodeType(s));
+                        NodeTypeRegistry.getInstance().getNodeType(s), site);
                 if (!viewsSet.isEmpty()) {
                     if (views.isEmpty()) {
                         views.addAll(viewsSet);

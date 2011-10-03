@@ -194,4 +194,13 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
         getSession().removeFromCache(this);
         item.remove();
     }
+    
+    /**
+     * Returns the path of this item for use in diagnostic output.
+     *
+     * @return "/path/to/item"
+     */
+    public String toString() {
+        return item.toString();
+    }
 }

@@ -792,7 +792,11 @@ public class JCRSessionWrapper implements Session {
             RepositoryException {
         JCRItemWrapper item = getItem(absPath);
         item.remove();
-        removeFromCache(item);
+        if (item.isNode() && ((JCRNodeWrapper)item).hasNodes()) {
+            flushCaches();
+        } else {
+            removeFromCache(item);
+        }
     }
 
     void removeFromCache(JCRItemWrapper item) throws RepositoryException {

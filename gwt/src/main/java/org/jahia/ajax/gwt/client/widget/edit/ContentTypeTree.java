@@ -44,7 +44,6 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Layout;
@@ -68,7 +67,6 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -161,9 +159,9 @@ public class ContentTypeTree extends LayoutContainer {
         store.add(nodes, true);
     }
 
-    public void fillStore(List<String> paths, List<String> types, boolean includeSubTypes, boolean displayStudioElement) {
+    public void fillStore(List<String> paths, List<String> types, boolean includeSubTypes) {
         store.removeAll();
-        JahiaContentManagementService.App.getInstance().getContentTypesAsTree(paths, types, Arrays.asList("name"), includeSubTypes, displayStudioElement,
+        JahiaContentManagementService.App.getInstance().getContentTypesAsTree(paths, types, Arrays.asList("name"), includeSubTypes,
                 new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> result) {
                         store.add(result, true);

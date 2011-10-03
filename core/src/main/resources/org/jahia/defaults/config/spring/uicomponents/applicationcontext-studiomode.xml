@@ -316,7 +316,6 @@
                                     <value>/templateSets/*</value>
                                 </list>
                             </property>
-                            <property name="displayStudioElement" value="true"/>
                         </bean>
                     </property>
 

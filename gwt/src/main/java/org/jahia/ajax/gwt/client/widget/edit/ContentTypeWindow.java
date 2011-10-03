@@ -61,7 +61,6 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEngine;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -159,8 +158,8 @@ public class ContentTypeWindow extends Window {
         ok.setEnabled(true);
     }
 
-    public static void createContent(final Linker linker, final String name, final List<String> nodeTypes, final Map<String, GWTJahiaNodeProperty> props, final GWTJahiaNode targetNode, boolean includeSubTypes, boolean displayStudioElements, final boolean createInParentAndMoveBefore) {
-        JahiaContentManagementService.App.getInstance().getContentTypesAsTree(Arrays.asList("$site/components/*"), nodeTypes, Arrays.asList("name"), includeSubTypes, displayStudioElements, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+    public static void createContent(final Linker linker, final String name, final List<String> nodeTypes, final Map<String, GWTJahiaNodeProperty> props, final GWTJahiaNode targetNode, boolean includeSubTypes, final boolean createInParentAndMoveBefore) {
+        JahiaContentManagementService.App.getInstance().getContentTypesAsTree(Arrays.asList("$site/components/*"), nodeTypes, Arrays.asList("name"), includeSubTypes, new BaseAsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> result) {
                 if (result.size() == 1 && result.get(0).getChildren().isEmpty()) {
                     EngineLoader.showCreateEngine(linker, targetNode, (GWTJahiaNodeType) result.get(0).get("componentNodeType"), props,

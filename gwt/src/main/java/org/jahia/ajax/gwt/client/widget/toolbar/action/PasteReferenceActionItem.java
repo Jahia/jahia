@@ -70,7 +70,7 @@ public class PasteReferenceActionItem extends BaseActionItem  {
             Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(2);
             props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title", new GWTJahiaNodePropertyValue(copiedNode.getDisplayName(), GWTJahiaNodePropertyType.STRING)));
             props.put("j:node", new GWTJahiaNodeProperty("j:node", new GWTJahiaNodePropertyValue(copiedNode, GWTJahiaNodePropertyType.WEAKREFERENCE)));
-            ContentTypeWindow.createContent(linker, copiedNode.getName(), allowedRefs, props, linker.getSelectionContext().getSingleSelection(), true, true, false);
+            ContentTypeWindow.createContent(linker, copiedNode.getName(), allowedRefs, props, linker.getSelectionContext().getSingleSelection(), true, false);
         } else {
             ContentActions.pasteReference(linker);
         }

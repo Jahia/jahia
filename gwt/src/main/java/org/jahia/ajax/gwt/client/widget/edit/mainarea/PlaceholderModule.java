@@ -112,7 +112,7 @@ public class PlaceholderModule extends Module {
                         final GWTJahiaNode parentNode = getParentModule().getNode();
                         if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
                             ContentActions.showContentWizard(mainModule.getEditLinker(), s, parentNode,
-                                    true, mainModule.getConfig().getName().equals("studiomode"));
+                                    true);
                         }
                     }
                 });

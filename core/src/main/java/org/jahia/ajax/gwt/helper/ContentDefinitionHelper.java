@@ -748,7 +748,7 @@ public class ContentDefinitionHelper {
     }
 
 
-    public List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> fields, boolean includeSubTypes, boolean displayStudioElement, final JCRSiteNode site,
+    public List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> fields, boolean includeSubTypes, final JCRSiteNode site,
                                                     Locale uiLocale, JCRSessionWrapper session)
             throws GWTJahiaServiceException {
         try {

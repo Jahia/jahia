@@ -60,7 +60,6 @@ class CreateContentTabItem extends SidePanelTabItem {
 
     private transient ContentTypeTree contentTypeTree;
     private transient CreateGridDragSource gridDragSource;
-    private boolean displayStudioElement = false;
     private String baseType = null;
     private List<String> paths;
 
@@ -69,7 +68,7 @@ class CreateContentTabItem extends SidePanelTabItem {
         tab.setLayout(new FitLayout());
 
         contentTypeTree = new ContentTypeTree();
-        contentTypeTree.fillStore(paths, baseType != null ? Arrays.asList(baseType.split(" ")) : null, true, displayStudioElement);
+        contentTypeTree.fillStore(paths, baseType != null ? Arrays.asList(baseType.split(" ")) : null, true);
 
         refresh(Linker.REFRESH_DEFINITIONS);
 
@@ -85,10 +84,6 @@ class CreateContentTabItem extends SidePanelTabItem {
         gridDragSource.addDNDListener(linker.getDndListener());
     }
 
-    public void setDisplayStudioElement(boolean displayStudioElement) {
-        this.displayStudioElement = displayStudioElement;
-    }
-
     public void setBaseType(String baseType) {
         this.baseType = baseType;
     }
@@ -100,7 +95,7 @@ class CreateContentTabItem extends SidePanelTabItem {
     @Override
     public void refresh(int flag) {
         if ((flag & Linker.REFRESH_COMPONENTS) != 0) {
-            contentTypeTree.fillStore(paths, baseType != null ? Arrays.asList(baseType.split(" ")) : null, true, displayStudioElement);
+            contentTypeTree.fillStore(paths, baseType != null ? Arrays.asList(baseType.split(" ")) : null, true);
         }
     }
 }

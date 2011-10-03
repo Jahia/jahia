@@ -264,12 +264,12 @@ public class ContentActions {
      * @param includeSubTypes
      */
     public static void showContentWizard(final Linker linker, final String nodeTypes, boolean includeSubTypes) {
-        showContentWizard(linker, nodeTypes, linker.getSelectionContext().getSingleSelection(), includeSubTypes, false);
+        showContentWizard(linker, nodeTypes, linker.getSelectionContext().getSingleSelection(), includeSubTypes);
     }
 
-    public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, boolean includeSubTypes, final boolean displayStudioElement) {
+    public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, boolean includeSubTypes) {
         if (parent != null && !parent.isFile()) {
-            ContentTypeWindow.createContent(linker, null, nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, new HashMap<String, GWTJahiaNodeProperty>(), parent, includeSubTypes, displayStudioElement, false);
+            ContentTypeWindow.createContent(linker, null, nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, new HashMap<String, GWTJahiaNodeProperty>(), parent, includeSubTypes, false);
         }
     }
 

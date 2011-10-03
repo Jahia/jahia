@@ -161,7 +161,7 @@ public class EditModeDNDListener extends DNDListener {
                 props.put("j:node", new GWTJahiaNodeProperty("j:node",
                         new GWTJahiaNodePropertyValue(selectedNode,
                                 GWTJahiaNodePropertyType.WEAKREFERENCE)));
-                ContentTypeWindow.createContent(editLinker, selectedNode.getName(), referenceType, props, targetNode, true, true, false);
+                ContentTypeWindow.createContent(editLinker, selectedNode.getName(), referenceType, props, targetNode, true, false);
             } else if (SIMPLEMODULE_TYPE.equals(sourceType)) {
                 // Item move
                 GWTJahiaNode selectedNode = sourceNodes.get(0);
@@ -215,7 +215,7 @@ public class EditModeDNDListener extends DNDListener {
                 props.put("j:node", new GWTJahiaNodeProperty("j:node",
                         new GWTJahiaNodePropertyValue(selectedNode,
                                 GWTJahiaNodePropertyType.WEAKREFERENCE)));
-                ContentTypeWindow.createContent(editLinker, selectedNode.getName(), referenceType, props, targetNode, true, true, true);
+                ContentTypeWindow.createContent(editLinker, selectedNode.getName(), referenceType, props, targetNode, true, true);
             } else if (SIMPLEMODULE_TYPE.equals(sourceType)) {
                 // Item move
 

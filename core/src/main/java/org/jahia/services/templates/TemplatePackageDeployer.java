@@ -64,10 +64,7 @@ import javax.servlet.ServletContext;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.SuffixFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.io.filefilter.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -168,6 +165,8 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             if (settingsBean.isDevelopmentMode()) {
                 List<File> remaining = new LinkedList<File>();
     
+                IOFileFilter fileFilter = new NotFileFilter(new SuffixFileFilter(new String[] {".pkg"}));
+
                 // list first level folders under /modules
                 for (File deployedFolder : deployedTemplatesFolder
                         .listFiles((FileFilter) FileFilterUtils.directoryFileFilter())) {
@@ -188,7 +187,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                     // watch for everything under module's META-INF/
                     File metaInf = new File(deployedFolder, "META-INF");
                     if (metaInf.exists()) {
-                        for (File file : FileUtils.listFiles(metaInf, TrueFileFilter.INSTANCE,
+                        for (File file : FileUtils.listFiles(metaInf, fileFilter,
                                 TrueFileFilter.INSTANCE)) {
                             if (!timestamps.containsKey(file.getPath())
                                     || timestamps.get(file.getPath()) != file.lastModified()) {
@@ -203,7 +202,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                     // watch for everything under module's WEB-INF/
                     File webInf = new File(deployedFolder, "WEB-INF");
                     if (webInf.exists()) {
-                        for (File file : FileUtils.listFiles(webInf, TrueFileFilter.INSTANCE,
+                        for (File file : FileUtils.listFiles(webInf, fileFilter,
                                 TrueFileFilter.INSTANCE)) {
                             if (!timestamps.containsKey(file.getPath())
                                     || timestamps.get(file.getPath()) != file.lastModified()) {
@@ -233,6 +232,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                         }
                     }
                     for (JahiaTemplatesPackage pack : getOrderedPackages(remainingPackages).values()) {
+                        initialImports.add(pack);
                         templatePackageRegistry.register(pack);
                         changed = true;
                     }
@@ -300,7 +300,10 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 }
             }
 
-           templatePackageRegistry.register(getOrderedPackages(remaining).values());
+            for (JahiaTemplatesPackage pack : getOrderedPackages(remaining).values()) {
+                initialImports.add(pack);
+                templatePackageRegistry.register(pack);
+            }
         }
         logger.info("...finished scanning module directory. Found "
                 + templatePackageRegistry.getAvailablePackagesCount() + " template packages.");
@@ -467,12 +470,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 webInfFolder.delete();
             }
 
-            JahiaTemplatesPackage pack = JahiaTemplatesPackageHandler.build(tmplRootFolder);
 
-            initialImports.add(pack);
-//            if (!pack.getInitialImports().isEmpty()) {
-//                initialImports.add(pack);
-//            }
 
             File metaInfFolder = new File(tmplRootFolder, "META-INF");
             if (!metaInfFolder.exists()) {
@@ -480,8 +478,6 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             }
             createDeploymentXMLFile(new File(metaInfFolder, "deployed.xml"), deployedFiles,
                     templateWar, packageName, depends, rootFolder, implementationVersionStr, packageTimestamp);
-
-            logger.info("Package '" + packageName + "' successfully deployed");
         }
     }
 
@@ -654,7 +650,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     private Map<String, JahiaTemplatesPackage> getOrderedPackages(List<JahiaTemplatesPackage> remaining) {
         LinkedHashMap<String, JahiaTemplatesPackage> toDeploy = new LinkedHashMap<String, JahiaTemplatesPackage>();
         Set<String> folderNames = new HashSet<String>();
-        while (!remaining.isEmpty()) {
+         while (!remaining.isEmpty()) {
             List<JahiaTemplatesPackage> newRemaining = new LinkedList<JahiaTemplatesPackage>();
             for (JahiaTemplatesPackage pack : remaining) {
                 Set<String> allDeployed = new HashSet<String>(templatePackageRegistry.getPackageNames());

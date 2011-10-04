@@ -1,7 +1,8 @@
+<%@ include file="/admin/include/header.inc" %>
 <%@ page import="org.jahia.params.ParamBean" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
-<%@ include file="/admin/include/header.inc" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%!
     private String getRequestAttr(HttpServletRequest request, String name) {
         String value = (String) request.getAttribute(name);
@@ -46,6 +47,7 @@
     Boolean trackingEnabled = (Boolean) request.getAttribute("trackingEnabled");
 
 
+    pageContext.setAttribute("templatePackageByNodeName", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByNodeName());
 
     stretcherToOpen   = 0;
 
@@ -161,6 +163,19 @@
     </tr>
     <tr class="evenLine">
         <td class="t3" >
+            <fmt:message key="label.modules"/>&nbsp;
+        </td>
+        <td class="lastCol">
+            <c:if test="${not empty selectedModules}">
+            &nbsp;<c:forEach var="module" items="${selectedModules}" varStatus="status">${status.index > 0 ? ', ' : ''}${fn:escapeXml(templatePackageByNodeName[module].name)}</c:forEach>
+            <c:forEach var="module" items="${selectedModules}">
+                <input type="hidden" name="selectedModules" value="${module}"/>
+            </c:forEach>
+            </c:if>
+        </td>
+    </tr>
+    <tr class="oddLine">
+        <td class="t3" >
             <fmt:message key="org.jahia.admin.site.ManageSites.theme.label"/>&nbsp;
         </td>
         <td class="lastCol">
@@ -168,7 +183,7 @@
             <input type="hidden" name="selectTheme" value="<%=selectedTheme%>"/>
         </td>
     </tr>
-    <tr class="oddLine">
+    <tr class="evenLine">
         <td class="t3" >
             <fmt:message key="label.language"/>&nbsp;
         </td>

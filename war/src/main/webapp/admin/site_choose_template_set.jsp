@@ -1,5 +1,7 @@
-<%@page import="org.jahia.data.templates.JahiaTemplatesPackage" %>
 <%@include file="/admin/include/header.inc" %>
+<%@page import="org.apache.commons.lang.StringUtils"%>
+<%@page import="org.jahia.services.templates.JahiaTemplateManagerService"%>
+<%@page import="org.jahia.data.templates.JahiaTemplatesPackage" %>
 <%@page import="org.jahia.bin.Jahia,org.jahia.utils.LanguageCodeConverters" %>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.Locale" %>
@@ -10,6 +12,7 @@
 <%
     Locale selectedLocale = (Locale) request.getAttribute("selectedLocale");
     Locale currentLocale = Jahia.getThreadParamBean().getUILocale();
+    JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
     stretcherToOpen = 0;
 %>
 
@@ -78,7 +81,7 @@
                                             <tr>
                                                 <c:if test="${not empty tmplSets}">
                                                     <td>
-                                                        <fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;:
+                                                        <fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>:
                                                     </td>
                                                     <td>
                                                         <select id="selectTmplSet" name="selectTmplSet" onChange="submitForm('change');">
@@ -130,10 +133,10 @@
                                                     </td>
                                                 </c:if>
                                             </tr>
+                                            <c:if test="${not empty availableThemes}">
                                             <tr>
-                                                <c:if test="${not empty availableThemes}">
                                                     <td>
-                                                        <fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTheme.label"/>&nbsp;:
+                                                        <fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTheme.label"/>:
                                                     </td>
                                                     <td>
                                                         <select id="selectTheme" name="selectTheme"  onChange="swapImage('themePreview','selectTheme');">
@@ -147,11 +150,35 @@
                                                             </c:forEach>
                                                         </select>
                                                     </td>
-                                                </c:if>
                                             </tr>
+                                            </c:if>
+                                            <c:if test="${not empty jahiApps || not empty modules}">
                                             <tr>
                                                 <td>
-                                                    <fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseLanguage.label"/>&nbsp;:
+                                                    <fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseModules.label"/>:
+                                                </td>
+                                                <td style="vertical-align: top;">
+                                                    <table width="100%">
+                                                        <tr>
+                                                            <td style="vertical-align: top;">
+                                                                <c:forEach items="${jahiApps}" var="module">
+                                                                    <input type="checkbox" id="module-${module.name}" name="selectedModules" value="${module.name}"${not empty selectedModules && functions:contains(selectedModules, module.name) ? ' checked="checked"' : ''}/>&nbsp;<label for="module-${module.name}">${fn:escapeXml(module.displayableName)}</label><br/>
+                                                                </c:forEach>
+                                                            </td>
+                                                            <td style="vertical-align: top;">
+                                                                ${paramValues.modules}
+                                                                <c:forEach items="${modules}" var="module">
+                                                                    <input type="checkbox" id="module-${module.name}" name="selectedModules" value="${module.name}"${not empty selectedModules && functions:contains(selectedModules, module.name) ? ' checked="checked"' : ''}/>&nbsp;<label for="module-${module.name}">${fn:escapeXml(module.displayableName)}</label><br/>
+                                                                </c:forEach>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            </c:if>
+                                            <tr>
+                                                <td>
+                                                    <fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseLanguage.label"/>:
                                                 </td>
                                                 <td>
                                                     <select name="languageList">

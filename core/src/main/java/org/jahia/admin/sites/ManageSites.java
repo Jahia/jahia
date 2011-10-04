@@ -855,6 +855,9 @@ public class ManageSites extends AbstractAdministrationModule {
 
             request.setAttribute("selectedTmplSet", selectedTmplSet);
             request.setAttribute("tmplSets", orderedTemplateSets.values());
+            request.setAttribute("modules", getModulesOfType("module").values());
+            request.setAttribute("jahiApps", getModulesOfType("jahiapp").values());
+            request.setAttribute("selectedModules", jParams.getParameterValues("selectedModules"));
             request.setAttribute("selectedPackage", selectedPackage);
             Locale currentLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_LOCALE);
             if (currentLocale == null) {
@@ -910,6 +913,7 @@ public class ManageSites extends AbstractAdministrationModule {
             // add the site in siteManager...
             site = jsms.addSite(currentUser, site.getTitle(), site.getServerName(), site.getSiteKey(), site.getDescr(),
                     selectedLocale, (String) request.getAttribute("selectedTmplSet"),
+                    jParams.getParameterValues("selectedModules"),
                     (String) request.getAttribute("firstImport"), (File) request.getAttribute("fileImport"),
                     (String) request.getAttribute("fileImportName"), (Boolean) request.getAttribute("asAJob"),
                     (Boolean) request.getAttribute("doImportServerPermissions"), (String) request.getAttribute("originatingJahiaRelease"));
@@ -1084,6 +1088,8 @@ public class ManageSites extends AbstractAdministrationModule {
 
         request.setAttribute("siteAdminOption", siteAdminOption);
         request.setAttribute("selectedTmplSet", selectTmplSet);
+        
+        request.setAttribute("selectedModules", jParams.getParameterValues("selectedModules"));
 
         String firstImport = jParams.getParameter("firstImport");
         request.setAttribute("firstImport", firstImport);
@@ -1290,6 +1296,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 request.setAttribute("templateName", tmplPack.getName());
             }
             request.setAttribute("selectedTmplSet", selectedTmplSet);
+            request.setAttribute("selectedModules", request.getAttribute("selectedModules"));
             request.setAttribute("selectedLocale", selectedLocale);
             // set display message...
             session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", jahiaDisplayMessage);
@@ -1815,13 +1822,6 @@ public class ManageSites extends AbstractAdministrationModule {
                 IOUtils.closeQuietly(zis);
             }
         }
-//        SharedTemplatePackagesRegistry tmplSetReg = SharedTemplatePackagesRegistry.getInstance();
-//        Iterator en = tmplSetReg.getAllTemplatePackages();
-//        List list = new ArrayList();
-//        while (en.hasNext()) {
-//            list.add(en.next());
-//        }
-        // TODO properly pol�late templates list
         request.setAttribute("tmplSets", Collections.emptyList());
     }
 
@@ -2144,6 +2144,11 @@ public class ManageSites extends AbstractAdministrationModule {
     }
 
     private TreeMap<String, JCRNodeWrapper> getTemplatesSets() throws RepositoryException {
+        return getModulesOfType("templatesSet");
+    }
+
+    private TreeMap<String, JCRNodeWrapper> getModulesOfType(String... moduleTypes) throws RepositoryException {
+        Set<String> types = new HashSet<String>(Arrays.asList(moduleTypes));
         JahiaTemplateManagerService managerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         TreeMap<String, JCRNodeWrapper> orderedTemplateSets = new TreeMap<String, JCRNodeWrapper>();
         final JCRNodeWrapper templatesSet =
@@ -2152,7 +2157,7 @@ public class ManageSites extends AbstractAdministrationModule {
         while (templates.hasNext()) {
             JCRNodeWrapper node = (JCRNodeWrapper) templates.next();
             if (!node.getName().equals("templates-system") && node.hasProperty("j:siteType") &&
-                    node.getProperty("j:siteType").getString().equals("templatesSet")) {
+                    types.contains(node.getProperty("j:siteType").getString())) {
                 if (managerService.getTemplatePackageByFileName(node.getName()) != null) {
                     orderedTemplateSets.put(node.getName(), node);
                 }

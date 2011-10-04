@@ -58,6 +58,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -417,14 +418,16 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     }
 
 
-    /**
-     * Add a new site only if there is no other site with same server name
-     *
-     * @return boolean false if there is another site using same server name
-     */
-
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
-                             Locale selectedLocale, String selectTmplSet, String firstImport, File fileImport, String fileImportName,
+            Locale selectedLocale, String selectTmplSet, String firstImport, File fileImport, String fileImportName,
+            Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException {
+        return addSite(currentUser, title, serverName, siteKey, descr, selectedLocale,
+                selectTmplSet, null, firstImport, fileImport, fileImportName, asAJob,
+                doImportServerPermissions, originatingJahiaRelease);
+    }
+    
+    public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
+                             Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, File fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException {
         JahiaSite site = new JahiaSite(-1, title, serverName, siteKey, descr, null, "/sites/"+siteKey);
 
@@ -503,8 +506,26 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                 siteNode.setProperty("j:templatesSet", templatePackage);
                                 siteNode.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(templatePackage)} );
 
-                                ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployModule("/templateSets/default", "/sites/" + siteKey1, session);
-                                ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployModule("/templateSets/" + templatePackage, "/sites/" + siteKey1, session);
+                                Set<String> modules = new LinkedHashSet<String>(
+                                        2 + (modulesToDeploy != null ? modulesToDeploy.length : 0));
+                                modules.add("default");
+                                modules.add(templatePackage);
+                                if (modulesToDeploy != null) {
+                                    modules.addAll(Arrays.asList(modulesToDeploy));
+                                }
+                                JahiaTemplateManagerService templateService = ServicesRegistry
+                                        .getInstance().getJahiaTemplateManagerService();
+                                for (String module : modules) {
+                                    String source = "/templateSets/" + module;
+                                    String target = "/sites/" + siteKey1;
+                                    try {
+                                        logger.info("Deploying module {} to {}", source, target);
+                                        templateService.deployModule(source, target, session);
+                                    } catch (RepositoryException re) {
+                                        logger.error("Unable to deploy module " + source + " to "
+                                                + target + ". Cause: " + re.getMessage(), re);
+                                    }
+                                }
                             }
                         }
 

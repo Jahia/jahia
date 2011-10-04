@@ -40,6 +40,8 @@
 
 package org.jahia.services.templates;
 
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -315,6 +317,20 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      */
     public JahiaTemplatesPackage getTemplatePackageByNodeName(String nodeName) {
         return templatePackageRegistry.lookupByNodeName(nodeName);
+    }
+
+    /**
+     * Returns the lookup map for template packages by the JCR node name.
+     * 
+     * @return the lookup map for template packages by the JCR node name
+     */
+    @SuppressWarnings("unchecked")
+    public Map<String, JahiaTemplatesPackage> getTemplatePackageByNodeName() {
+        return LazyMap.decorate(new HashMap<String, JahiaTemplatesPackage>(), new Transformer() {
+            public Object transform(Object input) {
+                return templatePackageRegistry.lookupByNodeName(String.valueOf(input));
+            }
+        });
     }
 
     /**

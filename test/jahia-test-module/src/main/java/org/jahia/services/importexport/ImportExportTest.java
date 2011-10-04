@@ -88,6 +88,81 @@ import com.google.common.collect.Lists;
 /**
  * Unit test for import/export functionality
  * 
+ * For a better overview, the test has a 3 levels deep structure of always 3 sub-pages 
+ * (named child0, child1, child2) and each of them has 3 content lists having 3 mainContent 
+ * nodes. And on some of them we are doing operations. 
+ * 
+ * Here is the tree to see, what is done:
+ * 
+ * home
+ *   child0
+ *     child0 - is copied
+ *       child0
+ *       child1
+ *       child2
+ *     child1 -> mark-for-deletion
+ *       child0
+ *       child1
+ *       child2
+ *     child2
+ *       child0
+ *       child1
+ *       child2        
+ *   child1 <-> renamed-child
+ *     child0
+ *       child0
+ *         contentList2
+ *               contentList2_text2 <-> renamed text-node
+ *       child1
+ *       child2        
+ *       moved-page
+ *       moved-ugc-page
+ *     child1
+ *       contentList0
+ *         contentList0_text2 <-> updated title
+ *       child0
+ *       child1
+ *       child2        
+ *     child2 -> removed
+ *       child0
+ *       child1
+ *       child2        
+ *     added-page-to-renamed-page
+ *     added-ugc-page-to-renamed-page (live)       
+ *       contentListUGC
+ *         contentListUGC0_text2 <-> updated title (live)
+ *         contentListUGC0_text3 -> removed
+ *         contentListUGC0_text4 -> moved before contentListUGC0_text0
+ *   child2
+ *     child0
+ *       child0
+ *       child1
+ *       child2
+ *     child1
+ *       child0
+ *         copied-node
+ *           child0
+ *           child1
+ *           child2
+ *         copied-ugc-node
+ *           child0
+ *           child1
+ *           child2                  
+ *       child1
+ *       child2        
+ *     child2  
+ *       child0
+ *       child1
+ *       child2 -> ordered before child0       
+ *     added-child-to-existing-subpage -> moved 
+ *     added-ugc-child-to-existing-subpage (live)  -> moved 
+ *   added-child
+ *   added-child-with-subpage
+ *     subpage
+ *   added-ugc-child (live)
+ *   added-ugc-child-with-subpage (live)
+ *     ugc-subpage (live)
+ *     
  * @author Benjamin Papez
  * 
  */

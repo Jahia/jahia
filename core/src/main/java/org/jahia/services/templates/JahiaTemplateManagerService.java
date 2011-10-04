@@ -69,6 +69,8 @@ import org.jdom.JDOMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.ApplicationListener;
 import org.xml.sax.SAXException;
 
@@ -90,7 +92,7 @@ import java.util.regex.Pattern;
  *
  * @author Sergiy Shyrkov
  */
-public class JahiaTemplateManagerService extends JahiaService implements ApplicationListener<ApplicationEvent> {
+public class JahiaTemplateManagerService extends JahiaService implements ApplicationEventPublisherAware, ApplicationListener<ApplicationEvent> {
 
     private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/templateSets/[^/]*/templates/(.*)");
 
@@ -107,6 +109,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
+    public static class ModuleDeployedOnSiteEvent extends ApplicationEvent {
+        public ModuleDeployedOnSiteEvent(Object source) {
+            super(source);
+        }
+    }
+
     private static Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
 
     private TemplatePackageDeployer templatePackageDeployer;
@@ -115,10 +123,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     private JahiaSitesService siteService;
 
+    private ApplicationEventPublisher applicationEventPublisher;
+
     private ComponentRegistry componentRegistry;
 
     public void setSiteService(JahiaSitesService siteService) {
         this.siteService = siteService;
+    }
+
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     /**
@@ -567,6 +581,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         } catch (JahiaException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+
+
+        applicationEventPublisher.publishEvent(new ModuleDeployedOnSiteEvent(JahiaTemplateManagerService.class.getName()));
+
     }
 
     private boolean addDependencyValue(JCRNodeWrapper originalNode, JCRNodeWrapper destinationNode, String propertyName) throws RepositoryException {

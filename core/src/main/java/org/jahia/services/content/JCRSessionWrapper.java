@@ -791,8 +791,12 @@ public class JCRSessionWrapper implements Session {
             throws VersionException, LockException, ConstraintViolationException, AccessDeniedException,
             RepositoryException {
         JCRItemWrapper item = getItem(absPath);
+        boolean flushNeeded = false;
+        if (item.isNode() && ((JCRNodeWrapper) item).hasNodes()) {
+            flushNeeded = true;
+        }
         item.remove();
-        if (item.isNode() && ((JCRNodeWrapper)item).hasNodes()) {
+        if (flushNeeded) {
             flushCaches();
         } else {
             removeFromCache(item);

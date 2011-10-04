@@ -181,10 +181,6 @@
             <version>6.6.0.0-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
-            	<exclusion>
-                    <groupId>xml-apis</groupId>
-            		<artifactId>xml-apis</artifactId>
-            	</exclusion>
                 <exclusion>
                     <groupId>javax.servlet</groupId>
                     <artifactId>servlet-api</artifactId>

@@ -959,8 +959,14 @@ public class JCRPublicationService extends JahiaService {
             throws RepositoryException {
         final JCRSessionWrapper sourceSession = sessionFactory.getCurrentUserSession(sourceWorkspace);
         final JCRSessionWrapper destinationSession = sessionFactory.getCurrentUserSession(destinationWorkspace);
+        return getPublicationInfo(uuid, languages, includesReferences, includesSubnodes, allsubtree, sourceSession, destinationSession);
+    }
 
-        JCRNodeWrapper stageNode;
+    public List<PublicationInfo> getPublicationInfo(String uuid, Set<String> languages, boolean includesReferences,
+                                                    boolean includesSubnodes, boolean allsubtree,
+                                                    final JCRSessionWrapper sourceSession, final JCRSessionWrapper destinationSession)
+            throws RepositoryException {
+            JCRNodeWrapper stageNode;
         try {
             stageNode = sourceSession.getNodeByUUID(uuid);
         } catch (ItemNotFoundException e) {

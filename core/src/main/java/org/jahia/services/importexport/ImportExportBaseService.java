@@ -48,7 +48,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.validation.*;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -850,7 +849,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         String templateSet = site.getTemplatePackageName(); 
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         try {
-            templateManagerService.deployTemplates("/templateSets/" + templateSet, "/sites/" + site.getSiteKey(), JCRSessionFactory.getInstance().getCurrentUser().getUsername());
+            templateManagerService.deployModule("/templateSets/" + templateSet, "/sites/" + site.getSiteKey(), JCRSessionFactory.getInstance().getCurrentUser().getUsername());
         } catch (RepositoryException e) {
             logger.error("Cannot deploy module "+templateSet,e);
         }
@@ -901,7 +900,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             } else if (firstKey.equals("installedModules")) {
                 if (!site.getInstalledModules().contains(value) && !templateSet.equals(value)) {
                     try {
-                        templateManagerService.deployTemplates("/templateSets/" + value, "/sites/" + site.getSiteKey(), JCRSessionFactory.getInstance().getCurrentUser().getUsername());
+                        templateManagerService.deployModule("/templateSets/" + value, "/sites/" + site.getSiteKey(), JCRSessionFactory.getInstance().getCurrentUser().getUsername());
                     } catch (RepositoryException e) {
                         logger.error("Cannot deploy module "+value,e);
                     }

@@ -1082,11 +1082,10 @@ public class ContentManagerHelper {
         }
     }
 
-    public void deployTemplates(final String templatesPath, final String sitePath, JCRSessionWrapper currentUserSession)
+    public void deployModule(final String modulePath, final String sitePath, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         try {
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployTemplates(templatesPath, sitePath, currentUserSession.getUser().getUsername());
-            cacheHelper.flush(sitePath, true);
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployModule(modulePath, sitePath, currentUserSession.getUser().getUsername());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());

@@ -697,7 +697,7 @@ public class Service extends JahiaService {
     public void deployModule(String moduleName, AddedNodeFact site, KnowledgeHelper drools) {
         User user = (User) drools.getWorkingMemory().getGlobal("user");
         try {
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployTemplates("/templateSets/" + moduleName, site.getPath(), user.getName() );
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployModule("/templateSets/" + moduleName, site.getPath(), user.getName());
         } catch (RepositoryException e) {
             e.printStackTrace();
         }

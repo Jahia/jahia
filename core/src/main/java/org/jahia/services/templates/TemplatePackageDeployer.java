@@ -538,14 +538,14 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     }
 
 
-    private void performInitialImport(final JahiaTemplatesPackage pack) {
-        logger.info("Starting import for the module package '" + pack.getName() + "' including: "
-                + pack.getInitialImports());
+    private boolean performInitialImport(final JahiaTemplatesPackage pack) {
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     initRepository(session, pack);
                     if (!pack.getInitialImports().isEmpty()) {
+                        logger.info("Starting import for the module package '" + pack.getName() + "' including: "
+                                + pack.getInitialImports());
                         cleanTemplates(pack.getRootFolder(), session);
                         for (String imp : pack.getInitialImports()) {
                             String targetPath = "/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
@@ -563,24 +563,24 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                                 } else {
                                     importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE,session);
                                 }
+                                importFile.delete();
                                 session.save(JCRObservationManager.IMPORT);
                             } catch (Exception e) {
                                 logger.error("Unable to import content for package '" + pack.getName() + "' from file " + imp
                                         + ". Cause: " + e.getMessage(), e);
                             }
                         }
+                        logger.info("... finished initial import for module package '" + pack.getName() + "'.");
+                        return true;
                     }
-                    return null;
+                    return false;
                 }
             });
         } catch (RepositoryException e) {
             logger.error("Unable to import content for package '" + pack.getName()
                     + "'. Cause: " + e.getMessage(), e);
+            return false;
         }
-
-
-        logger.info("... finished initial import for module package '" + pack.getName() + "'.");
-        
     }
 
     private void initRepository(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
@@ -615,12 +615,17 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     }
 
 
-    public void performInitialImport() {
+    public List<JahiaTemplatesPackage> performInitialImport() {
+        List<JahiaTemplatesPackage> results = new ArrayList<JahiaTemplatesPackage>();
         if (!initialImports.isEmpty()) {
             while (!initialImports.isEmpty()) {
-                performInitialImport(initialImports.remove(0));
+                JahiaTemplatesPackage pack = initialImports.remove(0);
+                if (performInitialImport(pack)) {
+                    results.add(pack);
+                }
             }
         }
+        return results;
     }
 
     private void cleanTemplates(String moduleName, JCRSessionWrapper session) throws RepositoryException {

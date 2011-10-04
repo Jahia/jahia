@@ -42,9 +42,12 @@ package org.jahia.ajax.gwt.helper;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.slf4j.Logger;
 import org.jahia.services.cache.CacheFactory;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 
 import java.util.List;
 
@@ -55,7 +58,7 @@ import java.util.List;
  * @since JAHIA 6.5
  *        Created : 16 sept. 2010
  */
-public class CacheHelper {
+public class CacheHelper implements ApplicationListener<ApplicationEvent> {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheHelper.class);
     private ModuleCacheProvider cacheProvider;
     private CacheFactory cacheFactory;
@@ -97,5 +100,11 @@ public class CacheHelper {
         }
         cacheProvider.flushCaches();
         cacheFactory.flushAllCaches();
+    }
+
+    public void onApplicationEvent(ApplicationEvent event) {
+        if (event instanceof JahiaTemplateManagerService.ModuleDeployedOnSiteEvent) {
+            flush(((JahiaTemplateManagerService.ModuleDeployedOnSiteEvent)event).getTargetSitePath(), true);
+        }
     }
 }

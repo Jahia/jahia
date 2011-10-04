@@ -275,5 +275,7 @@
                             j:privilegedAccess="true"
                 />
 
+        <component-manager jcr:primaryType="jnt:role" j:roleGroup="component-role"
+            j:permissions="/permissions/repository-permissions/jcr:all_default"/>
     </roles>
 </content>

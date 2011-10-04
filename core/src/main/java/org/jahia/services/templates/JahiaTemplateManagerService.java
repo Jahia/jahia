@@ -509,7 +509,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 //                writer.write("Build-Jdk: 1.6.0_20");
             writer.write("depends: Default Jahia Templates");
             writer.newLine();
-            writer.write("module-Type: " + moduleType);
+            writer.write("module-type: " + moduleType);
             writer.newLine();
             writer.write("package-name: " + moduleName);
             writer.newLine();

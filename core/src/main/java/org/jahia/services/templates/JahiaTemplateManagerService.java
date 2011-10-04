@@ -419,7 +419,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    public void createModule(String moduleName, boolean isTemplatesSet) {
+    public void createModule(String moduleName, String moduleType, boolean isTemplatesSet) {
         File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), moduleName);
         if (tmplRootFolder.exists()) {
             return;
@@ -452,13 +452,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     }
                 }
             }
-            createManifest(moduleName, tmplRootFolder);
+            createManifest(moduleName, tmplRootFolder, moduleType);
             templatePackageRegistry.register(templatePackageDeployer.getPackage(tmplRootFolder));
             logger.info("Package '" + moduleName + "' successfully created");
         }
     }
 
-    public void duplicateModule(String moduleName, final String sourceModule) {
+    public void duplicateModule(String moduleName, String moduleType, final String sourceModule) {
         File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), moduleName);
         if (tmplRootFolder.exists()) {
             return;
@@ -488,13 +488,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             new File(tmplRootFolder, "resources").mkdirs();
             new File(tmplRootFolder, "css").mkdirs();
 
-            createManifest(moduleName, tmplRootFolder);
+            createManifest(moduleName, tmplRootFolder, moduleType);
             templatePackageRegistry.register(templatePackageDeployer.getPackage(tmplRootFolder));
             logger.info("Package '" + moduleName + "' successfully created");
         }
     }
 
-    private void createManifest(String moduleName, File tmplRootFolder) {
+    private void createManifest(String moduleName, File tmplRootFolder, String moduleType) {
         try {
             File manifest = new File(tmplRootFolder + "/META-INF/MANIFEST.MF");
 
@@ -508,6 +508,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             writer.newLine();
 //                writer.write("Build-Jdk: 1.6.0_20");
             writer.write("depends: Default Jahia Templates");
+            writer.newLine();
+            writer.write("module-Type: " + moduleType);
             writer.newLine();
             writer.write("package-name: " + moduleName);
             writer.newLine();

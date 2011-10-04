@@ -29,7 +29,7 @@
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewTemplatesSetActionItem">
-                                                <property name="siteType" value="module"/>
+                                                <property name="siteType" value="jahiapp"/>
                                             </bean>
                                         </property>
                                         <property name="titleKey" value="label.newApp"/>

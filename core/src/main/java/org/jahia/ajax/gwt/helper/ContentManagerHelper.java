@@ -1112,7 +1112,7 @@ public class ContentManagerHelper {
 //                    templateSet.getNode("templates/base").setProperty("j:view", shortName);
 //                }
                 session.save();
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName, "templatesSet".equals(siteType));
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName, siteType, "templatesSet".equals(siteType));
 
                 return navigation.getGWTJahiaNode(templateSet, GWTJahiaNode.DEFAULT_SITE_FIELDS);
             } catch (IOException e) {
@@ -1140,7 +1140,7 @@ public class ContentManagerHelper {
                     }
                 }
                 session.save();
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().duplicateModule(key, baseSet);
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().duplicateModule(key, siteType, baseSet);
 
                 JCRNodeWrapper templateSet = session.getNodeByUUID(result.get(0).getUUID());
                 return navigation.getGWTJahiaNode(templateSet, GWTJahiaNode.DEFAULT_SITE_FIELDS);

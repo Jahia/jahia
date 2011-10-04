@@ -593,7 +593,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             m = modules.addNode(pack.getRootFolder(), "jnt:virtualsite");
             m.setProperty("j:title", pack.getName());
             m.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(pack.getName())});
-            m.setProperty("j:siteType","module");
+            m.setProperty("j:siteType",pack.getModuleType());
         } else {
             m = modules.getNode(pack.getRootFolder());
         }

@@ -110,6 +110,10 @@ public class JahiaTemplatesPackage {
 
     private boolean changesMade = false;
 
+    // set the module-type property from the manifest
+
+    private String moduleType;
+
     private String rootFolderPath;
 
     private String resourceBundleName;
@@ -501,5 +505,13 @@ public class JahiaTemplatesPackage {
 
     public void setVersion(Version version) {
         this.version = version;
+    }
+
+    public String getModuleType() {
+        return moduleType;
+    }
+
+    public void setModuleType(String moduleType) {
+        this.moduleType = moduleType;
     }
 }

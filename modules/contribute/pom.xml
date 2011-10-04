@@ -93,6 +93,7 @@
                             <package-name>${project.name}</package-name>
                             <depends>Default Jahia Templates,Jahia Static Assets</depends>
                             <root-folder>${project.artifactId}</root-folder>
+                            <module-type>system</module-type>
                         </manifestEntries>
                     </archive>
                 </configuration>

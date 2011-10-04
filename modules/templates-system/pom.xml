@@ -87,6 +87,7 @@
                             <package-name>${project.name}</package-name>
                             <depends>default,grid,skins</depends>
                             <root-folder>${project.artifactId}</root-folder>
+                            <module-type>templatesSet</module-type>
                         </manifestEntries>
                     </archive>
                 </configuration>

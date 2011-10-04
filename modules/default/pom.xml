@@ -107,6 +107,7 @@
                         <depends>Jahia Static Assets</depends>
                         <definitions>META-INF/definitions.cnd, META-INF/definitions-nav-menu.cnd</definitions>
                         <root-folder>${project.artifactId}</root-folder>
+                        <module-type>system</module-type>
                     </manifestEntries>
                 </archive>
                 <archiveClasses>true</archiveClasses>

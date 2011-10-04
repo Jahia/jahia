@@ -45,13 +45,15 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
@@ -66,8 +68,13 @@ import java.util.*;
 public class SiteSwitcherActionItem extends BaseActionItem {
     private static List<SiteSwitcherActionItem> instances = new ArrayList<SiteSwitcherActionItem>();
 
-    private transient ComboBox<GWTJahiaNode> mainComponent;
-    private GWTJahiaNode selectedSite;
+    private transient HorizontalPanel mainComponent;
+    private transient ComboBox<GWTJahiaNode> sitesCombo;
+    private transient SimpleComboBox<String> modulesCombo;
+    private boolean useModuleType = false;
+    private String defaultModuleType = "templatesSet";
+
+    private Map<String,String> modulesTypes;
 
     private List<String> root = Arrays.asList("/sites/*");
 
@@ -79,30 +86,92 @@ public class SiteSwitcherActionItem extends BaseActionItem {
 
     }
 
-    public void setSelectedSite(GWTJahiaNode site) {
-        this.selectedSite = site;
+    public boolean isUseModuleType() {
+        return useModuleType;
+    }
+
+    public void setUseModuleType(boolean useModuleType) {
+        this.useModuleType = useModuleType;
+    }
+
+    public String getDefaultModuleType() {
+        return defaultModuleType;
     }
 
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
+        mainComponent = new HorizontalPanel();
         instances.add(this);
-        initMainComponent();
-        refreshSitesList(linker);
+        if (isUseModuleType()) {
+            createModuleTypeCombo();
+            mainComponent.add(modulesCombo);
+        }
+        createSitesCombo();
+        mainComponent.add(sitesCombo);
+        if (useModuleType) {
+            modulesCombo.setSimpleValue(Messages.get("moduleType."+ defaultModuleType + ".label",defaultModuleType));
+        }
+        refreshSitesList(linker, defaultModuleType);
+    }
+
+    private void createModuleTypeCombo() {
+        modulesTypes = new HashMap<String,String>();
+        modulesCombo = new SimpleComboBox<String>();
+        modulesCombo.setTypeAhead(true);
+        modulesCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
+        modulesCombo.setForceSelection(true);
+        modulesCombo.setWidth(100);
+        List<GWTJahiaNode> sites = new ArrayList<GWTJahiaNode>(JahiaGWTParameters.getSitesMap().values());
+        modulesCombo.removeAllListeners();
+        modulesCombo.getStore().removeAll();
+        // fill modules type
+        Set<String> moduleSet = new LinkedHashSet<String>();
+        boolean b = true;
+        for (GWTJahiaNode s : sites ) {
+            if (s.getProperties().get("j:siteType") != null) {
+                String moduleType = (String) s.getProperties().get("j:siteType");
+                String r = Messages.get("moduleType."+ moduleType + ".label",moduleType);
+                modulesTypes.put(r,moduleType);
+                moduleSet.add(r);
+            }
+        }
+        modulesCombo.add(new ArrayList<String>(moduleSet));
+        defaultModuleType = (String) JahiaGWTParameters.getSiteNode().getProperties().get("j:siteType");
+        modulesCombo.getStore().sort("value", Style.SortDir.ASC);
+        modulesCombo.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> e) {
+                refreshAllSitesList(linker,modulesTypes.get(e.getSelectedItem().getValue()));
+            }
+        });
+        setEnabled(true);
     }
 
     public static void refreshAllSitesList(final Linker linker) {
         for (SiteSwitcherActionItem instance : instances) {
-            instance.refreshSitesList(linker);
+            instance.refreshSitesList(linker, instance.getDefaultModuleType());
         }
     }
 
-    private void refreshSitesList(final Linker linker) {
-        List<GWTJahiaNode> sites = new ArrayList<GWTJahiaNode>(JahiaGWTParameters.getSitesMap().values());
-        mainComponent.removeAllListeners();
-        mainComponent.getStore().removeAll();
-        mainComponent.getStore().add(sites);
+    public static void refreshAllSitesList(final Linker linker, String moduleType) {
+        for (SiteSwitcherActionItem instance : instances) {
+            instance.refreshSitesList(linker, moduleType);
+        }
+    }
+
+    private void refreshSitesList(final Linker linker, String moduleType) {
+        List<GWTJahiaNode> sites = new ArrayList<GWTJahiaNode>();
+        for (GWTJahiaNode n : JahiaGWTParameters.getSitesMap().values()) {
+            if (moduleType.equals("") || moduleType.equals(n.getProperties().get("j:siteType"))) {
+                sites.add(n);
+            }
+        }
+        sitesCombo.removeAllListeners();
+        sitesCombo.getStore().removeAll();
+        sitesCombo.getStore().add(sites);
         Set<String> siteNames= new LinkedHashSet<String>();
+        boolean b = true;
         for (GWTJahiaNode site : sites) {
             if(siteNames.contains(site.getDisplayName())) {
                 site.set("switcherDisplayName",site.getDisplayName()+" ("+site.getSiteKey()+")");
@@ -111,12 +180,13 @@ public class SiteSwitcherActionItem extends BaseActionItem {
             }
             siteNames.add(site.getDisplayName());
             if (site.getUUID().equals(JahiaGWTParameters.getSiteUUID())) {
-                mainComponent.setValue(site);
+                sitesCombo.setValue(site);
+                b = !b;
             }
         }
-        mainComponent.getStore().sort("switcherDisplayName", Style.SortDir.ASC);
+        sitesCombo.getStore().sort("switcherDisplayName", Style.SortDir.ASC);
 
-        mainComponent.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+        sitesCombo.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
                 final GWTJahiaNode jahiaNode = event.getSelection().get(0);
@@ -132,20 +202,23 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                 }
             }
         });
+        // Change the value to the first one of the list if not set before
+        if (b) {
+            sitesCombo.setValue(sitesCombo.getStore().getAt(0));
+        }
     }
 
     /**
      * init main component
      */
-    private void initMainComponent() {
-        mainComponent = new ComboBox<GWTJahiaNode>();
-        mainComponent.setStore(new ListStore<GWTJahiaNode>());
-        mainComponent.setDisplayField("switcherDisplayName");
-        mainComponent.setValueField("uuid");
-        mainComponent.setTypeAhead(true);
-        mainComponent.setTriggerAction(ComboBox.TriggerAction.ALL);
-        mainComponent.setForceSelection(true);
-        mainComponent.setValue(selectedSite);
+    private void createSitesCombo() {
+        sitesCombo = new ComboBox<GWTJahiaNode>();
+        sitesCombo.setStore(new ListStore<GWTJahiaNode>());
+        sitesCombo.setDisplayField("switcherDisplayName");
+        sitesCombo.setValueField("uuid");
+        sitesCombo.setTypeAhead(true);
+        sitesCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
+        sitesCombo.setForceSelection(true);
         setEnabled(true);
     }
 

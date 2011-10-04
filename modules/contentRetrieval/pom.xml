@@ -92,6 +92,7 @@
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
                             <depends>Default Jahia Templates</depends>
+                            <module-type>module</module-type>
                             <root-folder>${project.artifactId}</root-folder>
                         </manifestEntries>
                     </archive>

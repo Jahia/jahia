@@ -1290,7 +1290,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             result.setDefaultLanguageCode(defaultLanguage);
             result.setCurrentLocale(languages.getCurrentLang(getLocale()));
-            final List<ExtendedNodeType> availableMixins = contentDefinition.getAvailableMixin(typename);
+            final List<ExtendedNodeType> availableMixins = contentDefinition.getAvailableMixin(typename, parent.getResolveSite());
 
             List<GWTJahiaNodeType> gwtMixin = contentDefinition.getGWTNodeTypes(availableMixins, getUILocale());
 
@@ -1361,7 +1361,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
 
             final List<ExtendedNodeType> availableMixins =
-                    contentDefinition.getAvailableMixin(nodeWrapper.getPrimaryNodeTypeName());
+                    contentDefinition.getAvailableMixin(nodeWrapper.getPrimaryNodeTypeName(), nodeWrapper.getResolveSite());
 
             List<GWTJahiaNodeType> gwtMixin = contentDefinition.getGWTNodeTypes(availableMixins, getUILocale());
 
@@ -1504,7 +1504,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 }
 
                 final List<ExtendedNodeType> availableMixins =
-                        contentDefinition.getAvailableMixin(nodeWrapper.getPrimaryNodeTypeName());
+                        contentDefinition.getAvailableMixin(nodeWrapper.getPrimaryNodeTypeName(), nodeWrapper.getResolveSite());
 
                 List<GWTJahiaNodeType> theseMixin = contentDefinition.getGWTNodeTypes(availableMixins, getUILocale());
                 if (gwtMixin == null) {

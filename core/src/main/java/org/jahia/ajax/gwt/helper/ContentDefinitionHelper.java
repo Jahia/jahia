@@ -47,8 +47,11 @@ import org.apache.jackrabbit.value.*;
 import org.apache.jackrabbit.value.StringValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -511,9 +514,14 @@ public class ContentDefinitionHelper {
         }
     }
 
-    public List<ExtendedNodeType> getAvailableMixin(String type) throws NoSuchNodeTypeException {
+    public List<ExtendedNodeType> getAvailableMixin(String type, JCRSiteNode site) throws NoSuchNodeTypeException {
         ArrayList<ExtendedNodeType> res = new ArrayList<ExtendedNodeType>();
         Set<String> foundTypes = new HashSet<String>();
+
+        List<String> installedModules = null;
+        if (site != null && site.getPath().startsWith("/sites/")) {
+            installedModules = site.getInstalledModules();
+        }
 
         Map<ExtendedNodeType, Set<ExtendedNodeType>> m = NodeTypeRegistry.getInstance().getMixinExtensions();
 
@@ -522,8 +530,11 @@ public class ContentDefinitionHelper {
             if (realType.isNodeType(nodeType.getName())) {
                 for (ExtendedNodeType extension : m.get(nodeType)) {
 //                        ctx.put("contextType", realType);
-                    res.add(extension);
-                    foundTypes.add(extension.getName());
+                    if (installedModules == null || extension.getTemplatePackage() == null ||
+                            installedModules.contains(extension.getTemplatePackage().getRootFolder())) {
+                        res.add(extension);
+                        foundTypes.add(extension.getName());
+                    }
                 }
             }
         }

@@ -48,6 +48,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDeployedOnSiteEvent;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.settings.SettingsBean;
@@ -267,13 +268,23 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
 
         Collections.reverse(nodeTypeList);
 
+        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+
         List<String> installedModules = null;
         if (site != null && site.getPath().startsWith("/sites/")) {
             installedModules = site.getInstalledModules();
+            for (int i = 0; i < installedModules.size(); i++) {
+                JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(installedModules.get(i));
+                for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
+                    if (!installedModules.contains(depend.getRootFolder())) {
+                        installedModules.add(depend.getRootFolder());
+                    }
+                }
+            }
         }
 
         for (ExtendedNodeType type : nodeTypeList) {
-            Set<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(JCRContentUtils.replaceColon(type.getName()));
+            Set<JahiaTemplatesPackage> packages = templateManagerService.getAvailableTemplatePackagesForModule(JCRContentUtils.replaceColon(type.getName()));
             for (JahiaTemplatesPackage aPackage : packages) {
                 if (installedModules == null || installedModules.contains(aPackage.getRootFolder())) {
                     getViewsSet(type, views, templateType, aPackage.getRootFolder(), aPackage);

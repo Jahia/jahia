@@ -78,6 +78,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
             return new ArrayList<ChoiceListValue>();
         }
         JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
+        JCRNodeWrapper parentNode = (JCRNodeWrapper) context.get("contextParent");
         ExtendedNodeType realNodeType = (ExtendedNodeType) context.get("contextType");
         String propertyName = context.containsKey("dependentProperties") ? ((List<String>)context.get("dependentProperties")).get(0) : null;
 
@@ -88,6 +89,9 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
         try {
             if (node != null) {
                 site = node.getResolveSite();
+            }
+            if (site == null && parentNode != null) {
+                site = parentNode.getResolveSite();
             }
 
             final List<String> nodeTypeList = new ArrayList<String>();

@@ -150,7 +150,7 @@ public class RenderChain {
                 if (filter.areConditionsMatched(renderContext, resource)) {
                 	long timer = System.currentTimeMillis();
                     out = filter.prepare(renderContext, resource, this);
-                    if (resource.getContextConfiguration().equals("page") && logger.isDebugEnabled()) { 
+                    if (logger.isDebugEnabled()) { 
 			logger.debug("{}: prepare filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
                     }
                 }
@@ -160,7 +160,7 @@ public class RenderChain {
                 if (filter.areConditionsMatched(renderContext, resource)) {
                 	long timer = System.currentTimeMillis();
                     out = filter.execute(out, renderContext, resource, this);
-                    if (resource.getContextConfiguration().equals("page") && logger.isDebugEnabled()) { 
+                    if (logger.isDebugEnabled()) { 
                     	logger.debug("{}: execute filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
                     }
                 }
@@ -185,7 +185,7 @@ public class RenderChain {
                     if (filter.areConditionsMatched(renderContext, resource)) {
                     	long timer = System.currentTimeMillis();
                         filter.finalize(renderContext, resource, this);
-                        if (resource.getContextConfiguration().equals("page") && logger.isDebugEnabled()) { 
+                        if (logger.isDebugEnabled()) { 
                         	logger.debug("{}: finalizing filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
                         }
                     }

@@ -72,7 +72,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
     private transient ComboBox<GWTJahiaNode> sitesCombo;
     private transient SimpleComboBox<String> modulesCombo;
     private boolean useModuleType = false;
-    private String defaultModuleType = "templatesSet";
+    private String defaultModuleType = "";
 
     private Map<String,String> modulesTypes;
 

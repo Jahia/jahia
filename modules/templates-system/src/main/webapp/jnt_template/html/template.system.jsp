@@ -32,7 +32,7 @@
 <body>
 <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
 <div class="bodywrapper">
-    <template:area path="page"/>
+    <template:area path="pagecontent"/>
 </div>
 </body>
 </html>

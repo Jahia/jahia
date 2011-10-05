@@ -27,12 +27,6 @@
 
                 <simple jcr:primaryType="jnt:pageTemplate"/>
             </base>
-
-            <content-template j:applyOn="jnt:content" j:hiddenTemplate="true" j:priority="1" j:view="SITEKEY_PLACEHOLDER" jcr:primaryType="jnt:contentTemplate">
-                <pagecontent jcr:primaryType="jnt:contentList">
-                    <main-resource-display j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
-                </pagecontent>
-            </content-template>
         </templates>
 
     </SITEKEY_PLACEHOLDER>

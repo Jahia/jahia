@@ -229,7 +229,7 @@
                             <j:translation_fr j:alternateText="logo-jahia-xcm" jcr:language="fr" jcr:primaryType="jnt:translation" />
                         </logo-jahia-xcm.png>
                     </header-col2>
-                    <page jcr:primaryType="jnt:contentList">
+                    <pagecontent jcr:primaryType="jnt:contentList">
                         <header colNames="header-col1,header-colContent" customColumn="4, 12 " divID="header" jcr:primaryType="jnt:customRow" />
                         <content j:id="content" j:skin="skins.custom" jcr:mixinTypes="jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentList">
 
@@ -237,7 +237,7 @@
                             <pagecontent j:allowedTypes="" jcr:primaryType="jnt:area" />
                         </content>
                         <footer colNames="footer-colContent" customColumn="16" divID="footer" jcr:primaryType="jnt:customRow" />
-                    </page>
+                    </pagecontent>
                     <content-colContent jcr:primaryType="jnt:contentList" />
                     <footer-colContent jcr:primaryType="jnt:contentList">
                         <copyright jcr:primaryType="jnt:bigText">
@@ -566,11 +566,6 @@
                         </custom-rows-960gs-1-col2>
                     </documentFolderTemplate>
                 </base>
-                <content-template j:applyOn="jnt:content" j:hiddenTemplate="true" j:priority="1" j:view="system" jcr:primaryType="jnt:contentTemplate">
-                    <pagecontent jcr:primaryType="jnt:contentList">
-                        <main-resource-display j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
-                    </pagecontent>
-                </content-template>
             </templates>
 
             <files jcr:primaryType="jnt:folder" />

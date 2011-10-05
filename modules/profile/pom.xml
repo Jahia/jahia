@@ -94,7 +94,7 @@
                             <package-name>${project.name}</package-name>
                             <depends>Default Jahia Templates,Jahia Content retrieval</depends>
                             <root-folder>${project.artifactId}</root-folder>
-                            <module-type>templatesSet</module-type>
+                            <module-type>profileModule</module-type>
                         </manifestEntries>
                     </archive>
                 </configuration>

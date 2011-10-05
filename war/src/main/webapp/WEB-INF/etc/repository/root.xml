@@ -150,6 +150,7 @@
 
         <editMode jcr:primaryType="jnt:permission">
             <editModeAccess jcr:primaryType="jnt:permission"/>
+            <useComponent jcr:primaryType="jnt:permission"/>
             <editSelector jcr:primaryType="jnt:permission">
                 <categoriesSelector jcr:primaryType="jnt:permission"/>
                 <contentSelector jcr:primaryType="jnt:permission"/>
@@ -235,7 +236,7 @@
                j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/repository-permissions/jcr:all_live /permissions/actions"/>
 
         <privileged jcr:primaryType="jnt:role" j:roleGroup="edit-role"
-                    j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/repository-permissions/jcr:all_default/jcr:readAccessControl_default /permissions/repository-permissions/jcr:all_live/jcr:readAccessControl_live /permissions/editMode/editSelector/sitemapSelector"
+                    j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/repository-permissions/jcr:all_default/jcr:readAccessControl_default /permissions/repository-permissions/jcr:all_live/jcr:readAccessControl_live /permissions/editMode/editSelector/sitemapSelector /permissions/editMode/useComponent"
                     />
 
         <contributor jcr:primaryType="jnt:role" j:roleGroup="edit-role"
@@ -275,7 +276,5 @@
                             j:privilegedAccess="true"
                 />
 
-        <component-manager jcr:primaryType="jnt:role" j:roleGroup="component-role"
-            j:permissions="/permissions/repository-permissions/jcr:all_default"/>
     </roles>
 </content>

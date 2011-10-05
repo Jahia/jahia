@@ -781,30 +781,32 @@ public class ContentDefinitionHelper {
 
                 for (int j = 0; j < list.size(); j++) {
                     GWTJahiaNode child = list.get(j);
-                    GWTJahiaNodeType type = getNodeType(child.getName(), uiLocale);
-                    child.set("componentNodeType", type);
-                    if (child.getInheritedNodeTypes().contains("jnt:component") && nodeTypes != null && type != null) {
-                        if (includeSubTypes) {
-                            HashSet<String> set = new HashSet<String>(type.getSuperTypes());
-                            set.add(type.getName());
-                            set.retainAll(nodeTypes);
-                            if (!set.isEmpty()) {
-                                node.add(child);
-                                allNodes.add(child);
-                                lastAdded = child;
-                                found ++;
+                    if (session.getNodeByIdentifier(child.getUUID()).hasPermission("useComponent")) {
+                        GWTJahiaNodeType type = getNodeType(child.getName(), uiLocale);
+                        child.set("componentNodeType", type);
+                        if (child.getInheritedNodeTypes().contains("jnt:component") && nodeTypes != null && type != null) {
+                            if (includeSubTypes) {
+                                HashSet<String> set = new HashSet<String>(type.getSuperTypes());
+                                set.add(type.getName());
+                                set.retainAll(nodeTypes);
+                                if (!set.isEmpty()) {
+                                    node.add(child);
+                                    allNodes.add(child);
+                                    lastAdded = child;
+                                    found ++;
+                                }
+                            } else {
+                                if (nodeTypes.contains(type.getName())) {
+                                    node.add(child);
+                                    allNodes.add(child);
+                                    lastAdded = child;
+                                    found ++;
+                                }
                             }
                         } else {
-                            if (nodeTypes.contains(type.getName())) {
-                                node.add(child);
-                                allNodes.add(child);
-                                lastAdded = child;
-                                found ++;
-                            }
+                            node.add(child);
+                            allNodes.add(child);
                         }
-                    } else {
-                        node.add(child);
-                        allNodes.add(child);
                     }
                 }
                 node.setExpandOnLoad(false);

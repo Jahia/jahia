@@ -708,9 +708,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     session.checkout(destinationNode);
                     String primaryNodeTypeName = child.getPrimaryNodeTypeName();
                     node = destinationNode.addNode(childName, primaryNodeTypeName);
-                    if (childName.equals("components") && primaryNodeTypeName.equals(ComponentRegistry.JNT_COMPONENT_FOLDER)) {
-                        componentRegistry.applyComponentsSkeleton(node, session);
-                    }
                     session.save();
                     newNode = true;
                 }

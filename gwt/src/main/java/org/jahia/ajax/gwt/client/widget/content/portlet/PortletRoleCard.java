@@ -105,7 +105,7 @@ public class PortletRoleCard extends PortletWizardCard {
     }
 
     private void initAclEditor(GWTJahiaNodeACL acl) {
-        aclEditor = new AclEditor(acl, getPortletWizardWindow().getParentNode().getAclContext(), Collections.singleton(JCRClientUtils.PORTLET_ROLES));
+        aclEditor = new AclEditor(acl, getPortletWizardWindow().getParentNode().getAclContext(), null, Collections.singleton(JCRClientUtils.PORTLET_ROLES));
         aclEditor.setAddUsersLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.roles.adduser.label", "Add rode-user permission"));
         aclEditor.setAddGroupsLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.roles.addgroup.label", "Add rode-group permission"));
     }

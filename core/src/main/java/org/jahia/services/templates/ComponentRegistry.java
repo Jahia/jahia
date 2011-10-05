@@ -83,29 +83,7 @@ public class ComponentRegistry {
 
     private static final String NODE_COMPONENTS = "components";
 
-    private String componentsSkeleton;
-
     private TemplatePackageRegistry templatePackageRegistry;
-
-    protected void applyComponentsSkeleton(JCRNodeWrapper componentsNode, JCRSessionWrapper session)
-            throws RepositoryException {
-        if (StringUtils.isEmpty(componentsSkeleton)) {
-            return;
-        }
-
-        ByteArrayInputStream is = null;
-        try {
-            is = new ByteArrayInputStream(componentsSkeleton.getBytes("UTF-8"));
-            session.importXML(componentsNode.getPath(), is,
-                    ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW,
-                    DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, null);
-        } catch (IOException e) {
-            logger.error(
-                    "Unable to import the components folder skeleton. Cause: " + e.getMessage(), e);
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
-    }
 
     private JCRNodeWrapper findComponent(JCRNodeWrapper components, String name,
             JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {
@@ -260,10 +238,6 @@ public class ComponentRegistry {
         }
 
         return count;
-    }
-
-    public void setComponentsSkeleton(String componentsSkeleton) {
-        this.componentsSkeleton = componentsSkeleton;
     }
 
     public void setTemplatePackageRegistry(TemplatePackageRegistry tmplPackageRegistry) {

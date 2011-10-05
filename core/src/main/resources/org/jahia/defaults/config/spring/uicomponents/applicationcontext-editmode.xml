@@ -891,9 +891,9 @@
         <property name="requiredPermission" value="viewComponentRightsTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.RolesTabItem">
-                <property name="roleGroups">
+                <property name="roles">
                     <set>
-                        <value>component-role</value>
+                        <value>privileged</value>
                     </set>
                 </property>
                 <property name="canBreakInheritance"><value>true</value></property>

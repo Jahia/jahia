@@ -91,11 +91,11 @@ public class AclEditor {
     private String addUsersLabel = getResource("newUsers.label");
     private String addGroupsLabel = getResource("newGroups.label");
 
-    public AclEditor(GWTJahiaNodeACL acl, String aclContext, Set<String> roleGroups) {
+    public AclEditor(GWTJahiaNodeACL acl, String aclContext, Set<String> roles, Set<String> roleGroups) {
         this.originalAcl = acl;
         this.context = aclContext;
         final Map<String, List<String>> map = acl.getAvailablePermissions();
-        if (roleGroups == null || roleGroups.isEmpty()) {
+        if ((roleGroups == null || roleGroups.isEmpty()) && (roles == null || roles.isEmpty())) {
             displayedRoles = new ArrayList<String>();
             if (map != null && !map.isEmpty()) {
                 for (List<String> l : map.values()) {
@@ -105,9 +105,15 @@ public class AclEditor {
         } else {
             displayedRoles = new ArrayList<String>();
             if (map != null && !map.isEmpty()) {
-                for (String group : roleGroups) {
-                    if (map.containsKey(group)) {
-                        displayedRoles.addAll(map.get(group));
+                for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+                    if ((roleGroups != null && roleGroups.contains(entry.getKey()))) {
+                        displayedRoles.addAll(entry.getValue());
+                    } else if (roles != null && !roles.isEmpty()) {
+                        for (String s : entry.getValue()) {
+                            if (roles.contains(s)) {
+                                displayedRoles.add(s);
+                            }
+                        }
                     }
                 }
             }

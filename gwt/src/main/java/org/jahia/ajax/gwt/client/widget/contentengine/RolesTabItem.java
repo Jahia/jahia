@@ -64,7 +64,9 @@ import java.util.Set;
 public class RolesTabItem extends EditEngineTabItem {
     private transient AclEditor rolesEditor;
 
+    private Set<String> roles;
     private Set<String> roleGroups;
+
     private boolean canBreakInheritance = false;
 
     @Override
@@ -79,7 +81,7 @@ public class RolesTabItem extends EditEngineTabItem {
                 node = engine.getTargetNode();
             }
 
-            rolesEditor = new AclEditor(engine.getAcl(), node.getAclContext(), roleGroups);
+            rolesEditor = new AclEditor(engine.getAcl(), node.getAclContext(), roles, roleGroups);
             rolesEditor.setCanBreakInheritance(canBreakInheritance);
             if (!(node.getProviderKey().equals("default") || node.getProviderKey().equals("jahia"))) {
                 rolesEditor.setReadOnly(true);
@@ -96,6 +98,14 @@ public class RolesTabItem extends EditEngineTabItem {
         if (!processed) {
             rolesEditor = null;
         }
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 
     public Set<String> getRoleGroups() {

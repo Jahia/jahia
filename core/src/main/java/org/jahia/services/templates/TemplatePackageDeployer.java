@@ -624,9 +624,8 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         if (!initialImports.isEmpty()) {
             while (!initialImports.isEmpty()) {
                 JahiaTemplatesPackage pack = initialImports.remove(0);
-                if (performInitialImport(pack)) {
-                    results.add(pack);
-                }
+                performInitialImport(pack);
+                results.add(pack);
             }
         }
         return results;

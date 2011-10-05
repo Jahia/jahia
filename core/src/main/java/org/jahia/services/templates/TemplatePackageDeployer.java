@@ -68,11 +68,8 @@ import org.apache.commons.io.filefilter.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRObservationManager;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.*;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
@@ -594,6 +591,13 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             m.setProperty("j:title", pack.getName());
             m.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(pack.getName())});
             m.setProperty("j:siteType",pack.getModuleType());
+
+            m.addNode("portlets", "jnt:portletFolder");
+            m.addNode("files", "jnt:folder");
+            m.addNode("contents", "jnt:contentFolder");
+            JCRNodeWrapper tpls = m.addNode("templates", "jnt:templatesFolder");
+            tpls.addNode("files", "jnt:folder");
+            tpls.addNode("contents", "jnt:contentFolder");
         } else {
             m = modules.getNode(pack.getRootFolder());
         }

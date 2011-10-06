@@ -1,0 +1,34 @@
+Modules
+
+  A module is a package that can be deployed to Jahia to extends its features. A module can include
+  {{{./components.html}components}}, views, {{{../actions/actions.html}actions}}, {{{../../modules/rules/rules.html}rules}}
+  spring configuration files, or other resources.
+
+* Module types
+
+  Modules are organized in different categories, depending on their roles. These categories are for information
+  purpose only - they are to help the user to understand what the module is providing.
+  However, they do not really limit what can be included in the module.
+
+  * System module : A system module adds system wide features, like a connector to an external system, or additional
+    configuration. They can contain spring configuration files.
+
+  * Simple module : Simple module mainly adds components and associated views.
+
+  * Templates set : They are used as a basic structure for a site. All web projects requires a template set, and only
+   one templates set can be deployed to a site. They should include only JSPs, CSSs, images, resources, and templates.
+
+  * Jahiapp : The Jahiapps are full applications that can be deployed to a site to add complex features. They include
+    components, views, templates, actions, and any other specific spring configuration.
+
+  * My space module : Can be deployed to the "My space" page to extend the feature proposed to the user in its own space.
+    They can be as complex as a Jahiapp.
+
+
+* Module deployement
+
+  Modules can be deployed with the studio, by using the "deploy" menu - or with the "Templates and JahiApps management"
+  panel in the administration.
+
+  If a new version of the module is uploaded on the server, it will be automatically deployed on all sites that is
+  currently using it. All updates will be immediately availables in the site.

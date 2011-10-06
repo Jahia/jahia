@@ -63,7 +63,7 @@ public class CreateGridDragSource extends EditModeGridDragSource {
     @Override
     protected void onDragStart(DNDEvent e) {
         Object nodeType = grid.getSelectionModel().getSelectedItem().get("componentNodeType");
-        if (nodeType != null) {
+        if (nodeType != null && !((GWTJahiaNodeType) nodeType).isMixin()) {
             e.setCancelled(false);
 
             e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.CREATE_CONTENT_SOURCE_TYPE);

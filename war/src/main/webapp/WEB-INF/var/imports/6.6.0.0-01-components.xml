@@ -7,11 +7,10 @@
 
     <permissions jcr:primaryType="jnt:permission" jcr:mixinTypes="mix:versionable">
         <editMode jcr:primaryType="jnt:permission">
+            <useComponent jcr:primaryType="jnt:permission"/>
             <engineTabs jcr:primaryType="jnt:permission">
                 <viewRolesTab jcr:primaryType="jnt:permission">
                     <viewComponentRightsTab jcr:primaryType="jnt:permission"/>
-                    <viewLiveRolesTab jcr:primaryType="jnt:permission"/>
-                    <viewEditRolesTab jcr:primaryType="jnt:permission"/>
                 </viewRolesTab>
             </engineTabs>
         </editMode>
@@ -19,9 +18,4 @@
             <componentManager jcr:primaryType="jnt:permission"/>
         </managers>
     </permissions>
-
-    <roles jcr:primaryType="jnt:roles">
-        <component-manager jcr:primaryType="jnt:role" j:roleGroup="component-role"
-            j:permissions="/permissions/repository-permissions/jcr:all_default"/>
-    </roles>
 </content>

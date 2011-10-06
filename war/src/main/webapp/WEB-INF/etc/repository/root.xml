@@ -169,6 +169,7 @@
                 <viewMetadataTab jcr:primaryType="jnt:permission"/>
                 <viewOptionsTab jcr:primaryType="jnt:permission"/>
                 <viewRolesTab jcr:primaryType="jnt:permission">
+                    <viewComponentRightsTab jcr:primaryType="jnt:permission"/>
                     <viewLiveRolesTab jcr:primaryType="jnt:permission"/>
                     <viewEditRolesTab jcr:primaryType="jnt:permission"/>
                 </viewRolesTab>

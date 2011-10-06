@@ -1,4 +1,4 @@
-Jahia 6.5 - Core Module - HTML externalization
+Core Module - HTML externalization
 
   The HTML externalization service is used to convert and assemble the HTML and depending resources of a given Jahia URL as such, that it can then be for instance sent via mail (e.g. as newsletter) or to generate static pages, get a flat capture etc. 
   

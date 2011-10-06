@@ -1,4 +1,4 @@
-Jahia 6.5 - Production Tips
+Production Tips
 
     * Fine tune the JVM. As with all Java applications the tuning of your JVM will have a big impact on your performances, choose the right GC, the right amount of memory,etc. See our fine tuning guide for more Jahia 6.5 specific information.
 

@@ -1,4 +1,4 @@
-Jahia 6.5 - Development Tips
+Development Tips
 
     * If your modules will be used to create content by editors/contributors in the staging area of Jahia 6.5 then during the first phases of development only uses URLs of type (render/edit/contribute)/default, this way you will not have to bother about the HTML caches of Jahia 6.5 and you can see directly the changes you will made in your files.
 

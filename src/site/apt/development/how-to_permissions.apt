@@ -1,4 +1,4 @@
-Jahia 6.5 - How-to create your custom permissions
+How-to create your custom permissions
 
  Permissions and roles are imported on the deployment of your module by Jahia, roles and permissions are unique in the system (for permissions only the name matters, the path is just a logical way for grouping/organizing permissions).
 

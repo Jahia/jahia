@@ -1,4 +1,4 @@
-Jahia 6.5 - Search and indexing configuration
+Search and indexing configuration
 
   The configuration for search and indexing in Jahia 6.5 has changed a lot compared to previous versions as we are
   now using the standard configuration possibilities of Apache Jackrabbit.

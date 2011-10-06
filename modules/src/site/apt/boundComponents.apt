@@ -1,4 +1,4 @@
-Jahia 6.5 - BoundComponents
+BoundComponents
 
   This mechanism allows to define in a module that this module need to be linked to another module to be fully effective.
 

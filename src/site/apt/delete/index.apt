@@ -1,4 +1,4 @@
-Jahia 6.5 - Core Module - Delete
+Core Module - Delete
 
   Jahia provides a system to avoid unsafe deletion of nodes, equivalent to a trash can.
   When a user wants to delete a node, it is not directly deleted, but marked for deletion and can be undeleted.

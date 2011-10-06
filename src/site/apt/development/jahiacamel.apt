@@ -1,4 +1,4 @@
-Jahia 6.5 - Jahia And Camel
+Jahia And Camel
 
  Jahia 6.5 uses {{{http://camel.apache.org}Apache Camel 2.4.0}} for its interaction with many enterprise systems and network protocol.
 

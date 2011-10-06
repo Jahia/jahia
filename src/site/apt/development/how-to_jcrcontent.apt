@@ -1,4 +1,4 @@
-Jahia 6.5 - How-to manipulate my content using the JCR API in Jahia 6.5
+How-to manipulate my content using the JCR API in Jahia 6.5
 
  First things to understand is that in the JCR everything happens in the context of a session
 (think something like an hibernate session for those of you that familiar with this framework).

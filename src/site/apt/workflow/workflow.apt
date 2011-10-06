@@ -1,4 +1,4 @@
-Jahia 6.5 - Workflow Integration
+Workflow Integration
 
  Jahia works with a business process engine to manage its workflows. It is mainly used for publication operation, which usually
  require user validation and eventual interaction with external systems. However, it is possible to use the process

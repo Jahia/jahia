@@ -1,4 +1,4 @@
-Jahia 6.5 - Query basics
+Query basics
 
   With Jahia 6.5 all the Jahia content is now stored in Jackrabbit, which itself provides powerful query capabilities. This
   made the proprietary query/indexing code of Jahia obsolete. In order to continue some supporting interesting features, we enhanced

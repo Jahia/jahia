@@ -396,9 +396,9 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         if (!noUpdateTypes.contains(child.getPrimaryNodeType().getName()) && atts.getValue("jcr:primaryType") != null) {
                             addMixins(child, atts);
                             setAttributes(child, atts);
-                            uuids.add(child.getIdentifier());
                         }
                     }
+                    uuids.add(child.getIdentifier());
                 }
                 uuidMapping.put(originalUuid, child.getIdentifier());
                 if (nodes.peek().getPrimaryNodeType().hasOrderableChildNodes() && nodes.peek().hasPermission("jcr:write")) {

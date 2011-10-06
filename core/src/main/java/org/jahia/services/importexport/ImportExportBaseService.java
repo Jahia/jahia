@@ -265,7 +265,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         Set<String> tti = new HashSet<String>();
         tti.add(Constants.JAHIANT_VIRTUALSITE);
-        tti.add(Constants.JAHIANT_USER);
 
         if (params.containsKey(INCLUDE_USERS)) {
             // export users

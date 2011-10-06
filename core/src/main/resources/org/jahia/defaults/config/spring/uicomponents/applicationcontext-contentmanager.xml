@@ -1247,8 +1247,41 @@
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Info"/>
-                <ref bean="Engine.Tab.Content"/>
-                <ref bean="Engine.Tab.Metadata"/>
+                <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                    <property name="id" value="title"/>
+                    <property name="titleKey" value="label.title"/>
+                    <property name="requiredPermission" value="viewContentTab"/>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">
+                            <property name="dataType">
+                                <list>
+                                    <value>content</value>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                    <property name="id" value="description"/>
+                    <property name="titleKey" value="label.description"/>
+                    <property name="requiredPermission" value="viewContentTab"/>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">
+                            <property name="dataType">
+                                <list>
+                                    <value>metadata</value>
+                                </list>
+                            </property>
+                            <property name="excludedTypes">
+                                <list>
+                                    <value>mix:created</value>
+                                    <value>mix:lastModified</value>
+                                    <value>jmix:lastPublished</value>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
             </list>
         </property>
 
@@ -1279,8 +1312,6 @@
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Info"/>
-                <ref bean="Engine.Tab.Content"/>
-                <ref bean="Engine.Tab.Metadata"/>
                 <ref bean="Engine.Tab.ComponentRights"/>
             </list>
         </property>

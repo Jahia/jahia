@@ -41,7 +41,6 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
@@ -72,9 +71,9 @@ import java.util.List;
 /**
  * 
  *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
- *        Created : 21 déc. 2009
+ * Created : 21 déc. 2009
  */
 public class ContentTypeTree extends LayoutContainer {
     private TreeGrid<GWTJahiaNode> treeGrid;
@@ -85,29 +84,32 @@ public class ContentTypeTree extends LayoutContainer {
         setBorders(false);
 
         ColumnConfig name = new ColumnConfig("label", "Label", 400);
-        name.setRenderer(new WidgetTreeGridCellRenderer() {
+        name.setRenderer(new WidgetTreeGridCellRenderer<GWTJahiaNode>() {
             @Override
-            public Widget getWidget(ModelData modelData, String s, ColumnData columnData, int i, int i1,
+            public Widget getWidget(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
                                     ListStore listStore, Grid grid) {
                 Label label;
                 GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) modelData.get("componentNodeType");
                 HorizontalPanel panel = new HorizontalPanel();
                 panel.setTableWidth("100%");
+                label = new Label(modelData.getDisplayName());
                 TableData tableData;
+                String descr = modelData.getDescription();
                 if (gwtJahiaNodeType != null) {
-                    label = new Label((String) gwtJahiaNodeType.get(s));
                     tableData = new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.MIDDLE);
                     tableData.setWidth("5%");
                     panel.add(ContentModelIconProvider.getInstance().getIcon(gwtJahiaNodeType).createImage());
                     tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
                     tableData.setWidth("95%");
-                    if (!"".equals(gwtJahiaNodeType.getDescription())) {
-                        panel.setToolTip(gwtJahiaNodeType.getDescription());
+                    if ((descr == null || descr.length() == 0) && !"".equals(gwtJahiaNodeType.getDescription())) {
+                        descr = gwtJahiaNodeType.getDescription();  
                     }
                 } else {
-                    label = new Label((String) modelData.get("displayName"));
                     tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
                     tableData.setWidth("100%");
+                }
+                if (descr != null && descr.length() > 0) {
+                    panel.setToolTip(descr);
                 }
                 panel.add(label, tableData);
                 panel.layout();

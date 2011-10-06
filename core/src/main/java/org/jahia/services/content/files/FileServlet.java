@@ -97,6 +97,8 @@ public class FileServlet extends HttpServlet {
 
     protected int cacheThreshold = 64 * 1024;
 
+    protected boolean cacheForLoggedUsers = true;
+
     protected String characterEncoding = null;
 
     protected MetricsLoggingService loggingService;
@@ -341,7 +343,12 @@ public class FileServlet extends HttpServlet {
         if (value != null) {
             cacheThreshold = new Integer(value);
         }
-        
+
+        value = config.getInitParameter("cache-for-logged-in-users");
+        if (value != null) {
+            cacheForLoggedUsers = new Boolean(value);
+        }
+
         try {
             cacheManager = FileCacheManager.getInstance();
         } catch (JahiaRuntimeException e) {
@@ -424,15 +431,19 @@ public class FileServlet extends HttpServlet {
     private boolean isVisibleForGuest(JCRNodeWrapper n) throws RepositoryException {
         final String nodeId = n.getIdentifier();
         if (!n.getSession().getUserID().equals(JahiaUserManagerService.GUEST_USERNAME)) {
-            try {
-                getInstance().doExecuteWithUserSession(JahiaUserManagerService.GUEST_USERNAME, n.getSession().getWorkspace().getName(), n.getSession().getLocale(), new JCRCallback<JCRNodeWrapper>() {
-                    public JCRNodeWrapper doInJCR(JCRSessionWrapper session)
-                            throws RepositoryException {
-                        return session.getNodeByIdentifier(nodeId);
-                    }
-                });
-            } catch (ItemNotFoundException e) {
-                // not accessible by guest
+            if (cacheForLoggedUsers) {
+                try {
+                    getInstance().doExecuteWithUserSession(JahiaUserManagerService.GUEST_USERNAME, n.getSession().getWorkspace().getName(), n.getSession().getLocale(), new JCRCallback<JCRNodeWrapper>() {
+                        public JCRNodeWrapper doInJCR(JCRSessionWrapper session)
+                                throws RepositoryException {
+                            return session.getNodeByIdentifier(nodeId);
+                        }
+                    });
+                } catch (ItemNotFoundException e) {
+                    // not accessible by guest
+                    return false;
+                }
+            } else {
                 return false;
             }
         }

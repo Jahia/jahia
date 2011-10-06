@@ -50,6 +50,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.jcr.Binary;
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletConfig;
@@ -67,15 +68,15 @@ import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.Cache;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.jahia.services.content.JCRTemplate.*;
 
 /**
  * Serves resources from the JCR repository.
@@ -288,7 +289,7 @@ public class FileServlet extends HttpServlet {
         fileEntry = new FileCacheEntry(lastModifiedEntry.getETag(), content.getProperty(
                 Constants.JCR_MIMETYPE).getString(), contentLength,
                 lastModifiedEntry.getLastModified());
-        if (contentLength <= cacheThreshold) {
+        if (contentLength <= cacheThreshold && isVisibleForGuest(node)) {
             InputStream is = null;
             try {
                 is = binary.getStream();
@@ -418,6 +419,24 @@ public class FileServlet extends HttpServlet {
         return workspace != null && path != null ? new FileKey(workspace, JCRContentUtils.escapeNodePath(path),
                 req.getParameter("v"), req.getParameter("l"), StringUtils.defaultIfEmpty(
                         req.getParameter("t"), StringUtils.EMPTY)) : null;
+    }
+
+    private boolean isVisibleForGuest(JCRNodeWrapper n) throws RepositoryException {
+        final String nodeId = n.getIdentifier();
+        if (!n.getSession().getUserID().equals(JahiaUserManagerService.GUEST_USERNAME)) {
+            try {
+                getInstance().doExecuteWithUserSession(JahiaUserManagerService.GUEST_USERNAME, n.getSession().getWorkspace().getName(), n.getSession().getLocale(), new JCRCallback<JCRNodeWrapper>() {
+                    public JCRNodeWrapper doInJCR(JCRSessionWrapper session)
+                            throws RepositoryException {
+                        return session.getNodeByIdentifier(nodeId);
+                    }
+                });
+            } catch (ItemNotFoundException e) {
+                // not accessible by guest
+                return false;
+            }
+        }
+        return true;
     }
 
 }

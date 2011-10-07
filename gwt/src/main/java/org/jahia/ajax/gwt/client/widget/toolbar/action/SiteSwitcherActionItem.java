@@ -163,8 +163,10 @@ public class SiteSwitcherActionItem extends BaseActionItem {
     private void refreshSitesList(final Linker linker, String moduleType) {
         List<GWTJahiaNode> sites = new ArrayList<GWTJahiaNode>();
         for (GWTJahiaNode n : JahiaGWTParameters.getSitesMap().values()) {
-            if (moduleType.equals("") || moduleType.equals(n.getProperties().get("j:siteType"))) {
-                sites.add(n);
+            if (!n.getName().equals("systemsite")) {
+                if (moduleType.equals("") || moduleType.equals(n.getProperties().get("j:siteType"))) {
+                    sites.add(n);
+                }
             }
         }
         sitesCombo.removeAllListeners();

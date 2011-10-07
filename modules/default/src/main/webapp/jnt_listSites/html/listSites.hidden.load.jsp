@@ -18,6 +18,6 @@
 
 
 <query:definition var="result"
-         statement="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites')"/>
+         statement="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites') and localname(site) <> 'systemsite'"/>
 
 <c:set target="${moduleMap}" property="listQuery" value="${result}"/>

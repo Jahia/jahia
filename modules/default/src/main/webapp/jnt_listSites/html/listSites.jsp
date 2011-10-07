@@ -30,7 +30,7 @@
 <c:if test="${not ajaxRequired}">
 
     <jcr:sql var="result"
-             sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites') order by site.[jcr:created] desc"
+             sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites') and localname(site) <> 'systemsite' order by site.[jcr:created] desc"
              limit="${currentNode.properties['numberMaxOfSitesDisplayed'].string}"/>
     <ul class="list-sites">
         <c:forEach items="${result.nodes}" var="node">

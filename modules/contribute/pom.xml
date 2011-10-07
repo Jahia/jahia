@@ -96,6 +96,7 @@
                             <module-type>system</module-type>
                         </manifestEntries>
                     </archive>
+                    <archiveClasses>true</archiveClasses>
                 </configuration>
             </plugin>
         </plugins>

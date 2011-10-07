@@ -429,42 +429,45 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         byte[] buffer = new byte[4096];
         for (Iterator<JCRNodeWrapper> iterator = nodes.iterator(); iterator.hasNext();) {
             JCRNodeWrapper file = iterator.next();
-            exportNodeBinary(root, file, zout, typesToIgnore, buffer, basepath);
+            exportNodeBinary(root, file, zout, typesToIgnore, buffer, basepath, new HashSet<String>());
         }
     }
 
-    private void exportNodeBinary(JCRNodeWrapper root, JCRNodeWrapper node, ZipOutputStream zout, Set<String> typesToIgnore, byte[] buffer, String basepath) throws IOException, RepositoryException {
+    private void exportNodeBinary(JCRNodeWrapper root, JCRNodeWrapper node, ZipOutputStream zout, Set<String> typesToIgnore, byte[] buffer, String basepath, Set<String> exportedFiles) throws IOException, RepositoryException {
         int bytesIn;
         if (node.getProvider().isExportable() && !typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
             NodeIterator ni = node.getNodes();
             while (ni.hasNext()) {
                 Node child = ni.nextNode();
                 if (child.isNodeType("nt:resource")) {
-                    InputStream is = child.getProperty("jcr:data").getBinary().getStream();
-                    if (is != null) {
-                        try {
-                            String path = node.getPath();
-                            if (root.getPath().equals("/")) {
-                                path = basepath + path;
-                            } else {
-                                path = basepath + path.substring(root.getParent().getPath().length());
+                    if (exportedFiles.contains(child.getPath())) {
+                        exportedFiles.add(child.getPath());
+                        InputStream is = child.getProperty("jcr:data").getBinary().getStream();
+                        if (is != null) {
+                            try {
+                                String path = node.getPath();
+                                if (root.getPath().equals("/")) {
+                                    path = basepath + path;
+                                } else {
+                                    path = basepath + path.substring(root.getParent().getPath().length());
+                                }
+                                String name = JCRContentUtils.replaceColon(child.getName());
+                                if (child.getName().equals("jcr:content")) {
+                                    name = node.getName();
+                                }
+                                path += "/" + name;
+                                zout.putNextEntry(new ZipEntry(path.substring(1)));
+                                while ((bytesIn = is.read(buffer)) != -1) {
+                                    zout.write(buffer, 0, bytesIn);
+                                }
+                            } finally {
+                                IOUtils.closeQuietly(is);
                             }
-                            String name = JCRContentUtils.replaceColon(child.getName());
-                            if (child.getName().equals("jcr:content")) {
-                                name = node.getName();
-                            }
-                            path += "/" + name;
-                            zout.putNextEntry(new ZipEntry(path.substring(1)));
-                            while ((bytesIn = is.read(buffer)) != -1) {
-                                zout.write(buffer, 0, bytesIn);
-                            }
-                        } finally {
-                            IOUtils.closeQuietly(is);
                         }
                     }
                 }
                 if (child instanceof JCRNodeWrapper) {
-                    exportNodeBinary(root, (JCRNodeWrapper) child, zout, typesToIgnore, buffer, basepath);
+                    exportNodeBinary(root, (JCRNodeWrapper) child, zout, typesToIgnore, buffer, basepath, exportedFiles);
                 }
             }
         }

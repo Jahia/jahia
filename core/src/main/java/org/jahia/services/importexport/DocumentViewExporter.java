@@ -133,6 +133,10 @@ public class DocumentViewExporter {
 
         nodesList = new ArrayList<JCRNodeWrapper>(nodes);
         for (int i = 0; i<nodesList.size(); i++) {
+            List<JCRNodeWrapper> subList = new ArrayList<JCRNodeWrapper>(nodesList.subList(i, nodesList.size()));
+            Collections.sort(subList, nodes.comparator());
+            nodesList.removeAll(subList);
+            nodesList.addAll(subList);
             exportNode(nodesList.get(i));
         }
 //        for (Iterator<JCRNodeWrapper> iterator = nodes.iterator(); iterator.hasNext();) {
@@ -166,7 +170,7 @@ public class DocumentViewExporter {
 
                 String parentpath = path.substring(0, path.lastIndexOf('/'));
 
-                while (!stack.isEmpty() && !parentpath.startsWith(stack.peek())) {
+                while (!stack.isEmpty() && !parentpath.startsWith(stack.peek()+"/") && !parentpath.equals(stack.peek())) {
                     String end = stack.pop();
                     if (stack.isEmpty()) {
                         throw new RepositoryException("Node not in path : " + node.getPath());
@@ -195,9 +199,9 @@ public class DocumentViewExporter {
                     }
                     String encodedName = ISO9075.encode(name);
                     String currentpath = peek + "/" + name;
-//                    String pt = session.getNode(currentpath).getPrimaryNodeTypeName();
+                    String pt = session.getNode(currentpath).getPrimaryNodeTypeName();
                     AttributesImpl atts = new AttributesImpl();
-//                    atts.addAttribute(Name.NS_JCR_URI, "primaryType", "jcr:primaryType", CDATA, pt);
+                    atts.addAttribute(Name.NS_JCR_URI, "primaryType", "jcr:primaryType", CDATA, pt);
                     startElement(encodedName, atts);
                     stack.push(currentpath);
                 }

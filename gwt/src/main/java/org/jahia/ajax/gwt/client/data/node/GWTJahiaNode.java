@@ -632,4 +632,12 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         }
         return false;
     }
+    
+    public void setCanMarkForDeletion(boolean canMarkForDeletion) {
+        set("canMarkForDeletion", Boolean.valueOf(canMarkForDeletion));
+    } 
+
+    public boolean canMarkForDeletion() {
+        return (Boolean) get("canMarkForDeletion");
+    } 
 }

@@ -48,6 +48,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.MessageBox.MessageBoxType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
@@ -70,14 +71,80 @@ import java.util.List;
  * Date: Sep 25, 2009
  * Time: 6:59:06 PM
  */
+@SuppressWarnings("serial")
 public class DeleteActionItem extends BaseActionItem {
     
     private boolean permanentlyDelete;
     
     private String referenceTitleKey;
 
-    public void setReferenceTitleKey(String referenceTitleKey) {
-        this.referenceTitleKey = referenceTitleKey;
+    private boolean checkEnabledWithMarkedForDeletion(LinkerSelectionContext lh) {
+        boolean enabled = true;
+        if (permanentlyDelete) {
+            // we are dealing with permanent deletion action
+            for (GWTJahiaNode selected : lh.getMultipleSelection()) {
+                if (!selected.canMarkForDeletion()) {
+                    // the node does not support marking for deletion
+                    if (!selected.isLocked()) {
+                        // it is not locked -> we can permanently delete it
+                        continue;
+                    } else {
+                        // it is locked -> cannot delete it permanently
+                        enabled = false;
+                        break;
+                    }
+                }
+
+                if (selected.getAggregatedPublicationInfo().getStatus() != GWTJahiaPublicationInfo.NOT_PUBLISHED
+                        || (selected.isLocked() && !selected.getNodeTypes().contains(
+                                "jmix:markedForDeletionRoot"))) {
+                    // the node is already published or it is locked (and not marked for deletion)
+                    enabled = false;
+                    break;
+                }
+            }
+        } else {
+            // we are dealing with mark for delete action
+            
+            enabled = !lh.isLocked();
+            if (enabled) {
+
+            // if one of the selected nodes cannot be marked for deletion -> do not display the delete action
+                for (GWTJahiaNode selected : lh.getMultipleSelection()) {
+                    if (!selected.canMarkForDeletion()) {
+                        enabled = false;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        return enabled;
+    }
+
+    public void handleNewLinkerSelection() {
+        LinkerSelectionContext lh = linker.getSelectionContext();
+        List<GWTJahiaNode> selection = lh.getMultipleSelection();
+        if (selection != null && selection.size() > 0) {
+            if (selection.size() == 1) {
+                if (selection.get(0).getInheritedNodeTypes().contains("jmix:nodeReference")) {
+                    updateTitle(Messages.get(referenceTitleKey,referenceTitleKey));
+                } else {
+                    updateTitle(getGwtToolbarItem().getTitle() + " : " + selection.get(0).getDisplayName());
+                }
+            } else {
+                updateTitle(getGwtToolbarItem().getTitle() + " : " + selection.get(0).getDisplayName());
+            }
+        }
+        boolean enabled = selection != null && selection.size() > 0
+                && !lh.isSecondarySelection()
+                && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions());
+        
+        if (enabled) {
+            enabled = checkEnabledWithMarkedForDeletion(lh);
+        }
+
+        setEnabled(enabled);
     }
 
     public void onComponentSelection() {
@@ -97,6 +164,10 @@ public class DeleteActionItem extends BaseActionItem {
                     final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
 
                         async.getUsages(l, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
+                            public void onApplicationFailure(Throwable caught) {
+                                com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
+                            }
+
                             public void onSuccess(List<GWTJahiaNodeUsage> result) {
                                 String icon = MessageBox.WARNING;
                                 String message;
@@ -208,57 +279,17 @@ public class DeleteActionItem extends BaseActionItem {
                                 box.show();
 
                             }
-
-                            public void onApplicationFailure(Throwable caught) {
-                                com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
-                            }
                         });
                 }
             }
         });
     }
 
-    public void handleNewLinkerSelection() {
-        LinkerSelectionContext lh = linker.getSelectionContext();
-        List<GWTJahiaNode> selection = lh.getMultipleSelection();
-        if (selection != null && selection.size() > 0) {
-            if (selection.size() == 1) {
-                if (selection.get(0).getInheritedNodeTypes().contains("jmix:nodeReference")) {
-                    updateTitle(Messages.get(referenceTitleKey,referenceTitleKey));
-                } else {
-                    updateTitle(getGwtToolbarItem().getTitle() + " : " + selection.get(0).getDisplayName());
-                }
-            } else {
-                updateTitle(getGwtToolbarItem().getTitle() + " : " + selection.get(0).getDisplayName());
-            }
-        }
-        boolean enabled = selection != null && selection.size() > 0
-                && !lh.isSecondarySelection()
-                && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions());
-        
-        if (enabled) {
-            if (permanentlyDelete) {
-                for (GWTJahiaNode gwtJahiaNode : selection) {
-                    enabled &= gwtJahiaNode.getAggregatedPublicationInfo().getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED;
-                    if (lh.isLocked()) {
-                        enabled &= gwtJahiaNode.getNodeTypes().contains(
-                                "jmix:markedForDeletionRoot");
-                    }
-                    if (!enabled) {
-                        break;
-                    }
-                }
-            } else {
-                enabled = !lh.isLocked();
-            }
-        }
-
-        setEnabled(enabled);
-    }
-
     public void setPermanentlyDelete(boolean permanentlyDelete) {
         this.permanentlyDelete = permanentlyDelete;
     }
 
-
+    public void setReferenceTitleKey(String referenceTitleKey) {
+        this.referenceTitleKey = referenceTitleKey;
+    }
 }

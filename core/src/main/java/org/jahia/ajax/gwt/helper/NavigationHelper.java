@@ -804,6 +804,12 @@ public class NavigationHelper {
         n.setUUID(uuid);
         n.setName(JCRContentUtils.unescapeLocalNodeName(node.getName()));
         try {
+            n.setCanMarkForDeletion(node.canMarkForDeletion());
+        } catch (RepositoryException e) {
+            logger.error("Unable to check if the node " + node.getPath()
+                    + " supports marking for deletion. Cause: " + e.getMessage(), e);
+        }
+        try {
             if (node.getPath().equals("/")) {
                 n.setDisplayName("root");
                 n.setName("root");

@@ -514,7 +514,7 @@
 [jmix:userProfileComponents] > jmix:droppableContent mixin
 
 // @since Jahia 6.6
-[jnt:componentFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, mix:title, jmix:list
+[jnt:componentFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, mix:title, jmix:list, jmix:publication
  + * (jnt:component)
  + * (jnt:componentFolder)
 

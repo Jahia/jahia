@@ -1408,6 +1408,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
             result.setReferencesWarnings(referencesWarnings);
             return result;
+        } catch (PathNotFoundException e) {
+            // the node no longer exists
+            throw new GWTJahiaServiceException(e.getMessage());
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);
             throw new GWTJahiaServiceException("Cannot get node");
@@ -1527,6 +1530,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     NodeTypeRegistry.getInstance().getNodeType("nt:base"), nodeWrapper, nodeWrapper.getParent(),
                     getUILocale()));
             return result;
+        } catch (PathNotFoundException e) {
+            // the node no longer exists
+            throw new GWTJahiaServiceException(e.getMessage());
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);
             throw new GWTJahiaServiceException("Cannot get node");

@@ -40,20 +40,38 @@
 
 package org.jahia.services.render.filter;
 
+import java.text.MessageFormat;
+
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 /**
- * This filter hides the nodes that are "marked for deletion" nodes in preview mode
+ * Filter adds overlays for modules in edit mode that are marked for deletion.
+ * 
+ * @author Sergiy Shyrkov
  */
-public class MarkedForDeletionFilter extends AbstractFilter {
+public class MarkedForDeletionEditModeFilter extends AbstractFilter {
+
+    private String template;
 
     @Override
-    public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        if (resource.getNode().isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION)) {
-            return "";
+    public String execute(String previousOut, RenderContext renderContext, Resource resource,
+            RenderChain chain) throws Exception {
+        if (StringUtils.isEmpty(previousOut)
+                || !resource.getNode().isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
+            return previousOut;
         }
-        return null;
+
+        return MessageFormat.format(
+                template,
+                JahiaResourceBundle.getJahiaInternalResource("label.deleted",
+                        renderContext.getUILocale(), "Deleted"), previousOut);
+    }
+
+    public void setTemplate(String template) {
+        this.template = template;
     }
 }

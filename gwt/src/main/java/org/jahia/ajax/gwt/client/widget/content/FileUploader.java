@@ -50,12 +50,9 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -141,7 +138,7 @@ public class FileUploader extends Window {
     public FileUploader(final Linker linker, final GWTJahiaNode location) {
         super();
         setHeading(Messages.get("uploadFile.label"));
-        setSize(500, 200);
+        setSize(500, 250);
         setResizable(false);
 
         ButtonBar buttons = new ButtonBar();
@@ -185,19 +182,6 @@ public class FileUploader extends Window {
         form.add(dest);
         form.add(unzip);
 
-        final ToolBar toolBar = new ToolBar();
-        Button add = new Button(Messages.get("addFile.label"));
-        add.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
-        add.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                addUploadField();
-            }
-        });
-        toolBar.add(add);
-        bar.setVisible(false);
-        toolBar.add(new FillToolItem());
-        toolBar.add(bar);
-
         Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide();
@@ -220,8 +204,6 @@ public class FileUploader extends Window {
         setButtonAlign(Style.HorizontalAlignment.CENTER);
         setBottomComponent(buttons);
 
-        setTopComponent(toolBar);
-        
         final UploadPanel p = new UploadPanel();
         form.add(p);
 
@@ -240,7 +222,6 @@ public class FileUploader extends Window {
 
                 String result = formEvent.getResultHtml();
            
-                toolBar.removeAll();
                 removeAll();
                 String[] results = result.split("\n");
 

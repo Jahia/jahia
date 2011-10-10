@@ -440,7 +440,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             while (ni.hasNext()) {
                 Node child = ni.nextNode();
                 if (child.isNodeType("nt:resource")) {
-                    if (exportedFiles.contains(child.getPath())) {
+                    if (!exportedFiles.contains(child.getPath())) {
                         exportedFiles.add(child.getPath());
                         InputStream is = child.getProperty("jcr:data").getBinary().getStream();
                         if (is != null) {

@@ -47,9 +47,13 @@ public class PreviewWindow extends Window {
         htmlPreview.setScrollMode(Style.Scroll.AUTO);
         add(htmlPreview, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
+        // Use gwt configuration for pages
+
+        String configuration = jahiaNode.isNodeType("jnt:page")?"gwt":"preview";
+
         JahiaContentManagementService.App.getInstance().getRenderedContent(
                 jahiaNode.getPath(), null, JahiaGWTParameters.getLanguage(),
-                "default", "preview", null, true, linker.getConfig().getName(),
+                "default", configuration, null, true, linker.getConfig().getName(),
                 new BaseAsyncCallback<GWTRenderResult>() {
                     public void onSuccess(GWTRenderResult gwtRenderResult) {
                         htmlPreview.removeAll();

@@ -61,7 +61,7 @@ public class MarkedForDeletionEditModeFilter extends AbstractFilter {
     public String execute(String previousOut, RenderContext renderContext, Resource resource,
             RenderChain chain) throws Exception {
         if (StringUtils.isEmpty(previousOut)
-                || !resource.getNode().isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
+                || !resource.getNode().isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION)) {
             return previousOut;
         }
 

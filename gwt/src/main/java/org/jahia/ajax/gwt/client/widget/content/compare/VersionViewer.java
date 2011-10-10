@@ -215,8 +215,8 @@ public class VersionViewer extends ContentPanel {
             gwtJahiaToolbarItem.setDisplayTitle(true);
             gwtJahiaToolbarItem.setIcon("publish");
             actionItem.init(gwtJahiaToolbarItem, linker);
-            actionItem.handleNewLinkerSelection();
             headerToolBar.add(actionItem.getTextToolItem());
+            actionItem.handleNewLinkerSelection();
 
             gwtJahiaToolbarItem = new GWTJahiaToolbarItem();
             actionItem = new PublishAllActionItem();
@@ -226,8 +226,8 @@ public class VersionViewer extends ContentPanel {
             gwtJahiaToolbarItem.setDisplayTitle(true);
             gwtJahiaToolbarItem.setIcon("publishAll");
             actionItem.init(gwtJahiaToolbarItem, linker);
-            actionItem.handleNewLinkerSelection();
             headerToolBar.add(actionItem.getTextToolItem());
+            actionItem.handleNewLinkerSelection();
 
             setTopComponent(headerToolBar);
         } else {

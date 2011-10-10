@@ -7,7 +7,7 @@ Components
 
 * Declaring components
 
-  Components can be declared in a module through a node type {{{../../definitions.html}definition}}.
+  Components can be declared in a module through a node type {{{./definitions.html}definition}}.
   All components that are declared in a module are deployed to a tree in the JCR, under the <<</templateSet>>> node. For
   every node type definition found, a node <<<jnt:component>>> is created.
   Components are organized in components folder of type <<<jnt:componentFolder>>>.

@@ -50,6 +50,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
@@ -73,6 +74,7 @@ import java.util.List;
  * Date: Dec 21, 2009
  * Time: 2:22:24 PM
  */
+@SuppressWarnings("serial")
 class LastContentBrowseTabItem extends SidePanelTabItem {
     protected String search;
     protected int limit;
@@ -81,6 +83,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
     protected transient LayoutContainer contentContainer;
     protected transient ListStore<GWTJahiaNode> contentStore;
     protected transient DisplayGridDragSource displayGridSource;
+    private transient LayoutContainer previewLayoutContainer;
 
     public TabItem create(final GWTSidePanelTab config) {
         super.create(config);
@@ -115,7 +118,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         displayColumns.add(new ColumnConfig("displayName", Messages.get("label.name"), 170));
         ColumnConfig columnConfig = new ColumnConfig("jcr:lastModified", Messages.get("label.lastModif"),
                                                      100);
-        columnConfig.setDateTimeFormat(DateTimeFormat.getShortDateTimeFormat());
+        columnConfig.setDateTimeFormat(DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT));
         displayColumns.add(columnConfig);
         final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
 
@@ -124,23 +127,28 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         grid.setContextMenu(createContextMenu(config.getTableContextMenu(), grid.getSelectionModel()));
         grid.getStore().setMonitorChanges(true);
         grid.setAutoExpandColumn("displayName");
-        final LayoutContainer previewLayoutContainer = new LayoutContainer();
+        previewLayoutContainer = new LayoutContainer();
         previewLayoutContainer.setLayout(new FitLayout());
         previewLayoutContainer.addStyleName(cssWrapper);
         grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
-            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
-                JahiaContentManagementService.App.getInstance().getRenderedContent(
-                        gwtJahiaNodeSelectionChangedEvent.getSelectedItem().getPath(), null, editLinker.getLocale(),
-                        "default", "preview", null, true, config.getName(),
-                        new BaseAsyncCallback<GWTRenderResult>() {
-
-                            public void onSuccess(GWTRenderResult gwtRenderResult) {
-                                previewLayoutContainer.removeAll();
-                                previewLayoutContainer.add(new HTML(gwtRenderResult.getResult()));
-                                previewLayoutContainer.layout(true);
-                            }
-                        });
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> evt) {
+                if (evt.getSelectedItem() != null) {
+                    JahiaContentManagementService.App.getInstance().getRenderedContent(
+                            evt.getSelectedItem().getPath(), null, editLinker.getLocale(),
+                            "default", "preview", null, true, config.getName(),
+                            new BaseAsyncCallback<GWTRenderResult>() {
+    
+                                public void onSuccess(GWTRenderResult gwtRenderResult) {
+                                    previewLayoutContainer.removeAll();
+                                    previewLayoutContainer.add(new HTML(gwtRenderResult.getResult()));
+                                    previewLayoutContainer.layout(true);
+                                }
+                            });
+                } else {
+                    previewLayoutContainer.removeAll();
+                    previewLayoutContainer.layout(true);
+                }
             }
         });
 
@@ -160,15 +168,15 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         displayGridSource.addDNDListener(editLinker.getDndListener());
     }
 
-//    @Override
-//    protected void onRender(Element parent, int index) {
-//        super.onRender(parent, index);
-//        fillStore();
-//    }
-
     private void fillStore() {
         contentContainer.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+        contentStore.setFiresEvents(false);
+        if (previewLayoutContainer != null) {
+            previewLayoutContainer.removeAll();
+            previewLayoutContainer.layout(true);
+        }
         contentStore.removeAll();
+        contentStore.setFiresEvents(true);
         JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
         async.searchSQL(search, limit,
                         JCRClientUtils.CONTENT_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.ICON,"jcr:lastModified"),false, new BaseAsyncCallback<List<GWTJahiaNode>>() {

@@ -51,6 +51,7 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
 import org.jahia.ajax.gwt.client.widget.contentengine.EnginePanel;
@@ -67,68 +68,53 @@ import java.util.List;
  * Date: Sep 25, 2009
  * Time: 6:58:56 PM
  */
+@SuppressWarnings("serial")
 public class PublishActionItem extends BaseActionItem {
-    protected transient GWTJahiaWorkflow wf;
+    
+    /**
+     * Returns <code>true</code> if the selected item (single-selection case) is locked by the marked for deletion operation on its parent.
+     * In a multi-selection mode, the condition should be fulfilled for all selected items. If at least one of the selected items is not in
+     * marked for deletion state this method returns false.
+     * 
+     * @param selection
+     *            the current selection context
+     * @return <code>true</code> if the selected item (single-selection case) is locked by the marked for deletion operation on its parent.
+     *         In a multi-selection mode, the condition should be fulfilled for all selected items. If at least one of the selected items is
+     *         not in marked for deletion state this method returns false.
+     */
+    public static boolean isChildOfMarkedForDeletion(LinkerSelectionContext selection) {
+        if (selection.getMultipleSelection().size() == 0) {
+            return false;
+        }
+
+        boolean markedForDeletion = false;
+        for (GWTJahiaNode node : selection.getMultipleSelection()) {
+            markedForDeletion = node.getNodeTypes().contains("jmix:markedForDeletion")
+                    && !node.getNodeTypes().contains("jmix:markedForDeletionRoot");
+            if (!markedForDeletion) {
+                break;
+            }
+        }
+
+        return markedForDeletion;
+    }
+    
     protected transient boolean allSubTree = false;
     protected transient GWTJahiaNode gwtJahiaNode;
 
-    public void onComponentSelection() {
-        if (wf == null) {
-            if (gwtJahiaNode != null) {
-                final List<String> uuids = new ArrayList<String>();
-                List<GWTJahiaNode> jahiaNodes = linker.getSelectionContext().getMultipleSelection();
-                if (jahiaNodes.size() > 1) {
-                    for (GWTJahiaNode jahiaNode : jahiaNodes) {
-                        uuids.add(jahiaNode.getUUID());
-                    }
-                } else {
-                    uuids.add(gwtJahiaNode.getUUID());
-                }
-                linker.loading(Messages.get("label.gettingPublicationInfo", "Getting publication information"));
-                JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, false, new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
-                            public void onSuccess(List<GWTJahiaPublicationInfo> result) {
-                                linker.loaded();
-                                PublicationWorkflow.create(result, linker);
-                            }
-
-                            public void onApplicationFailure(Throwable caught) {
-                                linker.loaded();
-                                Window.alert("Cannot get status: " + caught.getMessage());
-                            }
-                        });
-            }
-        } else {
-            EngineContainer container;
-            if (linker instanceof ManagerLinker) {
-                container = new EngineWindow();
-            } else {
-                container = new EnginePanel();
-            }
-            new WorkflowActionDialog(wf, wf.getAvailableTasks().get(0), linker, wf.getCustomWorkflowInfo(), container);
-            container.showEngine();
-        }
-    }
-
-    /**
-     * Init the action item.
-     *
-     * @param gwtToolbarItem
-     * @param linker
-     */
-    @Override
-    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
-        super.init(gwtToolbarItem, linker);
-        setEnabled(false);
-    }
+    protected transient GWTJahiaWorkflow wf;
 
     public void handleNewLinkerSelection() {
-        if (linker.getSelectionContext().getMultipleSelection() != null
-                && linker.getSelectionContext().getMultipleSelection().size() > 1) {
-            setEnabled(true);
-            updateTitle(Messages.get("label.publish.selected.items"));
+        LinkerSelectionContext ctx = linker.getSelectionContext();
+        if (ctx.getMultipleSelection() != null
+                && ctx.getMultipleSelection().size() > 1) {
+            if (!isChildOfMarkedForDeletion(ctx)) {
+                setEnabled(true);
+                updateTitle(Messages.get("label.publish.selected.items"));
+            }
         } else {
-            gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
-            if (gwtJahiaNode != null && gwtJahiaNode.getWorkflowInfo() != null) {
+            gwtJahiaNode = ctx.getSingleSelection();
+            if (gwtJahiaNode != null && gwtJahiaNode.getWorkflowInfo() != null && !isChildOfMarkedForDeletion(ctx)) {
                 wf = gwtJahiaNode.getWorkflowInfo().getActiveWorkflows().get(new GWTJahiaWorkflowType("publish"));
                 if (wf != null) {
                     if (!wf.getAvailableTasks().isEmpty()) {
@@ -154,6 +140,55 @@ public class PublishActionItem extends BaseActionItem {
             } else {
                 setEnabled(false);
             }
+        }
+    }
+
+    /**
+     * Init the action item.
+     *
+     * @param gwtToolbarItem
+     * @param linker
+     */
+    @Override
+    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
+        super.init(gwtToolbarItem, linker);
+        setEnabled(false);
+    }
+
+    public void onComponentSelection() {
+        if (wf == null) {
+            if (gwtJahiaNode != null) {
+                final List<String> uuids = new ArrayList<String>();
+                List<GWTJahiaNode> jahiaNodes = linker.getSelectionContext().getMultipleSelection();
+                if (jahiaNodes.size() > 1) {
+                    for (GWTJahiaNode jahiaNode : jahiaNodes) {
+                        uuids.add(jahiaNode.getUUID());
+                    }
+                } else {
+                    uuids.add(gwtJahiaNode.getUUID());
+                }
+                linker.loading(Messages.get("label.gettingPublicationInfo", "Getting publication information"));
+                JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, false, new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
+                            public void onApplicationFailure(Throwable caught) {
+                                linker.loaded();
+                                Window.alert("Cannot get status: " + caught.getMessage());
+                            }
+
+                            public void onSuccess(List<GWTJahiaPublicationInfo> result) {
+                                linker.loaded();
+                                PublicationWorkflow.create(result, linker);
+                            }
+                        });
+            }
+        } else {
+            EngineContainer container;
+            if (linker instanceof ManagerLinker) {
+                container = new EngineWindow();
+            } else {
+                container = new EnginePanel();
+            }
+            new WorkflowActionDialog(wf, wf.getAvailableTasks().get(0), linker, wf.getCustomWorkflowInfo(), container);
+            container.showEngine();
         }
     }
 }

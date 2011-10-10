@@ -41,10 +41,10 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 /**
  * 
@@ -52,6 +52,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
  * Date: Sep 25, 2009
  * Time: 6:58:56 PM
  */
+@SuppressWarnings("serial")
 public class PublishAllActionItem extends PublishActionItem {
 
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
@@ -61,13 +62,16 @@ public class PublishAllActionItem extends PublishActionItem {
 
     public void handleNewLinkerSelection() {
         setEnabled(false);
-        if (linker.getSelectionContext().getMultipleSelection() != null
-                && linker.getSelectionContext().getMultipleSelection().size() > 1) {
-            setEnabled(true);
-            updateTitle(Messages.get("label.publish.all.selected.items"));
+        LinkerSelectionContext ctx = linker.getSelectionContext();
+        if (ctx.getMultipleSelection() != null
+                && ctx.getMultipleSelection().size() > 1) {
+            if (!isChildOfMarkedForDeletion(ctx)) {
+                setEnabled(true);
+                updateTitle(Messages.get("label.publish.all.selected.items"));
+            }
         } else {
-            gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
-            if (gwtJahiaNode != null) {
+            gwtJahiaNode = ctx.getSingleSelection();
+            if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx)) {
                 setEnabled(true);
                 if(gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
                     updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
@@ -75,8 +79,8 @@ public class PublishAllActionItem extends PublishActionItem {
                         setEnabled(false);
                     }
                 } else {
-                updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
-                            JahiaGWTParameters.getLanguageDisplayName());
+                    updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
+                                JahiaGWTParameters.getLanguageDisplayName());
                 }
             }
         }

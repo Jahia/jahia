@@ -214,7 +214,9 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         return  !info.isLocked() && info.isCanPublish() &&
                 info.getStatus() > GWTJahiaPublicationInfo.PUBLISHED &&
                 info.getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE &&
-                info.getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID;
+                info.getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID
+                && (!node.getNodeTypes().contains("jmix:markedForDeletion")
+                        || node.getNodeTypes().contains("jmix:markedForDeletionRoot"));
     }
 
 

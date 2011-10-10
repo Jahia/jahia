@@ -127,7 +127,6 @@ class PortletBrowseTabItem extends BrowseTabItem {
         ThumbsListView listView = new ThumbsListView(true);
         listView.setStyleAttribute("overflow-x", "hidden");
         listView.setStore(contentStore);
-        listView.setTemplate(getPortletTemplate());
         contentContainer.add(listView);
 
         tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
@@ -206,26 +205,5 @@ class PortletBrowseTabItem extends BrowseTabItem {
     protected boolean acceptNode(GWTJahiaNode node) {
         return node.getInheritedNodeTypes().contains("jnt:portlet");
     }
-
-    /**
-     * Portlet template
-     *
-     * @return
-     */
-    public native String getPortletTemplate() /*-{
-    return ['<tpl for=".">',
-        '<div style="padding: 5px ;border-bottom: 1px solid #D9E2F4;float: left;width: 100%;" class="thumb-wrap" id="{name}">',
-        '<div><div style="width: 140px; float: left; text-align: center;" class="thumb">{nodeImg}</div>',
-        '<div style="margin-left: 160px; " class="thumbDetails">',
-        '<div><b>{nameLabel}: </b>{name}</div>',
-        '<div><b>{authorLabel}: </b>{createdBy}</div>',
-        '{tagsHTML}',
-        '</div>',
-        '</div>',
-        '<div style="padding-left: 10px; padding-top: 10px; clear: left">{description}</div></div></tpl>',
-        '<div class="x-clear"></div>','</tpl>'
-    ].join("");
-    }-*/;
-
 
 }

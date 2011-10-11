@@ -219,7 +219,7 @@ public class TestHelper {
                         titlePrefix + Integer.toString(i));
             }
             pagesCreated++;
-            pagesCreated += createSubPages(newSubPage, level - 1, nbChildren);
+            pagesCreated += createSubPages(newSubPage, level - 1, nbChildren, titlePrefix);
         }
         return pagesCreated;
     }

@@ -92,6 +92,7 @@
         <property name="priority" value="10" />
         <property name="description" value="Filters out content in preview mode that is marked for deletion"/>
         <property name="applyOnModes" value="preview" />
+        <property name="template" value="/modules/assets/WEB-INF/scripts/markedForDeletionPreview.groovy"/>
     </bean>
 
 	<bean class="org.jahia.services.render.filter.BaseAttributesFilter">

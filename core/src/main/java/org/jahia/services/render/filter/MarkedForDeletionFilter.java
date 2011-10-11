@@ -40,20 +40,120 @@
 
 package org.jahia.services.render.filter;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.SimpleScriptContext;
+
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.map.LazyMap;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
+import org.jahia.utils.ScriptEngineUtils;
+import org.jahia.utils.WebUtils;
+import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationListener;
 
 /**
  * This filter hides the nodes that are "marked for deletion" nodes in preview mode
  */
-public class MarkedForDeletionFilter extends AbstractFilter {
+public class MarkedForDeletionFilter extends AbstractFilter implements
+        ApplicationListener<TemplatePackageRedeployedEvent> {
+
+    private static final Logger logger = LoggerFactory.getLogger(MarkedForDeletionFilter.class);
+
+    private String resolvedTemplate;
+    private String template;
+    private String templateExtension;
+
+    protected String getTemplateContent() throws IOException {
+        if (resolvedTemplate == null) {
+            resolvedTemplate = WebUtils.getResourceAsString(template);
+            if (resolvedTemplate == null) {
+                logger.warn("Unable to lookup template at {}", template);
+                resolvedTemplate = StringUtils.EMPTY;
+            }
+        }
+        return resolvedTemplate;
+    }
+
+    protected String getTemplateOutput(RenderContext renderContext, Resource resource) {
+        String out = StringUtils.EMPTY;
+        try {
+            String template = getTemplateContent();
+            resolvedTemplate = null;
+
+            if (StringUtils.isEmpty(template)) {
+                return StringUtils.EMPTY;
+            }
+
+            ScriptEngine engine = ScriptEngineUtils.getInstance().scriptEngine(templateExtension);
+            ScriptContext ctx = new SimpleScriptContext();
+            ctx.setWriter(new StringWriter());
+            Bindings bindings = engine.createBindings();
+            bindings.put("renderContext", renderContext);
+            bindings.put("resource", resource);
+            final ResourceBundle bundle = JahiaResourceBundle.lookupBundle(
+                    JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES, renderContext.getUILocale());
+            bindings.put("bundle", bundle);
+            bindings.put("i18n",
+                    LazyMap.decorate(new HashMap<String, String>(2), new Transformer() {
+                        public Object transform(Object input) {
+                            String value = null;
+                            String key = String.valueOf(input);
+                            try {
+                                value = bundle.getString(key);
+                            } catch (MissingResourceException e) {
+                                value = key;
+                            }
+                            return value;
+                        }
+                    }));
+
+            ctx.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+
+            engine.eval(template, ctx);
+            out = ((StringWriter) ctx.getWriter()).getBuffer().toString();
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return out;
+    }
+
+    public void onApplicationEvent(TemplatePackageRedeployedEvent event) {
+        resolvedTemplate = null;
+    }
 
     @Override
-    public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+    public String prepare(RenderContext renderContext, Resource resource, RenderChain chain)
+            throws Exception {
         if (resource.getNode().isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION)) {
-            return "";
+            if ("page".equals(resource.getContextConfiguration())) {
+                return getTemplateOutput(renderContext, resource);
+            } else {
+                return StringUtils.EMPTY;
+            }
         }
         return null;
     }
+
+    public void setTemplate(String template) {
+        this.template = template;
+        if (template != null) {
+            templateExtension = StringUtils.substringAfterLast(template, ".");
+        }
+    }
+
 }

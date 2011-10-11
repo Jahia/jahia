@@ -62,6 +62,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.ArrayList;
@@ -115,11 +116,13 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
             }
         });
         displayColumns.add(col);
-        displayColumns.add(new ColumnConfig("displayName", Messages.get("label.name"), 170));
-        ColumnConfig columnConfig = new ColumnConfig("jcr:lastModified", Messages.get("label.lastModif"),
+        col = new ColumnConfig("displayName", Messages.get("label.name"), 170);
+        col.setRenderer(NodeColumnConfigList.NAME_RENDERER);
+        displayColumns.add(col);
+        col = new ColumnConfig("jcr:lastModified", Messages.get("label.lastModif"),
                                                      100);
-        columnConfig.setDateTimeFormat(DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT));
-        displayColumns.add(columnConfig);
+        col.setDateTimeFormat(DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT));
+        displayColumns.add(col);
         final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
 
         contentContainer.add(grid);

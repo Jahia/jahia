@@ -61,7 +61,6 @@ import org.jahia.utils.WebUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
 import javax.script.Bindings;
@@ -82,7 +81,7 @@ import java.util.regex.Pattern;
  *
  * @author Sergiy Shyrkov
  */
-public class StaticAssetsFilter extends AbstractFilter implements ApplicationListener<ApplicationEvent> {
+public class StaticAssetsFilter extends AbstractFilter implements ApplicationListener<TemplatePackageRedeployedEvent> {
 
 
     private static final Transformer LOW_CASE_TRANSFORMER = new Transformer() {
@@ -356,10 +355,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         }
     }
 
-    public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof TemplatePackageRedeployedEvent) {
-            ajaxResolvedTemplate = null;
-            resolvedTemplate = null;
-        }
+    public void onApplicationEvent(TemplatePackageRedeployedEvent event) {
+        ajaxResolvedTemplate = null;
+        resolvedTemplate = null;
     }
 }

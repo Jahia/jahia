@@ -41,6 +41,7 @@
 package org.jahia.services.render.filter;
 
 import org.slf4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
@@ -344,9 +345,72 @@ public abstract class AbstractFilter implements RenderFilter {
     }
 
     /**
-     * Evaluates to <code>true</code> if the current resource's template matches
-     * the provided one.
-     *
+     * Filter execution condition that evaluates to true if the specified request attribute matches the specified value.
+     * 
+     * @author Sergiy Shyrkov
+     * @since Jahia 6.6
+     */
+    public static class RequestAttributeCondition extends RequestCondition {
+
+        public boolean matches(RenderContext renderContext, Resource resource) {
+            return name != null
+                    && StringUtils.equals(
+                            String.valueOf(renderContext.getRequest().getAttribute(name)), value);
+        }
+    }
+
+    /**
+     * Filter execution condition that evaluates to true if the specified request item matches the specified value.
+     * 
+     * @author Sergiy Shyrkov
+     * @since Jahia 6.6
+     */
+    public static abstract class RequestCondition implements ExecutionCondition {
+
+        protected String name;
+
+        protected String value;
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
+
+    /**
+     * Filter execution condition that evaluates to true if the specified request header matches the specified value.
+     * 
+     * @author Sergiy Shyrkov
+     * @since Jahia 6.6
+     */
+    public static class RequestHeaderCondition extends RequestCondition {
+
+        public boolean matches(RenderContext renderContext, Resource resource) {
+            return name != null
+                    && StringUtils.equals(renderContext.getRequest().getHeader(name), value);
+        }
+    }
+
+    /**
+     * Filter execution condition that evaluates to true if the specified request parameter matches the specified value.
+     * 
+     * @author Sergiy Shyrkov
+     * @since Jahia 6.6
+     */
+    public static class RequestParameterCondition extends RequestCondition {
+
+        public boolean matches(RenderContext renderContext, Resource resource) {
+            return name != null
+                    && StringUtils.equals(renderContext.getRequest().getParameter(name), value);
+        }
+    }
+
+    /**
+     * Evaluates to <code>true</code> if the current resource's template matches the provided one.
+     * 
      * @author Sergiy Shyrkov
      */
     public static class TemplateCondition extends PatternCondition {

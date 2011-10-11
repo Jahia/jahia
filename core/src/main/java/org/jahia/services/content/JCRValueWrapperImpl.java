@@ -164,6 +164,6 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
         if(obj instanceof JCRValueWrapperImpl) {
             return value.equals(((JCRValueWrapperImpl)obj).value);
         }
-        else return obj.getClass().equals(value.getClass()) && value.equals(obj);
+        else return obj != null && obj.getClass().equals(value.getClass()) && value.equals(obj);
     }
 }

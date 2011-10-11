@@ -86,6 +86,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.google.common.collect.Sets;
+
 import javax.jcr.*;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -500,7 +502,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             p.setProperty("defaultSite", "true");
         }
 
-        p.save(out, "");
+        p.store(out, "");
     }
 
     public void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException {
@@ -603,7 +605,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 zis.reallyClose();
             }
 
-            importZip(null,file,DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session);
+            importZip("/",file,DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, Sets.newHashSet(USERS_XML, CATEGORIES_XML));
         } else {
             // No repository descriptor - prepare to import files directly
             pathMapping.put("/", "/sites/"+site.getSiteKey()+"/files/");
@@ -1167,8 +1169,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return documentViewValidationHandler.getResults();
     }
 
-
     public void importZip(String parentNodePath, File file, int rootBehaviour, JCRSessionWrapper session)
+            throws IOException, RepositoryException {
+        importZip(parentNodePath, file, rootBehaviour, session, Collections.<String>emptySet());
+    }
+    
+    public void importZip(String parentNodePath, File file, int rootBehaviour, JCRSessionWrapper session, Set<String> filesToIgnore)
             throws IOException, RepositoryException {
         Map<String, Long> sizes = new HashMap<String, Long>();
         List<String> fileList = new ArrayList<String>();
@@ -1179,7 +1185,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         NoCloseZipInputStream zis;
 
         boolean importLive = sizes.containsKey(LIVE_REPOSITORY_XML);
-        JCRNodeWrapper importedRootNode;
+        
         List<String> liveUuids = null;
         if (importLive) {
             // Import live content
@@ -1256,8 +1262,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         }
                     }
                     session.save(JCRObservationManager.IMPORT);
-                } else if (name.endsWith(".xml") && !name.equals(REPOSITORY_XML) && !name.equals(LIVE_REPOSITORY_XML)) {
-                    String thisPath = parentNodePath + (parentNodePath.endsWith("/") ? "" : "/")+ StringUtils.substringBefore(name,".xml");
+                } else if (name.endsWith(".xml") && !name.equals(REPOSITORY_XML) && !name.equals(LIVE_REPOSITORY_XML) && !filesToIgnore.contains(name)) {
+                    String thisPath = parentNodePath + (parentNodePath.endsWith("/") ? "" : "/") + StringUtils.substringBefore(name,".xml");
                     importXML(thisPath, zis, rootBehaviour);
                 }
                 zis.closeEntry();
@@ -1337,7 +1343,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private class OrderedProperties extends Properties {
-        Vector keys = new Vector();
+        private static final long serialVersionUID = -2418536708883832686L;
+        
+        Vector<Object> keys = new Vector<Object>();
 
         @Override
         public Object put(Object key, Object value) {
@@ -1346,12 +1354,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
 
         @Override
-        public Enumeration keys() {
+        public Enumeration<Object> keys() {
             return keys.elements();
         }
-    }
-
-    private void setObserverInterval(long observerInterval) {
-        this.observerInterval = observerInterval;
     }
 }

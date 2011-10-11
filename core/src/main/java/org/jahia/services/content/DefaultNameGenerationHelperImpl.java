@@ -54,7 +54,6 @@ import java.util.Set;
  */
 public class DefaultNameGenerationHelperImpl implements NameGenerationHelper {
     private Set<String> randomizedNames;
-    private boolean targetNameAsDefaultName = true;
 
     public String generatNodeName(JCRNodeWrapper parent, String nodeType) {
         String defaultName = nodeType.substring(nodeType.lastIndexOf(":") + 1);
@@ -67,12 +66,10 @@ public class DefaultNameGenerationHelperImpl implements NameGenerationHelper {
     public String generatNodeName(JCRNodeWrapper parent, String defaultLanguage, ExtendedNodeType nodeType, String targetName) {
         String defaultName = JCRContentUtils.generateNodeName(nodeType.getLabel(
                 LanguageCodeConverters.languageCodeToLocale(defaultLanguage)), 32);
-        if (targetNameAsDefaultName) {
-            if ((targetName != null) && (!"*".equals(targetName))) {
-                // we are in the case of a strongly typed child node, so we use the specified child name instead of the
-                // node type.
-                defaultName = targetName;
-            }
+        if ((targetName != null) && (!"*".equals(targetName))) {
+            // we are in the case of a strongly typed child node, so we use the specified child name instead of the
+            // node type.
+            defaultName = targetName;
         }
         if (getRandomizedNames()!=null && getRandomizedNames().contains(nodeType.getName())) {
             defaultName += Math.round(Math.random() * 1000000);
@@ -88,14 +85,4 @@ public class DefaultNameGenerationHelperImpl implements NameGenerationHelper {
         return randomizedNames;
     }
 
-    /**
-     * This setting controls whether the targetName should be used as a default name in the case where it is not a
-     * "*" (wildcard) character. This means that if in the view something like this :
-     * &lt;template:module path="childName" /&gt; was used, the default name will be "childName" instead of something
-     * based on the definition as it would be if this is set to false (or in the case of the wildcard character).
-     * @param targetNameAsDefaultName
-     */
-    public void setTargetNameAsDefaultName(boolean targetNameAsDefaultName) {
-        this.targetNameAsDefaultName = targetNameAsDefaultName;
-    }
 }

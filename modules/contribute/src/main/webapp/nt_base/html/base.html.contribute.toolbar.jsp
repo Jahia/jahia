@@ -25,19 +25,15 @@
 <fmt:message key="label.noSelection" var="i18nNoSelection"/>
 <c:set var="i18nNoSelection" value="${functions:escapeJavaScript(i18nNoSelection)}"/>
 <template:addResources>
-    <script>
+    <script type="text/javascript">
         var contributeParams = new Array();
         $.ajaxSetup({
             accepts: {
                 script: "application/json"
             },
             cache:false
-        })
-        <%--
-         $("#delete-${currentNode.identifier}").button();
-         $("#copy-${currentNode.identifier}").button();
-         $("#paste-${currentNode.identifier}").button();
-         --%>
+        });
+
         function getUuids() {
             var uuids = new Array();
             var i = 0;
@@ -103,14 +99,17 @@
             }
         }
 
+        <fmt:message key="message.requestPublication.confirm" var="i18nConfirmPublish"/>
         function publishNodes() {
             var uuids = getUuids();
             if (uuids.length > 0) {
-                $.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.publishNodes.do'/>", {"uuids": uuids}, function(result) {
-                	<fmt:message key="label.workflow.started" var="i18nWorkflowStarted"/>
-                    window.alert("${functions:escapeJavaScript(i18nWorkflowStarted)}");
-                    reload();
-                }, "json");
+            	if (confirm('${functions:escapeJavaScript(i18nConfirmPublish)}')) {
+                    $.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.publishNodes.do'/>", {"uuids": uuids}, function(result) {
+                    	<fmt:message key="label.workflow.started" var="i18nWorkflowStarted"/>
+                        window.alert("${functions:escapeJavaScript(i18nWorkflowStarted)}");
+                        reload();
+                    }, "json");
+            	}
             } else {
                 window.alert("${i18nNoSelection}");
             }

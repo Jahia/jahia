@@ -89,6 +89,12 @@
                             <img height="16" width="16" border="0" style="cursor:pointer;" title="<fmt:message key='label.undelete'/>" alt="<fmt:message key='label.undelete'/>"
                                  src="<c:url value='/icons/undelete.png'/>"
                                 onclick="if (confirm('${functions:escapeJavaScript(i18nUndeleteConfirm)}')) { deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',null,false); } return false;">
+                            <fmt:message key="message.remove.single.confirm" var="i18nDeleteConfirm">
+                                <fmt:param value="${nodeName}"/>
+                            </fmt:message>
+                            <img height="16" width="16" border="0" style="cursor:pointer;" title="<fmt:message key='label.deletePermanently'/>" alt="<fmt:message key='label.undelete'/>"
+                                 src="<c:url value='/icons/delete.png'/>"
+                                onclick="if (confirm('${functions:escapeJavaScript(i18nDeleteConfirm)}')) { deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',null); } return false;">
                         </c:if>
                     </c:if>
 

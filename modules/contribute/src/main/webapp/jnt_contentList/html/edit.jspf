@@ -72,6 +72,12 @@
             <button id="undelbtn-${child.identifier}"
                     onclick="if (!confirm('${functions:escapeJavaScript(i18nUndeleteConfirm)}')) { return false; } var callback = '$(\'.addContentContributeDiv\').each(function(index,value){animatedcollapse.addDiv($(this).attr(\'id\'), \'fade=1,speed=700,group=tasks\');});animatedcollapse.reinit();if (navigator.userAgent.indexOf(\'MSIE\') > 0) {location.reload();}';deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',callback,false)">
                 <span class="icon-contribute icon-undelete"></span><fmt:message key="label.undelete"/></button>
+            <fmt:message key="message.remove.single.confirm" var="i18nDeleteConfirm">
+                <fmt:param value="${child.displayableName}"/>
+            </fmt:message>
+            <button id="delbtn-${child.identifier}"
+                    onclick="if (!confirm('${functions:escapeJavaScript(i18nDeleteConfirm)}')) { return false; } var callback = '$(\'.addContentContributeDiv\').each(function(index,value){animatedcollapse.addDiv($(this).attr(\'id\'), \'fade=1,speed=700,group=tasks\');});animatedcollapse.reinit();if (navigator.userAgent.indexOf(\'MSIE\') > 0) {location.reload();}';deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',callback)">
+                <span class="icon-contribute icon-delete"></span><fmt:message key="label.deletePermanently"/></button>
         </c:if>
     </c:if>
 

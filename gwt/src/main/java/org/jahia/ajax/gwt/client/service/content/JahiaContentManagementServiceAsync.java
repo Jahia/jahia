@@ -269,7 +269,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void isValidSession(AsyncCallback<Integer> async) throws GWTJahiaServiceException;
 
-    void initializeCreateEngine(String typeName, String parentPath, AsyncCallback<GWTJahiaCreateEngineInitBean> async);
+    void initializeCreateEngine(String typeName, String parentPath, String targetName, AsyncCallback<GWTJahiaCreateEngineInitBean> async);
 
     void initializeCreatePortletEngine(String typeName, String parentPath, AsyncCallback<GWTJahiaCreatePortletInitBean> async);
 

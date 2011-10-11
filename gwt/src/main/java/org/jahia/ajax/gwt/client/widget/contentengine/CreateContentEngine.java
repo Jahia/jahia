@@ -183,7 +183,7 @@ public class CreateContentEngine extends AbstractContentEngine {
      * load mixin
      */
     private void loadEngine() {
-        contentService.initializeCreateEngine(nodeTypes.iterator().next().getName(), parentPath, new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
+        contentService.initializeCreateEngine(nodeTypes.iterator().next().getName(), parentPath, targetName, new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
             public void onSuccess(GWTJahiaCreateEngineInitBean result) {
                 mixin = result.getMixin();
                 initializersValues = result.getInitializersValues();

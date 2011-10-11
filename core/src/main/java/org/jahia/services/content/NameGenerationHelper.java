@@ -43,13 +43,36 @@ package org.jahia.services.content;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 /**
- * 
+ * Name generation helper class. You might want to implement this method to provide alternative name generation
+ * schemes.
  *
  * @author : rincevent
  * @since JAHIA 6.5
  *        Created : 5/4/11
  */
 public interface NameGenerationHelper {
+
+    /**
+     * Basic name generation method, usually called by back-end methods or actions to generate a node name based
+     * on the type
+     * @param parent the parent object for which to create a new node name for a new child object
+     * @param nodeType the node type of the new child object
+     * @return a String containing the generated node name
+     */
     String generatNodeName(JCRNodeWrapper parent, String nodeType);
-    String generatNodeName(JCRNodeWrapper parent, String defaultLanguage, ExtendedNodeType nodeType);
+
+    /**
+     * Name generation method used mostly by Jahia's UI to generate node names based on the node type or the target
+     * name. This method is passed the default language because it might use it to make resource bundle lookups to
+     * generate the node name based on the node type.
+     * The targetName is the name of the module that was specified in the view if it was set. This might be useful
+     * to use as a node name in the case of more specific definitions
+     * @param parent the parent object for which to create a new node name for a new child object
+     * @param defaultLanguage the language code for the default language
+     * @param nodeType the node type of the new child object
+     * @param targetName the name of the module for the child node as specified in the definition (maybe be "*" if
+     * any name is allowed or null if no targetName was specified at all).
+     * @return a String containing the generated node name
+     */
+    String generatNodeName(JCRNodeWrapper parent, String defaultLanguage, ExtendedNodeType nodeType, String targetName);
 }

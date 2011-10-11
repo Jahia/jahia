@@ -274,7 +274,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public Integer isValidSession() throws GWTJahiaServiceException;
 
-    GWTJahiaCreateEngineInitBean initializeCreateEngine(String typeName, String parentPath) throws GWTJahiaServiceException;
+    GWTJahiaCreateEngineInitBean initializeCreateEngine(String typeName, String parentPath, String targetName) throws GWTJahiaServiceException;
 
     GWTJahiaCreatePortletInitBean initializeCreatePortletEngine(String typeName, String parentPath) throws GWTJahiaServiceException;
 

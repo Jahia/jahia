@@ -1275,7 +1275,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public GWTJahiaCreateEngineInitBean initializeCreateEngine(String typename, String parentpath)
+    public GWTJahiaCreateEngineInitBean initializeCreateEngine(String typename, String parentpath, String targetName)
             throws GWTJahiaServiceException {
         try {
             JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
@@ -1305,7 +1305,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     nodeType, null, parent, getUILocale()));
 
             result.setAcl(contentManager.getACL(parentpath, true, sessionWrapper, getUILocale()));
-            result.setDefaultName(jcrContentUtils.generateNodeName(parent, defaultLanguage, nodeType));
+            result.setDefaultName(jcrContentUtils.generateNodeName(parent, defaultLanguage, nodeType, targetName));
             return result;
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);
@@ -1316,7 +1316,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public GWTJahiaCreatePortletInitBean initializeCreatePortletEngine(String typename, String parentpath)
             throws GWTJahiaServiceException {
 
-        GWTJahiaCreateEngineInitBean result = initializeCreateEngine(typename, parentpath);
+        GWTJahiaCreateEngineInitBean result = initializeCreateEngine(typename, parentpath, null);
         GWTJahiaCreatePortletInitBean portletInitBean = new GWTJahiaCreatePortletInitBean();
         portletInitBean.setInitializersValues(result.getInitializersValues());
         portletInitBean.setLanguages(result.getLanguages());

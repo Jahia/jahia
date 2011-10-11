@@ -116,6 +116,7 @@
                         <value>jnt:area</value>
                     </set>
                 </property>
+                <property name="targetNameAsDefaultName" value="${useTargetNameAsDefaultNameGenerationScheme}" />
             </bean>
         </property>
         

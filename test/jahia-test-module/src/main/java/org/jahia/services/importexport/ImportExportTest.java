@@ -254,12 +254,22 @@ public class ImportExportTest {
                                 Constants.LIVE_WORKSPACE, null, true, null);
                         session.save();
 
+                        return null;
+                    }
+                });
+        sf.closeAllSessions();
+        JCRTemplate.getInstance().doExecuteWithUserSession(
+                sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE),
+                new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session)
+                            throws RepositoryException {
                         exportImportAndCheck();
 
                         return null;
                     }
                 });
-        sf.closeAllSessions();
+        sf.closeAllSessions();        
     }
 
     @Test
@@ -283,19 +293,28 @@ public class ImportExportTest {
                                     .getVersionManager()
                                     .checkout(englishEditSiteHomeNode.getPath());
                         }
-                        englishEditSiteHomeNode.addNode("added-child",
-                                "jnt:page");
-                        englishEditSiteHomeNode.addNode(
-                                "added-child-with-subpage", "jnt:page")
-                                .addNode("subpage", "jnt:page");
+                        JCRNodeWrapper newPage = englishEditSiteHomeNode
+                                .addNode("added-child", "jnt:page");
+                        newPage.setProperty("jcr:title",
+                                "Added child");
+                        
+                        newPage = englishEditSiteHomeNode.addNode(
+                                "added-child-with-subpage", "jnt:page");
+                        newPage.setProperty("jcr:title",
+                                "Added child with subpage");
+                        newPage = newPage.addNode("subpage", "jnt:page");
+                        newPage.setProperty("jcr:title", "Subpage");
+                        
                         JCRNodeWrapper childPage = englishEditSiteHomeNode
                                 .getNode("child2");
                         if (!childPage.isCheckedOut()) {
                             session.getWorkspace().getVersionManager()
                                     .checkout(childPage.getPath());
                         }
-                        childPage.addNode("added-child-to-existing-subpage",
+                        newPage = childPage.addNode("added-child-to-existing-subpage",
                                 "jnt:page");
+                        newPage.setProperty("jcr:title",
+                                "Added child to existing subpage");
                         session.save();
 
                         // updates
@@ -305,8 +324,10 @@ public class ImportExportTest {
                                     .checkout(childPage.getPath());
                         }
                         childPage.rename("renamed-child");
-                        childPage.addNode("added-page-to-renamed-page",
+                        newPage = childPage.addNode("added-page-to-renamed-page",
                                 "jnt:page");
+                        newPage.setProperty("jcr:title",
+                                "Added page to renamed page");
 
                         JCRNodeWrapper textNode = childPage
                                 .getNode("child1/contentList0/contentList0_text2");
@@ -378,6 +399,48 @@ public class ImportExportTest {
                                 "copied-node", false);
                         session.save();                        
 
+                        return null;
+                    }
+                });
+        sf.closeAllSessions();
+        JCRTemplate.getInstance().doExecuteWithUserSession(
+                sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE),
+                new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session)
+                            throws RepositoryException {
+                        exportImportAndCheck();
+
+                        return null;
+                    }
+                });
+        sf.closeAllSessions();
+        JCRTemplate.getInstance().doExecuteWithUserSession(
+                sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE),
+                new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session)
+                            throws RepositoryException {
+                        // Now publish everything and check again
+                        final JCRPublicationService jcrService = ServicesRegistry
+                                .getInstance().getJCRPublicationService();                        
+
+                        jcrService.publishByMainId(session.getRootNode()
+                                .getNode(SITECONTENT_ROOT_NODE)
+                                .getIdentifier(), Constants.EDIT_WORKSPACE,
+                                Constants.LIVE_WORKSPACE, null, true, null);
+                        session.save();
+                        
+                        return null;
+                    }
+                });
+        sf.closeAllSessions();
+        JCRTemplate.getInstance().doExecuteWithUserSession(
+                sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE),
+                new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session)
+                            throws RepositoryException {
                         exportImportAndCheck();
 
                         return null;
@@ -396,38 +459,47 @@ public class ImportExportTest {
                     public Object doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
 
-                        JCRNodeWrapper englishEditSiteRootNode = session
+                        JCRNodeWrapper englishLiveSiteRootNode = session
                                 .getNode("/" + SITECONTENT_ROOT_NODE);
-                        JCRNodeWrapper englishEditSiteHomeNode = (JCRNodeWrapper) englishEditSiteRootNode
+                        JCRNodeWrapper englishLiveSiteHomeNode = (JCRNodeWrapper) englishLiveSiteRootNode
                                 .getNode("home");
 
                         // additions
-                        if (!englishEditSiteHomeNode.isCheckedOut()) {
+                        if (!englishLiveSiteHomeNode.isCheckedOut()) {
                             session.getWorkspace()
                                     .getVersionManager()
-                                    .checkout(englishEditSiteHomeNode.getPath());
+                                    .checkout(englishLiveSiteHomeNode.getPath());
                         }
-                        englishEditSiteHomeNode.addNode("added-ugc-child",
+                        JCRNodeWrapper newPage = englishLiveSiteHomeNode.addNode("added-ugc-child",
                                 "jnt:page");
+                        newPage.setProperty("jcr:title",
+                                "Added UGC child");
                         
-                        englishEditSiteHomeNode.addNode(
-                                "added-ugc-child-with-subpage", "jnt:page")
-                                .addNode("ugc-subpage", "jnt:page");
+                        newPage = englishLiveSiteHomeNode.addNode(
+                                "added-ugc-child-with-subpage", "jnt:page");
+                        newPage.setProperty("jcr:title",
+                                "Added UGC child with subpage");
+                        newPage = newPage.addNode("ugc-subpage", "jnt:page");
+                        newPage.setProperty("jcr:title", "UGC subpage");
                         
-                        JCRNodeWrapper childPage = englishEditSiteHomeNode
+                        JCRNodeWrapper childPage = englishLiveSiteHomeNode
                                 .getNode("child2");
                         if (!childPage.isCheckedOut()) {
                             session.getWorkspace().getVersionManager()
                                     .checkout(childPage.getPath());
                         }
-                        childPage.addNode("added-ugc-child-to-existing-subpage",
+                        newPage = childPage.addNode("added-ugc-child-to-existing-subpage",
                                 "jnt:page");
+                        newPage.setProperty("jcr:title",
+                                "Added UGC child to existing subpage");
                         session.save();
 
                         // updates
-                        childPage = englishEditSiteHomeNode.getNode("renamed-child");
+                        childPage = englishLiveSiteHomeNode.getNode("renamed-child");
                         JCRNodeWrapper addedNode = childPage.addNode("added-ugc-page-to-renamed-page",
                                 "jnt:page");
+                        addedNode.setProperty("jcr:title",
+                                "Added UGC pageto renamed page");
                         
                         TestHelper.createList(addedNode, "contentListUGC", 5,
                                 INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
@@ -443,49 +515,59 @@ public class ImportExportTest {
                         session.save();
                         
                         // remove
-                        childPage = englishEditSiteHomeNode
+                        childPage = englishLiveSiteHomeNode
                                 .getNode("renamed-child/added-ugc-page-to-renamed-page/contentListUGC");
                         if (!childPage.isCheckedOut()) {
                             session.getWorkspace().getVersionManager()
                                     .checkout(childPage.getPath());
                         }
-                        childPage = englishEditSiteHomeNode
+                        childPage = englishLiveSiteHomeNode
                                 .getNode("renamed-child/added-ugc-page-to-renamed-page/contentListUGC/contentListUGC_text3");
                         childPage.remove();
 
                         session.save();
 
                         // reordering
-                        childPage = englishEditSiteHomeNode
+                        childPage = englishLiveSiteHomeNode
                                 .getNode("renamed-child/added-ugc-page-to-renamed-page/contentListUGC");
                         if (!childPage.isCheckedOut()) {
                             session.getWorkspace().getVersionManager()
                                     .checkout(childPage.getPath());
                         }
-                        childPage.orderBefore("contentListUGC0_text4", "contentListUGC0_text0");
+                        childPage.orderBefore("contentListUGC_text4", "contentListUGC_text0");
 
                         // move
                         session.move(
-                                englishEditSiteHomeNode
+                                englishLiveSiteHomeNode
                                         .getNode(
                                                 "child2/added-ugc-child-to-existing-subpage")
-                                        .getPath(), englishEditSiteHomeNode
+                                        .getPath(), englishLiveSiteHomeNode
                                         .getNode("renamed-child/child0")
                                         .getPath()
                                         + "/moved-ugc-page");
 
                         // copy
-                        childPage = englishEditSiteHomeNode
+                        childPage = englishLiveSiteHomeNode
                                 .getNode("child0/child0");
                         if (!childPage.isCheckedOut()) {
                             session.getWorkspace().getVersionManager()
                                     .checkout(childPage.getPath());
                         }
-                        childPage.copy(englishEditSiteHomeNode
+                        childPage.copy(englishLiveSiteHomeNode
                                 .getNode("child2/child1/child0"),
                                 "copied-ugc-node", false);
                         session.save();                        
 
+                        return null;
+                    }
+                });
+        sf.closeAllSessions();
+        JCRTemplate.getInstance().doExecuteWithUserSession(
+                sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE),
+                new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session)
+                            throws RepositoryException {
                         exportImportAndCheck();
 
                         return null;
@@ -622,7 +704,7 @@ public class ImportExportTest {
             JCRNodeWrapper englishEditSiteHomeNode = (JCRNodeWrapper) englishEditSiteRootNode
                     .getNode("home");
 
-            TestHelper.createSubPages(englishEditSiteHomeNode, 3, 3);
+            TestHelper.createSubPages(englishEditSiteHomeNode, 3, 3, "Page title");
             englishEditSession.save();
 
             fillPagesWithLists(englishEditSiteHomeNode);

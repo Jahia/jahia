@@ -203,6 +203,10 @@ public class TestHelper {
     }
 
     public static int createSubPages(Node currentNode, int level, int nbChildren) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
+       return createSubPages(currentNode, level, nbChildren, null);
+    }
+    
+    public static int createSubPages(Node currentNode, int level, int nbChildren, String titlePrefix) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
         int pagesCreated = 0;
         if (level <= 0) return pagesCreated;
         if (!currentNode.isCheckedOut()) {
@@ -210,6 +214,10 @@ public class TestHelper {
         }
         for (int i = 0; i < nbChildren; i++) {
             Node newSubPage = currentNode.addNode("child" + Integer.toString(i), "jnt:page");
+            if (titlePrefix != null) {
+                newSubPage.setProperty("jcr:title",
+                        titlePrefix + Integer.toString(i));
+            }
             pagesCreated++;
             pagesCreated += createSubPages(newSubPage, level - 1, nbChildren);
         }

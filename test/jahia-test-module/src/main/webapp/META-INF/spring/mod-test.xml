@@ -57,8 +57,9 @@
                 <value>org.jahia.services.versioning.VersioningTest</value>
                 <value>org.jahia.services.visibility.VisibilityServiceTest</value>
                 <value>org.jahia.services.workflow.StateSequenceTest</value>
-                <value>org.jahia.services.workflow.WorkflowServiceTest</value></list>
+                <value>org.jahia.services.workflow.WorkflowServiceTest</value>
                 <value>org.jahia.services.templates.JahiaTemplateManagerServiceTest</value>
+            </list>
         </property>
 
         <property name="ignoredTests">

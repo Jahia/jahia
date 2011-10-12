@@ -48,6 +48,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.importexport.validation.*;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -651,7 +652,7 @@ public class ContentManagerHelper {
             ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
             JCRNodeWrapper parent = session.getNode(parentPath);
             JCRSiteNode resolveSite = parent.getResolveSite();
-            ValidationResults results = importExport.validateImportFile(session, item.getStream(), item.getContentType(), resolveSite != null ? resolveSite.getInstalledModules() : null);
+            ValidationResults results = importExport.validateImportFile(session, item.getStream(), ImportExportBaseService.detectImportContentType(item), resolveSite != null ? resolveSite.getInstalledModules() : null);
 
             if (results.isSuccessful()) {
                 if (!asynchronously) {

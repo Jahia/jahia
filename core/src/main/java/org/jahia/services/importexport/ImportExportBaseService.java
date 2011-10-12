@@ -56,6 +56,7 @@ import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
+import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
@@ -86,6 +87,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 import javax.jcr.*;
@@ -109,6 +111,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private static ImportExportBaseService instance;
 
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(ImportExportService.DATE_FORMAT);
+
+    private static final Set<String> KNOWN_IMPORT_CONTENT_TYPES = ImmutableSet.of(
+            "application/zip", "application/xml", "text/xml");
 
     private static final String FILESACL_XML = "filesacl.xml";
     private static final String REPOSITORY_XML = "repository.xml";
@@ -141,6 +146,31 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return instance;
     }
 
+    public static String detectImportContentType(GWTFileManagerUploadServlet.Item item) {
+        String contentType = item.getContentType();
+        if (!KNOWN_IMPORT_CONTENT_TYPES.contains(contentType)) {
+            contentType = Jahia.getStaticServletConfig().getServletContext()
+                    .getMimeType(item.getOriginalFileName());
+            if (!KNOWN_IMPORT_CONTENT_TYPES.contains(contentType)) {
+                if (StringUtils.endsWithIgnoreCase(item.getOriginalFileName(), ".xml")) {
+                    contentType = "application/xml";
+                } else {
+
+                }
+                if (StringUtils.endsWithIgnoreCase(item.getOriginalFileName(), ".zip")) {
+                    contentType = "application/zip";
+                } else {
+                    // no chance to detect it
+                    logger.error("Unable to detect the content type for file {}."
+                            + " It is neither a ZIP file nor an XML. Skipping import.",
+                            item.getOriginalFileName());
+                }
+            }
+        }
+
+        return contentType;
+    }
+    
     protected ImportExportBaseService() {
     }
 

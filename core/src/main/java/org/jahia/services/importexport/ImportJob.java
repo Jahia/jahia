@@ -41,11 +41,10 @@
 package org.jahia.services.importexport;
 
 import org.slf4j.Logger;
-import org.springframework.util.StringUtils;
+import org.slf4j.LoggerFactory;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
-import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -56,11 +55,8 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 
-import com.google.common.collect.ImmutableSet;
-
 import java.io.File;
 import java.io.InputStream;
-import java.util.Set;
 
 /**
  * Background job for performing an import of the JCR content.
@@ -71,7 +67,7 @@ import java.util.Set;
  */
 public class ImportJob extends BackgroundJob {
 
-    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(ImportJob.class);
+    private final static Logger logger = LoggerFactory.getLogger(ImportJob.class);
 
     public static final String TARGET = "target";
     public static final String CONTENT_TYPE = "contentType";
@@ -85,9 +81,6 @@ public class ImportJob extends BackgroundJob {
 
     public static final String COPY_TO_JCR = "copyToJCR";
     
-    private static final Set<String> KNOWN_IMPORT_CONTENT_TYPES = ImmutableSet.of(
-            "application/zip", "application/xml", "text/xml");
-
     public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
         JobDetail jobDetail = jobExecutionContext.getJobDetail();
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
@@ -121,23 +114,7 @@ public class ImportJob extends BackgroundJob {
     public static void importContent(String parentPath, String fileKey) throws Exception {
         ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
         GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
-        String contentType = item.getContentType();
-        if (!KNOWN_IMPORT_CONTENT_TYPES.contains(contentType)) {
-            contentType = Jahia.getStaticServletConfig().getServletContext().getMimeType(item.getOriginalFileName());
-            if (!KNOWN_IMPORT_CONTENT_TYPES.contains(contentType)) {
-                if (StringUtils.endsWithIgnoreCase(item.getOriginalFileName(), ".xml")) {
-                    contentType = "application/xml";
-                } else {
-                    
-                } if (StringUtils.endsWithIgnoreCase(item.getOriginalFileName(), ".zip")) {
-                    contentType = "application/zip";
-                } else {
-                    // no chance to detect it
-                    logger.error("Unable to detect the content type for file {}."
-                            + " It is neither a ZIP file nor an XML. Skipping import.");
-                }
-            }
-        }
+        String contentType = ImportExportBaseService.detectImportContentType(item);
         try {
             if ("application/zip".equals(contentType)) {
                 try {

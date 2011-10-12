@@ -108,6 +108,9 @@ public class MissingModulesValidator implements ImportValidator, ModuleDependenc
             }
 
             done = true;
+        } else {
+            targetTemplateSetPresent = true;
+            missingModules.clear();
         }
     }
 

@@ -810,6 +810,13 @@ public class NavigationHelper {
                     + " supports marking for deletion. Cause: " + e.getMessage(), e);
         }
         try {
+            n.set("everPublished", Boolean.valueOf(node.hasProperty("j:published")));
+        } catch (RepositoryException e) {
+            logger.warn(
+                    "Unable to check existence of the j:published property on node "
+                            + node.getPath() + ". Cause: " + e.getMessage(), e);
+        }
+        try {
             if (node.getPath().equals("/")) {
                 n.setDisplayName("root");
                 n.setName("root");

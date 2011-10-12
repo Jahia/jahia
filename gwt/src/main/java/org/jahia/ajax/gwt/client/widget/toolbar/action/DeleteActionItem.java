@@ -52,7 +52,6 @@ import com.google.gwt.core.client.RunAsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -95,10 +94,10 @@ public class DeleteActionItem extends BaseActionItem {
                     }
                 }
 
-                if (selected.getAggregatedPublicationInfo().getStatus() != GWTJahiaPublicationInfo.NOT_PUBLISHED
-                        || (selected.isLocked() && !selected.getNodeTypes().contains(
-                                "jmix:markedForDeletionRoot"))) {
-                    // the node is already published or it is locked (and not marked for deletion)
+                if (selected.get("everPublished") != null && ((Boolean)selected.get("everPublished"))
+                        || (selected.isLocked() && (!selected.getNodeTypes().contains(
+                                "jmix:markedForDeletionRoot"))) || !UndeleteActionItem.isLockedForDeletion(selected)) {
+                    // the node is already published or it is locked (not for deletion)
                     enabled = false;
                     break;
                 }

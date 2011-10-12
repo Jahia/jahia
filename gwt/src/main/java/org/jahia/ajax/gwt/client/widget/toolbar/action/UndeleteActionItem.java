@@ -5,6 +5,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -16,6 +17,7 @@ import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Action item to undelete a node by removing locks and mixins
@@ -79,12 +81,23 @@ public class UndeleteActionItem extends BaseActionItem {
         LinkerSelectionContext lh = linker.getSelectionContext();
         List<GWTJahiaNode> selection = lh.getMultipleSelection();
         boolean canUndelete = false;
-        if (selection != null && selection.size() > 0) {
+        if (selection != null && selection.size() > 0 && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())) {
             canUndelete = true;
             for (GWTJahiaNode gwtJahiaNode : selection) {
                 canUndelete &= gwtJahiaNode.getNodeTypes().contains("jmix:markedForDeletionRoot");
+                canUndelete = canUndelete && (!gwtJahiaNode.isLocked() || isLockedForDeletion(gwtJahiaNode));
+                if (!canUndelete) {
+                    break;
+                }
             }
         }
-        setEnabled(canUndelete && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions()));
+        setEnabled(canUndelete);
+    }
+
+    static boolean isLockedForDeletion(GWTJahiaNode node) {
+        Map<String, List<String>> lockInfos = node.getLockInfos();
+        return lockInfos != null && lockInfos.size() == 1 && lockInfos.containsKey(null)
+                && !lockInfos.get(null).isEmpty()
+                && lockInfos.get(null).get(0).equals("label.locked.by.deletion");
     }
 }

@@ -245,7 +245,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
                         if (conditionNode.get("new-node") != null) {
                             final GWTJahiaNodeType type = types.getSelection().get(0);
                             JahiaContentManagementService.App.getInstance().initializeCreateEngine(type.getName(),
-                                    node.getPath(), new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
+                                    node.getPath(), null, new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
                                 public void onSuccess(GWTJahiaCreateEngineInitBean result) {
                                     PropertiesEditor pe = new PropertiesEditor(Arrays.asList(type), new HashMap<String, GWTJahiaNodeProperty>(), Arrays.asList("content"));
                                     pe.setInitializersValues(result.getInitializersValues());                                    

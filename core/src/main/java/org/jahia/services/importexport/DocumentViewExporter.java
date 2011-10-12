@@ -264,7 +264,7 @@ public class DocumentViewExporter {
                     logger.error("Cannot export property",e);
                 }
             }
-            if (publicationStatusSession != null) {
+            if (publicationStatusSession != null && node.isNodeType("jmix:publication")) {
                 String s = Integer.toString(JCRPublicationService.getInstance().getStatus(node, publicationStatusSession, null));
                 atts.addAttribute(prefixes.get("j"), "publicationStatus", "j:publicationStatus", CDATA, s);
             }

@@ -40,9 +40,28 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.nodetype.NodeDefinition;
+import javax.jcr.nodetype.PropertyDefinition;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.StringValue;
-import org.slf4j.Logger;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
@@ -53,16 +72,15 @@ import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.categories.Category;
-import org.jahia.services.content.*;
-import org.jahia.services.content.nodetypes.*;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRValueWrapper;
+import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
+import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.usermanager.JahiaUser;
-
-import javax.jcr.*;
-import javax.jcr.nodetype.NodeDefinition;
-import javax.jcr.nodetype.PropertyDefinition;
-
-import java.io.InputStream;
-import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper class for setting node properties based on GWT bean values.
@@ -71,18 +89,15 @@ import java.util.*;
  * Time: 2:45:42 PM
  */
 public class PropertiesHelper {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(PropertiesHelper.class);
+    private static Logger logger = LoggerFactory.getLogger(PropertiesHelper.class);
 
     private ContentDefinitionHelper contentDefinition;
-    private ContentManagerHelper contentManager;
     private NavigationHelper navigation;
+    
+    private Set<String> ignoredProperties = Collections.emptySet();
 
     public void setContentDefinition(ContentDefinitionHelper contentDefinition) {
         this.contentDefinition = contentDefinition;
-    }
-
-    public void setContentManager(ContentManagerHelper contentManager) {
-        this.contentManager = contentManager;
     }
 
     public void setNavigation(NavigationHelper navigation) {
@@ -105,7 +120,7 @@ public class PropertiesHelper {
                 Property prop = it.nextProperty();
                 PropertyDefinition def = prop.getDefinition();
                 // definition can be null if the file is versionned
-                if (def != null) {
+                if (def != null && !ignoredProperties.contains(def.getName())) {
                     propName = def.getName();
                     // create the corresponding GWT bean
                     GWTJahiaNodeProperty nodeProp = new GWTJahiaNodeProperty();
@@ -129,7 +144,9 @@ public class PropertiesHelper {
                     nodeProp.setValues(gwtValues);
                     props.put(nodeProp.getName(), nodeProp);
                 } else {
-                    logger.debug("The following property has been ignored " + prop.getName() + "," + prop.getPath());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("The following property has been ignored " + prop.getName() + "," + prop.getPath());
+                    }
                 }
             }
             NodeIterator ni = objectNode.getNodes();
@@ -388,5 +405,13 @@ public class PropertiesHelper {
             }
         }
         return values;
+    }
+
+    public void setIgnoredProperties(Set<String> ignoredProperties) {
+        if (ignoredProperties != null) {
+            this.ignoredProperties = ignoredProperties;
+        } else {
+            this.ignoredProperties = Collections.emptySet();
+        }
     }
 }

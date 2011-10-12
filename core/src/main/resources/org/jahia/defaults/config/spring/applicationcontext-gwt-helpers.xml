@@ -52,8 +52,14 @@
 
     <bean name="PropertiesHelper" class="org.jahia.ajax.gwt.helper.PropertiesHelper">
         <property name="contentDefinition" ref="ContentDefinitionHelper"/>
-        <property name="contentManager" ref="ContentManagerHelper"/>
         <property name="navigation" ref="NavigationHelper"/>
+        <property name="ignoredProperties">
+            <set>
+                <value>jcr:baseVersion</value>
+                <value>jcr:predecessors</value>
+                <value>jcr:versionHistory</value>
+            </set>
+        </property>
     </bean>
 
     <bean name="PublicationHelper" class="org.jahia.ajax.gwt.helper.PublicationHelper">

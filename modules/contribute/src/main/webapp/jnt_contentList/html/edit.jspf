@@ -65,19 +65,30 @@
                     onclick="var msg=prompt('${functions:escapeJavaScript(i18nDeleteConfirm)}\n${functions:escapeJavaScript(i18nDeleteComment)}:', ''); if (msg == null) { return false; } var callback = '$(\'.addContentContributeDiv\').each(function(index,value){animatedcollapse.addDiv($(this).attr(\'id\'), \'fade=1,speed=700,group=tasks\');});animatedcollapse.reinit();if (navigator.userAgent.indexOf(\'MSIE\') > 0) {location.reload();}';deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',callback,true,msg)">
                 <span class="icon-contribute icon-delete"></span><fmt:message key="label.delete"/></button>
         </c:if>
-        <c:if test="${markedForDeletion}">
+        <c:if test="${markedForDeletion && fn:length(child.properties['j:lockTypes']) <= 1}">
             <fmt:message key="message.undelete.confirm" var="i18nUndeleteConfirm">
                 <fmt:param value="${child.displayableName}"/>
             </fmt:message>
             <button id="undelbtn-${child.identifier}"
                     onclick="if (!confirm('${functions:escapeJavaScript(i18nUndeleteConfirm)}')) { return false; } var callback = '$(\'.addContentContributeDiv\').each(function(index,value){animatedcollapse.addDiv($(this).attr(\'id\'), \'fade=1,speed=700,group=tasks\');});animatedcollapse.reinit();if (navigator.userAgent.indexOf(\'MSIE\') > 0) {location.reload();}';deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',callback,false)">
                 <span class="icon-contribute icon-undelete"></span><fmt:message key="label.undelete"/></button>
-            <fmt:message key="message.remove.single.confirm" var="i18nDeleteConfirm">
-                <fmt:param value="${child.displayableName}"/>
-            </fmt:message>
-            <button id="delbtn-${child.identifier}"
-                    onclick="if (!confirm('${functions:escapeJavaScript(i18nDeleteConfirm)}')) { return false; } var callback = '$(\'.addContentContributeDiv\').each(function(index,value){animatedcollapse.addDiv($(this).attr(\'id\'), \'fade=1,speed=700,group=tasks\');});animatedcollapse.reinit();if (navigator.userAgent.indexOf(\'MSIE\') > 0) {location.reload();}';deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',callback)">
-                <span class="icon-contribute icon-delete"></span><fmt:message key="label.deletePermanently"/></button>
+            <jcr:nodeProperty node="${child}" name="j:published" var="childPublished"/>
+            <c:if test="${empty childPublished}">
+                <fmt:message key="message.remove.single.confirm" var="i18nDeleteConfirm">
+                    <fmt:param value="${child.displayableName}"/>
+                </fmt:message>
+                <button id="delbtn-${child.identifier}"
+                        onclick="if (!confirm('${functions:escapeJavaScript(i18nDeleteConfirm)}')) { return false; } var callback = '$(\'.addContentContributeDiv\').each(function(index,value){animatedcollapse.addDiv($(this).attr(\'id\'), \'fade=1,speed=700,group=tasks\');});animatedcollapse.reinit();if (navigator.userAgent.indexOf(\'MSIE\') > 0) {location.reload();}';deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',callback)">
+                    <span class="icon-contribute icon-delete"></span><fmt:message key="label.deletePermanently"/></button>
+            </c:if>                       
+            <c:if test="${not empty childPublished}">
+                <fmt:message key="message.requestPublication.single.confirm" var="i18nPublishConfirm">
+                    <fmt:param value="${child.displayableName}"/>
+                </fmt:message>
+                <button id="pubbtn-${child.identifier}"
+                        onclick="publishNodes(new Array('${child.identifier}'), '${functions:escapeJavaScript(i18nPublishConfirm)}');">
+                    <span class="icon-contribute icon-publish"></span><fmt:message key="label.requestPublication"/></button>
+            </c:if>                       
         </c:if>
     </c:if>
 

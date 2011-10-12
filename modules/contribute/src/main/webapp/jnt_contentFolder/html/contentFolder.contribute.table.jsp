@@ -82,19 +82,30 @@
                     <c:if test="${child.locked}">
                         <img height="16" width="16" border="0" title="<fmt:message key='label.locked'/>" alt="<fmt:message key='label.locked'/>"
                              src="<c:url value='${url.templatesPath}/default/images/icons/locked.gif'/>">
-                        <c:if test="${markedForDeletionRoot}">
+                        <c:if test="${markedForDeletionRoot && fn:length(child.properties['j:lockTypes']) <= 1}">
                             <fmt:message key="message.undelete.confirm" var="i18nUndeleteConfirm">
                                 <fmt:param value="${nodeName}"/>
                             </fmt:message>
                             <img height="16" width="16" border="0" style="cursor:pointer;" title="<fmt:message key='label.undelete'/>" alt="<fmt:message key='label.undelete'/>"
                                  src="<c:url value='/icons/undelete.png'/>"
                                 onclick="if (confirm('${functions:escapeJavaScript(i18nUndeleteConfirm)}')) { deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',null,false); } return false;">
-                            <fmt:message key="message.remove.single.confirm" var="i18nDeleteConfirm">
-                                <fmt:param value="${nodeName}"/>
-                            </fmt:message>
-                            <img height="16" width="16" border="0" style="cursor:pointer;" title="<fmt:message key='label.deletePermanently'/>" alt="<fmt:message key='label.undelete'/>"
-                                 src="<c:url value='/icons/delete.png'/>"
+                            <jcr:nodeProperty node="${child}" name="j:published" var="childPublished"/>
+                            <c:if test="${empty childPublished}">
+                                <fmt:message key="message.remove.single.confirm" var="i18nDeleteConfirm">
+                                    <fmt:param value="${nodeName}"/>
+                                </fmt:message>
+                                <img height="16" width="16" border="0" style="cursor:pointer;" title="<fmt:message key='label.deletePermanently'/>" alt="<fmt:message key='label.deletePermanently'/>"
+                                     src="<c:url value='/icons/delete.png'/>"
                                 onclick="if (confirm('${functions:escapeJavaScript(i18nDeleteConfirm)}')) { deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',null); } return false;">
+                            </c:if>
+                            <c:if test="${not empty childPublished}">
+                                <fmt:message key="message.requestPublication.single.confirm" var="i18nPublishConfirm">
+                                    <fmt:param value="${nodeName}"/>
+                                </fmt:message>
+                                <img height="16" width="16" border="0" style="cursor:pointer;" title="<fmt:message key='label.requestPublication'/>" alt="<fmt:message key='label.requestPublication'/>"
+                                     src="<c:url value='/icons/publish.png'/>"
+                                onclick="publishNodes(new Array('${child.identifier}'), '${functions:escapeJavaScript(i18nPublishConfirm)}');">
+                            </c:if>
                         </c:if>
                     </c:if>
 

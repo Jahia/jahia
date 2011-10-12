@@ -200,3 +200,6 @@ button span.icon-cancel{
 button span.icon-undelete{
  	background:url(img/toolbar-contribute.png) no-repeat 0px -144px;
 }
+button span.icon-publish{
+ 	background:url(img/toolbar-contribute.png) no-repeat 0px -160px;
+}

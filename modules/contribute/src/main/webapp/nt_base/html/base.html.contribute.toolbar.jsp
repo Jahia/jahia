@@ -100,10 +100,10 @@
         }
 
         <fmt:message key="message.requestPublication.confirm" var="i18nConfirmPublish"/>
-        function publishNodes() {
-            var uuids = getUuids();
+        function publishNodes(ids, confirmMsg) {
+            var uuids = typeof ids == 'undefined' ? getUuids() : ids;
             if (uuids.length > 0) {
-            	if (confirm('${functions:escapeJavaScript(i18nConfirmPublish)}')) {
+            	if (confirm(typeof confirmMsg == 'undefined' ? '${functions:escapeJavaScript(i18nConfirmPublish)}' : confirmMsg)) {
                     $.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.publishNodes.do'/>", {"uuids": uuids}, function(result) {
                     	<fmt:message key="label.workflow.started" var="i18nWorkflowStarted"/>
                         window.alert("${functions:escapeJavaScript(i18nWorkflowStarted)}");

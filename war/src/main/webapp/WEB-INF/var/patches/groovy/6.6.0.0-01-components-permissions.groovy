@@ -8,7 +8,7 @@ sysout << "Start granting component usage permission to privileged role\n"
 
 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
 	public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-		if (RBACUtils.grantPermissionToRole("/permissions/editMode/useComponent", "privileged", session)) {
+		if (RBACUtils.grantPermissionToRole(RBACUtils.getOrCreatePermission("/permissions/editMode/useComponent", session).getPath(), "privileged", session)) {
 			session.save();
 			sysout << "Permission granted\n"
 		} else {

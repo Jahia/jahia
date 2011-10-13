@@ -44,6 +44,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -73,6 +75,17 @@ import org.springframework.core.io.Resource;
  */
 public class GroovyPatcher implements JahiaAfterInitializationService, DisposableBean {
 
+    private static final Comparator<Resource> RESOURCE_COMPARATOR = new Comparator<Resource>() {
+        public int compare(Resource o1, Resource o2) {
+            try {
+                return o1.getURI().compareTo(o2.getURI());
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
+            return 0;
+        }
+    };
+
     private static final Logger logger = LoggerFactory.getLogger(GroovyPatcher.class);
 
     private long interval = 5 * 60000L; // 5minutes interval by default
@@ -90,7 +103,7 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
     protected void executeScripts(Resource[] scripts) {
         long timer = System.currentTimeMillis();
         if (logger.isInfoEnabled()) {
-            logger.info("Found new patch scripts {}. Executing...", scripts);
+            logger.info("Found new patch scripts {}. Executing...", StringUtils.join(scripts));
         }
 
         for (Resource script : scripts) {
@@ -193,6 +206,7 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
                     return;
                 }
 
+                Arrays.sort(resources, RESOURCE_COMPARATOR);
                 executeScripts(resources);
             }
         }, 0, interval);

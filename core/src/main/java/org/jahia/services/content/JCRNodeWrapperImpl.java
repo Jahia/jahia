@@ -117,6 +117,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         this.objectNode = objectNode;
         setItem(objectNode);
         if (path != null) {
+            if (path.endsWith("/") && !path.equals("/")) {
+                path = StringUtils.substringBeforeLast(path , "/");
+            }
             this.localPath = path;
         } else {
             try {

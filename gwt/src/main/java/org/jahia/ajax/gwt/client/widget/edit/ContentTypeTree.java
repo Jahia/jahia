@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.client.widget.edit;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Layout;
@@ -69,15 +70,22 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 
- *
  * @author rincevent
  * @since JAHIA 6.5
  * Created : 21 déc. 2009
  */
 public class ContentTypeTree extends LayoutContainer {
+
+    private static final StoreSorter<GWTJahiaNode> SORTER = new StoreSorter<GWTJahiaNode>() {
+        @Override
+        public int compare(Store<GWTJahiaNode> store, GWTJahiaNode n1, GWTJahiaNode n2,
+                String property) {
+            return super.compare(store, n1, n2, "displayName");
+        }
+    };
+
     private TreeGrid<GWTJahiaNode> treeGrid;
-	private StoreFilterField<GWTJahiaNode> nameFilterField;
+    private StoreFilterField<GWTJahiaNode> nameFilterField;
     private TreeStore<GWTJahiaNode> store;
 
     public ContentTypeTree() {
@@ -87,7 +95,7 @@ public class ContentTypeTree extends LayoutContainer {
         name.setRenderer(new WidgetTreeGridCellRenderer<GWTJahiaNode>() {
             @Override
             public Widget getWidget(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
-                                    ListStore listStore, Grid grid) {
+                                    ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> grid) {
                 Label label;
                 GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) modelData.get("componentNodeType");
                 HorizontalPanel panel = new HorizontalPanel();
@@ -118,6 +126,7 @@ public class ContentTypeTree extends LayoutContainer {
         });
 
         store = new TreeStore<GWTJahiaNode>();
+        store.setStoreSorter(SORTER);
 
         treeGrid = new TreeGrid<GWTJahiaNode>(store, new ColumnModel(Arrays.asList(name)));
         treeGrid.setBorders(true);
@@ -133,22 +142,22 @@ public class ContentTypeTree extends LayoutContainer {
         setLayout(layout);
         
         setBorders(false);
-        
-		nameFilterField = new StoreFilterField<GWTJahiaNode>() {
-			@Override
-			protected boolean doSelect(Store<GWTJahiaNode> store, GWTJahiaNode parent,
-			        GWTJahiaNode record, String property, String filter) {
 
+        nameFilterField = new StoreFilterField<GWTJahiaNode>() {
+            @Override
+            protected boolean doSelect(Store<GWTJahiaNode> store, GWTJahiaNode parent,
+                    GWTJahiaNode record, String property, String filter) {
 
-				if (record.getNodeTypes().contains("jnt:componentFolder")) {
+                if (record.getNodeTypes().contains("jnt:componentFolder")) {
                     return false;
                 }
 
                 String s = filter.toLowerCase();
-                return record.getName().toLowerCase().contains(s) || record.getDisplayName().toLowerCase().contains(s);
-			}
-		};
-		nameFilterField.bind(store);
+                return record.getName().toLowerCase().contains(s)
+                        || record.getDisplayName().toLowerCase().contains(s);
+            }
+        };
+        nameFilterField.bind(store);
         nameFilterField.setHeight(18);
 
         add(nameFilterField, new BorderLayoutData(Style.LayoutRegion.NORTH,22));

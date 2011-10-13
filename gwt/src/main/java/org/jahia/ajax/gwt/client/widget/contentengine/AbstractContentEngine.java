@@ -326,7 +326,10 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                                             .getPropertiesEditor();
                                     if (pe != null) {
                                         for (Field<?> field : pe.getFields()) {
-                                            if (field.getName().equals(propertyName)) {
+                                            if (field instanceof PropertiesEditor.PropertyAdapterField) {
+                                                field = ((PropertiesEditor.PropertyAdapterField)field).getField();
+                                            }
+                                            if (propertyName.equals(field.getName())) {
                                                 if (field instanceof DualListField<?>) {
                                                     DualListField<GWTJahiaValueDisplayBean> dualListField = (DualListField<GWTJahiaValueDisplayBean>) field;
                                                     ListStore<GWTJahiaValueDisplayBean> store = dualListField.getToField().getStore();

@@ -624,7 +624,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 modules.add(originalNode.getName());
             }
         } catch (JahiaException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);
         }
 
 

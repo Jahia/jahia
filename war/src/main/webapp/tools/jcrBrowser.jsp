@@ -1,11 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" 
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@page import="org.jahia.services.usermanager.jcr.JCRUserManagerProvider"%>
+<%@page import="javax.jcr.Value"%>
+<%@page import="javax.jcr.nodetype.PropertyDefinition"%>
 <%@page import="org.jahia.services.content.JCRContentUtils"%>
 <%@page import="org.jahia.services.content.JCRNodeWrapper"%>
 <%@page import="org.jahia.services.content.JCRSessionFactory"%>
 <%@page import="org.jahia.services.content.JCRSessionWrapper"%>
+<%@page import="org.jahia.services.usermanager.jcr.JCRUserManagerProvider"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -135,6 +137,44 @@ function go(id1, value1, id2, value2, id3, value3) {
                 jcrSession.save();
                 %>
                 <p style="color: blue">Mixin ${param.value} successfully removed from the node <strong>${fn:escapeXml(node.path)}</strong></p>
+            </c:when>
+            <c:when test="${param.action == 'removeProperty' && not empty param.value}">
+                <%
+                if (node.hasProperty(request.getParameter("value"))) {
+                    jcrSession.checkout(node);
+                    node.getProperty(request.getParameter("value")).remove();
+                    jcrSession.save();
+                %>
+                <p style="color: blue">Property ${param.value} successfully removed from the node <strong>${fn:escapeXml(node.path)}</strong></p>
+                <% } else { %>
+                <p style="color: red">Cannot find property ${param.value} on the node <strong>${fn:escapeXml(node.path)}</strong></p>
+                <% } %>
+            </c:when>
+            <c:when test="${param.action == 'setProperty' && not empty param.value}">
+                <%
+                PropertyDefinition def = JCRContentUtils.getPropertyDefinition(node.getPrimaryNodeTypeName(), request.getParameter("value"));
+                if (def != null) {
+                    jcrSession.checkout(node);
+                    if (def.isMultiple()) {
+                        String[] newValues = request.getParameterValues("propertyValue");
+                        if (newValues != null) {
+                            Value[] vals = new Value[newValues.length];
+                            for (int i = 0; i < newValues.length; i++) {
+                                vals[i] = jcrSession.getValueFactory().createValue(newValues[i]);
+                            }
+                            node.setProperty(request.getParameter("value"), vals);
+                        } else {
+                            node.setProperty(request.getParameter("value"), (Value[]) null);
+                        }
+                    } else {
+                        node.setProperty(request.getParameter("value"), request.getParameter("propertyValue"));
+                    }
+                    jcrSession.save();
+                %>
+                <p style="color: blue">Property ${param.value} successfully set on the node <strong>${fn:escapeXml(node.path)}</strong></p>
+                <% } else { %>
+                <p style="color: red">Cannot find definition for property ${param.value} on the node <strong>${fn:escapeXml(node.path)} [${node.primaryNodeTypeName}]</strong></p>
+                <% } %>
             </c:when>
             <c:when test="${param.action == 'addMixin' && not empty param.value}">
                 <%

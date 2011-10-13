@@ -354,7 +354,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                             }
                         }
                         if (!isValid) {
-                            nodes.peek().checkout();
+                            session.checkout(nodes.peek());
                             try {
                                 child = nodes.peek().addNode(decodedQName, pt, uuid, created, createdBy, lastModified, lastModifiedBy);
                             } catch (ConstraintViolationException e) {

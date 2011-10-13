@@ -1,6 +1,6 @@
 package org.jahia.services.importexport.validation;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -15,7 +15,7 @@ public class SitesValidator implements ImportValidator {
     private Map<String, Properties> sitesProperties;
 
     public SitesValidator() {
-        sitesProperties = new HashMap<String, Properties>();
+        sitesProperties = new LinkedHashMap<String, Properties>();
     }
 
     public ValidationResult getResult() {

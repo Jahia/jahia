@@ -424,6 +424,37 @@
             </build>
         </profile>
         <profile>
+            <id>aggregate-javadocs</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${javadoc.plugin.version}</version>
+                        <configuration>
+                            <attach>false</attach>
+                            <finalName>${project.artifactId}-${project.version}-aggregate</finalName>
+                            <detectOfflineLinks>false</detectOfflineLinks>
+                            <minmemory>128m</minmemory>
+                            <maxmemory>1g</maxmemory>
+                            <failOnError>false</failOnError>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>aggregate-javadocs</id>
+                                <goals>
+                                    <goal>aggregate-javadocs</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>patches</id>
             <modules>
                 <module>patches</module>
@@ -458,6 +489,25 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>${release.plugin.version}</version>
+                        <configuration>
+                            <useReleaseProfile>false</useReleaseProfile>
+                            <autoVersionSubmodules>true</autoVersionSubmodules>
+                            <goals>deploy</goals>
+                            <preparationGoals>clean install</preparationGoals>
+                            <releaseProfiles>do-attach-javadocs,aggregate-javadocs</releaseProfiles>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
@@ -573,18 +623,6 @@
                      <svn>javasvn</svn>
                    </providerImplementations>
                     -->
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>${release.plugin.version}</version>
-                <configuration>
-                    <useReleaseProfile>false</useReleaseProfile>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <goals>deploy</goals>
-                    <preparationGoals>clean install</preparationGoals>
-                    <releaseProfiles>do-attach-javadocs</releaseProfiles>
                 </configuration>
             </plugin>
         </plugins>

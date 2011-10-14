@@ -425,9 +425,6 @@
         </profile>
         <profile>
             <id>aggregate-javadocs</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -489,25 +486,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-release-plugin</artifactId>
-                        <version>${release.plugin.version}</version>
-                        <configuration>
-                            <useReleaseProfile>false</useReleaseProfile>
-                            <autoVersionSubmodules>true</autoVersionSubmodules>
-                            <goals>deploy</goals>
-                            <preparationGoals>clean install</preparationGoals>
-                            <releaseProfiles>do-attach-javadocs,aggregate-javadocs</releaseProfiles>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
@@ -623,6 +601,18 @@
                      <svn>javasvn</svn>
                    </providerImplementations>
                     -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${release.plugin.version}</version>
+                <configuration>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <goals>deploy</goals>
+                    <preparationGoals>clean install</preparationGoals>
+                    <releaseProfiles>do-attach-javadocs</releaseProfiles>
                 </configuration>
             </plugin>
         </plugins>

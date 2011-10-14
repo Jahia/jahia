@@ -82,12 +82,12 @@
                     <span class="icon-contribute icon-delete"></span><fmt:message key="label.deletePermanently"/></button>
             </c:if>                       
             <c:if test="${not empty childPublished}">
-                <fmt:message key="message.requestPublication.single.confirm" var="i18nPublishConfirm">
+                <fmt:message key="message.requestDeletionApproval.confirm" var="i18nPublishConfirm">
                     <fmt:param value="${child.displayableName}"/>
                 </fmt:message>
                 <button id="pubbtn-${child.identifier}"
                         onclick="publishNodes(new Array('${child.identifier}'), '${functions:escapeJavaScript(i18nPublishConfirm)}');">
-                    <span class="icon-contribute icon-publish"></span><fmt:message key="label.requestPublication"/></button>
+                    <span class="icon-contribute icon-publish"></span><fmt:message key="label.requestDeletionApproval"/></button>
             </c:if>                       
         </c:if>
     </c:if>

@@ -99,10 +99,10 @@
                                 onclick="if (confirm('${functions:escapeJavaScript(i18nDeleteConfirm)}')) { deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',null); } return false;">
                             </c:if>
                             <c:if test="${not empty childPublished}">
-                                <fmt:message key="message.requestPublication.single.confirm" var="i18nPublishConfirm">
+                                <fmt:message key="message.requestDeletionApproval.confirm" var="i18nPublishConfirm">
                                     <fmt:param value="${nodeName}"/>
                                 </fmt:message>
-                                <img height="16" width="16" border="0" style="cursor:pointer;" title="<fmt:message key='label.requestPublication'/>" alt="<fmt:message key='label.requestPublication'/>"
+                                <img height="16" width="16" border="0" style="cursor:pointer;" title="<fmt:message key='label.requestDeletionApproval'/>" alt="<fmt:message key='label.requestDeletionApproval'/>"
                                      src="<c:url value='/icons/publish.png'/>"
                                 onclick="publishNodes(new Array('${child.identifier}'), '${functions:escapeJavaScript(i18nPublishConfirm)}');">
                             </c:if>

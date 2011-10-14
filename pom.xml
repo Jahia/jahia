@@ -584,7 +584,7 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <goals>deploy</goals>
                     <preparationGoals>clean install</preparationGoals>
-                    <releaseProfiles>installer,windows-installer,qa-build,do-attach-javadocs</releaseProfiles>
+                    <releaseProfiles>do-attach-javadocs</releaseProfiles>
                 </configuration>
             </plugin>
         </plugins>

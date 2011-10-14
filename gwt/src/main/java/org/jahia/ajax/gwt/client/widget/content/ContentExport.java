@@ -43,10 +43,13 @@ package org.jahia.ajax.gwt.client.widget.content;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.ProgressBar;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -54,15 +57,13 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
- *
- *
  * User: toto
  * Date: Nov 13, 2008 - 7:31:46 PM
  */
 public class ContentExport extends Window {
 
     public ContentExport(final Linker linker, final GWTJahiaNode n) {
-        super() ;
+        super();
 
         setHeading(Messages.get("label.export"));
         setSize(500, 80);
@@ -74,6 +75,8 @@ public class ContentExport extends Window {
 
         setModal(true);
         final String result = JahiaGWTParameters.getContextPath() + "/cms/export/" + JahiaGWTParameters.getWorkspace() + n.getPath();
+        final ProgressBar progressBar = new ProgressBar();
+        add(progressBar);
         Button b;
         if (!n.getNodeTypes().contains("jnt:page")) {
             HorizontalPanel p = new HorizontalPanel();
@@ -84,7 +87,8 @@ public class ContentExport extends Window {
             b.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
-                    com.google.gwt.user.client.Window.open(result + ".xml?cleanup=simple", "","");
+                    startProgress(progressBar, n);
+                    com.google.gwt.user.client.Window.open(result + ".xml?cleanup=simple", "", "");
                 }
             });
             addButton(b);
@@ -94,8 +98,11 @@ public class ContentExport extends Window {
         b.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
+                startProgress(progressBar, n);
                 com.google.gwt.user.client.Window.Location.assign(result + ".zip?live=false&cleanup=simple");
             }
+
+
         });
         addButton(b);
 
@@ -103,6 +110,7 @@ public class ContentExport extends Window {
         b.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
+                startProgress(progressBar, n);
                 com.google.gwt.user.client.Window.Location.assign(result + ".zip?live=true&cleanup=simple");
             }
         });
@@ -123,10 +131,26 @@ public class ContentExport extends Window {
 
         b = new Button(Messages.get("label.close"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                hide() ;
+                hide();
             }
         });
         addButton(b);
     }
 
+
+    private void startProgress(ProgressBar progressBar, final GWTJahiaNode n) {
+        progressBar.setIncrement(50);
+        progressBar.auto();
+        new Timer() {
+            @Override
+            public void run() {
+                String exportedNode = Cookies.getCookie("exportedNode");
+                if (exportedNode != null && exportedNode.equals(n.getUUID())) {
+                    hide();
+                    Cookies.removeCookie("exportedNode", "/");
+                    this.cancel();
+                }
+            }
+        }.scheduleRepeating(1000);
+    }
 }

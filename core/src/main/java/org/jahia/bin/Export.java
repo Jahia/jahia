@@ -49,6 +49,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -203,6 +204,10 @@ public class Export extends JahiaController implements ServletContextAware {
                     params.put(ImportExportService.XSL_PATH, cleanupXsl);
                 }
                 OutputStream outputStream = response.getOutputStream();
+                Cookie exportedNode = new Cookie("exportedNode", node.getIdentifier());
+                exportedNode.setMaxAge(60);
+                exportedNode.setPath("/");
+                response.addCookie(exportedNode);
                 importExportService.exportNode(node, exportRoot, outputStream, params);
             } else if ("zip".equals(exportFormat)) {
                 JCRNodeWrapper node = session.getNode(nodePath);
@@ -219,6 +224,10 @@ public class Export extends JahiaController implements ServletContextAware {
                     params.put(ImportExportService.INCLUDE_LIVE_EXPORT, Boolean.TRUE);
                 }
                 OutputStream outputStream = response.getOutputStream();
+                Cookie exportedNode = new Cookie("exportedNode", node.getIdentifier());
+                exportedNode.setMaxAge(60);
+                exportedNode.setPath("/");
+                response.addCookie(exportedNode);
                 importExportService.exportZip(node, exportRoot, outputStream, params);
                 outputStream.close();
             }

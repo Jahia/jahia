@@ -49,12 +49,6 @@
     <name>Jahia Tag Libraries</name>
     <packaging>jar</packaging>
 
-    <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/taglib</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/taglib</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/trunk/taglib</url>
-    </scm>
-    
     <dependencies>
         <!--Cross project dependencies-->
         <dependency>

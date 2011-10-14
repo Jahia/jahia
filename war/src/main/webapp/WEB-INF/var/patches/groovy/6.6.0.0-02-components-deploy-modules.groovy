@@ -25,24 +25,10 @@ sysout << "Start analyzing sites and deploying modules\n"
                         continue;
                     }
                     
-                    if (site.hasNode("components")) {
-                        sysout << "\n  Components are already deployed to site " + site.getName() + "\n"
-                        continue;
-                    }
-                    
                     sysout << "\nProcessing site " + site.getName() + "\n";
-                    Set<String> alreadyDeployed = new TreeSet<String>();
-                    if (site.hasProperty("j:installedModules")) {
-                    	for (Value val : site.getProperty("j:installedModules").getValues()) {
-                    		alreadyDeployed.add(val.getString());
-                    	}
-                    }
-                    sysout << "  Modules, already deployed on site " + site.getName() + ": " + alreadyDeployed + "\n";
                     
                     Set<String> toDeploy = new LinkedHashSet<String>();
-                    if (!alreadyDeployed.contains("default")) {
-                    	toDeploy.add("default");
-                    }
+                  	toDeploy.add("default");
                     
                     for (NodeIterator moduleIterator  = session
                             .getWorkspace()
@@ -50,10 +36,6 @@ sysout << "Start analyzing sites and deploying modules\n"
                             .createQuery("select * from [jnt:virtualsite] where ischildnode('/templateSets')"+" and [j:siteType] = 'module' order by localname()",
                                     Query.JCR_SQL2).execute().getNodes(); moduleIterator.hasNext();) {
                         JCRNodeWrapper module = (JCRNodeWrapper) moduleIterator.nextNode();
-                        if (alreadyDeployed.contains(module.getName())) {
-                            sysout << "  Module " + module.getName() +" already deployed on -> skipping\n";
-                            continue;
-                        }
                         if (!module.hasNode("components")) {
                             sysout << "  Module " + module.getName() +" does not provide any components -> skipping\n";
                             continue;

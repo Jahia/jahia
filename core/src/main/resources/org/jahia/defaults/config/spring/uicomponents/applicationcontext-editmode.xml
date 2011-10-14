@@ -897,6 +897,12 @@
                     </set>
                 </property>
                 <property name="canBreakInheritance"><value>true</value></property>
+                <property name="showForTypes">
+                    <list value-type="java.lang.String">
+                        <value>jnt:component</value>
+                        <value>jnt:componentFolder</value>
+                    </list>
+                </property>
             </bean>
         </property>
     </bean>

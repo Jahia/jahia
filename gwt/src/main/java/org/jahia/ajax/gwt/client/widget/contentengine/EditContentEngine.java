@@ -223,12 +223,21 @@ public class EditContentEngine extends AbstractContentEngine {
                     } else {
                         for (Map.Entry<String, List<String>> entry : node.getLockInfos().entrySet()) {
                             if (entry.getKey() != null) {
-                                if (infos.length()>0) {
-                                    infos += ", ";
+                                if (infos.length() > 0) {
+                                    infos += "; ";
                                 }
                                 infos += entry.getKey() + " : ";
+                                int i = 0;
                                 for (String s : entry.getValue()) {
-                                    infos += s.substring(0,s.indexOf(":")) + " (" + s.substring(s.indexOf(":")+1) + ") ";
+                                    if (i > 0) {
+                                        infos += ", ";
+                                    }
+                                    if (s.startsWith("label.")) {
+                                        infos += Messages.get(s);
+                                    } else {
+                                        infos += s.substring(0, s.indexOf(":")) + " (" + s.substring(s.indexOf(":") + 1) + ") ";
+                                    }
+                                    i++;
                                 }
                             }
                         }

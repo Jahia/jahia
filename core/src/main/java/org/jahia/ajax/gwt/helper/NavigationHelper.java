@@ -855,16 +855,22 @@ public class NavigationHelper {
             String username = node.getSession().getUser().getUsername();
             n.setLocked(JCRContentUtils.isLockedAndCannotBeEdited(node));
             Map<String, List<String>> infos = node.getLockInfos();
-            if(!infos.isEmpty()) {
-                Map.Entry<String, List<String>> stringListEntry = infos.entrySet().iterator().next();
-                String lockTypeToken = stringListEntry.getValue().get(0);
-                JCRNodeLockType type = JCRContentUtils.getLockType(lockTypeToken);
-                if (JCRNodeLockType.USER != type) {
-                    infos.clear();
-                    infos.put(stringListEntry.getKey(),Arrays.asList("label.locked.by." + type.toString().toLowerCase()));
+            Map<String, List<String>> results = new HashMap<String, List<String>>(infos.size());
+            if (!infos.isEmpty()) {
+                for (Map.Entry<String, List<String>> entry : infos.entrySet()) {
+                    for (String s : entry.getValue()) {
+                        JCRNodeLockType type = JCRContentUtils.getLockType(s);
+                        if (JCRNodeLockType.USER != type) {
+                            if (!results.containsKey(entry.getKey())) {
+                                results.put(entry.getKey(), new LinkedList<String>());
+                            }
+                            results.get(entry.getKey()).add("label.locked.by." + type.toString().toLowerCase());
+
+                        }
+                    }
                 }
             }
-            n.setLockInfos(infos);
+            n.setLockInfos(results);
             if (node.getSession().getLocale() != null) {
                 String l = node.getSession().getLocale().toString();
                 n.setCanLock(infos.isEmpty() || !infos.containsKey(l));

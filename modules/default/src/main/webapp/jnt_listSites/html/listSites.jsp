@@ -26,12 +26,17 @@
         </script>
     </div>
 </c:if>
-
 <c:if test="${not ajaxRequired}">
-
-    <jcr:sql var="result"
-             sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites') and localname(site) <> 'systemsite' order by site.[jcr:created] desc"
-             limit="${currentNode.properties['numberMaxOfSitesDisplayed'].string}"/>
+    <c:if test="${empty currentNode.properties['typeOfContent'] or currentNode.properties['typeOfContent'].string eq 'website'}">
+        <jcr:sql var="result"
+                 sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites') and localname(site) <> 'systemsite' order by site.[jcr:created] desc"
+                 limit="${currentNode.properties['numberMaxOfSitesDisplayed'].string}"/>
+    </c:if>
+    <c:if test="${not empty currentNode.properties['typeOfContent'] and currentNode.properties['typeOfContent'].string ne 'website'}">
+        <jcr:sql var="result"
+                 sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites') order by site.[jcr:created] desc"
+                 limit="${currentNode.properties['numberMaxOfSitesDisplayed'].string}"/>
+    </c:if>
     <ul class="list-sites">
         <c:forEach items="${result.nodes}" var="node">
             <c:choose>

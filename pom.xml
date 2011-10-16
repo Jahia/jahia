@@ -443,7 +443,7 @@
                             <execution>
                                 <id>aggregate-javadocs</id>
                                 <goals>
-                                    <goal>aggregate-javadocs</goal>
+                                    <goal>aggregate-jar</goal>
                                 </goals>
                             </execution>
                         </executions>

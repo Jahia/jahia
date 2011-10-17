@@ -80,7 +80,7 @@ import static org.jahia.services.content.JCRTemplate.*;
 
 /**
  * Serves resources from the JCR repository.
- * 
+ *
  * @author Thomas Draier
  * Date: Oct 13, 2008
  * Time: 2:08:59 PM
@@ -116,7 +116,7 @@ public class FileServlet extends HttpServlet {
                     && StringUtils.isNotEmpty(fileKey.getPath())) {
 
                 Cache<String, FileLastModifiedCacheEntry> lastModifiedCache = cacheManager.getLastModifiedCache();
-                
+
                 FileLastModifiedCacheEntry lastModifiedEntry = lastModifiedCache.get(fileKey
                         .getCacheKey());
                 if (isNotModified(fileKey, lastModifiedEntry, req, res)) {
@@ -128,7 +128,7 @@ public class FileServlet extends HttpServlet {
                 }
 
                 Cache<String, Map<String, FileCacheEntry>> contentCache = cacheManager.getContentCache();
-                
+
                 Map<String, FileCacheEntry> entries = contentCache.get(fileKey.getCacheKey());
                 FileCacheEntry fileEntry = entries != null ? entries.get(fileKey.getThumbnail())
                         : null;
@@ -354,12 +354,12 @@ public class FileServlet extends HttpServlet {
         } catch (JahiaRuntimeException e) {
             throw new ServletException(e.getCause());
         }
-        
+
         if (SettingsBean.getInstance().isFileServletStatisticsEnabled()) {
             try {
                 loggingService = (MetricsLoggingService) SpringContextSingleton
                         .getBean("loggingService");
-                
+
                 sessionFactory = JCRSessionFactory.getInstance();
             } catch (Exception e) {
                 logger.error("Unable to get the logging service instance. Metrics logging will be disabled.");

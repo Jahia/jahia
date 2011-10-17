@@ -621,7 +621,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         Map<String, Properties> sites = ((SitesValidatorResult) sitesValidator.getResult()).getSitesProperties();
                         for (String s : sites.keySet()) {
                             // Only the first site returned is mapped (if its not the systemsite, which is always the same key)
-                            if (!s.equals("systemsite")) {
+                            if (!s.equals("systemsite") && site.getSiteKey().equals("systemsite")) {
                                 // Map to the new sitekey
                                 pathMapping.put("/sites/" + s + "/", "/sites/" + site.getSiteKey() + "/");
                                 break;

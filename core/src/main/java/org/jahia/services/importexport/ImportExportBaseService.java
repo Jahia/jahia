@@ -1299,7 +1299,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     }
                     session.save(JCRObservationManager.IMPORT);
                 } else if (name.endsWith(".xml") && !name.equals(REPOSITORY_XML) && !name.equals(LIVE_REPOSITORY_XML) && !filesToIgnore.contains(name)) {
-                    String thisPath = parentNodePath + (parentNodePath.endsWith("/") ? "" : "/") + StringUtils.substringBefore(name,".xml");
+                    String thisPath = (parentNodePath != null ? (parentNodePath + (parentNodePath.endsWith("/") ? "" : "/")) : "") + StringUtils.substringBefore(name,".xml");
                     importXML(thisPath, zis, rootBehaviour);
                 }
                 zis.closeEntry();

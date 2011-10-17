@@ -425,6 +425,9 @@
         </profile>
         <profile>
             <id>aggregate-javadocs</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -612,7 +615,7 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <goals>deploy</goals>
                     <preparationGoals>clean install</preparationGoals>
-                    <releaseProfiles>do-attach-javadocs</releaseProfiles>
+                    <releaseProfiles>do-attach-javadocs,aggregate-javadocs,attach-taglibdoc</releaseProfiles>
                 </configuration>
             </plugin>
         </plugins>

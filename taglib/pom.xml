@@ -162,6 +162,30 @@
                 </plugins>
             </reporting>
         </profile>
+        <profile>
+            <id>attach-taglibdoc</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jahia.server</groupId>
+                        <artifactId>maven-jahia-plugin</artifactId>
+                        <version>${jahia.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>taglibrarydoc</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>taglibrarydoc</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
     
     <reporting>

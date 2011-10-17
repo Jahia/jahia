@@ -165,7 +165,10 @@
         <profile>
             <id>attach-taglibdoc</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+            	<property>
+            		<name>env.JAHIA_GENERATE_TAGLIBDOC</name>
+            		<value>true</value>
+            	</property>
             </activation>
             <build>
                 <plugins>

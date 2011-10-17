@@ -1,0 +1,83 @@
+Content Import and Export
+
+* Import formats
+
+  Jahia supports differents formats for importing content, based on XML.
+
+** JCR Document view
+
+    The principal format that is used is based on the
+    standard document view from the JCR specifications. In this simple format, each node is an XML tag, and each
+    property is an XML attribute. This format directly reflects the structure that is used to store content inside the JCR.
+
+    A simple news from the ACME demo site will be exported like that :
+
+--------------------
+<news_36 image="/sites/ACME22/files/images/generic-pictures/illustration8.jpg" j:defaultCategory="/sites/systemsite/categories/project"
+         j:lastPublished="2011-10-17T11:15:42.161+02:00" j:lastPublishedBy="root" j:originWS="default" j:published="true"
+         jcr:created="2011-02-01T16:40:07.725+01:00" jcr:createdBy="root" jcr:lastModified="2011-10-17T13:24:53.353+02:00"
+         jcr:lastModifiedBy="root" jcr:mixinTypes="jmix:accessControlled jmix:categorized" jcr:primaryType="jnt:news">
+    <j:translation_en desc="<p> From the concept to completion, it took 6 yecdscdsars for this building of 180-metres high ..."
+      j:lastPublished="2011-10-17T11:15:42.161+02:00" j:lastPublishedBy="root" j:published="true" jcr:language="en"
+      jcr:lastModified="2011-10-17T13:24:53.321+02:00" jcr:lastModifiedBy="root" jcr:lockIsDeep="false" jcr:lockOwner="root"
+      jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="New 5 stars hotel in Hong Kong build by ACME Contruction"/>
+    <j:translation_fr desc="<p> De la conception &agrave; la r&eacute;alisation, il a fallu 6 ans pour ce b&acirc;timent de d..."
+      jcr:language="fr" jcr:lastModified="2011-02-01T16:40:14.671+01:00" jcr:lastModifiedBy="root" jcr:mixinTypes="mix:title"
+      jcr:primaryType="jnt:translation" jcr:title="Nouvel hôtel 5 étoiles à Hong Kong, construit par ACME International"/>
+</news_36>
+--------------------
+
+** Import file packaging
+
+    XML Import files can be packaged inside a zip file if multiple import files need to be imported,
+    if binary files are present in the import, or if multiple workspaces (default and live) need to be imported.
+
+    When exporting a node, multiple options are available :
+
+[../images/import/export-dialog.png]
+
+*** Export ZIP : Export with binaries
+
+    This ption will include the binaries along with the XML export file.
+
+    The XML document view is called <<<repository.xml>>>. All binaries associated to nodes in <<<repository.xml>>> will be
+    stored in a <<<content>>> sub-directory.
+
+    The path of the binary file :
+
+[../images/import/file-structure.png]
+
+*** Export ZIP with live content
+
+    In the case of an export containing live content, the document view file will be called <<<live-repository.xml>>>, and
+    associated binaries will be in <<<live-content>>> .
+
+
+** Legacy formats
+
+    Content export files from Jahia prior to version 6.5 uses a different format, based on the page / container lists /
+    container structure. This format is still supported for compatibilty, and can eventually be used along with a mapping
+    file for migration purpose.
+
+    Other legacy formats are supported for specific content import :
+
+     * The file <<<categories.xml>>> allows to import categories in the system site
+
+     * The file <<<users.xml>>> imports users and groups
+
+     * The file <<<filesacl.xml>>> imports ACLs and metadata on files
+
+* Export types
+
+** Branch export
+
+** Site export
+
+* Common use cases
+
+** Backup
+
+** Migration
+
+** External content import
+

@@ -50,7 +50,6 @@ import org.jahia.services.render.URLResolver;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.tools.files.FileUpload;
 import org.json.JSONObject;
-import sun.font.TrueTypeFont;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;

@@ -175,11 +175,16 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         Set<String> siteNames= new LinkedHashSet<String>();
         boolean b = true;
         for (GWTJahiaNode site : sites) {
+            String displayName = site.getDisplayName();
             if(siteNames.contains(site.getDisplayName())) {
-                site.set("switcherDisplayName",site.getDisplayName()+" ("+site.getSiteKey()+")");
-            } else {
-                site.set("switcherDisplayName",site.getDisplayName());
+                displayName += " ("+site.getSiteKey()+")";
             }
+
+            if (site.get("j:versionInfo") != null) {
+                displayName += " ("+site.get("j:versionInfo")+")";
+            }
+
+            site.set("switcherDisplayName", displayName);
             siteNames.add(site.getDisplayName());
             if (site.getUUID().equals(JahiaGWTParameters.getSiteUUID())) {
                 sitesCombo.setValue(site);

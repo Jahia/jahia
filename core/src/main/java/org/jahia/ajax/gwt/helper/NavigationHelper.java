@@ -1244,6 +1244,14 @@ public class NavigationHelper {
             logger.error(e.getMessage(), e);
         }
 
+        try {
+            if (fields.contains("j:versionInfo") && node.hasNode("j:versionInfo")) {
+                n.set("j:versionInfo", node.getNode("j:versionInfo").getProperty("j:version").getString());
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
         return n;
     }
 

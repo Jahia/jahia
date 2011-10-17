@@ -66,7 +66,7 @@ public class ConflictResolver {
 
 
     private static List<String> ignore = Arrays.asList(Constants.JCR_UUID, Constants.JCR_PRIMARYTYPE, Constants.JCR_MIXINTYPES, Constants.JCR_FROZENUUID, Constants.JCR_FROZENPRIMARYTYPE, Constants.JCR_FROZENMIXINTYPES,
-            Constants.JCR_CREATED, Constants.JCR_CREATEDBY, Constants.JCR_BASEVERSION, Constants.JCR_ISCHECKEDOUT, Constants.JCR_VERSIONHISTORY, Constants.JCR_PREDECESSORS, Constants.JCR_ACTIVITY, Constants.CHECKIN_DATE, Constants.LOCKTOKEN, Constants.LOCKTYPES, "jcr:lockOwner", "jcr:lockIsDeep", "j:deletedChildren");
+            Constants.JCR_CREATED, Constants.JCR_CREATEDBY, Constants.JCR_BASEVERSION, Constants.JCR_ISCHECKEDOUT, Constants.JCR_VERSIONHISTORY, Constants.JCR_PREDECESSORS, Constants.JCR_ACTIVITY, Constants.CHECKIN_DATE, Constants.LOCKTOKEN, Constants.LOCKTYPES, "jcr:lockOwner", "jcr:lockIsDeep", "j:deletedChildren", "j:processId");
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ConflictResolver.class);
     // Constants.JCR_LASTMODIFIED, "jcr:lastModifiedBy",
     // "jcr:lastPublished", "jcr:lastPublishedBy", "j:published");

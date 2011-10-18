@@ -437,7 +437,7 @@ public class ContentManagerHelper {
                             targetParent.orderBefore(name, targetNode.getName());
                         }
                         currentUserSession.save();
-                        res.add(navigation.getGWTJahiaNode(copy));
+                        res.add(navigation.getGWTJahiaNode(copy,Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.PERMISSIONS)));
                     } else {
                         missedPaths
                                 .add(new StringBuilder("File ").append(name).append(" could not be referenced in ")

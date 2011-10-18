@@ -58,6 +58,8 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
+import java.util.*;
+
 /**
  * Window that displays information about deleted node and its preview
  */
@@ -90,10 +92,11 @@ public class PreviewWindow extends Window {
         // Use gwt configuration for pages
 
         String configuration = jahiaNode.isNodeType("jnt:page")?"gwt":"preview";
-
+        Map<String, List<String>> params = new HashMap<String, List<String>>();
+        params.put("noDeleteLayer",Arrays.asList("true"));
         JahiaContentManagementService.App.getInstance().getRenderedContent(
                 jahiaNode.getPath(), null, JahiaGWTParameters.getLanguage(),
-                "default", configuration, null, true, linker.getConfig().getName(),
+                "default", configuration, params, true, linker.getConfig().getName(),
                 new BaseAsyncCallback<GWTRenderResult>() {
                     public void onSuccess(GWTRenderResult gwtRenderResult) {
                         htmlPreview.removeAll();

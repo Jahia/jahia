@@ -710,7 +710,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public GWTJahiaNodeACL getACL(String path, boolean newAcl, JCRSessionWrapper currentUserSession, Locale uiLocale)
+    public GWTJahiaNodeACL getACL(String path, boolean newAcl, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
@@ -892,7 +892,10 @@ public class ContentManagerHelper {
             throw new GWTJahiaServiceException(
                     new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
         }
-
+        GWTJahiaNodeACL oldAcl = getACL(path, false, currentUserSession);
+        if (oldAcl.equals(acl)) {
+            return;
+        }
         try {
             node.revokeAllRoles();
             for (GWTJahiaNodeACE ace : acl.getAce()) {
@@ -907,7 +910,9 @@ public class ContentManagerHelper {
                     }
                 }
             }
-            node.setAclInheritanceBreak(acl.isBreakAllInheritance());
+            if (acl.isBreakAllInheritance()) {
+                node.setAclInheritanceBreak(acl.isBreakAllInheritance());
+            }
             currentUserSession.save();
         } catch (RepositoryException e) {
             logger.error("error", e);

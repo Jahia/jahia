@@ -164,4 +164,37 @@ public class GWTJahiaNodeACE implements Serializable {
         return clone;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GWTJahiaNodeACE that = (GWTJahiaNodeACE) o;
+
+        if (hidden != that.hidden) return false;
+        if (isInherited != that.isInherited) return false;
+        if (principalType != that.principalType) return false;
+        if (inheritedFrom != null ? !inheritedFrom.equals(that.inheritedFrom) : that.inheritedFrom != null)
+            return false;
+        if (inheritedPermissions != null ? !inheritedPermissions.equals(that.inheritedPermissions) : that.inheritedPermissions != null)
+            return false;
+        if (permissions != null ? !permissions.equals(that.permissions) : that.permissions != null) return false;
+        if (principal != null ? !principal.equals(that.principal) : that.principal != null) return false;
+        if (principalKey != null ? !principalKey.equals(that.principalKey) : that.principalKey != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) principalType;
+        result = 31 * result + (principal != null ? principal.hashCode() : 0);
+        result = 31 * result + (principalKey != null ? principalKey.hashCode() : 0);
+        result = 31 * result + (isInherited ? 1 : 0);
+        result = 31 * result + (inheritedFrom != null ? inheritedFrom.hashCode() : 0);
+        result = 31 * result + (permissions != null ? permissions.hashCode() : 0);
+        result = 31 * result + (inheritedPermissions != null ? inheritedPermissions.hashCode() : 0);
+        result = 31 * result + (hidden ? 1 : 0);
+        return result;
+    }
 }

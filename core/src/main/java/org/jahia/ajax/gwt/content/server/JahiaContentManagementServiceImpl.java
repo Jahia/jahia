@@ -1304,7 +1304,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             result.setInitializersValues(contentDefinition.getAllInitializersValues(allTypes,
                     nodeType, null, parent, getUILocale()));
 
-            result.setAcl(contentManager.getACL(parentpath, true, sessionWrapper, getUILocale()));
+            result.setAcl(contentManager.getACL(parentpath, true, sessionWrapper));
             result.setDefaultName(jcrContentUtils.generateNodeName(parent, defaultLanguage, nodeType, targetName));
             return result;
         } catch (RepositoryException e) {
@@ -1381,7 +1381,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             result.setInitializersValues(
                     contentDefinition.getAllInitializersValues(allTypes, nodeWrapper.getPrimaryNodeType(), nodeWrapper,
                             parent, getUILocale()));
-            final GWTJahiaNodeACL gwtJahiaNodeACL = contentManager.getACL(nodepath, false, sessionWrapper, getUILocale());
+            final GWTJahiaNodeACL gwtJahiaNodeACL = contentManager.getACL(nodepath, false, sessionWrapper);
             result.setAcl(gwtJahiaNodeACL);
             Map<String,Set<String>> referencesWarnings = new HashMap<String, Set<String>>();
             for (GWTJahiaNodeProperty property : props.values()) {
@@ -1440,7 +1440,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         for (GWTJahiaNode reference : references) {
             GWTJahiaNodeACL referenceAcl =
-                    contentManager.getACL(reference.getPath(), false, sessionWrapper, getUILocale());
+                    contentManager.getACL(reference.getPath(), false, sessionWrapper);
 
             final Set<String> allReadUsers = new HashSet<String>();  // All users having read rights
             for (GWTJahiaNodeACE ace : nodeAcl.getAce()) {

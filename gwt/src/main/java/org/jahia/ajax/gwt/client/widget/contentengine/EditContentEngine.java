@@ -361,7 +361,7 @@ public class EditContentEngine extends AbstractContentEngine {
         node.getNodeTypes().addAll(addedTypes);
 
         contentService.saveNode(node,
-                orderedChildrenNodes, acl, changedI18NProperties, changedProperties,
+                orderedChildrenNodes, PermissionsUtils.isPermitted("viewRolesTab") ? acl : null, changedI18NProperties, changedProperties,
                 removedTypes, new BaseAsyncCallback<Object>() {
                     public void onApplicationFailure(Throwable throwable) {
                         String message = throwable.getMessage();

@@ -28,7 +28,7 @@
                         <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
-                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.PasteInMain"/>

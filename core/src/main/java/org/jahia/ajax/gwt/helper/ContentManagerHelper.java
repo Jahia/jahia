@@ -710,7 +710,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public GWTJahiaNodeACL getACL(String path, boolean newAcl, JCRSessionWrapper currentUserSession)
+    public GWTJahiaNodeACL getACL(String path, boolean newAcl, JCRSessionWrapper currentUserSession, Locale uiLocale)
             throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
@@ -892,7 +892,7 @@ public class ContentManagerHelper {
             throw new GWTJahiaServiceException(
                     new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
         }
-        GWTJahiaNodeACL oldAcl = getACL(path, false, currentUserSession);
+        GWTJahiaNodeACL oldAcl = getACL(path, false, currentUserSession, null);
         if (oldAcl.equals(acl)) {
             return;
         }

@@ -112,6 +112,7 @@ public class LegacyImportHandler extends DefaultHandler {
     private Map<String, List<String>> references = new HashMap<String, List<String>>();
 
     private JCRSessionWrapper session;
+    private final LegacyPidMappingTool legacyPidMappingTool;
 
     private static final String HTTP_WWW_JAHIA_ORG = "http://www.jahia.org/";
     private static final String PAGE = "page";
@@ -125,7 +126,7 @@ public class LegacyImportHandler extends DefaultHandler {
     private int level = 0;
 
     public LegacyImportHandler(JCRSessionWrapper session, JCRNodeWrapper currentSiteNode, NodeTypeRegistry registry,
-                               DefinitionsMapping mapping, Locale locale, String originatingJahiaRelease) {
+                               DefinitionsMapping mapping, Locale locale, String originatingJahiaRelease, LegacyPidMappingTool legacyPidMappingTool) {
         this.session = session;
         this.uuidMapping = session.getUuidMapping();
         this.pathMapping = session.getPathMapping();
@@ -140,6 +141,7 @@ public class LegacyImportHandler extends DefaultHandler {
         this.mapping = mapping;
         this.locale = locale;
         this.originatingJahiaRelease = originatingJahiaRelease;
+        this.legacyPidMappingTool = legacyPidMappingTool;
     }
 
     public void setReferences(Map<String, List<String>> references) {
@@ -181,7 +183,7 @@ public class LegacyImportHandler extends DefaultHandler {
                 // System.out.println("create page" + attributes.getValue("jahia:title"));
                 createPage(attributes.getValue(Name.NS_JCR_URI, "primaryType"), attributes.getValue("jahia:title"),
                         attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"),
-                        uuid, getMetadataForNodeCreation(attributes));
+                        uuid, getMetadataForNodeCreation(attributes), attributes.getValue("jahia:pid"));
                 setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
                 return;
             }
@@ -337,7 +339,7 @@ public class LegacyImportHandler extends DefaultHandler {
                         }
                         Map<String, String> props = currentCtx.peek().properties.peek();
                         createPage(attributes.getValue(Name.NS_JCR_URI, "primaryType"), title,
-                                attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid, getMetadataForNodeCreation(attributes));
+                                attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid, getMetadataForNodeCreation(attributes), attributes.getValue("jahia:pid"));
                         setMetadata(props);
                         setAcl(acl);
                         // todo : add a link here ??
@@ -418,7 +420,7 @@ public class LegacyImportHandler extends DefaultHandler {
         }
     }
 
-    private void createPage(String primaryType, String title, String template, String pageKey, String uuid, Map<String, String> creationMetadata)
+    private void createPage(String primaryType, String title, String template, String pageKey, String uuid, Map<String, String> creationMetadata, String pageId)
             throws RepositoryException {
         JCRNodeWrapper subPage;
         ExtendedNodeType t = null;
@@ -477,6 +479,10 @@ public class LegacyImportHandler extends DefaultHandler {
                 session.checkout(translation);
             }
             translation.setProperty("jcr:title", title);
+        }
+
+        if (legacyPidMappingTool != null) {
+            legacyPidMappingTool.defineLegacyMapping(Integer.valueOf(pageId), subPage, locale);
         }
     }
 
@@ -860,7 +866,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
         if (HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
             createPage(attributes.getValue(Name.NS_JCR_URI, "primaryType"), title,
-                    attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid, getMetadataForNodeCreation(attributes));
+                    attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid, getMetadataForNodeCreation(attributes), attributes.getValue("jahia:pid"));
             setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
 
             // todo : add a link here ??

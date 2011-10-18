@@ -178,6 +178,35 @@
                                         </select>
                                     </td>
                                 </tr>
+                                <%if ((Boolean) infos.get("legacyImport")) { %>
+                                <%
+                                    List<java.io.File> legacyMappings = (List<File>) infos.get("legacyMappings");
+                                    if (legacyMappings != null && !legacyMappings.isEmpty()) {
+                                %>
+                                <tr>
+                                    <td>
+                                        <fmt:message
+                                                key="org.jahia.admin.site.ManageSites.selectDefinitionMapping"/>
+                                    </td>
+                                    <td>
+                                        <select name="<%=siteKey%>legacyMapping">
+                                            <option value="">No Mapping file or zip internal mapping file</option>
+                                            <%
+                                                for (File legacyMapping : legacyMappings) {
+                                            %>
+                                            <option value="<%=legacyMapping.getAbsolutePath()%>" <% if (legacyMapping.getName().equals(infos.get("templates"))) { %>selected<% } %>><%=legacyMapping.getName()%>
+                                            </option>
+                                            <%
+                                                }
+                                            %>
+                                        </select>
+
+                                    </td>
+                                </tr>
+                                <%
+                                    }
+                                    }
+                                %>
                             </table>
                             <% } else if ("files".equals(fileType))  { %>
                             <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.shared"/>: <%=filename %>

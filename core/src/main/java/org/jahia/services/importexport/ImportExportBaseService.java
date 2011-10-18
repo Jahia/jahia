@@ -53,6 +53,7 @@ import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import org.jahia.utils.zip.ZipInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
@@ -540,6 +541,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         final UsersImportHandler usersImportHandler = new UsersImportHandler(site);
         JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, null);
 
+        importSiteZip(file, site, infos, null);
+    }
+
+    public void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath) throws RepositoryException, IOException {
         boolean legacyImport = false;
         List<String[]> catProps = null;
         List<String[]> userProps = null;
@@ -729,6 +734,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         // Import legacy content from 5.x and 6.x
         if (legacyImport) {
+            if(legacyMappingFilePath!=null) {
+                mapping = new DefinitionsMapping();
+                mapping.load(new FileInputStream(legacyMappingFilePath));
+            }
             // Old import
             JCRNodeWrapper siteFolder = session.getNode("/sites/" + site.getSiteKey());
 
@@ -750,11 +759,40 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         }
                         zipentry.getSize();
 
+<<<<<<< .working
                         LegacyImportHandler importHandler = new LegacyImportHandler(session, siteFolder, reg, mapping,
                                 LanguageCodeConverters.languageCodeToLocale(languageCode),
                                 infos != null ? (String) infos.get("originatingJahiaRelease") : null);
+=======
+                        LegacyImportHandler importHandler = new LegacyImportHandler(session,
+                                siteFolder, reg, mapping, LanguageCodeConverters
+                                        .languageCodeToLocale(languageCode),
+                                infos != null ? (String)infos.get("originatingJahiaRelease")
+                                        : null,legacyPidMappingTool);
+>>>>>>> .merge-right.r39463
                         importHandler.setReferences(references);
-                        handleImport(zis, importHandler);
+
+                        InputStream documentInput = zis;
+                        if (this.xmlContentTransformers != null && this.xmlContentTransformers.size() > 0) {
+                            documentInput = new ZipInputStream(new FileInputStream(file));
+                            while (!name.equals(((ZipInputStream) documentInput).getNextEntry().getName())) ;
+                            byte[] buffer = new byte[2048];
+                            File document = File.createTempFile("export_" + languageCode + "_initial_", ".xml");
+                            final OutputStream output = new BufferedOutputStream(new FileOutputStream(document), 2048);
+                            int count = 0;
+                            while ((count = documentInput.read(buffer, 0, 2048)) > 0) {
+                                output.write(buffer, 0, count);
+                            }
+                            output.flush();
+                            output.close();
+                            documentInput.close();
+                            for (XMLContentTransformer xct : xmlContentTransformers) {
+                                document = xct.transform(document);
+                            }
+                            documentInput = new FileInputStream(document);
+                        }
+
+                        handleImport(documentInput, importHandler);
                         siteFolder.getSession().save(JCRObservationManager.IMPORT);
                     }
                     zis.closeEntry();
@@ -1394,4 +1432,23 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             return keys.elements();
         }
     }
+<<<<<<< .working
 }
+=======
+
+	private void setObserverInterval(long observerInterval) {
+    	this.observerInterval = observerInterval;
+    }
+
+    private List<XMLContentTransformer> xmlContentTransformers;
+
+    public void setXmlContentTransformers(final List<XMLContentTransformer> xmlContentTransformers) {
+        this.xmlContentTransformers = xmlContentTransformers;
+    }
+
+    private LegacyPidMappingTool legacyPidMappingTool = null;
+
+    public void setLegacyPidMappingTool(LegacyPidMappingTool legacyPidMappingTool) {
+        this.legacyPidMappingTool = legacyPidMappingTool;
+    }
+}>>>>>>> .merge-right.r39463

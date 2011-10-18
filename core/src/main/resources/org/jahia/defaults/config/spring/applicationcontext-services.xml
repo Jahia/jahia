@@ -111,6 +111,20 @@
 		<property name="jcrStoreService" ref="JCRStoreService" />
 		<property name="fileWatcherService" ref="JahiaFileWatcherService" />
 		<property name="categoryService" ref="CategoryService" />
+        <property name="xmlContentTransformers">
+            <list value-type="org.jahia.services.importexport.XMLContentTransformer">
+                <!--
+                    <bean class="com.myproject.MyCustomXMLContentTransformer" />
+ 	 	 		-->
+            </list>
+        </property>
+        <!--
+        <property name="legacyPidMappingTool">
+            <bean class="org.jahia.services.importexport.LegacyPidToVanityUrlMappingToolImpl">
+                <property name="urlMgr" ref="org.jahia.services.seo.jcr.VanityUrlManager"/>
+            </bean>
+        </property>
+        -->
 	</bean>
 
     <bean id="org.jahia.services.templates.TemplatePackageRegistry"

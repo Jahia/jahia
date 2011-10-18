@@ -1803,6 +1803,14 @@ public class ManageSites extends AbstractAdministrationModule {
                     File i = iterator.next();
                     Map<Object, Object> value = prepareSiteImport(i, imports.get(i));
                     if (value != null) {
+                        Object legacyImport = value.get("legacyImport");
+                        if (legacyImport!=null && (Boolean) legacyImport && jParams instanceof ParamBean) {
+                        try {
+                            value.put("legacyMappings", FileUtils.listFiles(new File(((ParamBean)jParams).getContext().getRealPath("/WEB-INF/var/legacymappings")), new String[]{"map"}, false));
+                        } catch (Exception e) {
+                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        }
+                    }
                         importsInfos.add(value);
                     }
                 }
@@ -1822,6 +1830,16 @@ public class ManageSites extends AbstractAdministrationModule {
                 IOUtils.closeQuietly(zis);
             }
         }
+<<<<<<< .working
+=======
+//        SharedTemplatePackagesRegistry tmplSetReg = SharedTemplatePackagesRegistry.getInstance();
+//        Iterator en = tmplSetReg.getAllTemplatePackages();
+//        List list = new ArrayList();
+//        while (en.hasNext()) {
+//            list.add(en.next());
+//        }
+        // TODO properly populate templates list
+>>>>>>> .merge-right.r39463
         request.setAttribute("tmplSets", Collections.emptyList());
     }
 
@@ -1951,6 +1969,7 @@ public class ManageSites extends AbstractAdministrationModule {
                         logger.error("Error while preparing site import", e);
                     }
                 }
+                importInfos.put("legacyImport",isLegacySite);
             } else {
                 importInfos.put("type", "files");
             }
@@ -2018,7 +2037,7 @@ public class ManageSites extends AbstractAdministrationModule {
                     request.getParameter(file.getName() + "siteTitle").trim(), 100));
             infos.put("selected", request.getParameter(file.getName() + "selected"));
             infos.put("templates", request.getParameter(file.getName() + "templates"));
-
+            infos.put("legacyMapping", request.getParameter(file.getName() + "legacyMapping"));
             if (request.getParameter(file.getName() + "selected") != null) {
                 try {
                     if (NON_SITE_IMPORTS.contains(infos.get("importFileName"))) {
@@ -2116,13 +2135,21 @@ public class ManageSites extends AbstractAdministrationModule {
                         if ("".equals(tpl)) {
                             tpl = null;
                         }
+                        Object legacyImport = infos.get("legacyImport");
+                        String legacyImportFilePath = null;
+                        if(legacyImport != null && (Boolean) legacyImport) {
+                            legacyImportFilePath = (String) infos.get("legacyMapping");
+                            if("".equals(legacyImportFilePath.trim())){
+                                legacyImportFilePath = null;
+                            }
+                        }
                         Locale defaultLocale = determineDefaultLocale(jParams, infos);
                         try {
                             JahiaSite site = jahiaSitesService
                                     .addSite(jParams.getUser(), (String) infos.get("sitetitle"),
                                             (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
                                             defaultLocale, tpl, "fileImport", file,
-                                            (String) infos.get("importFileName"), false, false, (String) infos.get("originatingJahiaRelease"));
+                                            (String) infos.get("importFileName"), false, false, (String) infos.get("originatingJahiaRelease"),legacyImportFilePath);
                             session.setAttribute(ProcessingContext.SESSION_SITE, site);
                             jParams.setSite(site);
                             jParams.setSiteID(site.getID());

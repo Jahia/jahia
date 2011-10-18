@@ -429,6 +429,13 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, File fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException {
+        return addSite(currentUser,title, serverName, siteKey, descr, selectedLocale, selectTmplSet, firstImport, fileImport, fileImportName,
+                asAJob, doImportServerPermissions, originatingJahiaRelease, null);
+    }
+
+    public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
+                             Locale selectedLocale, String selectTmplSet, String firstImport, File fileImport, String fileImportName,
+                             Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease,String legacyMappingFilePath) throws JahiaException, IOException {
         JahiaSite site = new JahiaSite(-1, title, serverName, siteKey, descr, null, "/sites/"+siteKey);
 
         if (selectTmplSet != null) {
@@ -621,7 +628,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                     try {
                         Map<Object, Object> importInfos = new HashMap<Object, Object>();
                         importInfos.put("originatingJahiaRelease", originatingJahiaRelease);
-                        ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, site, importInfos);
+                        ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, site, importInfos, legacyMappingFilePath);
                     } catch (RepositoryException e) {
                         logger.warn("Error importing site ZIP", e);
                     }

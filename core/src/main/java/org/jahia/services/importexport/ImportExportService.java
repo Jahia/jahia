@@ -212,6 +212,8 @@ public interface ImportExportService {
      */
     void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException;
 
+    void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath) throws RepositoryException, IOException;
+
     void importCategories(Category rootCategory, InputStream is);
 
     List<String[]> importUsers(File file) throws IOException ;

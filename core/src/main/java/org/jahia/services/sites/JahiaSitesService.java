@@ -127,6 +127,7 @@ public abstract class JahiaSitesService extends JahiaService {
                                       Locale selectedLocale, String selectTmplSet, String firstImport, File fileImport, String fileImportName,
                                       Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException;
 
+<<<<<<< .working
     /**
      * Add a new site
      * @param currentUser
@@ -151,6 +152,13 @@ public abstract class JahiaSitesService extends JahiaService {
     public abstract JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                                       Locale selectedLocale, String selectTmplSet, String[] modulesToDeploy, String firstImport, File fileImport, String fileImportName,
                                       Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException;
+=======
+    public abstract JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
+                                      Locale selectedLocale, String selectTmplSet, String firstImport, File fileImport, String fileImportName,
+                                      Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease,
+                                      String legacyMappingFilePath) throws JahiaException, IOException;
+>>>>>>> .merge-right.r39463
+
 
     /**
      * remove a site

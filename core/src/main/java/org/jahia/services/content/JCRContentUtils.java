@@ -1088,14 +1088,18 @@ public final class JCRContentUtils {
         String username = node.getSession().getUser().getUsername();
         String lockOwner = node.getLockOwner();
         boolean isLocked = node.isLocked() && (lockOwner == null || !lockOwner.equals(username));
-        if (!isLocked && node.hasProperty(Constants.JAHIA_LOCKTYPES)) {
-            Value[] values = node.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
-            for (Value value : values) {
-                if (!value.getString().startsWith(username)) {
-                    isLocked = true;
-                    break;
+        try {
+            if (!isLocked && node.hasProperty(Constants.JAHIA_LOCKTYPES)) {
+                Value[] values = node.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
+                for (Value value : values) {
+                    if (!value.getString().startsWith(username)) {
+                        isLocked = true;
+                        break;
+                    }
                 }
             }
+        } catch (PathNotFoundException e){
+            logger.debug("concurrency issue lock is not present anymore");
         }
 
         return isLocked;

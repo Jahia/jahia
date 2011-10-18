@@ -712,7 +712,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     newNode = true;
                 }
 
-                templatesSynchro(child, node, session, references, newNode, false, true, moduleName, child.isNodeType("jnt:templatesFolder"));
+                templatesSynchro(child, node, session, references, newNode, false, true, moduleName, child.isNodeType("jnt:templatesFolder") || child.isNodeType("jnt:componentFolder"));
             }
         }
     }

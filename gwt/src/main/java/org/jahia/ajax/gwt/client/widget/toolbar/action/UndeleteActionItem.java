@@ -136,8 +136,9 @@ public class UndeleteActionItem extends BaseActionItem {
 
     static boolean isLockedForDeletion(GWTJahiaNode node) {
         Map<String, List<String>> lockInfos = node.getLockInfos();
-        return lockInfos != null && lockInfos.size() == 1 && lockInfos.containsKey(null)
+        return lockInfos != null  && lockInfos.containsKey(null)
                 && !lockInfos.get(null).isEmpty()
+                && lockInfos.get(null).size() == 1
                 && lockInfos.get(null).get(0).equals("label.locked.by.deletion");
     }
 }

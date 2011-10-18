@@ -1830,16 +1830,6 @@ public class ManageSites extends AbstractAdministrationModule {
                 IOUtils.closeQuietly(zis);
             }
         }
-<<<<<<< .working
-=======
-//        SharedTemplatePackagesRegistry tmplSetReg = SharedTemplatePackagesRegistry.getInstance();
-//        Iterator en = tmplSetReg.getAllTemplatePackages();
-//        List list = new ArrayList();
-//        while (en.hasNext()) {
-//            list.add(en.next());
-//        }
-        // TODO properly populate templates list
->>>>>>> .merge-right.r39463
         request.setAttribute("tmplSets", Collections.emptyList());
     }
 
@@ -2148,7 +2138,7 @@ public class ManageSites extends AbstractAdministrationModule {
                             JahiaSite site = jahiaSitesService
                                     .addSite(jParams.getUser(), (String) infos.get("sitetitle"),
                                             (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
-                                            defaultLocale, tpl, "fileImport", file,
+                                            defaultLocale, tpl, null, "fileImport", file,
                                             (String) infos.get("importFileName"), false, false, (String) infos.get("originatingJahiaRelease"),legacyImportFilePath);
                             session.setAttribute(ProcessingContext.SESSION_SITE, site);
                             jParams.setSite(site);

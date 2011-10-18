@@ -537,14 +537,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     public void importSiteZip(final File file, final JahiaSite site, final Map<Object, Object> infos) throws RepositoryException, IOException {
-        final CategoriesImportHandler categoriesImportHandler = new CategoriesImportHandler();
-        final UsersImportHandler usersImportHandler = new UsersImportHandler(site);
-        JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, null);
-
         importSiteZip(file, site, infos, null);
     }
 
     public void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath) throws RepositoryException, IOException {
+        final CategoriesImportHandler categoriesImportHandler = new CategoriesImportHandler();
+        final UsersImportHandler usersImportHandler = new UsersImportHandler(site);
+        JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, null);
         boolean legacyImport = false;
         List<String[]> catProps = null;
         List<String[]> userProps = null;
@@ -759,17 +758,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         }
                         zipentry.getSize();
 
-<<<<<<< .working
-                        LegacyImportHandler importHandler = new LegacyImportHandler(session, siteFolder, reg, mapping,
-                                LanguageCodeConverters.languageCodeToLocale(languageCode),
-                                infos != null ? (String) infos.get("originatingJahiaRelease") : null);
-=======
-                        LegacyImportHandler importHandler = new LegacyImportHandler(session,
-                                siteFolder, reg, mapping, LanguageCodeConverters
-                                        .languageCodeToLocale(languageCode),
-                                infos != null ? (String)infos.get("originatingJahiaRelease")
-                                        : null,legacyPidMappingTool);
->>>>>>> .merge-right.r39463
+                        LegacyImportHandler importHandler = new LegacyImportHandler(session, siteFolder, reg, mapping,LanguageCodeConverters.languageCodeToLocale(languageCode),infos != null ? (String) infos.get("originatingJahiaRelease") : null,legacyPidMappingTool);
                         importHandler.setReferences(references);
 
                         InputStream documentInput = zis;
@@ -1432,9 +1421,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             return keys.elements();
         }
     }
-<<<<<<< .working
-}
-=======
 
 	private void setObserverInterval(long observerInterval) {
     	this.observerInterval = observerInterval;
@@ -1451,4 +1437,4 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     public void setLegacyPidMappingTool(LegacyPidMappingTool legacyPidMappingTool) {
         this.legacyPidMappingTool = legacyPidMappingTool;
     }
-}>>>>>>> .merge-right.r39463
+}

@@ -127,7 +127,6 @@ public abstract class JahiaSitesService extends JahiaService {
                                       Locale selectedLocale, String selectTmplSet, String firstImport, File fileImport, String fileImportName,
                                       Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException;
 
-<<<<<<< .working
     /**
      * Add a new site
      * @param currentUser
@@ -152,12 +151,33 @@ public abstract class JahiaSitesService extends JahiaService {
     public abstract JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                                       Locale selectedLocale, String selectTmplSet, String[] modulesToDeploy, String firstImport, File fileImport, String fileImportName,
                                       Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException;
-=======
+    /**
+     * Add a new site
+     * @param currentUser
+     * @param title
+     * @param serverName
+     * @param siteKey
+     * @param descr
+     * @param selectedLocale
+     * @param selectTmplSet
+     * @param modulesToDeploy
+     * @param firstImport
+     * @param fileImport
+     * @param fileImportName
+     * @param asAJob
+     * @param doImportServerPermissions
+     * @param originatingJahiaRelease
+     * @param legacyMappingFilePath
+     * @return
+     * @throws JahiaException
+     * @throws IOException
+     * @since Jahia 6.6
+     */
     public abstract JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
-                                      Locale selectedLocale, String selectTmplSet, String firstImport, File fileImport, String fileImportName,
+                                      Locale selectedLocale, String selectTmplSet, String[] modulesToDeploy, String firstImport, File fileImport, String fileImportName,
                                       Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease,
                                       String legacyMappingFilePath) throws JahiaException, IOException;
->>>>>>> .merge-right.r39463
+
 
 
     /**

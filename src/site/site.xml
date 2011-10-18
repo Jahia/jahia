@@ -64,6 +64,7 @@
                 <item name="Forcing secure browsing for logged in users" href="./url/url.html#secure"/>
             </item>
             <item name="Rendering" href="./render/render.html"/>
+            <item name="Import and Export" href="./import/index.html"/>
         </menu>
         <menu name="Developing with Jahia">
             <item name="Prerequisites" href="./development/prerequisites.html">

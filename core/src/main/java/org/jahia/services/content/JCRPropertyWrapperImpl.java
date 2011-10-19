@@ -73,6 +73,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         super(session, provider);
         this.node = objectNode;
         this.property = property;
+        setItem(property);
         if (property != null) {
             try {
                 this.localPath = property.getPath();
@@ -88,6 +89,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         super(session, provider);
         this.node = objectNode;
         this.property = property;
+        setItem(property);
         this.name = name;
         this.localPath = node.getPath() + "/" + name;
         this.def = def;

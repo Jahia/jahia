@@ -85,4 +85,16 @@ public interface NodeFact {
      * @since Jahia 6.6
      */
     String getWorkspace() throws RepositoryException;
+
+    /**
+     * Returns the current JCR operation type.
+     *
+     * @return the current JCR operation type
+     * @throws RepositoryException
+     *             in case of a repository access error
+     * @since Jahia 6.6
+     */
+    String getOperationType();
+
+    void setOperationType(String operationType);
 }

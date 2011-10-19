@@ -66,7 +66,8 @@ public class DeletedNodeFact implements NodeFact {
 
     private String workspace;
     private List<String> types;
-    
+    private String operationType;
+
     public DeletedNodeFact(AddedNodeFact nodeWrapper, KnowledgeHelper drools) throws RepositoryException {
         path = nodeWrapper.getPath();
         JCRNodeWrapper node = nodeWrapper.getNode();
@@ -121,7 +122,22 @@ public class DeletedNodeFact implements NodeFact {
     public String getWorkspace() throws RepositoryException {
         return workspace;
     }
-    
+
+    /**
+     * Returns the current JCR operation type.
+     *
+     * @return the current JCR operation type
+     * @throws javax.jcr.RepositoryException in case of a repository access error
+     * @since Jahia 6.6
+     */
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
+    }
+
     public String getName() {
         return name;
     }

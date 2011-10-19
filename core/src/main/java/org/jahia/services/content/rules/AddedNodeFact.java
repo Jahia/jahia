@@ -72,7 +72,8 @@ public class AddedNodeFact implements Updateable, NodeFact {
     private JCRNodeWrapper node;
 
     private String workspace;
-    
+    private String operationType;
+
     public AddedNodeFact(JCRNodeWrapper node) throws RepositoryException {
         this.node = node;
         workspace = node.getSession().getWorkspace().getName();
@@ -141,7 +142,9 @@ public class AddedNodeFact implements Updateable, NodeFact {
 
     public AddedNodeFact getContent() throws RepositoryException {
         if (node.hasNode(Constants.JCR_CONTENT)) {
-            return new AddedNodeFact(node.getNode(Constants.JCR_CONTENT));
+            AddedNodeFact nodeFact = new AddedNodeFact(node.getNode(Constants.JCR_CONTENT));
+            nodeFact.setOperationType(this.getOperationType());
+            return nodeFact;
         }
         return null;
     }
@@ -158,13 +161,17 @@ public class AddedNodeFact implements Updateable, NodeFact {
         NodeIterator it = node.getNodes();
         while (it.hasNext()) {
             JCRNodeWrapper n = (JCRNodeWrapper) it.nextNode();
-            results.add(new AddedNodeFact(n));
+            AddedNodeFact nodeFact = new AddedNodeFact(n);
+            nodeFact.setOperationType(this.getOperationType());
+            results.add(nodeFact);
         }
         return results;
     }
 
     public AddedNodeFact getParent() throws RepositoryException {
-        return new AddedNodeFact(node.getParent());
+        AddedNodeFact nodeFact = new AddedNodeFact(node.getParent());
+        nodeFact.setOperationType(this.getOperationType());
+        return nodeFact;
     }
 
     public List<ChangedPropertyFact> getProperties() throws RepositoryException {
@@ -229,7 +236,9 @@ public class AddedNodeFact implements Updateable, NodeFact {
     }
 
     public AddedNodeFact getNode(String relPath) throws RepositoryException {
-        return new AddedNodeFact(node.getNode(relPath));
+        AddedNodeFact nodeFact = new AddedNodeFact(node.getNode(relPath));
+        nodeFact.setOperationType(this.getOperationType());
+        return nodeFact;
     }
 
     public String toString() {
@@ -271,5 +280,20 @@ public class AddedNodeFact implements Updateable, NodeFact {
 
     public String getWorkspace() throws RepositoryException {
         return workspace;
+    }
+
+    /**
+     * Returns the current JCR operation type.
+     *
+     * @return the current JCR operation type
+     * @throws javax.jcr.RepositoryException in case of a repository access error
+     * @since Jahia 6.6
+     */
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
     }
 }

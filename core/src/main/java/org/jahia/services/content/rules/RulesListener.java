@@ -248,7 +248,7 @@ public class RulesListener extends DefaultEventListener {
 
 
     public void onEvent(EventIterator eventIterator) {
-        int operationType = ((JCREventIterator) eventIterator).getOperationType();
+        final int operationType = ((JCREventIterator) eventIterator).getOperationType();
         if (!operationTypes.contains(operationType)) {
             return;
         }
@@ -300,6 +300,7 @@ public class RulesListener extends DefaultEventListener {
                                         AddedNodeFact rn = eventsMap.get(identifier);
                                         if (rn == null) {
                                             rn = new AddedNodeFact(n);
+                                            setNodeFactOperationType(rn, operationType);
                                             eventsMap.put(identifier, rn);
                                         }
                                         list.add(rn);
@@ -324,10 +325,12 @@ public class RulesListener extends DefaultEventListener {
                                                     rn = eventsMap.get(identifier);
                                                     if (rn == null) {
                                                         rn = new AddedNodeFact(parent);
+                                                        setNodeFactOperationType(rn, operationType);
                                                         eventsMap.put(identifier, rn);
                                                     }
                                                 } else {
                                                     rn = new AddedNodeFact(parent);
+                                                    setNodeFactOperationType(rn, operationType);
                                                 }
                                                 list.add(new ChangedPropertyFact(rn, p));
                                             }
@@ -347,12 +350,14 @@ public class RulesListener extends DefaultEventListener {
                                         AddedNodeFact w = eventsMap.get(identifier);
                                         if (w == null) {
                                             w = new AddedNodeFact(parent);
+                                            setNodeFactOperationType(w, operationType);
                                             eventsMap.put(identifier, w);
                                         }
 
                                         final DeletedNodeFact e = new DeletedNodeFact(w, event.getPath());
                                         e.setIdentifier(event.getIdentifier());
                                         e.setSession(s);
+                                        setNodeFactOperationType(e,operationType);
                                         list.add(e);
                                     } catch (PathNotFoundException e) {
                                     }
@@ -369,6 +374,7 @@ public class RulesListener extends DefaultEventListener {
                                             AddedNodeFact rn = eventsMap.get(key);
                                             if (rn == null) {
                                                 rn = new AddedNodeFact(n);
+                                                setNodeFactOperationType(rn, operationType);
                                                 eventsMap.put(key, rn);
                                             }
                                             list.add(new DeletedPropertyFact(rn, propertyName));
@@ -546,5 +552,15 @@ public class RulesListener extends DefaultEventListener {
 
     public List<Integer> getOperationTypes() {
         return operationTypes;
+    }
+
+    void setNodeFactOperationType(NodeFact nodeFact,int operationType) {
+        if(operationType==JCRObservationManager.IMPORT) {
+            nodeFact.setOperationType("import");
+        } else if(operationType==JCRObservationManager.SESSION_SAVE) {
+            nodeFact.setOperationType("session");
+        } else if(operationType==JCRObservationManager.WORKSPACE_CLONE) {
+            nodeFact.setOperationType("clone");
+        }
     }
 }

@@ -45,7 +45,7 @@ import org.drools.spi.KnowledgeHelper;
 import javax.jcr.RepositoryException;
 
 /**
- * 
+ * This class describe a property deletion event for the drools engine.
  * User: toto
  * Date: 17 janv. 2008
  * Time: 15:20:31
@@ -80,5 +80,16 @@ public class DeletedPropertyFact {
 
     public String toString() {
         return "deleted "+nodePath+"/"+name;
+    }
+
+    /**
+     * Returns the current JCR operation type.
+     *
+     * @return the current JCR operation type
+     * @throws javax.jcr.RepositoryException in case of a repository access error
+     * @since Jahia 6.6
+     */
+    public String getOperationType() {
+        return node.getOperationType();
     }
 }

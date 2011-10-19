@@ -56,6 +56,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 /**
+ * * This class describe a property change event for the drools engine.
  * User: toto
  */
 
@@ -71,11 +72,13 @@ public class ChangedPropertyFact implements Updateable {
     private Object value;
 
     private AddedNodeFact nodeWrapper;
+    private String operationType;
 
     public ChangedPropertyFact(AddedNodeFact nodeWrapper, JCRPropertyWrapper property) throws RepositoryException {
         this.nodeWrapper = nodeWrapper;
         this.property = property;
         path = property.getPath();
+        operationType = nodeWrapper.getOperationType();
     }
 
     public ChangedPropertyFact(AddedNodeFact nodeWrapper, final String name, final Object o, KnowledgeHelper drools) throws RepositoryException {
@@ -101,6 +104,7 @@ public class ChangedPropertyFact implements Updateable {
         } else {
             setProperty(node, name, o,overrideIfExisting);
         }
+        operationType = nodeWrapper.getOperationType();
     }
 
     public void doUpdate(JCRSessionWrapper s, List<Updateable> delayedUpdates) throws RepositoryException {
@@ -307,4 +311,14 @@ public class ChangedPropertyFact implements Updateable {
         return path;
     }
 
+    /**
+     * Returns the current JCR operation type.
+     *
+     * @return the current JCR operation type
+     * @throws javax.jcr.RepositoryException in case of a repository access error
+     * @since Jahia 6.6
+     */
+    public String getOperationType() {
+        return operationType;
+    }
 }

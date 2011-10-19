@@ -47,11 +47,13 @@
 
 <c:if test="${types != null}">
     <ul class="pagecontributeToolbar">
+        <jcr:node var="componentsNode" path="${currentNode.resolveSite.path}/components"/>
     <c:forEach items="${types}" var="nodeType" varStatus="status">
         <li><a href="<c:url value='${url.base}${currentNode.path}.contribute.add.html.ajax?resourceNodeType=${nodeType.name}&path=${renderContext.mainResource.node.path}'/>" id="addButton${currentNode.identifier}-${status.index}">
         <jcr:icon var="icon" type="${nodeType}"/>
-		<img title="" align="absmiddle" alt="" src="<c:url value='${url.templatesPath}/${icon}.png'/>"/> ${jcr:label(nodeType, renderContext.UILocale)}
-        </a></li>                                  
+            <jcr:sql var="result" sql="select * from [nt:base] as sel where isdescendantnode(sel,['${componentsNode.path}']) and name(sel)='${nodeType.name}'"/>
+		<img title="" align="absmiddle" alt="" src="<c:url value='${url.templatesPath}/${icon}.png'/>"/> <c:choose><c:when test="${functions:length(result.nodes)>0}"><c:forEach items="${result.nodes}" var="node"><c:choose><c:when test="${not empty node.properties['jcr:title']}">${node.properties["jcr:title"].string}</c:when><c:otherwise>${jcr:label(nodeType, renderContext.UILocale)}</c:otherwise></c:choose></c:forEach></c:when><c:otherwise>${jcr:label(nodeType, renderContext.UILocale)}</c:otherwise></c:choose>
+        </a></li>
     </c:forEach>
     </ul>
 
@@ -76,5 +78,5 @@
 
 </c:if>
 <div id="addNewContent" style="display:none;" >
-    
+
 </div>

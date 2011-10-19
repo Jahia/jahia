@@ -1808,7 +1808,7 @@ public class ManageSites extends AbstractAdministrationModule {
                         try {
                             value.put("legacyMappings", FileUtils.listFiles(new File(((ParamBean)jParams).getContext().getRealPath("/WEB-INF/var/legacymappings")), new String[]{"map"}, false));
                         } catch (Exception e) {
-                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            logger.debug("Legacy mappings not found", e);
                         }
                     }
                         importsInfos.add(value);
@@ -2129,7 +2129,7 @@ public class ManageSites extends AbstractAdministrationModule {
                         String legacyImportFilePath = null;
                         if(legacyImport != null && (Boolean) legacyImport) {
                             legacyImportFilePath = (String) infos.get("legacyMapping");
-                            if("".equals(legacyImportFilePath.trim())){
+                            if (legacyImportFilePath != null && "".equals(legacyImportFilePath.trim())){
                                 legacyImportFilePath = null;
                             }
                         }

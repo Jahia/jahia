@@ -408,24 +408,26 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof ContextInitializedEvent) {
-            // perform initial imports if any
-            final List<JahiaTemplatesPackage> packages = templatePackageDeployer.performInitialImport();
+            if (SettingsBean.getInstance().isProcessingServer()) {
+                // perform initial imports if any
+                final List<JahiaTemplatesPackage> packages = templatePackageDeployer.performInitialImport();
             
-            // do register components
-            componentRegistry.registerComponents();
+                // do register components
+                componentRegistry.registerComponents();
 
 
-            try {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
-                    public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        for (JahiaTemplatesPackage aPackage : packages) {
-                            deployModuleToAllSites("/templateSets/" + aPackage.getRootFolder(), true, session);
+                try {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
+                        public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            for (JahiaTemplatesPackage aPackage : packages) {
+                                deployModuleToAllSites("/templateSets/" + aPackage.getRootFolder(), true, session);
+                            }
+                            return null;
                         }
-                        return null;
-                    }
-                });
-            } catch (RepositoryException e) {
-                e.printStackTrace();
+                    });
+                } catch (RepositoryException e) {
+                    e.printStackTrace();
+                }
             }
         } else if (event instanceof TemplatePackageRedeployedEvent) {
             // flush resource bundle cache

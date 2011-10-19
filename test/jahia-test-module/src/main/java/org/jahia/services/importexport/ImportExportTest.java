@@ -841,10 +841,10 @@ public class ImportExportTest {
                     String targetReferencePath = "";
                     if ("j:fullpath".equals(sourceEntry.getKey()) || "j:nodename".equals(sourceEntry.getKey())
                             || "j:title".equals(sourceEntry.getKey())) {
-                        sourceValue = sourceProperty.getValue().getString().replace(sourceRootPath, "");
-                        targetValue = targetProperty.getValue().getString().replace(targetRootPath, "");
-                        sourceValue = sourceProperty.getValue().getString().replace(TESTSITE_NAME, "");
-                        targetValue = targetProperty.getValue().getString().replace(TARGET_TESTSITE_NAME, "");
+                        sourceValue = ((Value)sourceValue).getString().replace(sourceRootPath, "");
+                        targetValue = ((Value)targetValue).getString().replace(targetRootPath, "");
+                        sourceValue = ((String)sourceValue).replace(TESTSITE_NAME, "");
+                        targetValue = ((String)targetValue).replace(TARGET_TESTSITE_NAME, "");
                     } else if (sourceProperty.getDefinition().getRequiredType() == PropertyType.REFERENCE
                             || sourceProperty.getDefinition().getRequiredType() == PropertyType.WEAKREFERENCE) {
                         try {
@@ -852,7 +852,7 @@ public class ImportExportTest {
                                     .getPath();
                             sourceValue = sourceReferencePath;
                             sourceValue = ((String)sourceValue).replace(sourceRootPath, "");
-                            sourceValue = ((String) sourceValue).replace(TESTSITE_NAME, "");
+                            sourceValue = ((String)sourceValue).replace(TESTSITE_NAME, "");
                         } catch (Exception e) {
                             logger.warn(sourceProperty.getPath() + "'s value leads to an exception");
                             sourceReferencePath = ILLEGAL_STATE;
@@ -864,7 +864,7 @@ public class ImportExportTest {
                                     .getPath();
                             targetValue = targetReferencePath;
                             targetValue = ((String)targetValue).replace(targetRootPath, "");
-                            targetValue = ((String) targetValue).replace(TARGET_TESTSITE_NAME, "");
+                            targetValue = ((String)targetValue).replace(TARGET_TESTSITE_NAME, "");
                         } catch (Exception e) {
                             logger.warn(targetProperty.getPath() + "'s value leads to an exception");
                             targetReferencePath = ILLEGAL_STATE;
@@ -922,7 +922,7 @@ public class ImportExportTest {
         for (Value targetValue : targetValues) {
             String targetReference = ILLEGAL_STATE;
             try {
-                targetReference = sourceSession.getNodeByUUID(targetValue.getString()).getPath().replace(TESTSITE_NAME, "");
+                targetReference = targetSession.getNodeByUUID(targetValue.getString()).getPath().replace(TARGET_TESTSITE_NAME, "");
             } catch (Exception e) {
             }
             targetReferences.add(targetReference);

@@ -40,13 +40,21 @@
 
 package org.jahia.bin;
 
+import java.io.IOException;
+
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderException;
+import org.jahia.services.render.Resource;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -60,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Contribute extends Render {
     private static final long serialVersionUID = 7621770855694958651L;
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Contribute.class);
+    private static Logger logger = LoggerFactory.getLogger(Contribute.class);
 
     
     protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
@@ -70,6 +78,14 @@ public class Contribute extends Render {
         return context;
     }
 
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp,
+            RenderContext renderContext, Resource resource, long startTime)
+            throws RepositoryException, RenderException, IOException {
+        overrideResourceNodeType(resource, req);
+        super.doGet(req, resp, renderContext, resource, startTime);
+    }
+    
     public static String getContributeServletPath() {
         // TODO move this into configuration
         return "/cms/contribute";
@@ -95,4 +111,28 @@ public class Contribute extends Render {
     protected boolean isDisabled() {
         return settingsBean.isDistantPublicationServerMode();
     }
+
+    protected void overrideResourceNodeType(Resource resource, HttpServletRequest req) {
+        if (resource == null || resource.getResourceNodeType() != null) {
+            return;
+        }
+
+        String resourceNodeType = req.getParameter("resourceNodeType");
+        if (StringUtils.isEmpty(resourceNodeType)) {
+            return;
+        }
+
+        try {
+            resource.setResourceNodeType(NodeTypeRegistry.getInstance().getNodeType(
+                    resourceNodeType));
+            if (logger.isDebugEnabled()) {
+                logger.debug("Set resource node type for path {} to {}", resource.getNode()
+                        .getPath(), resourceNodeType);
+            }
+        } catch (NoSuchNodeTypeException e) {
+            logger.warn("Unable to find node type " + resourceNodeType
+                    + ". Skip overriding resource node type.", e);
+        }
+    }
+
 }

@@ -69,11 +69,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 
+ *
  * User: toto
  * Date: Apr 23, 2008
  * Time: 11:46:22 AM
- * 
+ *
  */
 public class VFSNodeImpl extends VFSItemImpl implements Node {
 
@@ -266,15 +266,18 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
                 } else {
                     throw new PathNotFoundException(s);
                 }
-            } else if (fileObject.getType() == FileType.FOLDER) {
+            } else if (fileObject.isReadable() && fileObject.getType() == FileType.FOLDER) {
                 FileObject child = fileObject.getChild(s);
                 if (child == null) {
                     throw new PathNotFoundException(s);
                 }
                 return new VFSNodeImpl(child, session);
-            } else {
+            } else if (fileObject.isReadable()) {
                 logger.warn("Found non file or folder entry, maybe an alias. VFS file type=" + fileObject.getType());
-                throw new PathNotFoundException(s);
+                 throw new PathNotFoundException(s);
+            } else {
+                logger.warn("Item "+ fileObject.getName() +" is not readable. VFS file type=" + fileObject.getType());
+                 throw new PathNotFoundException(s);
             }
         } catch (FileSystemException e) {
             throw new RepositoryException(e);
@@ -298,7 +301,7 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
 
     public NodeIterator getNodes(String s) throws RepositoryException {
         try {
-            FileObject child = fileObject.getType() == FileType.FOLDER ? fileObject.getChild(s) : null;
+            FileObject child = fileObject.isReadable() && fileObject.getType() ==  FileType.FOLDER ? fileObject.getChild(s) : null;
             return child != null ? new VFSNodeIteratorImpl(session, child) : VFSNodeIteratorImpl.EMPTY;
         } catch (FileSystemException e) {
             throw new RepositoryException(e);
@@ -343,11 +346,14 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
                 if ("jcr:content".equals(s)) {
                     return true;
                 }
-            } else if (fileObject.getType() == FileType.FOLDER) {
+            } else if (fileObject.isReadable() && fileObject.getType() == FileType.FOLDER) {
                 FileObject child = fileObject.getChild(s);
                 return child != null && child.exists();
-            } else {
+            } else if (fileObject.isReadable()) {
                 logger.warn("Found non file or folder entry, maybe an alias. VFS file type=" + fileObject.getType());
+                return false;
+            } else {
+                logger.warn("Item "+ fileObject.getName() +" is not readable. VFS file type=" + fileObject.getType());
                 return false;
             }
         } catch (FileSystemException e) {

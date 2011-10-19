@@ -851,7 +851,7 @@ public class ImportExportTest {
                             sourceReferencePath = sourceSiteNode.getSession().getNodeByUUID(sourceProperty.getValue().getString())
                                     .getPath();
                             sourceValue = sourceReferencePath;
-                            sourceValue = sourceProperty.getValue().getString().replace(sourceRootPath, "");
+                            sourceValue = ((String)sourceValue).replace(sourceRootPath, "");
                             sourceValue = ((String) sourceValue).replace(TESTSITE_NAME, "");
                         } catch (Exception e) {
                             logger.warn(sourceProperty.getPath() + "'s value leads to an exception");
@@ -863,7 +863,7 @@ public class ImportExportTest {
                             targetReferencePath = targetSiteNode.getSession().getNodeByUUID(targetProperty.getValue().getString())
                                     .getPath();
                             targetValue = targetReferencePath;
-                            targetValue = targetProperty.getValue().getString().replace(targetRootPath, "");
+                            targetValue = ((String)targetValue).replace(targetRootPath, "");
                             targetValue = ((String) targetValue).replace(TARGET_TESTSITE_NAME, "");
                         } catch (Exception e) {
                             logger.warn(targetProperty.getPath() + "'s value leads to an exception");

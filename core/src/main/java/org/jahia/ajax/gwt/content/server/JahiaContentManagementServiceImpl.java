@@ -400,7 +400,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public BasePagingLoadResult<GWTJahiaNode> search(GWTJahiaSearchQuery searchQuery, int limit, int offset, boolean showOnlyNodesWithTemplates)
             throws GWTJahiaServiceException {
         // To do: find a better war to handle total size
-        List<GWTJahiaNode> result = search.search(searchQuery, 0, 0, showOnlyNodesWithTemplates, retrieveCurrentSession());
+        List<GWTJahiaNode> result = search.search(searchQuery, 0, 0, showOnlyNodesWithTemplates, getSite().getSiteKey().equals("systemsite") ? null : getSite(), retrieveCurrentSession());
         int size = result.size();
         result = new ArrayList<GWTJahiaNode>(result.subList(offset, Math.min(size, offset + limit)));
         return new BasePagingLoadResult<GWTJahiaNode>(result, offset, size);
@@ -409,13 +409,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public List<GWTJahiaNode> search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes,
                                      List<String> filters) throws GWTJahiaServiceException {
-        return search.search(searchString, limit, nodeTypes, mimeTypes, filters, retrieveCurrentSession());
+        return search.search(searchString, limit, nodeTypes, mimeTypes, filters, getSite().getSiteKey().equals("systemsite") ? null : getSite(), retrieveCurrentSession());
     }
 
     public List<GWTJahiaNode> searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes,
                                         List<String> filters, List<String> fields,boolean sortOnDisplayName) throws GWTJahiaServiceException {
         List<GWTJahiaNode> gwtJahiaNodes = search.searchSQL(searchString, limit, nodeTypes, mimeTypes, filters, fields,
-                retrieveCurrentSession());
+                getSite().getSiteKey().equals("systemsite") ? null : getSite(), retrieveCurrentSession());
         if (sortOnDisplayName) {
             final Collator collator = Collator.getInstance(retrieveCurrentSession().getLocale());
             Collections.sort(gwtJahiaNodes, new Comparator<GWTJahiaNode>() {
@@ -436,7 +436,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public List<GWTJahiaNode> getSavedSearch() throws GWTJahiaServiceException {
-        return search.getSavedSearch(retrieveCurrentSession());
+        return search.getSavedSearch(getSite().getSiteKey().equals("systemsite") ? null : getSite(), retrieveCurrentSession());
     }
 
     public void saveSearch(GWTJahiaSearchQuery searchQuery, String path, String name, boolean onTopOf)

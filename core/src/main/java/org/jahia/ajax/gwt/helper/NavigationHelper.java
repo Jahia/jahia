@@ -179,7 +179,7 @@ public class NavigationHelper {
         final NodeIterator nodesIterator;
         if(node instanceof JCRQueryNode) {
             final Query q = node.getSession().getWorkspace().getQueryManager().getQuery(node.getRealNode());
-            List<GWTJahiaNode> gwtJahiaNodes = executeQuery(q, nodeTypes, mimeTypes, nameFilters, fields, showOnlyNodesWithTemplates);
+            List<GWTJahiaNode> gwtJahiaNodes = executeQuery(q, nodeTypes, mimeTypes, nameFilters, fields, null, showOnlyNodesWithTemplates);
             gwtNodeChildren.addAll(gwtJahiaNodes);
             return;
         } else {
@@ -442,7 +442,7 @@ public class NavigationHelper {
         try {
             String s = "select * from [jnt:mountPoint]";
             Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
-            return executeQuery(q, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>());
+            return executeQuery(q, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -696,12 +696,12 @@ public class NavigationHelper {
 
 
     public List<GWTJahiaNode> executeQuery(Query q, List<String> nodeTypesToApply, List<String> mimeTypesToMatch,
-                                           List<String> filtersToApply) throws RepositoryException {
-        return executeQuery(q, nodeTypesToApply, mimeTypesToMatch, filtersToApply, GWTJahiaNode.DEFAULT_FIELDS, false);
+                                           List<String> filtersToApply, List<String> sites) throws RepositoryException {
+        return executeQuery(q, nodeTypesToApply, mimeTypesToMatch, filtersToApply, GWTJahiaNode.DEFAULT_FIELDS, sites, false);
     }
 
     public List<GWTJahiaNode> executeQuery(Query q, List<String> nodeTypesToApply, List<String> mimeTypesToMatch,
-                                           List<String> filtersToApply, List<String> fields, boolean showOnlyNodesWithTemplates)
+                                           List<String> filtersToApply, List<String> fields, List<String> sites, boolean showOnlyNodesWithTemplates)
             throws RepositoryException {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         Set<String> addedIds = new HashSet<String>();
@@ -740,8 +740,9 @@ public class NavigationHelper {
                     if(showOnlyNodesWithTemplates && !JCRContentUtils.isADisplayableNode(n, new RenderContext(null, null, n.getSession().getUser()))){
                         continue;
                     }
+                    boolean siteCheck = (sites == null || sites.contains(n.getResolveSite().getSiteKey()));
 
-                    if ((matchFilter || hasNodes) && addedIds.add(n.getIdentifier())) {
+                    if (siteCheck && (matchFilter || hasNodes) && addedIds.add(n.getIdentifier())) {
                         GWTJahiaNode node = getGWTJahiaNode(n, fields);
                         node.setMatchFilters(matchFilter);
                         result.add(node);

@@ -95,16 +95,17 @@ public class SearchHelper {
     /**
      * Search for searchString in the name f the node
      *
+     *
      * @param searchString
      * @param limit
-     * @param currentUserSession
-     * @return
+     * @param site
+     *@param currentUserSession  @return
      * @throws GWTJahiaServiceException
      */
-    public List<GWTJahiaNode> search(String searchString, int limit, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> search(String searchString, int limit, JCRSiteNode site, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             Query q = createQuery(formatQuery(searchString), currentUserSession);
-            return navigation.executeQuery(q, null,null,null);
+            return navigation.executeQuery(q, null,null,null, Arrays.asList(site.getSiteKey()));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -116,22 +117,23 @@ public class SearchHelper {
      *
      *
      *
+     *
      * @param search
      * @param limit
      * @param offset
      * @param showOnlyNodesWithTemplates
-     * @param currentUserSession
-     * @return
+     * @param site
+     *@param currentUserSession  @return
      * @throws GWTJahiaServiceException
      */
-    public List<GWTJahiaNode> search(GWTJahiaSearchQuery search, int limit, int offset, boolean showOnlyNodesWithTemplates, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> search(GWTJahiaSearchQuery search, int limit, int offset, boolean showOnlyNodesWithTemplates, JCRSiteNode site, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             Query q = createQuery(search, limit, offset, currentUserSession);
             if (logger.isDebugEnabled()) {
                 logger.debug("Executing query: " + q.getStatement());
             }
             return navigation.executeQuery(q, search.getNodeTypes(), search.getMimeTypes(), search.getFilters(), Arrays.asList(GWTJahiaNode.ICON,
-                    GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.PRIMARY_TYPE_LABEL), showOnlyNodesWithTemplates);
+                    GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.PRIMARY_TYPE_LABEL), Arrays.asList(site.getSiteKey()), showOnlyNodesWithTemplates);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -141,19 +143,20 @@ public class SearchHelper {
     /**
      * Search for searchString and filters in the name f the node
      *
+     *
      * @param searchString
      * @param limit
      * @param nodeTypes
      * @param mimeTypes
      * @param filters
-     * @param currentUserSession
-     * @return
+     * @param site
+     *@param currentUserSession  @return
      * @throws GWTJahiaServiceException
      */
-    public List<GWTJahiaNode> search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, JCRSiteNode site, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             Query q = createQuery(formatQuery(searchString), currentUserSession);
-            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters);
+            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters, Arrays.asList(site.getSiteKey()));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -163,21 +166,22 @@ public class SearchHelper {
     /**
      * Search for searchString and filters in the name f the node
      *
+     *
      * @param searchString
      * @param limit
      * @param nodeTypes
      * @param mimeTypes
      * @param filters
-     * @param currentUserSession
-     * @return
+     * @param site
+     * @param currentUserSession  @return
      * @throws GWTJahiaServiceException
      */
     public List<GWTJahiaNode> searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes,
-                                        List<String> filters, List<String> fields, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+                                        List<String> filters, List<String> fields, JCRSiteNode site, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(searchString,Query.JCR_SQL2);
             q.setLimit(limit);
-            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters,fields, false);
+            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters,fields, Arrays.asList(site.getSiteKey()), false);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -187,15 +191,18 @@ public class SearchHelper {
     /**
      * Get saved search
      *
+     *
+     *
+     * @param site
      * @param currentUserSession
      * @return
      */
-    public List<GWTJahiaNode> getSavedSearch(JCRSessionWrapper currentUserSession) {
+    public List<GWTJahiaNode> getSavedSearch(JCRSiteNode site, JCRSessionWrapper currentUserSession) {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         try {
             String s = "select * from [nt:query]";
             Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
-            return navigation.executeQuery(q, null,null,null);
+            return navigation.executeQuery(q, null,null,null, Arrays.asList(site.getSiteKey()));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

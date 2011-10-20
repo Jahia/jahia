@@ -310,7 +310,9 @@ public class JCRStoreProvider {
 
             getSessionFactory().addProvider(getKey(), getMountPoint(), this);
 
-            initNodeTypes();
+            if (SettingsBean.getInstance().isProcessingServer()) {
+                initNodeTypes();
+            }
             initObservers();
             initialized = true;
             initContent();

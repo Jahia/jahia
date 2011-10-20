@@ -218,7 +218,14 @@ public class FileUploader extends Window {
         form.addListener(Events.Submit, new Listener<FormEvent>() {
             public void handleEvent(FormEvent formEvent) {
                 bar.reset();
-                linker.setSelectPathAfterDataUpdate(Arrays.asList(location.getPath() + "/" + p.getUpload().getFilename()));
+                String filename = p.getUpload().getFilename();
+                int beginIndex = filename.lastIndexOf("/");
+                if(beginIndex>0)
+                filename = filename.substring(beginIndex);
+                beginIndex = filename.lastIndexOf("\\");
+                if(beginIndex>0)
+                filename = filename.substring(beginIndex+1).replaceAll("\\\\","");
+                linker.setSelectPathAfterDataUpdate(Arrays.asList(location.getPath() + "/" + filename));
 
                 String result = formEvent.getResultHtml();
            

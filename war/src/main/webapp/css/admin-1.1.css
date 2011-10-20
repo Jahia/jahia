@@ -1481,6 +1481,10 @@ tr.oddLine {
     background-position: 4px -628px;
 }
 
+.ico-server-templates {
+    background-position: 4px -678px;
+}
+
 .set-site {
     background: url(images/andromeda/iconSet-site.png) no-repeat scroll;
     background-position: 4px -625px;

@@ -57,7 +57,6 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
@@ -67,6 +66,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 
 import java.util.ArrayList;
@@ -202,16 +202,22 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
             if (node.getNodeTypes().contains("jmix:markedForDeletion")) {
                 v = "<span class=\"markedForDeletion\">" + v + "</span>";
             }
+            if (PermissionsUtils.isPermitted("editModeAccess", node)) {
+                v = "<span class=\"noEditModeAccess\">" + v + "</span>";
+            }
             return v;
         }
     };
 
     public static final TreeGridCellRenderer<GWTJahiaNode> NAME_TREEGRID_RENDERER = new TreeGridCellRenderer<GWTJahiaNode>() {
         @Override
-        protected String getText(TreeGrid<GWTJahiaNode> gwtJahiaNodeTreeGrid, GWTJahiaNode model, String property, int rowIndex, int colIndex) {
-            String v = super.getText(gwtJahiaNodeTreeGrid, model, property, rowIndex, colIndex);
-            if (model.getNodeTypes().contains("jmix:markedForDeletion")) {
+        protected String getText(TreeGrid<GWTJahiaNode> gwtJahiaNodeTreeGrid, GWTJahiaNode node, String property, int rowIndex, int colIndex) {
+            String v = super.getText(gwtJahiaNodeTreeGrid, node, property, rowIndex, colIndex);
+            if (node.getNodeTypes().contains("jmix:markedForDeletion")) {
                 v = "<span class=\"markedForDeletion\">" + v + "</span>";
+            }
+            if (!PermissionsUtils.isPermitted("editModeAccess", node)) {
+                v = "<span class=\"noEditModeAccess\">" + v + "</span>";
             }
             return v;
         }

@@ -452,3 +452,7 @@
 .markedForDeletion {
     text-decoration:line-through;
 }
+
+.noEditModeAccess {
+    background: #FF9999;
+}

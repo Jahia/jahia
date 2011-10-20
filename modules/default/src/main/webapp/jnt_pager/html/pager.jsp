@@ -17,10 +17,9 @@
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty bindedComponent and jcr:isNodeType(bindedComponent, 'jmix:list')}">
     <template:option node="${bindedComponent}" nodetype="${bindedComponent.primaryNodeTypeName},jmix:list" view="hidden.header"/>
-<c:set var="pagesizeid" value="pagesize${bindedComponent.identifier}"/>
     <c:choose>
-        <c:when test="${not empty param[pagesizeid]}">
-            <c:set var="pageSize" value="${param[pagesizeid]}"/>
+        <c:when test="${not empty param.pagesize}">
+            <c:set var="pageSize" value="${param.pagesize}"/>
         </c:when>
         <c:when test="${not empty param.src_itemsPerPage}">
             <c:set var="pageSize" value="${param.src_itemsPerPage}"/>
@@ -31,6 +30,6 @@
     </c:choose>
     <template:initPager totalSize="${moduleMap.listTotalSize}" pageSize="${pageSize}" id="${bindedComponent.identifier}"/>
     <c:if test="${currentNode.properties.displayPager.boolean}">
-        <template:displayPagination id="${bindedComponent.identifier}"/>
+        <template:displayPagination/>
     </c:if>
 </c:if>

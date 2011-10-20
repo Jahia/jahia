@@ -104,11 +104,11 @@ public class InitPagerTag extends TagSupport {
             if (value != null) {
                 moduleMap.put("old_totalSize"+id, value);
             }
-            String beginStr = pageContext.getRequest().getParameter("begin"+id);
-            String endStr = pageContext.getRequest().getParameter("end"+id);
+            String beginStr = pageContext.getRequest().getParameter("begin");
+            String endStr = pageContext.getRequest().getParameter("end");
 
-            if(pageContext.getRequest().getParameter("pagesize"+id)!=null) {
-                pageSize = Integer.parseInt(pageContext.getRequest().getParameter("pagesize"+id));
+            if(pageContext.getRequest().getParameter("pagesize")!=null) {
+                pageSize = Integer.parseInt(pageContext.getRequest().getParameter("pagesize"));
             }
 
             int begin = beginStr == null ? 0 : Integer.parseInt(beginStr);

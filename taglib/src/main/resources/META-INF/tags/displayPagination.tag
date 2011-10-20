@@ -10,8 +10,6 @@
 <%@ taglib prefix="search" uri="http://www.jahia.org/tags/search" %>
 <%@ attribute name="nbItemsList" required="false" type="java.lang.String"
               description="The input field name and ID to synchronize the seletcted item value with."  %>
-<%@ attribute name="id" required="false" type="java.lang.String"
-              description="The ID of the paginated list."  %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
 <%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
@@ -24,14 +22,6 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
-
-<c:if test="${empty id}">
-    <c:set var="id" value="${currentNode.identifier}"/>
-</c:if>
-<c:set var="beginid" value="begin${id}"/>
-<c:set var="endid" value="end${id}"/>
-<c:set var="pagesizeid" value="pagesize${id}"/>
-
 <c:if test="${not empty moduleMap.paginationActive and moduleMap.totalSize > 0 and moduleMap.nbPages > 0}">
     <c:set target="${moduleMap}" property="usePagination" value="true"/>
     <c:choose>
@@ -40,7 +30,7 @@
             <c:url value="${searchUrl}" context="/" var="basePaginationUrl">
                 <c:if test="${not empty param}">
                     <c:forEach items="${param}" var="extraParam">
-                        <c:if test="${extraParam.key ne beginid and extraParam.key ne endid and extraParam.key ne pagesizeid}">
+                        <c:if test="${extraParam.key ne 'begin' and extraParam.key ne 'end' and extraParam.key ne 'pagesize'}">
                             <c:param name="${extraParam.key}" value="${extraParam.value}"/>
                         </c:if>
                     </c:forEach>
@@ -52,7 +42,7 @@
             <c:url value="${searchUrl}" var="basePaginationUrl">
                 <c:if test="${not empty param}">
                     <c:forEach items="${param}" var="extraParam">
-                        <c:if test="${extraParam.key ne beginid and extraParam.key ne endid and extraParam.key ne pagesizeid}">
+                        <c:if test="${extraParam.key ne 'begin' and extraParam.key ne 'end' and extraParam.key ne 'pagesize'}">
                             <c:param name="${extraParam.key}" value="${extraParam.value}"/>
                         </c:if>
                     </c:forEach>
@@ -71,9 +61,9 @@
         <div class="paginationNavigation">
             <label for="pageSizeSelector${currentNode.identifier}"><fmt:message key="pagination.itemsPerPage"/>:</label>
             <c:url value="${basePaginationUrl}" context="/" var="selectSizeUrl">
-                <c:param name="${beginid}" value="${moduleMap.begin}"/>
+                <c:param name="begin" value="${moduleMap.begin}"/>
             </c:url>
-            <select id="pageSizeSelector${currentNode.identifier}" onchange="window.location='${fn:escapeXml(selectSizeUrl)}&amp;pagesize${id}='+$('#pageSizeSelector${currentNode.identifier}').val();">
+            <select id="pageSizeSelector${currentNode.identifier}" onchange="window.location='${fn:escapeXml(selectSizeUrl)}&amp;pagesize='+$('#pageSizeSelector${currentNode.identifier}').val();">
                 <c:if test="${empty nbItemsList}">
                     <c:set var="nbItemsList" value="5,10,25,50,100"/>
                 </c:if>
@@ -82,20 +72,20 @@
                 </c:forTokens>
             </select>
             &nbsp;
-            <c:if test="${moduleMap .currentPage>1}">
+            <c:if test="${moduleMap.currentPage>1}">
                 <c:url value="${basePaginationUrl}" context="/" var="previousUrl">
-                    <c:param name="${beginid}" value="${(moduleMap.currentPage-2) * moduleMap.pageSize }"/>
-                    <c:param name="${endid}" value="${ (moduleMap.currentPage-1)*moduleMap.pageSize-1}"/>
-                    <c:param name="${pagesizeid}" value="${moduleMap.pageSize}"/>
+                    <c:param name="begin" value="${(moduleMap.currentPage-2) * moduleMap.pageSize }"/>
+                    <c:param name="end" value="${ (moduleMap.currentPage-1)*moduleMap.pageSize-1}"/>
+                    <c:param name="pagesize" value="${moduleMap.pageSize}"/>
                 </c:url>
                 <a class="previousLink" href="${fn:escapeXml(previousUrl) }"><fmt:message key="pagination.previous"/></a>
             </c:if>
             <c:forEach begin="1" end="${moduleMap.nbPages}" var="i">
                 <c:if test="${i != moduleMap.currentPage}">
                     <c:url value="${basePaginationUrl}" context="/" var="paginationPageUrl">
-                        <c:param name="${beginid}" value="${ (i-1) * moduleMap.pageSize }"/>
-                        <c:param name="${endid}" value="${ i*moduleMap.pageSize-1}"/>
-                        <c:param name="${pagesizeid}" value="${moduleMap.pageSize}"/>
+                        <c:param name="begin" value="${ (i-1) * moduleMap.pageSize }"/>
+                        <c:param name="end" value="${ i*moduleMap.pageSize-1}"/>
+                        <c:param name="pagesize" value="${moduleMap.pageSize}"/>
                     </c:url>
                     <span><a class="paginationPageUrl" href="${fn:escapeXml(paginationPageUrl)}"> ${ i }</a></span>
                 </c:if>
@@ -106,9 +96,9 @@
 
             <c:if test="${moduleMap.currentPage<moduleMap.nbPages}">
                 <c:url value="${basePaginationUrl}" context="/" var="nextUrl">
-                    <c:param name="${beginid}" value="${ moduleMap.currentPage * moduleMap.pageSize }"/>
-                    <c:param name="${endid}" value="${ (moduleMap.currentPage+1)*moduleMap.pageSize-1}"/>
-                    <c:param name="${pagesizeid}" value="${moduleMap.pageSize}"/>
+                    <c:param name="begin" value="${ moduleMap.currentPage * moduleMap.pageSize }"/>
+                    <c:param name="end" value="${ (moduleMap.currentPage+1)*moduleMap.pageSize-1}"/>
+                    <c:param name="pagesize" value="${moduleMap.pageSize}"/>
                 </c:url>
                 <a class="nextLink" href="${fn:escapeXml(nextUrl)}"><fmt:message key="pagination.next"/></a>
             </c:if>

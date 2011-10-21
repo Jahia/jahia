@@ -10,7 +10,7 @@ and can connect some LDAP users (userN) as the first connection is the longest a
         <collectionProp name="Arguments.arguments">
           <elementProp name="pathPrefix" elementType="Argument">
             <stringProp name="Argument.name">pathPrefix</stringProp>
-            <stringProp name="Argument.value">/cms/render/live</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.path,cms/render/live)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="homePageKey" elementType="Argument">
@@ -25,7 +25,7 @@ and can connect some LDAP users (userN) as the first connection is the longest a
           </elementProp>
           <elementProp name="totalServers" elementType="Argument">
             <stringProp name="Argument.name">totalServers</stringProp>
-            <stringProp name="Argument.value">2</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.totalServers,2)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="serverIP1" elementType="Argument">
@@ -81,6 +81,16 @@ and can connect some LDAP users (userN) as the first connection is the longest a
           <elementProp name="siteKey" elementType="Argument">
             <stringProp name="Argument.name">siteKey</stringProp>
             <stringProp name="Argument.value">${__P(jahia.test.jmeter.siteKey,10.8.31.21)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="offTime" elementType="Argument">
+            <stringProp name="Argument.name">offTime</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.timerFixedTime,30000)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="varTime" elementType="Argument">
+            <stringProp name="Argument.name">varTime</stringProp>
+            <stringProp name="Argument.value">5000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>

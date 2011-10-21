@@ -7,13 +7,13 @@
 If you need to test only the contribution part, you can just disable the browsing thread groups.
 
 For contribution, you need to create a top page (${contributionHomePage}), users will create their pages under this one.</stringProp>
-      <boolProp name="TestPlan.functional_mode">true</boolProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
         <collectionProp name="Arguments.arguments">
           <elementProp name="offTime" elementType="Argument">
             <stringProp name="Argument.name">offTime</stringProp>
-            <stringProp name="Argument.value">45000</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.timerFixedTime,30000)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="varTime" elementType="Argument">
@@ -23,32 +23,32 @@ For contribution, you need to create a top page (${contributionHomePage}), users
           </elementProp>
           <elementProp name="serverPort" elementType="Argument">
             <stringProp name="Argument.name">serverPort</stringProp>
-            <stringProp name="Argument.value">8080</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.serverPort,8080)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="nbUsersGuest" elementType="Argument">
             <stringProp name="Argument.name">nbUsersGuest</stringProp>
-            <stringProp name="Argument.value">3</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.nbUsersGuest,100)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="nbUsersAuth" elementType="Argument">
             <stringProp name="Argument.name">nbUsersAuth</stringProp>
-            <stringProp name="Argument.value">3</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.nbUsersAuth,100)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="nbPagesClick" elementType="Argument">
             <stringProp name="Argument.name">nbPagesClick</stringProp>
-            <stringProp name="Argument.value">20</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.NbPagesToBrowsePerUser,20)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="pathPrefixView" elementType="Argument">
             <stringProp name="Argument.name">pathPrefixView</stringProp>
-            <stringProp name="Argument.value">/cms/render/live/en/sites/ACME</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.pathSite,cms/render/live/en/sites/ACME)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="nbUsersEdit" elementType="Argument">
             <stringProp name="Argument.name">nbUsersEdit</stringProp>
-            <stringProp name="Argument.value">3</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.nbUsersEdit,10)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="homePageKey" elementType="Argument">
@@ -56,14 +56,9 @@ For contribution, you need to create a top page (${contributionHomePage}), users
             <stringProp name="Argument.value">home</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="password" elementType="Argument">
-            <stringProp name="Argument.name">password</stringProp>
-            <stringProp name="Argument.value">cGFzc3dvcmQ=</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
           <elementProp name="offTimeEditMode" elementType="Argument">
             <stringProp name="Argument.name">offTimeEditMode</stringProp>
-            <stringProp name="Argument.value">300000</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.timerEditFixedTime,300000)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="varTimeEditMode" elementType="Argument">
@@ -78,27 +73,22 @@ For contribution, you need to create a top page (${contributionHomePage}), users
           </elementProp>
           <elementProp name="pathPrefixEdit" elementType="Argument">
             <stringProp name="Argument.name">pathPrefixEdit</stringProp>
-            <stringProp name="Argument.value">/cms/edit/default/en/sites/ACME</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.pathEdit,/cms/edit/default/en)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="vanityPathPrefix" elementType="Argument">
-            <stringProp name="Argument.name">vanityPathPrefix</stringProp>
-            <stringProp name="Argument.value">/cms/render/live</stringProp>
+          <elementProp name="pathPrefix" elementType="Argument">
+            <stringProp name="Argument.name">pathPrefix</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.path,/cms/render/live/en)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="siteMapFileLive" elementType="Argument">
-            <stringProp name="Argument.name">siteMapFileLive</stringProp>
-            <stringProp name="Argument.value">./siteMap-live.csv</stringProp>
+          <elementProp name="siteMapFile" elementType="Argument">
+            <stringProp name="Argument.name">siteMapFile</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.siteMap,./siteMap-live.csv)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="rampUp" elementType="Argument">
             <stringProp name="Argument.name">rampUp</stringProp>
-            <stringProp name="Argument.value">45</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="siteMapFileEdit" elementType="Argument">
-            <stringProp name="Argument.name">siteMapFileEdit</stringProp>
-            <stringProp name="Argument.value">./siteMap-edit.csv</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.rampUp,45)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="rootUsername" elementType="Argument">
@@ -158,7 +148,12 @@ For contribution, you need to create a top page (${contributionHomePage}), users
           </elementProp>
           <elementProp name="totalServers" elementType="Argument">
             <stringProp name="Argument.name">totalServers</stringProp>
-            <stringProp name="Argument.value">2</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.totalServers,2)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="usersFile" elementType="Argument">
+            <stringProp name="Argument.name">usersFile</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.users,./ldap-users.csv)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -185,7 +180,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
         <boolProp name="CookieManager.clearEachIteration">true</boolProp>
       </CookieManager>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Load site map live" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Load site map live" enabled="false">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -275,7 +270,7 @@ if (prev.isSuccessful()) {
           <hashTree/>
         </hashTree>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Load site map edit" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Load site map edit" enabled="false">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -441,7 +436,7 @@ if (prev.isSuccessful()) {
         </RandomVariableConfig>
         <hashTree/>
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-          <stringProp name="filename">${siteMapFileLive}</stringProp>
+          <stringProp name="filename">${siteMapFile}</stringProp>
           <stringProp name="fileEncoding"></stringProp>
           <stringProp name="variableNames">pagePath</stringProp>
           <stringProp name="delimiter">;</stringProp>
@@ -466,7 +461,7 @@ if (prev.isSuccessful()) {
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${pagePath}.html</stringProp>
+            <stringProp name="HTTPSampler.path">${pathPrefix}${pagePath}.html</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
@@ -511,7 +506,7 @@ if (prev.isSuccessful()) {
         </RandomVariableConfig>
         <hashTree/>
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-          <stringProp name="filename">${siteMapFileLive}</stringProp>
+          <stringProp name="filename">${siteMapFile}</stringProp>
           <stringProp name="fileEncoding"></stringProp>
           <stringProp name="variableNames">pagePath</stringProp>
           <stringProp name="delimiter">;</stringProp>
@@ -524,7 +519,7 @@ if (prev.isSuccessful()) {
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="LDAP Users" enabled="true">
           <stringProp name="delimiter">\n</stringProp>
           <stringProp name="fileEncoding"></stringProp>
-          <stringProp name="filename">ldap-users-browsing.csv</stringProp>
+          <stringProp name="filename">${usersFile}</stringProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
           <stringProp name="shareMode">All threads</stringProp>
@@ -544,7 +539,7 @@ if (prev.isSuccessful()) {
               </elementProp>
               <elementProp name="password" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${password}</stringProp>
+                <stringProp name="Argument.value">${username}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">password</stringProp>
@@ -565,7 +560,7 @@ if (prev.isSuccessful()) {
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">${__V(server${randomServerID})}</stringProp>
+          <stringProp name="HTTPSampler.domain">${__V(serverIP${randomServerID})}</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
@@ -593,26 +588,17 @@ if (prev.isSuccessful()) {
           <stringProp name="LoopController.loops">${nbPagesClick}</stringProp>
         </LoopController>
         <hashTree>
-          <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Generate Page ID" enabled="true">
-            <stringProp name="variableName">idPage</stringProp>
-            <stringProp name="outputFormat">####</stringProp>
-            <stringProp name="minimumValue">0</stringProp>
-            <stringProp name="maximumValue">${totalPagesAvailable}</stringProp>
-            <stringProp name="randomSeed"></stringProp>
-            <boolProp name="perThread">true</boolProp>
-          </RandomVariableConfig>
-          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="View Jahia page (auth) - ${__V(serverIP${randomServerID})}" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
               <collectionProp name="Arguments.arguments"/>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">${__V(server${randomServerID})}</stringProp>
+            <stringProp name="HTTPSampler.domain">${__V(serverIP${randomServerID})}</stringProp>
             <stringProp name="HTTPSampler.port"></stringProp>
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${pagePath}.html</stringProp>
+            <stringProp name="HTTPSampler.path">${pathPrefix}${pagePath}.html</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
@@ -667,7 +653,7 @@ if (prev.isSuccessful()) {
         </HTTPSamplerProxy>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Auth users editing" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Auth users editing" enabled="false">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -733,7 +719,7 @@ if (prev.isSuccessful()) {
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">${__V(server${randomServerID})}</stringProp>
+          <stringProp name="HTTPSampler.domain">${__V(serverIP${randomServerID})}</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
@@ -800,7 +786,7 @@ if (prev.isSuccessful()) {
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">${__V(server${randomServerID})}</stringProp>
+          <stringProp name="HTTPSampler.domain">${__V(serverIP${randomServerID})}</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
@@ -861,13 +847,13 @@ if (prev.isSuccessful()) {
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">${__V(server${randomServerID})}</stringProp>
+          <stringProp name="HTTPSampler.domain">${__V(serverIP${randomServerID})}</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">${contributionHomePage}.html</stringProp>
+          <stringProp name="HTTPSampler.path">${pagePathEdit}.html</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -897,7 +883,7 @@ if (prev.isSuccessful()) {
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">${__V(server${randomServerID})}</stringProp>
+          <stringProp name="HTTPSampler.domain">${__V(serverIP${randomServerID})}</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
@@ -957,13 +943,13 @@ if (prev.isSuccessful()) {
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">${__V(server${randomServerID})}</stringProp>
+          <stringProp name="HTTPSampler.domain">${__V(serverIP${randomServerID})}</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">${contributionHomePage}/*</stringProp>
+          <stringProp name="HTTPSampler.path">${pagePathEdit}/*</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1004,13 +990,13 @@ if (prev.isSuccessful()) {
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">${__V(server${randomServerID})}</stringProp>
+            <stringProp name="HTTPSampler.domain">${__V(serverIP${randomServerID})}</stringProp>
             <stringProp name="HTTPSampler.port"></stringProp>
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${contributionHomePage}/jmeter-page-${username}-${idNewPage}/*</stringProp>
+            <stringProp name="HTTPSampler.path">${pagePathEdit}/jmeter-page-${username}-${idNewPage}/*</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1053,13 +1039,13 @@ if (prev.isSuccessful()) {
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">${__V(server${randomServerID})}</stringProp>
+            <stringProp name="HTTPSampler.domain">${__V(serverIP${randomServerID})}</stringProp>
             <stringProp name="HTTPSampler.port"></stringProp>
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${contributionHomePage}/jmeter-page-${username}-${idNewPage}/maincontent/*</stringProp>
+            <stringProp name="HTTPSampler.path">${pagePathEdit}/jmeter-page-${username}-${idNewPage}/maincontent/*</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1095,13 +1081,13 @@ if (prev.isSuccessful()) {
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">${__V(server${randomServerID})}</stringProp>
+            <stringProp name="HTTPSampler.domain">${__V(serverIP${randomServerID})}</stringProp>
             <stringProp name="HTTPSampler.port"></stringProp>
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${contributionHomePage}/jmeter-page-${username}-${idNewPage}.publish.do</stringProp>
+            <stringProp name="HTTPSampler.path">${pagePathEdit}/jmeter-page-${username}-${idNewPage}.publish.do</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1132,7 +1118,7 @@ if (prev.isSuccessful()) {
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">${__V(server${randomServerID})}</stringProp>
+          <stringProp name="HTTPSampler.domain">${__V(serverIP${randomServerID})}</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
@@ -1183,6 +1169,7 @@ if (prev.isSuccessful()) {
             <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
             <assertionsResultsToSave>0</assertionsResultsToSave>
             <bytes>true</bytes>
+            <url>true</url>
             <idleTime>true</idleTime>
           </value>
         </objProp>

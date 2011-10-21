@@ -91,6 +91,9 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private boolean displaySearchInContent = true;
     private boolean searchInFile = true;
     private boolean searchInContent = true;
+    private boolean searchInCurrentSiteOnly = false;
+    private String searchBasePath = null;
+
     private boolean showOnlyNodesWithTemplates = false;
 
 
@@ -319,7 +322,23 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
         this.searchInContent = searchInContent;
     }
 
-	public List<GWTEngineTab> getManagerEngineTabs() {
+    public boolean isSearchInCurrentSiteOnly() {
+        return searchInCurrentSiteOnly;
+    }
+
+    public void setSearchInCurrentSiteOnly(boolean searchInCurrentSiteOnly) {
+        this.searchInCurrentSiteOnly = searchInCurrentSiteOnly;
+    }
+
+    public String getSearchBasePath() {
+        return searchBasePath;
+    }
+
+    public void setSearchBasePath(String searchBasePath) {
+        this.searchBasePath = searchBasePath;
+    }
+
+    public List<GWTEngineTab> getManagerEngineTabs() {
     	return managerEngineTabs;
     }
 

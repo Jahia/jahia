@@ -1233,6 +1233,7 @@
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="false"/>
         <property name="searchInContent" value="true"/>
+        <property name="searchBasePath" value="/templateSets"/>
         <property name="searchInFile" value="false"/>
         <property name="enableDragAndDrop" value="false"/>
 
@@ -1309,6 +1310,9 @@
             </list>
         </property>
         <!-- tabs -->
+        <property name="searchBasePath" value="/"/>
+        <property name="searchInCurrentSiteOnly" value="true"/>
+
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Info"/>

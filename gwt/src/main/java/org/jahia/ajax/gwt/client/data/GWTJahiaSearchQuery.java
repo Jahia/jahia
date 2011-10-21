@@ -64,7 +64,9 @@ public class GWTJahiaSearchQuery implements Serializable {
     private List<String> nodeTypes;
     private List<String> filters;
     private List<String> mimeTypes;
+    private List<String> sites;
     private String originSiteUuid;
+    private String basePath;
 
     public String getQuery() {
         return query;
@@ -162,6 +164,14 @@ public class GWTJahiaSearchQuery implements Serializable {
         this.mimeTypes = mimeTypes;
     }
 
+    public List<String> getSites() {
+        return sites;
+    }
+
+    public void setSites(List<String> sites) {
+        this.sites = sites;
+    }
+
     /**
      * @return the originSiteUuid
      */
@@ -174,5 +184,13 @@ public class GWTJahiaSearchQuery implements Serializable {
      */
     public void setOriginSiteUuid(String originSiteUuid) {
         this.originSiteUuid = originSiteUuid;
+    }
+
+    public String getBasePath() {
+        return basePath;
+    }
+
+    public void setBasePath(String basePath) {
+        this.basePath = basePath;
     }
 }

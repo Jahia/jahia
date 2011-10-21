@@ -67,6 +67,8 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 
+import java.util.Arrays;
+
 /**
  * Form for searching repository content.
  * User: ktlili
@@ -353,6 +355,12 @@ public class ContentSearchForm extends ContentPanel implements AbstractView.Cont
         gwtJahiaSearchQuery.setNodeTypes(config.getNodeTypes());
         gwtJahiaSearchQuery.setFolderTypes(config.getFolderTypes());
         gwtJahiaSearchQuery.setOriginSiteUuid(JahiaGWTParameters.getSiteUUID());
+        if (config.isSearchInCurrentSiteOnly()) {
+            gwtJahiaSearchQuery.setSites(Arrays.asList(JahiaGWTParameters.getSiteKey()));
+        }
+        if (config.getSearchBasePath() != null) {
+            gwtJahiaSearchQuery.setBasePath(config.getSearchBasePath());
+        }
         return gwtJahiaSearchQuery;
     }
 

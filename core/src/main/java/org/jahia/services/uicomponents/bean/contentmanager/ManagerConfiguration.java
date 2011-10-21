@@ -92,6 +92,8 @@ public class ManagerConfiguration implements Serializable {
     private boolean displaySearchInContent = true;
     private boolean searchInFile = true;
     private boolean searchInContent = true;    
+    private boolean searchInCurrentSiteOnly = false;
+    private String searchBasePath = null;
 
     private String requiredPermission;
     private boolean showOnlyNodesWithTemplates = false;
@@ -285,6 +287,22 @@ public class ManagerConfiguration implements Serializable {
 
     public void setSearchInContent(boolean searchInContent) {
         this.searchInContent = searchInContent;
+    }
+
+    public boolean isSearchInCurrentSiteOnly() {
+        return searchInCurrentSiteOnly;
+    }
+
+    public void setSearchInCurrentSiteOnly(boolean searchInCurrentSiteOnly) {
+        this.searchInCurrentSiteOnly = searchInCurrentSiteOnly;
+    }
+
+    public String getSearchBasePath() {
+        return searchBasePath;
+    }
+
+    public void setSearchBasePath(String searchBasePath) {
+        this.searchBasePath = searchBasePath;
     }
 
     public String getRequiredPermission() {

@@ -149,7 +149,7 @@ import com.google.common.collect.Sets;
  *     child0
  *       child0
  *       child1 -> change ACL in default
- *       child2 -> change ACL in live
+ *       child2
  *     child1
  *       child0
  *         copied-node
@@ -172,7 +172,7 @@ import com.google.common.collect.Sets;
  *   added-child-with-subpage
  *     subpage
  *   added-ugc-child (live)
- *   added-ugc-child-with-subpage (live)
+ *   added-ugc-child-with-subpage (live)  -> change ACL in live
  *     ugc-subpage (live)
  * 
  * @author Benjamin Papez
@@ -193,13 +193,17 @@ public class ImportExportTest {
 
     private final static Set<String> ignoredProperties = Sets.newHashSet("jcr:baseVersion", "jcr:created", "j:deletedChildren",
             "j:installedModules", "jcr:lastModified", "jcr:lastModifiedBy", "j:lastPublished", "jcr:predecessors", "j:serverName",
-            "j:siteId", "j:templateNode", "jcr:uuid", "jcr:versionHistory", "result");
+            "j:siteId", "j:templateNode", "jcr:uuid", "jcr:versionHistory", "result", "j:fullpath");
 
     private final static Set<String> notExportedProperties = Sets.newHashSet("jcr:lockIsDeep", "j:lockTypes", "jcr:lockOwner",
             "j:locktoken");
 
     private final static Set<String> optionalProperties = Sets.newHashSet("jcr:mixinTypes", "j:published", "j:lastPublished",
-            "j:lastPublishedBy");
+            "j:lastPublishedBy", "j:deletedChildren");
+    
+    private final static Set<String> optionalMixins = Sets.newHashSet("jmix:deletedChildren");
+    
+    private static boolean readyForUGCTest = false; 
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -211,6 +215,8 @@ public class ImportExportTest {
         initContent(session, site);
 
         JCRSessionFactory.getInstance().closeAllSessions();
+        
+        readyForUGCTest = false; 
     }
 
     @AfterClass
@@ -237,6 +243,7 @@ public class ImportExportTest {
     @Test
     public void testSimpleExportImport() throws Exception {
         JCRSessionFactory sf = JCRSessionFactory.getInstance();
+        sf.closeAllSessions();
         JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -252,6 +259,7 @@ public class ImportExportTest {
     @Test
     public void testSimpleExportImportWithLive() throws Exception {
         JCRSessionFactory sf = JCRSessionFactory.getInstance();
+        sf.closeAllSessions();
         JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -279,6 +287,7 @@ public class ImportExportTest {
     @Test
     public void testExportImportWithComplexChanges() throws Exception {
         JCRSessionFactory sf = JCRSessionFactory.getInstance();
+        sf.closeAllSessions();
         JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -420,11 +429,16 @@ public class ImportExportTest {
                     }
                 });
         sf.closeAllSessions();
+        
+        readyForUGCTest = true;
     }
 
     @Test
     public void testExportImportWithUGCComplexChanges() throws Exception {
+        assertTrue("UGC tests cannot be executed, because a dependend test case failed before", readyForUGCTest);
+        
         JCRSessionFactory sf = JCRSessionFactory.getInstance();
+        sf.closeAllSessions();
         JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -498,7 +512,7 @@ public class ImportExportTest {
                         session.save();
 
                         // set ACL
-                        childPage = englishLiveSiteHomeNode.getNode("child2/child0/child2");
+                        childPage = englishLiveSiteHomeNode.getNode("added-ugc-child-with-subpage");
                         if (!childPage.isCheckedOut()) {
                             session.getWorkspace().getVersionManager().checkout(childPage.getPath());
                         }
@@ -784,29 +798,42 @@ public class ImportExportTest {
 
                 JCRPropertyWrapper sourceProperty = sourceEntry.getValue();
                 JCRPropertyWrapper targetProperty = targetProperties.get(sourceEntry.getKey());
+                boolean isReference = sourceProperty.getDefinition().getRequiredType() == PropertyType.REFERENCE || sourceProperty
+                        .getDefinition().getRequiredType() == PropertyType.WEAKREFERENCE;
                 if (sourceProperty.isMultiple() && targetProperty.isMultiple()) {
-                    Value[] sourceValues = sourceProperty.getValues();
-                    Value[] targetValues = targetProperty.getValues();
-                    if (sourceValues.length != targetValues.length
-                            || ((sourceProperty.getDefinition().getRequiredType() == PropertyType.REFERENCE || sourceProperty
-                                    .getDefinition().getRequiredType() == PropertyType.WEAKREFERENCE) && !compareReferenceValues(
+                    Set<Value> sourceValues = Sets.newHashSet(sourceProperty.getValues());
+                    Set<Value> targetValues = Sets.newHashSet(targetProperty.getValues());
+                    if (sourceValues.size() != targetValues.size() && "jcr:mixinTypes".equals(sourceProperty.getDefinition().getName())) {
+                        Iterator<Value> it = sourceValues.iterator();
+                        while (it.hasNext()) {
+                            if (optionalMixins.contains(it.next().getString())) {
+                                it.remove();
+                            }
+                        }
+                        it = targetValues.iterator();
+                        while (it.hasNext()) {
+                            if (optionalMixins.contains(it.next().getString())) {
+                                it.remove();
+                            }
+                        }
+                    }
+                    if (sourceValues.size() != targetValues.size() 
+                            || (isReference && !compareReferenceValues(
                                     sourceValues, targetValues, sourceSiteNode.getSession(), targetSiteNode.getSession()))
-                            || !compareArrayValues(sourceValues, targetValues)) {
+                            || (!isReference && !compareArrayValues(sourceValues, targetValues))) {
                         logger.error("Property values do not match for property "
                                 + sourceProperty.getName()
-                                + " of parent nodes: "
+                                + " of nodes: "
                                 + sourceSiteNode.toString()
                                 + "("
-                                + Arrays.toString((sourceProperty.getDefinition().getRequiredType() == PropertyType.REFERENCE || sourceProperty
-                                        .getDefinition().getRequiredType() == PropertyType.WEAKREFERENCE) ? getReferenceArray(
+                                + Arrays.toString(isReference ? getReferenceArray(
                                         sourceProperty.getValues(), sourceSiteNode.getSession())
                                         : getValueArray(sourceProperty.getValues()))
                                 + ")"
                                 + " vs. "
                                 + targetSiteNode.toString()
                                 + "("
-                                + Arrays.toString((targetProperty.getDefinition().getRequiredType() == PropertyType.REFERENCE || targetProperty
-                                        .getDefinition().getRequiredType() == PropertyType.WEAKREFERENCE) ? getReferenceArray(
+                                + Arrays.toString(isReference ? getReferenceArray(
                                         targetProperty.getValues(), targetSiteNode.getSession())
                                         : getValueArray(targetProperty.getValues())) + ")");
                         matches = false;
@@ -817,8 +844,7 @@ public class ImportExportTest {
                             + " of nodes: "
                             + sourceSiteNode.toString()
                             + "("
-                            + (((sourceProperty.getDefinition().getRequiredType() == PropertyType.REFERENCE || sourceProperty
-                                    .getDefinition().getRequiredType() == PropertyType.WEAKREFERENCE) ? (sourceProperty.isMultiple() ? Arrays
+                            + ((isReference ? (sourceProperty.isMultiple() ? Arrays
                                     .toString(getReferenceArray(sourceProperty.getValues(), sourceSiteNode.getSession())) : sourceSiteNode
                                     .getSession().getNodeByUUID(sourceProperty.getValue().getString()).getPath())
                                     : (sourceProperty.isMultiple() ? Arrays.toString(getValueArray(sourceProperty.getValues()))
@@ -827,8 +853,7 @@ public class ImportExportTest {
                             + " vs. "
                             + targetSiteNode.toString()
                             + "("
-                            + (((targetProperty.getDefinition().getRequiredType() == PropertyType.REFERENCE || targetProperty
-                                    .getDefinition().getRequiredType() == PropertyType.WEAKREFERENCE) ? (targetProperty.isMultiple() ? Arrays
+                            + ((isReference ? (targetProperty.isMultiple() ? Arrays
                                     .toString(getReferenceArray(targetProperty.getValues(), targetSiteNode.getSession())) : targetSiteNode
                                     .getSession().getNodeByUUID(targetProperty.getValue().getString()).getPath())
                                     : (targetProperty.isMultiple() ? Arrays.toString(getValueArray(targetProperty.getValues()))
@@ -845,8 +870,7 @@ public class ImportExportTest {
                         targetValue = ((Value)targetValue).getString().replace(targetRootPath, "");
                         sourceValue = ((String)sourceValue).replace(TESTSITE_NAME, "");
                         targetValue = ((String)targetValue).replace(TARGET_TESTSITE_NAME, "");
-                    } else if (sourceProperty.getDefinition().getRequiredType() == PropertyType.REFERENCE
-                            || sourceProperty.getDefinition().getRequiredType() == PropertyType.WEAKREFERENCE) {
+                    } else if (isReference) {
                         try {
                             sourceReferencePath = sourceSiteNode.getSession().getNodeByUUID(sourceProperty.getValue().getString())
                                     .getPath();
@@ -877,15 +901,13 @@ public class ImportExportTest {
                                 + " of nodes: "
                                 + sourceSiteNode.toString()
                                 + "("
-                                + ((sourceProperty.getDefinition().getRequiredType() == PropertyType.REFERENCE || sourceProperty
-                                        .getDefinition().getRequiredType() == PropertyType.WEAKREFERENCE) ? sourceReferencePath
+                                + (isReference ? sourceReferencePath
                                         : sourceProperty.getValue().getString())
                                 + ")"
                                 + " vs. "
                                 + targetSiteNode.toString()
                                 + "("
-                                + ((targetProperty.getDefinition().getRequiredType() == PropertyType.REFERENCE || targetProperty
-                                        .getDefinition().getRequiredType() == PropertyType.WEAKREFERENCE) ? targetReferencePath
+                                + (isReference ? targetReferencePath
                                         : targetProperty.getValue().getString()) + ")");
                         matches = false;
                     }
@@ -896,17 +918,16 @@ public class ImportExportTest {
         return matches;
     }
 
-    private boolean compareArrayValues(Value[] sourceValues, Value[] targetValues) {
+    private boolean compareArrayValues(Set<Value> sourceValues, Set<Value> targetValues) {
         boolean match = true;
-        Set<Value> targetValueSet = Sets.newHashSet(targetValues);
 
-        for (int i = 0; match && i < sourceValues.length; i++) {
-            match = targetValueSet.contains(sourceValues[i]);
+        for (Iterator<Value> it = sourceValues.iterator(); match && it.hasNext(); ) {
+            match = targetValues.contains(it.next());
         }
         return match;
     }
 
-    private boolean compareReferenceValues(Value[] sourceValues, Value[] targetValues, JCRSessionWrapper sourceSession,
+    private boolean compareReferenceValues(Set<Value> sourceValues, Set<Value> targetValues, JCRSessionWrapper sourceSession,
             JCRSessionWrapper targetSession) {
         boolean match = true;
         Set<String> sourceReferences = new HashSet<String>();
@@ -914,7 +935,7 @@ public class ImportExportTest {
         for (Value sourceValue : sourceValues) {
             String sourceReference = ILLEGAL_STATE;
             try {
-                sourceReference = sourceSession.getNodeByUUID(sourceValue.getString()).getPath().replace(TESTSITE_NAME, "");
+                sourceReference = sourceSession.getNodeByUUID(sourceValue.getString()).getPath().replace(TESTSITE_NAME, "").replace(TARGET_TESTSITE_NAME, "");
             } catch (Exception e) {
             }
             sourceReferences.add(sourceReference);
@@ -922,7 +943,7 @@ public class ImportExportTest {
         for (Value targetValue : targetValues) {
             String targetReference = ILLEGAL_STATE;
             try {
-                targetReference = targetSession.getNodeByUUID(targetValue.getString()).getPath().replace(TARGET_TESTSITE_NAME, "");
+                targetReference = targetSession.getNodeByUUID(targetValue.getString()).getPath().replace(TESTSITE_NAME, "").replace(TARGET_TESTSITE_NAME, "");
             } catch (Exception e) {
             }
             targetReferences.add(targetReference);
@@ -952,9 +973,11 @@ public class ImportExportTest {
         int i = 0;
         for (Value value : values) {
             try {
-                valueStrings[i++] = session.getNodeByUUID(value.getString()).getPath();
+                valueStrings[i] = session.getNodeByUUID(value.getString()).getPath();
             } catch (Exception e) {
-                valueStrings[i++] = ILLEGAL_STATE;
+                valueStrings[i] = ILLEGAL_STATE;
+            } finally {
+                i++;
             }
         }
         return valueStrings;
@@ -982,11 +1005,12 @@ public class ImportExportTest {
     @Test
     public void testNodeExportImportWithLive() throws Exception {
         JCRSessionFactory sf = JCRSessionFactory.getInstance();
-
+        sf.closeAllSessions();
         JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        JCRNodeWrapper englishLiveSiteRootNode = session.getNode("/" + SITECONTENT_ROOT_NODE);
+                        JCRSessionWrapper sessionNoLocale = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE);
+                        JCRNodeWrapper englishLiveSiteRootNode = sessionNoLocale.getNode("/" + SITECONTENT_ROOT_NODE);
                         JCRNodeWrapper englishLiveSiteHomeNode = (JCRNodeWrapper) englishLiveSiteRootNode.getNode("home");
 
                         nodeExportImportAndCheck(session, englishLiveSiteHomeNode.getNode("child2"), "/" + SITECONTENT_ROOT_NODE

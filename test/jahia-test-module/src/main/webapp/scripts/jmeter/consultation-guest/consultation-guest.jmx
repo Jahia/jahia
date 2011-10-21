@@ -67,6 +67,36 @@
             <stringProp name="Argument.value">${__P(jahia.test.jmeter.serverIP2,10.8.31.21)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="serverIP3" elementType="Argument">
+            <stringProp name="Argument.name">serverIP3</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.serverIP3,10.8.31.21)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="serverIP4" elementType="Argument">
+            <stringProp name="Argument.name">serverIP4</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.serverIP4,10.8.31.21)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="serverIP5" elementType="Argument">
+            <stringProp name="Argument.name">serverIP5</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.serverIP5,10.8.31.21)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="serverIP6" elementType="Argument">
+            <stringProp name="Argument.name">serverIP6</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.serverIP6,10.8.31.21)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="serverIP7" elementType="Argument">
+            <stringProp name="Argument.name">serverIP7</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.serverIP7,10.8.31.21)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="serverIP8" elementType="Argument">
+            <stringProp name="Argument.name">serverIP8</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.serverIP8,10.8.31.21)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </elementProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
@@ -111,7 +141,7 @@
             <boolProp name="perThread">true</boolProp>
           </RandomVariableConfig>
           <hashTree/>
-          <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="View Jahia page" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="View Jahia page" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
               <collectionProp name="Arguments.arguments"/>
             </elementProp>
@@ -127,9 +157,10 @@
             <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.implementation">Java</stringProp>
             <boolProp name="HTTPSampler.monitor">false</boolProp>
             <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-          </HTTPSampler>
+          </HTTPSamplerProxy>
           <hashTree>
             <GaussianRandomTimer guiclass="GaussianRandomTimerGui" testclass="GaussianRandomTimer" testname="Gaussian Random Timer" enabled="true">
               <stringProp name="ConstantTimer.delay">${offTime}</stringProp>
@@ -158,7 +189,7 @@
             <subresults>true</subresults>
             <responseData>false</responseData>
             <samplerData>false</samplerData>
-            <xml>false</xml>
+            <xml>true</xml>
             <fieldNames>false</fieldNames>
             <responseHeaders>false</responseHeaders>
             <requestHeaders>false</requestHeaders>
@@ -166,9 +197,10 @@
             <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
             <assertionsResultsToSave>0</assertionsResultsToSave>
             <bytes>true</bytes>
+            <idleTime>true</idleTime>
           </value>
         </objProp>
-        <stringProp name="filename"></stringProp>
+        <stringProp name="filename">results/consultation-guest_${__time(yyyyMMdd_HHmmss)}.jtl</stringProp>
       </ResultCollector>
       <hashTree/>
       <ResultCollector guiclass="GraphVisualizer" testclass="ResultCollector" testname="Graphique de résultats" enabled="true">

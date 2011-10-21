@@ -165,15 +165,15 @@ public class TemplateHelper {
             JCRSiteNode site = node.getResolveSite();
             renderContext.setSite(site);
             String res = renderService.render(r, renderContext);
-            Map<String, Set<String>> map = (Map<String, Set<String>>) renderContext.getRequest().getAttribute("staticAssets");
+            Map<String, Map<String,Map<String,String>>> map = (Map<String, Map<String,Map<String,String>>>) renderContext.getRequest().getAttribute("staticAssets");
             String constraints = ConstraintsHelper.getConstraints(node);
             if (constraints == null) {
                 constraints = "";
             }
             Map<String, List<String>> m = new HashMap<String, List<String>>();
             if (map != null) {
-                for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
-                    m.put(entry.getKey(), new ArrayList<String>(entry.getValue()));
+                  for (Map.Entry<String, Map<String,Map<String,String>>> entry : map.entrySet()) {
+                    m.put(entry.getKey(), new ArrayList<String>(entry.getValue().keySet()));
                 }
             }
             result = new GWTRenderResult(res, m, constraints, node.getDisplayableName());

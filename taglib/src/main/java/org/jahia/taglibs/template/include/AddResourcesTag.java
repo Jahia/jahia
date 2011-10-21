@@ -72,6 +72,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
     private String resources;
     private String title;
     private String key;
+    private String media;
     private String var;
 
     /**
@@ -84,13 +85,13 @@ public class AddResourcesTag extends AbstractJahiaTag {
     @Override
     public int doEndTag() throws JspException {
         JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule", PageContext.REQUEST_SCOPE);
-        addResources(getRenderContext(), templatesPackage, type, resources);
+        addResources(getRenderContext(), templatesPackage, type, resources, media);
         resetState();
         return super.doEndTag();
     }
 
     protected void addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage, String type,
-                                String resources) {
+                                String resources, String media) {
         logger.debug("Package : " + aPackage.getName() + " type : " + type + " resources : " + resources);
         if (bodyContent != null) {
             try {
@@ -121,7 +122,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
             if (resource.startsWith("/") || resource.startsWith("http://") || resource.startsWith("https://")) {
                 found = true;
                 resource = mapping.containsKey(resource) ? mapping.get(resource) : resource;
-                writeResourceTag(type, resource, insert, resource, title, null);
+                writeResourceTag(type, media, resource, insert, resource, title, null);
             } else {
                 for (String lookupPath : lookupPaths) {
                     String path = lookupPath + resource;
@@ -135,7 +136,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
                                 path = mapping.get(path);
                                 pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ? renderContext.getRequest().getContextPath() + path : path;
                             }
-                            writeResourceTag(type, pathWithContext, insert, resource, title, null);
+                            writeResourceTag(type, media, pathWithContext, insert, resource, title, null);
                             found = true;
                             if (builder.length() > 0) {
                                 builder.append(",");
@@ -169,15 +170,19 @@ public class AddResourcesTag extends AbstractJahiaTag {
         this.insert = insert;
     }
 
+    public void setMedia(String media) {
+        this.media = media;
+    }
+
     @Override
     public int doAfterBody() throws JspException {
         if (bodyContent != null) {
             String asset = getBodyContent().getString();
             getBodyContent().clearBody();
             if (key != null) {
-                writeResourceTag("inline", asset, insert, null, null, key);
+                writeResourceTag("inline", null, asset, insert, null, null, key);
             } else {
-                writeResourceTag("inline", asset, insert, null, null, null);
+                writeResourceTag("inline", null, asset, insert, null, null, null);
             }
         }
         return super.doAfterBody();
@@ -190,6 +195,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
         resources = null;
         type = null;
         title = null;
+        media = null;
         super.resetState();
     }
 
@@ -198,7 +204,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
         return (Map<String, String>) SpringContextSingleton.getBean("org.jahia.services.render.StaticAssetMappingRegistry");
     }
 
-    private void writeResourceTag(String type, String path, boolean insert, String resource, String title, String key) {
+    private void writeResourceTag(String type, String media, String path, boolean insert, String resource, String title, String key) {
         StringBuilder builder = new StringBuilder();
         builder.append("<jahia:resource type=\"");
         builder.append(type != null ? type : "").append("\"");
@@ -208,6 +214,9 @@ public class AddResourcesTag extends AbstractJahiaTag {
             logger.error(e.getMessage(), e);
         }
         builder.append(" insert=\"").append(insert).append("\"");
+        if (media != null) {
+            builder.append(" media=\"").append(media).append("\"");
+        }
         builder.append(" resource=\"").append(resource != null ? resource : "").append("\"");
         builder.append(" title=\"").append(title != null ? title : "").append("\"");
         builder.append(" key=\"").append(key != null ? key : "").append("\"");

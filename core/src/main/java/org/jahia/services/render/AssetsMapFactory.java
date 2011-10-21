@@ -43,10 +43,18 @@ package org.jahia.services.render;
 import org.apache.commons.collections.Factory;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 
-public class SetFactory implements Factory, Serializable {
+/**
+ * A map factory for assets (css, javascript, etc) entries
+ *
+ * @author David Griffon
+ */
+
+public class AssetsMapFactory implements Factory, Serializable {
     public Object create() {
-        return new LinkedHashSet<String>();
+        return new LinkedHashMap<String,Map<String,String>>();
     }
 }

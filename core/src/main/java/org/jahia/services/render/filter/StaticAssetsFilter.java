@@ -51,9 +51,9 @@ import org.apache.commons.collections.map.LazySortedMap;
 import org.apache.commons.collections.map.TransformedSortedMap;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
+import org.jahia.services.render.AssetsMapFactory;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.SetFactory;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.utils.ScriptEngineUtils;
@@ -67,10 +67,7 @@ import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.SimpleScriptContext;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.net.URLDecoder;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -130,9 +127,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             return writer;
         }
     }
-    
+
     private static Logger logger = LoggerFactory.getLogger(StaticAssetsFilter.class);
-    
+
     private String ajaxResolvedTemplate;
 
     private String ajaxTemplate;
@@ -156,60 +153,58 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         Source source = new Source(previousOut);
 
         @SuppressWarnings("unchecked")
-        Map<String, Set<String>> assets = LazySortedMap.decorate(
-                TransformedSortedMap.decorate(new TreeMap<String, Set<String>>(ASSET_COMPARATOR), LOW_CASE_TRANSFORMER, NOPTransformer.INSTANCE), new SetFactory());
-
-        @SuppressWarnings("unchecked")
-        Map<String, Map<String, String>> assetsOptions = LazyMap.decorate(
-                new HashMap<String, Map<String, Object>>(), new Factory() {
-                    public Object create() {
-                        return new HashMap<String, Object>();
-                    }
-                });
+        Map<String, Map<String,Map<String,String>>> assets = LazySortedMap.decorate(
+                TransformedSortedMap.decorate(new TreeMap<String, Map<String,Map<String,String>>>(ASSET_COMPARATOR), LOW_CASE_TRANSFORMER, NOPTransformer.INSTANCE), new AssetsMapFactory());
 
         List<StartTag> esiResourceTags = source.getAllStartTags("jahia:resource");
         Set<String> keys = new HashSet<String>();
         for (StartTag esiResourceTag : esiResourceTags) {
             String type = esiResourceTag.getAttributeValue("type");
             String path = esiResourceTag.getAttributeValue("path");
+            String media = esiResourceTag.getAttributeValue("media");
             path = URLDecoder.decode(path, "UTF-8");
             Boolean insert = Boolean.parseBoolean(esiResourceTag.getAttributeValue("insert"));
             String resourceS = esiResourceTag.getAttributeValue("resource");
             String title = esiResourceTag.getAttributeValue("title");
             String key = esiResourceTag.getAttributeValue("key");
-            Set<String> stringSet = assets.get(type);
-            if (stringSet == null) {
-                stringSet = new LinkedHashSet<String>();
+            Map<String,String> optionsMap = new HashMap<String, String>();
+
+            // Manage Options
+            if (title != null && !"".equals(title.trim())) {
+                optionsMap.put("title", title);
             }
+            if (media != null && !"".equals(media.trim())) {
+                optionsMap.put("media", media);
+            }
+
+            Map<String,Map<String,String>> stringMap = assets.get(type);
+            if (stringMap  == null) {
+                Map<String,Map<String,String>> assetMap = new LinkedHashMap<String, Map<String, String>>();
+                stringMap = assets.put(type,assetMap);
+            }
+
             if (insert) {
-                LinkedHashSet<String> my = new LinkedHashSet<String>();
-                my.add(path);
-                my.addAll(stringSet);
-                stringSet = my;
+                Map<String,Map<String,String>> my = new LinkedHashMap<String,Map<String,String>>();
+                my.put(path, optionsMap);
+                my.putAll(stringMap);
+                stringMap = my;
             } else {
                 if ("".equals(key) || !keys.contains(key)) {
-                    stringSet.add(path);
+                    Map<String,Map<String,String>> my = new LinkedHashMap<String,Map<String,String>>();
+                    my.put(path,optionsMap);
+                    stringMap.putAll(my);
                     keys.add(key);
                 }
             }
-            assets.put(type, stringSet);
-            if (title != null && !"".equals(title.trim())) {
-                Map<String, String> stringMap = assetsOptions.get(resourceS);
-                if (stringMap == null) {
-                    stringMap = new HashMap<String, String>();
-                    assetsOptions.put(resourceS, stringMap);
-                }
-                stringMap.put("title", title);
-            }
+            assets.put(type, stringMap);
         }
 
         renderContext.getRequest().setAttribute("staticAssets", assets);
-        renderContext.getRequest().setAttribute("staticAssetsOptions", assetsOptions);
 
         OutputDocument outputDocument = new OutputDocument(source);
 
         if (renderContext.isAjaxRequest()) {
-            String templateContent = getAjaxResolvedTemplate(); 
+            String templateContent = getAjaxResolvedTemplate();
             if (templateContent != null) {
                 Element element = source.getFirstElement();
                 final EndTag tag = element != null ? element.getEndTag() : null;
@@ -238,12 +233,12 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             if (renderContext.isEditMode()) {
                 // Add static div for edit mode
                 List<Element> bodyElementList = source.getAllElements(HTMLElementName.BODY);
-                Set<String> javascript = assets.get("javascript");
+                Map<String,Map<String,String>> javascript = assets.get("javascript");
                 if (javascript == null) {
-                    assets.put("javascript", (javascript = new HashSet<String>()));
+                    assets.put("javascript", (javascript = new HashMap<String, Map<String,String>>()));
                 }
-                javascript.add(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.min.js");
-                javascript.add(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.Jcrop.js");
+                javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.min.js", null);
+                javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.Jcrop.js", null);
 
                 if (bodyElementList.size() > 0) {
                     Element bodyElement = bodyElementList.get(bodyElementList.size() - 1);
@@ -255,19 +250,19 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
                     StartTag bodyStartTag = bodyElement.getStartTag();
                     outputDocument.replace(bodyStartTag.getEnd(), bodyStartTag.getEnd(), "\n" +
-                                                                                         "<div class=\"jahia-template-gxt editmode-gxt\" jahiatype=\"editmode\" id=\"editmode\"" +
-                                                                                         " config=\"" +
-                                                                                         renderContext.getEditModeConfigName() +
-                                                                                         "\"" + " path=\"" +
-                                                                                         resource.getNode().getPath() +
-                                                                                         "\" locale=\"" +
-                                                                                         resource.getLocale() + "\"" +
-                                                                                         " template=\"" +
-                                                                                         resource.getResolvedTemplate() +
-                                                                                         "\"" + " nodetypes=\"" +
-                                                                                         ConstraintsHelper.getConstraints(
-                                                                                                 renderContext.getMainResource().getNode()) +
-                                                                                         "\"" + ">");
+                            "<div class=\"jahia-template-gxt editmode-gxt\" jahiatype=\"editmode\" id=\"editmode\"" +
+                            " config=\"" +
+                            renderContext.getEditModeConfigName() +
+                            "\"" + " path=\"" +
+                            resource.getNode().getPath() +
+                            "\" locale=\"" +
+                            resource.getLocale() + "\"" +
+                            " template=\"" +
+                            resource.getResolvedTemplate() +
+                            "\"" + " nodetypes=\"" +
+                            ConstraintsHelper.getConstraints(
+                                    renderContext.getMainResource().getNode()) +
+                            "\"" + ">");
                 }
             }
             List<Element> headElementList = source.getAllElements(HTMLElementName.HEAD);
@@ -351,7 +346,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     public void setTemplate(String template) {
         this.template = template;
         if (template != null) {
-            templateExtension = StringUtils.substringAfterLast(template, "."); 
+            templateExtension = StringUtils.substringAfterLast(template, ".");
         }
     }
 
@@ -359,4 +354,5 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         ajaxResolvedTemplate = null;
         resolvedTemplate = null;
     }
+
 }

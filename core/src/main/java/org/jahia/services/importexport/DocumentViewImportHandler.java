@@ -173,7 +173,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             }
         }
 
-        if ("live".equals(atts.getValue("j:originWS"))) {
+        if (ugcLevel > 0 || "live".equals(atts.getValue("j:originWS"))) {
             if (importUserGeneratedContent) {
                 ugcLevel++;
             } else {

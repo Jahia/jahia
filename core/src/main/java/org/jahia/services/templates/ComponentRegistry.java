@@ -42,6 +42,8 @@ package org.jahia.services.templates;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
@@ -59,6 +61,7 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.DocumentViewImportHandler;
+import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,6 +114,9 @@ public class ComponentRegistry {
 
     private boolean registerComponent(JCRSessionWrapper session, boolean newDeployment, JCRNodeWrapper components, ExtendedNodeType nt) throws RepositoryException {
         boolean created = false;
+
+        List<Locale> locales = LanguageCodeConverters.getAvailableBundleLocales();
+
         if (!nt.isMixin() && !JMIX_DROPPABLE_CONTENT.equals(nt.getName())
                 && nt.isNodeType(JMIX_DROPPABLE_CONTENT)) {
             String name = nt.getName();
@@ -122,14 +128,30 @@ public class ComponentRegistry {
                 for (ExtendedNodeType st : nt.getSupertypes()) {
                     if (st.isMixin() && !st.getName().equals(JMIX_DROPPABLE_CONTENT)
                             && st.isNodeType(JMIX_DROPPABLE_CONTENT)) {
-                        folder = components.hasNode(st.getName()) ? components.getNode(st
-                                .getName()) : components.addNode(st.getName(),
-                                JNT_COMPONENT_FOLDER);
+                        if (components.hasNode(st.getName())) {
+                            folder = components.getNode(st.getName());
+                        } else {
+                            folder = components.addNode(st.getName(),JNT_COMPONENT_FOLDER);
+                            for (Locale locale : locales) {
+                                String label = st.getLabel(locale);
+                                if (label != null) {
+                                    folder.getOrCreateI18N(locale).setProperty("jcr:title", label);
+                                }
+                            }
+
+                        }
                         break;
                     }
                 }
                 if (!folder.hasNode(name)) {
                     JCRNodeWrapper comp = folder.addNode(name, JNT_SIMPLE_COMPONENT);
+
+                    for (Locale locale : locales) {
+                        String label = nt.getLabel(locale);
+                        if (label != null) {
+                            comp.getOrCreateI18N(locale).setProperty("jcr:title", label);
+                        }
+                    }
                     if (nt.isNodeType(JMIX_STUDIO_ONLY)) {
                         comp.addMixin(JMIX_STUDIO_ONLY);
                     }

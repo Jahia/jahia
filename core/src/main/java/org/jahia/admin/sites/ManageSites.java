@@ -1224,6 +1224,7 @@ public class ManageSites extends AbstractAdministrationModule {
             request.setAttribute("siteID", siteID);
             request.setAttribute("defaultSite", defaultSite);
             request.setAttribute("siteTemplatePackageName", site.getTemplatePackageName());
+            request.setAttribute("site", site);
 
             // redirect...
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "site_edit.jsp");

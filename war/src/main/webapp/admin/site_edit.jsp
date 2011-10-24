@@ -1,6 +1,7 @@
 <%@page import="org.jahia.params.ParamBean" %>
 <%@include file="/admin/include/header.inc" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
     final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
     String warningMsg = (String) request.getAttribute("warningMsg");
@@ -9,6 +10,8 @@
     String siteDescr = (String) request.getAttribute("siteDescr");
     String siteKey = (String) request.getAttribute("siteKey");
     Boolean defaultSite = (Boolean) request.getAttribute("defaultSite");
+    
+    pageContext.setAttribute("templatePackageByNodeName", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByNodeName());
 
 
     String gaUserAccountCustom = (String) request.getAttribute("gaUserAccountCustom");
@@ -110,6 +113,16 @@
     </td>
     <td>
         :&nbsp;<%= request.getAttribute("siteTemplatePackageName") %>
+    </td>
+</tr>
+<tr>
+    <td>
+        <fmt:message key="label.modules"/>
+    </td>
+    <td>
+        :&nbsp;<c:if test="${not empty site.installedModules && fn:length(site.installedModules) > 1}">
+            <c:forEach var="module" items="${site.installedModules}" varStatus="status" begin="1">${status.index > 1 ? ', ' : ''}${fn:escapeXml(templatePackageByNodeName[module].name)}</c:forEach>
+        </c:if>
     </td>
 </tr>
 <tr>

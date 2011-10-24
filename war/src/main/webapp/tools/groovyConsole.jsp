@@ -2,6 +2,7 @@
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<%@ page import="org.slf4j.LoggerFactory" %>
 <%@ page import="javax.script.Bindings" %>
 <%@ page import="javax.script.SimpleScriptContext" %>
 <%@ page import="javax.script.ScriptContext" %>
@@ -10,6 +11,7 @@
 <%@ page import="java.io.StringWriter" %>
 <%@ page import="java.io.Writer" %>
 <%@ page import="javax.script.ScriptException" %>
+<%@ page import="org.jahia.tools.patches.LoggerWrapper" %>
 <%@ page import="org.jahia.utils.ScriptEngineUtils" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -30,7 +32,9 @@ try {
 <%
 ScriptContext ctx = new SimpleScriptContext();
 ctx.setWriter(new StringWriter());
-ctx.setBindings(engine.createBindings(), ScriptContext.ENGINE_SCOPE);
+Bindings bindings = engine.createBindings();
+bindings.put("log", new LoggerWrapper(LoggerFactory.getLogger("org.jahia.tools.groovyConsole"), "org.jahia.tools.groovyConsole", ctx.getWriter()));
+ctx.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 engine.eval(request.getParameter("script"), ctx);
 pageContext.setAttribute("result", ((StringWriter) ctx.getWriter()).getBuffer().toString());
 pageContext.setAttribute("took", System.currentTimeMillis() - timer);

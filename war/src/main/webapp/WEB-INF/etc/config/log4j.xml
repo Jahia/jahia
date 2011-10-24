@@ -191,6 +191,13 @@
         <priority value="info"/>
     </category>
 
+    <category name="org.jahia.tools.patches.GroovyPatcher">
+        <priority value="debug"/>
+    </category>
+    <category name="org.jahia.tools.groovyConsole">
+        <priority value="debug"/>
+    </category>
+
     <root>
         <level value="info"/>
         <appender-ref ref="ROLL"/>

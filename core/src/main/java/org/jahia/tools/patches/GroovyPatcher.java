@@ -49,6 +49,7 @@ import java.util.Comparator;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
@@ -88,7 +89,7 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
 
     private static final Logger logger = LoggerFactory.getLogger(GroovyPatcher.class);
 
-    private long interval = 5 * 60000L; // 5minutes interval by default
+    private long interval = 5 * 60000L; // 5 minutes interval by default
 
     private String patchesLookup = "/WEB-INF/var/patches/groovy/**/*.groovy";
 
@@ -121,7 +122,9 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
                     ScriptEngine engine = getEngine();
                     ScriptContext ctx = new SimpleScriptContext();
                     ctx.setWriter(new StringWriter());
-                    ctx.setBindings(engine.createBindings(), ScriptContext.ENGINE_SCOPE);
+                    Bindings bindings = engine.createBindings();
+                    bindings.put("log", new LoggerWrapper(logger, logger.getName(), ctx.getWriter()));
+                    ctx.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
                     engine.eval(scriptContent, ctx);
                     String result = ((StringWriter) ctx.getWriter()).getBuffer().toString();
@@ -136,7 +139,7 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
                 rename(script, ".installed");
             } catch (Exception e) {
                 logger.error(
-                        "Execution of script " + script + " faile with error: " + e.getMessage(), e);
+                        "Execution of script " + script + " failed with error: " + e.getMessage(), e);
                 rename(script, ".failed");
             }
         }
@@ -186,8 +189,8 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
         watchdog.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Checking for avilable Groovy patches in {}", patchesLookup);
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Checking for avilable Groovy patches in {}", patchesLookup);
                 }
                 Resource[] resources = null;
                 try {
@@ -199,8 +202,8 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
                                     + e.getMessage(), e);
                 }
                 if (resources == null || resources.length == 0) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("No new Groovy patches found in {}. Sleeping...",
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("No new Groovy patches found in {}. Sleeping...",
                                 patchesLookup);
                     }
                     return;

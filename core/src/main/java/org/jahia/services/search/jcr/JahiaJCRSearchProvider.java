@@ -162,21 +162,23 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                             boolean ok = false;
 
                             if (!criteria.getSites().isEmpty() && !criteria.getSites().getValue().equals("-all-")) {
-                                List<String> sites = Arrays.asList(criteria.getSites().getValues());
-                                if (sites.contains(node.getResolveSite().getName())) {
+                                String[] sites = criteria.getSites().getValues();
+                                if (ArrayUtils.contains(sites, node.getResolveSite().getName())) {
                                     ok = true;
                                 } else if (hit instanceof JCRNodeHit) {
                                     List<AbstractHit<?>> filteredUsages = new ArrayList<AbstractHit<?>>();
                                     JCRNodeHit jcrNodeHit = (JCRNodeHit) hit;
                                     List<AbstractHit<?>> usages = jcrNodeHit.getUsages();
                                     for (AbstractHit<?> usage : usages) {
-                                        if (usage.getRawHit() instanceof JCRNodeWrapper && sites.contains(((JCRNodeWrapper)usage.getRawHit()).getResolveSite().getName())) {
+                                        if (usage.getRawHit() instanceof JCRNodeWrapper && ArrayUtils.contains(sites, ((JCRNodeWrapper) usage.getRawHit()).getResolveSite().getName())) {
                                             filteredUsages.add(usage);
                                         }
                                     }
                                     jcrNodeHit.setUsages(filteredUsages);
                                     ok = !filteredUsages.isEmpty();
                                 }
+                            } else {
+                                ok = true;
                             }
                             if (ok)  {
                                 SearchServiceImpl.executeURLModificationRules(hit, context);

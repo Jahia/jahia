@@ -56,7 +56,7 @@ pageContext.setAttribute("took", System.currentTimeMillis() - timer);
         <fieldset>
             <legend style="color: red">Error</legend>
             <p style="color: red">${fn:escapeXml(error.message)}</p>
-            <p>${fn:escapeXml(stackTrace)}</p>
+            <pre>${stackTrace}</pre>
         </fieldset>
         <%
     }

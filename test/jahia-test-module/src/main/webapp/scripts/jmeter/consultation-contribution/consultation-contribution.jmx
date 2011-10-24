@@ -43,7 +43,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
           </elementProp>
           <elementProp name="pathPrefixView" elementType="Argument">
             <stringProp name="Argument.name">pathPrefixView</stringProp>
-            <stringProp name="Argument.value">${__P(jahia.test.jmeter.pathSite,cms/render/live/en/sites/ACME)}</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.pathSite,cms/render/live/en/sites/testSite)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="nbUsersEdit" elementType="Argument">
@@ -68,7 +68,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
           </elementProp>
           <elementProp name="siteKey" elementType="Argument">
             <stringProp name="Argument.name">siteKey</stringProp>
-            <stringProp name="Argument.value">ACME</stringProp>
+            <stringProp name="Argument.value">testSite</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="pathPrefixEdit" elementType="Argument">
@@ -103,7 +103,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
           </elementProp>
           <elementProp name="contributionHomePage" elementType="Argument">
             <stringProp name="Argument.name">contributionHomePage</stringProp>
-            <stringProp name="Argument.value">/cms/edit/default/en/sites/ACME/home/page-edit-test</stringProp>
+            <stringProp name="Argument.value">/cms/edit/default/en/sites/testSite/home/page-edit-test</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="serverIP1" elementType="Argument">
@@ -156,6 +156,11 @@ For contribution, you need to create a top page (${contributionHomePage}), users
             <stringProp name="Argument.value">${__P(jahia.test.jmeter.users,./ldap-users.csv)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="siteMapFileEdit" elementType="Argument">
+            <stringProp name="Argument.name">siteMapFileEdit</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.siteMapEdit,./sitemap-edit.csv}}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </elementProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
@@ -180,236 +185,6 @@ For contribution, you need to create a top page (${contributionHomePage}), users
         <boolProp name="CookieManager.clearEachIteration">true</boolProp>
       </CookieManager>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Load site map live" enabled="false">
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
-          <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">1</stringProp>
-        </elementProp>
-        <stringProp name="ThreadGroup.num_threads">1</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-        <longProp name="ThreadGroup.start_time">1302745181000</longProp>
-        <longProp name="ThreadGroup.end_time">1302745181000</longProp>
-        <boolProp name="ThreadGroup.scheduler">false</boolProp>
-        <stringProp name="ThreadGroup.duration"></stringProp>
-        <stringProp name="ThreadGroup.delay"></stringProp>
-      </ThreadGroup>
-      <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get site map live" enabled="true">
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
-            <collectionProp name="Arguments.arguments"/>
-          </elementProp>
-          <stringProp name="HTTPSampler.domain"></stringProp>
-          <stringProp name="HTTPSampler.port"></stringProp>
-          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
-          <stringProp name="HTTPSampler.protocol"></stringProp>
-          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">${pathPrefixView}/home.sitemap.txt</stringProp>
-          <stringProp name="HTTPSampler.method">GET</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-          <stringProp name="HTTPSampler.implementation">Java</stringProp>
-          <boolProp name="HTTPSampler.monitor">false</boolProp>
-          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor" enabled="true">
-            <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-            <stringProp name="RegexExtractor.refname">SITE_MAP_LIVE</stringProp>
-            <stringProp name="RegexExtractor.regex">(?s)(.+)</stringProp>
-            <stringProp name="RegexExtractor.template">$1$</stringProp>
-            <stringProp name="RegexExtractor.default">SITE_MAP_LIVE_FAILED</stringProp>
-            <stringProp name="RegexExtractor.match_number">1</stringProp>
-          </RegexExtractor>
-          <hashTree/>
-          <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Format map file" enabled="true">
-            <stringProp name="filename"></stringProp>
-            <stringProp name="parameters"></stringProp>
-            <boolProp name="resetInterpreter">false</boolProp>
-            <stringProp name="script">import org.apache.jmeter.services.FileServer;
-
-if (prev.isSuccessful()) {
-    baseDir = FileServer.getFileServer().getBaseDir();
-    log.info(&quot;Base dir = &quot; + baseDir);
-    String live = vars.get(&quot;SITE_MAP_LIVE&quot;);
-
-    live = live.replaceAll(&quot;/cms/render/live&quot;, &quot;\n/cms/render/live&quot;);
-
-    // Removes Session ID
-    live = live.replaceAll(&quot;jsessionid=\\w+&quot;, &quot;&quot;);
-
-    // Add new line for each path
-    live = live.replaceAll(&quot;;&quot;, &quot;\n&quot;);
-
-    live = live.replaceAll(&quot;\n\n&quot;, &quot;\n&quot;);
-
-    live = live.replaceAll(&quot;.html&quot;, &quot;&quot;);
-
-    // removes empty lines
-    live =  org.apache.commons.lang.StringUtils.strip(live);
-
-    String mapFile = vars.get(&quot;siteMapFileLive&quot;);
-
-    try {
-        File f = new File(baseDir, mapFile);
-        // delete previous file
-        if (f.exists()) {
-            f.delete();
-        }
-        BufferedWriter out = new BufferedWriter(new FileWriter(f,true));
-        out.write(live);
-        out.close();
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-}</stringProp>
-          </BeanShellPostProcessor>
-          <hashTree/>
-        </hashTree>
-      </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Load site map edit" enabled="false">
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
-          <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">1</stringProp>
-        </elementProp>
-        <stringProp name="ThreadGroup.num_threads">1</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-        <longProp name="ThreadGroup.start_time">1302745181000</longProp>
-        <longProp name="ThreadGroup.end_time">1302745181000</longProp>
-        <boolProp name="ThreadGroup.scheduler">false</boolProp>
-        <stringProp name="ThreadGroup.duration"></stringProp>
-        <stringProp name="ThreadGroup.delay"></stringProp>
-      </ThreadGroup>
-      <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login" enabled="true">
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="username" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${rootUsername}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">username</stringProp>
-              </elementProp>
-              <elementProp name="password" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${rootPassword}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">password</stringProp>
-              </elementProp>
-              <elementProp name="doLogin" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">1</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">doLogin</stringProp>
-              </elementProp>
-              <elementProp name="redirectActive" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">false</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">redirectActive</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.domain"></stringProp>
-          <stringProp name="HTTPSampler.port"></stringProp>
-          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
-          <stringProp name="HTTPSampler.protocol"></stringProp>
-          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-          <stringProp name="HTTPSampler.path">/cms/login</stringProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-          <stringProp name="HTTPSampler.implementation">Java</stringProp>
-          <boolProp name="HTTPSampler.monitor">false</boolProp>
-          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-        </HTTPSamplerProxy>
-        <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get site map edit" enabled="true">
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
-            <collectionProp name="Arguments.arguments"/>
-          </elementProp>
-          <stringProp name="HTTPSampler.domain"></stringProp>
-          <stringProp name="HTTPSampler.port"></stringProp>
-          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
-          <stringProp name="HTTPSampler.protocol"></stringProp>
-          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">${pathPrefixEdit}/home.sitemap.txt</stringProp>
-          <stringProp name="HTTPSampler.method">GET</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-          <stringProp name="HTTPSampler.implementation">Java</stringProp>
-          <boolProp name="HTTPSampler.monitor">false</boolProp>
-          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor" enabled="true">
-            <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-            <stringProp name="RegexExtractor.refname">SITE_MAP_EDIT</stringProp>
-            <stringProp name="RegexExtractor.regex">(?s)(.+)</stringProp>
-            <stringProp name="RegexExtractor.template">$1$</stringProp>
-            <stringProp name="RegexExtractor.default">SITE_MAP_EDIT_FAILED</stringProp>
-            <stringProp name="RegexExtractor.match_number">1</stringProp>
-          </RegexExtractor>
-          <hashTree/>
-          <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Format map file" enabled="true">
-            <stringProp name="filename"></stringProp>
-            <stringProp name="parameters"></stringProp>
-            <boolProp name="resetInterpreter">false</boolProp>
-            <stringProp name="script">import org.apache.jmeter.services.FileServer;
-
-if (prev.isSuccessful()) {
-    baseDir = FileServer.getFileServer().getBaseDir();
-    log.info(&quot;Base dir = &quot; + baseDir);
-    String live = vars.get(&quot;SITE_MAP_EDIT&quot;);
-
-    live = live.replaceAll(&quot;/cms/edit/default&quot;, &quot;\n/cms/edit/default&quot;);
-
-    // Removes Session ID
-    live = live.replaceAll(&quot;jsessionid=\\w+&quot;, &quot;&quot;);
-
-    // Add new line for each path
-    live = live.replaceAll(&quot;;&quot;, &quot;\n&quot;);
-
-    live = live.replaceAll(&quot;\n\n&quot;, &quot;\n&quot;);
-
-    live = live.replaceAll(&quot;.html&quot;, &quot;&quot;);
-
-    // removes empty lines
-    live =  org.apache.commons.lang.StringUtils.strip(live);
-
-    String mapFile = vars.get(&quot;siteMapFileEdit&quot;);
-
-    try {
-        File f = new File(baseDir, mapFile);
-        // delete previous file
-        if (f.exists()) {
-            f.delete();
-        }
-        BufferedWriter out = new BufferedWriter(new FileWriter(f,true));
-        out.write(live);
-        out.close();
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-}</stringProp>
-          </BeanShellPostProcessor>
-          <hashTree/>
-        </hashTree>
-      </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Guest users browsing" enabled="true">
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Contrôleur Boucle" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -506,7 +281,7 @@ if (prev.isSuccessful()) {
         </RandomVariableConfig>
         <hashTree/>
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-          <stringProp name="filename">${siteMapFile}</stringProp>
+          <stringProp name="filename">${siteMapFileEdit}</stringProp>
           <stringProp name="fileEncoding"></stringProp>
           <stringProp name="variableNames">pagePath</stringProp>
           <stringProp name="delimiter">;</stringProp>
@@ -653,7 +428,7 @@ if (prev.isSuccessful()) {
         </HTTPSamplerProxy>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Auth users editing" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Auth users editing" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -695,7 +470,7 @@ if (prev.isSuccessful()) {
         <AuthManager guiclass="AuthPanel" testclass="AuthManager" testname="HTTP Authorization Manager" enabled="true">
           <collectionProp name="AuthManager.auth_list">
             <elementProp name="" elementType="Authorization">
-              <stringProp name="Authorization.url">http://${__V(server${randomServerID})}:${serverPort}/cms/render</stringProp>
+              <stringProp name="Authorization.url">http://${__V(serverIP${randomServerID})}:${serverPort}/cms/render</stringProp>
               <stringProp name="Authorization.username">jahia</stringProp>
               <stringProp name="Authorization.password">password</stringProp>
               <stringProp name="Authorization.domain"></stringProp>
@@ -705,7 +480,7 @@ if (prev.isSuccessful()) {
         </AuthManager>
         <hashTree/>
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-          <stringProp name="filename">${siteMapFileEdit}</stringProp>
+          <stringProp name="filename">${siteMapFile}</stringProp>
           <stringProp name="fileEncoding"></stringProp>
           <stringProp name="variableNames">pagePathEdit</stringProp>
           <stringProp name="delimiter">;</stringProp>
@@ -745,7 +520,7 @@ if (prev.isSuccessful()) {
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="LDAP Editors" enabled="true">
           <stringProp name="delimiter">\n</stringProp>
           <stringProp name="fileEncoding"></stringProp>
-          <stringProp name="filename">ldap-users-editing.csv</stringProp>
+          <stringProp name="filename">${usersFile}</stringProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
           <stringProp name="shareMode">All threads</stringProp>
@@ -765,7 +540,7 @@ if (prev.isSuccessful()) {
               </elementProp>
               <elementProp name="password" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${password}</stringProp>
+                <stringProp name="Argument.value">${username}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">password</stringProp>
@@ -803,15 +578,6 @@ if (prev.isSuccessful()) {
           <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
-            <collectionProp name="Asserion.test_strings">
-              <stringProp name="49586">200</stringProp>
-            </collectionProp>
-            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
-            <boolProp name="Assertion.assume_success">false</boolProp>
-            <intProp name="Assertion.test_type">2</intProp>
-          </ResponseAssertion>
-          <hashTree/>
           <GaussianRandomTimer guiclass="GaussianRandomTimerGui" testclass="GaussianRandomTimer" testname="Gaussian Random Timer" enabled="true">
             <stringProp name="ConstantTimer.delay">${offTime}</stringProp>
             <stringProp name="RandomTimer.range">${varTime}</stringProp>
@@ -853,7 +619,7 @@ if (prev.isSuccessful()) {
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">${pagePathEdit}.html</stringProp>
+          <stringProp name="HTTPSampler.path">${pathPrefixEdit}${pagePathEdit}.html</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -949,7 +715,7 @@ if (prev.isSuccessful()) {
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">${pagePathEdit}/*</stringProp>
+          <stringProp name="HTTPSampler.path">${pathPrefixEdit}${pagePathEdit}/*</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -996,7 +762,7 @@ if (prev.isSuccessful()) {
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${pagePathEdit}/jmeter-page-${username}-${idNewPage}/*</stringProp>
+            <stringProp name="HTTPSampler.path">${pathPrefixEdit}${pagePathEdit}/jmeter-page-${username}-${idNewPage}/*</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1045,7 +811,7 @@ if (prev.isSuccessful()) {
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${pagePathEdit}/jmeter-page-${username}-${idNewPage}/maincontent/*</stringProp>
+            <stringProp name="HTTPSampler.path">${pathPrefixEdit}${pagePathEdit}/jmeter-page-${username}-${idNewPage}/maincontent/*</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1074,7 +840,7 @@ if (prev.isSuccessful()) {
                 </elementProp>
                 <elementProp name="immediate" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">false</stringProp>
+                  <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                   <stringProp name="Argument.name">immediate</stringProp>
@@ -1087,7 +853,7 @@ if (prev.isSuccessful()) {
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${pagePathEdit}/jmeter-page-${username}-${idNewPage}.publish.do</stringProp>
+            <stringProp name="HTTPSampler.path">${pathPrefixEdit}${pagePathEdit}/jmeter-page-${username}-${idNewPage}.publish.do</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1203,6 +969,7 @@ if (prev.isSuccessful()) {
             <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
             <assertionsResultsToSave>0</assertionsResultsToSave>
             <bytes>true</bytes>
+            <idleTime>true</idleTime>
           </value>
         </objProp>
         <stringProp name="filename"></stringProp>
@@ -1235,6 +1002,7 @@ if (prev.isSuccessful()) {
             <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
             <assertionsResultsToSave>0</assertionsResultsToSave>
             <bytes>true</bytes>
+            <idleTime>true</idleTime>
           </value>
         </objProp>
         <stringProp name="filename"></stringProp>

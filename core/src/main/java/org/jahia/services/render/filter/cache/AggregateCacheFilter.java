@@ -571,7 +571,17 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(keyAttrbs.get(
                     "workspace"), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
                     renderContext.getFallbackLocale());
-            final JCRNodeWrapper node = currentUserSession.getNode(keyAttrbs.get("path"));
+            JCRNodeWrapper node = null;
+            try {
+                node = currentUserSession.getNode(keyAttrbs.get("path"));
+            } catch (PathNotFoundException e) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Node {} is not longer avilable."
+                            + " Replacing output with empty content.", keyAttrbs.get("path"));
+                }
+                outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), StringUtils.EMPTY);
+                return;
+            }
             if(logger.isDebugEnabled()) {
                 logger.debug("Calling render service for generating content for key " + cacheKey + " with attributes : " +
                              new ToStringBuilder(keyAttrbs,ToStringStyle.MULTI_LINE_STYLE)+ "\nmodule params : " +

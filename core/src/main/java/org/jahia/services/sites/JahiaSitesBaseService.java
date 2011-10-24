@@ -429,7 +429,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, File fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException {
-        return addSite(currentUser,title, serverName, siteKey, descr, selectedLocale, selectTmplSet,null, firstImport, fileImport, fileImportName,
+        return addSite(currentUser,title, serverName, siteKey, descr, selectedLocale, selectTmplSet,modulesToDeploy, firstImport, fileImport, fileImportName,
                 asAJob, doImportServerPermissions, originatingJahiaRelease, null);
     }
 

@@ -115,7 +115,9 @@
                                     <ul>
                                         <c:forEach items="${dep.propertyDefinitions}" var="propDef">
                                             <c:if test="${propDef.declaringNodeType.name eq dep.name}">
-                                                <li>${propDef.name}</li>
+                                                <c:set var="propType" value="${propDef.requiredType}"/>
+                                                <% pageContext.setAttribute("propTypeName", javax.jcr.PropertyType.nameFromValue((Integer)pageContext.getAttribute("propType"))); %>
+                                                <li>${propDef.name} (${propTypeName})</li>
                                             </c:if>
                                         </c:forEach>
                                     </ul>

@@ -16,3 +16,22 @@ global ImageService imageService
 global ExtractionService extractionService
 global Logger logger
 global JCRStoreProvider provider
+
+rule "Move subnodes to split folder"
+    salience 100
+    when
+        The type jmix:autoSplitFolders has been assigned to a node
+            - not in operation import
+    then
+        Move subnodes of node to split folder
+end
+
+rule "Move to split folder"
+    salience 100
+    when
+        A new node is created
+            - the parent has the type jmix:autoSplitFolders
+            - not in operation import
+    then
+        Move to split folder node
+end

@@ -202,9 +202,6 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
             if (node.getNodeTypes().contains("jmix:markedForDeletion")) {
                 v = "<span class=\"markedForDeletion\">" + v + "</span>";
             }
-            if (PermissionsUtils.isPermitted("editModeAccess", node)) {
-                v = "<span class=\"noEditModeAccess\">" + v + "</span>";
-            }
             return v;
         }
     };

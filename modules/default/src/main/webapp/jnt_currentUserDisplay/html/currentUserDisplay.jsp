@@ -25,8 +25,14 @@
             </div>
         </div>
     </c:when>
+    <c:when test="${not empty mainTemplate}">
+         <template:module path="${renderContext.user.localPath}" view="${mainTemplate}"/>
+     </c:when>
     <c:otherwise>
-        <template:module path="${renderContext.user.localPath}" view="${mainTemplate}"/>
+        <div class="AreaInformation">
+               <span>${currentNode.user.name}</span>
+            </div>
+
     </c:otherwise>
 </c:choose>
 

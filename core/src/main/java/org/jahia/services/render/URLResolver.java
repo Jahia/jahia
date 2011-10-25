@@ -401,7 +401,7 @@ public class URLResolver {
             siteInfo = (SiteInfo) siteInfoCache.get(cacheKey);
         } else {
             nodePath = JCRTemplate.getInstance().doExecuteWithSystemSession(null,
-                    workspace, new JCRCallback<String>() {
+                    workspace, locale, new JCRCallback<String>() {
                         public String doInJCR(JCRSessionWrapper session)
                                 throws RepositoryException {
                             String nodePath = JCRContentUtils.escapeNodePath(path.endsWith("/*") ? path.substring(0, path.lastIndexOf("/*")) : path);

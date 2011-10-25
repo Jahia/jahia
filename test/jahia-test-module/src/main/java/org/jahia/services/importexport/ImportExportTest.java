@@ -40,7 +40,9 @@
 
 package org.jahia.services.importexport;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -56,6 +58,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.jcr.ItemExistsException;
 import javax.jcr.NodeIterator;
@@ -86,10 +90,15 @@ import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.importexport.validation.MissingNodetypesValidationResult;
+import org.jahia.services.importexport.validation.ValidationResult;
+import org.jahia.services.importexport.validation.ValidationResults;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jdom.JDOMException;
@@ -1086,5 +1095,97 @@ public class ImportExportTest {
                 return null;
             }
         });
+    }
+    
+    @Test
+    public void testImportValidation() throws Exception {
+        JCRSessionFactory sf = JCRSessionFactory.getInstance();
+        sf.closeAllSessions();
+        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        JCRNodeWrapper englishSiteRootNode = session.getNode("/" + SITECONTENT_ROOT_NODE);
+                        JCRSiteNode site = englishSiteRootNode.getResolveSite();
+                        ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
+                        String prepackedZIPFile = SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites/webtemplates.zip";
+                        String siteZIPName = "ACME.zip";
+                        File siteZIPFile = null;
+                        try {
+                            ZipInputStream zis = null;
+                            OutputStream os = null;
+                            try {
+                                zis = new ZipInputStream(new FileInputStream(new File(prepackedZIPFile)));
+                                ZipEntry z = null;
+                                while ((z = zis.getNextEntry()) != null) {
+                                    if (siteZIPName.equalsIgnoreCase(z.getName())) {
+                                        File zipFile = File.createTempFile("import", ".zip");
+                                        os = new FileOutputStream(zipFile);
+                                        byte[] buf = new byte[4096];
+                                        int r;
+                                        while ((r = zis.read(buf)) > 0) {
+                                            os.write(buf, 0, r);
+                                        }
+                                        os.close();
+
+                                        siteZIPFile = zipFile;
+                                    }
+                                }
+                            } catch (IOException e) {
+                                logger.error(e.getMessage(), e);
+                            } finally {
+                                if (os != null) {
+                                    try {
+                                        os.close();
+                                    } catch (IOException e) {
+                                        logger.error(e.getMessage(), e);
+                                    }
+                                }
+                                if (zis != null) {
+                                    try {
+                                        zis.close();
+                                    } catch (IOException e) {
+                                        logger.error(e.getMessage(), e);
+                                    }
+                                }
+                            }
+
+                            NoCloseZipInputStream noCloseZis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(
+                                    siteZIPFile)));
+                            try {
+                                while (true) {
+                                    org.jahia.utils.zip.ZipEntry zipentry = noCloseZis.getNextEntry();
+                                    if (zipentry == null)
+                                        break;
+                                    String name = zipentry.getName();
+                                    if (name.equals("repository.xml")) {
+                                        ValidationResults results = importExport.validateImportFile(session, noCloseZis, "application/xml",
+                                                site.getInstalledModules());
+                                        List<ValidationResult> valResults = results.getResults();
+                                        assertTrue("No validation errors found although there should be some", valResults.size() > 0);
+                                        
+                                        for (ValidationResult result : valResults) {
+                                            if (!result.isSuccessful()) {
+                                                if (result instanceof MissingNodetypesValidationResult) {
+                                                    assertEquals("There should be 4 missing nodetypes", 4, ((MissingNodetypesValidationResult)result).getMissingNodetypes().size());
+                                                    assertEquals("There should be 1 missing mixin", 1, ((MissingNodetypesValidationResult)result).getMissingMixins().size());
+                                                } 
+                                            }
+                                        }
+                                    }
+                                }
+                            } finally {
+                                noCloseZis.reallyClose();
+                            }
+                        } catch (IOException e) {
+                            logger.error(e.getMessage(), e);
+                        } finally {
+                            if (siteZIPFile != null) {
+                                siteZIPFile.delete();
+                            }
+                        }
+                        return null;
+                    }
+                });
+        sf.closeAllSessions();
     }
 }

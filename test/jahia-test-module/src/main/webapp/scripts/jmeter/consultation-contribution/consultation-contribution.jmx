@@ -286,7 +286,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
         </RandomVariableConfig>
         <hashTree/>
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-          <stringProp name="filename">${siteMapFileEdit}</stringProp>
+          <stringProp name="filename">${siteMapFile}</stringProp>
           <stringProp name="fileEncoding"></stringProp>
           <stringProp name="variableNames">pagePath</stringProp>
           <stringProp name="delimiter">;</stringProp>
@@ -396,7 +396,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
             <hashTree/>
           </hashTree>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Logout" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Logout - ${__V(serverIP${randomServerID})}" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
             <collectionProp name="Arguments.arguments">
               <elementProp name="redirectActive" elementType="HTTPArgument">
@@ -415,7 +415,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">${__V(server${randomServerID})}</stringProp>
+          <stringProp name="HTTPSampler.domain">${__V(serverIP${randomServerID})}</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>

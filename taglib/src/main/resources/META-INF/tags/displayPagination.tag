@@ -10,14 +10,9 @@
 <%@ taglib prefix="search" uri="http://www.jahia.org/tags/search" %>
 <%@ attribute name="nbItemsList" required="false" type="java.lang.String"
               description="The input field name and ID to synchronize the seletcted item value with."  %>
-<<<<<<< .working
-<%@ attribute name="id" required="false" type="java.lang.String"
-              description="The ID of the paginated list."  %>
-=======
 <%@ attribute name="displayNumberOfItemsPerPage" required="false" type="java.lang.Boolean" description="Display the Number Of Items Per Page select list"  %>              
 <%@ attribute name="id" required="false" type="java.lang.String"
               description="The ID of the paginated list."  %>
->>>>>>> .merge-right.r39536
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
 <%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
@@ -75,22 +70,6 @@
         <div class="paginationPosition"><span><fmt:message key="pagination.pageOf.withTotal"><fmt:param value="${moduleMap.currentPage}"/><fmt:param value="${moduleMap.nbPages}"/><fmt:param value="${moduleMap.totalSize}"/></fmt:message></span>
         </div>
         <div class="paginationNavigation">
-<<<<<<< .working
-            <label for="pageSizeSelector${currentNode.identifier}"><fmt:message key="pagination.itemsPerPage"/>:</label>
-            <c:url value="${basePaginationUrl}" context="/" var="selectSizeUrl">
-                <c:param name="${beginid}" value="${moduleMap.begin}"/>
-            </c:url>
-            <select id="pageSizeSelector${currentNode.identifier}" onchange="window.location='${fn:escapeXml(selectSizeUrl)}&amp;pagesize${id}='+$('#pageSizeSelector${currentNode.identifier}').val();">
-                <c:if test="${empty nbItemsList}">
-                    <c:set var="nbItemsList" value="5,10,25,50,100"/>
-                </c:if>
-                <c:forTokens items="${nbItemsList}" delims="," var="opt">
-                    <option value="${opt}" <c:if test="${moduleMap.pageSize eq opt}">selected="true" </c:if>>${opt}</option>
-                </c:forTokens>
-            </select>
-            &nbsp;
-            <c:if test="${moduleMap .currentPage>1}">
-=======
 					<c:if test="${empty displayNumberOfItemsPerPage || displayNumberOfItemsPerPage eq 'true'}">        
                 <label for="pageSizeSelector${currentNode.identifier}"><fmt:message key="pagination.itemsPerPage"/>:</label>
                 <c:url value="${basePaginationUrl}" context="/" var="selectSizeUrl">
@@ -107,7 +86,6 @@
                 &nbsp;
             </c:if>
             <c:if test="${moduleMap .currentPage>1}">
->>>>>>> .merge-right.r39536
                 <c:url value="${basePaginationUrl}" context="/" var="previousUrl">
                     <c:param name="${beginid}" value="${(moduleMap.currentPage-2) * moduleMap.pageSize }"/>
                     <c:param name="${endid}" value="${ (moduleMap.currentPage-1)*moduleMap.pageSize-1}"/>

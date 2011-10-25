@@ -220,20 +220,22 @@ For contribution, you need to create a top page (${contributionHomePage}), users
           <boolProp name="perThread">true</boolProp>
         </RandomVariableConfig>
         <hashTree/>
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
+          <stringProp name="filename">${siteMapFile}</stringProp>
+          <stringProp name="fileEncoding"></stringProp>
+          <stringProp name="variableNames">pagePath</stringProp>
+          <stringProp name="delimiter">;</stringProp>
+          <boolProp name="quotedData">false</boolProp>
+          <boolProp name="recycle">true</boolProp>
+          <boolProp name="stopThread">false</boolProp>
+          <stringProp name="shareMode">All threads</stringProp>
+        </CSVDataSet>
+        <hashTree/>
         <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Browsing" enabled="true">
           <boolProp name="LoopController.continue_forever">true</boolProp>
           <stringProp name="LoopController.loops">${nbPagesClick}</stringProp>
         </LoopController>
         <hashTree>
-          <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random page ID" enabled="true">
-            <stringProp name="variableName">idPage</stringProp>
-            <stringProp name="outputFormat">###</stringProp>
-            <stringProp name="minimumValue">1</stringProp>
-            <stringProp name="maximumValue">${totalPages}</stringProp>
-            <stringProp name="randomSeed"></stringProp>
-            <boolProp name="perThread">true</boolProp>
-          </RandomVariableConfig>
-          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="View Jahia page (guest) - ${__V(serverIP${randomServerID})}" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
               <collectionProp name="Arguments.arguments"/>
@@ -244,7 +246,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${pathPrefix}/page${idPage}</stringProp>
+            <stringProp name="HTTPSampler.path">${pathPrefix}${pagePath}.html</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">true</boolProp>

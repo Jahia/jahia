@@ -61,7 +61,7 @@
 </script>
 <div id="topTitle">
     <h1>Jahia</h1>
-    <h2 class="edit"><fmt:message key="org.jahia.admin.users.ManageGroups.groupManagement.label"/> : <fmt:message key="org.jahia.admin.site.label"/>&nbsp;<%= currentSite.getTitle() %></h2>
+    <h2 class="edit"><fmt:message key="org.jahia.admin.users.ManageGroups.groupManagement.label"/>: <fmt:message key="org.jahia.admin.site.label"/>&nbsp;<%= currentSite.getTitle() %></h2>
 </div>
 <div id="main">
     <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">

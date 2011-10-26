@@ -99,7 +99,11 @@ function initEditFields(id) {
         tooltip : contributionI18n['edit'],
         loaddata : {defaultValue:($(".dateTimeEdit" + id).attr('jcr:valuems') != null ? $(".dateTimeEdit" + id).attr('jcr:valuems') : $(".dateTimeEdit" + id).attr('jcr:value'))}
     });
+    setChoiceListEdit(id);
+    setFileEdit(id);
+}
 
+function setChoiceListEdit(id) {
     $(".choicelistEdit" + id).editable(function (value, settings) {
         var submitId = $(this).attr('jcr:id').replace("_", ":");
         var data = {'jcrMethodToCall':'put'};
@@ -116,7 +120,9 @@ function initEditFields(id) {
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit']
     });
+}
 
+function setFileEdit(id) {
     $(".file" + id).editable('', {
         type : 'ajaxupload',
         onblur : 'ignore',
@@ -135,8 +141,10 @@ function initEditFields(id) {
         }
     });
 
+}
 
-    $(".fileSelector" + id).editable(function (value, settings) {
+function setFileSelector(id) {
+        $(".fileSelector" + id).editable(function (value, settings) {
         var data = {'jcrMethodToCall':'put'};
         var submitId = $(this).attr('jcr:id');
         data[submitId] = value;
@@ -157,7 +165,8 @@ function initEditFields(id) {
         root : $(".fileSelector" + id).attr('jeditabletreeselector:root'),
         selectorLabel : $(".fileSelector" + id).attr('jeditabletreeselector:selectorLabel'),
         preview : $(".fileSelector" + id).attr('jeditabletreeselector:preview'),
-        previewPath : $(".fileSelector" + id).attr('jeditabletreeselector:previewPath')
+        previewPath : $(".fileSelector" + id).attr('jeditabletreeselector:previewPath'),
+        output : ""
     });
 }
 

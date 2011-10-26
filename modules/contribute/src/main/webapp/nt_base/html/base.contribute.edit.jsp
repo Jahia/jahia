@@ -46,11 +46,33 @@
                       scope="application"/>
 <utility:setBundle basename="JahiaContributeMode" useUILocale="true" templateName="Jahia Contribute Mode"/>
 <c:set var="nodeLocked" value="${jcr:isLockedAndCannotBeEdited(currentNode)}"/>
+<c:if test="${empty currentResource.moduleParams.contentType}">
+    <c:set var="contentType" value="content"/>
+</c:if>
+<c:if test="${not empty currentResource.moduleParams.contentType}">
+    <c:set var="contentType" value="${currentResource.moduleParams.contentType}"/>
+</c:if>
+<c:set var="type" value="${currentNode.primaryNodeType}"/>
+
 <c:if test="${!nodeLocked && !renderContext.ajaxRequest}">
+    <c:set var="initEditFields" value="'initEditFields(\\\'${currentNode.identifier}\\\');"/>
+    <c:forEach items="${currentNode.primaryNodeType.propertyDefinitions}" var="propertyDefinition">
+        <c:if test="${!propertyDefinition.multiple and propertyDefinition.itemType eq contentType and not propertyDefinition.hidden and !(propertyDefinition.name eq 'jcr:title') and !(propertyDefinition.name eq '*')}">
+            <c:choose>
+                <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
+                    <c:set var="initEditFields" value="${initEditFields}setFileSelector(\\\'${currentNode.identifier}${fn:replace(propertyDefinition.name,':','_')}\\\');setFileEdit(\\\'${currentNode.identifier}${fn:replace(propertyDefinition.name,':','_')}\\\');"/>
+                </c:when>
+                <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
+                    <c:set var="initEditFields" value="${initEditFields}SetChoiceListEdit(\\\'${currentNode.identifier}${fn:replace(propertyDefinition.name,':','_')}\\\');"/>
+                </c:when>
+            </c:choose>
+        </c:if>
+    </c:forEach>
+    <c:set var="initEditFields" value="${initEditFields}'"/>
     <template:addResources>
         <script>
             $(document).ready(function() {
-                initEditFields("${currentNode.identifier}");
+                ${initEditFields}
             });
         </script>
     </template:addResources>
@@ -75,14 +97,7 @@
 
         /*  */
 </style>
-<c:if test="${empty currentResource.moduleParams.contentType}">
-    <c:set var="contentType" value="content"/>
-</c:if>
-<c:if test="${not empty currentResource.moduleParams.contentType}">
-    <c:set var="contentType" value="${currentResource.moduleParams.contentType}"/>
-</c:if>
 <div class="FormContribute">
-    <c:set var="type" value="${currentNode.primaryNodeType}"/>
     <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
         <c:if test="${propertyDefinition.name eq 'jcr:title'}">
             <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
@@ -133,22 +148,9 @@
                                     </c:otherwise>
                                 </c:choose>
                                 <c:choose>
-                                    <c:when test="${propertyDefinition.selectorOptions.type eq 'page'}">
-                                        <div class="fileSelector${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
-                                             jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
-                                             jeditabletreeselector:baseURL="${baseURL}"
-                                             jeditabletreeselector:root="${renderContext.site.path}"
-                                             jeditabletreeselector:nodetypes="${'jnt:page'}"
-                                             jeditabletreeselector:selectablenodetypes="${'jnt:page'}"
-                                             jeditabletreeselector:selectorLabel="<fmt:message key='label.show.page.picker'/>"
-                                             jeditabletreeselector:preview="true" jeditabletreeselector:previewPath="<c:url value='${url.files}'/>">
-                                            <span><fmt:message key="label.select.page"/></span>
-                                        </div>
-
-                                    </c:when>
-                                    <c:otherwise>
+                                    <c:when test="${propertyDefinition.selectorOptions.type eq 'image'}">
                                         <c:set var="pickerTypeImage" value="${propertyDefinition.selectorOptions.type == 'image'}"/>
-                                        <div class="fileSelector${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
+                                        <div class="fileSelector${currentNode.identifier}${propertyDefinition.name}" jcr:id="${propertyDefinition.name}"
                                              jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
                                              jeditabletreeselector:baseURL="${baseURL}"
                                              jeditabletreeselector:root="${renderContext.site.path}"
@@ -160,10 +162,61 @@
                                         </div>
 
                                         <span><fmt:message key="label.or"/></span>
-
-                                        <div class="file${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
+                                        <div class="file${currentNode.identifier}${propertyDefinition.name}" jcr:id="${propertyDefinition.name}"
                                              jcr:url="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>">
                                             <span><fmt:message key="add.file"/></span>
+                                        </div>
+
+                                    </c:when>
+                                    <c:when test="${propertyDefinition.selectorOptions.type eq 'folder'}">
+                                        <div class="fileSelector${currentNode.identifier}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${propertyDefinition.name}"
+                                             jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
+                                             jeditabletreeselector:baseURL="${baseURL}"
+                                             jeditabletreeselector:root="${renderContext.site.path}"
+                                             jeditabletreeselector:nodetypes="jnt:folder,jnt:virtualsite"
+                                             jeditabletreeselector:selectablenodetypes="jnt:folder"
+                                             jeditabletreeselector:selectorLabel="<fmt:message key='label.select.folder'/>"
+                                             jeditabletreeselector:preview="false">
+                                            <span><fmt:message key="label.select.folder"/></span>
+                                        </div>
+
+                                    </c:when>
+                                    <c:when test="${propertyDefinition.selectorOptions.type eq 'contentFolder'}">
+                                        <div class="fileSelector${currentNode.identifier}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${propertyDefinition.name}"
+                                             jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
+                                             jeditabletreeselector:baseURL="${baseURL}"
+                                             jeditabletreeselector:root="${renderContext.site.path}"
+                                             jeditabletreeselector:nodetypes="jnt:contentFolder"
+                                             jeditabletreeselector:selectablenodetypes="jnt:contentFolder"
+                                             jeditabletreeselector:selectorLabel="<fmt:message key='label.select.folder'/>"
+                                             jeditabletreeselector:preview="false">
+                                            <span><fmt:message key="label.select.folder"/></span>
+                                        </div>
+
+                                    </c:when>
+                                    <c:when test="${propertyDefinition.selectorOptions.type eq 'page'}">
+                                        <div class="fileSelector${currentNode.identifier}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${propertyDefinition.name}"
+                                             jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
+                                             jeditabletreeselector:baseURL="${baseURL}"
+                                             jeditabletreeselector:root="${renderContext.site.path}"
+                                             jeditabletreeselector:nodetypes="jnt:page"
+                                             jeditabletreeselector:selectablenodetypes="jnt:page"
+                                             jeditabletreeselector:selectorLabel="<fmt:message key='label.show.page.picker'/>"
+                                             jeditabletreeselector:preview="false">
+                                            <span><fmt:message key="label.select.page"/></span>
+                                        </div>
+
+                                    </c:when>
+
+                                    <c:otherwise>
+                                        <div class="fileSelector${currentNode.identifier}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${propertyDefinition.name}"
+                                             jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
+                                             jeditabletreeselector:baseURL="${baseURL}"
+                                             jeditabletreeselector:root="${renderContext.site.path}"
+                                             jeditabletreeselector:nodetypes="jnt:content,jnt:page,jnt:virtualsite"
+                                             jeditabletreeselector:selectablenodetypes="jnt:content,jntpage"
+                                             jeditabletreeselector:selectorLabel="<fmt:message key='label.show.content.picker'/>" jeditabletreeselector:preview="false">
+                                            <span><fmt:message key="label.select.content"/></span>
                                         </div>
                                     </c:otherwise>
                                 </c:choose>
@@ -171,12 +224,12 @@
                             <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
                                 <jcr:propertyInitializers var="options" nodeType="${type.name}"
                                                           name="${propertyDefinition.name}"/>
-                                <div jcr:id="${propertyDefinition.name}" class="choicelistEdit${currentNode.identifier}"
+                                <div jcr:id="${propertyDefinition.name}" class="choicelistEdit${currentNode.identifier}${fn:replace(propertyDefinition.name,':','_')}"
                                      jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
                                      jcr:options="{<c:forEach items="${options}" varStatus="status" var="option"><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}">${prop.string}</div>
                             </c:when>
                             <c:otherwise>
-                                <div class="fileSelector${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
+                                <div class="fileSelector${currentNode.identifier}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${propertyDefinition.name}"
                                      jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
                                      jeditabletreeselector:baseURL="${baseURL}"
                                      jeditabletreeselector:root="${renderContext.site.path}"
@@ -187,7 +240,7 @@
                                 </div>
                             </c:otherwise>
                         </c:choose>
-                        <div id="renderingOfFile${currentNode.identifier}">
+                        <div id="renderingOfFile${currentNode.identifier}${fn:replace(propertyDefinition.name,':','_')}">
                             <template:module node="${prop.node}" view="default" />
                         </div>
                     </c:when>

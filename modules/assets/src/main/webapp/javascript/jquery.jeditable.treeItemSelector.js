@@ -1,7 +1,10 @@
 $.editable.addInputType('treeItemSelector', {
     /* create input element */
     element : function(settings, original) {
-        var input = $('<a href="#treeItemSelectorJeditable-treeItemSelector" id="treeItemSelectorJeditable-treeItemSelectorTrigger">'+settings.selectorLabel+'</a><div style="display:none"><div id="treeItemSelectorJeditable-treeItemSelector"><ul id="treeItemSelectorJeditable-treeItemSelectorTree"></ul></div></div><input id="treeItemSelectorJeditable" readonly="true"/>');
+        var input = $('<a href="#treeItemSelectorJeditable-treeItemSelector" id="treeItemSelectorJeditable-treeItemSelectorTrigger">'+settings.selectorLabel+'</a>' +
+            '<div style="display:none"><div id="treeItemSelectorJeditable-treeItemSelector"><ul id="treeItemSelectorJeditable-treeItemSelectorTree"></ul></div></div>' +
+            '<input id="treeItemSelectorJeditable-input" readonly="true"/>' +
+            '<div id="treeItemSelectorJeditable-preview"></div><input type="hidden" id="treeItemSelectorJeditable" readonly="true"/>');
         $(this).append(input);
         return(input);
     },
@@ -44,8 +47,9 @@ $.editable.addInputType('treeItemSelector', {
                     callback: function (uuid, path, title) {
                         $("#treepreview").remove();
                         $("#treeItemSelectorJeditable").val(uuid);
-                        if(preview) {
-                            $("#treeItemSelectorJeditable").after("<img src='" + previewPath+path + "' alt='"+title+"' />");
+                        $("#treeItemSelectorJeditable-input").val(title);
+                        if(preview == "true") {
+                            $("#treeItemSelectorJeditable-preview").html("<img src='" + previewPath+path + "' alt='"+title+"' />");
                         }
                         $.fancybox.close();
                     }

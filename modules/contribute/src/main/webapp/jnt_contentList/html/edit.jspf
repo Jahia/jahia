@@ -1,20 +1,44 @@
 <c:set var="locked" value="${child.locked and child.lockOwner ne currentUser.username}"/>
+<c:if test="${empty currentResource.moduleParams.contentType}">
+    <c:set var="contentType" value="content"/>
+</c:if>
+<c:if test="${not empty currentResource.moduleParams.contentType}">
+    <c:set var="contentType" value="${currentResource.moduleParams.contentType}"/>
+</c:if>
+<utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType"
+                      scope="application"/>
+<utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
+                      scope="application"/>
 <div class="listEditToolbar">
     <input type="checkbox" name="${child.identifier}" ${locked ? 'disabled=true':''}/>
+    <c:set var="initEditFields" value="'initEditFields(\\\'${child.identifier}\\\');"/>
+    <c:forEach items="${child.primaryNodeType.propertyDefinitions}" var="propertyDefinition">
+        <c:if test="${!propertyDefinition.multiple and propertyDefinition.itemType eq contentType and not propertyDefinition.hidden and !(propertyDefinition.name eq 'jcr:title') and !(propertyDefinition.name eq '*')}">
+            <c:choose>
+                <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
+                    <c:set var="initEditFields" value="${initEditFields}setFileSelector(\\\'${child.identifier}${fn:replace(propertyDefinition.name,':','_')}\\\');setFileEdit(\\\'${currentNode.identifier}${fn:replace(propertyDefinition.name,':','_')}\\\');"/>
+                </c:when>
+                <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
+                    <c:set var="initEditFields" value="${initEditFields}SetChoiceListEdit(\\\'${currentNode.identifier}${fn:replace(propertyDefinition.name,':','_')}\\\');"/>
+                </c:when>
+            </c:choose>
+        </c:if>
+    </c:forEach>
+    <c:set var="initEditFields" value="${initEditFields}'"/>
 
     <c:if test="${inSite eq 'true'}">
         <c:if test="${locked ne 'true'}">
             <button id="editbtn-${child.identifier}"
                     onclick="$('#editbtn-${child.identifier}').hide();$.post('<c:url value="${url.base}${child.path}.lock.do"/>',{ type: 'contribute' },function(data){
-                        if (data['error'] != null) {
+                            if (data['error'] != null) {
                             $('#lockbtn-${child.identifier}').show();
                             $('#delbtn-${child.identifier}').hide();
-                        } else {
+                            } else {
                             $('#quitbtn-${child.identifier}').show();
-                            jreplace('edit-${child.identifier}', '<c:url value="${url.base}${child.path}.contribute.edit.html.ajax"/>',null, 'initEditFields(\'${child.identifier}\')');
+                            jreplace('edit-${child.identifier}', '<c:url value="${url.base}${child.path}.contribute.edit.html.ajax"/>',null, ${initEditFields});
                             lockedPath['<c:url value="${url.base}${child.path}"/>'] = 'locked';
-                        }
-                    }, 'json')">
+                            }
+                            }, 'json')">
 
 
                 <span class="icon-contribute icon-edit"></span><fmt:message key="label.edit"/>&nbsp;</button>
@@ -26,20 +50,20 @@
         <button style="display:none;" id="quitbtn-${child.identifier}"
                 onclick="$('#quitbtn-${child.identifier}').hide();$.post('<c:url value="${url.base}${child.path}.unlock.do"/>',{ type: 'contribute' },function(data){
                         if (data['error'] != null) {
-                            $('#lockbtn-${child.identifier}').show();
-                            $('#delbtn-${child.identifier}').hide();
+                        $('#lockbtn-${child.identifier}').show();
+                        $('#delbtn-${child.identifier}').hide();
                         } else {
-                            $('#editbtn-${child.identifier}').show();
-                            lockedPath['<c:url value="${url.base}${child.path}"/>'] = 'unlocked';
+                        $('#editbtn-${child.identifier}').show();
+                        lockedPath['<c:url value="${url.base}${child.path}"/>'] = 'unlocked';
                         }
-	    	            var editors = CKEDITOR.instances;
-	    	            for(var i in editors) {
-	    		            try {
-	    			            CKEDITOR.instances[i].destroy();
-	    		            } catch (de) {}
-	    		        }
+                        var editors = CKEDITOR.instances;
+                        for(var i in editors) {
+                        try {
+                        CKEDITOR.instances[i].destroy();
+                        } catch (de) {}
+                        }
                         jreplace('edit-${child.identifier}', '<c:url value="${url.base}${child.path}.html.ajax"/>',null, '');
-                    }, 'json')">
+                        }, 'json')">
             <span class="icon-contribute icon-preview"></span><fmt:message key="label.quit"/>&nbsp;</button>
     </c:if>
     <c:if test="${moduleMap.orderedList != 'true' and (areaResource.properties['j:canOrderInContribution'].boolean or currentNode.properties['j:canOrderInContribution'].boolean) and jcr:hasOrderableChildNodes(currentNode)}">

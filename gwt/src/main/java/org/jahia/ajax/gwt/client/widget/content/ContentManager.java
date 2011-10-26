@@ -123,13 +123,15 @@ public class ContentManager extends TriPanelBrowserLayout {
         // linker initializations
         linker.registerComponents(tree, contentViews, tabs, toolbar, statusBar);
 
-        final ActionContextMenu actionContextMenu = new ActionContextMenu(config.getContextMenu(), linker);
+        if (config.getContextMenu() != null) {
+            final ActionContextMenu actionContextMenu = new ActionContextMenu(config.getContextMenu(), linker);
+            if (tree != null) {
+                tree.getComponent().setContextMenu(actionContextMenu);
+            }
 
-        if (tree != null) {
-            tree.getComponent().setContextMenu(actionContextMenu);
+            contentViews.getComponent().setContextMenu(actionContextMenu);
         }
 
-        contentViews.getComponent().setContextMenu(actionContextMenu);
         linker.handleNewSelection();
         if (config.isExpandRoot()) {
         } else {

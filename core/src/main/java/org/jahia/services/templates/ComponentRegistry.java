@@ -137,8 +137,11 @@ public class ComponentRegistry {
                                 if (label != null) {
                                     folder.getOrCreateI18N(locale).setProperty("jcr:title", label);
                                 }
+                                String description = st.getDescription(locale);
+                                if (description != null) {
+                                    folder.getOrCreateI18N(locale).setProperty("jcr:description", description);
+                                }
                             }
-
                         }
                         break;
                     }
@@ -150,6 +153,10 @@ public class ComponentRegistry {
                         String label = nt.getLabel(locale);
                         if (label != null) {
                             comp.getOrCreateI18N(locale).setProperty("jcr:title", label);
+                        }
+                        String description = nt.getDescription(locale);
+                        if (description != null) {
+                            folder.getOrCreateI18N(locale).setProperty("jcr:description", description);
                         }
                     }
                     if (nt.isNodeType(JMIX_STUDIO_ONLY)) {
@@ -169,6 +176,7 @@ public class ComponentRegistry {
             JCRNodeWrapper folder = components.hasNode("nonDroppableComponents") ?
                     components.getNode("nonDroppableComponents") : components.addNode("nonDroppableComponents",
                     JNT_COMPONENT_FOLDER);
+//            folder.addMixin("jmix:");
             if (!folder.hasNode(nt.getName())) {
                 folder.addNode(nt.getName(), JNT_SIMPLE_COMPONENT);
                 created = true;

@@ -48,6 +48,7 @@ import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.TreeGridDragSource;
 import com.extjs.gxt.ui.client.dnd.TreeGridDropTarget;
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
@@ -58,6 +59,7 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
+import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
@@ -108,6 +110,16 @@ public class RepositoryTab extends ContentPanel {
         factory.setSaveOpenPath(true);
         loader = factory.getLoader();
         store = factory.getStore();
+
+        store.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
+            public int compare(Object o1, Object o2) {
+                GWTJahiaNode s1 = (GWTJahiaNode) o1;
+                GWTJahiaNode s2 = (GWTJahiaNode) o2;
+
+                return Collator.getInstance().localeCompare(s1.get(config.getTreeColumnKeys().get(0)).toString(),
+                        s2.get(config.getTreeColumnKeys().get(0)).toString());
+            }
+        }));
 
         NodeColumnConfigList columns = new NodeColumnConfigList(config.getTreeColumns());
         columns.init();

@@ -1165,7 +1165,7 @@
     </bean>
 
     <!-- component manager -->
-    <bean id="componentmanager" parent="abstractmanager">
+    <bean id="sitecomponentmanager" parent="abstractmanager">
         <property name="requiredPermission" value="componentManager"/>
         <property name="nodeTypes">
             <list>
@@ -1189,100 +1189,34 @@
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
-                            <property name="titleKey" value="label.edit"/>
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.DeletePermanently"/>
-                                </list>
-                            </property>
-                        </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
-                            <property name="titleKey"
-                                      value="viewMenu.label"/>
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.Refresh"/>
-                                    <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.ListView"/>
-                                    <ref bean="Toolbar.Item.ThumbsView"/>
-                                    <ref bean="Toolbar.Item.Detailedview"/>
-                                    <ref bean="Toolbar.Item.ViewHiddenTypes"/>
-                                    <ref bean="Toolbar.Item.ViewHiddenProperties"/>
-                                </list>
-                            </property>
-                        </bean>
                         <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
                     </list>
                 </property>
             </bean>
         </property>
-        <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                <property name="items">
-                    <list>
-                        <ref bean="Toolbar.Item.DeletePermanently"/>
-                        <ref bean="Toolbar.Item.Export"/>
-                        <ref bean="Toolbar.Item.Import"/>
-                    </list>
-                </property>
-            </bean>
-        </property>
+
+        <property name="allowsMultipleSelection" value="false"/>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="false"/>
         <property name="searchInContent" value="true"/>
-        <property name="searchBasePath" value="/templateSets"/>
+        <property name="searchBasePath" value="/"/>
+        <property name="searchInCurrentSiteOnly" value="true"/>
         <property name="searchInFile" value="false"/>
         <property name="enableDragAndDrop" value="false"/>
 
         <!-- accordion -->
         <property name="repositories">
             <list>
-                <ref bean="repository.components"/>
+                <ref bean="repository.siteComponents"/>
             </list>
         </property>
         
         <!-- tabs -->
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <ref bean="Engine.Tab.Info"/>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                    <property name="id" value="title"/>
-                    <property name="titleKey" value="label.title"/>
-                    <property name="requiredPermission" value="viewContentTab"/>
-                    <property name="tabItem">
-                        <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">
-                            <property name="dataType">
-                                <list>
-                                    <value>content</value>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                    <property name="id" value="description"/>
-                    <property name="titleKey" value="label.description"/>
-                    <property name="requiredPermission" value="viewContentTab"/>
-                    <property name="tabItem">
-                        <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">
-                            <property name="dataType">
-                                <list>
-                                    <value>metadata</value>
-                                </list>
-                            </property>
-                            <property name="excludedTypes">
-                                <list>
-                                    <value>mix:created</value>
-                                    <value>mix:lastModified</value>
-                                    <value>jmix:lastPublished</value>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                </bean>
+                <ref bean="Engine.Tab.ComponentRights"/>
             </list>
         </property>
 
@@ -1302,24 +1236,6 @@
         </property>
     </bean>
     <!-- site-level component manager -->
-    <bean id="sitecomponentmanager" parent="componentmanager">
-        <!-- accordion -->
-        <property name="repositories">
-            <list>
-                <ref bean="repository.siteComponents"/>
-            </list>
-        </property>
-        <!-- tabs -->
-        <property name="searchBasePath" value="/"/>
-        <property name="searchInCurrentSiteOnly" value="true"/>
-
-        <property name="engineTabs">
-            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <ref bean="Engine.Tab.Info"/>
-                <ref bean="Engine.Tab.ComponentRights"/>
-            </list>
-        </property>
-    </bean>
 
     <!-- accordion -->
     <bean id="repository.global" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
@@ -1463,12 +1379,6 @@
                 <property name="inNodePath" value="/templateSets"/>
             </bean>
         </property>
-    </bean>
-
-    <bean id="repository.components" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="componentRepository"/>
-        <property name="paths" value="/templateSets"/>
-        <property name="titleKey" value="repository.componentRepository.label"/>
     </bean>
 
     <bean id="repository.siteComponents" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">

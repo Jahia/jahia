@@ -523,7 +523,7 @@
     </bean>
     
     <!-- Component Manager -->
-    <bean id="Toolbar.Item.ComponentManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+    <bean id="Toolbar.Item.SiteComponentManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
         </property>
@@ -534,25 +534,6 @@
                 <property name="permission" value="componentManager"/>
             </bean>
         </property>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=componentmanager&amp;site=$siteuuid"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="width"/>
-                    <property name="value" value="1020"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="height"/>
-                    <property name="value" value="730"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-    <!-- Site-level Component Manager -->
-    <bean id="Toolbar.Item.SiteComponentManager" parent="Toolbar.Item.ComponentManager" scope="prototype">
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">

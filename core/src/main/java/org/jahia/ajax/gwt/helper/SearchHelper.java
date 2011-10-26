@@ -202,7 +202,7 @@ public class SearchHelper {
         try {
             String s = "select * from [nt:query]";
             Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
-            return navigation.executeQuery(q, null,null,null, Arrays.asList(site.getSiteKey()));
+            return navigation.executeQuery(q, null,null,null, (site != null ? Arrays.asList(site.getSiteKey()): null));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

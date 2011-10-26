@@ -222,6 +222,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
         if (context != null) {
             List<Integer> list = new ArrayList<Integer>();;
 
+            list.add(0);
             if (context.equals("currentSite")) {
                 JCRSiteNode site = getSite();
                 if (site != null) {
@@ -237,8 +238,6 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                 } catch (JahiaException e) {
                     logger.error(e.getMessage(), e);
                 }
-            } else if (context.startsWith("sharedOnly")) {
-                list.add(0);
             }
 
             return searchGroups(match, offset, limit, list);

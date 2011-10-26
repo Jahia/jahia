@@ -260,12 +260,18 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     final List<String> groups = new ArrayList<String>();
                     try {
                         if (session.getWorkspace().getQueryManager() != null) {
-                            String siteName = sitesService.getSite(siteID).getSiteKey();
-                            String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP +
+                            StringBuffer query = new StringBuffer("SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP +
                                     "] as group WHERE group.[" + JCRGroup.J_EXTERNAL +
-                                    "] = 'false' AND ISCHILDNODE(group, '/sites/" + siteName +
-                                    "/groups') ORDER BY group.[j:nodename]";
-                            Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
+                                    "] = 'false'");
+                            if (siteID <= 0) {
+                                query.append(" AND ISCHILDNODE(group, '/groups");;
+                            } else {
+                                String siteName = sitesService.getSite(siteID).getSiteKey();
+                                query.append(" AND ISCHILDNODE(group, '/sites/").append(siteName).append("/groups')");
+                            }
+                            query.append(" ORDER BY group.[j:nodename]");
+
+                            Query q = session.getWorkspace().getQueryManager().createQuery(query.toString(), Query.JCR_SQL2);
                             QueryResult qr = q.execute();
                             RowIterator rows = qr.getRows();
                             while (rows.hasNext()) {
@@ -338,12 +344,18 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     List<String> groups = new ArrayList<String>();
                     try {
                         if (session.getWorkspace().getQueryManager() != null) {
-                            String siteName = sitesService.getSite(siteID).getSiteKey();
-                            String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP +
+                            StringBuilder query = new StringBuilder("SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP +
                                     "] as group WHERE group.[" + JCRGroup.J_EXTERNAL +
-                                    "] = 'false' AND ISCHILDNODE(group, '/sites/" + siteName +
-                                    "/groups') ORDER BY group.[j:nodename]";
-                            Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
+                                    "] = 'false'");
+                            if (siteID <= 0) {
+                                query.append(" AND ISCHILDNODE(g, '/groups')");
+                            } else {
+                                String siteName = sitesService.getSite(siteID).getSiteKey();
+                                query.append(" AND ISCHILDNODE(g, '/sites/" + siteName + "/groups')");
+                            }
+                            query.append(" ORDER BY group.[j:nodename]");
+
+                            Query q = session.getWorkspace().getQueryManager().createQuery(query.toString(), Query.JCR_SQL2);
                             QueryResult qr = q.execute();
                             RowIterator rows = qr.getRows();
                             while (rows.hasNext()) {
@@ -708,11 +720,15 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     try {
                         Set<JahiaGroup> users = new HashSet<JahiaGroup>();
                         if (session.getWorkspace().getQueryManager() != null) {
-                            String siteName = sitesService.getSite(siteID).getSiteKey();
                             StringBuilder query = new StringBuilder(
                                     "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as g WHERE g.[" +
-                                            JCRGroup.J_EXTERNAL + "] = 'false' AND ISCHILDNODE(g, '/sites/" + siteName +
-                                            "/groups')");
+                                            JCRGroup.J_EXTERNAL + "] = 'false'");
+                            if (siteID <= 0) {
+                                query.append(" AND ISCHILDNODE(g, '/groups')");
+                            } else {
+                                String siteName = sitesService.getSite(siteID).getSiteKey();
+                                query.append(" AND ISCHILDNODE(g, '/sites/" + siteName + "/groups')");
+                            }
                             if (searchCriterias != null && searchCriterias.size() > 0) {
                                 // Avoid wildcard attribute
                                 if (!(searchCriterias.containsKey("*") && searchCriterias.size() == 1 &&

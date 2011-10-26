@@ -75,7 +75,6 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     private String link  = null;
 
     private Map<String, JCRPropertyWrapper> propertiesFacade;
-    private List<AbstractHit<?>> usages;
 
     /**
      * Initializes an instance of this class.
@@ -175,39 +174,33 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     }
     
     public List<AbstractHit<?>> getUsages() {
-        if (usages == null) {
-            usages = Collections.emptyList();
+        List<AbstractHit<?>> usages = Collections.emptyList();
         
-            if (shouldRetrieveUsages(resource)) {
-                usages = new ArrayList<AbstractHit<?>>();
-                Set<String> addedLinks = new HashSet<String>();
-                try {
-                    for (PropertyIterator it = resource.getWeakReferences(); it.hasNext();) {
-                        try {
-                            JCRNodeWrapper refNode = (JCRNodeWrapper) it.nextProperty().getParent().getParent();
-                            JCRNodeWrapper node = JCRContentUtils.findDisplayableNode(refNode, context);
-                            AbstractHit<?> hit = node.isNodeType(Constants.JAHIANT_PAGE) ? new PageHit(
-                                    node, context) : new JCRNodeHit(node, context);
-                            if (!node.equals(resource) && addedLinks.add(hit.getLink())) {
-                                usages.add(hit);
-                            }
-                        } catch (Exception e) {
+        if (shouldRetrieveUsages(resource)) {
+            usages = new ArrayList<AbstractHit<?>>();
+            Set<String> addedLinks = new HashSet<String>();
+            try {
+                for (PropertyIterator it = resource.getWeakReferences(); it.hasNext();) {
+                    try {
+                        JCRNodeWrapper refNode = (JCRNodeWrapper) it.nextProperty().getParent().getParent();
+                        JCRNodeWrapper node = JCRContentUtils.findDisplayableNode(refNode, context);
+                        AbstractHit<?> hit = node.isNodeType(Constants.JAHIANT_PAGE) ? new PageHit(
+                                node, context) : new JCRNodeHit(node, context);
+                        if (!node.equals(resource) && addedLinks.add(hit.getLink())) {
+                            usages.add(hit);
                         }
+                    } catch (Exception e) {
                     }
-                } catch (RepositoryException e) {
                 }
+            } catch (RepositoryException e) {
             }
         }
         return usages;
     }
-
-    public void setUsages(List<AbstractHit<?>> usages) {
-        this.usages = usages;
-    }
-
+    
     private boolean shouldRetrieveUsages(JCRNodeWrapper node) {
         boolean shouldRetrieveUsages = false;
-        if (node.getPath().matches("/sites/([^/]+)/(contents|files)/.*")) {
+        if (node.getPath().matches("/sites/([^/]+)/contents/.*")) {
             shouldRetrieveUsages = true;
         }
         return shouldRetrieveUsages;

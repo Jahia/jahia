@@ -43,7 +43,12 @@ package org.jahia.services.search.jcr;
 import static org.jahia.services.content.JCRContentUtils.stringToJCRSearchExp;
 import static org.jahia.services.content.JCRContentUtils.stringToQueryLiteral;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
@@ -159,33 +164,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         if (addedNodes.add(node.getIdentifier()) && !isNodeToSkip(node, criteria, languages)) {
                             Hit<?> hit = buildHit(row, node, context);
 
-                            boolean ok = false;
+                            SearchServiceImpl.executeURLModificationRules(hit, context);
 
-                            if (!criteria.getSites().isEmpty() && !criteria.getSites().getValue().equals("-all-")) {
-                                String[] sites = criteria.getSites().getValues();
-                                if (ArrayUtils.contains(sites, node.getResolveSite().getName())) {
-                                    ok = true;
-                                } else if (hit instanceof JCRNodeHit) {
-                                    List<AbstractHit<?>> filteredUsages = new ArrayList<AbstractHit<?>>();
-                                    JCRNodeHit jcrNodeHit = (JCRNodeHit) hit;
-                                    List<AbstractHit<?>> usages = jcrNodeHit.getUsages();
-                                    for (AbstractHit<?> usage : usages) {
-                                        if (usage.getRawHit() instanceof JCRNodeWrapper && ArrayUtils.contains(sites, ((JCRNodeWrapper) usage.getRawHit()).getResolveSite().getName())) {
-                                            filteredUsages.add(usage);
-                                        }
-                                    }
-                                    jcrNodeHit.setUsages(filteredUsages);
-                                    ok = !filteredUsages.isEmpty();
-                                }
-                            } else {
-                                ok = true;
-                            }
-                            if (ok)  {
-                                SearchServiceImpl.executeURLModificationRules(hit, context);
-
-                                if (addedHits.add(hit.getLink())) {
-                                    results.add(hit);
-                                }
+                            if (addedHits.add(hit.getLink())) {
+                                results.add(hit);
                             }
                         }
                     } catch (Exception e) {
@@ -300,33 +282,33 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             query.append(ISO9075.encodePath(jcrPath.toString())).append("element(").append(
                     lastFolder).append(",").append(
                     getNodeType(params)).append(")");
-//        } else if (!params.getSites().isEmpty()) {
-//            query.append("/jcr:root/sites/");
-//            if ("-all-".equals(params.getSites().getValue())) {
-//                query.append("*");
-//            } else if (params.getSites().getValues().length == 1) {
-//                query.append(params.getSites().getValue());
-//            } else {
-//                query.append("*[");
-//                int i = 0;
-//                for (String site : params.getSites().getValues()) {
-//                    if (i > 0) {
-//                        query.append(" or ");
-//                    }
-//                    query.append("fn:name() = '");
-//                    query.append(site);
-//                    query.append("'");
-//                    i++;
-//                }
-//                query.append("]");
-//            }
-//
-//            if (!isFileSearch(params)) {
-//                query.append("/*[@j:isHomePage='true' or fn:name() = 'files' or fn:name() = 'contents']");
-//            }
-//
-//            query.append("//element(*,").append(getNodeType(params))
-//                    .append(")");
+        } else if (!params.getSites().isEmpty()) {
+            query.append("/jcr:root/sites/");
+            if ("-all-".equals(params.getSites().getValue())) {
+                query.append("*");
+            } else if (params.getSites().getValues().length == 1) {
+                query.append(params.getSites().getValue());
+            } else {
+                query.append("*[");
+                int i = 0;
+                for (String site : params.getSites().getValues()) {
+                    if (i > 0) {
+                        query.append(" or ");
+                    }
+                    query.append("fn:name() = '");
+                    query.append(site);
+                    query.append("'");
+                    i++;
+                }
+                query.append("]");
+            }
+
+            if (!isFileSearch(params)) {
+                query.append("/*[@j:isHomePage='true' or fn:name() = 'files' or fn:name() = 'contents']");
+            }
+
+            query.append("//element(*,").append(getNodeType(params))
+                    .append(")");
         } else {
             query.append("//element(*,").append(
                     getNodeType(params)).append(")");

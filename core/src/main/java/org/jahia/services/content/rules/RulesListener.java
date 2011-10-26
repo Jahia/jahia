@@ -291,10 +291,13 @@ public class RulesListener extends DefaultEventListener {
                         if (isExternal(event)) {
                             continue;
                         }
+                        String path = event.getPath();
                         try {
-                            if (!event.getPath().startsWith("/jcr:system/")) {
-                                if (event.getType() == Event.NODE_ADDED) {
-                                    JCRNodeWrapper n = s.getNode(event.getPath());
+                            if (!path.startsWith("/jcr:system/")) {
+                                String eventUuid = event.getIdentifier();
+                                int type = event.getType();
+                                if (type == Event.NODE_ADDED) {
+                                    JCRNodeWrapper n = eventUuid != null ? s.getNodeByIdentifier(eventUuid) : s.getNode(path);
                                     if (n.isNodeType("jmix:observable") && !n.isNodeType("jnt:translation")) {
                                         final String identifier = n.getIdentifier();
                                         AddedNodeFact rn = eventsMap.get(identifier);
@@ -305,9 +308,8 @@ public class RulesListener extends DefaultEventListener {
                                         }
                                         list.add(rn);
                                     }
-                                } else if (event.getType() == Event.PROPERTY_ADDED ||
-                                        event.getType() == Event.PROPERTY_CHANGED) {
-                                    String path = event.getPath();
+                                } else if (type == Event.PROPERTY_ADDED ||
+                                        type == Event.PROPERTY_CHANGED) {
                                     String propertyName = path.substring(path.lastIndexOf('/') + 1);
                                     if (!propertiesToIgnore.contains(propertyName)) {
                                         try {
@@ -341,10 +343,10 @@ public class RulesListener extends DefaultEventListener {
                                             logger.warn("Couldn't access path " + path + ", ignoring it since it's not supported on some external repositories... ");
                                         }
                                     }
-                                } else if (event.getType() == Event.NODE_REMOVED) {
+                                } else if (type == Event.NODE_REMOVED) {
                                     String parentPath = null;
                                     try {
-                                        parentPath = StringUtils.substringBeforeLast(event.getPath(), "/");
+                                        parentPath = StringUtils.substringBeforeLast(path, "/");
                                         JCRNodeWrapper parent = s.getNode(parentPath);
                                         final String identifier = parent.getIdentifier();
                                         AddedNodeFact w = eventsMap.get(identifier);
@@ -354,15 +356,14 @@ public class RulesListener extends DefaultEventListener {
                                             eventsMap.put(identifier, w);
                                         }
 
-                                        final DeletedNodeFact e = new DeletedNodeFact(w, event.getPath());
-                                        e.setIdentifier(event.getIdentifier());
+                                        final DeletedNodeFact e = new DeletedNodeFact(w, path);
+                                        e.setIdentifier(eventUuid);
                                         e.setSession(s);
                                         setNodeFactOperationType(e,operationType);
                                         list.add(e);
                                     } catch (PathNotFoundException e) {
                                     }
-                                } else if (event.getType() == Event.PROPERTY_REMOVED) {
-                                    String path = event.getPath();
+                                } else if (type == Event.PROPERTY_REMOVED) {
                                     int index = path.lastIndexOf('/');
                                     String nodePath = path.substring(0, index);
                                     String propertyName = path.substring(index + 1);
@@ -386,7 +387,7 @@ public class RulesListener extends DefaultEventListener {
                             }
                         } catch (PathNotFoundException pnfe) {
                             logger.error("Error when executing event. Unable to find node or property for path: " +
-                                    event.getPath(), pnfe);
+                                    path, pnfe);
                         } catch (Exception e) {
                             logger.error("Error when executing event", e);
                         }
@@ -432,25 +433,6 @@ public class RulesListener extends DefaultEventListener {
                             TimerTask t = new DelayedUpdatesTimerTask(userId, delayedUpdates);
                             rulesTimer.schedule(t, UPDATE_DELAY_FOR_LOCKED_NODE);
                         }
-
-
-//                                Set<Object> objects = new HashSet<Object>();
-//                                for (Iterator<Object> iterator = list.iterator(); iterator.hasNext();) {
-//                                    Object o = iterator.next();
-//                                    if (o instanceof NodeWrapper) {
-//                                        objects.add(o);
-//                                    } else if (o instanceof PropertyWrapper) {
-//                                        objects.add(((PropertyWrapper) o).getNode());
-//                                    }
-//                                }
-//                                for (Iterator<Object> iterator = objects.iterator(); iterator.hasNext();) {
-//                                    NodeWrapper nodeWrapper = (NodeWrapper) iterator.next();
-//                                    Node n = nodeWrapper.getNode();
-////                        if (n.isNodeType(Constants.MIX_VERSIONABLE)) {
-////                            n.checkin();
-////                            n.checkout();
-////                        }
-//                                }
                     }
                     return null;
                 }

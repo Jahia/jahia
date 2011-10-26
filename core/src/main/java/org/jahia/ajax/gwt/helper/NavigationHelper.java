@@ -418,17 +418,17 @@ public class NavigationHelper {
                             currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")).getNodes();
                     while (ni.hasNext()) {
                         GWTJahiaNode node = getGWTJahiaNode((JCRNodeWrapper) ni.next(), fields);
-                        if (displayName != "") {
-                            node.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
-                        }
+//                        if (displayName != "") {
+//                            node.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
+//                        }
                         userNodes.add(node);
                     }
                 } else {
                     GWTJahiaNode root = getNode(path, fields, currentUserSession);
                     if (root != null) {
-                        if (displayName != "") {
-                            root.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
-                        }
+//                        if (displayName != "") {
+//                            root.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
+//                        }
                         userNodes.add(root);
                     }
                 }

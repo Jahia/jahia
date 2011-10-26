@@ -167,6 +167,18 @@
         <property name="urlParams" value="" />
     </bean>
     
+    <bean id="templatesAdministrationModule" class="org.jahia.admin.JspForwardAdministrationModule" parent="abstractAdministrationModule">
+        <property name="serverModule" value="false"/>
+        <property name="urlKey" value="siteTemplates" />
+        <property name="permissionName" value="admin/adminSiteTemplates" />
+        <property name="name" value="templates" />
+        <property name="icon" value="briefcase_document" />
+        <property name="label" value="label.manageTemplates" />
+        <property name="tooltip" value="" />
+        <property name="urlAction" value="siteTemplates" />
+        <property name="jspPath" value="/admin/view_templates.jsp" />
+    </bean>
+
     <bean id="administrationModulesRegistry" class="org.jahia.admin.AdministrationModulesRegistry"/>
 
 </beans>

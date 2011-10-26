@@ -139,6 +139,7 @@
             <adminSiteLanguages jcr:primaryType="jnt:permission"/>
             <adminHtmlSettings jcr:primaryType="jnt:permission"/>
             <adminUrlmapping jcr:primaryType="jnt:permission"/>
+            <adminSiteTemplates jcr:primaryType="jnt:permission"/>
         </admin>
 
         <studioMode jcr:primaryType="jnt:permission">
@@ -273,7 +274,7 @@
                 />
 
         <site-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite" j:roleGroup="edit-role"
-                            j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers/categoryManager /permissions/managers/editorialContentManager /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/managers/tagManager /permissions/wysiwyg-editor-toolbar /permissions/admin/administrationAccess /permissions/admin/adminSiteLanguages /permissions/admin/adminUrlmapping /permissions/admin/adminHtmlSettings /permissions/admin/adminDocumentation /permissions/admin/adminGroups /permissions/admin/adminIssueTracking /permissions/templates"
+                            j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers/categoryManager /permissions/managers/editorialContentManager /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/managers/tagManager /permissions/wysiwyg-editor-toolbar /permissions/admin/administrationAccess /permissions/admin/adminSiteLanguages /permissions/admin/adminUrlmapping /permissions/admin/adminHtmlSettings /permissions/admin/adminDocumentation /permissions/admin/adminGroups /permissions/admin/adminIssueTracking /permissions/admin/adminSiteTemplates /permissions/templates"
                             j:privilegedAccess="true"
                 />
 

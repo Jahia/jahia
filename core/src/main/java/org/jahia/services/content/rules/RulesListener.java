@@ -313,7 +313,17 @@ public class RulesListener extends DefaultEventListener {
                                     String propertyName = path.substring(path.lastIndexOf('/') + 1);
                                     if (!propertiesToIgnore.contains(propertyName)) {
                                         try {
-                                            JCRPropertyWrapper p = (JCRPropertyWrapper) s.getItem(path);
+                                            JCRPropertyWrapper p = null;
+                                            try {
+                                                p = (JCRPropertyWrapper) s.getItem(path);
+                                            } catch (PathNotFoundException e) {
+                                                // the node could be moved in between
+                                                try {
+                                                    p = s.getNodeByIdentifier(eventUuid).getProperty(propertyName);
+                                                } catch (RepositoryException infe) {
+                                                    throw e;
+                                                }
+                                            }
 
                                             JCRNodeWrapper parent = p.getParent();
                                             if (parent.isNodeType("jnt:translation")) {

@@ -200,10 +200,6 @@ public class JahiaAdministration extends HttpServlet {
             servletPath = request.getServletPath();
         }
 
-        if (Jahia.getJahiaHttpPort() == -1) {
-            Jahia.setJahiaHttpPort(request.getServerPort());
-        }
-
         // init host servlet URI
         if (servletURI == null) {
             this.servletURI = getServletURI(request, response);
@@ -272,7 +268,7 @@ public class JahiaAdministration extends HttpServlet {
         try {
             return JCRSessionFactory.getInstance().getCurrentUserSession().getRootNode().hasPermission(permissionName);
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return false;
         }
     }
@@ -283,7 +279,7 @@ public class JahiaAdministration extends HttpServlet {
         } catch (PathNotFoundException e) {
             return false;
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return false;
         }
     }

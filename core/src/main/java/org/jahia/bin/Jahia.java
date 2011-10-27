@@ -131,6 +131,10 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
     static private String jahiaServletPath;
     static private String jahiaContextPath;
+    /**
+     * @deprecated since Jahia 6.5
+     */
+    @Deprecated
     static private int jahiaHttpPort = -1;
 
     static private ThreadLocal<ProcessingContext> paramBeanThreadLocal = new ThreadLocal<ProcessingContext>();
@@ -500,10 +504,18 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         return jahiaContextPath;
     }
 
+    /**
+     * @deprecated since Jahia 6.5
+     */
+    @Deprecated
     public static int getJahiaHttpPort() {
         return jahiaHttpPort;
     }
 
+    /**
+     * @deprecated since Jahia 6.5
+     */
+    @Deprecated
     public static void setJahiaHttpPort(int theJahiaHttpPort) {
         Jahia.jahiaHttpPort = theJahiaHttpPort;
     }

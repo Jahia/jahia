@@ -55,7 +55,6 @@ import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
@@ -110,14 +109,15 @@ public class RepositoryTab extends ContentPanel {
         factory.setSaveOpenPath(true);
         loader = factory.getLoader();
         store = factory.getStore();
-
+        
         store.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
             public int compare(Object o1, Object o2) {
                 GWTJahiaNode s1 = (GWTJahiaNode) o1;
                 GWTJahiaNode s2 = (GWTJahiaNode) o2;
-
-                return Collator.getInstance().localeCompare(s1.get(config.getTreeColumnKeys().get(0)).toString(),
-                        s2.get(config.getTreeColumnKeys().get(0)).toString());
+                String key = config.getTreeColumnKeys().get(0);
+                Object val1 = s1.get(key);
+                Object val2 = s2.get(key);
+                return Collator.getInstance().localeCompare(val1.toString(), val2.toString());
             }
         }));
 

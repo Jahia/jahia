@@ -381,7 +381,7 @@ public class JahiaAdministration extends HttpServlet {
             if (e instanceof JahiaForbiddenAccessException) {
                 throw (JahiaForbiddenAccessException) e;
             }
-            logger.error("Error during " + operation + " operation of a new element we must flush all caches to ensure integrity between database and viewing", e);
+            logger.error("Error during " + operation + " operation", e);
             if (isValidLoginSession(session)) {
                 displayMenu(request, response, session);
             } else {
@@ -410,14 +410,11 @@ public class JahiaAdministration extends HttpServlet {
                                                HttpSession session,
                                                String destination)
             throws IOException, ServletException {
-        if (session.getAttribute(CLASS_NAME + "jahiaDisplayMessage") == null) {
-            request.setAttribute("jahiaDisplayMessage", "");
-        } else {
-            request.setAttribute("jahiaDisplayMessage",
-                    session.getAttribute(CLASS_NAME + "jahiaDisplayMessage"));
-        }
+        request.setAttribute("jahiaDisplayMessage", session.getAttribute(CLASS_NAME + "jahiaDisplayMessage") != null ? session.getAttribute(CLASS_NAME + "jahiaDisplayMessage") : "");
+        request.setAttribute("jahiaDisplayInfo", session.getAttribute(CLASS_NAME + "jahiaDisplayInfo") != null ? session.getAttribute(CLASS_NAME + "jahiaDisplayInfo") : "");
 
         session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", "");
+        session.setAttribute(CLASS_NAME + "jahiaDisplayInfo", "");
 
         request.setAttribute("URL", null);
         request.setAttribute("requestURI", request.getRequestURI());

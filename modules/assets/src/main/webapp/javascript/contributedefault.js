@@ -136,7 +136,8 @@ function setFileEdit(id) {
             var callableUrl = $(original).attr('jcr:url');
             datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];
             $.post($(original).attr('jcr:url'), datas, function(result) {
-                jreplace("renderingOfFile"+id, callableUrl+".html.ajax",null, null);
+                //jreplace("renderingOfFile"+id, callableUrl+".html.ajax",null, null);
+                $("#renderingOfFile" + id).html(result[$(".fileSelector"+id).attr("jcr:id")]);
             }, "json");
         }
     });
@@ -150,7 +151,9 @@ function setFileSelector(id) {
         data[submitId] = value;
         var callableUrl = $(this).attr('jcr:url');
         $.post(callableUrl, data, function(result){
-            jreplace("renderingOfFile"+id, callableUrl+".html.ajax",null, null);
+//            jreplace("renderingOfFile"+id, callableUrl+".html.ajax",null, null);
+            $("#renderingOfFile" + id).html(result[$(".fileSelector"+id).attr("jcr:id")]);
+
         }, "json");
         return(value);
     }, {

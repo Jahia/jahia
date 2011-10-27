@@ -19,7 +19,7 @@
                     <c:set var="initEditFields" value="${initEditFields}setFileSelector(\\\'${child.identifier}${fn:replace(propertyDefinition.name,':','_')}\\\');setFileEdit(\\\'${currentNode.identifier}${fn:replace(propertyDefinition.name,':','_')}\\\');"/>
                 </c:when>
                 <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
-                    <c:set var="initEditFields" value="${initEditFields}SetChoiceListEdit(\\\'${currentNode.identifier}${fn:replace(propertyDefinition.name,':','_')}\\\');"/>
+                    <c:set var="initEditFields" value="${initEditFields}setChoiceListEdit(\\\'${currentNode.identifier}${fn:replace(propertyDefinition.name,':','_')}\\\');"/>
                 </c:when>
             </c:choose>
         </c:if>

@@ -62,44 +62,43 @@ import org.springframework.web.util.WebUtils;
  */
 public class ManagePasswordPolicies extends AbstractAdministrationModule {
 
-	/**
-	 * Handles the displaying of password policy management dialog.
-	 * 
-	 * @param request
-	 *            current request
-	 * @param response
-	 *            current response
-	 * @throws ServletException
-	 * @throws IOException
-	 */
-	public void service(HttpServletRequest request, HttpServletResponse response)
-	        throws IOException, ServletException {
+    /**
+     * Handles the displaying of password policy management dialog.
+     * 
+     * @param request
+     *            current request
+     * @param response
+     *            current response
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void service(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
 
-		String action = request.getParameter("sub");
+        String action = request.getParameter("sub");
 
-		JahiaPasswordPolicyService service = ServicesRegistry.getInstance()
-		        .getJahiaPasswordPolicyService();
+        JahiaPasswordPolicyService service = ServicesRegistry.getInstance()
+                .getJahiaPasswordPolicyService();
 
-		JahiaPasswordPolicy pwdPolicy = service.getDefaultPolicy();
+        JahiaPasswordPolicy pwdPolicy = service.getDefaultPolicy();
 
-		if ("save".equals(action)) {
-			for (JahiaPasswordPolicyRule rule : pwdPolicy.getRules()) {
-	            rule.setActive(false);
+        if ("save".equals(action)) {
+            for (JahiaPasswordPolicyRule rule : pwdPolicy.getRules()) {
+                rule.setActive(false);
             }
-	        try {
-	        	BeanUtils.populate(pwdPolicy, WebUtils.getParametersStartingWith(request, ""));
-	        } catch (Exception e) {
-	            throw new ServletException("BeanUtils.populate", e);
-	        }
-			service.updatePolicy(pwdPolicy);
-			request.setAttribute("confirmationMessage",
-			        "label.changeSaved");
-		}
+            try {
+                BeanUtils.populate(pwdPolicy, WebUtils.getParametersStartingWith(request, ""));
+            } catch (Exception e) {
+                throw new ServletException("BeanUtils.populate", e);
+            }
+            service.updatePolicy(pwdPolicy);
+            request.setAttribute("confirmationMessage", "label.changeSaved");
+        }
 
-		request.setAttribute("policy", pwdPolicy);
+        request.setAttribute("policy", pwdPolicy);
 
-		JahiaAdministration.doRedirect(request, response, request.getSession(),
-		        JahiaAdministration.JSP_PATH + "password_policy.jsp");
-	}
+        JahiaAdministration.doRedirect(request, response, request.getSession(),
+                JahiaAdministration.JSP_PATH + "password_policy.jsp");
+    }
 
 }

@@ -44,7 +44,7 @@
         <jsp:useBean id="activeFacetsVars" class="java.util.HashMap" scope="request"/>
     </c:if>
     <c:set target="${activeFacetsVars}" property="${facetParamVarName}"
-           value="${facet:decodeFacetUrlParam(param[facetParamVarName])}"/>
+           value="${functions:decodeUrlParam(param[facetParamVarName])}"/>
     <c:set target="${activeFacetsVars}" property="${activeFacetMapVarName}"
            value="${facet:getAppliedFacetFilters(activeFacetsVars[facetParamVarName])}"/>
 </c:if>

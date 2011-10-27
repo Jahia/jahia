@@ -51,7 +51,6 @@ import org.apache.commons.collections.KeyValue;
 import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.query.QueryResultWrapper;
-import org.jahia.utils.Url;
 import org.apache.solr.client.solrj.response.FacetField;
 
 /**
@@ -68,7 +67,7 @@ public class Functions {
      * Get a list of applied facets
      * @param filterString the already decoded filter String from the query parameter
      * @return a Map with the facet group as key and a KeyValue with the facet value as key and the query as value
-     * @see #decodeFacetUrlParam(String)
+     * @see org.jahia.taglibs.functions.Functions#decodeUrlParam(String)
      */
     public static Map<String, List<KeyValue>> getAppliedFacetFilters(String filterString) {
         Map<String, List<KeyValue>> appliedFacetFilters = new LinkedHashMap<String, List<KeyValue>>();        
@@ -210,25 +209,7 @@ public class Functions {
         }
         return queryString;
     }
-    
-    /**
-     * Encode facet filter URL parameter
-     * @param inputString facet filter parameter 
-     * @return filter encoded for URL query parameter usage
-     */
-    public static String encodeFacetUrlParam(String inputString) {
-        return Url.encodeUrlParam(inputString);
-    }
-    
-    /**
-     * Decode facet filter URL parameter
-     * @param inputString enocded facet filter URL query parameter
-     * @return decoded facet filter parameter
-     */
-    public static String decodeFacetUrlParam(String inputString) {
-        return Url.decodeUrlParam(inputString);
-    }
-    
+
     /**
      * Check whether there is an unapplied facet existing in the query. Useful in order to determine 
      * whether a title/label should be displayed or not.

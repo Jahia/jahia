@@ -67,6 +67,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import javax.servlet.http.HttpServletRequest;
 import java.text.FieldPosition;
 import java.text.MessageFormat;
 import java.text.ParseException;
@@ -114,66 +115,91 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     }
 
     private Object[] getArguments(Resource resource, RenderContext renderContext) {
+        HttpServletRequest request = renderContext.getRequest();
         List<String> args = new LinkedList<String>();
         for (String field : fields) {
             if ("workspace".equals(field)) {
                 args.add(resource.getWorkspace());
             } else if ("language".equals(field)) {
                 args.add(resource.getLocale().toString());
-            } else if ("path".equals(field)) {
-                StringBuilder s = new StringBuilder(resource.getNode().getPath());
-                if (Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.mainResource"))) {
-                    s.append("_mr_");
-                }
-                args.add(s.toString());
-            } else if ("template".equals(field)) {
-                if (resource.getContextConfiguration().equals("page") && resource.getNode().getPath().equals(
-                        renderContext.getMainResource().getNode().getPath())) {
-                    args.add(renderContext.getMainResource().getResolvedTemplate());
-                } else {
-                    args.add(resource.getResolvedTemplate());
-                }
-            } else if ("templateType".equals(field)) {
-                String templateType = resource.getTemplateType();
-                if (renderContext.isAjaxRequest()) {
-                    templateType += ".ajax";
-                }
-                args.add(templateType);
-            } else if ("queryString".equals(field)) {
-                final String queryString = renderContext.getRequest().getQueryString();
-                if (renderContext.getRequest().getParameter("ec") != null) {
-                    try {
-                        if (renderContext.getRequest().getParameter("ec").equals(resource.getNode().getIdentifier())) {
-                            args.add(queryString != null ? queryString : "");
-                        } else {
-                            args.add("");
-                        }
-                    } catch (RepositoryException e) {
-                        logger.debug(e.getMessage(),e);
+            } else {
+                if ("path".equals(field)) {
+                    StringBuilder s = new StringBuilder(resource.getNode().getPath());
+                    if (Boolean.TRUE.equals(request.getAttribute("cache.mainResource"))) {
+                        s.append("_mr_");
                     }
-                } else {
-                    args.add(queryString != null ? queryString : "");
+                    args.add(s.toString());
+                } else if ("template".equals(field)) {
+                    if (resource.getContextConfiguration().equals("page") && resource.getNode().getPath().equals(
+                            renderContext.getMainResource().getNode().getPath())) {
+                        args.add(renderContext.getMainResource().getResolvedTemplate());
+                    } else {
+                        args.add(resource.getResolvedTemplate());
+                    }
+                } else if ("templateType".equals(field)) {
+                    String templateType = resource.getTemplateType();
+                    if (renderContext.isAjaxRequest()) {
+                        templateType += ".ajax";
+                    }
+                    args.add(templateType);
+                } else if ("queryString".equals(field)) {
+                    String[] params = (String[]) request.getAttribute("cache.requestParameters");
+                    if (params != null && params.length > 0) {
+                        args.add("_qs"+Arrays.toString(params)+"_");
+/*
+                        SortedMap<String,String> qs = new TreeMap<String, String>();
+                        for (String param : params) {
+                            if (param.endsWith("*")) {
+                                param = param.substring(0,param.length()-1);
+                                for (Map.Entry o : (Iterable<? extends Map.Entry>) parameterMap.entrySet()) {
+                                    String key = (String) o.getKey();
+                                    if (key.startsWith(param)) {
+                                        qs.put(key, Arrays.toString((String[])parameterMap.get(param)));
+                                    }
+                                }
+                            } else if (parameterMap.containsKey(param)) {
+                                qs.put(param, Arrays.toString((String[])parameterMap.get(param)));
+                            }
+                        }
+                        final String queryString = qs.toString();
+                        if (request.getParameter("ec") != null) {
+                            try {
+                                if (request.getParameter("ec").equals(resource.getNode().getIdentifier())) {
+                                    args.add(queryString != null ? queryString : "");
+                                } else {
+                                    args.add("");
+                                }
+                            } catch (RepositoryException e) {
+                                logger.debug(e.getMessage(),e);
+                            }
+                        } else {
+                            args.add(queryString != null ? queryString : "");
+                        }
+                        */
+                    } else {
+                        args.add("");
+                    }
+                } else if ("acls".equals(field)) {
+                    args.add(appendAcls(resource, renderContext, true));
+                } else if ("wrapped".equals(field)) {
+                    args.add(String.valueOf(resource.hasWrapper()));
+                } else if ("context".equals(field)) {
+                    args.add(String.valueOf(resource.getContextConfiguration()));
+                } else if ("custom".equals(field)) {
+                    args.add((String) resource.getModuleParams().get("module.cache.additional.key"));
+                } else if ("templateNodes".equals(field)) {
+                    final Template t = (Template) request.getAttribute("previousTemplate");
+                    args.add(t != null ? t.serialize() : "");
+                } else if ("resourceID".equals(field)) {
+                    try {
+                        args.add(resource.getNode().getIdentifier());
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                } else if ("inArea".equals(field)) {
+                    Object inArea = request.getAttribute("inArea");
+                    args.add(inArea != null ? inArea.toString() : "");
                 }
-            } else if ("acls".equals(field)) {
-                args.add(appendAcls(resource, renderContext, true));
-            } else if ("wrapped".equals(field)) {
-                args.add(String.valueOf(resource.hasWrapper()));
-            } else if ("context".equals(field)) {
-                args.add(String.valueOf(resource.getContextConfiguration()));
-            } else if ("custom".equals(field)) {
-                args.add((String) resource.getModuleParams().get("module.cache.additional.key"));
-            } else if ("templateNodes".equals(field)) {
-                final Template t = (Template) renderContext.getRequest().getAttribute("previousTemplate");
-                args.add(t != null ? t.serialize() : "");
-            } else if ("resourceID".equals(field)) {
-                try {
-                    args.add(resource.getNode().getIdentifier());
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            } else if ("inArea".equals(field)) {
-                Object inArea = renderContext.getRequest().getAttribute("inArea");
-                args.add(inArea != null ? inArea.toString() : "");
             }
         }
         return args.toArray(new String[KNOWN_FIELDS.size()]);

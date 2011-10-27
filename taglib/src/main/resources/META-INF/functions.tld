@@ -401,4 +401,26 @@
 		</example>
 	</function>
 
+    <function>
+        <description>Encode facet filter URL parameter</description>
+        <name>encodeUrlParam</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.String encodeUrlParam(java.lang.String)
+        </function-signature>
+        <example>
+            ${functions:encodeFacetUrlParam(facet:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName]))}
+        </example>
+    </function>
+
+    <function>
+        <description>Decode facet filter URL parameter</description>
+        <name>decodeUrlParam</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.String decodeUrlParam(java.lang.String)
+        </function-signature>
+        <example>
+            ${functions:decodeFacetUrlParam(param[facetParamVarName])}
+        </example>
+    </function>
+
 </taglib>

@@ -25,7 +25,7 @@
         <c:if test="${activeFacetsVars == null}">
            <jsp:useBean id="activeFacetsVars" class="java.util.HashMap" scope="request"/>
         </c:if>
-        <c:set target="${activeFacetsVars}" property="${facetParamVarName}" value="${facet:decodeFacetUrlParam(param[facetParamVarName])}"/>
+        <c:set target="${activeFacetsVars}" property="${facetParamVarName}" value="${functions:decodeUrlParam(param[facetParamVarName])}"/>
         <c:set target="${activeFacetsVars}" property="${activeFacetMapVarName}" value="${facet:getAppliedFacetFilters(activeFacetsVars[facetParamVarName])}"/>
     </c:if>
 
@@ -183,7 +183,7 @@
             <c:if test="${not facet:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}">
                 <c:set var="facetDrillDownUrl" value="${facet:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName])}"/>
                 <c:url var="facetUrl" value="${url.mainResource}">
-                    <c:param name="${facetParamVarName}" value="${facet:encodeFacetUrlParam(facetDrillDownUrl)}"/>
+                    <c:param name="${facetParamVarName}" value="${functions:encodeUrlParam(facetDrillDownUrl)}"/>
                 </c:url>
                 <li><a href="${facetUrl}"><facet:facetValueLabel currentActiveFacetValue="${facetValue}" facetValueLabels="${facetValueLabels}"/></a> (${facetValue.value})<br/></li>
             </c:if>

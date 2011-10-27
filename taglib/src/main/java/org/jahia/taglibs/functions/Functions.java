@@ -51,6 +51,7 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.Url;
 
 import javax.jcr.RangeIterator;
 import javax.servlet.jsp.JspTagException;
@@ -256,4 +257,21 @@ public class Functions {
         return Pattern.compile(pattern).matcher(str).matches();
     }
 
+    /**
+     * Encode facet filter URL parameter
+     * @param inputString facet filter parameter
+     * @return filter encoded for URL query parameter usage
+     */
+    public static String encodeUrlParam(String inputString) {
+        return Url.encodeUrlParam(inputString);
+    }
+
+    /**
+     * Decode facet filter URL parameter
+     * @param inputString enocded facet filter URL query parameter
+     * @return decoded facet filter parameter
+     */
+    public static String decodeUrlParam(String inputString) {
+        return Url.decodeUrlParam(inputString);
+    }
 }

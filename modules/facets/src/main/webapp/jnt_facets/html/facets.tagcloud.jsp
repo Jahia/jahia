@@ -28,7 +28,7 @@
             <jsp:useBean id="activeFacetsVars" class="java.util.HashMap" scope="request"/>
         </c:if>
         <c:set target="${activeFacetsVars}" property="${facetParamVarName}"
-               value="${facet:decodeFacetUrlParam(param[facetParamVarName])}"/>
+               value="${functions:decodeUrlParam(param[facetParamVarName])}"/>
         <c:set target="${activeFacetsVars}" property="${activeFacetMapVarName}"
                value="${facet:getAppliedFacetFilters(activeFacetsVars[facetParamVarName])}"/>
     </c:if>
@@ -176,7 +176,7 @@
                             <c:if test="${not facet:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}">
                                 <c:url var="facetUrl" value="${url.mainResource}">
                                     <c:param name="${facetParamVarName}"
-                                             value="${facet:encodeFacetUrlParam(facet:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName]))}"/>
+                                             value="${functions:encodeUrlParam(facet:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName]))}"/>
                                 </c:url>
                                 <li><a href="${facetUrl}"
                                        class="tag${functions:round(10 * tagCloud[facetValue.name] / totalUsages)}0">

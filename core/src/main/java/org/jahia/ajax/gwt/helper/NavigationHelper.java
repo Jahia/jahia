@@ -202,20 +202,23 @@ public class NavigationHelper {
                 continue;
             }
             // in case of a folder, it allows to know if the node is selectable
-            boolean hiddenType = false;
+            boolean hiddenNode = false;
             if (!displayHiddenTypes) {
                 if (hiddenTypes != null) {
                     for (String type : hiddenTypes) {
                         if (childNode.getNodeTypes().contains(type)) {
-                            hiddenType = true;
+                            hiddenNode = true;
                         }
                     }
                 }
                 if (hiddenRegex != null && childNode.getName().matches(hiddenRegex)) {
-                    hiddenType = true;
+                    hiddenNode = true;
+                }
+                if (childNode.getNodeTypes().contains(Constants.JAHIAMIX_HIDDEN_NODE)) {
+                    hiddenNode = true;
                 }
             }
-            boolean matchVisibilityFilter = !hiddenType;
+            boolean matchVisibilityFilter = !hiddenNode;
             boolean matchNodeType = matchesNodeType(childNode, nodeTypes);
             if (logger.isDebugEnabled()) {
                 logger.debug("----------");

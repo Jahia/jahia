@@ -44,6 +44,8 @@ itemtype = template
 
         [mix:title]   unify all title of contents. Also provide a description. You can access them with jcr:title and jcr:description properties.
 
+        [jmix:hiddenNode]  the node will not appear in managers
+
 * System, content and files
 
     **Jahia store items using this definitions

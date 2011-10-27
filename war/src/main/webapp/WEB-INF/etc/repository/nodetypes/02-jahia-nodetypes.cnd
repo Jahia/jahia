@@ -539,6 +539,9 @@
  - j:deletionDate (date) mandatory hidden
  - j:deletionMessage (string) hidden indexed=no
 
+// @since Jahia 6.6
+[jmix:hiddenNode] mixin
+
 //---------------------------------------------------------
 // References and links
 //---------------------------------------------------------

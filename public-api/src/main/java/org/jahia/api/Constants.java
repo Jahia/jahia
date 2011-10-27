@@ -156,6 +156,8 @@ public class Constants {
 
     public static final String JAHIANT_VIRTUALSITES_FOLDER = "jnt:virtualsitesFolder";
 
+    public static final String JAHIAMIX_HIDDEN_NODE = "jmix:hiddenNode";
+
     public static final String JAHIANT_FOLDER = "jnt:folder";
     public static final String JAHIANT_FILE = "jnt:file";
     public static final String JAHIANT_RESOURCE = "jnt:resource";

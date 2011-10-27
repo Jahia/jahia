@@ -40,19 +40,15 @@
 
 package org.jahia.services.templates;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.query.InvalidQueryException;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.tika.io.IOUtils;
+import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -60,7 +56,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,7 +171,7 @@ public class ComponentRegistry {
             JCRNodeWrapper folder = components.hasNode("nonDroppableComponents") ?
                     components.getNode("nonDroppableComponents") : components.addNode("nonDroppableComponents",
                     JNT_COMPONENT_FOLDER);
-//            folder.addMixin("jmix:");
+            folder.addMixin(Constants.JAHIAMIX_HIDDEN_NODE);
             if (!folder.hasNode(nt.getName())) {
                 folder.addNode(nt.getName(), JNT_SIMPLE_COMPONENT);
                 created = true;

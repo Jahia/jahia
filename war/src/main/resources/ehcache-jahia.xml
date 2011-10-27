@@ -184,6 +184,12 @@
             maxElementsInMemory="5000"
             diskPersistent="true"
             eternal="true"/>
+    <cache
+            name="HTMLREGEXPDependenciesCache"
+            overflowToDisk="true"
+            maxElementsInMemory="500"
+            diskPersistent="true"
+            eternal="true"/>
 
     <cache
             name="FileLastModifiedCache"

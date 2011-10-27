@@ -82,7 +82,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
     protected transient PropertiesEditor propertiesEditor;
     protected transient Map<String, PropertiesEditor> langPropertiesEditorMap;
     protected transient Map<String, Map<String,GWTJahiaNodeProperty>> changedProperties;
-    protected transient boolean multiLang = false;
+    protected transient boolean multiLang = true;
 
     @Override
     public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {

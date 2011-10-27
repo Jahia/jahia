@@ -44,6 +44,8 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.Query;
@@ -61,6 +63,7 @@ import java.util.*;
  *        Created : 17 nov. 2009
  */
 public class UsersChoiceListInitializerImpl implements ChoiceListInitializer {
+    private static final Logger logger = LoggerFactory.getLogger(UsersChoiceListInitializerImpl.class);
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
         List<ChoiceListValue> vs = new ArrayList<ChoiceListValue>();
@@ -90,7 +93,7 @@ public class UsersChoiceListInitializerImpl implements ChoiceListInitializer {
                 vs.add(new ChoiceListValue(name, new HashMap<String,Object>(), new ValueImpl(node.getUUID(), PropertyType.WEAKREFERENCE, false)));
             }
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return vs;
     }

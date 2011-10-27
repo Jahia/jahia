@@ -300,7 +300,7 @@ public class ManageSites extends AbstractAdministrationModule {
         try {
             request.setAttribute("hasTemplateSets",getTemplatesSets().size() > 0);
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         // redirect...
         JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "sites_management.jsp");

@@ -207,7 +207,7 @@ public class JCRObservationManager implements ObservationManager {
                 }
             }
         } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);
         }
     }
 

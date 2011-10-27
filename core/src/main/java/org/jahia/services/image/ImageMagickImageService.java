@@ -48,6 +48,8 @@ import org.im4java.core.InfoException;
 import org.im4java.process.ProcessStarter;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -65,6 +67,8 @@ import java.io.OutputStream;
  * Time: 11:33
  */
 public class ImageMagickImageService implements JahiaImageService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(ImageMagickImageService.class);
 
     private static ImageMagickImageService instance;
 
@@ -128,7 +132,7 @@ public class ImageMagickImageService implements JahiaImageService {
 
             cmd.run(op);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return false;
         }
         return true;
@@ -165,7 +169,7 @@ public class ImageMagickImageService implements JahiaImageService {
 
             cmd.run(op);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return false;
         }
         return true;
@@ -184,7 +188,7 @@ public class ImageMagickImageService implements JahiaImageService {
 
             cmd.run(op);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return false;
         }
         return true;
@@ -203,7 +207,7 @@ public class ImageMagickImageService implements JahiaImageService {
 
             cmd.run(op);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return false;
         }
         return true;

@@ -44,6 +44,8 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
@@ -53,6 +55,7 @@ import java.util.*;
  * Initializer that returns the list of all workflow definitions
  */
 public class WorkflowChoiceListInitializer implements ChoiceListInitializer {
+    private static final Logger logger = LoggerFactory.getLogger(WorkflowChoiceListInitializer.class);
     private WorkflowService workflowService;
 
     public void setWorkflowService(WorkflowService workflowService) {
@@ -70,7 +73,7 @@ public class WorkflowChoiceListInitializer implements ChoiceListInitializer {
                         new ValueImpl(def.getProvider() + ":" + def.getKey(), PropertyType.STRING, false)));
             }
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return choiceListValues;
     }

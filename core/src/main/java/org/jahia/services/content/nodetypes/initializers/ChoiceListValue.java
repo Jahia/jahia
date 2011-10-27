@@ -43,10 +43,8 @@ package org.jahia.services.content.nodetypes.initializers;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.jahia.services.seo.VanityUrl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.LinkedHashMap;
@@ -59,6 +57,8 @@ import java.util.LinkedHashMap;
  *        Created : 17 nov. 2009
  */
 public class ChoiceListValue implements Comparable<ChoiceListValue> {
+    
+    private static final Logger logger = LoggerFactory.getLogger(ChoiceListValue.class);
 
     private String displayName;
     private Value value;
@@ -118,7 +118,7 @@ public class ChoiceListValue implements Comparable<ChoiceListValue> {
             if (!value.getString().equals(that.value.getString()) ) return false;
             if (value.getType() != that.value.getType()) return false;
         } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);
         }
 
         return true;
@@ -130,7 +130,7 @@ public class ChoiceListValue implements Comparable<ChoiceListValue> {
         try {
             result = 31 * result + value.getString().hashCode();
         } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);
         }
         result = 31 * result + value.getType();
         result = 31 * result + (properties != null ? properties.hashCode() : 0);

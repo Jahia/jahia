@@ -657,7 +657,7 @@ public class ManageGroups extends AbstractAdministrationModule {
                     request.setAttribute("groupReadOnly", Boolean.FALSE);
                 }
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
             request.setAttribute("jspSource", JSP_PATH + "group_management/group_remove.jsp");
             request.setAttribute("directMenu", JSP_PATH + "direct_menu.jsp");

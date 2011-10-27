@@ -40,7 +40,6 @@
 
 package org.jahia.services.notification;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -49,6 +48,8 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.CamelContextAware;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.RoutesBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 
 /**
@@ -59,7 +60,7 @@ import org.springframework.beans.factory.DisposableBean;
  * Created : 28 juin 2010
  */
 public class CamelNotificationService implements CamelContextAware, DisposableBean, Runnable {
-
+    
     public class CamelMessage {
         private String target;
         private Object body;
@@ -83,6 +84,8 @@ public class CamelNotificationService implements CamelContextAware, DisposableBe
             return headers;
         }
     }
+    
+    private static final Logger logger = LoggerFactory.getLogger(CamelNotificationService.class);
 
     private CamelContext camelContext;
     private ProducerTemplate template;
@@ -155,7 +158,7 @@ public class CamelNotificationService implements CamelContextAware, DisposableBe
                 Thread.sleep(queueProcessorFrequency);
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);
         }
     }
 }

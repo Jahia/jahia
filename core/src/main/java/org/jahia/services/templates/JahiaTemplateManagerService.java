@@ -426,7 +426,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         }
                     });
                 } catch (RepositoryException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
             }
         } else if (event instanceof TemplatePackageRedeployedEvent) {

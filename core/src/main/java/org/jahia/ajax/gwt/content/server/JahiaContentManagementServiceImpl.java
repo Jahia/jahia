@@ -1774,7 +1774,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     result.setInContentPortlet(true);
                 }
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
             result.setHtmlOutput(portletOutput);
 
@@ -1816,7 +1816,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 returnedSites.add(gwtJahiaSite);
             }
         } catch (JahiaException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);
         }
 
         return returnedSites;

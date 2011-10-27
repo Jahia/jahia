@@ -973,7 +973,7 @@ public class LegacyImportHandler extends DefaultHandler {
                         cal.setTime(d);
                         n.setProperty(propertyName, cal);
                     } catch (java.text.ParseException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
                     }
                     break;
 

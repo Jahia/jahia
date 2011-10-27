@@ -117,7 +117,7 @@ public class Service extends JahiaService {
             node.getNode().grantRoles("u:"+user,Collections.singleton(role));
             node.getNode().getSession().save();
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -126,7 +126,7 @@ public class Service extends JahiaService {
             node.getNode().grantRoles("g:"+group,Collections.singleton(role));
             node.getNode().getSession().save();
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -136,7 +136,7 @@ public class Service extends JahiaService {
                 node.getNode().denyRoles(s, Collections.singleton(role));
                 node.getNode().getSession().save();
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -699,7 +699,7 @@ public class Service extends JahiaService {
         try {
             ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployModule("/templateSets/" + moduleName, site.getPath(), user.getName());
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 

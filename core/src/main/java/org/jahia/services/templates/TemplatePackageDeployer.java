@@ -489,14 +489,9 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
             out.output(description, os);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
-            try {
-                if (os != null)
-                    os.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            IOUtils.closeQuietly(os);
         }
     }
 

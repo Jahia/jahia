@@ -215,7 +215,7 @@ public class TemplateHelper {
                 }
             }
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
 
         return templatesPath;

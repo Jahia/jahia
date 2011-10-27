@@ -558,7 +558,7 @@ public class JCRPublicationService extends JahiaService {
                             }
                         }
                     } catch (RepositoryException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        logger.error(e.getMessage(), e);
                     }
                 }
 
@@ -613,7 +613,7 @@ public class JCRPublicationService extends JahiaService {
                     } catch (PathNotFoundException e) {
                         // already removed
                     } catch (RepositoryException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
                     }
                 }
 
@@ -709,7 +709,7 @@ public class JCRPublicationService extends JahiaService {
                             node.remove();
                             node.getSession().save();
                         } catch (RepositoryException e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage(), e);
                         }
                     }
                 } else {
@@ -755,7 +755,7 @@ public class JCRPublicationService extends JahiaService {
         try {
             destinationNode = destinationSession.getNode(sourceNode.getCorrespondingNodePath(destinationWorkspaceName));
         } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);
         }
         return destinationNode;
     }

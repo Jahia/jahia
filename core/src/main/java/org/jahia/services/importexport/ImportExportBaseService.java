@@ -717,7 +717,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 r.parse();
                             }
                         } catch (ParseException e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage(), e);
                         }
                     } else if (name.equals(DEFINITIONS_MAP)) {
                         mapping = new DefinitionsMapping();

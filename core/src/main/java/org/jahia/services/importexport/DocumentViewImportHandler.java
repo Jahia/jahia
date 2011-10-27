@@ -146,7 +146,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 placeHoldersMap.put("$user", "u:" + node.getPath().substring(node.getPath().lastIndexOf("/") + 1));
             }
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new IOException();
         }
         nodes.add(node);

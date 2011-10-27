@@ -20,7 +20,7 @@ public class LegacyPidMappingToolLogger implements LegacyPidMappingTool {
         try {
             logger.info("Mapping pid {} to uuid {}, page accessible through URL {}",new Object[]{oldPid,newPageNode.getIdentifier(),newPageNode.getUrl()});
         } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);
         }
     }
 }

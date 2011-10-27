@@ -48,6 +48,8 @@ import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
@@ -61,6 +63,8 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  */
 public abstract class AbstractAdministrationModule implements AdministrationModule {
 
+    private static final Logger logger = LoggerFactory.getLogger(AbstractAdministrationModule.class);
+    
     private String icon;
     private String iconSmall;
     private String label;
@@ -140,7 +144,7 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
                 return StringUtils.isEmpty(permissionName) || JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/sites/"+siteKey).hasPermission(permissionName);
             }
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return false;
         }
     }

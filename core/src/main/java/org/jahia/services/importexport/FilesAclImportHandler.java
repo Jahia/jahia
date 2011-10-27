@@ -273,7 +273,7 @@ public class FilesAclImportHandler extends DefaultHandler {
                         cal.setTime(d);
                         n.setProperty(propertyName, cal);
                     } catch (java.text.ParseException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
                     }
                     break;
 
@@ -315,7 +315,7 @@ public class FilesAclImportHandler extends DefaultHandler {
                                     try {
                                         n.setProperty(propertyName, value);
                                     } catch (Exception e) {
-                                        e.printStackTrace();
+                                        logger.error(e.getMessage(), e);
                                     }
                                 }
                             } else {

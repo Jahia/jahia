@@ -149,7 +149,7 @@ public class ContentManagerAccessCheckFilter implements Filter,
             try {
                 site = JCRSessionFactory.getInstance().getCurrentUserSession().getRootNode();
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }

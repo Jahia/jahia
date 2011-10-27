@@ -124,7 +124,7 @@ public class WorkflowHelper {
 
             return info;
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
@@ -220,10 +220,10 @@ public class WorkflowHelper {
             HashMap<String, Object> map = getVariablesMap(properties);
             service.startProcessAsJob(Arrays.asList(node.getIdentifier()), session, def.getId(), def.getProvider(), map, comments);
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
@@ -237,10 +237,10 @@ public class WorkflowHelper {
             map.putAll(args);
             service.startProcessAsJob(uuids, session, def.getId(), def.getProvider(), map, comments);
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
@@ -453,7 +453,7 @@ public class WorkflowHelper {
             }
             return result;
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }

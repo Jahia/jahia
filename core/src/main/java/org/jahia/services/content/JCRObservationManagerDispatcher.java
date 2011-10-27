@@ -42,6 +42,8 @@ package org.jahia.services.content;
 
 import org.apache.jackrabbit.core.observation.EventImpl;
 import org.apache.jackrabbit.core.observation.SynchronousEventListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.EventIterator;
@@ -59,6 +61,8 @@ import java.util.List;
  * Time: 1:59:20 PM
  */
 public class JCRObservationManagerDispatcher implements SynchronousEventListener {
+    
+    private static final Logger logger = LoggerFactory.getLogger(JCRObservationManagerDispatcher.class);
 
     private JCRStoreProvider provider;
     private String workspace;
@@ -112,7 +116,7 @@ public class JCRObservationManagerDispatcher implements SynchronousEventListener
                     }
                 });
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         };
     }

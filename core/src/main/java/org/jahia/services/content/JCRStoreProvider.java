@@ -649,23 +649,6 @@ public class JCRStoreProvider {
         }
 
         s = getRepository().login(credentials, workspace);
-//        if (s instanceof XASession) {
-//            try {
-//                Context ctx = new InitialContext();
-//                TransactionManager tm = (TransactionManager) ctx.lookup("java:TransactionManager");
-//                Transaction transaction = tm.getTransaction();
-//                if (transaction != null && transaction.getStatus() == Status.STATUS_ACTIVE) {
-//                    transaction.enlistResource(((XASession)s).getXAResource());
-//                    System.out.println("enlisted session into : " + transaction);
-//                } else {
-//                    System.out.println("tx non active");
-//                }
-//            } catch (NamingException e) {
-//            } catch (Exception e) {
-//                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//            }
-//
-//        }
         return s;
     }
 

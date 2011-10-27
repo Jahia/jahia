@@ -402,7 +402,7 @@ public class ConflictResolver {
                 return o1.getString().equals(o2.getString());
             }
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }

@@ -443,7 +443,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     for (Map.Entry o : (Iterable<? extends Map.Entry>) parameterMap.entrySet()) {
                         String k = (String) o.getKey();
                         if (k.startsWith(param)) {
-                            qs.put(key, Arrays.toString((String[])o.getValue()));
+                            qs.put(k, Arrays.toString((String[])o.getValue()));
                         }
                     }
                 } else if (parameterMap.containsKey(param)) {

@@ -163,7 +163,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
           </elementProp>
           <elementProp name="siteMapFileEdit" elementType="Argument">
             <stringProp name="Argument.name">siteMapFileEdit</stringProp>
-            <stringProp name="Argument.value">${__P(jahia.test.jmeter.siteMapEdit,./sitemap-edit.csv}}</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.siteMapEdit,./sitemap-edit.csv)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="nbPagesCreate" elementType="Argument">

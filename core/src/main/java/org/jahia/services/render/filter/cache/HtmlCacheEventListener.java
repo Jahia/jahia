@@ -62,7 +62,7 @@ import java.util.Set;
  * @since JAHIA 6.5
  *        Created : 12 janv. 2010
  */
-public class HtmlCacheEventListener extends DefaultEventListener {
+public class HtmlCacheEventListener extends DefaultEventListener implements ExternalEventListener {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(HtmlCacheEventListener.class);
 
     private ModuleCacheProvider cacheProvider;

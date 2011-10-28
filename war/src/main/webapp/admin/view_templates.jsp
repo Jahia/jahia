@@ -3,6 +3,7 @@
 <c:set var="site" value="${sessionScope['org.jahia.services.sites.jahiasite']}"/>
 <%
     pageContext.setAttribute("templatePackageByNodeName", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByNodeName());
+    pageContext.setAttribute("templateSetPackage", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(((JahiaSite) pageContext.getAttribute("site")).getTemplatePackageName()));
     List<String> modules = new LinkedList<String>(((JahiaSite) pageContext.getAttribute("site")).getInstalledModules());
     if (modules.size() > 1) {
         modules = modules.subList(1, modules.size());
@@ -45,7 +46,7 @@
                                             <strong><fmt:message key="org.jahia.admin.site.ManageSites.templateSet.label"/>:</strong>
                                         </td>
                                         <td>
-                                            ${fn:escapeXml(site.templatePackageName)}
+                                            ${fn:escapeXml(site.templatePackageName)}&nbsp;(${templateSetPackage.version})
                                         </td>
                                     </tr>
                                     <tr>
@@ -56,7 +57,7 @@
                                             <c:set var="found" value="false"/>
                                             <c:forEach var="module" items="${modules}">
                                                 <c:set var="pkg" value="${templatePackageByNodeName[module]}"/>
-                                                <c:if test="${pkg.moduleType == 'jahiapp'}">${found ? '<br/>' : ''}${fn:escapeXml(pkg.name)}<c:set var="found" value="true"/></c:if>
+                                                <c:if test="${pkg.moduleType == 'jahiapp'}">${found ? '<br/>' : ''}${fn:escapeXml(pkg.name)}&nbsp;(${pkg.version})<c:set var="found" value="true"/></c:if>
                                             </c:forEach>
                                             <c:if test="${not found}">
                                                 <fmt:message key="label.none"/>
@@ -71,7 +72,7 @@
                                             <c:set var="found" value="false"/>
                                             <c:forEach var="module" items="${modules}">
                                                 <c:set var="pkg" value="${templatePackageByNodeName[module]}"/>
-                                                <c:if test="${empty pkg.moduleType || pkg.moduleType == 'module' || pkg.moduleType == 'system'}">${found ? '<br/>' : ''}${fn:escapeXml(pkg.name)}<c:set var="found" value="true"/></c:if>
+                                                <c:if test="${empty pkg.moduleType || pkg.moduleType == 'module' || pkg.moduleType == 'system'}">${found ? '<br/>' : ''}${fn:escapeXml(pkg.name)}&nbsp;(${pkg.version})<c:set var="found" value="true"/></c:if>
                                             </c:forEach>
                                             <c:if test="${not found}">
                                                 <fmt:message key="label.none"/>
@@ -86,7 +87,7 @@
                                             <c:set var="found" value="false"/>
                                             <c:forEach var="module" items="${modules}" varStatus="status">
                                                 <c:set var="pkg" value="${templatePackageByNodeName[module]}"/>
-                                                <c:if test="${pkg.moduleType == 'profileModule'}">${found ? '<br/>' : ''}${fn:escapeXml(pkg.name)}<c:set var="found" value="true"/></c:if>
+                                                <c:if test="${pkg.moduleType == 'profileModule'}">${found ? '<br/>' : ''}${fn:escapeXml(pkg.name)}&nbsp;(${pkg.version})<c:set var="found" value="true"/></c:if>
                                             </c:forEach>
                                             <c:if test="${not found}">
                                                 <fmt:message key="label.none"/>

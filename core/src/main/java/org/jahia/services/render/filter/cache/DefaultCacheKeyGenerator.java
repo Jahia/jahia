@@ -492,9 +492,13 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     }
 
     public void flushUsersGroupsKey() {
+        flushUsersGroupsKey(true);
+    }
+
+    public void flushUsersGroupsKey(boolean propageToOtherClusterNodes) {
         synchronized (aclGroups) {
             aclGroups.clear();
-            cache.removeAll();
+            cache.removeAll(!propageToOtherClusterNodes);
             cache.flush();
         }
     }

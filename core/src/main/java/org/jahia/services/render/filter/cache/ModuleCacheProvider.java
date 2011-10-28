@@ -126,8 +126,19 @@ public class ModuleCacheProvider implements InitializingBean {
      * @param nodePath the node path to be invalidated.
      * @throws ParseException in case of a malformed key
      */
-    @SuppressWarnings("unchecked")
     public void invalidate(String nodePath) {
+        invalidate(nodePath, true);
+    }
+    
+    /**
+     * Flushes all the cache entries, related to the specified node.
+     * 
+     * @param nodePath the node path to be invalidated.
+     * @param propageToOtherClusterNodes do notify replicators of this event
+     * @throws ParseException in case of a malformed key
+     */
+    @SuppressWarnings("unchecked")
+    public void invalidate(String nodePath, boolean propageToOtherClusterNodes) {
         Element element = dependenciesCache.get(nodePath);
         if(element!=null) {
             Set<String> deps = (Set<String>) element.getValue();
@@ -136,15 +147,19 @@ public class ModuleCacheProvider implements InitializingBean {
     }
 
     private void invalidateDependencies(Set<String> deps) {
+        invalidateDependencies(deps, true);
+    }
+
+    private void invalidateDependencies(Set<String> deps, boolean propageToOtherClusterNodes) {
         for (String dep : deps) {
-            boolean removed = blockingCache.remove(dep);
+            boolean removed = blockingCache.remove(dep, !propageToOtherClusterNodes);
             if(logger.isDebugEnabled() && ! removed) {
                 logger.debug("Failed to remove "+dep+" from cache");
             }
             try {
-                blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.load"));
-                blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.header"));
-                blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.footer"));
+                blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.load"), !propageToOtherClusterNodes);
+                blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.header"), !propageToOtherClusterNodes);
+                blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.footer"), !propageToOtherClusterNodes);
             } catch (ParseException e) {
                 logger.warn(e.getMessage(), e);
             }
@@ -197,7 +212,14 @@ public class ModuleCacheProvider implements InitializingBean {
     }
 
     public void invalidateRegexp(String key) {
-        Set<String> deps = (Set<String>) regexpDependenciesCache.get(key).getValue();
-        invalidateDependencies(deps);
+        invalidateRegexp(key, true);
     }
+
+    public void invalidateRegexp(String key, boolean propageToOtherClusterNodes) {
+        @SuppressWarnings("unchecked")
+        Set<String> deps = (Set<String>) regexpDependenciesCache.get(key).getValue();
+        invalidateDependencies(deps, propageToOtherClusterNodes);
+    }
+
+
 }

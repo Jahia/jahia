@@ -44,9 +44,9 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.content.*;
 
-import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
@@ -60,14 +60,12 @@ import java.util.Set;
  *
  * @author : rincevent
  * @since JAHIA 6.5
- *        Created : 12 janv. 2010
+ * Created : 12 janv. 2010
  */
 public class HtmlCacheEventListener extends DefaultEventListener implements ExternalEventListener {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(HtmlCacheEventListener.class);
+    private static Logger logger = LoggerFactory.getLogger(HtmlCacheEventListener.class);
 
     private ModuleCacheProvider cacheProvider;
-    private JCRTemplate jcrTemplate;
-
     @Override
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED + Event.NODE_REMOVED;
@@ -84,6 +82,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         final Set<String> flushed = new HashSet<String>();
         while (events.hasNext()) {
             Event event = (Event) events.next();
+            boolean propageToOtherClusterNodes = !isExternal(event);
             try {
                 String path = event.getPath();
                 if (!path.startsWith("/jcr:system")) {
@@ -109,29 +108,27 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                         CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
                         if (cacheKeyGenerator instanceof DefaultCacheKeyGenerator) {
                             DefaultCacheKeyGenerator generator = (DefaultCacheKeyGenerator) cacheKeyGenerator;
-                            generator.flushUsersGroupsKey();
+                            generator.flushUsersGroupsKey(propageToOtherClusterNodes);
                         }
                         flushParent = true;
                     }
                     path = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(path, "/j:translation"), "/j:acl");
-                    flushDependenciesOfPath(depCache, flushed, path);
+                    flushDependenciesOfPath(depCache, flushed, path, propageToOtherClusterNodes);
                     try {
-                        flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier());
+                        flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propageToOtherClusterNodes);
                     } catch (PathNotFoundException e) {
                         //
                     }
-                    flushRegexpDependenciesOfPath(regexpDepCache,path);
-                    flushSharedNode(depCache, flushed, path);
+                    flushRegexpDependenciesOfPath(regexpDepCache, path, propageToOtherClusterNodes);
                     if (flushParent) {
                         path = StringUtils.substringBeforeLast(path, "/");
-                        flushDependenciesOfPath(depCache, flushed, path);
+                        flushDependenciesOfPath(depCache, flushed, path, propageToOtherClusterNodes);
                         try {
-                            flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier());
+                            flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propageToOtherClusterNodes);
                         } catch (PathNotFoundException e) {
                             //
                         }
-                        flushRegexpDependenciesOfPath(regexpDepCache,path);
-                        flushSharedNode(depCache, flushed, path);
+                        flushRegexpDependenciesOfPath(regexpDepCache,path, propageToOtherClusterNodes);
                     }
                 }
 
@@ -142,33 +139,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         }
     }
 
-    private void flushSharedNode(final Cache depCache, final Set<String> flushed, final String finalPath)
-            throws RepositoryException {
-        // Flushed shared node associated with this event
-        jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                try {
-                    JCRNodeWrapper node = session.getNode(finalPath);
-                    NodeIterator nodeIterator = node.getSharedSet();
-                    String path = "";
-                    while (nodeIterator.hasNext()) {
-                        JCRNodeWrapper wrapper = (JCRNodeWrapper) nodeIterator.next();
-                        if (!path.equals(wrapper.getPath())) {
-                            path = wrapper.getPath();
-                            flushDependenciesOfPath(depCache, flushed, path);
-                        }
-                    }
-                } catch (PathNotFoundException e) {
-                    logger.trace(e.getMessage(), e);
-                } catch (RepositoryException e) {
-                    logger.debug(e.getMessage(), e);
-                }
-                return null;
-            }
-        });
-    }
-
-    private void flushDependenciesOfPath(Cache depCache, Set<String> flushed, String path) {
+    private void flushDependenciesOfPath(Cache depCache, Set<String> flushed, String path, boolean propageToOtherClusterNodes) {
         if (logger.isDebugEnabled()) {
             logger.debug("Flushing dependencies for path : " + path);
         }
@@ -178,19 +149,20 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
             if (logger.isDebugEnabled()) {
                 logger.debug("Flushing path : " + path);
             }
-            cacheProvider.invalidate(path);
-            depCache.remove(element.getKey());
+            cacheProvider.invalidate(path, propageToOtherClusterNodes);
+            depCache.remove(element.getKey(), !propageToOtherClusterNodes);
         }
     }
 
-    private void flushRegexpDependenciesOfPath(Cache depCache, String path) {
+    private void flushRegexpDependenciesOfPath(Cache depCache, String path, boolean propageToOtherClusterNodes) {
         if (logger.isDebugEnabled()) {
             logger.debug("Flushing dependencies for path : " + path);
         }
+        @SuppressWarnings("unchecked")
         List<String> keys = depCache.getKeys();
         for (String key : keys) {
             if(path.matches(key)) {
-                cacheProvider.invalidateRegexp(key);
+                cacheProvider.invalidateRegexp(key, propageToOtherClusterNodes);
             }
         }
 
@@ -198,9 +170,5 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
 
     public void setCacheProvider(ModuleCacheProvider cacheProvider) {
         this.cacheProvider = cacheProvider;
-    }
-
-    public void setJcrTemplate(JCRTemplate jcrTemplate) {
-        this.jcrTemplate = jcrTemplate;
     }
 }

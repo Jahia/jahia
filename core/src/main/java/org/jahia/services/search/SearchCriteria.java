@@ -745,6 +745,7 @@ public class SearchCriteria implements Serializable {
     private String rawQuery;
 
     private CommaSeparatedMultipleValue sites = new CommaSeparatedMultipleValue();
+    private CommaSeparatedMultipleValue sitesForReferences = new CommaSeparatedMultipleValue();
     
     private List<Term> terms = LazyList.decorate(new LinkedList<Term>(),
             FactoryUtils.instantiateFactory(Term.class));
@@ -849,6 +850,10 @@ public class SearchCriteria implements Serializable {
 
     public CommaSeparatedMultipleValue getSites() {
         return sites;
+    }
+    
+    public CommaSeparatedMultipleValue getSitesForReferences() {
+        return sitesForReferences;
     }
 
     public List<Term> getTerms() {
@@ -979,6 +984,10 @@ public class SearchCriteria implements Serializable {
     public void setSites(CommaSeparatedMultipleValue sites) {
         this.sites = sites;
     }
+    
+    public void setSitesForReferences(CommaSeparatedMultipleValue sitesForReferences) {
+        this.sitesForReferences = sitesForReferences;
+    }
 
     /**
      * Simplified method for setting the search term. This method resets all
@@ -1001,22 +1010,15 @@ public class SearchCriteria implements Serializable {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, TO_STRING_STYLE).append("rawQuery",
-                this.getRawQuery()).append("createdBy", this.getCreatedBy())
-                .append("created", this.getCreated()).append("lastModifiedBy",
-                        this.getLastModifiedBy()).append("lastModified",
-                        this.getLastModified()).append("pagePath",
-                        this.getPagePath()).append("fileType",
-                        this.getFileType()).append("nodeType",
-                        this.getNodeType()).append("filePath",
-                        this.getFilePath()).append("properties",
-                        listToString(this.getPropertiesAll())).append("terms",
-                        listToString(this.getTerms())).append("itemsPerPage",
-                        this.getItemsPerPage()).append("sites", this.getSites())
-                .append("languages", this.getLanguages())
-                .append("limit", this.getLimit())
-                .append("offset", this.getOffset())
-                .append("originSiteKey", this.getOriginSiteKey()).toString();
+        return new ToStringBuilder(this, TO_STRING_STYLE).append("rawQuery", this.getRawQuery()).append("createdBy", this.getCreatedBy())
+                .append("created", this.getCreated()).append("lastModifiedBy", this.getLastModifiedBy())
+                .append("lastModified", this.getLastModified()).append("pagePath", this.getPagePath())
+                .append("fileType", this.getFileType()).append("nodeType", this.getNodeType()).append("filePath", this.getFilePath())
+                .append("properties", listToString(this.getPropertiesAll())).append("terms", listToString(this.getTerms()))
+                .append("itemsPerPage", this.getItemsPerPage()).append("sites", this.getSites())
+                .append("sitesForReferences", this.getSitesForReferences()).append("languages", this.getLanguages())
+                .append("limit", this.getLimit()).append("offset", this.getOffset()).append("originSiteKey", this.getOriginSiteKey())
+                .toString();
     }
 
 }

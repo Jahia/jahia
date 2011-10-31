@@ -45,11 +45,13 @@ import static org.jahia.services.content.JCRContentUtils.stringToQueryLiteral;
 
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.jcr.PathNotFoundException;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -78,7 +80,6 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.search.AbstractHit;
 import org.jahia.services.search.FileHit;
 import org.jahia.services.search.Hit;
 import org.jahia.services.search.JCRNodeHit;
@@ -94,6 +95,8 @@ import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.services.search.SearchCriteria.Term.SearchFields;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.utils.DateUtils;
+
+import com.google.common.collect.Sets;
 
 /**
  * This is the default search provider used by Jahia and used the index created by Jahia's main
@@ -124,6 +127,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         List<Hit<?>> results = new LinkedList<Hit<?>>();
         Set<String> addedHits = new HashSet<String>();
         Set<String> addedNodes = new HashSet<String>();
+
         try {
             JCRSessionWrapper session = ServicesRegistry
                     .getInstance()
@@ -152,23 +156,40 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         }
                     }
                 }
+                
+                Set<String> usageFilterSites = !criteria.getSites().isEmpty() && !criteria.getSites().getValue().equals("-all-")
+                        && !criteria.getSitesForReferences().isEmpty() ? Sets.newHashSet(criteria.getSites().getValues()) : null;
 
                 while (it.hasNext()) {
+                    Row row = it.nextRow();
                     try {
-                        Row row = it.nextRow();
                         JCRNodeWrapper node = (JCRNodeWrapper) row.getNode();
                         if (node.isNodeType(Constants.JAHIANT_TRANSLATION)
                                 || Constants.JCR_CONTENT.equals(node.getName())) {
                             node = node.getParent();
                         }
-                        if (addedNodes.add(node.getIdentifier()) && !isNodeToSkip(node, criteria, languages)) {
-                            Hit<?> hit = buildHit(row, node, context);
-
-                            SearchServiceImpl.executeURLModificationRules(hit, context);
-
-                            if (addedHits.add(hit.getLink())) {
-                                results.add(hit);
+                        if (addedNodes.add(node.getIdentifier())) {
+                            boolean skipNode = isNodeToSkip(node, criteria, languages);
+                                    
+                            Hit<?> hit = !skipNode ? buildHit(row, node, context, usageFilterSites) : null;
+                            
+                            if (!skipNode && usageFilterSites != null
+                                    && !usageFilterSites.contains(node.getResolveSite().getName())
+                                    && hit instanceof JCRNodeHit) {
+                                JCRNodeHit jcrNodeHit = (JCRNodeHit) hit;
+                                skipNode = jcrNodeHit.getUsages().isEmpty();
                             }
+                            if (!skipNode) {
+                                SearchServiceImpl.executeURLModificationRules(hit, context);
+
+                                if (addedHits.add(hit.getLink())) {
+                                    results.add(hit);
+                                }
+                            }
+                        }
+                    } catch (PathNotFoundException e) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Found node is not visible or published: " + row.getPath(), e);
                         }
                     } catch (Exception e) {
                         logger.warn("Error resolving search hit", e);
@@ -217,11 +238,12 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         } catch (RepositoryException e) {
             logger.debug("Error while trying to check for node language", e);
         }
+
         return skipNode;
     }
 
-    private Hit<?> buildHit(Row row, JCRNodeWrapper node, RenderContext context) throws RepositoryException {
-        AbstractHit<?> searchHit = null;
+    private Hit<?> buildHit(Row row, JCRNodeWrapper node, RenderContext context, Set<String> usageFilterSites) throws RepositoryException {
+        JCRNodeHit searchHit = null;
         if (node.isFile() || node.isNodeType(Constants.NT_FOLDER)) {
             searchHit = new FileHit(node, context);
         } else {
@@ -229,6 +251,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         }
 
         try {
+            searchHit.setUsageFilterSites(usageFilterSites);
             searchHit.setScore((float) (row.getScore() / 1000.));
 
             // this is Jackrabbit specific, so if other implementations
@@ -286,21 +309,30 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             query.append("/jcr:root/sites/");
             if ("-all-".equals(params.getSites().getValue())) {
                 query.append("*");
-            } else if (params.getSites().getValues().length == 1) {
-                query.append(params.getSites().getValue());
             } else {
-                query.append("*[");
-                int i = 0;
+                Set<String> sites = new LinkedHashSet<String>();
                 for (String site : params.getSites().getValues()) {
-                    if (i > 0) {
-                        query.append(" or ");
-                    }
-                    query.append("fn:name() = '");
-                    query.append(site);
-                    query.append("'");
-                    i++;
+                    sites.add(site);
                 }
-                query.append("]");
+                for (String site : params.getSitesForReferences().getValues()) {
+                    sites.add(site);
+                }
+                if (sites.size() == 1) {
+                    query.append(sites.iterator().next());
+                } else {
+                    query.append("*[");
+                    int i = 0;
+                    for (String site : sites) {
+                        if (i > 0) {
+                            query.append(" or ");
+                        }
+                        query.append("fn:name() = '");
+                        query.append(site);
+                        query.append("'");
+                        i++;
+                    }
+                    query.append("]");
+                }
             }
 
             if (!isFileSearch(params)) {

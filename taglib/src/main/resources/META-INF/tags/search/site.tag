@@ -10,6 +10,8 @@
               description="Represents a comma separated string of site keys to be displayed in the selection list." %>
 <%@ attribute name="allowAll" required="false" type="java.lang.Boolean"
               description="If set to true, we diaplys an option to search in all sites. [true]" %>
+<%@ attribute name="includeReferencesFrom" required="false"
+              description="Normally references from other sites than the selected ones are not found. In this parameter you can specify one or multiple comma separated site keys and then node references to these sites will also be displayed in the search results." %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
@@ -39,3 +41,6 @@
     </select>
 </c:if>
 <c:if test="${!display}"><input type="hidden" name="src_sites.values" value="${fn:escapeXml(value)}"/></c:if>
+<c:if test="${not empty includeReferencesFrom}">
+    <input type="hidden" name="src_sitesForReferences.values" value="${fn:escapeXml(includeReferencesFrom)}"/>
+</c:if>

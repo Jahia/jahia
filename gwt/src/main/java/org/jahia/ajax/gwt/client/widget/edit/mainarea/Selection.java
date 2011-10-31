@@ -151,8 +151,10 @@ public class Selection extends LayoutContainer {
         right.el().makePositionable(true);
 
         onShow();
-
-        setPosition(currentContainer.getAbsoluteLeft(), currentContainer.getAbsoluteTop(), currentContainer.getWidth(), currentContainer.getHeight());
+        if (currentContainer != null) {
+            setPosition(currentContainer.getAbsoluteLeft(), currentContainer.getAbsoluteTop(), currentContainer.getWidth(),
+                    currentContainer.getHeight());
+        }
     }
 
     @Override

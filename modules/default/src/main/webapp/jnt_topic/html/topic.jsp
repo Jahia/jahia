@@ -23,9 +23,10 @@
         $('.timestamp').cuteTime({ refresh: 60000 });
     });
 </script>
+<c:set var="pagesizeParamName" value="pagesize${currentNode.identifier}"/>
 <c:choose>
-    <c:when test="${not empty param.pagesize}">
-        <c:set var="pageSize" value="${param.pagesize}"/>
+    <c:when test="${not empty param[pagesizeParamName]}">
+        <c:set var="pageSize" value="${param[pagesizeParamName]}"/>
     </c:when>
     <c:when test="${not empty param.src_itemsPerPage}">
         <c:set var="pageSize" value="${param.src_itemsPerPage}"/>

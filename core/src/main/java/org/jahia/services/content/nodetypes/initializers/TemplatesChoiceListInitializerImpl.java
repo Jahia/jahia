@@ -62,7 +62,7 @@ import java.io.File;
 import java.util.*;
 
 /**
- * Choice list initializer ro provide a selection of available templates.
+ * Choice list initializer to provide a selection of available templates.
  *
  * @author : rincevent
  * @since JAHIA 6.5
@@ -250,10 +250,8 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                     !view.getKey().startsWith("wrapper.") && !view.getKey().contains("hidden.")
                     ) {
                 HashMap<String, Object> map = new HashMap<String, Object>();
-                Properties properties = view.getProperties();
-                for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-                    map.put(entry.getKey().toString(), entry.getValue());
-                }
+                fillProperties(map, view.getDefaultProperties());
+                fillProperties(map, view.getProperties());
                 JahiaResourceBundle rb = new JahiaResourceBundle(null, locale, view.getModule().getName());
 
                 String displayName = rb.get(declaringPropertyDefinition.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(view.getKey()),
@@ -279,5 +277,11 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
         }
         Collections.sort(vs);
         return vs;
+    }
+
+    private void fillProperties(HashMap<String, Object> map, Properties properties) {
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            map.put(entry.getKey().toString(), entry.getValue());
+        }
     }
 }

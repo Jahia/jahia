@@ -73,9 +73,9 @@
 					<c:if test="${empty displayNumberOfItemsPerPage || displayNumberOfItemsPerPage eq 'true'}">        
                 <label for="pageSizeSelector${currentNode.identifier}"><fmt:message key="pagination.itemsPerPage"/>:</label>
                 <c:url value="${basePaginationUrl}" context="/" var="selectSizeUrl">
-                    <c:param name="begin" value="${moduleMap.begin}"/>
+                    <c:param name="${beginid}" value="${moduleMap.begin}"/>
                 </c:url>
-                <select id="pageSizeSelector${currentNode.identifier}" onchange="window.location='${fn:escapeXml(selectSizeUrl)}&amp;pagesize='+$('#pageSizeSelector${currentNode.identifier}').val();">
+                <select id="pageSizeSelector${currentNode.identifier}" onchange="window.location='${fn:escapeXml(selectSizeUrl)}&${pagesizeid}='+$('#pageSizeSelector${currentNode.identifier}').val();">
                     <c:if test="${empty nbItemsList}">
                         <c:set var="nbItemsList" value="5,10,25,50,100"/>
                     </c:if>

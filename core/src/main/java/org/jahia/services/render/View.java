@@ -76,4 +76,11 @@ public interface View {
      * @return properties of the template
      */
     Properties getProperties();
+
+    /**
+     * Return default properties of the node type template
+     *
+     * @return
+     */
+    Properties getDefaultProperties();
 }

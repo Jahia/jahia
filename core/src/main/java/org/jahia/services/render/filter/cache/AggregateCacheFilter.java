@@ -99,7 +99,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public static final Pattern ESI_INCLUDE_STOPTAG_REGEXP = Pattern.compile("<!-- /cache:include -->");
     private static final Pattern CLEANUP_REGEXP = Pattern.compile(
             "<!-- cache:include src=\\\"(.*)\\\" -->\n|\n<!-- /cache:include -->");
-    private static final Pattern QUERYSTRING_REGEXP = Pattern.compile("(.*)(_qs\\[([^\\]]*)\\]_)(.*)");
+    private static final Pattern QUERYSTRING_REGEXP = Pattern.compile("(.*)(_qs\\[([^\\]]+)\\]_)(.*)");
 
     public static final Set<String> notCacheableFragment = new HashSet<String>(512);
 
@@ -124,20 +124,28 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         final Script script = (Script) renderContext.getRequest().getAttribute("script");
         boolean isBinded = resource.getNode().isNodeType("jmix:bindedComponent");
         if (script != null) {
+            Properties scriptProperties = script.getView().getProperties();
+            Properties defaultScriptProperties = script.getView().getDefaultProperties();
             chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
-                    script.getView().getProperties().getProperty("cache.perUser", "false")));
+                    scriptProperties.getProperty("cache.perUser")!=null?scriptProperties.getProperty("cache.perUser"):defaultScriptProperties.getProperty("cache.perUser", "false")));
             if(isBinded) {
                 chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.TRUE);
             } else {
                 chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
-                    script.getView().getProperties().getProperty("cache.mainResource", "false")));
+                    scriptProperties.getProperty("cache.mainResource")!=null?scriptProperties.getProperty("cache.mainResource"):defaultScriptProperties.getProperty("cache.mainResource", "false")));
             }
-            String requestParameters = script.getView().getProperties().getProperty("cache.requestParameters");
-            if (requestParameters != null) {
+
+            String requestParameters = scriptProperties.getProperty("cache.requestParameters");
+            if (requestParameters == null) {
+                requestParameters = defaultScriptProperties.getProperty("cache.requestParameters");
+            }
+            if (requestParameters != null && !"".equals(requestParameters.trim())) {
                 chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", requestParameters.split(","));
+            } else {
+                chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", new String[]{""});
             }
-            if (Boolean.valueOf(script.getView().getProperties().getProperty(
-                    "cache.additional.key.useMainResourcePath", "false"))) {
+            if (Boolean.valueOf(scriptProperties.getProperty("cache.additional.key.useMainResourcePath")!=null?
+                scriptProperties.getProperty("cache.additional.key.useMainResourcePath"):defaultScriptProperties.getProperty("cache.additional.key.useMainResourcePath", "false"))) {
                 resource.getModuleParams().put("module.cache.additional.key",
                         renderContext.getMainResource().getNode().getPath());
             }
@@ -232,18 +240,27 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             throws Exception {
         boolean isBinded = resource.getNode().isNodeType("jmix:bindedComponent");
         final Script script = (Script) renderContext.getRequest().getAttribute("script");
+        Properties scriptProperties = null;
+        Properties defaultScriptProperties = null;
         if (script != null) {
+            scriptProperties = script.getView().getProperties();
+            defaultScriptProperties = script.getView().getDefaultProperties();
             chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
-                    script.getView().getProperties().getProperty("cache.perUser", "false")));
+                    scriptProperties.getProperty("cache.perUser")!=null?scriptProperties.getProperty("cache.perUser"):defaultScriptProperties.getProperty("cache.perUser", "false")));
             if(isBinded) {
                 chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.TRUE);
             } else {
-                chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
-                    script.getView().getProperties().getProperty("cache.mainResource", "false")));
+                chain.pushAttribute(renderContext.getRequest(), "cache.mainResource",
+                        Boolean.valueOf(scriptProperties.getProperty("cache.mainResource")!=null?scriptProperties.getProperty("cache.mainResource"):defaultScriptProperties.getProperty("cache.mainResource", "false")));
             }
-            String requestParameters = script.getView().getProperties().getProperty("cache.requestParameters");
-            if (requestParameters != null) {
+            String requestParameters = scriptProperties.getProperty("cache.requestParameters");
+            if (requestParameters == null) {
+                requestParameters = defaultScriptProperties.getProperty("cache.requestParameters");
+            }
+            if (requestParameters != null && !"".equals(requestParameters.trim())) {
                 chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", requestParameters.split(","));
+            } else {
+                chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", null);
             }
         }
         resource.getDependencies().add(resource.getNode().getPath());
@@ -255,8 +272,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         if (key.contains("_mr_")) {
             resource.getDependencies().add(renderContext.getMainResource().getNode().getPath());
-            if (script != null && Boolean.valueOf(script.getView().getProperties().getProperty(
-                    "cache.mainResource.flushParent", "false"))) {
+            if (scriptProperties != null && defaultScriptProperties!=null &&
+                Boolean.valueOf(scriptProperties.getProperty("cache.mainResource.flushParent")!=null?scriptProperties.getProperty("cache.mainResource.flushParent"):defaultScriptProperties.getProperty("cache.mainResource.flushParent", "false"))) {
                 try {
                     resource.getDependencies().add(renderContext.getMainResource().getNode().getParent().getPath());
                 } catch (ItemNotFoundException e) {
@@ -297,8 +314,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 }
                 String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
                 Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(
-                        script != null ? script.getView().getProperties().getProperty("cache.expiration",
-                                "-1") : "-1");
+                        scriptProperties != null && defaultScriptProperties!=null ? (scriptProperties.getProperty("cache.expiration")!=null?scriptProperties.getProperty("cache.expiration"):defaultScriptProperties.getProperty("cache.expiration", "-1")) : "-1");
                 final Cache dependenciesCache = cacheProvider.getDependenciesCache();
                 Set<String> depNodeWrappers = resource.getDependencies();
                 for (String path : depNodeWrappers) {
@@ -609,7 +625,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 node = currentUserSession.getNode(keyAttrbs.get("path"));
             } catch (PathNotFoundException e) {
             if(logger.isDebugEnabled()) {
-                    logger.debug("Node {} is not longer avilable."
+                    logger.debug("Node {} is not longer available."
                             + " Replacing output with empty content.", keyAttrbs.get("path"));
                 }
                 outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), StringUtils.EMPTY);
@@ -624,7 +640,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             renderContext.getRequest().removeAttribute(
                     "areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
             Template oldOne = (Template) renderContext.getRequest().getAttribute("previousTemplate");
-            boolean restoreOldOneIfNeeded = false;
             String context = keyAttrbs.get("context");
             if(!context.equals("page")) {
                 renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
@@ -634,7 +649,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 renderContext.getRequest().setAttribute("previousTemplate", templateNodes);
             } else {
                 renderContext.getRequest().removeAttribute("previousTemplate");
-                restoreOldOneIfNeeded = true;
             }
 
             renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
@@ -656,8 +670,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             }
             String content = RenderService.getInstance().render(resource, renderContext);
             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);
-            if (restoreOldOneIfNeeded) {
+            if (oldOne!=null) {
                 renderContext.getRequest().setAttribute("previousTemplate", oldOne);
+            } else {
+                renderContext.getRequest().removeAttribute("previousTemplate");
             }
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);

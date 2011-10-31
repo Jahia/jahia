@@ -16,6 +16,7 @@
 <c:set var="bindedComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty bindedComponent and jcr:isNodeType(bindedComponent, 'jmix:list')}">
+    <template:addCacheDependency node="${bindedComponent}"/>
     <template:option node="${bindedComponent}" nodetype="${bindedComponent.primaryNodeTypeName},jmix:list" view="hidden.header"/>
 <c:set var="pagesizeid" value="pagesize${bindedComponent.identifier}"/>
     <c:choose>

@@ -71,6 +71,7 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
     private JahiaTemplatesPackage ownerPackage;
     private String displayName;    
     private Properties properties;
+    private Properties defaultProperties;
     public static String THUMBNAIL = "image";
 
     private static Map<String,Properties> propCache = new HashMap<String, Properties>();
@@ -90,9 +91,17 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
         }
 
         String propName = StringUtils.substringBeforeLast(path, "." + fileExtension) + ".properties";
+        String defaultPropName = StringUtils.substringBefore(path, ".") + ".properties";
         String thumbnail = StringUtils.substringBeforeLast(path, "." + fileExtension) + ".png";
+        String defaultThumbnail = StringUtils.substringBefore(path, ".") + ".png";
+        getProperties(propName, thumbnail, false);
+        getProperties(defaultPropName, defaultThumbnail, true);
+    }
+
+    private void getProperties(String propName, String thumbnail, boolean defaultProps) {
+        Properties properties;
         if (!propCache.containsKey(propName)) {
-            properties = new Properties();            
+            properties = new Properties();
             propCache.put(propName, properties);
             InputStream is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(propName);
             if (is != null) {
@@ -112,6 +121,11 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
             }
         } else {
             properties = propCache.get(propName);
+        }
+        if(defaultProps) {
+            this.defaultProperties = properties;
+        } else {
+            this.properties = properties;
         }
     }
 
@@ -152,6 +166,15 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
      */
     public Properties getProperties() {
         return properties;
+    }
+
+    /**
+     * Return default properties of the node type template
+     *
+     * @return
+     */
+    public Properties getDefaultProperties() {
+        return defaultProperties;
     }
 
     @Override

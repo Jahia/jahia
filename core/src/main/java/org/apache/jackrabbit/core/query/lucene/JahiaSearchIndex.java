@@ -105,8 +105,8 @@ public class JahiaSearchIndex extends SearchIndex {
             final NodeState state = add.next();
             if (state != null) {
                 addedIds.add(state.getNodeId());
+                addList.add(state);                
             }
-            addList.add(state);
         }
         while (remove.hasNext()) {
             NodeId nodeId = remove.next();

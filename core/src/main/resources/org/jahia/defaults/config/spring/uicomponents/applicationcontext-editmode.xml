@@ -796,7 +796,24 @@
         <property name="titleKey" value="label.engineTab.visibility"/>
         <property name="requiredPermission" value="viewVisibilityTab"/>
         <property name="tabItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.VisibilityTabItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.VisibilityTabItem">
+                <property name="hideForTypes">
+                    <list>
+                        <value>jnt:category</value>
+                        <value>jnt:component</value>
+                        <value>jnt:componentFolder</value>
+                        <value>jnt:group</value>
+                        <value>jnt:groupsFolder</value>
+                        <value>jnt:tag</value>
+                        <value>jnt:template</value>
+                        <value>jnt:user</value>
+                        <value>jnt:usersFolder</value>
+                        <value>jnt:virtualsitesFolder</value>
+                        <value>jnt:virtualsite</value>
+                        <value>rep:root</value>
+                    </list>
+                </property>
+            </bean>
         </property>
     </bean>
 

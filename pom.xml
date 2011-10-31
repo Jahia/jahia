@@ -619,7 +619,7 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <goals>deploy</goals>
                     <preparationGoals>clean install</preparationGoals>
-                    <releaseProfiles>do-attach-javadocs,aggregate-javadocs,forge-modules</releaseProfiles>
+                    <releaseProfiles>do-attach-javadocs,aggregate-javadocs</releaseProfiles>
                 </configuration>
             </plugin>
         </plugins>

@@ -206,6 +206,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-scm-plugin</artifactId>
                         <executions>
+                            <!--
                             <execution>
                                 <id>checkout-modules-set</id>
                                 <phase>pre-clean</phase>
@@ -302,6 +303,7 @@
                                     <skipCheckoutIfExists>true</skipCheckoutIfExists>
                                 </configuration>
                             </execution>
+                            -->
                             <execution>
                                 <id>LDAP-provider</id>
                                 <phase>pre-clean</phase>
@@ -322,6 +324,7 @@
         <profile>
             <id>forge-modules</id>
             <modules>
+                <!--
                 <module>forge-blog</module>
                 <module>forge-forum</module>
                 <module>forge-ldap</module>
@@ -331,6 +334,8 @@
                 <module>forge-newsletter</module>
                 <module>forge-templates-set</module>
                 <module>forge-wiki</module>
+                -->
+                <module>forge-ldap</module>
             </modules>
         </profile>
         

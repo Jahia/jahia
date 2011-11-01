@@ -811,6 +811,7 @@
                         <value>jnt:virtualsitesFolder</value>
                         <value>jnt:virtualsite</value>
                         <value>rep:root</value>
+                        <value>jnt:templateSets</value>
                     </list>
                 </property>
             </bean>

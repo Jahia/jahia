@@ -112,7 +112,7 @@ public class URLResolver {
 
     private String redirectUrl;
     private String vanityUrl;
-    private String method;
+
     private Date versionDate;
     private String versionLabel;
     private static final String CACHE_KEY_SEPARATOR = "___";
@@ -123,8 +123,8 @@ public class URLResolver {
 
     private RenderContext renderContext;
     private Map<String, JCRNodeWrapper> resolvedNodes = new ConcurrentHashMap<String, JCRNodeWrapper>();
-    private Cache nodePathCache;
-    private Cache siteInfoCache;
+    private Cache<String, String> nodePathCache;
+    private Cache<String, SiteInfo> siteInfoCache;
 
     /**
      * Initializes an instance of this class. This constructor is mainly used when
@@ -134,11 +134,11 @@ public class URLResolver {
      * @param serverName  the server name (usually obtained with @link javax.servlet.http.HttpServletRequest.getServerName())
      * @param request  the current HTTP servlet request object 
      */
-    protected URLResolver(String urlPathInfo, String serverName, HttpServletRequest request, Cache nodePathCache, Cache siteInfoCache) {
+    protected URLResolver(String urlPathInfo, String serverName, HttpServletRequest request, Cache<String, String> nodePathCache, Cache<String, SiteInfo> siteInfoCache) {
         super();
         this.nodePathCache = nodePathCache;
         this.siteInfoCache = siteInfoCache;
-        this.method = request.getMethod();
+
         this.urlPathInfo = urlPathInfo;
         if (urlPathInfo != null) {
             servletPart = StringUtils.substring(getUrlPathInfo(), 1,
@@ -181,10 +181,10 @@ public class URLResolver {
      * @param url   URL in HTML links of outgoing requests
      * @param context  The current request in order to obtain the context path
      */
-    protected URLResolver(String url, RenderContext context, Cache nodePathCache, Cache siteInfoCache) {
+    protected URLResolver(String url, RenderContext context, Cache<String, String> nodePathCache, Cache<String, SiteInfo> siteInfoCache) {
         this.nodePathCache = nodePathCache;
         this.siteInfoCache = siteInfoCache;
-        method = context.getRequest().getMethod();
+
         renderContext = context;
         String contextPath = context.getRequest().getContextPath();
 
@@ -419,8 +419,11 @@ public class URLResolver {
                                 }
                             }
                             nodePathCache.put(cacheKey, nodePath);
-                            SiteInfo siteInfo = new SiteInfo(node.getResolveSite());
-                            siteInfoCache.put(cacheKey, siteInfo);
+                            // the next condition is false e.g. when nodePath is "/" and session's locale is not in systemsite's locales 
+                            if (node.getResolveSite() != null) {
+                                SiteInfo siteInfo = new SiteInfo(node.getResolveSite());
+                                siteInfoCache.put(cacheKey, siteInfo);
+                            }
                             return nodePath;
                         }
                     });

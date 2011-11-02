@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
@@ -455,7 +454,7 @@ public class URLFilterTest {
             assertTrue("Wrong node or language returned - all vanity urls are published, not just the one of the published language", pageNode
                     .equals(resolvedNode)
                     && "fr".equals(resolvedNode.getLanguage()));
-        } catch (AccessDeniedException e) {
+        } catch (PathNotFoundException e) {
         }        
 
         languages.clear();

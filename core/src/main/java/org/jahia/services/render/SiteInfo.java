@@ -51,6 +51,8 @@ import java.io.Serializable;
 */
 public class SiteInfo implements Serializable {
 
+    private static final long serialVersionUID = 8653715685356097398L;
+    
     private boolean htmlMarkupFilterEnabled;
     private boolean mixLanguagesActive;
     private boolean WCAGComplianceCheckEnabled;

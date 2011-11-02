@@ -124,6 +124,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         modulesTypes = new HashMap<String, String>();
         modulesCombo = new SimpleComboBox<String>();
         modulesCombo.setTypeAhead(true);
+        modulesCombo.getListView().setStyleAttribute("font-size","11px");
         modulesCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
         modulesCombo.setForceSelection(true);
         modulesCombo.setWidth(200);
@@ -232,6 +233,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         sitesCombo.setTypeAhead(true);
         sitesCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
         sitesCombo.setForceSelection(true);
+        sitesCombo.getListView().setStyleAttribute("font-size","11px");
         if (useModuleType) {
             sitesCombo.setWidth(250);
         } else {

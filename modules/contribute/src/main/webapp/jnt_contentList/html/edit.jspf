@@ -16,10 +16,10 @@
         <c:if test="${!propertyDefinition.multiple and propertyDefinition.itemType eq contentType and not propertyDefinition.hidden and !(propertyDefinition.name eq 'jcr:title') and !(propertyDefinition.name eq '*')}">
             <c:choose>
                 <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
-                    <c:set var="initEditFields" value="${initEditFields}setFileSelector(\\\'${child.identifier}${fn:replace(propertyDefinition.name,':','_')}\\\');setFileEdit(\\\'${currentNode.identifier}${fn:replace(propertyDefinition.name,':','_')}\\\');"/>
+                    <c:set var="initEditFields" value="${initEditFields}setFileSelector(\\\'${child.identifier}${fn:replace(propertyDefinition.name,':','_')}\\\');setFileEdit(\\\'${child.identifier}${fn:replace(propertyDefinition.name,':','_')}\\\');"/>
                 </c:when>
                 <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
-                    <c:set var="initEditFields" value="${initEditFields}setChoiceListEdit(\\\'${currentNode.identifier}${fn:replace(propertyDefinition.name,':','_')}\\\');"/>
+                    <c:set var="initEditFields" value="${initEditFields}setChoiceListEdit(\\\'${child.identifier}${fn:replace(propertyDefinition.name,':','_')}\\\');"/>
                 </c:when>
             </c:choose>
         </c:if>

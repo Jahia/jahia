@@ -13,6 +13,9 @@ $.editable.addInputType('treeItemSelector', {
         /* do nothing */
     },
 
+    submit: function (settings, original) {
+    //    $("#datetimepicker_", this).val(jQuery.trim($("#datetimepicker_", this).val()).replace(" ", "T"));
+    },
     /* attach 3rd party plugin to input element */
     plugin : function(settings, original) {
         var form = this;

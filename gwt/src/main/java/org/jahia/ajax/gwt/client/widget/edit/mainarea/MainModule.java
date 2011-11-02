@@ -533,7 +533,7 @@ public class MainModule extends Module {
             String lastUnpublished = null;
             if (modules != null) {
                 for (Module m : modules) {
-                    if (!m.getPath().endsWith("*")) {
+                    if (m instanceof AreaModule || !m.getPath().endsWith("*")) {
                         GWTJahiaNode currentNode = m.getNode();
                         if (currentNode != null) {
                             List<LayoutContainer> images = new ArrayList<LayoutContainer>();

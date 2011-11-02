@@ -66,6 +66,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.sites.SitesSettings;
+import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -893,12 +894,17 @@ public class NavigationHelper {
             for (Map.Entry<JCRNodeWrapper, Boolean> entry : conditionMatchesDetails.entrySet()) {
                 ModelData data = new BaseModelData();
                 data.set("matches",entry.getValue());
+                VisibilityConditionRule visibilityConditionRule = null;
                 try {
-                    data.set("xtemplate",visibilityService.getConditions().get(entry.getKey().getPrimaryNodeTypeName()).getGWTDisplayTemplate(node.getSession().getLocale()));
+                    visibilityConditionRule = visibilityService.getConditions().get(
+                            entry.getKey().getPrimaryNodeTypeName());
+                    data.set("xtemplate", visibilityConditionRule.getGWTDisplayTemplate(node.getSession().getLocale()));
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
-                visibilityInfo.put(getGWTJahiaNode(entry.getKey(),Arrays.asList("start","end")), data);
+                if(visibilityConditionRule!=null) {
+                    visibilityInfo.put(getGWTJahiaNode(entry.getKey(),visibilityConditionRule.getRequiredFieldNamesForTemplate()), data);
+                }
             }
             n.setVisibilityInfo(visibilityInfo);
             n.setVisible(visibilityService.matchesConditions(node));

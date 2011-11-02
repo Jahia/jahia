@@ -107,43 +107,36 @@ public class ContentTabItem extends PropertiesTabItem {
             }
 
             if (nameEditable && !engine.isMultipleSelection()) {
+                if (autoUpdateName != null) {
+                    autoUpdateName.removeAllListeners();
+                }
+                if (titleField != null) {
+                    titleField.removeAllListeners();
+                }
                 isNodeNameFieldDisplayed = true;
-                if (engine.getDefaultLanguageCode().equals(this.language)) {
-                    boolean autoUpdate = true;
+                boolean autoUpdate = true;
 
-                    if (autoUpdateName != null) {
-                        Boolean realValue = autoUpdateName.getData("realValue");
-                        if (realValue == null) {
-                            if (engine.isExistingNode()) {
-                                if (titleField != null && titleField.getValue() != null) {
-                                    String generated = generateNodeName((String) titleField.getValue());
-                                    autoUpdate = engine.getNodeName().equals(generated);
-                                } else {
-                                    autoUpdate = false;
-                                }
-                            }
+                if (autoUpdateName != null) {
+                    if (engine.isExistingNode()) {
+                        if (titleField != null && titleField.getValue() != null) {
+                            String generated = generateNodeName((String) titleField.getValue());
+                            autoUpdate = nameText.getValue().equals(generated);
                         } else {
-                            autoUpdate = realValue;
+                            autoUpdate = false;
                         }
-                        autoUpdateName.setValue(autoUpdate);
-                        autoUpdateName.setVisible(true);
-                        autoUpdateLabel.setText("&nbsp;" + Messages.get("label.synchronizeName", "Automatically synchronize name with title") + ":");
-                    } else {
-                        autoUpdate = false;
-                        autoUpdateLabel.setText("");
                     }
-
-                    nameText.setEnabled(!autoUpdate);
-
+                    autoUpdateName.setValue(autoUpdate);
+                    autoUpdateName.setVisible(true);
+                    autoUpdateLabel.setText("&nbsp;" + Messages.get("label.synchronizeName", "Automatically synchronize name with title") + ":");
                 } else {
-                    if (autoUpdateName != null) {
-                        autoUpdateName.setVisible(false);
-                    }
-                    autoUpdateLabel.setText("&nbsp;" + Messages.get("label.switchToUpdateName", "Switch to default language to update name"));
-                    nameText.setEnabled(false);
+                    autoUpdate = false;
+                    autoUpdateLabel.setText("");
                 }
 
-                if (titleField != null && engine.getDefaultLanguageCode().equals(this.language)) {
+                nameText.setEnabled(!autoUpdate);
+
+
+                if (titleField != null) {
                     autoUpdateName.addListener(Events.Change, new Listener<ComponentEvent>() {
                         public void handleEvent(ComponentEvent event) {
                             nameText.setEnabled(!autoUpdateName.getValue());

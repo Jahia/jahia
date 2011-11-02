@@ -49,7 +49,7 @@
 
     <p>Title: <jcr:nodeProperty node="${currentNode}" name="j:title"/></p>
 
-    <p>Description: <jcr:nodeProperty node="${currentNode}" name="j:description"/></p>
+    <p>Version: <jcr:node path="j:versionInfo" var="versionInfo"/><jcr:nodeProperty node="${versionInfo}" name="j:version"/></p>
 
     <jcr:jqom statement="select * from [jnt:template] as template where ISDESCENDANTNODE(template,'${currentNode.path}')" var="templates"/>
 

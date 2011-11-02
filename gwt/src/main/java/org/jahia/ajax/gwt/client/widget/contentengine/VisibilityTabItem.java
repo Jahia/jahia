@@ -499,7 +499,8 @@ public class VisibilityTabItem extends EditEngineTabItem {
             statusContainer = new LayoutContainer(new FitLayout());
             statusPanel.add(statusContainer);
 
-            if (node.getAggregatedPublicationInfo().getStatus() != GWTJahiaPublicationInfo.NOT_PUBLISHED) {
+            GWTJahiaPublicationInfo aggregatedPublicationInfo = node.getAggregatedPublicationInfo();
+            if (aggregatedPublicationInfo!=null && aggregatedPublicationInfo.getStatus() != GWTJahiaPublicationInfo.NOT_PUBLISHED) {
                 statusPanel.add(new Text("&nbsp;&nbsp;" + Messages.get("label.visibility.publicationStatus", "Publication status") + ": &nbsp;"));
                 publicationInfoContainer = new LayoutContainer(new FitLayout());
                 statusPanel.add(publicationInfoContainer);
@@ -519,15 +520,19 @@ public class VisibilityTabItem extends EditEngineTabItem {
         }
 
         private void update() {
-            statusContainer.removeAll();
-            if (oneUnknown && (allConditionsMatch.getValue() || (!oneTrue && !oneFalse))) {
-                statusContainer.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusUnknown").createImage());
-            } else if ((allConditionsMatch.getValue() && !oneFalse) || (!allConditionsMatch.getValue() && oneTrue) || (!oneTrue && !oneFalse)) {
-                statusContainer.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusGreen").createImage());
-            } else {
-                statusContainer.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusRed").createImage());
+            if (statusContainer != null) {
+                statusContainer.removeAll();
+                if (oneUnknown && (allConditionsMatch.getValue() || (!oneTrue && !oneFalse))) {
+                    statusContainer.add(ToolbarIconProvider.getInstance().getIcon(
+                            "visibilityStatusUnknown").createImage());
+                } else if ((allConditionsMatch.getValue() && !oneFalse) ||
+                           (!allConditionsMatch.getValue() && oneTrue) || (!oneTrue && !oneFalse)) {
+                    statusContainer.add(ToolbarIconProvider.getInstance().getIcon(
+                            "visibilityStatusGreen").createImage());
+                } else {
+                    statusContainer.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusRed").createImage());
+                }
             }
-
             int infoStatus;
             if (info != null) {
                 infoStatus = info.getStatus();

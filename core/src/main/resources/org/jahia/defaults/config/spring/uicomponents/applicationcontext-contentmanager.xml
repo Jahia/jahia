@@ -1383,7 +1383,7 @@
 
     <bean id="repository.siteComponents" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="siteComponentRepository"/>
-        <property name="paths" value="$site/components"/>
+        <property name="paths" value="$site/components/*"/>
         <property name="titleKey" value="repository.componentRepository.label"/>
     </bean>
 

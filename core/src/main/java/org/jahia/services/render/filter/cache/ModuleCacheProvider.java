@@ -142,7 +142,7 @@ public class ModuleCacheProvider implements InitializingBean {
         Element element = dependenciesCache.get(nodePath);
         if(element!=null) {
             Set<String> deps = (Set<String>) element.getValue();
-            invalidateDependencies(deps);
+            invalidateDependencies(deps, propageToOtherClusterNodes);
         }
     }
 

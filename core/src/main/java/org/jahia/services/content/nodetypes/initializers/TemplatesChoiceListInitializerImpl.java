@@ -244,14 +244,14 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
 
         List<ChoiceListValue> vs = new ArrayList<ChoiceListValue>();
         for (View view : views) {
-            if (!"false".equals(view.getProperties().getProperty("visible")) &&
-                    ((StringUtils.isEmpty(param) && view.getProperties().get("type") == null) ||
-                            param.equals(view.getProperties().get("type"))) &&
+            HashMap<String, Object> map = new HashMap<String, Object>();
+            fillProperties(map, view.getDefaultProperties());
+            fillProperties(map, view.getProperties());
+            if (!"false".equals(map.get("visible")) &&
+                    ((StringUtils.isEmpty(param) && map.get("type") == null) ||
+                            param.equals(map.get("type"))) &&
                     !view.getKey().startsWith("wrapper.") && !view.getKey().contains("hidden.")
                     ) {
-                HashMap<String, Object> map = new HashMap<String, Object>();
-                fillProperties(map, view.getDefaultProperties());
-                fillProperties(map, view.getProperties());
                 JahiaResourceBundle rb = new JahiaResourceBundle(null, locale, view.getModule().getName());
 
                 String displayName = rb.get(declaringPropertyDefinition.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(view.getKey()),

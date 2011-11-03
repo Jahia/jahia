@@ -593,21 +593,21 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             JCRNodeWrapper tpls = m.addNode("templates", "jnt:templatesFolder");
             tpls.addNode("files", "jnt:folder");
             tpls.addNode("contents", "jnt:contentFolder");
-            List<Value> l = new ArrayList<Value>();
-            for (String d : pack.getDepends()) {
-                if (templatePackageRegistry.lookup(d) != null) {
-                    l.add(session.getValueFactory().createValue(templatePackageRegistry.lookup(d).getFileName()));
-                } else if (templatePackageRegistry.lookupByFileName(d) != null) {
-                    l.add(session.getValueFactory().createValue(templatePackageRegistry.lookupByFileName(d).getFileName()));
-                } else {
-                    logger.warn("cannot found dependency " + d + " for package '" + pack.getName() + "'");
-                }
-            }
-            Value[] v = new Value[pack.getDepends().size()];
-            m.setProperty("j:dependencies",l.toArray(v));
         } else {
             m = modules.getNode(pack.getRootFolder());
         }
+        List<Value> l = new ArrayList<Value>();
+        for (String d : pack.getDepends()) {
+            if (templatePackageRegistry.lookup(d) != null) {
+                l.add(session.getValueFactory().createValue(templatePackageRegistry.lookup(d).getFileName()));
+            } else if (templatePackageRegistry.lookupByFileName(d) != null) {
+                l.add(session.getValueFactory().createValue(templatePackageRegistry.lookupByFileName(d).getFileName()));
+            } else {
+                logger.warn("cannot found dependency " + d + " for package '" + pack.getName() + "'");
+            }
+        }
+        Value[] values = new Value[pack.getDepends().size()];
+        m.setProperty("j:dependencies",l.toArray(values));
         JCRNodeWrapper v;
         if (!m.hasNode("j:versionInfo")) {
             v = m.addNode("j:versionInfo", "jnt:versionInfo" );

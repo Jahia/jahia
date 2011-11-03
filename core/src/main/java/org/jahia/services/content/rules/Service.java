@@ -48,6 +48,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.drools.FactException;
@@ -63,7 +64,6 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
-import org.jahia.services.render.URLGenerator;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSitesService;
@@ -184,7 +184,7 @@ public class Service extends JahiaService {
                         boolean siteKeyEx = sitesService.getSiteByKey((String) infos.get("sitekey")) != null || "".equals(
                                 infos.get("sitekey"));
                         String serverName = (String) infos.get("siteservername");
-                        boolean serverNameEx = (sitesService.getSite(serverName) != null && !URLGenerator.isLocalhost(serverName)) || "".equals(serverName);
+                        boolean serverNameEx = (sitesService.getSite(serverName) != null && !Url.isLocalhost(serverName)) || "".equals(serverName);
                         if (!user.getJahiaUser().isRoot()) {
                             return;
                         }

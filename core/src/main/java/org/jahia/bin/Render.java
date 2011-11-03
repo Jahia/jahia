@@ -756,6 +756,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     renderContext.setMainResource(resource);
 
                     JCRSiteNode site = resource.getNode().getResolveSite();
+                    if (urlResolver.getSiteKey() != null && !site.getSiteKey().equals(urlResolver.getSiteKey())) {
+                        site = (JCRSiteNode) resource.getNode().getSession().getNode("/sites/"+urlResolver.getSiteKey());
+                    } else if (urlResolver.getSiteKeyByServerName() != null && !site.getSiteKey().equals(urlResolver.getSiteKeyByServerName())) {
+                        site = (JCRSiteNode) resource.getNode().getSession().getNode("/sites/"+urlResolver.getSiteKeyByServerName());
+                    }
                     if ((site == null && resource.getNode().getPath().startsWith("/sites/")) || (site != null
                             && (renderContext.getEditModeConfigName() == null
                             || !renderContext.getEditModeConfigName().equals(Studio.STUDIO_MODE))

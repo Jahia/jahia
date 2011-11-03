@@ -82,16 +82,17 @@ public class VanityUrlService {
      *            the workspace to look for mappings
      * @param locale
      *            the locale to which the mapping should apply
+     * @param siteKey
      * @return the VanityUrl bean
      * @throws RepositoryException
      *             if there was an unexpected exception accessing the repository
      */
     public VanityUrl getVanityUrlForWorkspaceAndLocale(final JCRNodeWrapper contentNode,
-            String workspace, Locale locale) throws RepositoryException {
+                                                       String workspace, Locale locale, final String siteKey) throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, locale,
                 new JCRCallback<VanityUrl>() {
                     public VanityUrl doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        return vanityUrlManager.getVanityUrlForCurrentLocale(contentNode, session);
+                        return vanityUrlManager.getVanityUrlForCurrentLocale(contentNode, siteKey, session);
                     }
                 });
     }

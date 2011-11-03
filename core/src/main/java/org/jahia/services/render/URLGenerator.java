@@ -40,10 +40,8 @@
 
 package org.jahia.services.render;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
@@ -51,6 +49,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -81,12 +80,7 @@ import org.jahia.settings.SettingsBean;
  */
 public class URLGenerator {
     private static Logger logger = LoggerFactory.getLogger(URLGenerator.class);
-    
-    private static final Set<String> LOCALHOSTS = Collections.singleton("localhost");
-    
-    public static boolean isLocalhost(String host) {
-    	return host != null && LOCALHOSTS.contains(host);
-    }
+
 
     /**
      * Returns the server URL, including scheme, host and port.
@@ -416,7 +410,7 @@ public class URLGenerator {
             StringBuilder url = new StringBuilder();
             String scheme = context.getRequest().getScheme();
             String host = context.getSite().getServerName();
-            if (isLocalhost(host)) {
+            if (Url.isLocalhost(host)) {
                 host = context.getRequest().getServerName();
             }
             

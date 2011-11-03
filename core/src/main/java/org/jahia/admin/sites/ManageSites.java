@@ -80,7 +80,6 @@ import org.jahia.services.importexport.NoCloseZipInputStream;
 import org.jahia.services.importexport.validation.ValidationResults;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
-import org.jahia.services.render.URLGenerator;
 import org.jahia.services.search.spell.CompositeSpellChecker;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSiteTools;
@@ -91,6 +90,7 @@ import org.jahia.services.usermanager.*;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Url;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -459,7 +459,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 } else if (siteServerName.equals("default")) {
                     warningMsg = 
                             getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
-                } else if (!URLGenerator.isLocalhost(siteServerName) && sMgr.getSite(siteServerName) != null) {
+                } else if (!Url.isLocalhost(siteServerName) && sMgr.getSite(siteServerName) != null) {
                     warningMsg = 
                             getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
                 } else if (sMgr.getSiteByKey(siteKey) != null) {
@@ -1395,7 +1395,7 @@ public class ManageSites extends AbstractAdministrationModule {
                             getMessage("org.jahia.admin.warningMsg.invalidServerName.label");
                     processError = true;
                 } else if (!site.getServerName().equals(siteServerName)) {
-                    if (!URLGenerator.isLocalhost(siteServerName) && sMgr.getSite(siteServerName) != null) {
+                    if (!Url.isLocalhost(siteServerName) && sMgr.getSite(siteServerName) != null) {
                         warningMsg = 
                                 getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
                         processError = true;
@@ -1951,7 +1951,7 @@ public class ManageSites extends AbstractAdministrationModule {
                         importInfos.put(
                                 "siteServerNameExists",
                                 valid
-                                        && !URLGenerator
+                                        && !Url
                                                 .isLocalhost(serverName)
                                         && ServicesRegistry.getInstance()
                                                 .getJahiaSitesService()
@@ -2044,7 +2044,7 @@ public class ManageSites extends AbstractAdministrationModule {
                        	String serverName = (String) infos.get("siteservername");                        
 	                    valid = isServerNameValid(serverName);
 	                    infos.put("siteServerNameInvalid", !valid);
-                       	infos.put("siteServerNameExists", valid && !URLGenerator.isLocalhost(serverName) && jahiaSitesService.getSite(serverName) != null);
+                       	infos.put("siteServerNameExists", valid && !Url.isLocalhost(serverName) && jahiaSitesService.getSite(serverName) != null);
                        	
 						stillBad = (Boolean) infos.get("siteKeyInvalid")
 						        || (Boolean) infos.get("siteKeyExists")

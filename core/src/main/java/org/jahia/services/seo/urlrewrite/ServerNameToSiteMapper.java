@@ -44,8 +44,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.render.URLGenerator;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +76,7 @@ public class ServerNameToSiteMapper {
         }
 
         String host = request.getServerName();
-        if (StringUtils.isEmpty(host) || URLGenerator.isLocalhost(host)) {
+        if (StringUtils.isEmpty(host) || Url.isLocalhost(host)) {
             targetSiteKey = StringUtils.EMPTY;
         } else {
             targetSiteKey = StringUtils.defaultString(lookupSiteKeyByServerName(host));
@@ -115,7 +115,7 @@ public class ServerNameToSiteMapper {
                 logger.error("Error resolving site by key '" + key + "'", e);
             }
         }
-        return site != null && !URLGenerator.isLocalhost(site.getServerName()) ? site.getServerName() : null;
+        return site != null && !Url.isLocalhost(site.getServerName()) ? site.getServerName() : null;
     }
 
     public void canResolveSiteByServerName(HttpServletRequest request, String ctx, String language,

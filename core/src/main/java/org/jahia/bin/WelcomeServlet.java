@@ -67,14 +67,13 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
-import org.jahia.services.render.URLGenerator;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.Url;
 import org.slf4j.Logger;
 
 /**
@@ -199,7 +198,7 @@ public class WelcomeServlet extends HttpServlet {
 
     protected JCRSiteNode resolveSite(HttpServletRequest request, String workspace) throws JahiaException, RepositoryException {
         JahiaSitesService siteService = JahiaSitesBaseService.getInstance();
-        JahiaSite resolvedSite = !URLGenerator.isLocalhost(request.getServerName()) ? siteService.getSiteByServerName(request.getServerName()) : null;
+        JahiaSite resolvedSite = !Url.isLocalhost(request.getServerName()) ? siteService.getSiteByServerName(request.getServerName()) : null;
         if (resolvedSite == null) {
             resolvedSite = siteService.getDefaultSite();
         }

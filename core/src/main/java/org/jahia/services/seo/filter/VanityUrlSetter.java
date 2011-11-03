@@ -44,6 +44,7 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.*;
+import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
@@ -71,7 +72,7 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
      */
     public String visit(final String attrValue, RenderContext context, Resource resource) {
         String value = attrValue;
-        if (StringUtils.isNotEmpty(attrValue) && !URLGenerator.isLocalhost(context.getRequest().getServerName())) {
+        if (StringUtils.isNotEmpty(attrValue) && !Url.isLocalhost(context.getRequest().getServerName())) {
             URLResolver urlResolver = urlResolverFactory.createURLResolver(attrValue, context);
             if (urlResolver.isMapped()) {
                 try {
@@ -79,7 +80,7 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
                             .getVanityUrlForWorkspaceAndLocale(
                                     urlResolver.getNode(),
                                     urlResolver.getWorkspace(),
-                                    urlResolver.getLocale());
+                                    urlResolver.getLocale(), context.getSite().getSiteKey());
                     if (vanityUrl != null) {
                         value = attrValue.replace("/" + urlResolver.getLocale()
                                 + urlResolver.getPath(), vanityUrl.getUrl());

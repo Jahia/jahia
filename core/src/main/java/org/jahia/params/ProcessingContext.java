@@ -120,6 +120,7 @@
 
 package org.jahia.params;
 
+import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaInterface;
@@ -128,7 +129,6 @@ import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
-import org.jahia.services.render.URLGenerator;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -1026,7 +1026,7 @@ public class ProcessingContext {
      * @return true if servername supplied is valid.
      */
     private boolean isValidServerName(final String aServerName) {
-        return aServerName != null && !URLGenerator.isLocalhost(aServerName);
+        return aServerName != null && !Url.isLocalhost(aServerName);
     }
 
     /**

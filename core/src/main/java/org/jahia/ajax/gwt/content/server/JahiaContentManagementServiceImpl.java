@@ -95,6 +95,7 @@ import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.utils.EncryptionUtils;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Url;
 import org.slf4j.Logger;
 
 import javax.jcr.*;
@@ -103,6 +104,7 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
+import java.net.MalformedURLException;
 import java.text.Collator;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1029,8 +1031,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             JCRNodeWrapper node = session.getNode(path);
 
-            return getResponse().encodeURL(this.navigation.getNodeURL(servlet, node, versionDate, versionLabel, session.getWorkspace().getName(),
-                    session.getLocale()));
+            String nodeURL = this.navigation.getNodeURL(servlet, node, versionDate, versionLabel, session.getWorkspace().getName(),
+                    session.getLocale());
+
+            nodeURL = Url.appendServerNameIfNeeded(node, nodeURL, getRequest());
+
+            return getResponse().encodeURL(nodeURL);
+        } catch (MalformedURLException e) {
+            throw new GWTJahiaServiceException(e);
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e);
         }

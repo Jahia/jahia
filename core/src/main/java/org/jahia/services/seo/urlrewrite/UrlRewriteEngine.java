@@ -43,7 +43,11 @@ package org.jahia.services.seo.urlrewrite;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -52,11 +56,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Render;
-import org.jahia.services.render.URLGenerator;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
+import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -152,16 +158,22 @@ class UrlRewriteEngine extends UrlRewriter {
     protected RewrittenOutboundUrl processEncodeURL(HttpServletResponse hsResponse, HttpServletRequest hsRequest, boolean encodeUrlHasBeenRun, String outboundUrl) {
         try {
             if (outboundUrl.startsWith(hsRequest.getContextPath()+ Render.getRenderServletPath())) {
-                if (StringUtils.isNotEmpty(outboundUrl) && !URLGenerator.isLocalhost(hsRequest.getServerName())) {
+                if (StringUtils.isNotEmpty(outboundUrl) && !Url.isLocalhost(hsRequest.getServerName())) {
                     String url = StringUtils.substringAfter(outboundUrl,hsRequest.getContextPath()+"/cms");
+                    url = StringUtils.substringBefore(url,"?");
+                    url = StringUtils.substringBefore(url,"#");
+                    url = StringUtils.substringBefore(url,";");
+                    url = URLDecoder.decode(url,"UTF-8");
                     URLResolver urlResolver = urlResolverFactory.createURLResolver(url, hsRequest.getServerName() ,hsRequest);
+                    JCRNodeWrapper node = urlResolver.getNode();
                     if (urlResolver.isMapped()) {
                         try {
+                            RenderContext context = (RenderContext) hsRequest.getAttribute("renderContext");
                             VanityUrl vanityUrl = vanityUrlService
                                     .getVanityUrlForWorkspaceAndLocale(
-                                            urlResolver.getNode(),
+                                            node,
                                             urlResolver.getWorkspace(),
-                                            urlResolver.getLocale());
+                                            urlResolver.getLocale(), context != null ? context.getSite().getSiteKey() : null);
                             if (vanityUrl != null) {
                                 outboundUrl = outboundUrl.replace("/" + urlResolver.getLocale()
                                         + urlResolver.getPath(), vanityUrl.getUrl());
@@ -169,6 +181,14 @@ class UrlRewriteEngine extends UrlRewriter {
                         } catch (RepositoryException e) {
                             logger.debug("Error when trying to obtain vanity url", e);
                         }
+                    }
+                    try {
+                        // Switch to correct site for link to pages
+                        if (node.isNodeType("jnt:page")) {
+                            outboundUrl = Url.appendServerNameIfNeeded(node, outboundUrl, hsRequest);
+                        }
+                    } catch (PathNotFoundException e) {
+                        // Cannot find node
                     }
                 }
             }

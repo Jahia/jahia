@@ -56,6 +56,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
@@ -148,13 +149,13 @@ public class URLResolver {
         } 
         if (!resolveUrlMapping(serverName)) {
             init();
-            if (!URLGenerator.isLocalhost(serverName) && isMappable()
+            if (!Url.isLocalhost(serverName) && isMappable()
                     && SettingsBean.getInstance().isPermanentMoveForVanityURL()) {
                 try {
                     if (siteKeyByServerName != null && siteKeyByServerName.equals(getNode().getResolveSite().getSiteKey()) ) {
                         VanityUrl defaultVanityUrl = getVanityUrlService()
                                 .getVanityUrlForWorkspaceAndLocale(getNode(),
-                                        workspace, locale);
+                                        workspace, locale, siteKey);
                         if (defaultVanityUrl != null && defaultVanityUrl.isActive()) {
                             if (request == null || StringUtils.isEmpty(request.getQueryString())) {
                                 setRedirectUrl(defaultVanityUrl.getUrl());
@@ -243,14 +244,14 @@ public class URLResolver {
             String siteKeyInPath = StringUtils.substringBetween(getPath(), "/sites/", "/");
             if (!StringUtils.isEmpty(siteKeyInPath)) {
                 setSiteKey(siteKeyInPath);
-            } else if (!URLGenerator.isLocalhost(serverName)) {
+            } else if (!Url.isLocalhost(serverName)) {
                 if (siteKeyByServerName != null) {
                     setSiteKey(siteKeyByServerName);
                 }
             }
         }
 
-        if (isServletAllowingUrlMapping() && !URLGenerator.isLocalhost(serverName)) {
+        if (isServletAllowingUrlMapping() && !Url.isLocalhost(serverName)) {
             String tempPath = null;
             try {
                 String tempWorkspace = verifyWorkspace(StringUtils.substringBefore(getPath(), "/"));
@@ -283,7 +284,7 @@ public class URLResolver {
                             && !resolvedVanityUrl.isDefaultMapping()) {
                         VanityUrl defaultVanityUrl = getVanityUrlService()
                                 .getVanityUrlForWorkspaceAndLocale(getNode(),
-                                        workspace, locale);
+                                        workspace, locale, siteKey);
                         if (defaultVanityUrl != null
                                 && defaultVanityUrl.isActive() && !resolvedVanityUrl.equals(defaultVanityUrl)) {
                             setRedirectUrl(defaultVanityUrl.getUrl());
@@ -623,6 +624,10 @@ public class URLResolver {
      */
     public void setSiteKey(String siteKey) {
         this.siteKey = siteKey;
+    }
+
+    public String getSiteKeyByServerName() {
+        return siteKeyByServerName;
     }
 
     /**

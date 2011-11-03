@@ -127,12 +127,12 @@ public class VanityUrlManager {
      * then take the first mapping for the locale.
      * 
      * @param contentNode the content node for which to return a mapping
-     * @param session the JCR session holding the information about workspace and locale
-     * @return the VanityUrl bean
+     * @param site
+     *@param session the JCR session holding the information about workspace and locale  @return the VanityUrl bean
      * @throws RepositoryException if there was an unexpected exception accessing the repository
      */
     public VanityUrl getVanityUrlForCurrentLocale(JCRNodeWrapper contentNode,
-            JCRSessionWrapper session) throws RepositoryException {
+                                                  String siteKey, JCRSessionWrapper session) throws RepositoryException {
         VanityUrl vanityUrl = null;
         if (contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED)) {
             String currentLanguage = session.getLocale().toString();
@@ -142,13 +142,12 @@ public class VanityUrlManager {
                 JCRNodeWrapper currentNode = (JCRNodeWrapper) it.next();
                 if (currentNode.getPropertyAsString(JCR_LANGUAGE).equals(
                         currentLanguage)) {
-                    if (vanityUrl == null
-                            || currentNode.getProperty(PROPERTY_DEFAULT)
-                                    .getBoolean()) {
+                    boolean isSite = (currentNode.getResolveSite().getSiteKey().equals(siteKey));
+                    if (currentNode.getProperty(PROPERTY_DEFAULT).getBoolean() && isSite) {
                         vanityUrl = populateJCRData(currentNode,
                                 new VanityUrl());
                     }
-                    if (vanityUrl.isDefaultMapping()) {
+                    if (vanityUrl != null) {
                         break;
                     }
                 }

@@ -250,6 +250,9 @@ public class RenderService {
                 site = node.getSession().getNodeByIdentifier(jsite);
                 renderContext.setSite((JCRSiteNode) site);
             } else {
+                site = renderContext.getSite();
+            }
+            if (site == null) {
                 site = node.getResolveSite();
             }
             JCRNodeWrapper templatesNode = null;
@@ -275,6 +278,13 @@ public class RenderService {
                 if (resource.getTemplate().equals("default") && current.hasProperty("j:templateNode")) {
                     // A template node is specified on the current node
                     JCRNodeWrapper templateNode = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
+//                    if (renderContext.getSite() != null && !templateNode.getResolveSite().equals(renderContext.getSite())) {
+//                        try {
+//                            templateNode = templatesNode.getSession().getNode(templateNode.getPath().replace("/sites/"+templateNode.getResolveSite().getSiteKey(), "/sites/"+renderContext.getSite().getSiteKey()));
+//                        } catch (PathNotFoundException e) {
+//                            // Cannot switch site context, template not found
+//                        }
+//                    }
                     if (!checkTemplatePermission(resource, renderContext, templateNode)) {
                         throw new AccessDeniedException(resource.getTemplate());
                     }

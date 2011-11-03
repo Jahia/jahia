@@ -174,7 +174,7 @@ public class URLFilterTest {
 
         VanityUrl savedVanityUrl = getVanityUrlService()
                 .getVanityUrlForWorkspaceAndLocale(pageNode,
-                        session.getWorkspace().getName(), session.getLocale());
+                        session.getWorkspace().getName(), session.getLocale(), TESTSITE_NAME);
         assertTrue("Wrong page vanity URL returned", vanityUrl.getUrl().equals(
                 savedVanityUrl.getUrl()));
 
@@ -191,7 +191,7 @@ public class URLFilterTest {
                 .isEmpty());
         assertNull("No page vanity URL should exist", getVanityUrlService()
                 .getVanityUrlForWorkspaceAndLocale(pageNode,
-                        session.getWorkspace().getName(), session.getLocale()));
+                        session.getWorkspace().getName(), session.getLocale(), TESTSITE_NAME));
         assertTrue("No container vanity URL should exist",
                 getVanityUrlService().getVanityUrlsForCurrentLocale(
                         contentNode, session).isEmpty());
@@ -325,7 +325,7 @@ public class URLFilterTest {
         getVanityUrlService().removeVanityUrlMappings(pageNode, "fr");
         assertNull("No page vanity URL should exist", getVanityUrlService()
                 .getVanityUrlForWorkspaceAndLocale(pageNode,
-                        session.getWorkspace().getName(), session.getLocale()));
+                        session.getWorkspace().getName(), session.getLocale(), TESTSITE_NAME));
     }
 
     @Test
@@ -408,11 +408,11 @@ public class URLFilterTest {
 
         assertTrue("Wrong URL returned", getVanityUrlService()
                 .getVanityUrlForWorkspaceAndLocale(pageNode,
-                        Constants.EDIT_WORKSPACE, Locale.ENGLISH).getUrl()
+                        Constants.EDIT_WORKSPACE, Locale.ENGLISH, TESTSITE_NAME).getUrl()
                 .equals("/testpage"));
         assertTrue("Wrong URL returned", getVanityUrlService()
                 .getVanityUrlForWorkspaceAndLocale(pageNode,
-                        Constants.EDIT_WORKSPACE, Locale.FRENCH).getUrl()
+                        Constants.EDIT_WORKSPACE, Locale.FRENCH, TESTSITE_NAME).getUrl()
                 .equals("/testpage/french2"));
         URLResolver urlResolver = getUrlResolverFactory().createURLResolver("/edit/default/testpage", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/edit/default/testpage"));
         JCRNodeWrapper resolvedNode = urlResolver.getNode();

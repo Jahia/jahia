@@ -42,11 +42,18 @@ package org.jahia.utils;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.slf4j.Logger;
 
+import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -59,6 +66,7 @@ import java.util.zip.Inflater;
 public class Url {
 
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(Url.class);
+    public static final Set<String> LOCALHOSTS = Collections.singleton("localhost");
 
     /**
      * Encode facet filter URL parameter
@@ -113,5 +121,19 @@ public class Url {
             logger.warn("Not able to decode facet URL: " + inputString, e);
         }
         return outputString;
+    }
+
+    public static boolean isLocalhost(String host) {
+    	return host != null && LOCALHOSTS.contains(host);
+    }
+
+    public static String appendServerNameIfNeeded(JCRNodeWrapper node, String nodeURL, HttpServletRequest request) throws RepositoryException, MalformedURLException {
+        if (!isLocalhost(request.getServerName()) &&
+                !isLocalhost(node.getResolveSite().getServerName()) &&
+                !request.getServerName().equals(node.getResolveSite().getServerName())
+                ) {
+            nodeURL = new URL(request.getScheme(), node.getResolveSite().getServerName(), request.getServerPort(), nodeURL).toString();
+        }
+        return nodeURL;
     }
 }

@@ -419,11 +419,19 @@ public class URLResolver {
                                 }
                             }
                             nodePathCache.put(cacheKey, nodePath);
+<<<<<<< .working
                             // the next condition is false e.g. when nodePath is "/" and session's locale is not in systemsite's locales 
                             if (node.getResolveSite() != null) {
                                 SiteInfo siteInfo = new SiteInfo(node.getResolveSite());
                                 siteInfoCache.put(cacheKey, siteInfo);
                             }
+=======
+                            JCRSiteNode resolveSite = node.getResolveSite();
+                            if (resolveSite != null) {
+                                SiteInfo siteInfo = new SiteInfo(resolveSite);
+                                siteInfoCache.put(cacheKey, siteInfo);
+                            }
+>>>>>>> .merge-right.r39630
                             return nodePath;
                         }
                     });

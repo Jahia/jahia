@@ -329,7 +329,7 @@ public class NavigationHelper {
         try {
             logger.debug("open paths for getRoot : " + openPaths);
 
-            final List<GWTJahiaNode> userNodes = retrieveRoot(paths, fields, site, uiLocale, currentUserSession);
+            final List<GWTJahiaNode> userNodes = retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, site, uiLocale, currentUserSession, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex);
             List<GWTJahiaNode> allNodes = new ArrayList<GWTJahiaNode>(userNodes);
             if (selectedNodes != null) {
                 if (openPaths == null) {
@@ -377,7 +377,7 @@ public class NavigationHelper {
         }
     }
 
-    public List<GWTJahiaNode> retrieveRoot(List<String> paths, List<String> fields, final JCRSiteNode site, Locale uiLocale, JCRSessionWrapper currentUserSession) throws RepositoryException, GWTJahiaServiceException {
+    public List<GWTJahiaNode> retrieveRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, final JCRSiteNode site, Locale uiLocale, JCRSessionWrapper currentUserSession, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex) throws RepositoryException, GWTJahiaServiceException {
         final List<GWTJahiaNode> userNodes = new ArrayList<GWTJahiaNode>();
 
         for (String path : paths) {
@@ -418,15 +418,16 @@ public class NavigationHelper {
             }
             if (path.startsWith("/")) {
                 if (path.endsWith("/*")) {
-                    NodeIterator ni =
-                            currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")).getNodes();
-                    while (ni.hasNext()) {
-                        GWTJahiaNode node = getGWTJahiaNode((JCRNodeWrapper) ni.next(), fields);
-//                        if (displayName != "") {
-//                            node.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
-//                        }
-                        userNodes.add(node);
-                    }
+//                    NodeIterator ni =
+//                            currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")).getNodes();
+                    getMatchingChilds(nodeTypes, mimeTypes, filters, fields, currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")), userNodes ,checkSubChild, displayHiddenTypes, hiddenTypes,hiddenRegex,false);
+//                    while (ni.hasNext()) {
+//                        GWTJahiaNode node = getGWTJahiaNode((JCRNodeWrapper) ni.next(), fields);
+////                        if (displayName != "") {
+////                            node.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
+////                        }
+//                        userNodes.add(node);
+//                    }
                 } else {
                     GWTJahiaNode root = getNode(path, fields, currentUserSession);
                     if (root != null) {

@@ -47,11 +47,8 @@ import org.apache.jackrabbit.value.*;
 import org.apache.jackrabbit.value.StringValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -773,7 +770,7 @@ public class ContentDefinitionHelper {
 
                 List<GWTJahiaNode> list;
                 if (node == root) {
-                    list = navigation.retrieveRoot(paths, fields, site, uiLocale, session);
+                    list = navigation.retrieveRoot(paths, null, null, null, fields, site, uiLocale, session, false, false, null, null);
                 } else {
                     list = navigation.ls(node, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
                             false, null, null, session, false);

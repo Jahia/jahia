@@ -341,7 +341,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             AccessControlManager accessControlManager = getAccessControlManager();
             List<Privilege> app = Arrays.asList(accessControlManager.getPrivileges(localPath));
-            List<Privilege> pr = Arrays.asList(accessControlManager.getSupportedPrivileges(localPath));                
+            List<Privilege> pr = Arrays.asList(accessControlManager.getSupportedPrivileges(localPath));
             b = new BitSet(pr.size());
             for (Privilege privilege : app) {
                 b.set(pr.indexOf(privilege));
@@ -549,7 +549,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRNodeWrapper uploadFile(String name, final InputStream is, final String contentType) throws RepositoryException {
         checkLock();
-        
+
         name = JCRContentUtils.escapeLocalNodeName(name);
 
         JCRNodeWrapper file = null;
@@ -1048,7 +1048,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean isNodeType(String type) throws RepositoryException {
-            return objectNode.isNodeType(type);
+        return objectNode.isNodeType(type);
     }
 
     /**
@@ -1068,11 +1068,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public boolean isFile() {
         try {
-        return isNodeType(Constants.NT_FILE);
+            return isNodeType(Constants.NT_FILE);
         } catch (RepositoryException e) {
             logger.error("Cannot get type",e);
             return false;
-    }
+        }
     }
 
     /**
@@ -1080,11 +1080,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public boolean isPortlet() {
         try {
-        return isNodeType(Constants.JAHIANT_PORTLET);
+            return isNodeType(Constants.JAHIANT_PORTLET);
         } catch (RepositoryException e) {
             logger.error("Cannot get type",e);
             return false;
-    }
+        }
     }
 
     /**
@@ -1189,7 +1189,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 language = getProperty("jcr:language").getString();
             }
         } catch (RepositoryException e1) {
-        } 
+        }
         if (language == null && getSession().getLocale() != null) {
             try {
                 language = getI18N(getSession().getLocale()).getProperty("jcr:language")
@@ -1224,7 +1224,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public boolean hasI18N(Locale locale) throws RepositoryException {
         return hasI18N(locale, true);
     }
-    
+
     private boolean hasI18N(Locale locale, boolean fallback) throws RepositoryException {
         boolean b = (i18NobjectNodes != null && i18NobjectNodes.containsKey(locale)) || objectNode.hasNode(
                 "j:translation_" + locale);
@@ -1232,7 +1232,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             final Locale fallbackLocale = getSession().getFallbackLocale();
             if (fallbackLocale != null && fallbackLocale != locale) {
                 b = (i18NobjectNodes != null && i18NobjectNodes.containsKey(fallbackLocale)) || objectNode.hasNode(
-                "j:translation_" + fallbackLocale);
+                        "j:translation_" + fallbackLocale);
             }
         }
         return b;
@@ -1358,8 +1358,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return result;
     }
 
-	public JCRPropertyWrapper retrieveExternalReferenceProperty(String name,
-			ExtendedPropertyDefinition epd) throws RepositoryException {
+    public JCRPropertyWrapper retrieveExternalReferenceProperty(String name,
+                                                                ExtendedPropertyDefinition epd) throws RepositoryException {
         Property referenceProperty = null;
         String refPropertyNamesPropertyName = SHARED_REFERENCE_PROPERTY_NAMES_PROPERTYNAME;
         if (epd.isInternationalized()) {
@@ -1413,7 +1413,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             // in this case we are dealing with a "regular" reference property, we will try to load it.
             return internalGetProperty(name, epd);
         }
-	}
+    }
 
     /**
      * {@inheritDoc}
@@ -2003,7 +2003,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     private boolean internalHasProperty(String propertyName) throws RepositoryException {
         final Locale locale = getSession().getLocale();
         if (isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE) &&
-            getSharedExternalPropertyNames().contains(propertyName)) {
+                getSharedExternalPropertyNames().contains(propertyName)) {
             return true;
         }
         if (locale != null && !propertyName.equals("jcr:language")) {
@@ -2039,7 +2039,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
         if (isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE) &&
-            getAllExternalPropertyNames().size() > 0) {
+                getAllExternalPropertyNames().size() > 0) {
             return true;
         }
         return false;
@@ -2579,14 +2579,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 throw new LockException("Node locked.");
             }
             if (session.getLocale() != null) {
-                Node i18n = getI18N(session.getLocale());
-                if (i18n.isLocked()) {
-                    owners = getLockOwners(i18n);
-                    if (owners.size() == 1 && owners.contains(session.getUserID())) {
-                        session.addLockToken(i18n.getProperty("j:locktoken").getString());
-                    } else {
-                        throw new LockException("Node locked.");
+                try {
+                    Node i18n = getI18N(session.getLocale());
+                    if (i18n.isLocked()) {
+                        owners = getLockOwners(i18n);
+                        if (owners.size() == 1 && owners.contains(session.getUserID())) {
+                            session.addLockToken(i18n.getProperty("j:locktoken").getString());
+                        } else {
+                            throw new LockException("Node locked.");
+                        }
                     }
+                } catch (ItemNotFoundException e) {
+                    // no i18n node
                 }
             }
         }

@@ -148,7 +148,7 @@ function setFileEdit(id) {
                         $("#renderingOfFile" + id).html(data);
                     });
                 }
-                $(".file"+id).html(result[$(".fileSelector"+id).attr("jcr:id")]);
+                $(".file"+id).html(result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")]);
             }, "json");
         }
     });
@@ -174,7 +174,7 @@ function setFileSelector(id) {
                     $("#renderingOfFile" + id).html(data);
                 });
             }
-            $(".fileSelector"+id).html(result[$(".fileSelector"+id).attr("jcr:id")]);
+            $(".fileSelector"+id).html(result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")]);
         }, "json");
         return(value);
     }, {

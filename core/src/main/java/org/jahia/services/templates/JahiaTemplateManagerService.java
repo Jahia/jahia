@@ -86,6 +86,7 @@ import javax.jcr.query.QueryManager;
 
 import java.io.*;
 import java.util.*;
+import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -470,7 +471,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     }
                 }
             }
-            createManifest(moduleName, tmplRootFolder, moduleType);
+            createManifest(moduleName, tmplRootFolder, moduleType, "1.0", Arrays.asList("default"));
             templatePackageRegistry.register(templatePackageDeployer.getPackage(tmplRootFolder));
             logger.info("Package '" + moduleName + "' successfully created");
         }
@@ -506,13 +507,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             new File(tmplRootFolder, "resources").mkdirs();
             new File(tmplRootFolder, "css").mkdirs();
 
-            createManifest(moduleName, tmplRootFolder, moduleType);
+            createManifest(moduleName, tmplRootFolder, moduleType, "1.0", Arrays.asList("default"));
             templatePackageRegistry.register(templatePackageDeployer.getPackage(tmplRootFolder));
             logger.info("Package '" + moduleName + "' successfully created");
         }
     }
 
-    private void createManifest(String moduleName, File tmplRootFolder, String moduleType) {
+    public void createManifest(String moduleName, File tmplRootFolder, String moduleType, String version, List<String> depends) {
         try {
             File manifest = new File(tmplRootFolder + "/META-INF/MANIFEST.MF");
 
@@ -525,7 +526,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             writer.write("Built-By: " + JCRSessionFactory.getInstance().getCurrentUser().getName());
             writer.newLine();
 //                writer.write("Build-Jdk: 1.6.0_20");
-            writer.write("depends: Default Jahia Templates");
+            writer.write("Implementation-Version: " + version);
+            writer.newLine();
+            writer.write("depends: " + StringUtils.substringBetween(depends.toString(), "[", "]"));
             writer.newLine();
             writer.write("module-type: " + moduleType);
             writer.newLine();
@@ -534,9 +537,43 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             writer.write("root-folder: " + moduleName);
             writer.newLine();
             writer.close();
+            templatePackageDeployer.setTimestamp(manifest.getPath(), manifest.lastModified());
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
+    }
+
+    public void regenerateManifest(final String moduleName) throws RepositoryException  {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                File tmplRootFolder = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName);
+
+//                try {
+//                    File manifestFile = new File(tmplRootFolder, "META-INF/MANIFEST.MF");
+//                    BufferedReader reader = new BufferedReader(new FileReader(manifestFile));
+//                } catch (IOException e) {
+//                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//                }
+
+                JCRNodeWrapper node = session.getNode("/templateSets/" + moduleName);
+                List<String> dependencies = new ArrayList<String>();
+                if (node.hasProperty("j:dependencies")) {
+                    Value[] deps = node.getProperty("j:dependencies").getValues();
+                    for (Value dep : deps) {
+                        dependencies.add(dep.getString());
+                    }
+                }
+                String version = node.getNode("j:versionInfo").getProperty("j:version").getString();
+
+                createManifest(moduleName, tmplRootFolder, node.getProperty("j:siteType").getString(),
+                        version,
+                        dependencies);
+
+                return null;
+            }
+        });
+
+
     }
 
     public void regenerateImportFile(final String moduleName) throws RepositoryException {
@@ -554,9 +591,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     Map<String, Object> params = new HashMap<String, Object>();
                     params.put(ImportExportService.XSL_PATH, SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/export/templatesCleanup.xsl");
 
+                    templatePackageDeployer.setTimestamp(importFile.getPath(), Long.MAX_VALUE);
+
                     ImportExportBaseService
                             .getInstance().exportZip(session.getNode("/templateSets/" + moduleName), session.getRootNode(),
                             new FileOutputStream(importFile), params);
+
+
+                    templatePackageDeployer.setTimestamp(importFile.getPath(), importFile.lastModified());
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 } catch (SAXException e) {
@@ -570,6 +612,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
         });
     }
+
+    public void regenerateManifestFile(final String moduleName) throws RepositoryException {
+        File manifestFile = new File(new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName), "META-INF/MANIFEST.MF");
+
+    }
+
 
     public void deployModule(final String modulePath, final String sitePath, String username)
             throws RepositoryException {

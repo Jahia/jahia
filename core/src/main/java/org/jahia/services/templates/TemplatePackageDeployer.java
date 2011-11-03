@@ -93,8 +93,9 @@ import org.springframework.web.context.ServletContextAware;
  */
 class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPublisherAware {
 
+    private Map<String, Long> timestamps = new HashMap<String, Long>();
+
     class TemplatesWatcher extends TimerTask {
-        private Map<String, Long> timestamps = new HashMap<String, Long>();
         private File sharedTemplatesFolder;
         private File deployedTemplatesFolder;
 
@@ -737,6 +738,11 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             watchdog.cancel();
         }
     }
+
+    public void setTimestamp(String path, long time) {
+        timestamps.put(path, time);
+    }
+
 
     public void setImportExportService(ImportExportService importExportService) {
         this.importExportService = importExportService;

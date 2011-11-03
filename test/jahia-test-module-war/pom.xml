@@ -46,9 +46,9 @@
         <groupId>org.jahia.test</groupId>
         <version>6.6.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>jahia-test-module</artifactId>
-    <name>Jahia Test Module Package</name>
-    <packaging>jar</packaging>
+    <artifactId>jahia-test-module-war</artifactId>
+    <name>Jahia Test Module War Package</name>
+    <packaging>war</packaging>
 
     <repositories>
         <repository>
@@ -193,6 +193,11 @@
             <version>6.6.0.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jahia.test</groupId>
+            <artifactId>jahia-test-module</artifactId>
+            <version>6.6.0.0-SNAPSHOT</version>
+        </dependency>
     	<dependency>
     		<groupId>org.apache.ant</groupId>
     		<artifactId>ant</artifactId>
@@ -208,19 +213,16 @@
             <groupId>org.apache.jackrabbit</groupId>
             <artifactId>jackrabbit-jcr-tests</artifactId>
             <version>${jackrabbit.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
             <version>1.2</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jbpm.jbpm4</groupId>
             <artifactId>jbpm-test-base</artifactId>
             <version>4.4</version>
-            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -261,13 +263,11 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.1</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit-addons</groupId>
             <artifactId>junit-addons</artifactId>
             <version>1.4</version>
-            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <artifactId>xmlParserAPIs</artifactId>
@@ -283,19 +283,16 @@
             <groupId>xmlunit</groupId>
             <artifactId>xmlunit</artifactId>
             <version>1.3</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
             <version>4.0.1</version>
-            <scope>provided</scope>
             <exclusions>
             	<exclusion>
             		<artifactId>bcmail-jdk14</artifactId>
@@ -319,7 +316,6 @@
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy</artifactId>
             <version>1.7.7</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -332,17 +328,28 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>${jar.plugin.version}</version>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${war.plugin.version}</version>
                 <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <warSourceExcludes>resources/*.properties</warSourceExcludes>
                     <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
                         <manifestEntries>
-                            <Implementation-Build>${buildNumber}</Implementation-Build>
+		                	<Implementation-Title>${project.name}</Implementation-Title>
+		                    <Implementation-Version>${project.version}</Implementation-Version>
+		                    <Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
+		                    <Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
+		                    <Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
+		                    <Specification-Title>${project.name}</Specification-Title>
+		                    <Specification-Version>${project.version}</Specification-Version>
+		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
+                            <package-name>${project.name}</package-name>
+                            <depends>Default Jahia Templates</depends>
+                            <root-folder>${project.artifactId}</root-folder>
+                            <module-type>system</module-type>
                         </manifestEntries>
                     </archive>
+	                <archiveClasses>true</archiveClasses>
                 </configuration>
             </plugin>
         </plugins>

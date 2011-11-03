@@ -203,7 +203,7 @@ public class PublicationTest {
         JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession();
         try {
             InputStream importStream = getClass().getClassLoader()
-                    .getResourceAsStream("imports/importJCR.xml");
+                    .getResourceAsStream("jahia-test-module-war/src/main/resources/imports/importJCR.xml");
             session.importXML(SITECONTENT_ROOT_NODE, importStream,
                     ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
             importStream.close();
@@ -230,7 +230,7 @@ public class PublicationTest {
                             + "/content-def/workflow-test"), languages, false);
 
             importStream = getClass().getClassLoader().getResourceAsStream(
-                    "imports/importJCRContainerList.xml");
+                    "jahia-test-module-war/src/main/resources/imports/importJCRContainerList.xml");
             session.importXML(SITECONTENT_ROOT_NODE
                     + "/content-def/workflow-test", importStream,
                     ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
@@ -252,7 +252,7 @@ public class PublicationTest {
             }
             
             importStream = getClass().getClassLoader().getResourceAsStream(
-                    "imports/importJCRContainer.xml");
+                    "jahia-test-module-war/src/main/resources/imports/importJCRContainer.xml");
             session.importXML(SITECONTENT_ROOT_NODE
                     + "/content-def/workflow-test/allFieldsWithList", importStream,
                     ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);

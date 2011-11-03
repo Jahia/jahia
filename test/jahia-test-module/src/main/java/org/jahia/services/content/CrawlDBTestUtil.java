@@ -105,7 +105,7 @@ public class CrawlDBTestUtil {
     public static Configuration createConfiguration() {
         Configuration conf = new Configuration();
         conf.addResource("nutch-default.xml");
-        conf.addResource("crawl-tests.xml");
+        conf.addResource("jahia-test-module-war/src/main/resources/crawl-tests.xml");
         return conf;
     }
 

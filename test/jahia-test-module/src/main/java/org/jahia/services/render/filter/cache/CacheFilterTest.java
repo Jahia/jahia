@@ -40,7 +40,6 @@
 
 package org.jahia.services.render.filter.cache;
 
-import junit.framework.TestCase;
 import net.sf.ehcache.Element;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -52,12 +51,10 @@ import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.notification.HttpClientService;
 import org.jahia.services.query.IndexOptionsTest;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
@@ -67,7 +64,6 @@ import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.BaseAttributesFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.filter.RenderFilter;
-import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -118,7 +114,8 @@ public class CacheFilterTest {
             
             String templatesFolder = "/sites/"+site.getSiteKey() + "/templates";
             InputStream importStream = IndexOptionsTest.class.getClassLoader()
-                    .getResourceAsStream("imports/importTemplatesForCacheTest.xml");
+                    .getResourceAsStream(
+                            "jahia-test-module-war/src/main/resources/imports/importTemplatesForCacheTest.xml");
             session.importXML(templatesFolder + "/base", importStream,
                     ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
             importStream.close();

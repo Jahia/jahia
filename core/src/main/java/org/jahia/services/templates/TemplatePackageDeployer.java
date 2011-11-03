@@ -593,6 +593,12 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             JCRNodeWrapper tpls = m.addNode("templates", "jnt:templatesFolder");
             tpls.addNode("files", "jnt:folder");
             tpls.addNode("contents", "jnt:contentFolder");
+            List<Value> l = new ArrayList<Value>();
+            for (String d : pack.getDepends()) {
+                l.add(session.getValueFactory().createValue(templatePackageRegistry.lookup(d).getFileName()));
+            }
+            Value[] v = new Value[pack.getDepends().size()];
+            m.setProperty("j:dependencies",l.toArray(v));
         } else {
             m = modules.getNode(pack.getRootFolder());
         }

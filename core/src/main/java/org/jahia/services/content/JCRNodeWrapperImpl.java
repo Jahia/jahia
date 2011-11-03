@@ -2590,7 +2590,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         }
                     }
                 } catch (ItemNotFoundException e) {
-                    // no i18n node
+                    logger.debug("checkLock : no i18n node for node " + objectNode.getPath());
                 }
             }
         }
@@ -2905,7 +2905,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             try {
                 co &= versionManager.isCheckedOut(getI18N(session.getLocale()).getPath());
             } catch (ItemNotFoundException e) {
-                // no i18n node
+                logger.debug("isCheckedOut : no i18n node for node " + objectNode.getPath());
             }
         }
 

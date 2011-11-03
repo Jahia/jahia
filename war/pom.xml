@@ -43,9 +43,13 @@
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
 <<<<<<< .working
+<<<<<<< .working
         <version>6.6.0.0-SNAPSHOT</version>
 =======
         <version>6.5.1.1-RC1</version>
+=======
+        <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -456,9 +460,13 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <scope>runtime</scope>
         </dependency>
@@ -466,9 +474,13 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-api</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <scope>runtime</scope>
         </dependency>
@@ -476,9 +488,13 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <scope>runtime</scope>
         </dependency>
@@ -486,9 +502,13 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <scope>compile</scope>
         </dependency>
@@ -498,9 +518,13 @@
             <groupId>org.jahia.modules</groupId>
             <artifactId>assets</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <type>war</type>
             <scope>runtime</scope>
@@ -509,9 +533,13 @@
             <groupId>org.jahia.modules</groupId>
             <artifactId>contentRetrieval</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <type>war</type>
             <scope>runtime</scope>
@@ -520,9 +548,13 @@
             <groupId>org.jahia.modules</groupId>
             <artifactId>contribute</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <type>war</type>
             <scope>runtime</scope>
@@ -531,9 +563,13 @@
             <groupId>org.jahia.modules</groupId>
             <artifactId>default</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <type>war</type>
             <scope>runtime</scope>
@@ -542,9 +578,13 @@
             <groupId>org.jahia.modules</groupId>
             <artifactId>facets</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <type>war</type>
             <scope>runtime</scope>
@@ -553,9 +593,13 @@
             <groupId>org.jahia.modules</groupId>
             <artifactId>grid</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <type>war</type>
             <scope>runtime</scope>
@@ -564,9 +608,13 @@
             <groupId>org.jahia.modules</groupId>
             <artifactId>macros</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <type>war</type>
             <scope>runtime</scope>
@@ -575,9 +623,13 @@
             <groupId>org.jahia.modules</groupId>
             <artifactId>profile</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <type>war</type>
             <scope>runtime</scope>
@@ -586,9 +638,13 @@
             <groupId>org.jahia.modules</groupId>
             <artifactId>search</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <type>war</type>
             <scope>runtime</scope>
@@ -597,9 +653,13 @@
             <groupId>org.jahia.modules</groupId>
             <artifactId>skins</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <type>war</type>
             <scope>runtime</scope>
@@ -608,9 +668,13 @@
             <groupId>org.jahia.modules</groupId>
             <artifactId>tabularList</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <type>war</type>
             <scope>runtime</scope>
@@ -619,9 +683,13 @@
             <groupId>org.jahia.modules</groupId>
             <artifactId>tags</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <type>war</type>
             <scope>runtime</scope>
@@ -630,9 +698,13 @@
             <groupId>org.jahia.modules</groupId>
             <artifactId>tasks</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <type>war</type>
             <scope>runtime</scope>
@@ -641,9 +713,13 @@
             <groupId>org.jahia.modules</groupId>
             <artifactId>templates-system</artifactId>
 <<<<<<< .working
+<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
 =======
             <version>6.5.1.1-RC1</version>
+=======
+            <version>6.5.1.1-SNAPSHOT</version>
+>>>>>>> .merge-right.r39660
 >>>>>>> .merge-right.r39657
             <type>war</type>
             <scope>runtime</scope>

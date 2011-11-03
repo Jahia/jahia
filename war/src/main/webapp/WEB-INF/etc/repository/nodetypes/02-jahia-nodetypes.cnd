@@ -454,7 +454,7 @@
  - j:mixLanguage (boolean) = false protected
  - j:templatesSet (string) protected
  - j:siteType (string) protected hidden
- - j:dependencies (string) multiple protected hidden nofulltext
+ - j:dependencies (string, choicelist[nodes='/templateSets;jnt:virtualsite;name']) multiple nofulltext
  + * (nt:base)
 
 [jnt:versionInfo] > nt:base

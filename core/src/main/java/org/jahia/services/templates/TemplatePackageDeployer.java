@@ -597,6 +597,8 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             for (String d : pack.getDepends()) {
                 if (templatePackageRegistry.lookup(d) != null) {
                     l.add(session.getValueFactory().createValue(templatePackageRegistry.lookup(d).getFileName()));
+                } else if (templatePackageRegistry.lookupByFileName(d) != null) {
+                    l.add(session.getValueFactory().createValue(templatePackageRegistry.lookupByFileName(d).getFileName()));
                 } else {
                     logger.warn("cannot found dependency " + d + " for package '" + pack.getName() + "'");
                 }

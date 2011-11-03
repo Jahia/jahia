@@ -101,6 +101,10 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                     }
                 }
                 String path = s[0];
+                String returnType = "";
+                if (s.length > 2) {
+                    returnType = s[2];
+                }
                 Locale fallbackLocale = null;
                 if (site != null) {
                     fallbackLocale = site.isMixLanguagesActive() ? LanguageCodeConverters.languageCodeToLocale(
@@ -114,7 +118,7 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                 }
                 final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession(null, locale, fallbackLocale);
                 final JCRNodeWrapper node = jcrSessionWrapper.getNode(path);
-                addSubnodes(listValues, nodetype, node, subTree);
+                addSubnodes(listValues, nodetype, node, subTree, returnType);
             } catch (PathNotFoundException e) {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
@@ -123,16 +127,16 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
         return listValues;
     }
 
-    private void addSubnodes(ArrayList<ChoiceListValue> listValues, String nodetype, JCRNodeWrapper node, boolean subTree) throws RepositoryException {
+    private void addSubnodes(ArrayList<ChoiceListValue> listValues, String nodetype, JCRNodeWrapper node, boolean subTree, String returnType) throws RepositoryException {
         final NodeIterator nodeIterator = node.getNodes();
         while (nodeIterator.hasNext()) {
             JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();
             if (nodeWrapper.isNodeType(nodetype)) {
                 String displayName = nodeWrapper.getDisplayableName();
                 listValues.add(new ChoiceListValue(displayName, new HashMap<String, Object>(), new ValueImpl(
-                        nodeWrapper.getIdentifier(), PropertyType.STRING, false)));
+                        "name".equals(returnType)?nodeWrapper.getName():nodeWrapper.getIdentifier(), PropertyType.STRING, false)));
                 if (subTree) {
-                    addSubnodes(listValues, nodetype, nodeWrapper, subTree);
+                    addSubnodes(listValues, nodetype, nodeWrapper, subTree, returnType);
                 }
             }
         }

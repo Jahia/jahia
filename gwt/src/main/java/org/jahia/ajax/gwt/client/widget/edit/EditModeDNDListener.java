@@ -153,7 +153,10 @@ public class EditModeDNDListener extends DNDListener {
 
             if (referenceType != null) {
                 status.setData(OPERATION_CALLED, "true");
-                final GWTJahiaNode selectedNode = sourceNodes.get(0);
+                GWTJahiaNode selectedNode = sourceNodes.get(0);
+                if (selectedNode.getReferencedNode() != null) {
+                    selectedNode = selectedNode.getReferencedNode();
+                }
                 Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(2);
                 props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title",
                         new GWTJahiaNodePropertyValue(selectedNode.getDisplayName(),
@@ -207,7 +210,10 @@ public class EditModeDNDListener extends DNDListener {
         } else if (SIMPLEMODULE_TYPE.equals(targetType)) {
             if (referenceType != null) {
                 status.setData(OPERATION_CALLED, "true");
-                final GWTJahiaNode selectedNode = sourceNodes.get(0);
+                GWTJahiaNode selectedNode = sourceNodes.get(0);
+                if (selectedNode.getReferencedNode() != null) {
+                    selectedNode = selectedNode.getReferencedNode();
+                }
                 Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(2);
                 props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title",
                         new GWTJahiaNodePropertyValue(selectedNode.getDisplayName(),

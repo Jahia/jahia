@@ -49,9 +49,16 @@
     <artifactId>jahia-test-parent</artifactId>
     <name>Jahia Test Parent Package</name>
     <packaging>pom</packaging>
-
-	<modules>
-		<module>jahia-test-module</module>
-        <module>jahia-test-module-war</module>
-	</modules>
+    <profiles>
+        <profile>
+            <id>excludeBeforeJDK16</id>
+            <activation>
+                <jdk>[1.6,)</jdk>
+            </activation>
+            <modules>
+                <module>jahia-test-module</module>
+                <module>jahia-test-module-war</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>

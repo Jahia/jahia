@@ -44,14 +44,35 @@
     <parent>
         <artifactId>jahia-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
+<<<<<<< .working
         <version>6.6.0.0-SNAPSHOT</version>
+=======
+        <version>6.5.1.1-RC1</version>
+>>>>>>> .merge-right.r39657
     </parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>tasks</artifactId>
     <name>Jahia Tasks</name>
     <packaging>war</packaging>
     <description>Jahia template module for leveraging simple user and shared task management.</description>
+<<<<<<< .working
 
+=======
+    <dependencies>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-impl</artifactId>
+            <version>6.5.1.1-RC1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-taglib</artifactId>
+            <version>6.5.1.1-RC1</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+>>>>>>> .merge-right.r39657
     <build>
         <plugins>
             <plugin>

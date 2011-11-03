@@ -44,15 +44,7 @@
     <parent>
         <artifactId>jahia-test-parent</artifactId>
         <groupId>org.jahia.test</groupId>
-<<<<<<< .working
-<<<<<<< .working
         <version>6.6.0.0-SNAPSHOT</version>
-=======
-        <version>6.5.1.1-RC1</version>
-=======
-        <version>6.5.1.1-SNAPSHOT</version>
->>>>>>> .merge-right.r39660
->>>>>>> .merge-right.r39657
     </parent>
     <artifactId>jahia-test-module</artifactId>
     <name>Jahia Test Module Package</name>
@@ -186,15 +178,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-<<<<<<< .working
-<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
-=======
-            <version>6.5.1.1-RC1</version>
-=======
-            <version>6.5.1.1-SNAPSHOT</version>
->>>>>>> .merge-right.r39660
->>>>>>> .merge-right.r39657
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -206,15 +190,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
-<<<<<<< .working
-<<<<<<< .working
             <version>6.6.0.0-SNAPSHOT</version>
-=======
-            <version>6.5.1.1-RC1</version>
-=======
-            <version>6.5.1.1-SNAPSHOT</version>
->>>>>>> .merge-right.r39660
->>>>>>> .merge-right.r39657
             <scope>provided</scope>
         </dependency>
     	<dependency>

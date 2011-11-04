@@ -410,8 +410,12 @@ public class JahiaAdministration extends HttpServlet {
                                                HttpSession session,
                                                String destination)
             throws IOException, ServletException {
-        request.setAttribute("jahiaDisplayMessage", session.getAttribute(CLASS_NAME + "jahiaDisplayMessage") != null ? session.getAttribute(CLASS_NAME + "jahiaDisplayMessage") : "");
-        request.setAttribute("jahiaDisplayInfo", session.getAttribute(CLASS_NAME + "jahiaDisplayInfo") != null ? session.getAttribute(CLASS_NAME + "jahiaDisplayInfo") : "");
+        if (request.getAttribute("jahiaDisplayMessage") == null) {
+            request.setAttribute("jahiaDisplayMessage", session.getAttribute(CLASS_NAME + "jahiaDisplayMessage") != null ? session.getAttribute(CLASS_NAME + "jahiaDisplayMessage") : "");
+        }
+        if (request.getAttribute("jahiaDisplayInfo") == null) {
+            request.setAttribute("jahiaDisplayInfo", session.getAttribute(CLASS_NAME + "jahiaDisplayInfo") != null ? session.getAttribute(CLASS_NAME + "jahiaDisplayInfo") : "");
+        }
 
         session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", "");
         session.setAttribute(CLASS_NAME + "jahiaDisplayInfo", "");

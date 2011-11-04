@@ -133,7 +133,6 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         modulesCombo.getStore().removeAll();
         // fill modules type
         Set<String> moduleSet = new LinkedHashSet<String>();
-        boolean b = true;
         for (GWTJahiaNode s : sites) {
             String moduleType;
             if (s.getProperties().get("j:siteType") != null && !(moduleType = (String) s.getProperties().get("j:siteType")).equals("system")) {

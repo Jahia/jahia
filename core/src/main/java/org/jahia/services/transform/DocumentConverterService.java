@@ -86,9 +86,6 @@ public class DocumentConverterService implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
 
-    public void getReferenceTable() {
-    }
-
     /**
      * Converts the provided input file into output, considering provided
      * document formats.

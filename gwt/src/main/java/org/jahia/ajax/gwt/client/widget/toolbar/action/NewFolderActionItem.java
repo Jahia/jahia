@@ -44,13 +44,12 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 /**
- * 
-* User: toto
-* Date: Sep 25, 2009
-* Time: 6:57:27 PM
-* 
-*/
-public class NewFolderActionItem extends BaseActionItem {
+ * User: toto
+ * Date: Sep 25, 2009
+ * Time: 6:57:27 PM
+ */
+@SuppressWarnings("serial")
+public class NewFolderActionItem extends NodeTypeAwareBaseActionItem {
     public void onComponentSelection() {
         ContentActions.createFolder(linker);
     }
@@ -60,6 +59,6 @@ public class NewFolderActionItem extends BaseActionItem {
         setEnabled(lh.getSingleSelection() != null
                 && !lh.isLocked()
                 && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions())
-                && lh.getSingleSelection().getNodeTypes().contains("jnt:folder"));
+                && isNodeTypeAllowed(lh.getSingleSelection()));
     }
 }

@@ -827,7 +827,14 @@
 
     <bean id="Toolbar.Item.NewFolder" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewFolderActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewFolderActionItem">
+                <property name="allowedNodeTypes">
+                    <list>
+                        <value>jnt:folder</value>
+                        <value>jnt:vfsMountPoint</value>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="titleKey" value="label.createFolder"/>
         <property name="icon" value="newFolder"/>
@@ -1024,7 +1031,14 @@
 
     <bean id="Toolbar.Item.Upload" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UploadActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UploadActionItem">
+                <property name="allowedNodeTypes">
+                    <list>
+                        <value>jnt:folder</value>
+                        <value>jnt:vfsMountPoint</value>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="titleKey" value="label.upload"/>
         <property name="icon" value="upload"/>
@@ -1053,7 +1067,14 @@
 
     <bean id="Toolbar.Item.Zip" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ZipActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ZipActionItem">
+                <property name="allowedNodeTypes">
+                    <list>
+                        <value>jnt:file</value>
+                        <value>jnt:folder</value>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="titleKey" value="label.zip"/>
         <property name="icon" value="zip"/>

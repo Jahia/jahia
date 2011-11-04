@@ -45,13 +45,12 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.FileUploader;
 
 /**
- * 
  * User: toto
  * Date: Sep 25, 2009
  * Time: 6:58:22 PM
- * 
  */
-public class UploadActionItem extends BaseActionItem {
+@SuppressWarnings("serial")
+public class UploadActionItem extends NodeTypeAwareBaseActionItem {
     public void onComponentSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         new FileUploader(linker, lh.getSingleSelection());
@@ -62,7 +61,7 @@ public class UploadActionItem extends BaseActionItem {
 
         setEnabled(lh.getSingleSelection() != null
                 && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions())
-                && lh.getSingleSelection().getNodeTypes().contains("jnt:folder")
+                && isNodeTypeAllowed(lh.getSingleSelection())
                 && !lh.isLocked());
     }
 }

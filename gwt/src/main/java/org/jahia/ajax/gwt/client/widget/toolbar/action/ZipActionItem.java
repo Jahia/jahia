@@ -48,19 +48,17 @@ import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
-* User: toto
-* Date: Sep 25, 2009
-* Time: 6:58:06 PM
-* 
-*/
-public class ZipActionItem extends BaseActionItem  {
+ * User: toto
+ * Date: Sep 25, 2009
+ * Time: 6:58:06 PM
+ */
+@SuppressWarnings("serial")
+public class ZipActionItem extends NodeTypeAwareBaseActionItem  {
     public void onComponentSelection() {
         final List<GWTJahiaNode> selectedItems = linker.getSelectionContext().getMultipleSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
@@ -119,7 +117,7 @@ public class ZipActionItem extends BaseActionItem  {
 
     public void handleNewLinkerSelection(){
         LinkerSelectionContext lh = linker.getSelectionContext();
-        Boolean isContentType = lh.getSingleSelection() != null && (lh.getSingleSelection().isNodeType("jnt:file") || lh.getSingleSelection().isNodeType("jnt:folder"));
+        Boolean isContentType = lh.getSingleSelection() != null && isNodeTypeAllowed(lh.getSingleSelection());
         setEnabled(lh.getMultipleSelection().size() > 0 && lh.isParentWriteable() && !lh.isSecondarySelection() && isContentType );
     }
 }

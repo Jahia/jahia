@@ -319,7 +319,12 @@
                             </property>
                         </bean>
                     </property>
-
+                    <property name="treeColumns">
+                        <list>
+                            <value>label,*,label.title</value>
+                            <value>dependency,50,label.dependency</value>
+                        </list>
+                    </property>
                     <property name="requiredPermission" value="createSelector"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">

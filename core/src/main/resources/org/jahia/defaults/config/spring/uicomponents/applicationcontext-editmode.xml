@@ -322,6 +322,11 @@
                             </property>
                         </bean>
                     </property>
+                    <property name="treeColumns">
+                        <list>
+                            <value>label,*,label.displayName</value>
+                        </list>
+                    </property>
                     <property name="requiredPermission" value="createSelector"/>
                 </bean>
                 <!--

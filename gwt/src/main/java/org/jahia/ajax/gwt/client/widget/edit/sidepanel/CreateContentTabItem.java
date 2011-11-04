@@ -67,7 +67,7 @@ class CreateContentTabItem extends SidePanelTabItem {
         super.create(config);
         tab.setLayout(new FitLayout());
 
-        contentTypeTree = new ContentTypeTree();
+        contentTypeTree = new ContentTypeTree(config.getTreeColumns());
         contentTypeTree.fillStore(paths, baseType != null ? Arrays.asList(baseType.split(" ")) : null, true);
 
         refresh(Linker.REFRESH_DEFINITIONS);

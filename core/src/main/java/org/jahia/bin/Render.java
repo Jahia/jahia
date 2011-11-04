@@ -66,6 +66,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
+import org.jahia.utils.Url;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
@@ -756,14 +757,18 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     renderContext.setMainResource(resource);
 
                     JCRSiteNode site = resource.getNode().getResolveSite();
-                    if (urlResolver.getSiteKey() != null && !site.getSiteKey().equals(urlResolver.getSiteKey())) {
-                        site = (JCRSiteNode) resource.getNode().getSession().getNode("/sites/"+urlResolver.getSiteKey());
-                    } else if (urlResolver.getSiteKeyByServerName() != null && !site.getSiteKey().equals(urlResolver.getSiteKeyByServerName())) {
-                        site = (JCRSiteNode) resource.getNode().getSession().getNode("/sites/"+urlResolver.getSiteKeyByServerName());
+                    boolean studioMode = renderContext.getEditModeConfigName() == null || renderContext.getEditModeConfigName().equals(Studio.STUDIO_MODE);
+                    if (!Url.isLocalhost(req.getServerName()) && renderContext.isEditMode()) {
+                        JCRSessionWrapper session1 = resource.getNode().getSession();
+                        if (urlResolver.getSiteKey() != null && !site.getSiteKey().equals(urlResolver.getSiteKey())) {
+                            site = (JCRSiteNode) session1.getNode("/sites/" + urlResolver.getSiteKey());
+                        } else if (urlResolver.getSiteKeyByServerName() != null && !site.getSiteKey().equals(
+                                urlResolver.getSiteKeyByServerName())) {
+                            site = (JCRSiteNode) session1.getNode("/sites/" + urlResolver.getSiteKeyByServerName());
+                        }
                     }
                     if ((site == null && resource.getNode().getPath().startsWith("/sites/")) || (site != null
-                            && (renderContext.getEditModeConfigName() == null
-                            || !renderContext.getEditModeConfigName().equals(Studio.STUDIO_MODE))
+                            && !studioMode
                             && !(renderContext.isLiveMode() ? site.getActiveLanguagesAsLocales()
                                     .contains(urlResolver.getLocale()) : site
                                     .getLanguagesAsLocales().contains(urlResolver.getLocale())))) {

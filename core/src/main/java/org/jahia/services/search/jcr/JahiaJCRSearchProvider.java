@@ -314,8 +314,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 for (String site : params.getSites().getValues()) {
                     sites.add(site);
                 }
-                for (String site : params.getSitesForReferences().getValues()) {
-                    sites.add(site);
+                if (!params.getSitesForReferences().isEmpty()) {
+                    for (String site : params.getSitesForReferences().getValues()) {
+                        sites.add(site);
+                    }
                 }
                 if (sites.size() == 1) {
                     query.append(sites.iterator().next());

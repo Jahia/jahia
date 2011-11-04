@@ -770,7 +770,7 @@ public class ContentDefinitionHelper {
 
                 List<GWTJahiaNode> list;
                 if (node == root) {
-                    list = navigation.retrieveRoot(paths, null, null, null, fields, site, uiLocale, session, false, false, null, null);
+                    list = navigation.retrieveRoot(paths, null, null, null, fields, site, uiLocale, session, false, true, null, null);
                 } else {
                     list = navigation.ls(node, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
                             false, null, null, session, false);

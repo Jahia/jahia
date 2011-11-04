@@ -147,12 +147,14 @@ public class ModuleDropTarget extends DropTarget {
 
             String nodetypes = parentModule.getNodeTypes();
             int listLimit = parentModule.getListLimit();
+            int childCount = parentModule.getChildCount();
             if (EditModeDNDListener.EMPTYAREA_TYPE.equals(targetType)) {
                 nodetypes = module.getNodeTypes();
                 listLimit = module.getListLimit();
+                childCount = module.getChildCount();
             }
             EditModeDNDListener.SIMPLEMODULE_TYPE.equals(e.getStatus().getData(EditModeDNDListener.SOURCE_MODULE));
-            if (parentModule.getChildCount() >= listLimit && listLimit != -1 &&
+            if (childCount >= listLimit && listLimit != -1 &&
                     (e.getStatus().getData(EditModeDNDListener.SOURCE_MODULE) == null ||
                     !parentModule.equals(((Module) e.getStatus().getData(EditModeDNDListener.SOURCE_MODULE)).getParentModule()))) {
                 e.getStatus().setStatus(false);

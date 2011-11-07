@@ -743,16 +743,3 @@ extends = jnt:content
 
 [jnt:containerList] > nt:base,  jmix:basemetadata orderable
  + * (jnt:container) version
-
-[jnt:layoutItem]  > nt:base, jmix:basemetadata
- - j:columnIndex (long)
- - j:rowIndex (long)
- - j:status (string) nofulltext
- - j:portlet (weakreference) < jnt:portlet
-
-[jnt:layout]  > nt:base,  jmix:basemetadata
- - j:page (weakreference)
- - j:nbColumns (long)
- - j:liveEditable (boolean)
- - j:liveDraggable (boolean)
- + j:item (jnt:layoutItem) multiple

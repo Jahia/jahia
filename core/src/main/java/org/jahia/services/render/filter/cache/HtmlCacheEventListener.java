@@ -150,7 +150,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 logger.debug("Flushing path : " + path);
             }
             cacheProvider.invalidate(path, propageToOtherClusterNodes);
-            depCache.remove(element.getKey(), !propageToOtherClusterNodes);
+            depCache.remove(element.getKey());
         }
     }
 

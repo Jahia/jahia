@@ -146,10 +146,6 @@ public class ModuleCacheProvider implements InitializingBean {
         }
     }
 
-    private void invalidateDependencies(Set<String> deps) {
-        invalidateDependencies(deps, true);
-    }
-
     private void invalidateDependencies(Set<String> deps, boolean propageToOtherClusterNodes) {
         for (String dep : deps) {
             boolean removed = blockingCache.remove(dep, !propageToOtherClusterNodes);

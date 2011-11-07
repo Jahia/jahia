@@ -249,7 +249,7 @@ public class ContentTypeTree extends LayoutContainer {
         treeGrid = new TreeGrid<GWTJahiaNode>(store, new ColumnModel(columnList)) {
             @Override
             public void setExpanded(GWTJahiaNode model, boolean expand, boolean deep) {
-                if (expand && model.get("cannotexpand") != null) {
+                if (expand && model !=null && model.get("cannotexpand") != null) {
                     return;
                 }
                 super.setExpanded(model,expand,deep);

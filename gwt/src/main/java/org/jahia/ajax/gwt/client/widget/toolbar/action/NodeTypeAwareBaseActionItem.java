@@ -52,31 +52,45 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 @SuppressWarnings("serial")
 public abstract class NodeTypeAwareBaseActionItem extends BaseActionItem {
 
-    private List<String> allowedNodeTypes;
+    protected List<String> allowedNodeTypes;
+
+    protected List<String> forbiddenNodeTypes;
 
     /**
-     * Returns the required set of nodes type, a selected node should have (one of the specified types), in order to display the action.
-     * Returns <code>null</code> in case any node type is allowed.
-     * 
-     * @return the required set of nodes type, a selected node should have (one of the specified types), in order to display the action.
-     *         Returns <code>null</code> in case any node type is allowed
-     */
-    protected List<String> getAllowedNodeTypes() {
-        return allowedNodeTypes;
-    }
-
-    /**
-     * Returns <code>true</code> if the provided node has one of the allowed node types.
+     * Returns <code>true</code> if the provided node has none of the forbidden types and has one of the allowed node types.
      * 
      * @param selectedNode
      *            the currently selected node
-     * @return <code>true</code> if the provided node has one of the allowed node types
+     * @return <code>true</code> if the provided node has none of the forbidden types and has one of the allowed node types
      */
     protected boolean isNodeTypeAllowed(GWTJahiaNode selectedNode) {
-        if (selectedNode == null || allowedNodeTypes == null) {
+        if (selectedNode == null) {
             return true;
         }
-        return selectedNode.isNodeType(allowedNodeTypes);
+        return (forbiddenNodeTypes == null || !selectedNode.isNodeType(forbiddenNodeTypes))
+                && (allowedNodeTypes == null || selectedNode.isNodeType(allowedNodeTypes));
+
+    }
+
+    /**
+     * Returns <code>true</code> if all of the selected nodes pass the {@link #isNodeTypeAllowed(GWTJahiaNode)} check.
+     * 
+     * @param selection
+     *            currently selected nodes
+     * @return <code>true</code> if all of the selected nodes pass the {@link #isNodeTypeAllowed(GWTJahiaNode)} check
+     */
+    protected boolean isNodeTypeAllowed(List<GWTJahiaNode> selection) {
+        if (selection == null) {
+            return true;
+        }
+        boolean allowed = true;
+        for (GWTJahiaNode selected : selection) {
+            if (!isNodeTypeAllowed(selected)) {
+                allowed = false;
+                break;
+            }
+        }
+        return allowed;
 
     }
 
@@ -84,4 +98,10 @@ public abstract class NodeTypeAwareBaseActionItem extends BaseActionItem {
         this.allowedNodeTypes = allowedNodeTypes != null && allowedNodeTypes.isEmpty() ? null
                 : allowedNodeTypes;
     }
+
+    public void setForbiddenNodeTypes(List<String> forbiddenNodeTypes) {
+        this.forbiddenNodeTypes = forbiddenNodeTypes != null && forbiddenNodeTypes.isEmpty() ? null
+                : forbiddenNodeTypes;
+    }
+
 }

@@ -2,7 +2,9 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
     <!-- global language switcher -->
     <bean id="Toolbar.ItemsGroup.LanguageSwitcher" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
@@ -736,6 +738,7 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem">
                 <property name="referenceTitleKey" value="label.remove"/>
                 <property name="permanentlyDelete" value="false"/>
+                <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypes"/>
             </bean>
         </property>
         <property name="titleKey" value="label.delete"/>
@@ -755,6 +758,7 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem">
                 <property name="referenceTitleKey" value="label.deletePermanently"/>
                 <property name="permanentlyDelete" value="true"/>
+                <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypes"/>
             </bean>
         </property>
         <property name="titleKey" value="label.deletePermanently"/>
@@ -869,7 +873,9 @@
 
     <bean id="Toolbar.Item.Cut" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CutActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CutActionItem">
+                <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypes"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.cut"/>
         <property name="icon" value="cut"/>
@@ -999,7 +1005,9 @@
 
     <bean id="Toolbar.Item.Rename" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RenameActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RenameActionItem">
+                <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypes"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.rename"/>
         <property name="icon" value="rename"/>
@@ -1206,4 +1214,18 @@
         </property>
         <property name="titleKey" value="label.languages"/>
     </bean>
+    
+    <util:list id="forbidDeleteRenameCutForNodeTypes">
+        <value>rep:root</value>
+        <value>jnt:group</value>
+        <value>jnt:groupsFolder</value>
+        <value>jnt:mounts</value>
+        <value>jnt:remotePublications</value>
+        <value>jnt:templateSets</value>
+        <value>jnt:user</value>
+        <value>jnt:usersFolder</value>
+        <value>jnt:virtualsite</value>
+        <value>jnt:virtualsitesFolder</value>
+    </util:list>
+    
 </beans>

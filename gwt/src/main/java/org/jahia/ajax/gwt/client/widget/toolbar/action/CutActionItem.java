@@ -54,13 +54,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
-* User: toto
-* Date: Sep 25, 2009
-* Time: 6:57:14 PM
-* 
-*/
-public class CutActionItem extends BaseActionItem  {
+ * User: toto
+ * Date: Sep 25, 2009
+ * Time: 6:57:14 PM
+ */
+@SuppressWarnings("serial")
+public class CutActionItem extends NodeTypeAwareBaseActionItem  {
     public void onComponentSelection() {
         final List<GWTJahiaNode> selectedItems = linker.getSelectionContext().getMultipleSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
@@ -109,6 +108,7 @@ public class CutActionItem extends BaseActionItem  {
                         .equals("/sites/" + lh.getMultipleSelection().get(0).getSiteKey() + "/"
                                 + lh.getMultipleSelection().get(0).getName())
                 && !lh.getMultipleSelection().get(0).getPath()
-                        .equals("/" + lh.getMultipleSelection().get(0).getName()));
+                        .equals("/" + lh.getMultipleSelection().get(0).getName())
+                && isNodeTypeAllowed(lh.getMultipleSelection()));
     }
 }

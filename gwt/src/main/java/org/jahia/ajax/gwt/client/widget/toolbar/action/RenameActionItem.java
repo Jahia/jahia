@@ -53,12 +53,12 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import java.util.Arrays;
 
 /**
- * 
  * User: toto
  * Date: Sep 25, 2009
  * Time: 6:57:51 PM
  */
-public class RenameActionItem extends BaseActionItem {
+@SuppressWarnings("serial")
+public class RenameActionItem extends NodeTypeAwareBaseActionItem {
     public void onComponentSelection() {
         final GWTJahiaNode selection = linker.getSelectionContext().getSingleSelection();
         if (selection != null) {
@@ -102,6 +102,7 @@ public class RenameActionItem extends BaseActionItem {
                 && !lh.isLocked()
                 && !lh.isSecondarySelection()
                 && !lh.getSingleSelection().getPath().equals("/sites/"+lh.getSingleSelection().getSiteKey()+"/"+lh.getSingleSelection().getName())
-                && !lh.getSingleSelection().getPath().equals("/"+lh.getSingleSelection().getName()));
+                && !lh.getSingleSelection().getPath().equals("/"+lh.getSingleSelection().getName())
+                && isNodeTypeAllowed(lh.getSingleSelection()));
     }
 }

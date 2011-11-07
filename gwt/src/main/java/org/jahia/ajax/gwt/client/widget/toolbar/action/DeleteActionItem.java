@@ -71,7 +71,7 @@ import java.util.List;
  * Time: 6:59:06 PM
  */
 @SuppressWarnings("serial")
-public class DeleteActionItem extends BaseActionItem {
+public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
     
     private boolean permanentlyDelete;
     
@@ -137,7 +137,8 @@ public class DeleteActionItem extends BaseActionItem {
         }
         boolean enabled = selection != null && selection.size() > 0
                 && !lh.isSecondarySelection()
-                && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions());
+                && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
+                && isNodeTypeAllowed(selection);
         
         if (enabled) {
             enabled = checkEnabledWithMarkedForDeletion(lh);

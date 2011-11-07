@@ -345,7 +345,7 @@ public class ConflictResolver {
         NodeIterator ni = frozenNode.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper frozenSub = (JCRNodeWrapper) ni.next();
-            if (node.hasNode(frozenSub.getName()) && frozenSub.isNodeType(Constants.NT_FROZENNODE) && node.getNode(frozenSub.getName()).isVersioned()) {
+            if (node.hasNode(frozenSub.getName()) && frozenSub.isNodeType(Constants.NT_FROZENNODE) && !node.getNode(frozenSub.getName()).isVersioned()) {
                 diffs.addAll(compare(frozenSub, node.getNode(frozenSub.getName()), addPath(basePath, frozenSub.getName())));
             }
         }

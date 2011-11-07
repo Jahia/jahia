@@ -55,6 +55,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
@@ -164,11 +165,17 @@ public class ContentTypeTree extends LayoutContainer {
                 });
                 columnList.add(name);
             } else if (column.getKey().equals("dependency")) {
+
                 CheckColumnConfig chk = new CheckColumnConfig(column.getKey(), column.getTitle(), i) {
                     @Override
                     protected String onRender(ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ModelData> store) {
                         if (((GWTJahiaNode) model).getNodeTypes().contains("jnt:virtualsite")) {
-                            return super.onRender(model, property, config, rowIndex, colIndex, store);
+                            QuickTip tooltip = new QuickTip( grid ); // Needed to activate the tooltip
+                            boolean checked = ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(((GWTJahiaNode) model).getName());
+                            String t = checked?Messages.get("label.removeDependency","Click to remove the dependency"):Messages.get("label.addDependency","Click to add the dependency");
+                            String s = super.onRender(model, property, config, rowIndex, colIndex, store);
+                            return  "<span qtip='" + t + "'>" + s + "</span>";
+
                         } else {
                             return "";
                         }
@@ -233,6 +240,7 @@ public class ContentTypeTree extends LayoutContainer {
                                     treeGrid.unmask();
                                 }
                             });
+
                         }
                     }
                 };
@@ -272,7 +280,7 @@ public class ContentTypeTree extends LayoutContainer {
 
         Layout layout = new BorderLayout();
         setLayout(layout);
-        
+
         setBorders(false);
 
         nameFilterField = new StoreFilterField<GWTJahiaNode>() {

@@ -322,7 +322,7 @@
                     <property name="treeColumns">
                         <list>
                             <value>label,*,label.title</value>
-                            <value>dependency,50,label.dependency</value>
+                            <value>dependency,50</value>
                         </list>
                     </property>
                     <property name="requiredPermission" value="createSelector"/>

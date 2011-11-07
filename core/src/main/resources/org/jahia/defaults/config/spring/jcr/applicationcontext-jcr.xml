@@ -319,6 +319,8 @@
           class="org.jahia.services.content.nodetypes.initializers.WorkflowChoiceListInitializer">
         <property name="workflowService" ref="workflowService"/>
     </bean>
+    <bean id="sortInitializer"
+          class="org.jahia.services.content.nodetypes.initializers.SortChoiceListInitializerImpl"/>
     <bean id="nodeReferenceRenderer"
           class="org.jahia.services.content.nodetypes.renderer.NodeReferenceChoiceListRenderer"/>
 
@@ -343,6 +345,7 @@
                 <entry key="moduleImage" value-ref="moduleImageInitializer"/>
                 <entry key="linkerProps" value-ref="commponentLinkerInitializer"/>
                 <entry key="workflow" value-ref="workflowInitializer"/>
+                <entry key="sort" value-ref="sortInitializer"/>
             </map>
         </property>
     </bean>

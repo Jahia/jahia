@@ -98,7 +98,7 @@ public class ContentTypeTree extends LayoutContainer {
     private boolean moduleFiltering;
 
     public ContentTypeTree() {
-        this(Arrays.asList(new GWTColumn("label", "label.displayName", -1)));
+        this(Arrays.asList(new GWTColumn("label", Messages.get("label.displayName", "Name"), -1)));
     }
 
     public ContentTypeTree(List<GWTColumn> columns) {

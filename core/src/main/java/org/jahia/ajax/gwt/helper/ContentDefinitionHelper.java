@@ -756,10 +756,20 @@ public class ContentDefinitionHelper {
     }
 
 
-    public List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> fields, boolean includeSubTypes, final JCRSiteNode site,
+    public List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> fields, boolean includeSubTypes, boolean includeNonDependentModules, final JCRSiteNode site,
                                                     Locale uiLocale, JCRSessionWrapper session)
             throws GWTJahiaServiceException {
         try {
+            List<String> dependencies = null;
+
+            if (!includeNonDependentModules && site.hasProperty("j:dependencies")) {
+                dependencies = new ArrayList<String>();
+                Value[] deps = site.getProperty("j:dependencies").getValues();
+                for (Value dep : deps) {
+                    dependencies.add(dep.getString());
+                }
+            }
+
             GWTJahiaNode root = new GWTJahiaNode();
             List<GWTJahiaNode> allNodes = new ArrayList<GWTJahiaNode>();
             allNodes.add(root);
@@ -767,6 +777,10 @@ public class ContentDefinitionHelper {
             GWTJahiaNode lastAdded = null;
             for (int i = 0; i < allNodes.size(); i++) {
                 GWTJahiaNode node = allNodes.get(i);
+
+                if (node.getNodeTypes() != null && node.getNodeTypes().contains("jnt:virtualsite") && dependencies != null && !dependencies.contains(node.getName())) {
+                    continue;
+                }
 
                 List<GWTJahiaNode> list;
                 if (node == root) {

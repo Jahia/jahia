@@ -328,7 +328,7 @@ public interface JahiaContentManagementServiceAsync {
     void getContentTypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement, AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>> async);
 
     void getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> fields,
-                               boolean includeSubTypes, AsyncCallback<List<GWTJahiaNode>> async);
+                               boolean includeSubTypes, boolean includeNonDependentModules, AsyncCallback<List<GWTJahiaNode>> async);
 
     void getWFFormForNodeAndNodeType(String formResourceName,
                                      AsyncCallback<GWTJahiaNodeType> asyncCallback);

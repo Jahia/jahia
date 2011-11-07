@@ -396,7 +396,7 @@ public interface JahiaContentManagementService extends RemoteService {
     Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getContentTypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement) throws GWTJahiaServiceException;
 
     List<GWTJahiaNode> getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> fields,
-                                             boolean includeSubTypes) throws GWTJahiaServiceException;
+                                             boolean includeSubTypes,  boolean includeNonDependentModules) throws GWTJahiaServiceException;
 
     GWTJahiaNodeType getWFFormForNodeAndNodeType(String formResourceName)
             throws GWTJahiaServiceException;

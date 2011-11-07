@@ -46,10 +46,7 @@ import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.store.*;
-import com.extjs.gxt.ui.client.widget.ComponentPlugin;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Layout;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.form.StoreFilterField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
@@ -59,6 +56,7 @@ import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -318,9 +316,9 @@ public class ContentTypeTree extends LayoutContainer {
         store.add(nodes, true);
     }
 
-    public void fillStore(List<String> paths, List<String> types, boolean includeSubTypes) {
+    public void fillStore(List<String> paths, List<String> types, boolean includeSubTypes, boolean includeNonDependentModules) {
         store.removeAll();
-        JahiaContentManagementService.App.getInstance().getContentTypesAsTree(paths, types, Arrays.asList("name"), includeSubTypes,
+        JahiaContentManagementService.App.getInstance().getContentTypesAsTree(paths, types, Arrays.asList("name"), includeSubTypes,  includeNonDependentModules,
                 new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> result) {
                         store.add(result, true);

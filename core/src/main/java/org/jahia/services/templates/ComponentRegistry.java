@@ -112,7 +112,7 @@ public class ComponentRegistry {
 
         List<Locale> locales = LanguageCodeConverters.getAvailableBundleLocales();
 
-        if (!nt.isMixin() && !JMIX_DROPPABLE_CONTENT.equals(nt.getName())
+        if (!nt.isMixin() && !nt.isAbstract() && !JMIX_DROPPABLE_CONTENT.equals(nt.getName())
                 && nt.isNodeType(JMIX_DROPPABLE_CONTENT)) {
             String name = nt.getName();
             if (logger.isDebugEnabled()) {
@@ -167,7 +167,7 @@ public class ComponentRegistry {
                     logger.debug("Component {} already exists", name);
                 }
             }
-        } else if (!nt.isMixin()) {
+        } else if (!nt.isMixin() && !nt.isAbstract()) {
             JCRNodeWrapper folder = components.hasNode("nonDroppableComponents") ?
                     components.getNode("nonDroppableComponents") : components.addNode("nonDroppableComponents",
                     JNT_COMPONENT_FOLDER);

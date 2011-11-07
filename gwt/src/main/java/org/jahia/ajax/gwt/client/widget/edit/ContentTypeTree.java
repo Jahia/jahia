@@ -165,19 +165,25 @@ public class ContentTypeTree extends LayoutContainer {
             } else if (column.getKey().equals("dependency")) {
 
                 CheckColumnConfig chk = new CheckColumnConfig(column.getKey(), column.getTitle(), i) {
-                    @Override
-                    protected String onRender(ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ModelData> store) {
-                        if (((GWTJahiaNode) model).getNodeTypes().contains("jnt:virtualsite")) {
-                            QuickTip tooltip = new QuickTip( grid ); // Needed to activate the tooltip
-                            boolean checked = ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(((GWTJahiaNode) model).getName());
-                            String t = checked?Messages.get("label.removeDependency","Click to remove the dependency"):Messages.get("label.addDependency","Click to add the dependency");
-                            String s = super.onRender(model, property, config, rowIndex, colIndex, store);
-                            return  "<span qtip='" + t + "'>" + s + "</span>";
 
-                        } else {
-                            return "";
-                        }
+                    protected void init() {
+                        setRenderer(new GridCellRenderer<ModelData>() {
+                            public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
+                                                 ListStore<ModelData> store, Grid<ModelData> grid) {
+                                if (((GWTJahiaNode) model).getNodeTypes().contains("jnt:virtualsite")) {
+                                    String s = onRender(model, property, config, rowIndex, colIndex, store);
+                                    Text text = new Text(s);
+                                    boolean checked = ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(((GWTJahiaNode) model).getName());
+                                    String tooltip = checked?Messages.get("label.removeDependency","Click to remove the dependency"):Messages.get("label.addDependency","Click to add the dependency");
+                                    text.setToolTip(tooltip);
+                                    return text;
+                                } else {
+                                    return "";
+                                }
+                            }
+                        });
                     }
+
 
                     @Override
                     protected String getCheckState(ModelData model, String property, int rowIndex,

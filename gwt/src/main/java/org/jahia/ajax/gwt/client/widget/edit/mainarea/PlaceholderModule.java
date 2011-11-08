@@ -55,6 +55,9 @@ import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 /**
  * 
@@ -103,7 +106,14 @@ public class PlaceholderModule extends Module {
 
         if (getParentModule() != null && getParentModule().getNodeTypes() != null) {
             String[] nodeTypesArray = getParentModule().getNodeTypes().split(" ");
+            List filter = null;
+            if (nodeTypes != null && nodeTypes.length()>0) {
+                filter = Arrays.asList(nodeTypes);
+            }
             for (final String s : nodeTypesArray) {
+                if (filter != null && !filter.contains(s)) {
+                    continue;
+                }
                 Button button = new Button(ModuleHelper.getNodeType(s) != null ? ModuleHelper.getNodeType(
                         s).getLabel() : s);
                 button.setStyleName("button-placeholder");

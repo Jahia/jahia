@@ -90,59 +90,6 @@
     </repositories>
     <profiles>
         <profile>
-            <id>excludeBeforeJDK16</id>
-            <activation>
-                <jdk>1.5</jdk>
-            </activation>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/*CrawlingPageVisitorTest*.java</exclude>
-                                <exclude>**/*CrawlDBTestUtil*.java</exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <configuration>
-                            <classifier>jdk15</classifier>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <configuration>
-                            <classifier>jdk15</classifier>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>crawler-deployment</id>
-            <activation>
-                <jdk>[1.6,)</jdk>
-            </activation>
-            <dependencies>
-                <!-- Nutch and its dependencies -->
-                <dependency>
-                    <groupId>org.apache.nutch</groupId>
-                    <artifactId>nutch</artifactId>
-                    <version>1.0</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.mahout.hadoop</groupId>
-                    <artifactId>hadoop-core</artifactId>
-                    <version>0.19.1</version>
-                </dependency>
-                <!-- End of Nutch and its dependencies -->
-            </dependencies>
-        </profile>
-        <profile>
             <id>eclipse-integration</id>
             <build>
                 <plugins>
@@ -327,6 +274,19 @@
             <version>2.4</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Nutch and its dependencies -->
+        <dependency>
+            <groupId>org.apache.nutch</groupId>
+            <artifactId>nutch</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.mahout.hadoop</groupId>
+            <artifactId>hadoop-core</artifactId>
+            <version>0.19.1</version>
+        </dependency>
+        <!-- End of Nutch and its dependencies -->
     </dependencies>
     <build>
         <plugins>

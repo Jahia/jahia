@@ -757,8 +757,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     renderContext.setMainResource(resource);
 
                     JCRSiteNode site = resource.getNode().getResolveSite();
-                    boolean studioMode = renderContext.getEditModeConfigName() == null || renderContext.getEditModeConfigName().equals(Studio.STUDIO_MODE);
-                    if (!Url.isLocalhost(req.getServerName()) && renderContext.isEditMode()) {
+                    if (!Url.isLocalhost(req.getServerName()) && !renderContext.isEditMode()) {
                         JCRSessionWrapper session1 = resource.getNode().getSession();
                         if (urlResolver.getSiteKey() != null && !site.getSiteKey().equals(urlResolver.getSiteKey())) {
                             site = (JCRSiteNode) session1.getNode("/sites/" + urlResolver.getSiteKey());
@@ -768,7 +767,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         }
                     }
                     if ((site == null && resource.getNode().getPath().startsWith("/sites/")) || (site != null
-                            && !studioMode
+                            && (renderContext.getEditModeConfigName() == null
+                            || !renderContext.getEditModeConfigName().equals(Studio.STUDIO_MODE))
                             && !(renderContext.isLiveMode() ? site.getActiveLanguagesAsLocales()
                                     .contains(urlResolver.getLocale()) : site
                                     .getLanguagesAsLocales().contains(urlResolver.getLocale())))) {

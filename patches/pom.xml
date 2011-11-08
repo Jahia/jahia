@@ -56,7 +56,6 @@
         <module>camel-stream</module>
         <module>concurrent</module>
         <module>jodconverter</module>
-        <module>maven-war-plugin</module>
     </modules>
 
 </project>

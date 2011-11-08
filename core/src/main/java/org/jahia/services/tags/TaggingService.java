@@ -244,7 +244,7 @@ public class TaggingService {
 	 * @throws RepositoryException
 	 *             in case of errors
 	 */
-	private boolean tag(final String nodePath, final String tag, final String siteKey, final boolean createTagIfNotExists,
+	public boolean tag(final String nodePath, final String tag, final String siteKey, final boolean createTagIfNotExists,
 	        JCRSessionWrapper session) throws RepositoryException {
 
 		boolean applied = false;

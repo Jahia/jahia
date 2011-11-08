@@ -230,7 +230,10 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                         }
                     }
                     for (JahiaTemplatesPackage pack : getOrderedPackages(remainingPackages).values()) {
-                        initialImports.add(pack);
+                        if (unzippedPackages.contains(pack.getRootFolder())) {
+                            unzippedPackages.remove(pack.getRootFolder());
+                            initialImports.add(pack);
+                        }
                         templatePackageRegistry.register(pack);
                         changed = true;
                     }
@@ -262,6 +265,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     private Timer watchdog;
 
     private List<JahiaTemplatesPackage> initialImports = new LinkedList<JahiaTemplatesPackage>();
+    private List<String> unzippedPackages = new LinkedList<String>();
 
     private TemplatePackageApplicationContextLoader contextLoader;
 
@@ -299,7 +303,10 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             }
 
             for (JahiaTemplatesPackage pack : getOrderedPackages(remaining).values()) {
-                initialImports.add(pack);
+                if (unzippedPackages.contains(pack.getRootFolder())) {
+                    unzippedPackages.remove(pack.getRootFolder());
+                    initialImports.add(pack);
+                }
                 templatePackageRegistry.register(pack);
             }
         }
@@ -468,14 +475,14 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 webInfFolder.delete();
             }
 
-
-
             File metaInfFolder = new File(tmplRootFolder, "META-INF");
             if (!metaInfFolder.exists()) {
                 metaInfFolder.mkdirs();
             }
             createDeploymentXMLFile(new File(metaInfFolder, "deployed.xml"), deployedFiles,
                     templateWar, packageName, depends, rootFolder, implementationVersionStr, packageTimestamp);
+
+            unzippedPackages.add(tmplRootFolder.getName());
         }
     }
 

@@ -113,9 +113,7 @@ public class CacheFilterTest {
             this.site = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
             
             String templatesFolder = "/sites/"+site.getSiteKey() + "/templates";
-            InputStream importStream = IndexOptionsTest.class.getClassLoader()
-                    .getResourceAsStream(
-                            "jahia-test-module-war/src/main/resources/imports/importTemplatesForCacheTest.xml");
+            InputStream importStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("imports/importTemplatesForCacheTest.xml");
             session.importXML(templatesFolder + "/base", importStream,
                     ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
             importStream.close();

@@ -49,20 +49,21 @@ import org.jahia.services.usermanager.JahiaUser;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * 
+ *
  * User: toto
  * Date: Sep 28, 2009
  * Time: 2:47:08 PM
- * 
+ *
  */
 public class ContentHubHelper {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ContentHubHelper.class);
 
     private JCRSessionFactory sessionFactory;
-
+    private JCRStoreService jcrStoreService;
     public void setSessionFactory(JCRSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
@@ -85,10 +86,19 @@ public class ContentHubHelper {
                             if (!mounts.isCheckedOut()) {
                                 mounts.checkout();
                             }
-
-                            childNode = (JCRMountPointNode) mounts.addNode(name, "jnt:vfsMountPoint");
+                            List<ExternalProvider> providers = jcrStoreService.getExternalProviders();
+                            // create the node depending of the root
+                            for (ExternalProvider ext : providers) {
+                                if (root.startsWith(ext.getKey())) {
+                                    childNode = (JCRMountPointNode) mounts.addNode(name,"jnt:mountPoint");
+                                    childNode.setProperty("j:provider", ext.getKey());
+                                }
+                            }
+                            if (childNode == null) {
+                                childNode = (JCRMountPointNode) mounts.addNode(name, "jnt:mountPoint");
+                                childNode.setProperty("j:provider", "vfs");
+                            }
                             childNode.setProperty("j:root", root);
-
                             boolean valid = childNode.checkMountPointValidity();
                             if (!valid) {
                                 childNode.remove();
@@ -133,5 +143,9 @@ public class ContentHubHelper {
         } else {
             user.setProperty("storedPassword_" + providerKey, password);
         }
+    }
+
+    public void setJcrStoreService(JCRStoreService jcrStoreService) {
+        this.jcrStoreService = jcrStoreService;
     }
 }

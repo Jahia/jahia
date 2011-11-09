@@ -472,10 +472,13 @@
 //---------------------------------------------------------
 
 [jnt:mountPoint] > nt:hierarchyNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
+ - j:root (string) nofulltext
+ - j:provider (string) nofulltext
 
 [jnt:mounts] > nt:base, jmix:nodenameInfo, jmix:systemNode
  + * (jnt:mountPoint)
 
+// Deprecated, declare ExternalProvider bean instead
 [jnt:vfsMountPoint] > jnt:mountPoint
  - j:root (string) nofulltext
 

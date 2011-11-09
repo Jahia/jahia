@@ -95,7 +95,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     private Map<String, String> decorators = new HashMap<String, String>();
     private Map<String, Constructor<?>> decoratorCreators = new HashMap<String, Constructor<?>>();
     private InterceptorChain interceptorChain;
-
+    private List<ExternalProvider> externalProviders = new LinkedList<ExternalProvider>();
     private List<PropertyInterceptor> interceptors = new LinkedList<PropertyInterceptor>();
 
     private Map<String,List<DefaultEventListener>> listeners;
@@ -125,6 +125,10 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     public void addInterceptor(PropertyInterceptor interceptor) {
         this.interceptors.add(interceptor);
         interceptorChain = null;
+    }
+
+    public void addExternalProvider(ExternalProvider externalProvider) {
+        this.externalProviders.add(externalProvider);
     }
 
     public JCRNodeWrapper decorate(JCRNodeWrapper w) {
@@ -271,6 +275,22 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         this.interceptors.addAll(interceptors);
         interceptorChain = null;
     }
+
+    public List<ExternalProvider> getExternalProviders() {
+        return externalProviders;
+    }
+
+    public ExternalProvider getExternalProviderByKey(String key) {
+        for (ExternalProvider ex : externalProviders) {
+            if (key.equals(ex.getKey())) {
+                return ex;
+            }
+        }
+
+        logger.info("Unable to find provider for key : " + key);
+        return null;
+        }
+
 
     public void setListeners(Map<String, List<DefaultEventListener>> listeners) {
         this.listeners = listeners;

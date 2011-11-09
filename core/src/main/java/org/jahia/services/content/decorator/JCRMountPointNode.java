@@ -40,10 +40,8 @@
 
 package org.jahia.services.content.decorator;
 
+import org.jahia.services.content.*;
 import org.jahia.services.content.impl.vfs.VFSContentStoreProvider;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreProvider;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.springframework.beans.BeanUtils;
 
 import javax.jcr.*;
@@ -115,11 +113,10 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         JCRStoreProvider provider = null;
         Map<String, JCRStoreProvider> dynamicMountPoints = getProvider().getSessionFactory().getDynamicMountPoints();
         if (!dynamicMountPoints.containsKey(getPath())) {
-            if (isNodeType("jnt:vfsMountPoint")) {
-                Map<String, Object> m = new HashMap<String, Object>();
-                m.put("root",getProperty("j:root").getString());
-                provider = mount(VFSContentStoreProvider.class, getPath(), getUUID(), m);
-            }
+            Map<String, Object> m = new HashMap<String, Object>();
+            m.put("root",getProperty("j:root").getString());
+            ExternalProvider e = JCRStoreService.getInstance().getExternalProviderByKey(getProperty("j:provider").getString());
+            provider = mount(e.getProvider().getClass(), getPath(), getUUID(), m);
         } else {
             provider = dynamicMountPoints.get(getPath());
         }

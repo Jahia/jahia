@@ -69,6 +69,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                 }
             } else if (renderContext.getRequest().getAttribute("cachedTemplate") != null) {
                 template = (Template) renderContext.getRequest().getAttribute("cachedTemplate");
+                renderContext.getRequest().removeAttribute("cachedTemplate");
                 if (logger.isDebugEnabled()) {
                     logger.debug(
                             "Restoring cached template to : " + template.serialize() + " for resource " + resource);

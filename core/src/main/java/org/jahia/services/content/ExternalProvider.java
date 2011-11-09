@@ -11,6 +11,7 @@ import org.springframework.beans.factory.InitializingBean;
 public class ExternalProvider implements InitializingBean {
     private JCRStoreProvider provider;
     private String key;
+    private JCRStoreService jcrStoreService;
 
     public JCRStoreProvider getProvider() {
         return provider;
@@ -28,7 +29,11 @@ public class ExternalProvider implements InitializingBean {
         this.key = key;
     }
 
+    public void setJcrStoreService(JCRStoreService jcrStoreService) {
+        this.jcrStoreService = jcrStoreService;
+    }
+
     public void afterPropertiesSet() throws Exception {
-        JCRStoreService.getInstance().addExternalProvider(this);
+        jcrStoreService.addExternalProvider(this);
     }
 }

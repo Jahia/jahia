@@ -411,6 +411,7 @@ public class JCRStoreProvider {
                     if (logger != null) logger.info("System session closed, deregister listeners");
                 }
             };
+            t.setDaemon(true); 
             t.start();
         }
     }

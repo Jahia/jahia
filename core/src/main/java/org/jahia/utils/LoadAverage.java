@@ -63,6 +63,7 @@ public abstract class LoadAverage implements Runnable {
 
     public LoadAverage(String threadName) {
         loadCalcThread = new Thread(this, threadName);
+        loadCalcThread.setDaemon(true); 
     }
 
     public void start() {

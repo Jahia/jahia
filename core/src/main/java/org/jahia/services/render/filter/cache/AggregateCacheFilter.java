@@ -146,8 +146,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             }
             if (Boolean.valueOf(scriptProperties.getProperty("cache.additional.key.useMainResourcePath")!=null?
                 scriptProperties.getProperty("cache.additional.key.useMainResourcePath"):defaultScriptProperties.getProperty("cache.additional.key.useMainResourcePath", "false"))) {
-                resource.getModuleParams().put("module.cache.additional.key",
-                        renderContext.getMainResource().getNode().getPath());
+
+                ArrayList l = (ArrayList) resource.getModuleParams().get("module.cache.additional.key");
+                if (l == null) {
+                    l = new ArrayList();
+                    resource.getModuleParams().put("module.cache.additional.key",l);
+                }
+                l.add(renderContext.getMainResource().getNode().getPath());
             }
         }
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);

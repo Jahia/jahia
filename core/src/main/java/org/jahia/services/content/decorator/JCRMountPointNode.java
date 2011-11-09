@@ -115,7 +115,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         if (!dynamicMountPoints.containsKey(getPath())) {
             Map<String, Object> m = new HashMap<String, Object>();
             m.put("root",getProperty("j:root").getString());
-            ExternalProvider e = JCRStoreService.getInstance().getExternalProviderByKey(getProperty("j:provider").getString());
+            ExternalProvider e = JCRStoreService.getInstance().getExternalProviderByKey(hasProperty("j:provider")?getProperty("j:provider").getString():"vfs");
             provider = mount(e.getProvider().getClass(), getPath(), getUUID(), m);
         } else {
             provider = dynamicMountPoints.get(getPath());

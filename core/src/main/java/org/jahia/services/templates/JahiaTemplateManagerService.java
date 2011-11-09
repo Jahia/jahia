@@ -54,6 +54,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.importexport.ImportExportBaseService;
@@ -785,9 +786,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         final Map<String, String> uuidMapping = session.getUuidMapping();
 
-        NodeType[] mixin = source.getMixinNodeTypes();
-        for (NodeType aMixin : mixin) {
-            destinationNode.addMixin(aMixin.getName());
+        ExtendedNodeType[] mixin = source.getMixinNodeTypes();
+        List<ExtendedNodeType> destMixin = Arrays.asList(destinationNode.getMixinNodeTypes());
+        for (ExtendedNodeType aMixin : mixin) {
+            if (!destMixin.contains(aMixin)) {
+                destinationNode.addMixin(aMixin.getName());
+            }
         }
 
         uuidMapping.put(source.getIdentifier(), destinationNode.getIdentifier());
@@ -811,13 +815,19 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         if (property.getType() == PropertyType.REFERENCE ||
                                 property.getType() == PropertyType.WEAKREFERENCE) {
                             if (property.getDefinition().isMultiple() && (property.isMultiple())) {
-                                destinationNode.setProperty(property.getName(), new Value[0]);
-                                Value[] values = property.getValues();
-                                for (Value value : values) {
-                                    keepReference(destinationNode, references, property, value.getString());
+                                if (!destinationNode.hasProperty(property.getName()) ||
+                                        !Arrays.equals(destinationNode.getProperty(property.getName()).getValues(), property.getValues())) {
+                                    destinationNode.setProperty(property.getName(), new Value[0]);
+                                    Value[] values = property.getValues();
+                                    for (Value value : values) {
+                                        keepReference(destinationNode, references, property, value.getString());
+                                    }
                                 }
                             } else {
-                                keepReference(destinationNode, references, property, property.getValue().getString());
+                                if (!destinationNode.hasProperty(property.getName()) ||
+                                        !destinationNode.getProperty(property.getName()).getValue().equals(property.getValue())) {
+                                    keepReference(destinationNode, references, property, property.getValue().getString());
+                                }
                             }
                         } else if (property.getDefinition().isMultiple() && (property.isMultiple())) {
                             if (!destinationNode.hasProperty(property.getName()) ||
@@ -938,19 +948,20 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 }
             }
         }
-
-        List<String> destNames = new ArrayList<String>();
-        ni = destinationNode.getNodes();
-        while (ni.hasNext()) {
-            JCRNodeWrapper oldChild = (JCRNodeWrapper) ni.next();
-            destNames.add(oldChild.getName());
-        }
-        if (destinationNode.getPrimaryNodeType().hasOrderableChildNodes() && !names.equals(destNames)) {
-            Collections.reverse(names);
-            String previous = null;
-            for (String name : names) {
-                destinationNode.orderBefore(name, previous);
-                previous = name;
+        if (doUpdate) {
+            List<String> destNames = new ArrayList<String>();
+            ni = destinationNode.getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper oldChild = (JCRNodeWrapper) ni.next();
+                destNames.add(oldChild.getName());
+            }
+            if (destinationNode.getPrimaryNodeType().hasOrderableChildNodes() && !names.equals(destNames)) {
+                Collections.reverse(names);
+                String previous = null;
+                for (String name : names) {
+                    destinationNode.orderBefore(name, previous);
+                    previous = name;
+                }
             }
         }
     }

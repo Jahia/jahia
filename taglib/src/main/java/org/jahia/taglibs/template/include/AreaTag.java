@@ -142,10 +142,10 @@ public class AreaTag extends ModuleTag implements ParamParent {
     }
 
     protected void findNode(RenderContext renderContext, Resource currentResource) throws IOException {
-        Resource resource = renderContext.getMainResource();
+        Resource mainResource = renderContext.getMainResource();
 
         if (renderContext.isAjaxRequest() && renderContext.getAjaxResource() != null) {
-            resource = renderContext.getAjaxResource();
+            mainResource = renderContext.getAjaxResource();
         }
         renderContext.getRequest().removeAttribute("skipWrapper");
         renderContext.getRequest().removeAttribute("inArea");
@@ -181,7 +181,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                         path = node.getPath() + "/" + path;
                     }
                     node = null;
-                    missingResource(renderContext, currentResource, resource);
+                    missingResource(renderContext, currentResource, mainResource);
                 } finally {
                     if (node == null && logger.isDebugEnabled()) {
                         if (level == null) {
@@ -210,16 +210,16 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     if (t != null) {
                         for (Template currentTemplate : t.getNextTemplates()) {
                             nodes.add(0,
-                                    resource.getNode().getSession().getNodeByIdentifier(currentTemplate.getNode()));
+                                    mainResource.getNode().getSession().getNodeByIdentifier(currentTemplate.getNode()));
                         }
                     }
-                    nodes.add(resource.getNode());
+                    nodes.add(mainResource.getNode());
 
                     boolean found = false;
-                    boolean currentMain = false;
+                    boolean notMainResource = false;
                     for (JCRNodeWrapper node : nodes) {
                         if (!path.equals("*") && node.hasNode(path)) {
-                            currentMain = resource.getNode() != node;
+                            notMainResource = mainResource.getNode() != node;
                             this.node = node.getNode(path);
                             if (currentResource.getNode().getParent().getPath().equals(this.node.getPath())) {
                                 this.node = null;
@@ -239,14 +239,15 @@ public class AreaTag extends ModuleTag implements ParamParent {
                         logger.debug("Looking for local area "+path+", will be searched in node "+ (node!=null?node.getPath():null) +
                                      " saved template = "+tempNS+", previousTemplate set to "+prevNS);
                     }
-                    if (currentMain) {
+                    boolean templateEdit = mainResource.getModuleParams().containsKey("templateEdit") &&mainResource.getModuleParams().get("templateEdit").equals(node.getParent().getIdentifier());
+                    if (notMainResource && !templateEdit) {
                         renderContext.getRequest().setAttribute("inArea", Boolean.TRUE);
                     }
                     if (!found) {
-                        missingResource(renderContext, currentResource, resource);
+                        missingResource(renderContext, currentResource, mainResource);
                     }
                 } else if (path.startsWith("/")) {
-                    JCRSessionWrapper session = resource.getNode().getSession();
+                    JCRSessionWrapper session = mainResource.getNode().getSession();
 
                     // No more areas in an absolute area
                     renderContext.getRequest().setAttribute("previousTemplate", null);
@@ -257,13 +258,13 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     try {
                         node = (JCRNodeWrapper) session.getItem(path);
                     } catch (PathNotFoundException e) {
-                        missingResource(renderContext, currentResource, resource);
+                        missingResource(renderContext, currentResource, mainResource);
                     }
                 }
                 renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
             } else {
                 renderContext.getRequest().removeAttribute("skipWrapper");
-                node = resource.getNode();
+                node = mainResource.getNode();
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -271,7 +272,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
         if (node == null && logger.isDebugEnabled()) {
             logger.debug("Can not find the area node for path " + path + " with templates " + templateNode +
-                         "rendercontext " + renderContext + " main resource " + resource +
+                         "rendercontext " + renderContext + " main resource " + mainResource +
                          " current resource " + currentResource);
         }
     }

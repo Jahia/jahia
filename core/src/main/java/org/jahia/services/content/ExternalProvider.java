@@ -12,6 +12,8 @@ public class ExternalProvider implements InitializingBean {
     private JCRStoreProvider provider;
     private String key;
     private JCRStoreService jcrStoreService;
+    private String prefix;
+
 
     public JCRStoreProvider getProvider() {
         return provider;
@@ -29,11 +31,19 @@ public class ExternalProvider implements InitializingBean {
         this.key = key;
     }
 
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
     public void setJcrStoreService(JCRStoreService jcrStoreService) {
         this.jcrStoreService = jcrStoreService;
     }
 
     public void afterPropertiesSet() throws Exception {
-        jcrStoreService.addExternalProvider(this);
+        jcrStoreService.addExternalProvider(key, this);
     }
 }

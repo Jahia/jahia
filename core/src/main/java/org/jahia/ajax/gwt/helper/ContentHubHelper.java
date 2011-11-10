@@ -45,6 +45,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.usermanager.JahiaUser;
+import ucar.nc2.util.net.EasyX509TrustManager;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -86,12 +87,14 @@ public class ContentHubHelper {
                             if (!mounts.isCheckedOut()) {
                                 mounts.checkout();
                             }
-                            List<ExternalProvider> providers = jcrStoreService.getExternalProviders();
+                            Map<String, ExternalProvider> providers = jcrStoreService.getExternalProviders();
                             // create the node depending of the root
-                            for (ExternalProvider ext : providers) {
-                                if (root.startsWith(ext.getKey())) {
+                            for (String k : providers.keySet()) {
+                                ExternalProvider ext;
+                                if (root.startsWith((ext = providers.get(k)).getPrefix())) {
                                     childNode = (JCRMountPointNode) mounts.addNode(name,"jnt:mountPoint");
                                     childNode.setProperty("j:provider", ext.getKey());
+                                    break;
                                 }
                             }
                             if (childNode == null) {

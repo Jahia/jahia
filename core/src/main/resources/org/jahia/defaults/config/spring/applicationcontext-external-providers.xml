@@ -8,6 +8,7 @@
         <property name="provider">
             <bean class="org.jahia.services.content.impl.vfs.VFSContentStoreProvider"/>
         </property>
+        <property name="prefix" value="vfs"/>
         <property name="key" value="vfs"/>
     </bean>
 </beans>

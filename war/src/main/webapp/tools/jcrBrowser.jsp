@@ -209,7 +209,12 @@ function go(id1, value1, id2, value2, id3, value3) {
     </c:if>
     
     <c:if test="${node.path != '/'}">
-        <a href="#parent" onclick="go('uuid', '${node.parent.identifier}'); return false;">[..]&nbsp;${fn:escapeXml(node.parent.name)}</a>
+        <a href="#parent" onclick="go('uuid', '${node.parent.identifier}'); return false;">[..]</a>
+        <c:set var="breadcrumbs" value=""/>
+        <c:forTokens items="${node.path}" delims="/" var="pathItem"
+        varStatus="loop"><c:set var="breadcrumbs" value="${breadcrumbs}/${pathItem}"
+        />/<c:if test="${!loop.last}"><a href="#breadcrumbs" onclick="go('path', '${breadcrumbs}'); return false;">${fn:escapeXml(pathItem)}</a
+        ></c:if><c:if test="${loop.last}">${fn:escapeXml(pathItem)}</c:if></c:forTokens>
     </c:if>
     <p>
         <c:if test="${showActions}">

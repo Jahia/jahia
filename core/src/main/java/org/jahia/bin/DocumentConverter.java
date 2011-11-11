@@ -56,7 +56,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -73,8 +72,6 @@ import org.springframework.web.servlet.ModelAndView;
  * @author Sergiy Shyrkov
  */
 public class DocumentConverter extends JahiaController {
-
-    private static final long serialVersionUID = -3949472591925972005L;
 
     private static Logger logger = LoggerFactory.getLogger(DocumentConverter.class);
 
@@ -192,13 +189,6 @@ public class DocumentConverter extends JahiaController {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet
-     * .http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         if (requireAuthenticatedUser && isUserGuest()) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "The service is available only for authenticated users.");
@@ -212,12 +202,29 @@ public class DocumentConverter extends JahiaController {
         
         ModelAndView result = null;
 
-        if (ServletFileUpload.isMultipartContent(request)) {
-            result = handlePost(request, response);
-        } else if ("get".equalsIgnoreCase(request.getMethod())) {
-            result = handleGet(request, response);
+        if (ServletFileUpload.isMultipartContent(request) || "get".equalsIgnoreCase(request.getMethod())) {
+            long startTime = System.currentTimeMillis();
+            try {
+                result = ServletFileUpload.isMultipartContent(request) ? handlePost(request,
+                        response) : handleGet(request, response);
+            } finally {
+                if (logger.isInfoEnabled()) {
+                    StringBuilder sb = new StringBuilder(100);
+                    sb.append("Converted [").append(request.getRequestURI());
+                    JCRSessionFactory jcrSessionFactory = JCRSessionFactory.getInstance();
+                    if (jcrSessionFactory.getCurrentUser() != null) {
+                        sb.append("] user=[").append(
+                                jcrSessionFactory.getCurrentUser().getUsername());
+                    }
+                    sb.append("] ip=[").append(request.getRemoteAddr()).append("] sessionID=[")
+                            .append(request.getSession().getId()).append("] in [")
+                            .append(System.currentTimeMillis() - startTime).append("ms]");
+                    logger.info(sb.toString());
+                }
+            }
         } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Multipart data is not found in the POST request");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    "Multipart data is not found in the POST request");
             return null;
         }
 

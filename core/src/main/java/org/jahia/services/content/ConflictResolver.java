@@ -826,7 +826,9 @@ public class ConflictResolver {
 
             if (newTargetValue == null) {
                 if (newValue == null) {
-                    targetNode.getProperty(propertyName).remove();
+                    if (targetNode.hasProperty(propertyName)) {
+                    	targetNode.getProperty(propertyName).remove();
+                    }
                 } else {
                     targetNode.getRealNode().setProperty(propertyName, newValue);
                 }

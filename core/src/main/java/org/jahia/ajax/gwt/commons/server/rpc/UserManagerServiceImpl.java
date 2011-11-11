@@ -124,9 +124,6 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
 
     public BasePagingLoadResult<GWTJahiaGroup> searchGroups(String match, int offset, int limit, List<Integer> siteIds) {
         try {
-            Properties criterias = new Properties();
-            criterias.setProperty("groupname", match);
-
             List<Integer> sites = siteIds;
             if (sites == null || sites.size() == 0) {
                 sites = new ArrayList<Integer>();
@@ -134,31 +131,37 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
             }
 
             List<GWTJahiaGroup> result = new ArrayList<GWTJahiaGroup>();
+            Set<JahiaGroup> groups = new HashSet<JahiaGroup>();
 
             for (Integer siteId : sites) {
-                Set<JahiaGroup> groups = groupManagerService.searchGroups(siteId, criterias);
-                if (groups != null) {
-                    Iterator<JahiaGroup> iterator = groups.iterator();
-                    JahiaGroup group;
-                    GWTJahiaGroup data;
-                    while (iterator.hasNext()) {
-                        group = (JahiaGroup) iterator.next();
-                        if (!group.isHidden()) {
-                            String groupName = PrincipalViewHelper.getDisplayName(group, getUILocale());
-                            data = new GWTJahiaGroup(group.getGroupname(), group.getGroupKey(), groupName);
-                            if (group.getSiteID() > 0) {
-                                JahiaSite jahiaSite = sitesService.getSite(group.getSiteID());
-                                if (jahiaSite != null) {
-                                    data.setSiteName(jahiaSite.getTitle());
-                                }
-                            }
-                            data.setSiteId(siteId);
-                            data.setProvider(group.getProviderName());
-                            result.add(data);
-                        }
-                    }
+                Properties criterias = new Properties();
+                criterias.setProperty("groupname", match);
+                Set<JahiaGroup> siteGroups = groupManagerService.searchGroups(siteId, criterias);
+                if (siteGroups != null) {
+                    groups.addAll(siteGroups);
                 }
             }
+            
+            GWTJahiaGroup data;
+            Map<Integer, JahiaSite> siteMap = new HashMap<Integer, JahiaSite>(sites.size());
+            for (JahiaGroup group : groups) {
+                if (group.isHidden()) {
+                    continue;
+                }
+                data = new GWTJahiaGroup(group.getGroupname(), group.getGroupKey(), PrincipalViewHelper.getDisplayName(group, getUILocale()));
+                Integer siteId = group.getSiteID();
+                if (siteId > 0) {
+                    JahiaSite jahiaSite = siteMap.containsKey(siteId) ? siteMap.get(siteId) : sitesService
+                            .getSite(siteId);
+                    if (jahiaSite != null) {
+                        data.setSiteName(jahiaSite.getTitle());
+                    }
+                }
+                data.setSiteId(siteId);
+                data.setProvider(group.getProviderName());
+                result.add(data);
+            }
+            
             Collections.sort(result, new Comparator<GWTJahiaGroup>() {
                 public int compare(GWTJahiaGroup o1, GWTJahiaGroup o2) {
                     return o1.getGroupname().compareTo(o2.getGroupname());

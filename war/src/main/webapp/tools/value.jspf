@@ -1,7 +1,15 @@
 <c:choose>
     <c:when test="${value.type == jcrPropertyTypes.BINARY}"> <%-- binary --%>
         <c:if test="${property.name == 'jcr:data'}" var="jcrData">
-                <a href="<c:url value='${currentNode.parent.url}'/>">&lt;binary&gt;</a>
+            <c:if test="${currentNode.file}">
+                <c:url value="${currentNode.parent.url}" var="binaryUrl"/>
+            </c:if>
+            <c:if test="${!currentNode.file}">
+                <c:url value="${currentNode.parent.url}" var="binaryUrl">
+                    <c:param name="t" value="${currentNode.name}"/>
+                </c:url>
+            </c:if>
+            <a href="${binaryUrl}" target="_blank">&lt;binary&gt;</a>
         </c:if>
         <c:if test="${not jcrData}">
                 &lt;binary&gt;

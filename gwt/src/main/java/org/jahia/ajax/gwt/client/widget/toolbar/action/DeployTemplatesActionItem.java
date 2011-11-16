@@ -126,11 +126,15 @@ public class DeployTemplatesActionItem extends BaseActionItem {
             List<String> dependencies = JahiaGWTParameters.getSiteNode().get("j:dependencies");
             for (GWTJahiaSite site : sites) {
                 String label = site.getSiteKey();
+                // dependencies are not required modules anymore
+                // todo: add a way to manage required modules
+/*
                 if (dependencies != null && dependencies.size() > 0) {
                     if (!site.getInstalledModules().containsAll(dependencies)) {
                         continue;
                     }
                 }
+*/
                 if (site.getInstalledModules().contains(JahiaGWTParameters.getSiteKey())) {
                     label += " *";
                 }

@@ -41,7 +41,7 @@
             <c:url value="${searchUrl}" context="/" var="basePaginationUrl">
                 <c:if test="${not empty param}">
                     <c:forEach items="${param}" var="extraParam">
-                        <c:if test="${extraParam.key ne beginid and extraParam.key ne endid and extraParam.key ne pagesizeid}">
+                        <c:if test="${extraParam.key ne beginid and extraParam.key ne endid and extraParam.key ne pagesizeid and !fn:startsWith(extraParam.key, 'src_')}">
                             <c:param name="${extraParam.key}" value="${extraParam.value}"/>
                         </c:if>
                     </c:forEach>

@@ -83,11 +83,11 @@ public class TestHelper {
     public static final String INTRANET_TEMPLATES = "templates-intranet";
 
     public static JahiaSite createSite(String name) throws Exception {
-        return createSite(name, "localhost" + System.currentTimeMillis(), WEB_TEMPLATES, null, null);
+        return createSite(name, "localhost" + System.currentTimeMillis(), WEB_TEMPLATES, null, null, null);
     }
 
     public static JahiaSite createSite(String name, Set<String> languages, Set<String> mandatoryLanguages, boolean mixLanguagesActive) throws Exception {
-        JahiaSite site = createSite(name, "localhost" + System.currentTimeMillis(), WEB_TEMPLATES, null, null);
+        JahiaSite site = createSite(name, "localhost" + System.currentTimeMillis(), WEB_TEMPLATES, null, null, null);
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
         if (!CollectionUtils.isEmpty(languages) && !languages.equals(site.getLanguages())) {
             site.setLanguages(languages);
@@ -102,12 +102,17 @@ public class TestHelper {
         return site;
     }
 
+    public static JahiaSite createSite(String name, String serverName, String templateSet, String[] modulesToDeploy) throws Exception {
+        return createSite(name, serverName, templateSet, null, null,modulesToDeploy);
+    }
+
     public static JahiaSite createSite(String name, String serverName, String templateSet) throws Exception {
-        return createSite(name, serverName, templateSet, null, null);
+        return createSite(name, serverName, templateSet, null, null,null);
     }
 
     public static JahiaSite createSite(String name, String serverName, String templateSet,
-                                       String prepackedZIPFile, String siteZIPName) throws Exception {
+                                       String prepackedZIPFile, String siteZIPName, String[] modulesToDeploy) throws Exception {
+        modulesToDeploy = (modulesToDeploy == null) ? new String[0] : modulesToDeploy;
 
         ProcessingContext ctx = Jahia.getThreadParamBean();
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);
@@ -172,7 +177,7 @@ public class TestHelper {
                 }
             }
             site = service.addSite(admin, name, serverName, name, name, ctx.getLocale(),
-                    templateSet, siteZIPFile == null ? "noImport" : "fileImport", siteZIPFile,
+                    templateSet, modulesToDeploy, siteZIPFile == null ? "noImport" : "fileImport", siteZIPFile,
                     null, false, false, null);
             ctx.setSite(site);
         } finally {
@@ -185,6 +190,11 @@ public class TestHelper {
         }
 
         return site;
+    }
+
+    public static JahiaSite createSite(String name, String serverName, String templateSet,
+                                       String prepackedZIPFile, String siteZIPName) throws Exception {
+            return createSite(name, serverName, templateSet, prepackedZIPFile, siteZIPName, null);
     }
 
     public static void removeAllSites(JahiaSitesService service) throws JahiaException {

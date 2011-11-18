@@ -783,11 +783,21 @@ public class ContentDefinitionHelper {
                 }
 
                 List<GWTJahiaNode> list;
-                if (node == root) {
-                    list = navigation.retrieveRoot(paths, null, null, null, fields, site, uiLocale, session, false, true, null, null);
-                } else {
-                    list = navigation.ls(node, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
-                            false, null, null, session, false);
+                try {
+                    if (node == root) {
+                        list = navigation.retrieveRoot(paths, null, null, null, fields, site, uiLocale, session, false, true, null, null);
+                    } else if (node.getNodeTypes().contains("jnt:virtualsite")) {
+                        GWTJahiaNode comp = new GWTJahiaNode();
+                        comp.setPath(node.getPath()+"/components");
+                        list = navigation.ls(comp, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
+                                false, null, null, session, false);
+                    } else {
+                        list = navigation.ls(node, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
+                                false, null, null, session, false);
+                    }
+                } catch (GWTJahiaServiceException e) {
+                    e.printStackTrace();
+                    continue;
                 }
 
                 for (int j = 0; j < list.size(); j++) {

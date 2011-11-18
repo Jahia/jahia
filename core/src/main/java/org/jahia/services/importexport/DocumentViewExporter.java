@@ -45,6 +45,7 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.value.ValueHelper;
 import org.jahia.services.content.JCRPublicationService;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
@@ -100,15 +101,22 @@ public class DocumentViewExporter {
         this.stack = new Stack<String>();
 
         prefixes = new HashMap<String, String>();
-        try {
-            for (String prefix : session.getNamespacePrefixes()) {
-                if (!StringUtils.isEmpty(prefix) && !prefix.startsWith(Name.NS_XML_PREFIX)) {
-                    prefixes.put(prefix, session.getNamespaceURI(prefix));
+//        try {
+            for (Map.Entry<String, String> entry : NodeTypeRegistry.getInstance().getNamespaces().entrySet()) {
+                if (!StringUtils.isEmpty(entry.getKey()) && !entry.getKey().startsWith(Name.NS_XML_PREFIX)) {
+                    prefixes.put(entry.getKey(), entry.getValue());
                 }
+
             }
-        } catch (RepositoryException e) {
-            logger.warn("Namespace not correctly exported", e);
-        }
+//
+//            for (String prefix : session.getNamespacePrefixes()) {
+//                if (!StringUtils.isEmpty(prefix) && !prefix.startsWith(Name.NS_XML_PREFIX)) {
+//                    prefixes.put(prefix, session.getNamespaceURI(prefix));
+//                }
+//            }
+//        } catch (RepositoryException e) {
+//            logger.warn("Namespace not correctly exported", e);
+//        }
         
         exportedShareable = new HashMap<String, String>();
     }

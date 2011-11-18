@@ -150,7 +150,7 @@ public class ContentTypeTree extends LayoutContainer {
                     @Override
                     protected TreePanel.Joint calcualteJoint(TreeGrid<GWTJahiaNode> gwtJahiaNodeTreeGrid, GWTJahiaNode model, String property, int rowIndex, int colIndex) {
                         if (model.getNodeTypes().contains("jnt:virtualsite")) {
-                            boolean checked = ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(model.getName());
+                            boolean checked = JahiaGWTParameters.getSiteNode().get("j:dependencies") != null && ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(model.getName());
                             if (!checked) {
                                 model.set("cannotexpand", Boolean.TRUE);
                                 return TreePanel.Joint.NONE;
@@ -173,7 +173,7 @@ public class ContentTypeTree extends LayoutContainer {
                                 if (((GWTJahiaNode) model).getNodeTypes().contains("jnt:virtualsite")) {
                                     String s = onRender(model, property, config, rowIndex, colIndex, store);
                                     Text text = new Text(s);
-                                    boolean checked = ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(((GWTJahiaNode) model).getName());
+                                    boolean checked = JahiaGWTParameters.getSiteNode().get("j:dependencies") != null && ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(((GWTJahiaNode) model).getName());
                                     String tooltip = checked?Messages.get("label.removeDependency","Click to remove the dependency"):Messages.get("label.addDependency","Click to add the dependency");
                                     text.setToolTip(tooltip);
                                     return text;
@@ -188,7 +188,7 @@ public class ContentTypeTree extends LayoutContainer {
                     @Override
                     protected String getCheckState(ModelData model, String property, int rowIndex,
                                                    int colIndex) {
-                        boolean checked = ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(((GWTJahiaNode) model).getName());
+                        boolean checked = JahiaGWTParameters.getSiteNode().get("j:dependencies") != null && ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(((GWTJahiaNode) model).getName());
 
                         if (checked) {
                             return "-on";
@@ -205,6 +205,11 @@ public class ContentTypeTree extends LayoutContainer {
                             GWTJahiaNode model = (GWTJahiaNode) ge.getModel();
 
                             List<String> depends = (List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies");
+                            // init depends if not
+                            if (depends == null) {
+                                depends = new ArrayList<String>();
+                                JahiaGWTParameters.getSiteNode().set("j:dependencies", depends);
+                            }
                             String modelName = model.getName();
 
                             boolean checked = depends.contains(modelName);
@@ -224,7 +229,7 @@ public class ContentTypeTree extends LayoutContainer {
                             final GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
                             gwtJahiaNodeProperty.setName("j:dependencies");
 
-                            List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>();
+                            final List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>();
                             for (String s : depends) {
                                 values.add(new GWTJahiaNodePropertyValue(s, GWTJahiaNodePropertyType.STRING));
                             }
@@ -300,7 +305,7 @@ public class ContentTypeTree extends LayoutContainer {
                     if (module.indexOf("/") > -1) {
                         module = module.substring(0, module.indexOf("/"));
                     }
-                    if (!((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(module)) {
+                    if (!(JahiaGWTParameters.getSiteNode().get("j:dependencies") != null && ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(module))) {
                         return false;
                     }
                 }

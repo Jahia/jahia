@@ -150,7 +150,7 @@ public class ContentTypeTree extends LayoutContainer {
                     @Override
                     protected TreePanel.Joint calcualteJoint(TreeGrid<GWTJahiaNode> gwtJahiaNodeTreeGrid, GWTJahiaNode model, String property, int rowIndex, int colIndex) {
                         if (model.getNodeTypes().contains("jnt:virtualsite")) {
-                            boolean checked = JahiaGWTParameters.getSiteNode().get("j:dependencies") != null && ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(model.getName());
+                            boolean checked = JahiaGWTParameters.getSiteNode().getName().equals(model.getName()) || (JahiaGWTParameters.getSiteNode().get("j:dependencies") != null && ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(model.getName()));
                             if (!checked) {
                                 model.set("cannotexpand", Boolean.TRUE);
                                 return TreePanel.Joint.NONE;
@@ -189,8 +189,10 @@ public class ContentTypeTree extends LayoutContainer {
                     protected String getCheckState(ModelData model, String property, int rowIndex,
                                                    int colIndex) {
                         boolean checked = JahiaGWTParameters.getSiteNode().get("j:dependencies") != null && ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(((GWTJahiaNode) model).getName());
-
-                        if (checked) {
+                        boolean disabled = JahiaGWTParameters.getSiteNode().getName().equals(((GWTJahiaNode) model).getName());
+                        if (disabled) {
+                            return "-disabled";
+                        } else if (checked) {
                             return "-on";
                         } else {
                             return "";
@@ -304,9 +306,6 @@ public class ContentTypeTree extends LayoutContainer {
                     String module = record.getPath().substring(record.getPath().indexOf('/',1)+1);
                     if (module.indexOf("/") > -1) {
                         module = module.substring(0, module.indexOf("/"));
-                    }
-                    if (!(JahiaGWTParameters.getSiteNode().get("j:dependencies") != null && ((List<String>) JahiaGWTParameters.getSiteNode().get("j:dependencies")).contains(module))) {
-                        return false;
                     }
                 }
                 String s = filter.toLowerCase();

@@ -101,23 +101,24 @@ public class DocumentViewExporter {
         this.stack = new Stack<String>();
 
         prefixes = new HashMap<String, String>();
-//        try {
-            for (Map.Entry<String, String> entry : NodeTypeRegistry.getInstance().getNamespaces().entrySet()) {
+        try {
+            Map<String, String> map = NodeTypeRegistry.getInstance().getNamespaces();
+            for (Map.Entry<String, String> entry : map.entrySet()) {
                 if (!StringUtils.isEmpty(entry.getKey()) && !entry.getKey().startsWith(Name.NS_XML_PREFIX)) {
                     prefixes.put(entry.getKey(), entry.getValue());
                 }
 
             }
-//
-//            for (String prefix : session.getNamespacePrefixes()) {
-//                if (!StringUtils.isEmpty(prefix) && !prefix.startsWith(Name.NS_XML_PREFIX)) {
-//                    prefixes.put(prefix, session.getNamespaceURI(prefix));
-//                }
-//            }
-//        } catch (RepositoryException e) {
-//            logger.warn("Namespace not correctly exported", e);
-//        }
-        
+
+            for (String prefix : session.getNamespacePrefixes()) {
+                if (!StringUtils.isEmpty(prefix) && !prefix.startsWith(Name.NS_XML_PREFIX) && !map.containsKey(prefix)) {
+                    prefixes.put(prefix, session.getNamespaceURI(prefix));
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.warn("Namespace not correctly exported", e);
+        }
+
         exportedShareable = new HashMap<String, String>();
     }
 

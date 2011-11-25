@@ -185,7 +185,7 @@ public class ComponentRegistry {
      */
     protected void registerComponents() {
         long timer = System.currentTimeMillis();
-        logger.info("Start registering UI dpoppable components...");
+        logger.info("Start registering UI droppable components...");
         int newComponents = 0;
         try {
             newComponents = JCRTemplate.getInstance().doExecuteWithSystemSession(

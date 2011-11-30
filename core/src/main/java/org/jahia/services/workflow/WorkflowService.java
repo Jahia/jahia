@@ -317,15 +317,18 @@ public class WorkflowService implements BeanPostProcessor {
         List<Workflow> workflows = new ArrayList<Workflow>();
         try {
             Node n = node;
+            if (n.isNodeType(Constants.JAHIAMIX_WORKFLOW) && n.hasProperty(Constants.PROCESSID)) {
+                addActiveWorkflows(workflows, n.getProperty(Constants.PROCESSID), locale);
+            }
             try {
                 if (locale != null && node.hasTranslations()) {
                     n = node.getI18N(locale);
+                    if (n.isNodeType(Constants.JAHIAMIX_WORKFLOW) && n.hasProperty(Constants.PROCESSID)) {
+                        addActiveWorkflows(workflows, n.getProperty(Constants.PROCESSID), locale);
+                    }
                 }
             } catch (ItemNotFoundException e) {
                 return workflows;
-            }
-            if (n.isNodeType(Constants.JAHIAMIX_WORKFLOW) && n.hasProperty(Constants.PROCESSID)) {
-                addActiveWorkflows(workflows, n.getProperty(Constants.PROCESSID), locale);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

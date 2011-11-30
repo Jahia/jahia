@@ -167,6 +167,9 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
             if (getPropertiesIterator().hasNext()) {
                 Property property = getPropertiesIterator().nextProperty();
                 ExtendedPropertyDefinition epd = node.getApplicablePropertyDefinition(property.getName());
+                if (epd == null) {
+                    return nextProperty();
+                }
                 return new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), epd);
             } else if (getExternalSharedPropertyNameIterator().hasNext()) {
                 return getExternalSharedPropertyNameIterator().nextProperty();
@@ -224,6 +227,9 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
             if (getPropertiesIterator().hasNext()) {
                 Property property = getPropertiesIterator().nextProperty();
                 ExtendedPropertyDefinition epd = node.getApplicablePropertyDefinition(property.getName());
+                if (epd == null) {
+                    return hasNext();
+                }
                 tempNext = new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), epd);
                 return true;
             } else if (getExternalSharedPropertyNameIterator().hasNext()) {

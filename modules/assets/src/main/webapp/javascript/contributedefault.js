@@ -304,7 +304,7 @@ function deleteNode(source, urlbase, callbackId, callbackUrl,callbackJS,markForD
 }
 
 function startWorkflow(source, process, urlbase, callbackId, callbackUrl,callbackJS) {
-    $.post(urlbase + source + ".startWorkflow.do", {"process": process},
+    $.post(urlbase + source + ".startPublicationWorkflow.do", {"process": process},
         function(result) {
             jreplace(callbackId, callbackUrl,null, callbackJS);
         },

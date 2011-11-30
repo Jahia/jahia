@@ -36,7 +36,7 @@
 <div class="FormContribute">
     <c:choose>
         <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">
-            <c:set var="formAction" value="${url.base}${currentNode.path}.startWorkflow.do"/>
+            <c:set var="formAction" value="${url.base}${currentNode.path}.startPublicationWorkflow.do"/>
         </c:when>
         <c:when test="${not empty currentResource.moduleParams.workflowTaskForm}">
             <c:set var="formAction" value="${url.base}${currentNode.path}.executeTask.do"/>

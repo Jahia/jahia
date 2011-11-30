@@ -47,6 +47,8 @@
 
     <bean class="org.jahia.modules.defaultmodule.StartWorkflowAction">
         <property name="workflowService" ref="workflowService"/>
+    </bean>
+    <bean class="org.jahia.modules.defaultmodule.StartPublicationWorkflowAction">
         <property name="publicationService" ref="jcrPublicationService"/>
     </bean>
 

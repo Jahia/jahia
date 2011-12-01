@@ -77,13 +77,12 @@ function go(id1, value1, id2, value2, id3, value3) {
     <input type="text" id="goToPath" name="goToPath" value="${fn:escapeXml(node.path)}"
         onkeypress="if ((event || window.event).keyCode == 13) go('path', this.value);" />
     &nbsp;<a href="#go"
-        onclick='var path=document.getElementById("goToPath").value; if (path.length > 0) { go("path", path); } return false;' title="Got to the node with path">
-        <img src="<c:url value='/icons/refresh.png'/>" height="16" width="16" title="Got to the node with path" border="0" style="vertical-align: middle;"/>
-    </a>
+        onclick='var path=document.getElementById("goToPath").value; if (path.length > 0) { go("path", path); } return false;' title="Go to the node with path"
+        ><img src="<c:url value='/icons/refresh.png'/>" height="16" width="16" title="Go to the node with path" border="0" style="vertical-align: middle;"/></a>
     <label for="goToUuid">UUID: </label>
     <input type="text" id="goToUuid" name="goToUuid" value=""
         onkeypress="if ((event || window.event).keyCode == 13) go('uuid', this.value);" />
-    &nbsp;<a href="#go" onclick='var uuid=document.getElementById("goToUuid").value; if (uuid.length > 0) { go("uuid", uuid); } return false;' title="Got to the node with UUID"><img src="<c:url value='/icons/search.png'/>" height="16" width="16" title="Got to the node with UUID" border="0" style="vertical-align: middle;"/></a>
+    &nbsp;<a href="#go" onclick='var uuid=document.getElementById("goToUuid").value; if (uuid.length > 0) { go("uuid", uuid); } return false;' title="Go to the node with UUID"><img src="<c:url value='/icons/search.png'/>" height="16" width="16" title="Go to the node with UUID" border="0" style="vertical-align: middle;"/></a>
 </fieldset>
  
 <fieldset>

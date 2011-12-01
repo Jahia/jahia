@@ -585,8 +585,12 @@ public class WorkflowService implements BeanPostProcessor {
     }
 
     public HistoryWorkflow getHistoryWorkflow(String id, String provider, Locale locale) {
-        HistoryWorkflow wf = providers.get(provider).getHistoryWorkflows(Collections.singletonList(id), locale).get(0);
-        return wf;
+        List<HistoryWorkflow> list = providers.get(provider).getHistoryWorkflows(Collections.singletonList(id), locale);
+        if (!list.isEmpty()) {
+            return list.get(0);
+        } else {
+            return null;
+        }
     }
 
     /**

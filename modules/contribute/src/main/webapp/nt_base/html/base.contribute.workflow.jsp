@@ -77,6 +77,52 @@
 
                 </c:if>
             </c:forEach>
+            <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
+                <c:if test="${!propertyDefinition.multiple and propertyDefinition.contentItem and !(propertyDefinition.name eq 'jcr:title')}">
+                    <p class="field">
+                        <c:choose>
+                            <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
+                                <c:choose>
+                                    <c:when test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.CONTENTPICKER}">
+                                        <%@include file="formelements/file.jsp" %>
+                                    </c:when>
+                                    <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
+                                        <%@include file="formelements/select.jsp" %>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <%@include file="formelements/reference.jsp" %>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:when>
+                            <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
+                                <%@include file="formelements/datepicker.jsp" %>
+                            </c:when>
+                            <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
+                                <%@include file="formelements/select.jsp" %>
+                            </c:when>
+                            <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
+                                <%@include file="formelements/richtext.jsp" %>
+                            </c:when>
+                            <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.BOOLEAN}">
+                                <label class="left"
+                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
+                                <input type="radio" value="true" class="radio"
+                                       id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
+                                       name="${propertyDefinition.name}" checked="true"/><fmt:message key="label.yes"/>
+                                <input type="radio" value="false" class="radio"
+                                       id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
+                                       name="${propertyDefinition.name}"/><fmt:message key="label.no"/>
+                            </c:when>
+                            <c:otherwise>
+                                <label class="left"
+                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
+                                <input type="text" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
+                                       name="${propertyDefinition.name}"/>
+                            </c:otherwise>
+                        </c:choose>
+                    </p>
+                </c:if>
+            </c:forEach>
             <div class="divButton">
                 <c:choose>
                     <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">

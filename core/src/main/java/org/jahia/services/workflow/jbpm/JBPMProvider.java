@@ -709,9 +709,25 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
      */
     public List<HistoryWorkflowTask> getHistoryWorkflowTasks(String processId, Locale locale) {
         List<HistoryWorkflowTask> historyItems = new LinkedList<HistoryWorkflowTask>();
-        List<HistoryTask> jbpmTasks = null;
+        List<HistoryTask> jbpmTasks = new ArrayList<HistoryTask>();
+
+        List<String> executionIds = new ArrayList<String>();
+        executionIds.add(processId);
+
+        List<Execution> executions = new ArrayList<Execution>();
+        executions.addAll(executionService.createProcessInstanceQuery().processInstanceId(processId).list());
+        for (int i = 0; i < executions.size(); i++) {
+            Execution execution = executions.get(i);
+            for (Execution subExecution : execution.getExecutions()) {
+                executionIds.add(subExecution.getId());
+                executions.add(subExecution);
+            }
+        }
+
         try {
-            jbpmTasks = historyService.createHistoryTaskQuery().executionId(processId).list();
+            for (String id : executionIds) {
+                jbpmTasks.addAll(historyService.createHistoryTaskQuery().executionId(id).list());
+            }
         } catch (JbpmException e) {
             logger.error(
                     "History task records for process instance with ID '" + processId + "' cannot be found. Cause: " +
@@ -720,7 +736,6 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         if (jbpmTasks == null) {
             return Collections.emptyList();
         }
-
         for (HistoryTask jbpmHistoryTask : jbpmTasks) {
             final Task task = taskService.getTask(jbpmHistoryTask.getId());
             String name = "";
@@ -728,7 +743,10 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 name = task != null ? task.getName() : "";
             } else {
                 // So nice !
-                List<HistoryActivityInstance> l = historyService.createHistoryActivityInstanceQuery().processInstanceId(jbpmHistoryTask.getExecutionId()).list();
+                List<HistoryActivityInstance> l = new ArrayList<HistoryActivityInstance>();
+                for (String id : executionIds) {
+                    l.addAll(historyService.createHistoryActivityInstanceQuery().processInstanceId(id).list());
+                }
                 for (HistoryActivityInstance activityInstance : l) {
                     if (activityInstance.getStartTime().equals(jbpmHistoryTask.getCreateTime()) &&
                             activityInstance.getEndTime() != null && activityInstance.getEndTime().equals(jbpmHistoryTask.getEndTime())) {

@@ -37,12 +37,59 @@
     </tag>
     <tag>
         <description>Exposes the possible workflow for the specified node.</description>
+        <name>workflowsForAction</name>
+        <tag-class>org.jahia.taglibs.workflow.WorkflowsForActionTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>scope</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>workflowAction</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Exposes the possible workflow for the specified node.</description>
+        <name>workflowHistory</name>
+        <tag-class>org.jahia.taglibs.workflow.WorkflowHistoryTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>scope</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>workflow</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Exposes the possible workflow for the specified node.</description>
         <name>workflowsForNode</name>
-        <tag-class>org.jahia.taglibs.workflow.AvailableWorkflowsTag</tag-class>
+        <tag-class>org.jahia.taglibs.workflow.WorkflowsForNodeTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>node</name>
             <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>checkPermission</name>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
@@ -64,7 +111,7 @@
     <tag>
         <description>Exposes the possible tasks for the specified node.</description>
         <name>tasksForNode</name>
-        <tag-class>org.jahia.taglibs.workflow.AvailableTasksTag</tag-class>
+        <tag-class>org.jahia.taglibs.workflow.TasksForNodeTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>node</name>

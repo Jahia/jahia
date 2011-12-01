@@ -62,8 +62,8 @@ import java.util.Locale;
  * Time: 8:02:06 PM
  * 
  */
-public class AvailableTasksTag extends AbstractJahiaTag {
-    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(AvailableTasksTag.class);
+public class TasksForNodeTag extends AbstractJahiaTag {
+    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(TasksForNodeTag.class);
 
     private JCRNodeWrapper node;
     private String var;

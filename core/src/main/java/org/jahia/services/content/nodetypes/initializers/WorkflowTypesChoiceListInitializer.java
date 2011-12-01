@@ -40,23 +40,20 @@
 
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
-import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
 import java.util.*;
 
 /**
  * Initializer that returns the list of all workflow definitions
  */
-public class WorkflowChoiceListInitializer implements ChoiceListInitializer {
-    private static final Logger logger = LoggerFactory.getLogger(WorkflowChoiceListInitializer.class);
+public class WorkflowTypesChoiceListInitializer implements ChoiceListInitializer {
+    private static final Logger logger = LoggerFactory.getLogger(WorkflowTypesChoiceListInitializer.class);
     private WorkflowService workflowService;
 
     public void setWorkflowService(WorkflowService workflowService) {
@@ -66,20 +63,9 @@ public class WorkflowChoiceListInitializer implements ChoiceListInitializer {
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
         List<ChoiceListValue> choiceListValues = new ArrayList<ChoiceListValue>();
-        try {
-
-            List<WorkflowDefinition> defs;
-            if (!StringUtils.isEmpty(param)) {
-                defs = workflowService.getWorkflowsForAction(param, locale);
-            } else {
-                defs = workflowService.getWorkflows(locale);
-            }
-            for (WorkflowDefinition def : defs) {
-                choiceListValues.add(new ChoiceListValue(def.getName(), new HashMap<String, Object>(),
-                        new ValueImpl(def.getProvider() + ":" + def.getKey(), PropertyType.STRING, false)));
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+        for (String s : workflowService.getTypesOfWorkflow()) {
+            choiceListValues.add(new ChoiceListValue(s, new HashMap<String, Object>(),
+                    new ValueImpl(s, PropertyType.STRING, false)));
         }
         return choiceListValues;
     }

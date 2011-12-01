@@ -40,6 +40,7 @@
 
 package org.jahia.services.workflow.jbpm;
 
+import org.jbpm.pvm.internal.cal.BusinessCalendarImpl;
 import org.slf4j.Logger;
 import org.jbpm.pvm.internal.cal.BusinessCalendar;
 import org.joda.time.DateTime;
@@ -57,7 +58,7 @@ import java.util.Date;
  * @since JAHIA 6.5
  *        Created : 18 juin 2010
  */
-public class JahiaBusinessCalendar implements BusinessCalendar {
+public class JahiaBusinessCalendar extends BusinessCalendarImpl {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaBusinessCalendar.class);
 
     public Date add(Date date, String duration) {
@@ -67,12 +68,12 @@ public class JahiaBusinessCalendar implements BusinessCalendar {
             logger.info("Workflow Variable Date = "+ SimpleDateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.SHORT).format(calendar.getTime()));
             return calendar.getTime();
         } catch (NumberFormatException e) {
-            DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(duration);
-            return dateTime.toDate();
+            try {
+                DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(duration);
+                return dateTime.toDate();
+            } catch (Exception e1) {
+                return super.add(date, duration);
+            }
         }
-    }
-
-    public Date subtract(Date date, String duration) {
-        return null;
     }
 }

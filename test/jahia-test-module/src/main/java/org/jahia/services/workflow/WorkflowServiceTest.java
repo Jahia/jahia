@@ -135,7 +135,7 @@ public class WorkflowServiceTest {
 
     @Test
     public void testGetPossibleWorkflow() throws Exception {
-        final Collection<WorkflowDefinition> workflowList =  WorkflowService.getInstance().getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0),Locale.ENGLISH).values();
+        final Collection<WorkflowDefinition> workflowList =  WorkflowService.getInstance().getPossibleWorkflows(stageNode,true,Locale.ENGLISH).values();
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
     }
 
@@ -145,7 +145,7 @@ public class WorkflowServiceTest {
         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
         map.put("startDate",values);
         map.put("endDate",values);
-        final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0),Locale.ENGLISH).values();
+        final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, true,Locale.ENGLISH).values();
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.iterator().next();
         assertNotNull("Worflow should not be null", workflow);
@@ -213,7 +213,7 @@ public class WorkflowServiceTest {
         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
         map.put("startDate",values);
         map.put("endDate",values);
-        final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0),Locale.ENGLISH).values();
+        final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, true,Locale.ENGLISH).values();
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition currentWorkflow : workflowList) {
@@ -256,7 +256,7 @@ public class WorkflowServiceTest {
         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
         map.put("startDate",values);
         map.put("endDate",values);
-        final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0),Locale.ENGLISH).values();
+        final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, true,Locale.ENGLISH).values();
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.iterator().next();
         assertNotNull("Workflow should not be null", workflow);
@@ -459,7 +459,7 @@ public class WorkflowServiceTest {
         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
         map.put("startDate",values);
         map.put("endDate",values);
-        final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0),Locale.ENGLISH).values();
+        final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, true,Locale.ENGLISH).values();
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
@@ -498,7 +498,7 @@ public class WorkflowServiceTest {
         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
         map.put("startDate",values);
         map.put("endDate",values);
-        final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0),Locale.ENGLISH).values();
+        final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, true,Locale.ENGLISH).values();
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {

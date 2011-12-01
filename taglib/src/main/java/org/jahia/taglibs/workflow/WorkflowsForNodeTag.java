@@ -61,8 +61,8 @@ import java.util.List;
  * Time: 8:02:06 PM
  * 
  */
-public class AvailableWorkflowsTag extends AbstractJahiaTag {
-    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(AvailableWorkflowsTag.class);
+public class WorkflowsForNodeTag extends AbstractJahiaTag {
+    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowsForNodeTag.class);
 
     private JCRNodeWrapper node;
     private String var;
@@ -71,14 +71,16 @@ public class AvailableWorkflowsTag extends AbstractJahiaTag {
 
     private int scope = PageContext.PAGE_SCOPE;
 
+    private boolean checkPermission = true;
+
     @Override
     public int doEndTag() throws JspException {
         List<WorkflowDefinition> defs = null;
         try {
             if (workflowAction != null) {
-                defs = Collections.singletonList(WorkflowService.getInstance().getPossibleWorkflowForAction(node, getUser(),workflowAction,getUILocale()));
+                defs = Collections.singletonList(WorkflowService.getInstance().getPossibleWorkflowForAction(node, checkPermission,workflowAction,getUILocale()));
             } else {
-                defs = new ArrayList<WorkflowDefinition>(WorkflowService.getInstance().getPossibleWorkflows(node, getUser(),getUILocale()).values());
+                defs = new ArrayList<WorkflowDefinition>(WorkflowService.getInstance().getPossibleWorkflows(node, checkPermission, getUILocale()).values());
             }
         } catch (RepositoryException e) {
             logger.error("Could not retrieve workflows", e);
@@ -90,6 +92,7 @@ public class AvailableWorkflowsTag extends AbstractJahiaTag {
         var = null;
         workflowAction = null;
         scope = PageContext.PAGE_SCOPE;
+        checkPermission = true;
         return super.doEndTag();
     }
 
@@ -103,6 +106,10 @@ public class AvailableWorkflowsTag extends AbstractJahiaTag {
 
     public void setWorkflowAction(String workflowAction) {
         this.workflowAction = workflowAction;
+    }
+
+    public void setCheckPermission(boolean checkPermission) {
+        this.checkPermission = checkPermission;
     }
 
     public void setScope(String scope) {

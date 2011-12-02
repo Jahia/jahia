@@ -47,7 +47,7 @@ import java.util.Date;
  * 
  * @author Sergiy Shyrkov
  */
-class HistoryWorkflowBase extends WorkflowBase {
+public class HistoryWorkflowBase extends WorkflowBase {
 
     private Long duration;
 

@@ -437,7 +437,13 @@ public class WorkflowService implements BeanPostProcessor {
 
     public String startProcess(List<String> nodeIds, JCRSessionWrapper session, String processKey, String provider,
                              Map<String, Object> args, List<String> comments) throws RepositoryException {
-        args.put("nodeId", nodeIds.iterator().next());
+        String mainId = nodeIds.iterator().next();
+        args.put("nodeId", mainId);
+        try {
+            args.put("nodePath", session.getNodeByIdentifier(mainId).getPath());
+        } catch (ItemNotFoundException e) {
+            // Node not found
+        }
         args.put("nodeIds", nodeIds);
         args.put("workspace", session.getWorkspace().getName());
         args.put("locale", session.getLocale());
@@ -610,6 +616,23 @@ public class WorkflowService implements BeanPostProcessor {
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
+        }
+        return history;
+    }
+
+    /**
+     * Returns a list of process instance history records for the specified
+     * path. This method also returns "active" (i.e. not completed) workflow
+     * process instance.
+     *
+     * @param path   the Path of the node to retrieve history records for
+     * @param locale
+     * @return a list of process instance history records for the specified node
+     */
+    public List<HistoryWorkflow> getHistoryWorkflowsByPath(String path, Locale locale) {
+        List<HistoryWorkflow> history = new LinkedList<HistoryWorkflow>();
+        for (WorkflowProvider workflowProvider : providers.values()) {
+            history.addAll(workflowProvider.getHistoryWorkflowsForPath(path, locale));
         }
         return history;
     }

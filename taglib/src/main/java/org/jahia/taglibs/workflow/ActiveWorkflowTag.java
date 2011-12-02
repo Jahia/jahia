@@ -58,7 +58,7 @@ import java.util.List;
  * 
  */
 public class ActiveWorkflowTag extends AbstractJahiaTag {
-    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(TasksForNodeTag.class);
+    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(ActiveWorkflowTag.class);
 
     private JCRNodeWrapper node;
     private String var;

@@ -72,7 +72,33 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <name>workflow</name>
+            <name>workflowId</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>workflowProvider</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Exposes the possible workflow for the specified node.</description>
+        <name>workflowForPath</name>
+        <tag-class>org.jahia.taglibs.workflow.WorkflowForPathTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>scope</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>path</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

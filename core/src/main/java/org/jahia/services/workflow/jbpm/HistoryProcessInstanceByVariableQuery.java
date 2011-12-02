@@ -62,6 +62,7 @@ public class HistoryProcessInstanceByVariableQuery extends AbstractQuery {
   protected String state;
   protected String processInstanceId;
   protected String processInstanceKey;
+  protected boolean useLike = false;
 
   protected boolean ended;
   protected Date endedBefore;
@@ -90,7 +91,11 @@ public class HistoryProcessInstanceByVariableQuery extends AbstractQuery {
           hql.append(" as hv ");
           appendWhereClause(" hpi.processInstanceId = hv.processInstanceId", hql);
           appendWhereClause(" hv.variableName = '"+variableName+"' ", hql );
-          appendWhereClause(" hv.value = '"+value+"' ", hql );
+          if (useLike) {
+              appendWhereClause(" hv.value like '"+value+"' ", hql );
+          } else {
+              appendWhereClause(" hv.value = '"+value+"' ", hql );
+          }
       }
 
     if (processInstanceId!=null) {
@@ -174,6 +179,13 @@ public class HistoryProcessInstanceByVariableQuery extends AbstractQuery {
     public HistoryProcessInstanceByVariableQuery variable(String variableName, String value) {
         this.variableName = variableName;
         this.value = value;
+        return this;
+    }
+
+    public HistoryProcessInstanceByVariableQuery variableLike(String variableName, String value) {
+        this.variableName = variableName;
+        this.value = value;
+        this.useLike = true;
         return this;
     }
 

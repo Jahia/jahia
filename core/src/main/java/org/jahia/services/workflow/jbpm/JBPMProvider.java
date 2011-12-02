@@ -313,6 +313,9 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         String res = executionService.startProcessInstanceByKey(processKey, args).getId();
         executionService.createVariable(res, "user", args.get("user"), true);
         executionService.createVariable(res, "nodeId", args.get("nodeId"), true);
+        if (args.containsKey("nodePath")) {
+            executionService.createVariable(res, "nodePath", args.get("nodePath"), true);
+        }
         return res;
     }
 
@@ -622,6 +625,22 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         HistoryProcessInstanceByVariableQuery q = new HistoryProcessInstanceByVariableQuery();
         q.setCommandService(((HistoryServiceImpl) historyService).getCommandService());
         q.variable("nodeId",nodeId);
+        List<HistoryProcessInstance> list = q.list();
+
+        List<HistoryWorkflow> historyItems = new LinkedList<HistoryWorkflow>();
+
+        for (HistoryProcessInstance jbpmHistoryItem : list) {
+            final HistoryWorkflow workflow = convertToHistoryWorkflow(jbpmHistoryItem, locale);
+            historyItems.add(workflow);
+        }
+
+        return historyItems;
+    }
+
+    public List<HistoryWorkflow> getHistoryWorkflowsForPath(String path, Locale locale) {
+        HistoryProcessInstanceByVariableQuery q = new HistoryProcessInstanceByVariableQuery();
+        q.setCommandService(((HistoryServiceImpl) historyService).getCommandService());
+        q.variableLike("nodePath",path);
         List<HistoryProcessInstance> list = q.list();
 
         List<HistoryWorkflow> historyItems = new LinkedList<HistoryWorkflow>();

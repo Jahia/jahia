@@ -94,6 +94,8 @@ public interface WorkflowProvider {
 
     List<HistoryWorkflow> getHistoryWorkflowsForNode(String nodeId, Locale locale);
 
+    List<HistoryWorkflow> getHistoryWorkflowsForPath(String path, Locale locale);
+
     /**
      * Returns a list of process instance history records for the specified
      * process IDs. This method also returns "active" (i.e. not completed)

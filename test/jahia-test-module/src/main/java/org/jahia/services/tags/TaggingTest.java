@@ -56,7 +56,6 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -194,8 +193,7 @@ public class TaggingTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 Node contentFolder = session.getNode("/sites/" + TESTSITE_NAME + "/tags-content");
                 session.checkout(contentFolder);
-                Node contentNode = contentFolder.addNode("content-0", "jnt:text");
-                contentNode.addMixin("jmix:tagged");
+                contentFolder.addNode("content-0", "jnt:text");
                 session.save();
                 return null;
             }
@@ -236,8 +234,7 @@ public class TaggingTest {
                 Node contentFolder = session.getNode("/sites/" + TESTSITE_NAME + "/tags-content");
                 session.checkout(contentFolder);
                 for (int i = 1; i <= 10; i++) {
-                    Node contentNode = contentFolder.addNode("content-" + i, "jnt:text");
-                    contentNode.addMixin("jmix:tagged");
+                    contentFolder.addNode("content-" + i, "jnt:text");
                 }
 
                 session.save();

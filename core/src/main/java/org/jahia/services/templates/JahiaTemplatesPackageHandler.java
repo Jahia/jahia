@@ -216,6 +216,7 @@ final class JahiaTemplatesPackageHandler {
                 String packageName = (String) manifest.getMainAttributes().get(new Attributes.Name("package-name"));
                 String rootFolder = (String) manifest.getMainAttributes().get(new Attributes.Name("root-folder"));
                 String moduleType = (String) manifest.getMainAttributes().get(new Attributes.Name("module-type"));
+                moduleType = moduleType == null?"module":moduleType;
                 String implementationVersionStr = (String) manifest.getMainAttributes().get(new Attributes.Name("Implementation-Version"));
                 if (packageName == null) {
                     packageName = file.getName();

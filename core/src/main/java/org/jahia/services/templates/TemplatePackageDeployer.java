@@ -593,8 +593,6 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             m = modules.addNode(pack.getRootFolder(), "jnt:virtualsite");
             m.setProperty("j:title", pack.getName());
             m.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(pack.getName())});
-            m.setProperty("j:siteType",pack.getModuleType());
-
             m.addNode("portlets", "jnt:portletFolder");
             m.addNode("files", "jnt:folder");
             m.addNode("contents", "jnt:contentFolder");
@@ -616,6 +614,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         }
         Value[] values = new Value[pack.getDepends().size()];
         m.setProperty("j:dependencies",l.toArray(values));
+        m.setProperty("j:siteType",pack.getModuleType());
         JCRNodeWrapper v;
         if (!m.hasNode("j:versionInfo")) {
             v = m.addNode("j:versionInfo", "jnt:versionInfo" );

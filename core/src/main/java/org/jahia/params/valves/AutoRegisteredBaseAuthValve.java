@@ -40,65 +40,76 @@
 
 package org.jahia.params.valves;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.pipelines.valves.Valve;
-import org.jahia.services.usermanager.JahiaUser;
-import org.springframework.beans.factory.BeanNameAware;
+import org.jahia.pipelines.PipelineException;
+import org.jahia.pipelines.impl.GenericPipeline;
+import org.jahia.pipelines.valves.ValveContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Common class for authentication valves.
  * 
  * @author Sergiy Shyrkov
+ * @since Jahia 6.6.0.0
  */
-public abstract class BaseAuthValve implements Valve, BeanNameAware {
+public abstract class AutoRegisteredBaseAuthValve extends BaseAuthValve implements InitializingBean {
 
-    private String beanName;
+    private static final class AuthValveStub extends BaseAuthValve {
 
-    private boolean enabled = true;
-
-    private String id;
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        if (obj instanceof BaseAuthValve && obj != null) {
-            BaseAuthValve other = (BaseAuthValve) obj;
-            return getId() != null ? other.getId() != null && getId().equals(other.getId()) : other
-                    .getId() == null;
+        /**
+         * Initializes an instance of this class.
+         * 
+         * @param id
+         *            the valve unique identifier
+         */
+        public AuthValveStub(String id) {
+            super();
+            setId(id);
         }
 
-        return false;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void initialize() {
-        if (StringUtils.isEmpty(id)) {
-            id = beanName;
+        public void invoke(Object context, ValveContext valveContext) throws PipelineException {
+            // do nothing
         }
     }
 
-    protected boolean isAccounteLocked(JahiaUser user) {
-        return !user.isRoot() && Boolean.valueOf(user.getProperty("j:accountLocked"));
+    private static final Logger logger = LoggerFactory.getLogger(AutoRegisteredBaseAuthValve.class);
+
+    private GenericPipeline authPipeline;
+
+    private int position = -1;
+    private String positionAfter;
+    private String positionBefore;
+
+    public void afterPropertiesSet() {
+        initialize();
+        
+        authPipeline.removeValve(new AuthValveStub(getId()));
+        
+        int index = -1;
+        if (position >= 0) {
+            index = position;
+        } else if (positionBefore != null) {
+            index = authPipeline.indexOf(new AuthValveStub(positionBefore));
+        } else if (positionAfter != null) {
+            index = authPipeline.indexOf(new AuthValveStub(positionAfter));
+            if (index != -1) {
+                index++;
+            }
+            if (index >= authPipeline.getValves().length) {
+                index = -1;
+            }
+        }
+        if (index != -1) {
+            authPipeline.addValve(index, this);
+            logger.info("Registered authentication valve {} at position {}", getId(), index);
+        } else {
+            authPipeline.addValve(this);
+            logger.info("Registered authentication valve {}", getId());
+        }
     }
 
-    protected boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setBeanName(String name) {
-        this.beanName = name;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public void setAuthPipeline(GenericPipeline authPipeline) {
+        this.authPipeline = authPipeline;
     }
 }

@@ -10,6 +10,10 @@
         <property name="workflowService" ref="workflowService"/>
         <property name="visibilityService" ref="visibilityService"/>
 	</bean>
+    
+    <bean class="org.jahia.params.valves.AuthPipelineInitializer">
+        <property name="authPipeline" ref="authPipeline"/>
+    </bean>
 
     <bean name="managerEditorConfigurerModules" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
         <property name="customEditors">

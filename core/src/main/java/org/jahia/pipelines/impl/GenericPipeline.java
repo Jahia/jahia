@@ -55,6 +55,7 @@
  */
 package org.jahia.pipelines.impl;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
@@ -82,7 +83,7 @@ public class GenericPipeline implements Pipeline, ValveContext {
      * Valve is currently being processed.
      *
      */
-    protected ThreadLocal state = new ThreadLocal();
+    protected ThreadLocal<Integer> state = new ThreadLocal<Integer>();
 
     public GenericPipeline () {
 
@@ -138,12 +139,33 @@ public class GenericPipeline implements Pipeline, ValveContext {
         }
     }
 
+    /**
+     * @since Jahia 6.6.0.0
+     */
+    public void addValve(int position, Valve valve) {
+        // Add this Valve to the set associated with this Pipeline
+        synchronized (valves) {
+            Valve[] results = new Valve[valves.length + 1];
+            if (position == -1 || position >= valves.length) {
+                System.arraycopy(valves, 0, results, 0, valves.length);
+                results[valves.length] = valve;
+            } else {
+                results = (Valve[]) ArrayUtils.add(valves, position, valve);
+            }
+            valves = results;
+
+            System.arraycopy(valves, 0, results, 0, valves.length);
+            results[valves.length] = valve;
+            valves = results;
+        }
+    }
+
     public void removeValve (Valve valve) {
         synchronized (valves) {
             // Locate this Valve in our list
             int index = -1;
             for (int i = 0; i < valves.length; i++) {
-                if (valve == valves[i]) {
+                if (valve.equals(valves[i])) {
                     index = i;
                     break;
                 }
@@ -193,23 +215,35 @@ public class GenericPipeline implements Pipeline, ValveContext {
     /**
 	 * @see org.jahia.pipelines.Pipeline#hasValveOfClass(java.lang.Class)
      */
-    public boolean hasValveOfClass(Class c) {
+    public boolean hasValveOfClass(Class<Valve> c) {
     	return getFirstValveOfClass(c) != null;
     }
 
-	/**
-	 * @see org.jahia.pipelines.Pipeline#getFirstValveOfClass(java.lang.Class)
-	 */
-	public Valve getFirstValveOfClass(Class c) {
-    	for (int i = 0; i < this.valves.length; i++) {
-			if (c.isInstance(valves[i])) {
-				return valves[i];
-			}
-		}
-    	return null;
-	}
+    /**
+     * @see org.jahia.pipelines.Pipeline#getFirstValveOfClass(java.lang.Class)
+     */
+    public Valve getFirstValveOfClass(Class<Valve> c) {
+        for (int i = 0; i < this.valves.length; i++) {
+            if (c.isInstance(valves[i])) {
+                return valves[i];
+            }
+        }
+        return null;
+    }
     // END [added by Pascal Aubry for CAS authentication]
 
+    /**
+     * @since Jahia 6.6.0.0
+     */
+    public int indexOf(Valve valve) {
+        int pos = -1;
+        for (int i = 0; i < valves.length; i++) {
+            if (valve.equals(valves[i])) {
+                pos = i;
+                break;
+            }
+        }
 
-
+        return pos;
+    }
 }

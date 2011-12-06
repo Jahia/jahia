@@ -118,7 +118,7 @@ public interface Pipeline {
      * @param c the class or interface
      * @return
      */
-    public boolean hasValveOfClass(Class c);
+    public boolean hasValveOfClass(Class<Valve> c);
 
     /**
      * <p>Return the first valve of the pipeline that is an instance
@@ -126,7 +126,7 @@ public interface Pipeline {
      * @param c the class or interface
      * @return a Valve instance, or null if no valve matches.
      */
-    public Valve getFirstValveOfClass(Class c);
+    public Valve getFirstValveOfClass(Class<Valve> c);
     // END [added by Pascal Aubry for CAS authentication]
 
 }

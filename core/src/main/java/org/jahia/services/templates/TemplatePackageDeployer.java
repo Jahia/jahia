@@ -52,11 +52,7 @@ import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 
-import javax.jcr.ImportUUIDBehavior;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
@@ -570,9 +566,11 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                                         + ". Cause: " + e.getMessage(), e);
                             }
                         }
+                        resetModuleAttributes(session, pack);
                         logger.info("... finished initial import for module package '" + pack.getName() + "'.");
                         return true;
                     }
+                    resetModuleAttributes(session, pack);
                     return false;
                 }
             });
@@ -583,24 +581,13 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         }
     }
 
-    private void initRepository(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
-        if (!session.nodeExists("/templateSets")) {
-            session.getRootNode().addNode("templateSets", "jnt:templateSets");
-        }
+    private void resetModuleAttributes(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
         JCRNodeWrapper modules = session.getNode("/templateSets");
-        JCRNodeWrapper m;
-        if (!modules.hasNode(pack.getRootFolder())) {
-            m = modules.addNode(pack.getRootFolder(), "jnt:virtualsite");
-            m.setProperty("j:title", pack.getName());
-            m.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(pack.getName())});
-            m.addNode("portlets", "jnt:portletFolder");
-            m.addNode("files", "jnt:folder");
-            m.addNode("contents", "jnt:contentFolder");
-            JCRNodeWrapper tpls = m.addNode("templates", "jnt:templatesFolder");
-            tpls.addNode("files", "jnt:folder");
-            tpls.addNode("contents", "jnt:contentFolder");
-        } else {
-            m = modules.getNode(pack.getRootFolder());
+        JCRNodeWrapper m = modules.getNode(pack.getRootFolder());
+        m.setProperty("j:title", pack.getName());
+        m.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(pack.getName())});
+        if (pack.getModuleType() != null) {
+            m.setProperty("j:siteType",pack.getModuleType());
         }
         List<Value> l = new ArrayList<Value>();
         for (String d : pack.getDepends()) {
@@ -614,7 +601,49 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         }
         Value[] values = new Value[pack.getDepends().size()];
         m.setProperty("j:dependencies",l.toArray(values));
-        m.setProperty("j:siteType",pack.getModuleType());
+
+        if (pack.getModuleType() == null) {
+            String moduleType = guessModuleType(session, pack);
+            pack.setModuleType(moduleType);
+        }
+
+        if (pack.getModuleType() != null) {
+            m.setProperty("j:siteType",pack.getModuleType());
+        }
+        session.save();
+    }
+
+    private String guessModuleType(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
+        String moduleType = "module";
+        if (session.itemExists("/templateSets/" + pack.getRootFolder() + "/j:siteType")) {
+            moduleType = session.getNode("/templateSets/"+pack.getRootFolder()).getProperty("j:siteType").getValue().getString();
+        } else {
+            List files = new ArrayList(Arrays.asList(new File(pack.getFilePath()).list()));
+            files.removeAll(Arrays.asList("META-INF","WEB-INF", "resources"));
+            if (files.isEmpty()) {
+                moduleType = "system";
+            }
+        }
+        return moduleType;
+    }
+
+    private void initRepository(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
+        if (!session.nodeExists("/templateSets")) {
+            session.getRootNode().addNode("templateSets", "jnt:templateSets");
+        }
+        JCRNodeWrapper modules = session.getNode("/templateSets");
+        JCRNodeWrapper m;
+        if (!modules.hasNode(pack.getRootFolder())) {
+            m = modules.addNode(pack.getRootFolder(), "jnt:virtualsite");
+            m.addNode("portlets", "jnt:portletFolder");
+            m.addNode("files", "jnt:folder");
+            m.addNode("contents", "jnt:contentFolder");
+            JCRNodeWrapper tpls = m.addNode("templates", "jnt:templatesFolder");
+            tpls.addNode("files", "jnt:folder");
+            tpls.addNode("contents", "jnt:contentFolder");
+        } else {
+            m = modules.getNode(pack.getRootFolder());
+        }
         JCRNodeWrapper v;
         if (!m.hasNode("j:versionInfo")) {
             v = m.addNode("j:versionInfo", "jnt:versionInfo" );

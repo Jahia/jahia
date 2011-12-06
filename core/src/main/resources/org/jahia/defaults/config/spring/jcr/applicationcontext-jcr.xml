@@ -407,7 +407,6 @@
         <value>j:locktoken</value>
         <value>j:lockTypes</value>
         <value>j:processId</value>
-        <value>j:siteType</value>
     </util:set>
     
     <util:map id="ImportDefinitionsMappingMetadata">

@@ -49,6 +49,7 @@ import org.jasypt.digest.ByteDigester;
 import org.jasypt.digest.PooledByteDigester;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 /**
  * Miscellaneous encryption utilities.
@@ -56,6 +57,30 @@ import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
  * @author Sergiy Shyrkov
  */
 public final class EncryptionUtils {
+    
+    public static class EncryptedPasswordFactoryBean extends AbstractFactoryBean<String> {
+
+        private String password;
+
+        @Override
+        protected String createInstance() throws Exception {
+            if (this.password == null) {
+                return null;
+            }
+
+            return passwordBaseDecrypt(password);
+        }
+
+        @Override
+        public Class<?> getObjectType() {
+            return String.class;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+    }
 
     private static ByteDigester sha1DigesterLegacy;
 

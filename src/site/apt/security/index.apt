@@ -3,7 +3,12 @@ Security aspects
 * Overview
 
   Provides a brief overview of the security considerations and the ways
-  for reducing risks and protecting system and data.  
+  for reducing risks and protecting system and data.
+  
+* Authentication {valves}
+
+  Jahia already contains a set of built-in authentication valves. Custom valves can be implemented and deployed easily
+  to extend the standard authentication pipeline in Jahia. See {{{./authenticationValves.html} authentication valves}} section for more details.  
   
 * {User} authentication and data
 

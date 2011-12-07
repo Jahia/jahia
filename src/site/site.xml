@@ -35,6 +35,7 @@
             </item>
             <item name="Query" href="query/index.html"/>
             <item name="Security aspects" href="security/index.html">
+                <item name="Authentication valves" href="security/index.html#valves"/>
                 <item name="User authentication and data" href="security/index.html#User"/>
                 <item name="Template and action protection" href="security/index.html#Template"/>
                 <item name="Miscellaneous" href="security/index.html#Miscellaneous"/>

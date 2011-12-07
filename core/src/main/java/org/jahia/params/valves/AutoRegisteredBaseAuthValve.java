@@ -112,4 +112,16 @@ public abstract class AutoRegisteredBaseAuthValve extends BaseAuthValve implemen
     public void setAuthPipeline(GenericPipeline authPipeline) {
         this.authPipeline = authPipeline;
     }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public void setPositionAfter(String positionAfter) {
+        this.positionAfter = positionAfter;
+    }
+
+    public void setPositionBefore(String positionBefore) {
+        this.positionBefore = positionBefore;
+    }
 }

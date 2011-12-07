@@ -153,10 +153,6 @@ public class GenericPipeline implements Pipeline, ValveContext {
                 results = (Valve[]) ArrayUtils.add(valves, position, valve);
             }
             valves = results;
-
-            System.arraycopy(valves, 0, results, 0, valves.length);
-            results[valves.length] = valve;
-            valves = results;
         }
     }
 

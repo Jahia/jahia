@@ -21,6 +21,7 @@
 							<value>fm</value>
 						</list>
 					</property>
+                    <property name="templateManagerService" ref="JahiaTemplateManagerService" />
 				</bean>
 			</list>
 		</property>

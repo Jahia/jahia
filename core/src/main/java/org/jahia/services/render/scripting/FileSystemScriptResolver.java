@@ -42,7 +42,6 @@ package org.jahia.services.render.scripting;
 
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -86,6 +85,8 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
 
     private static Map<String, Boolean> resourcesCache = new ConcurrentHashMap<String, Boolean>();
     private static Map<String, SortedSet<View>> viewSetCache = new ConcurrentHashMap<String, SortedSet<View>>();
+    
+    private JahiaTemplateManagerService templateManagerService;
 
     public List<String> getScriptExtensionsOrdering() {
         return scriptExtensionsOrdering;
@@ -134,7 +135,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     private View resolveView(Resource resource, List<ExtendedNodeType> nodeTypeList, ArrayList<String> searchedLocations) {
         String template = resource.getResolvedTemplate();
             for (ExtendedNodeType st : nodeTypeList) {
-                Set<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(
+                Set<JahiaTemplatesPackage> sortedPackages = templateManagerService.getAvailableTemplatePackagesForModule(
                         JCRContentUtils.replaceColon(st.getAlias()));
                 View res = resolveView(resource, template, st, sortedPackages, searchedLocations);
                 if (res != null) {
@@ -228,36 +229,6 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         return false;
     }
 
-    private void getAllViewsSet(Map<String, View> views, String templateType, String currentTemplatePath, JahiaTemplatesPackage tplPackage) {
-        String path = currentTemplatePath;
-        File d = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath() + "/" + path);
-        File[] dirs = d.listFiles();
-        for (File n : dirs) {
-            if (n.exists() && !n.isFile()) {
-                File f = new File(n, templateType);
-                if (f.exists() && !f.isFile()) {
-                    File[] files = f.listFiles();
-                    for (File file : files) {
-                        if (!file.isDirectory()) {
-                            String filename = file.getName();
-                            String key = null;
-                            try {
-                                key = filename.substring(filename.indexOf(".") + 1, filename.lastIndexOf("."));
-                            } catch (StringIndexOutOfBoundsException e) {
-                                key = "default";
-                            }
-                            if (!views.containsKey(key)) {
-                                views.put(key, new FileSystemView(SettingsBean.getInstance().getTemplatesContext() + path + "/" + n.getName() + "/" + f.getName() + "/" + file.getName(), key, tplPackage, filename));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-
-
     public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site) {
         Map<String, View> views = new HashMap<String, View>();
 
@@ -267,8 +238,6 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         String templateType = "html";
 
         Collections.reverse(nodeTypeList);
-
-        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
 
         List<String> installedModules = null;
         if (site != null && site.getPath().startsWith("/sites/")) {
@@ -324,5 +293,9 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
             viewSetCache.clear();
             FileSystemView.clearPropertiesCache();
         }
+    }
+
+    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
+        this.templateManagerService = templateManagerService;
     }
 }

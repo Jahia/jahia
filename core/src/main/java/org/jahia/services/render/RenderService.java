@@ -81,8 +81,8 @@ public class RenderService {
         this.cacheKeyGenerator = cacheKeyGenerator;
     }
 
+    @SuppressWarnings("unchecked")
     public void setCacheProvider(CacheProvider cacheProvider) {
-        this.cacheProvider = cacheProvider;
         templatesCache = (CacheImplementation<String, Template>) cacheProvider.newCacheImplementation(RENDER_SERVICE_TEMPLATES_CACHE);
     }
 
@@ -352,8 +352,6 @@ public class RenderService {
     }
 
     private CacheImplementation<String,Template> templatesCache;
-
-    private CacheProvider cacheProvider;
 
     private DefaultCacheKeyGenerator cacheKeyGenerator;
 

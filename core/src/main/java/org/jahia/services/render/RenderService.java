@@ -364,7 +364,7 @@ public class RenderService {
         boolean isNotDefaultTemplate = resource.getTemplate() != null && !resource.getTemplate().equals("default");
 
         String key = new StringBuffer(templateNode.getPath()).append(type).append(
-                isNotDefaultTemplate ? resource.getTemplate() : "default").toString() +
+                isNotDefaultTemplate ? resource.getTemplate() : "default").toString() + renderContext.getServletPath() + resource.getWorkspace() + renderContext.isLoggedIn() +
                      resource.getNode().getPrimaryNodeTypeName()+cacheKeyGenerator.appendAcls(resource, renderContext, false);
 
         Template template = templatesCache.get(key);

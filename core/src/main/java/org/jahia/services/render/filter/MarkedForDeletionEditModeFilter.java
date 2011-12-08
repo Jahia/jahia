@@ -41,7 +41,6 @@
 package org.jahia.services.render.filter;
 
 import java.text.MessageFormat;
-import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
@@ -62,8 +61,8 @@ public class MarkedForDeletionEditModeFilter extends AbstractFilter {
     public String execute(String previousOut, RenderContext renderContext, Resource resource,
             RenderChain chain) throws Exception {
         boolean noDeleteLayer = Boolean.valueOf(renderContext.getRequest().getParameter("noDeleteLayer"));
-        if (StringUtils.isEmpty(previousOut)
-                || !resource.getNode().isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION) || noDeleteLayer) {
+        if (noDeleteLayer || StringUtils.isEmpty(previousOut)
+                || !resource.getNode().isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION)) {
             return previousOut;
         }
 

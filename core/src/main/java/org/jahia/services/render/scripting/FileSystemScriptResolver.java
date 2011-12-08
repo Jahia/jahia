@@ -105,6 +105,11 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
 
         ExtendedNodeType nt = resource.getNode().getPrimaryNodeType();
         List<ExtendedNodeType> nodeTypeList = getNodeTypeList(nt);
+        for (ExtendedNodeType type : resource.getNode().getMixinNodeTypes()) {
+            nodeTypeList.addAll(0,Arrays.asList(type.getSupertypes()));
+            nodeTypeList.add(0,type);
+        }
+        
 
         View res = resolveView(resource, nodeTypeList, searchedLocations);
         if (res != null) {

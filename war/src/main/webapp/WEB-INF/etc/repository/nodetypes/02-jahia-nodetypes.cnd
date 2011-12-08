@@ -153,7 +153,7 @@
 
 [jmix:lockable] > mix:lockable mixin
  - j:locktoken (string) protected indexed=no hidden
- - j:lockTypes (string) protected multiple indexed=no hidden
+ - j:lockTypes (string) protected multiple nofulltext hidden
 
 //---------------------------------------------------------
 // Workflow

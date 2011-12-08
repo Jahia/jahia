@@ -55,8 +55,10 @@ import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitial
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.content.rules.ModuleGlobalObject;
 import org.jahia.services.content.rules.RulesListener;
+import org.jahia.services.render.RenderService;
 import org.jahia.services.render.StaticAssetMapping;
 import org.jahia.services.render.filter.RenderFilter;
+import org.jahia.services.render.filter.RenderServiceAware;
 import org.jahia.settings.SettingsBean;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.bin.Action;
@@ -94,13 +96,18 @@ class TemplatePackageRegistry {
         
         private ChoiceListInitializerService choiceListInitializers;
 
+        private RenderService renderService;
+
         private WorkflowService workflowService;
 
         private VisibilityService visibilityService;
 
         private Map<String, String> staticAssetMapping;
-
+        
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+            if (bean instanceof RenderServiceAware) {
+                ((RenderServiceAware) bean).setRenderService(renderService);
+            }
             if (bean instanceof RenderFilter) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Registering RenderFilter '" + beanName + "'");
@@ -224,6 +231,10 @@ class TemplatePackageRegistry {
 
         public void setVisibilityService(VisibilityService visibilityService) {
             this.visibilityService = visibilityService;
+        }
+
+        public void setRenderService(RenderService renderService) {
+            this.renderService = renderService;
         }
     }
 

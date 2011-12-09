@@ -74,6 +74,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Url;
+import org.jahia.utils.WebUtils;
 import org.slf4j.Logger;
 
 /**
@@ -136,6 +137,7 @@ public class WelcomeServlet extends HttpServlet {
                 targetUrl = StringUtils.substringBefore(targetUrl, ";jsessionid=");
             }
         }
+        WebUtils.setNoCacheHeaders(response);
         response.sendRedirect(targetUrl);
     }
 

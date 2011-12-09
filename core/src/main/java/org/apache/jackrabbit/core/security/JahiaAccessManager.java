@@ -372,11 +372,12 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public boolean isGranted(Path absPath, Set<String> permissions) throws RepositoryException {
-        String absPathStr = absPath.toString();
         if (isSystemPrincipal() && deniedPathes.get() == null) {
             return true;
         }
 
+        String absPathStr = absPath.toString();
+        
         if (permissions.size() == 1 && absPathStr.equals("{}") && permissions.contains(getPrivilegeName(Privilege.JCR_READ,  workspaceName))) {
             return true;
         }

@@ -9,6 +9,7 @@
 <%@page import="org.jahia.services.pwdpolicy.JahiaPasswordPolicyService" %>
 <%@page import="org.jahia.services.usermanager.JahiaUser,org.jahia.services.usermanager.UserProperties,org.jahia.services.usermanager.UserProperty" %>
 <%@ page import="org.apache.commons.lang.StringUtils" %>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 <%@ page import="java.security.Principal" %>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.Locale" %>
@@ -45,7 +46,7 @@
         if (propValue == null) {
             return "";
         } else {
-            return propValue.getValue();
+            return propValue.getValue() != null ? StringEscapeUtils.escapeXml(propValue.getValue()) : propValue.getValue();
         }
     }
 

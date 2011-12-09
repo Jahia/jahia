@@ -43,6 +43,7 @@
 package org.jahia.data.viewhelper.principal;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -180,7 +181,7 @@ public class PrincipalViewHelper implements Serializable {
             final Integer size = (Integer) selectBoxFieldsSize.get(i);
             final Object[] args = {p, size};
             try {
-                authUserText.append((String) m.invoke(this, args));
+                authUserText.append(StringEscapeUtils.escapeXml((String) m.invoke(this, args)));
                 if(i<selectBoxFieldsMethod.size()-1) {
                     authUserText.append("|");
                 }

@@ -13,6 +13,7 @@ Prerequisites :
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <%
     List providerList     = (List) request.getAttribute( "providerList" );
@@ -157,9 +158,9 @@ int stretcherToOpen   = 0;
                                 Iterator it = resultSet.iterator();
                                 while (it.hasNext()) {
                                     Principal p = (Principal)it.next();
-                                    %><option value="<%=principalViewHelper.getPrincipalValueOption(p)%>">
-                                        <%=principalViewHelper.getPrincipalTextOption(p)%>
-                                    </option><%
+                                    pageContext.setAttribute("principalKey", principalViewHelper.getPrincipalValueOption(p));
+                                    pageContext.setAttribute("principalLabel", principalViewHelper.getPrincipalTextOption(p));
+                                    %><option value="${fn:escapeXml(principalKey)}">${principalLabel}</option><%
                             }
                             } %>
                         </select><br>

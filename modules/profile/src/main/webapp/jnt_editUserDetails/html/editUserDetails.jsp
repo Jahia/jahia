@@ -88,7 +88,7 @@
 
             <span jcr:id="j:firstName" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_firstName"
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:firstName']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:firstName']}">${fields['j:firstName']}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:firstName']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:firstName']}">${fn:escapeXml(fields['j:firstName'])}</c:if></span>
         </li>
     </c:if>
     <c:if test="${currentNode.properties['j:lastName'].boolean}">
@@ -97,7 +97,7 @@
 
             <span jcr:id="j:lastName" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_lastName"
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:lastName']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:lastName']}">${fields['j:lastName']}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:lastName']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:lastName']}">${fn:escapeXml(fields['j:lastName'])}</c:if></span>
         </li>
     </c:if>
     <c:if test="${currentNode.properties['j:picture'].boolean}">
@@ -172,7 +172,7 @@
 
             <span jcr:id="j:organization" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_organization"
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:organization']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:organization']}">${fields['j:organization']}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:organization']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:organization']}">${fn:escapeXml(fields['j:organization'])}</c:if></span>
         </li>
     </c:if>
 
@@ -182,7 +182,7 @@
 
             <span jcr:id="j:function" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_function"
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:function']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:function']}">${fields['j:function']}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:function']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:function']}">${fn:escapeXml(fields['j:function'])}</c:if></span>
         </li>
     </c:if>
 
@@ -192,6 +192,7 @@
 
             <span jcr:id="j:about" class="ckeditorEdit${currentNode.identifier}"
                   id="ckeditorEdit${currentNode.identifier}j_about"
+                  ckeditor:type="Mini"
                   jcr:url="<c:url value='${url.basePreview}${user.path}'/>">${fields['j:about']}</span>
         </li>
     </c:if>
@@ -202,7 +203,7 @@
 
             <span jcr:id="j:email" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_email"
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:email']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:email']}">${fields['j:email']}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:email']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:email']}">${fn:escapeXml(fields['j:email'])}</c:if></span>
         </li>
     </c:if>
 
@@ -212,7 +213,7 @@
 
             <span jcr:id="j:skypeID" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_skypeID"
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:skypeID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:skypeID']}">${fields['j:skypeID']}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:skypeID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:skypeID']}">${fn:escapeXml(fields['j:skypeID'])}</c:if></span>
         </li>
     </c:if>
 
@@ -222,7 +223,7 @@
 
             <span jcr:id="j:twitterID" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_twitterID"
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:twitterID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:twitterID']}">${fields['j:twitterID']}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:twitterID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:twitterID']}">${fn:escapeXml(fields['j:twitterID'])}</c:if></span>
         </li>
     </c:if>
 
@@ -232,7 +233,7 @@
 
             <span jcr:id="j:facebookID" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_facebookID"
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:facebookID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:facebookID']}">${fields['j:facebookID']}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:facebookID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:facebookID']}">${fn:escapeXml(fields['j:facebookID'])}</c:if></span>
         </li>
     </c:if>
 
@@ -242,7 +243,7 @@
 
             <span jcr:id="j:linkedinID" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_linkedinID"
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:linkedinID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:linkedinID']}">${fields['j:linkedinID']}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"><c:if test="${empty fields['j:linkedinID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:linkedinID']}">${fn:escapeXml(fields['j:linkedinID'])}</c:if></span>
         </li>
     </c:if>
 

@@ -110,7 +110,7 @@ public final class UserPreferencesHelper {
      *         is not provided or empty
      */
     public static String getFirstName(JahiaUser user) {
-        String name = user != null ? user.getProperty("firstname") : null;
+        String name = user != null ? user.getProperty("j:firstName") : null;
     
         return !StringUtils.isBlank(name) ? name : null;
     }
@@ -150,7 +150,7 @@ public final class UserPreferencesHelper {
      *         is not provided or empty
      */
     public static String getLastName(JahiaUser user) {
-        String name = user != null ? user.getProperty("lastname") : null;
+        String name = user != null ? user.getProperty("j:lastName") : null;
     
         return !StringUtils.isBlank(name) ? name : null;
     }

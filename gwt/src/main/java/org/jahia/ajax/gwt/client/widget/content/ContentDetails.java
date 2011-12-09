@@ -63,6 +63,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.*;
@@ -223,8 +224,9 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                                     EditEngineTabItem tabItem = (EditEngineTabItem) item.getData("item");
                                     if ((tabItem.getHideForTypes().isEmpty() || !node.isNodeType(
                                             tabItem.getHideForTypes())) &&
-                                        (tabItem.getShowForTypes().isEmpty() || node.isNodeType(
-                                                tabItem.getShowForTypes()))) {
+                                            (tabItem.getShowForTypes().isEmpty() || node.isNodeType(
+                                                    tabItem.getShowForTypes())) && (tabItem.getGwtEngineTab().getRequiredPermission() == null ||
+                                            tabItem.getGwtEngineTab().getRequiredPermission() != null && PermissionsUtils.isPermitted(tabItem.getGwtEngineTab().getRequiredPermission(), selectedNodes.get(0).getPermissions()))) {
                                         item.setEnabled(true);
                                     }
                                 }
@@ -247,11 +249,12 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         initializersValues = result.getInitializersValues();
                         ok.setEnabled(true);
                         for (TabItem item : tabs.getItems()) {
-                            if (((EditEngineTabItem) item.getData("item")).isHandleMultipleSelection()) {
+                            EditEngineTabItem editItem = (EditEngineTabItem) item.getData("item");
+                            if (((EditEngineTabItem) item.getData("item")).isHandleMultipleSelection() && (editItem.getGwtEngineTab().getRequiredPermission() == null ||
+                                    editItem.getGwtEngineTab().getRequiredPermission() != null && PermissionsUtils.isPermitted(editItem.getGwtEngineTab().getRequiredPermission(), selectedNodes.get(0).getPermissions()))) {
                                 item.setEnabled(true);
                             }
                             if (!tabs.getSelectedItem().equals(item)) {
-                                EditEngineTabItem editItem = (EditEngineTabItem) item.getData("item");
                                 if (editItem instanceof ContentTabItem) {
                                     if (((ContentTabItem) editItem).isNodeNameFieldDisplayed()) {
                                         ((ContentTabItem) editItem).getName().setValue(getNodeName());

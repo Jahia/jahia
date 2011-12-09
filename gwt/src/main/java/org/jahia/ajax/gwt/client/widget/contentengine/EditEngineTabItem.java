@@ -120,6 +120,10 @@ public abstract class EditEngineTabItem implements Serializable {
         this.hideForTypes = hideForTypes;
     }
 
+    public GWTEngineTab getGwtEngineTab() {
+        return gwtEngineTab;
+    }
+
     public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, GWTJahiaNodeACL acl) {
 
     }

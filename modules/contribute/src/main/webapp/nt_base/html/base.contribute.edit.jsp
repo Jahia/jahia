@@ -52,8 +52,8 @@
 <c:if test="${not empty currentResource.moduleParams.contentType}">
     <c:set var="contentType" value="${currentResource.moduleParams.contentType}"/>
 </c:if>
-<c:set var="type" value="${currentNode.primaryNodeType}"/>
-
+<c:forEach items="${currentNode.nodeTypes}" var="typeName">
+<jcr:nodeType name="${typeName}" var="type"/>
 <c:if test="${!nodeLocked && !renderContext.ajaxRequest}">
     <c:set var="initEditFields" value="initEditFields('${currentNode.identifier}');"/>
     <c:forEach items="${currentNode.primaryNodeType.propertyDefinitions}" var="propertyDefinition">
@@ -98,7 +98,7 @@
 </style>
 <div class="FormContribute">
     <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
-        <c:if test="${propertyDefinition.name eq 'jcr:title'}">
+        <c:if test="${propertyDefinition.name eq 'jcr:title' and propertyDefinition.itemType eq contentType}">
             <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
             <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>
             <p>
@@ -277,3 +277,4 @@
         </c:if>
     </c:forEach>
 </div>
+</c:forEach>

@@ -41,8 +41,12 @@
 package org.jahia.services.applications.pluto;
 
 import java.security.Principal;
+import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.data.applications.EntryPointInstance;
 import org.apache.pluto.container.PortletWindow;
@@ -60,6 +64,7 @@ public class JahiaPortalServletRequest extends HttpServletRequestWrapper {
     private EntryPointInstance entryPointInstance;
     private String id;
     private String workspaceName;
+    private Locale locale;
 
     public JahiaPortalServletRequest(EntryPointInstance entryPointInstance,JahiaUser jahiaUser, HttpServletRequest request, PortletWindow window, String workspaceName) {
         super(request);
@@ -67,6 +72,8 @@ public class JahiaPortalServletRequest extends HttpServletRequestWrapper {
         this.entryPointInstance = entryPointInstance;
         this.id = window.getId().getStringId();
         this.workspaceName = workspaceName;
+        RenderContext ctx = (RenderContext) request.getAttribute("renderContext");
+        this.locale = ctx != null && ctx.getMainResource() != null ? ctx.getMainResourceLocale() : null; 
     }
 
     public String getRemoteUser() {
@@ -87,5 +94,10 @@ public class JahiaPortalServletRequest extends HttpServletRequestWrapper {
             return false;
         }
         return entryPointInstance.isUserInRole(jahiaUser, role, workspaceName);
+    }
+    
+    @Override
+    public Locale getLocale() {
+        return locale != null ? locale : super.getLocale();
     }
 }

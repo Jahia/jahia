@@ -42,8 +42,9 @@
             var ckeditorConfig = ckeditorType == 'Mini' ? {toolbar: 'Mini', filebrowserBrowseUrl: null, filebrowserFlashBrowseUrl: null, filebrowserImageBrowseUrl: null, filebrowserLinkBrowseUrl: null} : {toolbar: ckeditorType};
             eval('var originalConfig = ' + $(original).attr('ckeditor:config'));
           	ckeditorConfig = $.extend(ckeditorConfig, settings.ckeditorConfig, originalConfig);
-            if(settings.ckeditorToolbar != 'undefined')
-            ckeditorConfig = eval(settings.ckeditorToolbar);
+            if((typeof settings.ckeditorToolbar) != 'undefined') {
+            	ckeditorConfig = eval(settings.ckeditorToolbar);
+            }
             var ckeditorInstance=CKEDITOR.replace(id, ckeditorConfig);
             if (typeof wcagCompliant == 'function') {
             	ckeditorInstance.checkWCAGCompliance=wcagCompliant;

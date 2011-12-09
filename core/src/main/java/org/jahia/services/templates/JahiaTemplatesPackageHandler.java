@@ -247,6 +247,11 @@ final class JahiaTemplatesPackageHandler {
                         templatePackage.addInitialImport(imp.trim());
                     }
                 }
+                
+                String resourceBundle = (String) manifest.getMainAttributes().get(new Attributes.Name("resource-bundle"));
+                if (StringUtils.isNotBlank(resourceBundle)) {
+                    templatePackage.setResourceBundleName(resourceBundle.trim());
+                }
 
                 templatePackage.setName(packageName);
                 templatePackage.setRootFolder(rootFolder);

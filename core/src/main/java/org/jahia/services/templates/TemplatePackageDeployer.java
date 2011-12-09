@@ -64,7 +64,6 @@ import org.apache.commons.io.filefilter.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportService;
@@ -475,10 +474,13 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             if (!metaInfFolder.exists()) {
                 metaInfFolder.mkdirs();
             }
+            long lastModified = metaInfFolder.lastModified();
             createDeploymentXMLFile(new File(metaInfFolder, "deployed.xml"), deployedFiles,
                     templateWar, packageName, depends, rootFolder, implementationVersionStr, packageTimestamp);
+            metaInfFolder.setLastModified(lastModified);
 
             unzippedPackages.add(tmplRootFolder.getName());
+            tmplRootFolder.setLastModified(templateWar.lastModified());
         }
     }
 

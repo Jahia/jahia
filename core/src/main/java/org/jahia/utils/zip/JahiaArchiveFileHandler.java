@@ -194,6 +194,7 @@ public class JahiaArchiveFileHandler {
         throws JahiaException {
 
         Map<String,String> unzippedFiles = new TreeMap<String,String>();
+        Map<File,Long> timestamps = new HashMap<File,Long>();
 
         pathFilter = pathFilter != null ? pathFilter : PathFilter.ALL;
 
@@ -223,6 +224,10 @@ public class JahiaArchiveFileHandler {
                     if (pathFilter.accept(pathPrefix != null ? pathPrefix + "/"
                             + zeName : zeName)) {
                         unzippedFiles.put(filePath, fo.getAbsolutePath());
+                        long lastModified = ze.getTime();
+                        if (lastModified > 0) {
+                            timestamps.put(fo, lastModified);
+                        }
                         if (ze.isDirectory()) {
                             fo.mkdirs();
                         } else if (overwrite || !fo.exists()) {
@@ -252,6 +257,16 @@ public class JahiaArchiveFileHandler {
                                      JahiaException.ERROR_SEVERITY, ioe);
 
         }
+        
+        // preserve last modified time stamps
+        for (Map.Entry<File, Long> tst : timestamps.entrySet()) {
+            try {
+                tst.getKey().setLastModified(tst.getValue());
+            } catch (Exception e) {
+                logger.warn("Unable to set last mofified date for file {}. Cause: {}", tst.getKey(), e.getMessage());
+            }
+        }
+        
         return unzippedFiles;
 
     }

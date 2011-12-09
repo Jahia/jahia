@@ -62,6 +62,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.sites.SitesSettings;
 
@@ -177,9 +178,10 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
         Set<String> tags = filteredTags;
         boolean doFiltering = false;
         if (considerSiteSettingsForFiltering) {
-            if (node.getResolveSite().hasProperty(SitesSettings.HTML_MARKUP_FILTERING_ENABLED)) {
-                tags = convertToTagSet(node.getResolveSite().hasProperty(
-                        SitesSettings.HTML_MARKUP_FILTERING_TAGS) ? node.getResolveSite()
+            JCRSiteNode resolveSite = node.getResolveSite();
+            if (resolveSite != null && resolveSite.hasProperty(SitesSettings.HTML_MARKUP_FILTERING_ENABLED)) {
+                tags = convertToTagSet(resolveSite.hasProperty(
+                        SitesSettings.HTML_MARKUP_FILTERING_TAGS) ? resolveSite
                         .getProperty(SitesSettings.HTML_MARKUP_FILTERING_TAGS).getString() : null);
                 if (tags != null && !tags.isEmpty()) {
                     doFiltering = true;

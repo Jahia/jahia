@@ -75,7 +75,11 @@
         <property name="trigger">
             <bean class="org.quartz.CronTrigger">
                 <property name="name" value="DataStoreGarbageCollectorJobTrigger"/>
-                <property name="cronExpression" value="0 0 * * * ?"/><!-- execute every hour -->
+                <!-- execute at night (01:30) -->
+                <property name="cronExpression" value="0 30 1 * * ?"/>
+                <!-- execute every hour 
+                <property name="cronExpression" value="0 0 * * * ?"/>
+                -->
             </bean>
         </property>
     </bean>

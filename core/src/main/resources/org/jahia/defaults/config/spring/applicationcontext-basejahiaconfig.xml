@@ -16,6 +16,12 @@
             <value>file:${jahia.config}</value>
   		</list>
   	</property>
+    <property name="localOverride" value="true"/>
+    <property name="properties">
+        <bean class="org.jahia.settings.SystemPropertiesFactoryBean">
+            <property name="prefix" value="jahiaConfig."/>
+        </bean>
+    </property>
   </bean>
 
   <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">

@@ -13,7 +13,7 @@ sysout << "Start analyzing sites and deploying modules\n"
 
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-            	JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+                JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
                 for (NodeIterator siteIterator = session
                         .getWorkspace()
                         .getQueryManager()
@@ -27,8 +27,19 @@ sysout << "Start analyzing sites and deploying modules\n"
                     
                     sysout << "\nProcessing site " + site.getName() + "\n";
                     
+                    // searching for the homepage
+                    List<String> searchedLocations = new LinkedList<String>();
+                    searchedLocations.add("contents");
+                    for (NodeIterator homeIterator = session
+                            .getWorkspace()
+                            .getQueryManager()
+                            .createQuery("select * from [jnt:page] where ischildnode('/sites/" + site.getName() + "/') and [j:isHomePage] = true",
+                                    Query.JCR_SQL2).execute().getNodes(); homeIterator.hasNext();) {
+                        searchedLocations.add(homeIterator.nextNode().getName());
+                    }
+                    
                     Set<String> toDeploy = new LinkedHashSet<String>();
-                  	toDeploy.add("default");
+                    toDeploy.add("default");
                     
                     for (NodeIterator moduleIterator  = session
                             .getWorkspace()
@@ -48,41 +59,47 @@ sysout << "Start analyzing sites and deploying modules\n"
                                         Query.JCR_SQL2).execute().getNodes(); coponentIterator.hasNext();) {
                             JCRNodeWrapper component = (JCRNodeWrapper) coponentIterator.nextNode();
                             if (component.isNodeType("jmix:studioOnly")) {
-                            	// skip studio only component
-                            	continue;
+                                // skip studio only component
+                                continue;
                             }
                             //sysout << "    Checking component " + component.getName() + " for site " + site.getName() + "\n";
-                            if (session
-                            .getWorkspace()
-                            .getQueryManager()
-                            .createQuery("select * from ["+component.getName()+"] where isdescendantnode('/sites/"+site.getName()+"/home')",
-                                    Query.JCR_SQL2).execute().getNodes().hasNext()
-                                || session
-                            .getWorkspace()
-                            .getQueryManager()
-                            .createQuery("select * from ["+component.getName()+"] where isdescendantnode('/sites/"+site.getName()+"/contents')",
-                                    Query.JCR_SQL2).execute().getNodes().hasNext()) {
-                                //sysout << "    Site " + site.getName() + " contains component " + component.getName() + ". Module " + module.getName() + " will be deployed\n";
-                                toDeploy.add(module.getName());
+                            boolean found = false;
+                            try {
+                                for (String home : searchedLocations) {
+                                    found = session
+                                        .getWorkspace()
+                                        .getQueryManager()
+                                        .createQuery("select * from ["+component.getName()+"] where isdescendantnode('/sites/"+site.getName()+"/" + home + "')",
+                                        Query.JCR_SQL2).execute().getNodes().hasNext();
+                                    if (found) {
+                                        //sysout << "    Site " + site.getName() + " contains component " + component.getName() + ". Module " + module.getName() + " will be deployed\n";
+                                        toDeploy.add(module.getName());
+                                        break;
+                                    }
+                                }
+                            } catch (RepositoryException e) {
+                                sysout << "    Error checking component " + component.getName() + " for site " + site.getName() + ". Cause: " + e.getMessage() + "\n";
+                            }
+                            if (found) {
                                 break;
                             }
                         }
                         if (toDeploy.contains(module.getName())) {
-							sysout << "    + Site " + site.getName() + " contains components of module " + module.getName() + ". It will be deployed to the site.\n";
-						} else {
-							sysout << "    - Site " + site.getName() + " does not contain components of module " + module.getName() + ". It won't be deployed to the site.\n";
-						}
+                            sysout << "    + Site " + site.getName() + " contains components of module " + module.getName() + ". It will be deployed to the site.\n";
+                        } else {
+                            sysout << "    - Site " + site.getName() + " does not contain components of module " + module.getName() + ". It won't be deployed to the site.\n";
+                        }
                     }
                     
                     if (toDeploy.isEmpty()) {
-                    	sysout << "  No new modules will need to be deployed on the site " + site.getName() + "\n";
+                        sysout << "  No new modules will need to be deployed on the site " + site.getName() + "\n";
                     } else {
-                    	sysout << "  Following modules will deployed to the site " + site.getName() + ": " + toDeploy + "\n";
-	                    for (String deployedModule : toDeploy) {
-	                    	sysout << "    Deploying module " + deployedModule + " to site " + site.getName() + "\n";
-	                    	templateService.deployModule("/templateSets/" + deployedModule, site.getPath(), session); 
-	                    }
-	                    session.save();
+                        sysout << "  Following modules will deployed to the site " + site.getName() + ": " + toDeploy + "\n";
+                        for (String deployedModule : toDeploy) {
+                            sysout << "    Deploying module " + deployedModule + " to site " + site.getName() + "\n";
+                            templateService.deployModule("/templateSets/" + deployedModule, site.getPath(), session); 
+                        }
+                        session.save();
                     }
                 }
                 

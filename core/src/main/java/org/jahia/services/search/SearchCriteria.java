@@ -873,7 +873,7 @@ public class SearchCriteria implements Serializable {
                 && isValueEmpty(getFileType()) && isValueEmpty(getCreatedBy())
                 && getCreated().isEmpty() && isValueEmpty(getLastModifiedBy())
                 && getLastModified().isEmpty() && getPagePath().isEmpty()
-                && getFilePath().isEmpty() && getSites().isEmpty();
+                && getFilePath().isEmpty();
 
         if (empty) {
             for (Term term : getTerms()) {

@@ -40,6 +40,7 @@
 
 package org.jahia.taglibs.search;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.jsp.JspException;
@@ -73,6 +74,8 @@ public class ResultsTag extends AbstractJahiaTag {
 
     private String var;
 
+    private boolean allowEmptySearchTerm = false;
+
     @Override
     public int doEndTag() throws JspException {
         pageContext.removeAttribute(getVar(), PageContext.PAGE_SCOPE);
@@ -93,7 +96,13 @@ public class ResultsTag extends AbstractJahiaTag {
         if (null == criteria) {
             return SKIP_BODY;
         }
-        hits = ServicesRegistry.getInstance().getSearchService().search(criteria, renderContext).getResults();
+
+        if (allowEmptySearchTerm || !criteria.isEmpty()) {
+            hits = ServicesRegistry.getInstance().getSearchService().search(criteria, renderContext).getResults();
+        } else {
+            hits = Collections.emptyList();
+        }
+
         int count = hits.size();
 
         pageContext.setAttribute(getVar(), hits);
@@ -179,6 +188,7 @@ public class ResultsTag extends AbstractJahiaTag {
         searchCriteriaBeanName = null;
         searchCriteriaVar = null;
         termVar = null;
+        allowEmptySearchTerm = false;
         super.resetState();
     }
 
@@ -202,4 +212,7 @@ public class ResultsTag extends AbstractJahiaTag {
         this.var = var;
     }
 
+    public void setAllowEmptySearchTerm(boolean allowEmptySearchTerm) {
+        this.allowEmptySearchTerm = allowEmptySearchTerm;
+    }
 }

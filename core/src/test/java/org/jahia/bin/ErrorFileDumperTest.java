@@ -41,6 +41,7 @@
 package org.jahia.bin;
 
 import org.jahia.bin.errors.ErrorFileDumper;
+import org.jahia.settings.SettingsBean;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -50,7 +51,13 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.util.StopWatch;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Test unit for error file dumper sub system.
@@ -58,11 +65,17 @@ import java.io.IOException;
 public class ErrorFileDumperTest {
 
     private final long LOOP_COUNT = 1000L;
+    private final long THREAD_COUNT = 20;
+    private Set<Thread> threadSet = new HashSet<Thread>();
+    private static File todaysDirectory;
 
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ErrorFileDumperTest.class);
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
+        Date now = new Date();
+        todaysDirectory = new File(new File(System.getProperty("java.io.tmpdir"), "jahia-errors"), ErrorFileDumper.DATE_FORMAT_DIRECTORY.format(now));
+
     }
 
     @AfterClass
@@ -70,20 +83,72 @@ public class ErrorFileDumperTest {
     }
 
     @Test
-    public void testDumper() throws IOException {
-        StopWatch stopWatch = new StopWatch("testErrorFileDumper");
+    public void testDumperInSequence() throws InterruptedException {
+        StopWatch stopWatch = new StopWatch("testDumperInSequence");
         stopWatch.start(Thread.currentThread().getName() + " generating error dumps");
-        for (int i=0; i < LOOP_COUNT; i++) {
-            MockHttpServletRequest request = new MockHttpServletRequest();
-            request.setRequestURI("/cms");
-            request.setQueryString("name=value");
-            request.addHeader("headerName", "headerValue");
-            ErrorFileDumper.dumpToFile(new Throwable("mock error " + i), (HttpServletRequest) request);
-        }
+
+        ErrorFileDumper.start();
+
+        generateExceptions();
+
         stopWatch.stop();
         long totalTime = stopWatch.getTotalTimeMillis();
         double averageTime = ((double) totalTime) / ((double) LOOP_COUNT);
         logger.info("Milliseconds per exception = " + averageTime);
         logger.info(stopWatch.prettyPrint());
+
+        ErrorFileDumper.shutdown(10000L);
+
+        Assert.assertTrue("Error dump directory does not exist !", todaysDirectory.exists());
+        Assert.assertTrue("Error dump directory should have error files in it !", todaysDirectory.listFiles().length > 0);
+    }
+
+    @Test
+    public void testDumperInParallel() throws IOException, InterruptedException {
+        StopWatch stopWatch = new StopWatch("testDumperInParallel");
+        stopWatch.start(Thread.currentThread().getName() + " generating error dumps");
+
+        ErrorFileDumper.start();
+
+        for (int i=0; i < THREAD_COUNT; i++) {
+            Thread newThread = new Thread(new Runnable() {
+
+                public void run() {
+                    generateExceptions();
+                }
+            }, "ErrorFileDumperTestThread" + i);
+            newThread.start();
+        }
+
+        logger.info("Waiting for dumps to be processed...");
+
+        for (Thread curThread : threadSet) {
+            curThread.join();
+        }
+
+        ErrorFileDumper.shutdown(10000L);
+
+        stopWatch.stop();
+        long totalTime = stopWatch.getTotalTimeMillis();
+        double averageTime = ((double) totalTime) / ((double) LOOP_COUNT);
+        logger.info("Milliseconds per exception = " + averageTime);
+        logger.info(stopWatch.prettyPrint());
+
+        Assert.assertTrue("Error dump directory does not exist !", todaysDirectory.exists());
+        Assert.assertTrue("Error dump directory should have error files in it !", todaysDirectory.listFiles().length > 0);
+    }
+
+    private void generateExceptions() {
+        for (int i=0; i < LOOP_COUNT; i++) {
+            MockHttpServletRequest request = new MockHttpServletRequest();
+            request.setRequestURI("/cms");
+            request.setQueryString("name=value");
+            request.addHeader("headerName", "headerValue");
+            try {
+                ErrorFileDumper.dumpToFile(new Throwable("mock error " + i), (HttpServletRequest) request);
+            } catch (IOException e) {
+                logger.error("Error while dumping error", e);
+            }
+        }
     }
 }

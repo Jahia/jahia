@@ -174,6 +174,10 @@ public class ErrorFileDumper {
     }
 
     public static void shutdown() {
+        shutdown(100L);
+    }
+
+    public static void shutdown(long millisecondsToWait) {
         if (isShutdown()) {
             return;
         }
@@ -181,7 +185,7 @@ public class ErrorFileDumper {
             System.out.println("Shutting down error file dumper executor service...");
             executorService.shutdown();
             try {
-                if (!executorService.awaitTermination(100L, TimeUnit.MILLISECONDS)) {
+                if (!executorService.awaitTermination(millisecondsToWait, TimeUnit.MILLISECONDS)) {
                     List<Runnable> droppedTasks = executorService.shutdownNow();
                 }
             } catch (InterruptedException e) {
@@ -189,6 +193,7 @@ public class ErrorFileDumper {
             }
             executorService = null;
         }
+
     }
 
     public static boolean isShutdown() {
@@ -207,12 +212,17 @@ public class ErrorFileDumper {
         Future<?> dumperFuture = executorService.submit(new FileDumperRunnable(t, requestData));
     }
 
+
+    public static ExecutorService getExecutorService() {
+        return executorService;
+    }
+
     private static void performDumpToFile(Throwable t, HttpRequestData httpRequestData) throws IOException {
         long dumpStartTime = System.currentTimeMillis();
         if (lastFileDumpedException != null && t != null && t.toString().equals(lastFileDumpedException.toString())) {
             lastFileDumpedExceptionOccurences++;
-            if (lastFileDumpedExceptionOccurences <
-                    SettingsBean.getInstance().getFileDumpMaxRegroupingOfPreviousException()) {
+            if ((SettingsBean.getInstance() != null) && (lastFileDumpedExceptionOccurences <
+                    SettingsBean.getInstance().getFileDumpMaxRegroupingOfPreviousException())) {
                 return;
             }
         }
@@ -386,14 +396,14 @@ public class ErrorFileDumper {
 
         if (caches) {
             strOut.println();
-            if (ServicesRegistry.getInstance().getCacheService() != null) {
+            DecimalFormat percentFormat = new DecimalFormat("###.##");
+            if (SpringContextSingleton.getInstance().isInitialized() && (ServicesRegistry.getInstance().getCacheService() != null)) {
                 strOut.println("Cache status:");
                 strOut.println("--------------");
     
                 // non Ehcaches
                 SortedSet sortedCacheNames = new TreeSet(ServicesRegistry.getInstance().getCacheService().getNames());
                 Iterator cacheNameIte = sortedCacheNames.iterator();
-                DecimalFormat percentFormat = new DecimalFormat("###.##");
                 while (cacheNameIte.hasNext()) {
                     String curCacheName = (String) cacheNameIte.next();
                     Object objectCache = ServicesRegistry.getInstance().getCacheService().getCache(curCacheName);
@@ -407,9 +417,11 @@ public class ErrorFileDumper {
                                 ", total hits=" + curCache.getTotalHits() + ", efficiency=" + efficiencyStr + "%");
                     }
                 }
+            }
     
-                // Ehcaches
-                CacheManager ehcacheManager = ((EhCacheProvider) SpringContextSingleton.getBean("ehCacheProvider")).getCacheManager();
+            // Ehcaches
+            List<CacheManager> cacheManagers = CacheManager.ALL_CACHE_MANAGERS;
+            for (CacheManager ehcacheManager : cacheManagers) {
                 String[] ehcacheNames = ehcacheManager.getCacheNames();
                 java.util.Arrays.sort(ehcacheNames);
                 for (String ehcacheName : ehcacheNames) {

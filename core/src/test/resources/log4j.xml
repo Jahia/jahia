@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<!--
+  This is the default log4j development file. For use in production server,
+  please use the log4j-prod.xml file instead, as it is a lot less verbose than
+  this one.
+-->
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <appender name="Console" class="org.apache.log4j.ConsoleAppender">
+        <param name="Threshold" value="debug"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-5p - %m%n"/>
+            <!--param name="ConversionPattern" value="%d: %-5p [%c{1}] - %m%n"/-->
+            <!-- another useful pattern to see date time,class, lines
+            BUT cpu intensive
+            -->
+            <!--param name="ConversionPattern" value="(%r)%d %5p [%t] (%F:%L) - %m%n" /-->
+        </layout>
+    </appender>
+
+    <root>
+        <level value="info"/>
+        <appender-ref ref="Console"/>
+    </root>
+
+</log4j:configuration>

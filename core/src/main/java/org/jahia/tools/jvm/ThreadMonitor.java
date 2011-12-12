@@ -40,8 +40,6 @@
 
 package org.jahia.tools.jvm;
 
-import static java.lang.management.ManagementFactory.*;
-
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
@@ -147,7 +145,7 @@ public class ThreadMonitor {
      * Constructs a ThreadMonitor object to get thread information in the local JVM.
      */
     public ThreadMonitor() {
-        this(getPlatformMBeanServer());
+        this(ManagementFactory.getPlatformMBeanServer());
     }
 
     /**
@@ -294,7 +292,7 @@ public class ThreadMonitor {
     public String getFullThreadInfo() {
         StringBuilder dump = new StringBuilder(65536);
 
-        if (SettingsBean.getInstance().isUseJstackForThreadDumps()) {
+        if ((SettingsBean.getInstance() != null) && SettingsBean.getInstance().isUseJstackForThreadDumps()) {
             dumpThreadInfoUsingJstack(dump);
         } else {
             dumpThreadInfo(dump);
@@ -304,7 +302,7 @@ public class ThreadMonitor {
     }
 
     private void parseMBeanInfo() throws IOException {
-            setDumpPrefix();
+        setDumpPrefix();
     }
 
     private void printThread(ThreadInfo ti, StringBuilder dump) {
@@ -356,16 +354,9 @@ public class ThreadMonitor {
     }
 
     private void setDumpPrefix() {
-        try {
-            RuntimeMXBean rmbean = (RuntimeMXBean) ManagementFactory
-                    .newPlatformMXBeanProxy(server,
-                            ManagementFactory.RUNTIME_MXBEAN_NAME,
-                            RuntimeMXBean.class);
-            dumpPrefix += rmbean.getVmName() + " (" + rmbean.getVmVersion()
-                    + ")\n";
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        RuntimeMXBean rmbean = (RuntimeMXBean) ManagementFactory.getRuntimeMXBean();
+        dumpPrefix += rmbean.getVmName() + " (" + rmbean.getVmVersion()
+                + ")\n";
     }
 
     /**
@@ -375,14 +366,7 @@ public class ThreadMonitor {
      */
     void setMBeanServerConnection(MBeanServerConnection mbs) {
         this.server = mbs;
-        try {
-            this.tmbean = (ThreadMXBean) ManagementFactory
-                    .newPlatformMXBeanProxy(server,
-                            ManagementFactory.THREAD_MXBEAN_NAME,
-                            ThreadMXBean.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.tmbean = (ThreadMXBean) ManagementFactory.getThreadMXBean();
     }
 
 }

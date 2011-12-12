@@ -24,5 +24,5 @@
 <input type="hidden" name="${propertyDefinition.name}" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
 <fmt:message key="label.select.content" var="contentLabel"/>
 <ui:treeItemSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
-                     nodeTypes="jnt:content,jnt:page,jnt:virtualsite" selectableNodeTypes="jnt:content,jnt:page" displayIncludeChildren="false"
+                     nodeTypes="jnt:content,jnt:page,jnt:virtualsite" selectableNodeTypes="jnt:content" displayIncludeChildren="false"
         label="${contentLabel}" fancyboxOptions="{height:600,width:600}"/>

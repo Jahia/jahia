@@ -40,6 +40,7 @@
 
 package org.jahia.services.importexport;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.tika.io.IOUtils;
@@ -80,7 +81,8 @@ public class ImportJob extends BackgroundJob {
     public static final String ORIGINATING_JAHIA_RELEASE = "originatingJahiaRelease";
 
     public static final String COPY_TO_JCR = "copyToJCR";
-    
+    public static final String REPLACE_CONTENT = "replaceContent";
+
     public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
         JobDetail jobDetail = jobExecutionContext.getJobDetail();
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
@@ -107,25 +109,38 @@ public class ImportJob extends BackgroundJob {
             // we are in the case of a regular content import.
             String destinationParentPath = (String) jobDataMap.get(DESTINATION_PARENT_PATH);
             String fileKey = (String) jobDataMap.get(FILE_KEY);
-            importContent(destinationParentPath, fileKey);
+            if(jobDataMap.containsKey(REPLACE_CONTENT)) {
+                importContent(destinationParentPath, fileKey, jobDataMap.getBoolean(REPLACE_CONTENT));
+            } else {
+                importContent(destinationParentPath, fileKey);
+            }
         }
     }
 
     public static void importContent(String parentPath, String fileKey) throws Exception {
+        importContent(parentPath, fileKey, false);
+    }
+
+    public static void importContent(String parentPath, String fileKey, boolean replaceContent) throws Exception {
         ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
         GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
         String contentType = ImportExportBaseService.detectImportContentType(item);
         try {
+            if(replaceContent) {
+                parentPath = StringUtils.substringBeforeLast(parentPath,"/");
+            }
             if ("application/zip".equals(contentType)) {
                 try {
-                    importExport.importZip(parentPath, item.getFile(), DocumentViewImportHandler.ROOT_BEHAVIOUR_RENAME);
+                    importExport.importZip(parentPath, item.getFile(),
+                            replaceContent ? DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE : DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE);
                 } finally {
                     item.dispose();
                 }
             } else if ("application/xml".equals(contentType) || "text/xml".equals(contentType)) {
                 InputStream is = item.getStream();
                 try {
-                    importExport.importXML(parentPath, is, DocumentViewImportHandler.ROOT_BEHAVIOUR_RENAME);
+                    importExport.importXML(parentPath, is,
+                            replaceContent ? DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE : DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE);
                 } finally {
                     IOUtils.closeQuietly(is);
                     item.dispose();

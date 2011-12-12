@@ -905,6 +905,14 @@
         <property name="icon" value="import"/>
     </bean>
 
+    <bean id="Toolbar.Item.Update" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UpdateActionItem"/>
+        </property>
+        <property name="titleKey" value="label.update"/>
+        <property name="icon" value="import"/>
+    </bean>
+
     <bean id="Toolbar.Item.Mount" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.MountActionItem"/>

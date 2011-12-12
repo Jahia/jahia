@@ -198,6 +198,8 @@ public interface JahiaContentManagementServiceAsync {
 
     void importContent(String parentPath, String fileKey, Boolean asynchronously, AsyncCallback async);
 
+    void importContent(String parentPath, String fileKey, Boolean asynchronously, Boolean replaceContent, AsyncCallback async);
+
     void getWorkflowDefinitions(List<String> workflowDefinitionIds, AsyncCallback<Map<String,GWTJahiaWorkflowDefinition>> async);
 
     void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties, List<String> comments, AsyncCallback async);

@@ -63,11 +63,17 @@ import org.jahia.ajax.gwt.client.widget.form.FileUploadField;
 public class ContentImport extends Window {
 
     private Linker m_linker;
+    private final boolean replaceContent;
 
     public ContentImport(final Linker linker, final GWTJahiaNode n) {
+        this(linker, n, false);
+    }
+
+    public ContentImport(final Linker linker, final GWTJahiaNode n, boolean replaceContent) {
         super();
 
         m_linker = linker;
+        this.replaceContent = replaceContent;
 
         setHeading(Messages.get("label.import"));
         setSize(500, 150);
@@ -113,7 +119,7 @@ public class ContentImport extends Window {
 
     public void doImport(String path, Object value, Boolean asynchronously) {
         Log.debug(path + " " + value);
-        JahiaContentManagementService.App.getInstance().importContent(path, value.toString(), asynchronously, new BaseAsyncCallback() {
+        JahiaContentManagementService.App.getInstance().importContent(path, value.toString(), asynchronously, replaceContent, new BaseAsyncCallback() {
 
             public void onApplicationFailure(Throwable caught) {
                 com.google.gwt.user.client.Window.alert(Messages.get("label.error") + "\n" + caught.getLocalizedMessage());

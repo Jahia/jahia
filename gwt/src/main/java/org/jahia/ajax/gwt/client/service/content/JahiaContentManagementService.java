@@ -403,6 +403,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public ModelData getVisibilityInformation(String path) throws GWTJahiaServiceException;
 
+    void importContent(String parentPath, String fileKey, Boolean asynchronously, Boolean replaceContent) throws GWTJahiaServiceException;
+
     // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

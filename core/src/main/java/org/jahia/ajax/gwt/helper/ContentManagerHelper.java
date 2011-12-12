@@ -647,6 +647,10 @@ public class ContentManagerHelper {
     }
 
     public void importContent(String parentPath, String fileKey, boolean asynchronously, JCRSessionWrapper session) throws GWTJahiaServiceException {
+        importContent(parentPath, fileKey, asynchronously, false, session);
+    }
+
+    public void importContent(String parentPath, String fileKey, boolean asynchronously, boolean replaceContent, JCRSessionWrapper session) throws GWTJahiaServiceException {
         try {
             GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
             ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
@@ -656,7 +660,7 @@ public class ContentManagerHelper {
 
             if (results.isSuccessful()) {
                 if (!asynchronously) {
-                    ImportJob.importContent(parentPath, fileKey);
+                    ImportJob.importContent(parentPath, fileKey, replaceContent);
                 } else {
                     // let's schedule an import job.
                     JobDetail jobDetail = BackgroundJob.createJahiaJob("Import file " + FilenameUtils.getName(item.getOriginalFileName()), ImportJob.class);
@@ -666,6 +670,7 @@ public class ContentManagerHelper {
                     jobDataMap.put(ImportJob.DESTINATION_PARENT_PATH, parentPath);
                     jobDataMap.put(ImportJob.FILE_KEY, fileKey);
                     jobDataMap.put(ImportJob.FILENAME, FilenameUtils.getName(item.getOriginalFileName()));
+                    jobDataMap.put(ImportJob.REPLACE_CONTENT,replaceContent);
 
                     ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
 

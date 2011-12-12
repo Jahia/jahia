@@ -363,6 +363,7 @@
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Export"/>
                                     <ref bean="Toolbar.Item.Import"/>
+                                    <ref bean="Toolbar.Item.Update"/>
                                 </list>
                             </property>
                         </bean>

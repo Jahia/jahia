@@ -55,6 +55,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.taglibs.standard.tag.common.core.OutSupport;
 import org.jahia.bin.Render;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
@@ -62,6 +63,7 @@ import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -182,13 +184,14 @@ class UrlRewriteEngine extends UrlRewriter {
                             logger.debug("Error when trying to obtain vanity url", e);
                         }
                     }
-                    try {
-                        // Switch to correct site for link to pages
-                        if (node.isNodeType("jnt:page")) {
+                    if (!SettingsBean.getInstance().isUrlRewriteSeoRulesEnabled()) {
+                        // Just in case the SEO is not activated, switch the servername anyway to avoid crosscontext pages
+                        try {
+                            // Switch to correct site for links
                             outboundUrl = Url.appendServerNameIfNeeded(node, outboundUrl, hsRequest);
+                        } catch (PathNotFoundException e) {
+                            // Cannot find node
                         }
-                    } catch (PathNotFoundException e) {
-                        // Cannot find node
                     }
                 }
             }

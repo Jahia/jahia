@@ -133,12 +133,12 @@ public class ServerNameToSiteMapper {
 
         if (!matches) {
             String serverName = lookupSiteServerNameByKey(siteKey);
-            if (serverName != null) {
+            if (!StringUtils.isEmpty(serverName)) {
                 if (request.getServerPort() != 80) {
                     serverName += ":"+request.getServerPort();
                 }
-                request.setAttribute(ATTR_NAME_SITE_KEY_FOR_LINK, serverName);
             }
+            request.setAttribute(ATTR_NAME_SITE_KEY_FOR_LINK, serverName);
         }
 
         if (logger.isDebugEnabled()) {

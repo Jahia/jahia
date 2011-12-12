@@ -72,7 +72,7 @@
         <condition type="attribute" name="jahiaSiteKeyMatchesDefaultLanguage" operator="equal">^false$</condition>
         <condition type="attribute" name="jahiaSiteKeyForLink" operator="notequal">^$</condition>
         <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)/(.*)$</from>
-        <to>http://%{attribute:jahiaSiteKeyForLink}$1/cms/$2/$4</to>
+        <to>%{scheme}://%{attribute:jahiaSiteKeyForLink}$1/cms/$2/$4</to>
     </outbound-rule>
     <outbound-rule>
         <name>Remove the site key and language and switch server</name>
@@ -81,7 +81,7 @@
         <condition type="attribute" name="jahiaSiteKeyMatchesDefaultLanguage" operator="equal">^true$</condition>
         <condition type="attribute" name="jahiaSiteKeyForLink" operator="notequal">^$</condition>
         <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)/(.*)$</from>
-        <to>http://%{attribute:jahiaSiteKeyForLink}$1/cms/$4</to>
+        <to>%{scheme}://%{attribute:jahiaSiteKeyForLink}$1/cms/$4</to>
     </outbound-rule>
     <outbound-rule>
         <name>Remove the /cms/render/live part</name>

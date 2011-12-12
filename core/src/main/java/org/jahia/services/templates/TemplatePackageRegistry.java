@@ -505,7 +505,7 @@ class TemplatePackageRegistry {
         logger.info("Registered "+templatePackage.getName() + " version=" + templatePackage.getVersion());
     }
 
-	public void unregister(JahiaTemplatesPackage templatePackage) {
+    public void unregister(JahiaTemplatesPackage templatePackage) {
         registry.remove(templatePackage.getName());
         fileNameRegistry.remove(templatePackage.getFileName());
         templatePackages = null;

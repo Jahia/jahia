@@ -87,7 +87,6 @@ import javax.jcr.query.QueryManager;
 
 import java.io.*;
 import java.util.*;
-import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -114,6 +113,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public static class ModuleDeployedOnSiteEvent extends ApplicationEvent {
+        private static final long serialVersionUID = -6693201714720533228L;
         private String targetSitePath;
 
         public ModuleDeployedOnSiteEvent(String targetSitePath, Object source) {
@@ -388,7 +388,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         templatePackageDeployer.startWatchdog();
 
         logger.info("JahiaTemplateManagerService started successfully."
-                + " Total number of found template packages: "
+                + " Total number of found modules: "
                 + templatePackageRegistry.getAvailablePackagesCount());
     }
 
@@ -411,6 +411,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof ContextInitializedEvent) {
             if (SettingsBean.getInstance().isProcessingServer()) {
+                // initialize modules (migration case)
+                templatePackageDeployer.initializeMissingModuleNodes();
                 // perform initial imports if any
                 final List<JahiaTemplatesPackage> packages = templatePackageDeployer.performInitialImport();
             

@@ -151,10 +151,10 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 if (!timestamps.containsKey(file.getPath()) || timestamps.get(file.getPath()) != file.lastModified()) {
                     logger.debug("Detected modified resource {}", file.getPath());
                     try {
-                        deployPackage(file);
+                    deployPackage(file);
                         timestamps.put(file.getPath(), file.lastModified());
-                        reloadSpringContext = true;
-                        changed = true;
+                    reloadSpringContext = true;
+                    changed = true;
                     } catch (ZipException e) {
                         logger.warn("Cannot deploy module : "+file.getName()+", will try again later");
                     } catch (Exception e) {
@@ -348,10 +348,10 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         for (int i = 0; i < warFiles.length; i++) {
             File templateWar = warFiles[i];
             try {
-                deployPackage(templateWar);
+            deployPackage(templateWar);
             } catch (Exception e) {
                 logger.error("Cannot deploy module : "+templateWar.getName(),e);
-            }
+        }
         }
 
         logger.info("...finished scanning shared modules directory.");
@@ -581,10 +581,12 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                             }
                         }
                         resetModuleAttributes(session, pack);
+                        session.save();
                         logger.info("... finished initial import for module package '" + pack.getName() + "'.");
                         return true;
                     }
                     resetModuleAttributes(session, pack);
+                    session.save();
                     return false;
                 }
             });
@@ -624,7 +626,6 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         if (pack.getModuleType() != null) {
             m.setProperty("j:siteType",pack.getModuleType());
         }
-        session.save();
     }
 
     private String guessModuleType(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
@@ -632,7 +633,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         if (session.itemExists("/templateSets/" + pack.getRootFolder() + "/j:siteType")) {
             moduleType = session.getNode("/templateSets/"+pack.getRootFolder()).getProperty("j:siteType").getValue().getString();
         } else {
-            List files = new ArrayList(Arrays.asList(new File(pack.getFilePath()).list()));
+            List<String> files = new ArrayList<String>(Arrays.asList(new File(pack.getFilePath()).list()));
             files.removeAll(Arrays.asList("META-INF","WEB-INF", "resources"));
             if (files.isEmpty()) {
                 moduleType = "system";
@@ -642,12 +643,21 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     }
 
     private void initRepository(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
+        initModuleNode(session, pack, true);
+        session.save();
+    }
+
+    private boolean initModuleNode(JCRSessionWrapper session, JahiaTemplatesPackage pack, boolean updateDeploymentDate)
+            throws RepositoryException {
+        boolean modified = false;
         if (!session.nodeExists("/templateSets")) {
             session.getRootNode().addNode("templateSets", "jnt:templateSets");
+            modified = true;
         }
         JCRNodeWrapper modules = session.getNode("/templateSets");
         JCRNodeWrapper m;
         if (!modules.hasNode(pack.getRootFolder())) {
+            modified = true;
             m = modules.addNode(pack.getRootFolder(), "jnt:virtualsite");
             m.addNode("portlets", "jnt:portletFolder");
             m.addNode("files", "jnt:folder");
@@ -660,21 +670,28 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         }
         JCRNodeWrapper v;
         if (!m.hasNode("j:versionInfo")) {
-            v = m.addNode("j:versionInfo", "jnt:versionInfo" );
+            v = m.addNode("j:versionInfo", "jnt:versionInfo");
+            modified = true;
         } else {
             v = m.getNode("j:versionInfo");
         }
         if (v.hasProperty("j:version")) {
             String s = v.getProperty("j:version").getString();
-            if (s.equals(pack.getVersion().toString())) {
-                // same version
+            if (!s.equals(pack.getVersion().toString())) {
+                v.setProperty("j:version", pack.getVersion().toString());
+                modified = true;
             }
+        } else {
+            v.setProperty("j:version", pack.getVersion().toString());
+            modified = true;
         }
-        v.setProperty("j:version", pack.getVersion().toString());
-        v.setProperty("j:deployementDate", new GregorianCalendar());
-        session.save();
-    }
+        if (updateDeploymentDate) {
+            v.setProperty("j:deployementDate", new GregorianCalendar());
+            modified = true;
+        }
 
+        return modified;
+    }
 
     public List<JahiaTemplatesPackage> performInitialImport() {
         List<JahiaTemplatesPackage> results = new ArrayList<JahiaTemplatesPackage>();
@@ -807,5 +824,43 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
 
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
+    }
+
+    public void initializeMissingModuleNodes() {
+        long timer = System.currentTimeMillis();
+        int count = 0;
+
+        try {
+            final Set<String> willBeImported = new HashSet<String>();
+            for (JahiaTemplatesPackage pkg : initialImports) {
+                willBeImported.add(pkg.getRootFolder());
+            }
+            count = JCRTemplate.getInstance().doExecuteWithSystemSession(
+                    new JCRCallback<Integer>() {
+                        public Integer doInJCR(JCRSessionWrapper session)
+                                throws RepositoryException {
+                            int count = 0;
+                            for (JahiaTemplatesPackage pkg : templatePackageRegistry
+                                    .getAvailablePackages()) {
+                                if (!willBeImported.contains(pkg.getRootFolder())
+                                        && !session.nodeExists("/templateSets/"
+                                                + pkg.getRootFolder())) {
+                                    if (initModuleNode(session, pkg, false)) {
+                                        count++;
+                                        resetModuleAttributes(session, pkg);
+                                    }
+                                }
+                            }
+                            if (count > 0) {
+                                session.save();
+                            }
+                            return count;
+                        }
+                    });
+        } catch (RepositoryException e) {
+            logger.error("Error initializig modules. Cause: " + e.getMessage(), e);
+        }
+        logger.info("Checking for missing module nodes and initializing {} of them took {} ms",
+                count, (System.currentTimeMillis() - timer));
     }
 }

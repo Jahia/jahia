@@ -37,7 +37,7 @@
 <jcr:node var="refNode" uuid="${facetValueName}"/>
 <c:choose>
     <c:when test="${not empty refNode}">        
-        <c:set var="mappedLabel" value="${refNode.name}"/>
+        <c:set var="mappedLabel" value="${refNode.displayableName}"/>
     </c:when>
     <c:when test="${not empty facetValueLabels}">
         <c:forEach items="${facetValueLabels}" var="currentFacetValueLabel">

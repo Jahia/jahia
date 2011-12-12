@@ -1,6 +1,7 @@
 import java.util.*
 
 import javax.jcr.*
+import javax.jcr.nodetype.NoSuchNodeTypeException
 import javax.jcr.query.*
 
 import org.jahia.services.content.*
@@ -14,6 +15,7 @@ Integer updated = JCRTemplate.getInstance().doExecuteWithSystemSession(null, "li
         int count = 0;
         Set<String> roles = new HashSet<String>();
         roles.add("owner");
+        try {
         for (NodeIterator pageIterator = session.getWorkspace().getQueryManager()
                         .createQuery("select * from [jnt:wikiPage] where [jcr:createdBy] is not null",
                                 Query.JCR_SQL2).execute().getNodes(); pageIterator.hasNext();) {
@@ -28,6 +30,12 @@ Integer updated = JCRTemplate.getInstance().doExecuteWithSystemSession(null, "li
             if (count > 0 && (count % 1000 == 0)) {
                 session.save();
             }
+        }
+        } catch (InvalidQueryException e) {
+            if (e.getCause() == null || !(e.getCause() instanceof NoSuchNodeTypeException)) {
+                log.warn("Unable to execute the query. Cause: " + e.getMessage(), e);
+            }
+            
         }
         if (count > 0) {
             session.save();

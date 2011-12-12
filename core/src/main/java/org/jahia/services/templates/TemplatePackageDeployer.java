@@ -51,6 +51,7 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
+import java.util.zip.ZipException;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
@@ -148,11 +149,18 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             File[] existingFiles = getPackageFiles(sharedTemplatesFolder);
             for (File file : existingFiles) {
                 if (!timestamps.containsKey(file.getPath()) || timestamps.get(file.getPath()) != file.lastModified()) {
-                    timestamps.put(file.getPath(), file.lastModified());
                     logger.debug("Detected modified resource {}", file.getPath());
-                    deployPackage(file);
-                    reloadSpringContext = true;
-                    changed = true;
+                    try {
+                        deployPackage(file);
+                        timestamps.put(file.getPath(), file.lastModified());
+                        reloadSpringContext = true;
+                        changed = true;
+                    } catch (ZipException e) {
+                        logger.warn("Cannot deploy module : "+file.getName()+", will try again later");
+                    } catch (Exception e) {
+                        logger.error("Cannot deploy module : "+file.getName(),e);
+                        timestamps.put(file.getPath(), file.lastModified());
+                    }
                 }
             }
             if (settingsBean.isDevelopmentMode()) {
@@ -339,7 +347,11 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
 
         for (int i = 0; i < warFiles.length; i++) {
             File templateWar = warFiles[i];
-            deployPackage(templateWar);
+            try {
+                deployPackage(templateWar);
+            } catch (IOException e) {
+                logger.error("Cannot deploy module : "+templateWar.getName(),e);
+            }
         }
 
         logger.info("...finished scanning shared modules directory.");
@@ -378,7 +390,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         }
     }
 
-    private void deployPackage(File templateWar) {
+    private void deployPackage(File templateWar) throws IOException {
         String packageName = null;
         String rootFolder = null;
         String implementationVersionStr = null;
@@ -386,8 +398,8 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         Calendar packageTimestamp = Calendar.getInstance();
         // TODO there are still some bugs in the generated paths, we must fix the list, maybe exclude directories ?
         Map<String,String> deployedFiles = new TreeMap<String,String>();
+        JarFile jarFile = new JarFile(templateWar);
         try {
-            JarFile jarFile = new JarFile(templateWar);
             Attributes mainAttributes = jarFile.getManifest().getMainAttributes();
             packageName = (String) mainAttributes.get(new Attributes.Name("package-name"));
             rootFolder = (String) mainAttributes.get(new Attributes.Name("root-folder"));

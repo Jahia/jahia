@@ -370,6 +370,9 @@ public class NavigationHelper {
                     }
                 }
             }
+            for (GWTJahiaNode userNode : userNodes) {
+                userNode.set("isRootNode", Boolean.TRUE);
+            }
             return userNodes;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

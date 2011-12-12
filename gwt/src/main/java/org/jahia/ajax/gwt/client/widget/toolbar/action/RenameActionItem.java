@@ -100,6 +100,7 @@ public class RenameActionItem extends NodeTypeAwareBaseActionItem {
         setEnabled(lh.getSingleSelection() != null
                 && PermissionsUtils.isPermitted("jcr:write", lh.getSelectionPermissions())
                 && !lh.isLocked()
+                && !lh.isRootNode()
                 && !lh.isSecondarySelection()
                 && !lh.getSingleSelection().getPath().equals("/sites/"+lh.getSingleSelection().getSiteKey()+"/"+lh.getSingleSelection().getName())
                 && !lh.getSingleSelection().getPath().equals("/"+lh.getSingleSelection().getName())

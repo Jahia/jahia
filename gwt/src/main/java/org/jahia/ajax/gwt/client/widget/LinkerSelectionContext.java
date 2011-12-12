@@ -70,6 +70,7 @@ public class LinkerSelectionContext {
     private boolean pasteAllowed;
 
     private GWTBitSet permissions;
+    private boolean isRootNode;
     private boolean parentWriteable;
     private boolean lockable;
     private boolean locked;
@@ -135,6 +136,7 @@ public class LinkerSelectionContext {
 
 
         permissions = null;
+        isRootNode = false;
         parentWriteable = true;
         parent = null;
         lockable = true;
@@ -156,6 +158,7 @@ public class LinkerSelectionContext {
                 parent = mainNode;
             }
             parentWriteable = parent != null && PermissionsUtils.isPermitted("jcr:addChildNodes",  parent) && !parent.isLocked();
+            isRootNode |= node.get("isRootNode") != null;
             lockable &= node.isLockable();
             locked &= node.isLocked();
 
@@ -202,6 +205,10 @@ public class LinkerSelectionContext {
 
     public GWTBitSet getSelectionPermissions() {
         return permissions;
+    }
+
+    public boolean isRootNode() {
+        return isRootNode;
     }
 
     public boolean isParentWriteable() {

@@ -59,6 +59,8 @@ public class EditContentActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         final GWTJahiaNode singleSelection = lh.getSingleSelection();
-        setEnabled(singleSelection != null && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions()));
+        setEnabled(singleSelection != null
+                && !lh.isRootNode()
+                && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions()));
     }
 }

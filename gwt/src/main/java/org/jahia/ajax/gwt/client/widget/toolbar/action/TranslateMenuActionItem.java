@@ -109,7 +109,8 @@ public class TranslateMenuActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null);
+        setEnabled(lh.getSingleSelection() != null
+                && !lh.isRootNode());
         menu.removeAll();
         initMenu(linker);
     }

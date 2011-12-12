@@ -220,14 +220,14 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                                 ok.setEnabled(true);
                                 acl = result.getAcl();
                                 referencesWarnings = result.getReferencesWarnings();
-                                for (TabItem item : tabs.getItems()) {
-                                    EditEngineTabItem tabItem = (EditEngineTabItem) item.getData("item");
-                                    if ((tabItem.getHideForTypes().isEmpty() || !node.isNodeType(
-                                            tabItem.getHideForTypes())) &&
-                                            (tabItem.getShowForTypes().isEmpty() || node.isNodeType(
-                                                    tabItem.getShowForTypes())) && (tabItem.getGwtEngineTab().getRequiredPermission() == null ||
-                                            tabItem.getGwtEngineTab().getRequiredPermission() != null && PermissionsUtils.isPermitted(tabItem.getGwtEngineTab().getRequiredPermission(), selectedNodes.get(0).getPermissions()))) {
-                                        item.setEnabled(true);
+                                if (node.get("isRootNode") == null) {
+                                    for (TabItem item : tabs.getItems()) {
+                                        EditEngineTabItem tabItem = (EditEngineTabItem) item.getData("item");
+                                        if ((tabItem.getHideForTypes().isEmpty() || !node.isNodeType(tabItem.getHideForTypes())) &&
+                                                (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes())) &&
+                                                (tabItem.getGwtEngineTab().getRequiredPermission() == null || tabItem.getGwtEngineTab().getRequiredPermission() != null && PermissionsUtils.isPermitted(tabItem.getGwtEngineTab().getRequiredPermission(), selectedNodes.get(0).getPermissions()))) {
+                                            item.setEnabled(true);
+                                        }
                                     }
                                 }
 
@@ -250,8 +250,8 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         ok.setEnabled(true);
                         for (TabItem item : tabs.getItems()) {
                             EditEngineTabItem editItem = (EditEngineTabItem) item.getData("item");
-                            if (((EditEngineTabItem) item.getData("item")).isHandleMultipleSelection() && (editItem.getGwtEngineTab().getRequiredPermission() == null ||
-                                    editItem.getGwtEngineTab().getRequiredPermission() != null && PermissionsUtils.isPermitted(editItem.getGwtEngineTab().getRequiredPermission(), selectedNodes.get(0).getPermissions()))) {
+                            if (((EditEngineTabItem) item.getData("item")).isHandleMultipleSelection() && 
+                                    (editItem.getGwtEngineTab().getRequiredPermission() == null || editItem.getGwtEngineTab().getRequiredPermission() != null && PermissionsUtils.isPermitted(editItem.getGwtEngineTab().getRequiredPermission(), selectedNodes.get(0).getPermissions()))) {
                                 item.setEnabled(true);
                             }
                             if (!tabs.getSelectedItem().equals(item)) {

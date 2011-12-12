@@ -40,6 +40,7 @@
 
 package org.jahia.bin;
 
+import org.apache.commons.io.FileUtils;
 import org.jahia.bin.errors.ErrorFileDumper;
 import org.jahia.settings.SettingsBean;
 import org.junit.AfterClass;
@@ -53,6 +54,7 @@ import org.springframework.util.StopWatch;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -75,11 +77,11 @@ public class ErrorFileDumperTest {
     public static void oneTimeSetUp() throws Exception {
         Date now = new Date();
         todaysDirectory = new File(new File(System.getProperty("java.io.tmpdir"), "jahia-errors"), ErrorFileDumper.DATE_FORMAT_DIRECTORY.format(now));
-
     }
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
+        FileUtils.deleteDirectory(todaysDirectory);
     }
 
     @Test
@@ -136,6 +138,44 @@ public class ErrorFileDumperTest {
 
         Assert.assertTrue("Error dump directory does not exist !", todaysDirectory.exists());
         Assert.assertTrue("Error dump directory should have error files in it !", todaysDirectory.listFiles().length > 0);
+    }
+
+    @Test
+    public void testOutputSystemInfoAllInParallel() throws InterruptedException {
+
+        StopWatch stopWatch = new StopWatch("testDumperInParallel");
+        stopWatch.start(Thread.currentThread().getName() + " generating error dumps");
+
+        ErrorFileDumper.start();
+
+        for (int i=0; i < THREAD_COUNT; i++) {
+            Thread newThread = new Thread(new Runnable() {
+
+                public void run() {
+                    // this is the call made in errors.jsp file.
+                    ErrorFileDumper.outputSystemInfoAll(new PrintWriter(System.out));
+                }
+            }, "ErrorFileDumperTestThread" + i);
+            newThread.start();
+        }
+
+        logger.info("Waiting for dumps to be processed...");
+
+        for (Thread curThread : threadSet) {
+            curThread.join();
+        }
+
+        ErrorFileDumper.shutdown(10000L);
+
+        stopWatch.stop();
+        long totalTime = stopWatch.getTotalTimeMillis();
+        double averageTime = ((double) totalTime) / ((double) LOOP_COUNT);
+        logger.info("Milliseconds per exception = " + averageTime);
+        logger.info(stopWatch.prettyPrint());
+
+        Assert.assertTrue("Error dump directory does not exist !", todaysDirectory.exists());
+        Assert.assertTrue("Error dump directory should have error files in it !", todaysDirectory.listFiles().length > 0);
+
     }
 
     private void generateExceptions() {

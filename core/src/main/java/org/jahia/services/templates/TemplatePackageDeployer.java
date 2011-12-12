@@ -349,7 +349,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             File templateWar = warFiles[i];
             try {
                 deployPackage(templateWar);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.error("Cannot deploy module : "+templateWar.getName(),e);
             }
         }

@@ -43,6 +43,7 @@ package org.jahia.services.render;
 import static org.jahia.api.Constants.LIVE_WORKSPACE;
 
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -148,7 +149,7 @@ public class URLResolver {
                     getUrlPathInfo().length());
         } 
         if (!resolveUrlMapping(serverName)) {
-            init();
+            init(request);
             if (!Url.isLocalhost(serverName) && isMappable()
                     && SettingsBean.getInstance().isPermanentMoveForVanityURL()) {
                 try {
@@ -194,18 +195,55 @@ public class URLResolver {
 
         if (!StringUtils.isEmpty(urlPathInfo)) {
             path = getUrlPathInfo().substring(1);
-            init();
+            init(context.getRequest());
         }
     }
-
-    private void init() {
+ 
+    private boolean isValidLocale(String value) {
+        Locale []locales = Locale.getAvailableLocales();
+        for (Locale l : locales) {
+          if (value.equals(l.toString())) {
+            return true;
+          }
+        }
+        return false;
+      }
+    
+    private void init(HttpServletRequest request) {
         workspace = verifyWorkspace(StringUtils.substringBefore(path, "/"));
         path = StringUtils.substringAfter(path, "/");
         String langCode = StringUtils.substringBefore(path, "/");
 
-        locale = StringUtils.isEmpty(langCode) ? DEFAULT_LOCALE
+        if(isValidLocale(langCode)) {
+            locale = StringUtils.isEmpty(langCode) ? DEFAULT_LOCALE
                 : LanguageCodeConverters.languageCodeToLocale(langCode);
-        path = "/" + StringUtils.substringAfter(path, "/");
+            path = "/" + StringUtils.substringAfter(path, "/");
+        } else {
+             locale = DEFAULT_LOCALE;
+             try{
+                 if(getSiteKey() != null) {
+                     boolean localeInSite = false;
+                     JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(getSiteKey());
+                     Enumeration<Locale> browserLocales = request.getLocales();
+                     while(!localeInSite && browserLocales.hasMoreElements()) {
+                         locale = browserLocales.nextElement();
+                         List<Locale> sitelocales = site.getLanguagesAsLocales();
+                         for(Locale sl : sitelocales) {
+                             if(!localeInSite && sl.getDisplayName().equals(locale.getDisplayName())) {
+                                 localeInSite = true;
+                                 break;
+                             }
+                         }
+                     }
+                     if(!localeInSite) 
+                       locale = site.getLanguagesAsLocales().get(0);
+                 }
+             }catch(JahiaException ex) {
+                 locale = request.getLocale();
+                 logger.info("Cannot get JahiaSite to get Locales, default Browser locale will be used", ex);
+             }
+             path = "/" + path;
+        }
 
         // TODO: this is perhaps a temporary limitation as URL points to special templates, when 
         // there are more than one dots - and the path needs to end with .html

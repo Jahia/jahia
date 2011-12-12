@@ -45,6 +45,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer;
 import org.jahia.services.content.nodetypes.renderer.ChoiceListRendererService;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
 
@@ -56,7 +57,7 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This Tag allows access to specific property of a node.
@@ -90,22 +91,36 @@ public class JCRPropertyCustomRendererTag extends AbstractJahiaTag {
             pageContext.removeAttribute(var);
         }
         try {
-            Property property = node.getProperty(name);
+            final Property property = node.getProperty(name);
             if (property != null) {
                 if (!"".equals(renderer)) {
                     final ChoiceListRenderer renderer1 = ChoiceListRendererService.getInstance().getRenderers().get(
                             renderer);
-                    RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext",
+                    final RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext",
                                                                                            PageContext.REQUEST_SCOPE);
+                    List<Map<String,Object>> l = new ArrayList<Map<String,Object>>();
+                    String s = "";
+                    if (property.isMultiple()) {
+                        for (Value v : property.getValues()) {
+                            if (var != null) {
+                                l.add(renderer1.getObjectRendering(renderContext, (ExtendedPropertyDefinition) property.getDefinition(), v.getString()));
+                            } else {
+                                s = (!"".equals(s)?s + ", ":"")  + renderer1.getStringRendering(renderContext, (ExtendedPropertyDefinition) property.getDefinition(), v.getString());
+                            }
+                        }
+                    } else {
+                        if (var !=null) {
+                            l.add(renderer1.getObjectRendering(renderContext,(JCRPropertyWrapper) property));
+                        } else {
+                            s = renderer1.getStringRendering(renderContext,(JCRPropertyWrapper) property);
+                        }
+                    }
                     if (var != null) {
-                        final Map<String, Object> map = renderer1.getObjectRendering(renderContext,
-                                                                                     (JCRPropertyWrapper) property);
-                        pageContext.setAttribute(var, map);
+                        pageContext.setAttribute(var, l);
 
                         returnValue = EVAL_BODY_INCLUDE;
                     } else {
-                        pageContext.getOut().print(renderer1.getStringRendering(renderContext,
-                                                                                (JCRPropertyWrapper) property));
+                        pageContext.getOut().print(s);
 
                     }
                 } else if (var != null) {

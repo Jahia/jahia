@@ -360,7 +360,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 }
                 Source source = new Source(cachedRenderContent);
                 // This will remove all blank line and drastically reduce data in memory
-                source = new Source((new SourceFormatter(source)).toString());
+//                source = new Source((new SourceFormatter(source)).toString());
                 List<StartTag> esiIncludeTags = source.getAllStartTags("esi:include");
                 /*if (debugEnabled) {
                     displaySegments(esiIncludeTags);
@@ -368,9 +368,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 // We will remove container content here has we do not want to store them twice in memory
                 OutputDocument outputDocument = emptyEsiIncludeTagContainer(esiIncludeTags, source);
                 String output = outputDocument.toString();
-                source = new Source(output);
-
-                output = outputDocument.toString();
                 cachedRenderContent = surroundWithCacheTag(key, output);
                 CacheEntry<String> cacheEntry = new CacheEntry<String>(cachedRenderContent);
 

@@ -40,18 +40,18 @@
 
 package org.jahia.taglibs.uicomponents;
 
+import org.jahia.api.Constants;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.render.RenderContext;
+import org.slf4j.Logger;
+
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
-import org.slf4j.Logger;
-import org.jahia.api.Constants;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.render.RenderContext;
-
 /**
  * Custom facet functions, which are exposed into the template scope.
- * 
+ *
  * @author Benjamin Papez
  */
 public class Functions {
@@ -61,7 +61,8 @@ public class Functions {
     /**
      *
      */
-    public static JCRNodeWrapper getBindedComponent(JCRNodeWrapper currentNode, RenderContext renderContext, String property) {
+    public static JCRNodeWrapper getBindedComponent(JCRNodeWrapper currentNode, RenderContext renderContext,
+                                                    String property) {
         Node bindedComponentNode = null;
         try {
             if (currentNode.hasProperty(property)) {
@@ -71,7 +72,7 @@ public class Functions {
                 }
                 if (bindedComponentNode != null) {
                     if (bindedComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY) ||
-                            bindedComponentNode.isNodeType("jnt:template")) {
+                        bindedComponentNode.isNodeType("jnt:template")) {
                         bindedComponentNode = renderContext.getMainResource().getNode();
                     } else if (bindedComponentNode.isNodeType(Constants.JAHIANT_AREA)) {
                         String areaName = bindedComponentNode.getName();
@@ -86,13 +87,18 @@ public class Functions {
             } else {
                 bindedComponentNode = renderContext.getMainResource().getNode();
             }
+            if (bindedComponentNode != null && !bindedComponentNode.getPath().equals(
+                    renderContext.getMainResource().getNode().getPath())) {
+                renderContext.getResourcesStack().peek().getDependencies().add(bindedComponentNode.getPath());
+            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
         return (JCRNodeWrapper) bindedComponentNode;
     }
 
-    public static String getBindedComponentPath(JCRNodeWrapper currentNode, RenderContext renderContext, String property) {
+    public static String getBindedComponentPath(JCRNodeWrapper currentNode, RenderContext renderContext,
+                                                String property) {
         Node bindedComponentNode = null;
         try {
             if (currentNode.hasProperty(property)) {
@@ -102,12 +108,12 @@ public class Functions {
                 }
                 if (bindedComponentNode != null) {
                     if (bindedComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY) ||
-                            bindedComponentNode.isNodeType("jnt:template")) {
+                        bindedComponentNode.isNodeType("jnt:template")) {
                         bindedComponentNode = renderContext.getMainResource().getNode();
                     } else if (bindedComponentNode.isNodeType(Constants.JAHIANT_AREA)) {
                         String areaName = bindedComponentNode.getName();
                         bindedComponentNode = renderContext.getMainResource().getNode();
-                        return bindedComponentNode.getPath() + "/" +areaName;
+                        return bindedComponentNode.getPath() + "/" + areaName;
                     }
                 }
             }

@@ -40,6 +40,7 @@
 
 package org.jahia.services.content.rules;
 
+import org.drools.FactException;
 import org.slf4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
@@ -216,7 +217,12 @@ public class AddedNodeFact implements Updateable, NodeFact {
     public void removeType(String type, KnowledgeHelper drools) throws RepositoryException {
         node.checkout();
         node.removeMixin(type);
-        drools.insert(new ChangedPropertyFact(this, node.getProperty(Constants.JCR_MIXINTYPES)));
+        try {
+            JCRPropertyWrapper property = node.getProperty(Constants.JCR_MIXINTYPES);
+            drools.insert(new ChangedPropertyFact(this, property));
+        } catch (PathNotFoundException e) {
+            drools.insert(new DeletedNodeFact(this,Constants.JCR_MIXINTYPES));
+        }
         node.getSession().save();
         //        drools.update(this);
     }

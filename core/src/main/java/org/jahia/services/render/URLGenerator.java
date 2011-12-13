@@ -82,6 +82,19 @@ import org.jahia.settings.SettingsBean;
 public class URLGenerator {
     private static Logger logger = LoggerFactory.getLogger(URLGenerator.class);
 
+    /**
+     * Returns the server URL, including scheme, host and port.
+     * The URL is in the form <code><scheme><host>:<port></code>,
+     * e.g. <code>http://www.jahia.org:8080</code>. The port is omitted in case
+     * of standard HTTP (80) and HTTPS (443) ports.
+     *
+     * @deprecated Please use Url.getServer(HttpServletRequest request) instead
+     *
+     * @return the server URL, including scheme, host and port
+     */
+    public static String getServer(HttpServletRequest request) {
+        return Url.getServer(request);
+    }
 
     private String base;
 

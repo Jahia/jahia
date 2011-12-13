@@ -67,7 +67,7 @@ import java.util.concurrent.TimeUnit;
 public class ErrorFileDumperTest {
 
     private final long LOOP_COUNT = 1000L;
-    private final long THREAD_COUNT = 20;
+    private final long THREAD_COUNT = 200;
     private Set<Thread> threadSet = new HashSet<Thread>();
     private static File todaysDirectory;
 
@@ -112,6 +112,8 @@ public class ErrorFileDumperTest {
 
         ErrorFileDumper.start();
 
+        threadSet.clear();
+
         for (int i=0; i < THREAD_COUNT; i++) {
             Thread newThread = new Thread(new Runnable() {
 
@@ -119,6 +121,7 @@ public class ErrorFileDumperTest {
                     generateExceptions();
                 }
             }, "ErrorFileDumperTestThread" + i);
+            threadSet.add(newThread);
             newThread.start();
         }
 
@@ -148,6 +151,8 @@ public class ErrorFileDumperTest {
 
         ErrorFileDumper.start();
 
+        threadSet.clear();
+
         for (int i=0; i < THREAD_COUNT; i++) {
             Thread newThread = new Thread(new Runnable() {
 
@@ -156,6 +161,7 @@ public class ErrorFileDumperTest {
                     ErrorFileDumper.outputSystemInfoAll(new PrintWriter(System.out));
                 }
             }, "ErrorFileDumperTestThread" + i);
+            threadSet.add(newThread);
             newThread.start();
         }
 

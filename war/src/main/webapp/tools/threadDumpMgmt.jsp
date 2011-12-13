@@ -14,11 +14,11 @@
 <h1>Thread Dump Management</h1>
 <c:if test="${empty param.threadDumpCount && (param.threadDump == 'sysout' || param.threadDump == 'file')}">
 <p style="color: blue">Thread dump created</p>
-<% new ThreadMonitor().dumpThreadInfo("sysout".equals(request.getParameter("threadDump")), "file".equals(request.getParameter("threadDump"))); %>
+<% ThreadMonitor.getInstance().dumpThreadInfo("sysout".equals(request.getParameter("threadDump")), "file".equals(request.getParameter("threadDump"))); %>
 </c:if>
 <c:if test="${not empty param.threadDumpCount && (param.threadDump == 'sysout' || param.threadDump == 'file')}">
 <p style="color: blue">Thread dump task started</p>
-<% new ThreadMonitor().dumpThreadInfoWithInterval("sysout".equals(request.getParameter("threadDump")), "file".equals(request.getParameter("threadDump")), Integer.parseInt(StringUtils.defaultIfEmpty(request.getParameter("threadDumpCount"), "10")), Integer.parseInt(StringUtils.defaultIfEmpty(request.getParameter("threadDumpInterval"), "10"))); %>
+<% ThreadMonitor.getInstance().dumpThreadInfoWithInterval("sysout".equals(request.getParameter("threadDump")), "file".equals(request.getParameter("threadDump")), Integer.parseInt(StringUtils.defaultIfEmpty(request.getParameter("threadDumpCount"), "10")), Integer.parseInt(StringUtils.defaultIfEmpty(request.getParameter("threadDumpInterval"), "10"))); %>
 </c:if>
 <ul>
     <li><img src="<c:url value='/icons/filePreview.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;<a href="<c:url value='/tools/threadDump.jsp'/>" target="_blank">Perform thread dump (view in a new browser window)</a></li>

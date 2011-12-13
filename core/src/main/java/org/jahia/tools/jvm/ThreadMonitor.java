@@ -59,6 +59,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.settings.SettingsBean;
 
 import java.io.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Warning : generating thread dumps is an operation that locks the JVM and therefore should not be done while
@@ -95,14 +96,16 @@ public class ThreadMonitor {
             }
             out("Executing thread dump " + executionCount + " of " + numberOfExecutions);
             OutputStream out = null;
+            long startTime = System.currentTimeMillis();
             try {
-                String dump = new ThreadMonitor().getFullThreadInfo();
+                String dump = ThreadMonitor.getInstance().getFullThreadInfo();
                 if (toSystemOut) {
                     System.out.println(dump);
                 }
                 if (targetFile != null) {
                     out = new FileOutputStream(targetFile, true);
-                    out.write(new ThreadMonitor().getFullThreadInfo().getBytes("UTF-8"));
+                    out.write(dump.getBytes("UTF-8"));
+                    out.flush();
                 }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -111,10 +114,13 @@ public class ThreadMonitor {
             } finally {
                 if (targetFile != null) {
                     IOUtils.closeQuietly(out);
+                    long dumpTime = System.currentTimeMillis() - startTime;
+                    out("Wrote thread dump to file " + targetFile.getAbsolutePath() + " in " + dumpTime + " ms");
                 }
                 if (executionCount >= numberOfExecutions) {
                     timer.cancel();
                     out("Stopping thread dump task after " + executionCount + " executions into a file " + targetFile);
+                    ThreadMonitor.getInstance().releaseAlreadyDumping();
                 }
             }
         }
@@ -141,17 +147,31 @@ public class ThreadMonitor {
 
     private ThreadMXBean tmbean;
 
+    private volatile static ThreadMonitor instance;
+
+    private Timer timer;
+
+    private boolean loggingConcurrentCalls = false;
+
+    private AtomicBoolean alreadyDumping = new AtomicBoolean(false);
+
+    private boolean activated = true;
+
+    private long minimalIntervalBetweenDumps = 20;
+
+    private long lastDumpTime = -1;
+
     /**
      * Constructs a ThreadMonitor object to get thread information in the local JVM.
      */
-    public ThreadMonitor() {
+    private ThreadMonitor() {
         this(ManagementFactory.getPlatformMBeanServer());
     }
 
     /**
      * Constructs a ThreadMonitor object to get thread information in a remote JVM.
      */
-    public ThreadMonitor(MBeanServerConnection server) {
+    private ThreadMonitor(MBeanServerConnection server) {
         setMBeanServerConnection(server);
         try {
             parseMBeanInfo();
@@ -161,10 +181,103 @@ public class ThreadMonitor {
     }
 
     /**
-     * Prints the thread dump information to System.out.
+     * Retrieves the singleton instance, creating it if it doesn't exist yet. Be sure to call the shutdownInstance()
+     * method once you no longer need it.
+     * @return
      */
-    public void dumpThreadInfo() {
-        dumpThreadInfo(true, false);
+    public static ThreadMonitor getInstance() {
+        if (instance == null) {
+            synchronized (ThreadMonitor.class) {
+                if (instance == null) {
+                    instance = new ThreadMonitor();
+                }
+            }
+        }
+        return instance;
+    }
+
+    /**
+     * Shuts down the singleton instance, calls this when undeploying your application, or call it from the
+     * dependency injection system upon destruction of the application context.
+     */
+    public static void shutdownInstance() {
+        if (instance == null) {
+            return;
+        }
+        instance.shutdown();
+        instance = null;
+    }
+
+    public boolean isLoggingConcurrentCalls() {
+        return loggingConcurrentCalls;
+    }
+
+    /**
+     * Activate this to output concurrent call logging to System.out
+     * @param loggingConcurrentCalls
+     */
+    public void setLoggingConcurrentCalls(boolean loggingConcurrentCalls) {
+        this.loggingConcurrentCalls = loggingConcurrentCalls;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    /**
+     * With this method you can activate/deactivate thread dumping methods. If deactivated, the methods will simply
+     * do nothing.
+     * @param activated
+     */
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
+
+    public long getMinimalIntervalBetweenDumps() {
+        return minimalIntervalBetweenDumps;
+    }
+
+    /**
+     * Sets the minimal interval allowed between thread dumps. This makes it easy to avoid loading the CPU with
+     * thread dumps under heavy load. The default value is 20ms between two thread dumps. If a thread dump is requested
+     * before the interval has elapsed it will simply be ignored (there is no queuing). Some methods that return a
+     * String will indicate this behavior.
+     * @param minimalIntervalBetweenDumps specified in milliseconds (default value is 20ms).
+     */
+    public void setMinimalIntervalBetweenDumps(long minimalIntervalBetweenDumps) {
+        this.minimalIntervalBetweenDumps = minimalIntervalBetweenDumps;
+    }
+
+    private void shutdown() {
+        if (timer != null) {
+            timer.cancel();
+        }
+    }
+
+    private boolean isAlreadyDumping() {
+        boolean dumping = !alreadyDumping.compareAndSet(false, true);
+        if (!dumping) {
+            // let's check the interval since that last dump.
+            long currentTime = System.currentTimeMillis();
+            if ((currentTime - lastDumpTime) <= minimalIntervalBetweenDumps) {
+                if (loggingConcurrentCalls) {
+                    System.out.println("Cannot dump threads as minimal interval ("+minimalIntervalBetweenDumps+"ms) between dumps has not elapsed (=" + (currentTime - lastDumpTime) + "ms)");
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (loggingConcurrentCalls) {
+                System.out.println("Thread dump already in progress, ignoring...");
+            }
+            return dumping;
+        }
+    }
+
+    private void releaseAlreadyDumping() {
+        lastDumpTime = System.currentTimeMillis();
+        alreadyDumping.set(false);
     }
 
     /**
@@ -173,10 +286,20 @@ public class ThreadMonitor {
      * @param toFile print the generated thread dump to a file
      */
     public void dumpThreadInfo(boolean toSysOut, boolean toFile) {
+
+        if (!activated) {
+            return;
+        }
+
         if (!(toSysOut || toFile)) {
             return;
         }
-        
+
+        if (isAlreadyDumping()) {
+            return;
+        }
+
+        long startTime = System.currentTimeMillis();
         String threadInfo = getFullThreadInfo();
         if (toSysOut) {
             System.out.print(threadInfo);
@@ -186,10 +309,14 @@ public class ThreadMonitor {
             final File dumpFile = getNextThreadDumpFile(null);
             try {
                 FileUtils.writeStringToFile(dumpFile, threadInfo, "UTF-8");
+                long dumpTime = System.currentTimeMillis() - startTime;
+                System.out.println("Wrote thread dump to file " + dumpFile.getAbsolutePath() + " in " + dumpTime + " ms");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
+        releaseAlreadyDumping();
     }
 
     private void dumpThreadInfo(StringBuilder dump) {
@@ -200,7 +327,9 @@ public class ThreadMonitor {
         ThreadInfo[] tinfos = tmbean.getThreadInfo(tids, Integer.MAX_VALUE);
         for (int i = 0; i < tinfos.length; i++) {
             ThreadInfo ti = tinfos[i];
-            printThreadInfo(ti, dump);
+            if (ti != null) {
+                printThreadInfo(ti, dump);
+            }
         }
         dump.append(DUMP_END);
     }
@@ -231,11 +360,21 @@ public class ThreadMonitor {
      */
     public void dumpThreadInfoWithInterval(boolean toSysOut, boolean toFile, int threadDumpCount,
             int intervalSeconds) {
+        if (!activated) {
+            return;
+        }
+
         if (threadDumpCount < 1 || intervalSeconds < 1 || !(toSysOut || toFile)) {
             return;
         }
-        
-        Timer timer = new Timer(true);
+
+        if (isAlreadyDumping()) {
+            return;
+        }
+
+        if (timer == null) {
+            timer = new Timer(true);
+        }
         File file = toFile ? getNextThreadDumpFile("-" + threadDumpCount + "-executions") : null;
         timer.schedule(new ThreadDumpTask(timer, threadDumpCount, toSysOut, file), 0,
                 intervalSeconds * 1000L);
@@ -245,6 +384,15 @@ public class ThreadMonitor {
      * Checks if any threads are deadlocked. If any, print the thread dump information.
      */
     public String findDeadlock() {
+
+        if (!activated) {
+            return "ThreadMonitor deactivated.";
+        }
+
+        if (isAlreadyDumping()) {
+            return "Dead lock detection already in progress in another thread, will not report";
+        }
+
         StringBuilder dump = new StringBuilder();
         long[] tids = tmbean.findMonitorDeadlockedThreads();
         if (tids == null) {
@@ -259,6 +407,8 @@ public class ThreadMonitor {
             printThreadInfo(ti, dump);
         }
 
+        releaseAlreadyDumping();
+
         return (dump.toString());
     }
 
@@ -268,10 +418,29 @@ public class ThreadMonitor {
      * @param writer the output writer
      */
     public void generateThreadInfo(Writer writer) {
+        if (!activated) {
+            try {
+                writer.write("ThreadMonitor deactivated.");
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            return;
+        }
+
+        if (isAlreadyDumping()) {
+            try {
+                writer.write("Thread info generation already in progress in another thread.");
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            return;
+        }
         try {
             writer.write(getFullThreadInfo());
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            releaseAlreadyDumping();
         }
     }
 
@@ -289,7 +458,7 @@ public class ThreadMonitor {
      * 
      * @return the thread dump content as string
      */
-    public String getFullThreadInfo() {
+    private String getFullThreadInfo() {
         StringBuilder dump = new StringBuilder(65536);
 
         if ((SettingsBean.getInstance() != null) && SettingsBean.getInstance().isUseJstackForThreadDumps()) {
@@ -297,7 +466,7 @@ public class ThreadMonitor {
         } else {
             dumpThreadInfo(dump);
         }
-        
+
         return dump.toString();
     }
 

@@ -451,14 +451,14 @@ public class ErrorFileDumper {
             strOut.println();
             strOut.println("Thread status:");
             strOut.println("--------------");
-            threadMonitor = new ThreadMonitor();
+            threadMonitor = ThreadMonitor.getInstance();
             threadMonitor.generateThreadInfo(strOut);
         }
 
         if (deadlocks) {
             strOut.println();
             strOut.println("Deadlock status:");
-            threadMonitor = threadMonitor != null ? threadMonitor : new ThreadMonitor();
+            threadMonitor = threadMonitor != null ? threadMonitor : ThreadMonitor.getInstance();;
             String deadlock = threadMonitor.findDeadlock();
             strOut.println(deadlock != null ? deadlock : "none");
         }

@@ -854,7 +854,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             }
         }
         if (createDump) {
-            ThreadMonitor tm = new ThreadMonitor();
+            ThreadMonitor tm = ThreadMonitor.getInstance();
             tm.dumpThreadInfo(generatorQueue.isThreadDumpToSystemOut(), generatorQueue.isThreadDumpToFile());
             tm = null;
         }

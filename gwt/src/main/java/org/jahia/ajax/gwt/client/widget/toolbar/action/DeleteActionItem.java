@@ -95,8 +95,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                 }
 
                 if (selected.get("everPublished") != null && ((Boolean)selected.get("everPublished"))
-                        || (selected.isLocked() && (!selected.getNodeTypes().contains(
-                                "jmix:markedForDeletionRoot"))) || !UndeleteActionItem.isLockedForDeletion(selected)) {
+                        ||  !selected.getNodeTypes().contains("jmix:markedForDeletionRoot")) {
                     // the node is already published or it is locked (not for deletion)
                     enabled = false;
                     break;
@@ -110,7 +109,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
 
             // if one of the selected nodes cannot be marked for deletion -> do not display the delete action
                 for (GWTJahiaNode selected : lh.getMultipleSelection()) {
-                    if (!selected.canMarkForDeletion()) {
+                    if (!selected.canMarkForDeletion() || selected.getNodeTypes().contains("jmix:markedForDeletionRoot")) {
                         enabled = false;
                         break;
                     }

@@ -40,12 +40,14 @@
 
 package org.jahia.services.content.files;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -61,6 +63,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.catalina.servlets.RangeUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.commons.conversion.MalformedPathException;
@@ -177,10 +180,8 @@ public class FileServlet extends HttpServlet {
                 }
 
                 if (fileEntry != null) {
-                    res.setContentType(fileEntry.getMimeType());
-                    if (fileEntry.getContentLength() <= Integer.MAX_VALUE) {
-                        res.setContentLength((int) fileEntry.getContentLength());
-                    }
+                    List<RangeUtils.Range> ranges = RangeUtils.parseRange(req, res, fileEntry.getETag(), fileEntry.getLastModified(), fileEntry.getContentLength());
+
                     if (fileKey.getPath().indexOf('%', fileKey.getPath().lastIndexOf('/')) != -1) {
                         res.setHeader(
                                 "Content-Disposition",
@@ -190,30 +191,73 @@ public class FileServlet extends HttpServlet {
                     }
                     res.setDateHeader("Last-Modified", fileEntry.getLastModified());
                     res.setHeader("ETag", fileEntry.getETag());
-                    ServletOutputStream os = res.getOutputStream();
+                    InputStream is = null;
+
                     if (fileEntry.getData() != null) {
                         // writing in-memory data
-                        os.write(fileEntry.getData());
-                        os.flush();
-                        os.close();
+                        is = new ByteArrayInputStream(fileEntry.getData());
                     } else if (fileEntry.getBinary() != null) {
                         // spool from an input stream
-                        InputStream is = null;
-                        try {
-                            is = fileEntry.getBinary().getStream();
-                            IOUtils.copy(is, os);
-                            os.flush();
-                            os.close();
-                        } finally {
-                            IOUtils.closeQuietly(is);
-                            fileEntry.getBinary().dispose();
-                            fileEntry.setBinary(null);
-                        }
+                        is = fileEntry.getBinary().getStream();
                     } else {
                         code = HttpServletResponse.SC_NOT_FOUND;
                         res.sendError(HttpServletResponse.SC_NOT_FOUND);
                         return;
                     }
+
+                    if (ranges == null || (ranges == RangeUtils.FULL)) {
+                        res.setContentType(fileEntry.getMimeType());
+                        if (fileEntry.getContentLength() <= Integer.MAX_VALUE) {
+                            res.setContentLength((int) fileEntry.getContentLength());
+                        } else {
+                            res.setHeader("Content-Length", Long.toString(fileEntry.getContentLength()));
+                        }
+                        ServletOutputStream os = res.getOutputStream();
+                        IOUtils.copy(is, os);
+                        os.flush();
+                        os.close();
+                    } else {
+                        res.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+                        if (ranges.size() == 1) {
+                            res.setContentType(fileEntry.getMimeType());
+                            RangeUtils.Range range = (RangeUtils.Range) ranges.get(0);
+                            res.addHeader("Content-Range", "bytes "
+                                               + range.start
+                                               + "-" + range.end + "/"
+                                               + range.length);
+                            long length = range.end - range.start + 1;
+                            if (length < Integer.MAX_VALUE) {
+                                res.setContentLength((int) length);
+                            } else {
+                                // Set the content-length as String to be able to use a long
+                                res.setHeader("Content-Length", "" + length);
+                            }
+                            ServletOutputStream os = res.getOutputStream();
+                            RangeUtils.copy(is, os, range);
+                            IOUtils.closeQuietly(is);
+                            IOUtils.closeQuietly(os);
+
+                        } else {
+                            res.setContentType("multipart/byteranges; boundary="
+                                                + RangeUtils.MIME_SEPARATION);
+
+                            try {
+                                res.setBufferSize(RangeUtils.getOutput());
+                            } catch (IllegalStateException e) {
+                                // Silent catch
+                            }
+                            ServletOutputStream os = res.getOutputStream();
+                            RangeUtils.copy(is, os, ranges.iterator(),
+                                    fileEntry.getMimeType());
+                            IOUtils.closeQuietly(is);
+                            IOUtils.closeQuietly(os);
+                        }
+                    }
+                    if ((fileEntry.getData() == null) && (fileEntry.getBinary() != null)) {
+                        fileEntry.getBinary().dispose();
+                        fileEntry.setBinary(null);
+                    }
+
                 } else {
                     code = HttpServletResponse.SC_NOT_FOUND;
                     res.sendError(HttpServletResponse.SC_NOT_FOUND);

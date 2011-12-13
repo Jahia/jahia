@@ -258,7 +258,7 @@ public class CronField extends AdapterField {
                 hourCombo.setValue(hourCombo.getStore().getAt(Integer.parseInt(values[2])));
                 minuteCombo.setValue(minuteCombo.getStore().getAt(Integer.parseInt(values[1])));
                 monthDayCombo.setValue(monthDayCombo.getStore().getAt(Integer.parseInt(values[3]) - 1));
-                monthCombo.setValue(monthCombo.getStore().getAt(Integer.parseInt(values[4])));
+                monthCombo.setValue(monthCombo.getStore().getAt(Integer.parseInt(values[4]) - 1));
                 choose.setValue(choose.getStore().getAt(EVERY_YEAR));
             }
         } else {
@@ -289,7 +289,7 @@ public class CronField extends AdapterField {
                 return "0 " + minuteCombo.getValue().getValue() + " " + hourCombo.getValue().getValue() + " " + (monthDayCombo.getSelectedIndex() + 1) + " * ?";
             }
             case EVERY_YEAR: { // Year
-                return "0 " + minuteCombo.getValue().getValue() + " " + hourCombo.getValue().getValue() + " " + (monthDayCombo.getSelectedIndex() + 1) + " " + (monthCombo.getSelectedIndex()) + " ?";
+                return "0 " + minuteCombo.getValue().getValue() + " " + hourCombo.getValue().getValue() + " " + (monthDayCombo.getSelectedIndex() + 1) + " " + (monthCombo.getSelectedIndex() + 1) + " ?";
             }
         }
         return "";

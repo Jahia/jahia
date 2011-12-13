@@ -169,7 +169,7 @@ public class Logout implements Controller {
             }
         }
 
-        response.sendRedirect(response.encodeRedirectURL(redirect));
+        response.sendRedirect(response.encodeRedirectURL(StringUtils.isNotEmpty(redirect) ? redirect : request.getContextPath() + "/"));
     }
 
     /**

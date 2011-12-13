@@ -55,4 +55,5 @@
     <bean class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
     
     <bean id="jahiaLoginConfig" class="org.jahia.params.valves.LoginConfig" factory-method="getInstance"/>
+    <bean id="jahiaLogoutConfig" class="org.jahia.params.valves.LogoutConfig" factory-method="getInstance"/>
 </beans>

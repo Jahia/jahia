@@ -52,50 +52,51 @@ import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.ApplicationListener;
 
 /**
- * Login configuration settings.
+ * Logout configuration settings.
  * 
  * @author Sergiy Shyrkov
  */
-public class LoginConfig implements ApplicationListener<ContextInitializedEvent> {
+public class LogoutConfig implements ApplicationListener<ContextInitializedEvent> {
 
-    private static LoginConfig instance;
-    
-    private static final Logger logger = LoggerFactory.getLogger(LoginConfig.class);
+    private static LogoutConfig instance;
 
-    public static LoginConfig getInstance() {
+    private static final Logger logger = LoggerFactory.getLogger(LogoutConfig.class);
+
+    public static LogoutConfig getInstance() {
         if (instance == null) {
-            synchronized (LoginConfig.class) {
+            synchronized (LogoutConfig.class) {
                 if (instance == null) {
-                    instance = new LoginConfig();
+                    instance = new LogoutConfig();
                 }
             }
         }
-        
+
         return instance;
     }
-    
-    private LoginUrlProvider loginUrlProvider;
+
+    private LogoutUrlProvider logoutUrlProvider;
 
     /**
-     * Returns custom login URL if the corresponding authentication provider is found. <code>null</code> otherwise.
+     * Returns custom logout URL if the corresponding authentication provider is found. <code>null</code> otherwise.
      * 
      * @param request
      *            current servlet request
-     * @return custom login URL if the corresponding authentication provider is found. <code>null</code> otherwise.
+     * @return custom logout URL if the corresponding authentication provider is found. <code>null</code> otherwise.
      */
-    public String getCustomLoginUrl(HttpServletRequest request) {
-        return loginUrlProvider != null ? loginUrlProvider.getLoginUrl(request) : null;
+    public String getCustomLogoutUrl(HttpServletRequest request) {
+        return logoutUrlProvider != null ? logoutUrlProvider.getLogoutUrl(request) : null;
     }
 
     public void onApplicationEvent(ContextInitializedEvent event) {
-        Map<String, LoginUrlProvider> beansOfType = BeanFactoryUtils.beansOfTypeIncludingAncestors(
-                ((TemplatePackageApplicationContextLoader) event.getSource()).getContext(),
-                LoginUrlProvider.class);
+        Map<String, LogoutUrlProvider> beansOfType = BeanFactoryUtils
+                .beansOfTypeIncludingAncestors(
+                        ((TemplatePackageApplicationContextLoader) event.getSource()).getContext(),
+                        LogoutUrlProvider.class);
         if (!beansOfType.isEmpty()) {
-            for (LoginUrlProvider provider : beansOfType.values()) {
-                if (provider.hasCustomLoginUrl()) {
-                    logger.info("Using login URL provider {}", provider);
-                    loginUrlProvider = provider;
+            for (LogoutUrlProvider provider : beansOfType.values()) {
+                if (provider.hasCustomLogoutUrl()) {
+                    logger.info("Using logout URL provider {}", provider);
+                    logoutUrlProvider = provider;
                     return;
                 }
             }

@@ -40,65 +40,31 @@
 
 package org.jahia.params.valves;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
-import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
-import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.BeanFactoryUtils;
-import org.springframework.context.ApplicationListener;
-
 /**
- * Login configuration settings.
+ * Is implemented by an authentication provider that implies custom logout form URL.
  * 
+ * @since Jahia 6.6
  * @author Sergiy Shyrkov
  */
-public class LoginConfig implements ApplicationListener<ContextInitializedEvent> {
-
-    private static LoginConfig instance;
-    
-    private static final Logger logger = LoggerFactory.getLogger(LoginConfig.class);
-
-    public static LoginConfig getInstance() {
-        if (instance == null) {
-            synchronized (LoginConfig.class) {
-                if (instance == null) {
-                    instance = new LoginConfig();
-                }
-            }
-        }
-        
-        return instance;
-    }
-    
-    private LoginUrlProvider loginUrlProvider;
+public interface LogoutUrlProvider {
 
     /**
-     * Returns custom login URL if the corresponding authentication provider is found. <code>null</code> otherwise.
+     * Returns the custom logout URL, used to redirect the user for invalidating session. If the provider is not activated, returns
+     * <code>null</code>.
      * 
-     * @param request
-     *            current servlet request
-     * @return custom login URL if the corresponding authentication provider is found. <code>null</code> otherwise.
+     * @return the custom logout URL, used to redirect the user for invalidating session. If the provider is not activated, returns
+     *         <code>null</code>.
      */
-    public String getCustomLoginUrl(HttpServletRequest request) {
-        return loginUrlProvider != null ? loginUrlProvider.getLoginUrl(request) : null;
-    }
+    String getLogoutUrl(HttpServletRequest request);
 
-    public void onApplicationEvent(ContextInitializedEvent event) {
-        Map<String, LoginUrlProvider> beansOfType = BeanFactoryUtils.beansOfTypeIncludingAncestors(
-                ((TemplatePackageApplicationContextLoader) event.getSource()).getContext(),
-                LoginUrlProvider.class);
-        if (!beansOfType.isEmpty()) {
-            for (LoginUrlProvider provider : beansOfType.values()) {
-                if (provider.hasCustomLoginUrl()) {
-                    logger.info("Using login URL provider {}", provider);
-                    loginUrlProvider = provider;
-                    return;
-                }
-            }
-        }
-    }
+    /**
+     * Returns <code>true</code> if an only if the provider is activated (the corresponding authentication valve) and the valve requires
+     * custom logout URL. Otherwise returns <code>false</code>.
+     * 
+     * @return <code>true</code> if an only if the provider is activated (the corresponding authentication valve) and the valve requires
+     *         custom logout URL. Otherwise returns <code>false</code>.
+     */
+    boolean hasCustomLogoutUrl();
 }

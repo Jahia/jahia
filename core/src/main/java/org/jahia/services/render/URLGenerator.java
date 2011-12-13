@@ -66,6 +66,7 @@ import org.jahia.bin.Logout;
 import org.jahia.bin.Render;
 import org.jahia.bin.Studio;
 import org.jahia.params.valves.LoginConfig;
+import org.jahia.params.valves.LogoutConfig;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -112,6 +113,8 @@ public class URLGenerator {
     private String server;
     
     private String login;
+    
+    private String logout;
 
     public URLGenerator(RenderContext context, Resource resource) {
         this.context = context;
@@ -221,7 +224,13 @@ public class URLGenerator {
     }
 
     public String getLogout() {
-        return Logout.getLogoutServletPath();
+        if (logout == null) {
+            logout = StringUtils.defaultIfEmpty(
+                    LogoutConfig.getInstance().getCustomLogoutUrl(context.getRequest()),
+                    Logout.getLogoutServletPath());
+        }
+
+        return logout;
     }
 
     public String getCurrentModule() {
@@ -398,7 +407,7 @@ public class URLGenerator {
                   ("https".equals(scheme) && (port == 443)))) {
                 url.append(":").append(port);
             }
-
+            
             server = url.toString();
         }
         

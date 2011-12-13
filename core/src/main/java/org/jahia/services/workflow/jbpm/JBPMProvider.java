@@ -835,11 +835,12 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             resourceBundle = getResourceBundle(displayLocale, definitionKey);
         }
         if (resourceBundle != null) {
+            String key = workflowAction.getName().replaceAll(" ",
+                    ".").trim().toLowerCase();
             try {
-                rbActionName = resourceBundle.getString(workflowAction.getName().replaceAll(" ",
-                        ".").trim().toLowerCase());
+                rbActionName = resourceBundle.getString(key);
             } catch (MissingResourceException e) {
-                logger.info("Missing ressource : " + key + " in " + resourceBundle);
+                logger.warn("Missing ressource : " + key + " in " + resourceBundle);
             }
         }
         workflowAction.setDisplayName(rbActionName);
@@ -856,7 +857,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                     try {
                         s = resourceBundle.getString(key);
                     } catch (Exception e) {
-                        logger.info("Missing ressource : " + key + " in " + resourceBundle);
+                        logger.warn("Missing ressource : " + key + " in " + resourceBundle);
                     }
                 }
                 displayOutcomes.add(s);

@@ -75,13 +75,14 @@
                             <c:set var="baseEdit"
                                    value="${fn:substring(url.baseEdit,-1,fn:length(url.baseEdit)-localeLength)}${node.defaultLanguage}"/>
                         </c:if>
-                        <c:if test="${currentNode.properties.edit.boolean && jcr:hasPermission(node,'editModeAccess') && !renderContext.settings.distantPublicationServerMode}">
+                        <c:set var="remotelyPublished" value="${jcr:isNodeType(node,'jmix:remotelyPublished')}"/>
+                        <c:if test="${currentNode.properties.edit.boolean && jcr:hasPermission(node,'editModeAccess') && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
                             <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" "
                                  role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
                                 href="<c:url value='${baseEdit}${node.path}${page}.html'/>"><fmt:message
                                 key="label.editMode"/></a>
                         </c:if>
-                        <c:if test="${currentNode.properties.contribute.boolean  && jcr:hasPermission(node,'contributeModeAccess') && !renderContext.settings.distantPublicationServerMode}">
+                        <c:if test="${currentNode.properties.contribute.boolean  && jcr:hasPermission(node,'contributeModeAccess') && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
                             <c:url value='/icons/contribute.png' var="icon"/>
                             <c:if test="${currentNode.properties.typeOfContent.string eq 'contents'}">
                                 <c:url value='/icons/content-manager-1616.png' var="icon"/>
@@ -91,13 +92,13 @@
                                 href="<c:url value='${baseContribute}${node.path}${page}.html'/>"><fmt:message
                                 key="label.contribute"/></a>
                         </c:if>
-                        <c:if test="${currentNode.properties.preview.boolean && jcr:hasPermission(node,'jcr:read_default') && !renderContext.settings.distantPublicationServerMode}">
+                        <c:if test="${currentNode.properties.preview.boolean && jcr:hasPermission(node,'jcr:read_default') && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
                             <img src="<c:url value='/icons/preview.png'/>" width="16" height="16" alt=" "
                                  role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
                                 href="<c:url value='${basePreview}${node.path}${page}.html'/>"><fmt:message
                                 key="label.preview"/></a>
                         </c:if>
-                        <c:if test="${currentNode.properties.live.boolean && node.home.properties['j:published'].boolean}">
+                        <c:if test="${currentNode.properties.live.boolean && (node.home.properties['j:published'].boolean or remotelyPublished)}">
                             <img src="<c:url value='/icons/live.png'/>" width="16" height="16" alt=" "
                                  role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
                                 href="<c:url value='${baseLive}${node.path}${page}.html'/>"><fmt:message

@@ -41,7 +41,6 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
-import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;

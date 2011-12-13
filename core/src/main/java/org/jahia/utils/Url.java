@@ -43,6 +43,7 @@ package org.jahia.utils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
@@ -132,8 +133,43 @@ public class Url {
                 !isLocalhost(node.getResolveSite().getServerName()) &&
                 !request.getServerName().equals(node.getResolveSite().getServerName())
                 ) {
-            nodeURL = new URL(request.getScheme(), node.getResolveSite().getServerName(), request.getServerPort(), nodeURL).toString();
+            int serverPort = request.getServerPort();
+            if ("http".equals(request.getScheme()) && (request.getServerPort() == 80)) {
+                serverPort = -1;
+            } else if ("https".equals(request.getScheme()) && (request.getServerPort() == 443)) {
+                serverPort = -1;
+            }
+            nodeURL = new URL(request.getScheme(), node.getResolveSite().getServerName(), serverPort, nodeURL).toString();
         }
         return nodeURL;
+    }
+
+    /**
+     * Returns the server URL, including scheme, host and port.
+     * The URL is in the form <code><scheme><host>:<port></code>,
+     * e.g. <code>http://www.jahia.org:8080</code>. The port is omitted in case
+     * of standard HTTP (80) and HTTPS (443) ports.
+     *
+     * @return the server URL, including scheme, host and port
+     */
+    public static String getServer(HttpServletRequest request) {
+        StringBuilder url = new StringBuilder();
+        String scheme = request.getScheme();
+        String host = request.getServerName();
+
+        int port = SettingsBean.getInstance().getSiteURLPortOverride();
+
+        if (port == 0) {
+            port = request.getServerPort();
+        }
+
+        url.append(scheme).append("://").append(host);
+
+        if (!(("http".equals(scheme) && (port == 80)) ||
+              ("https".equals(scheme) && (port == 443)))) {
+            url.append(":").append(port);
+        }
+
+        return url.toString();
     }
 }

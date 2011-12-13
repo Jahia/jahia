@@ -82,34 +82,6 @@ public class URLGenerator {
     private static Logger logger = LoggerFactory.getLogger(URLGenerator.class);
 
 
-    /**
-     * Returns the server URL, including scheme, host and port.
-     * The URL is in the form <code><scheme><host>:<port></code>,
-     * e.g. <code>http://www.jahia.org:8080</code>. The port is omitted in case
-     * of standard HTTP (80) and HTTPS (443) ports.
-     * 
-     * @return the server URL, including scheme, host and port
-     */
-    public static String getServer(HttpServletRequest request) {
-        StringBuilder url = new StringBuilder();
-        String scheme = request.getScheme();
-        String host = request.getServerName();
-        
-        int port = SettingsBean.getInstance().getSiteURLPortOverride();
-        
-        if (port == 0) {
-            port = request.getServerPort();
-        }
-        
-        url.append(scheme).append("://").append(host);
-        
-        if (port != 80 && port != 443) {
-            url.append(":").append(port);
-        }
-        
-        return url.toString();
-    }
-
     private String base;
 
     private String live;
@@ -422,10 +394,11 @@ public class URLGenerator {
             
             url.append(scheme).append("://").append(host);
             
-            if (port != 80 && port != 443) {
+            if (!(("http".equals(scheme) && (port == 80)) ||
+                  ("https".equals(scheme) && (port == 443)))) {
                 url.append(":").append(port);
             }
-            
+
             server = url.toString();
         }
         

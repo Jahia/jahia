@@ -134,7 +134,8 @@ public class ServerNameToSiteMapper {
         if (!matches) {
             String serverName = lookupSiteServerNameByKey(siteKey);
             if (!StringUtils.isEmpty(serverName)) {
-                if (request.getServerPort() != 80) {
+                if (!(("http".equals(request.getScheme()) && (request.getServerPort() == 80)) ||
+                      ("https".equals(request.getScheme()) && (request.getServerPort() == 443)))) {
                     serverName += ":"+request.getServerPort();
                 }
             }

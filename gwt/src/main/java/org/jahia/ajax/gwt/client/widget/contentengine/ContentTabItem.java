@@ -50,6 +50,7 @@ import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
+
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -57,6 +58,7 @@ import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * User: toto
@@ -74,6 +76,8 @@ public class ContentTabItem extends PropertiesTabItem {
     private transient Label autoUpdateLabel;
     private boolean nameEditable = true;
 
+    private List<String> nameNotEditableForTypes;
+    
     public Field<String> getName() {
         return nameText;
     }
@@ -116,7 +120,9 @@ public class ContentTabItem extends PropertiesTabItem {
                 isNodeNameFieldDisplayed = true;
                 boolean autoUpdate = true;
 
-                if (autoUpdateName != null) {
+                boolean nameEditingAllowed = isNameEditableForType(engine);
+                
+                if (nameEditingAllowed && autoUpdateName != null) {
                     if (engine.isExistingNode()) {
                         if (titleField != null && titleField.getValue() != null) {
                             String generated = generateNodeName((String) titleField.getValue());
@@ -133,8 +139,7 @@ public class ContentTabItem extends PropertiesTabItem {
                     autoUpdateLabel.setText("");
                 }
 
-                nameText.setEnabled(!autoUpdate);
-
+                nameText.setEnabled(nameEditingAllowed && !autoUpdate);
 
                 if (titleField != null) {
                     autoUpdateName.addListener(Events.Change, new Listener<ComponentEvent>() {
@@ -324,5 +329,15 @@ public class ContentTabItem extends PropertiesTabItem {
             nameEditable = true;
         }
         super.setProcessed(processed);
+    }
+
+    public void setNameNotEditableForTypes(List<String> nameNotEditableForTypes) {
+        this.nameNotEditableForTypes = nameNotEditableForTypes;
+    }
+    
+    private boolean isNameEditableForType(NodeHolder engine) {
+        return nameNotEditableForTypes == null || nameNotEditableForTypes.isEmpty()
+                || engine == null || !engine.isExistingNode()
+                || !engine.getNode().isNodeType(nameNotEditableForTypes);
     }
 }

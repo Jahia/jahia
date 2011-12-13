@@ -665,7 +665,21 @@
         <property name="titleKey" value="label.engineTab.content"/>
         <property name="requiredPermission" value="viewContentTab"/>
         <property name="tabItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem">
+                <property name="nameNotEditableForTypes">
+                    <list>
+                        <value>jnt:group</value>
+                        <value>jnt:groupsFolder</value>
+                        <value>jnt:mounts</value>
+                        <value>jnt:remotePublications</value>
+                        <value>jnt:templateSets</value>
+                        <value>jnt:user</value>
+                        <value>jnt:usersFolder</value>
+                        <value>jnt:virtualsite</value>
+                        <value>jnt:virtualsitesFolder</value>
+                    </list>
+                </property>
+            </bean>            
         </property>
     </bean>
 

@@ -235,7 +235,7 @@ public class AclEditor {
                     CheckBox chb = new CheckBox();
                     chb.setTitle(columnName);
                     chb.setValue(Boolean.TRUE.equals(permValue) || (permValue == null && Boolean.TRUE.equals(inPermValue)));
-                    chb.setEnabled(!readOnly);
+                    chb.setEnabled(!readOnly && !ace.isHidden());
                     chb.addClickHandler(new ClickHandler() {
                         public void onClick(ClickEvent sender) {
                             setDirty();
@@ -602,9 +602,6 @@ public class AclEditor {
             return;
         }
         if (ace.getPermissions().isEmpty() && ace.getInheritedPermissions().isEmpty()) {
-            return;
-        }
-        if (ace.isHidden()) {
             return;
         }
         BaseModelData value = new BaseModelData();//Object[3 + available.size()];

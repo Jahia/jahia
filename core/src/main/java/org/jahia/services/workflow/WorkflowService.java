@@ -41,6 +41,7 @@
 package org.jahia.services.workflow;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
@@ -76,7 +77,7 @@ public class WorkflowService implements BeanPostProcessor {
     public static final String CANDIDATE = "candidate";
     public static final String START_ROLE = "start";
     private Map<String, List<String>> workflowTypes;
-    private Map<String, Map<String,String>> workflowPermissions;
+    private Map<String, Map<String,String>> workflowPermissions = new HashMap<String, Map<String, String>>();
     private Map<String, String> workflowTypeByDefinition;
     public static final String WORKFLOWRULES_NODE_NAME = "j:workflowRules";
 
@@ -121,8 +122,38 @@ public class WorkflowService implements BeanPostProcessor {
     public void start() {
     }
 
-    public void addProvider(WorkflowProvider provider) {
+    public void addProvider(final WorkflowProvider provider) {
         providers.put(provider.getKey(), provider);
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    List<WorkflowDefinition> definitions = provider.getAvailableWorkflows(null);
+                    for (WorkflowDefinition definition : definitions) {
+                        Map<String,String> map = workflowPermissions.get(definition.getKey());
+                        if (map == null) {
+                            map = new HashMap<String, String>();
+                            workflowPermissions.put(definition.getKey(), map);
+                        }
+                        Set<String> tasks = definition.getTasks();
+                        for (String task : tasks) {
+                            if (!map.containsKey(task)) {
+                                String permissionName = definition.getKey().replace(" ","-") + "-" + task.replace(" ","-");
+                                if (!session.itemExists("/permissions/workflow-tasks/"+permissionName)) {
+                                    logger.info("Create workflow permission : "+permissionName);
+                                    JCRNodeWrapper perms = session.getNode("/permissions/workflow-tasks");
+                                    perms.addNode(permissionName, "jnt:permission");
+                                }
+                                map.put(task, "/workflow-tasks/" + permissionName);
+                            }
+                        }
+                    }
+                    session.save();
+                    return null;
+                }
+            });
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
         /*try {
             List<WorkflowDefinition> list = getWorkflows();
             for (WorkflowDefinition definition : list) {

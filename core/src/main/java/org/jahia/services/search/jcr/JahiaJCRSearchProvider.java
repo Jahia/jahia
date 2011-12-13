@@ -69,6 +69,7 @@ import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -258,7 +259,28 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             // throw exceptions, we have to do a check here            
             Value excerpt = row.getValue("rep:excerpt(.)");
             if (excerpt != null) {
-                searchHit.setExcerpt(excerpt.getString());
+                if (excerpt.getString().contains("###" + JahiaExcerptProvider.TAG_TYPE + "#") || excerpt.getString().contains("###" + JahiaExcerptProvider.CATEGORY_TYPE + "#")) {
+                    String r = "";
+                    String separator = "";
+                    String type = "";
+                    for (String s : excerpt.getString().split(",")) {
+                        String s2 = s.contains(JahiaExcerptProvider.TAG_TYPE)? JahiaResourceBundle.getJahiaInternalResource("label.tags",context.getRequest().getLocale()):
+                                JahiaResourceBundle.getJahiaInternalResource("label.category",context.getRequest().getLocale());
+                        String s1 = s.substring(s.indexOf("###"), s.lastIndexOf("###"));
+                        String identifier = s1.substring(s1.lastIndexOf("#") + 1);
+                        if (!type.equals(s2)) {
+                            r += s2 + ":";
+                            type = s2;
+                            separator = "";
+                        }
+                        r +=separator + node.getSession().getNodeByUUID(identifier).getDisplayableName();
+                        separator = ", ";
+
+                    }
+                    searchHit.setExcerpt(r);
+                } else {
+                    searchHit.setExcerpt(excerpt.getString());
+                }
             }
         } catch (Exception e) {
             logger.warn("Search details cannot be retrieved", e);

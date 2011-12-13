@@ -42,9 +42,16 @@ package org.jahia.services.search.jcr;
 
 import java.io.IOException;
 
-import org.apache.jackrabbit.core.query.lucene.AbstractExcerpt;
-import org.apache.jackrabbit.core.query.lucene.DefaultHighlighter;
+import org.apache.jackrabbit.core.id.NodeId;
+import org.apache.jackrabbit.core.query.lucene.*;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Fieldable;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.index.TermPositionVector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <code>HTMLExcerpt</code> creates a HTML excerpt with the following
@@ -58,6 +65,12 @@ import org.apache.lucene.index.TermPositionVector;
  */
 public class HTMLExcerpt extends AbstractExcerpt {
 
+    /**
+     * Logger instance for this class.
+     */
+    private static final Logger log = LoggerFactory.getLogger(HTMLExcerpt.class);
+
+
     @Override
     protected String createExcerpt(TermPositionVector tpv, String text,
             int maxFragments, int maxFragmentSize) throws IOException {
@@ -65,6 +78,42 @@ public class HTMLExcerpt extends AbstractExcerpt {
         return DefaultHighlighter.highlight(tpv, getQueryTerms(), text,
                 "<div>", "</div>", "<span>", "</span>", "<span class=\"searchHighlightedText\">", "</span>",
                 maxFragments, maxFragmentSize / 2);
+    }
+
+    @Override
+    public String getExcerpt(NodeId id, int maxFragments, int maxFragmentSize) throws IOException {
+        IndexReader reader = index.getIndexReader();
+        try {
+            Term idTerm = TermFactory.createUUIDTerm(id.toString());
+            TermDocs tDocs = reader.termDocs(idTerm);
+            int docNumber;
+        Document doc;
+        try {
+            if (tDocs.next()) {
+                docNumber = tDocs.doc();
+                doc = reader.document(docNumber);
+            } else {
+                // node not found in index
+                return null;
+            }
+        } finally {
+            tDocs.close();
+        }
+        Fieldable[] fields = doc.getFieldables(FieldNames.FULLTEXT);
+            if (fields.length == 0) {
+                // Avoid to return all index entries as excerpt
+                log.debug("Fulltext field not stored, using {}",
+                        JahiaExcerptProvider.class.getName());
+                JahiaExcerptProvider exProvider = new JahiaExcerptProvider();
+                exProvider.init(query, index);
+                return exProvider.getExcerpt(id, maxFragments, maxFragmentSize);
+
+            } else {
+                return super.getExcerpt(id, maxFragments, maxFragmentSize);
+            }
+        } finally {
+            Util.closeOrRelease(reader);
+        }
     }
 
 }

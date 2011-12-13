@@ -2075,14 +2075,14 @@ public class ManageSites extends AbstractAdministrationModule {
         } else {
 
             boolean doImportServerPermissions = false;
-			for (Map<Object, Object> infos : importsInfos) {
-				File file = (File) infos.get("importFile");
-				if (request.getParameter(file.getName() + "selected") != null
-				        && infos.get("importFileName").equals("serverPermissions.xml")) {
-					doImportServerPermissions = true;
-					break;
-				}
-			}
+            for (Map<Object, Object> infos : importsInfos) {
+                File file = (File) infos.get("importFile");
+                if (request.getParameter(file.getName() + "selected") != null
+                        && infos.get("importFileName").equals("serverPermissions.xml")) {
+                    doImportServerPermissions = true;
+                    break;
+                }
+            }
 
             request.setAttribute("doImportServerPermissions", Boolean.valueOf(doImportServerPermissions));
 
@@ -2099,60 +2099,64 @@ public class ManageSites extends AbstractAdministrationModule {
                 }
             }
 
-            for (Map<Object, Object> infos : importsInfos) {
-                File file = (File) infos.get("importFile");
-                if (request.getParameter(file.getName() + "selected") != null) {
-                    if (infos.get("type").equals("files")) {
-                        try {
-                            JahiaSite system = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
-
-                            Map<String,String> pathMapping = JCRSessionFactory.getInstance().getCurrentUserSession().getPathMapping();
-                            pathMapping.put("/shared/files/", "/sites/" + system.getSiteKey() + "/files/");
-                            pathMapping.put("/shared/mashups/", "/sites/" + system.getSiteKey() + "/portlets/");
-
-                            ImportExportBaseService.getInstance().importSiteZip(file, system, infos);
-                        } catch (Exception e) {
-                            logger.error("Error when getting templates", e);
-                        } finally {
-                            file.delete();
-                        }
-                    } else if (infos.get("type").equals("xml") &&
-                            (infos.get("importFileName").equals("serverPermissions.xml") ||
-                                    infos.get("importFileName").equals("users.xml"))) {
-
-                    } else if (infos.get("type").equals("site")) {
-                        // site import
-                        String tpl = (String) infos.get("templates");
-                        if ("".equals(tpl)) {
-                            tpl = null;
-                        }
-                        Object legacyImport = infos.get("legacyImport");
-                        String legacyImportFilePath = null;
-                        if(legacyImport != null && (Boolean) legacyImport) {
-                            legacyImportFilePath = (String) infos.get("legacyMapping");
-                            if (legacyImportFilePath != null && "".equals(legacyImportFilePath.trim())){
-                                legacyImportFilePath = null;
+            try {
+                for (Map<Object, Object> infos : importsInfos) {
+                    File file = (File) infos.get("importFile");
+                    if (request.getParameter(file.getName() + "selected") != null) {
+                        if (infos.get("type").equals("files")) {
+                            try {
+                                JahiaSite system = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+    
+                                Map<String,String> pathMapping = JCRSessionFactory.getInstance().getCurrentUserSession().getPathMapping();
+                                pathMapping.put("/shared/files/", "/sites/" + system.getSiteKey() + "/files/");
+                                pathMapping.put("/shared/mashups/", "/sites/" + system.getSiteKey() + "/portlets/");
+    
+                                ImportExportBaseService.getInstance().importSiteZip(file, system, infos);
+                            } catch (Exception e) {
+                                logger.error("Error when getting templates", e);
                             }
-                        }
-                        Locale defaultLocale = determineDefaultLocale(jParams, infos);
-                        try {
-                            JahiaSite site = jahiaSitesService
-                                    .addSite(jParams.getUser(), (String) infos.get("sitetitle"),
-                                            (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
-                                            defaultLocale, tpl, null, "fileImport", file,
-                                            (String) infos.get("importFileName"), false, false, (String) infos.get("originatingJahiaRelease"),legacyImportFilePath);
-                            session.setAttribute(ProcessingContext.SESSION_SITE, site);
-                            jParams.setSite(site);
-                            jParams.setSiteID(site.getID());
-                            jParams.setSiteKey(site.getSiteKey());
-                            jParams.setCurrentLocale(defaultLocale);
-
-
-                        } catch (Exception e) {
-                            logger.error("Cannot create site " + infos.get("sitetitle"), e);
+                        } else if (infos.get("type").equals("xml") &&
+                                (infos.get("importFileName").equals("serverPermissions.xml") ||
+                                        infos.get("importFileName").equals("users.xml"))) {
+    
+                        } else if (infos.get("type").equals("site")) {
+                            // site import
+                            String tpl = (String) infos.get("templates");
+                            if ("".equals(tpl)) {
+                                tpl = null;
+                            }
+                            Object legacyImport = infos.get("legacyImport");
+                            String legacyImportFilePath = null;
+                            if(legacyImport != null && (Boolean) legacyImport) {
+                                legacyImportFilePath = (String) infos.get("legacyMapping");
+                                if (legacyImportFilePath != null && "".equals(legacyImportFilePath.trim())){
+                                    legacyImportFilePath = null;
+                                }
+                            }
+                            Locale defaultLocale = determineDefaultLocale(jParams, infos);
+                            try {
+                                JahiaSite site = jahiaSitesService
+                                        .addSite(jParams.getUser(), (String) infos.get("sitetitle"),
+                                                (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
+                                                defaultLocale, tpl, null, "fileImport", file,
+                                                (String) infos.get("importFileName"), false, false, (String) infos.get("originatingJahiaRelease"),legacyImportFilePath);
+                                session.setAttribute(ProcessingContext.SESSION_SITE, site);
+                                jParams.setSite(site);
+                                jParams.setSiteID(site.getID());
+                                jParams.setSiteKey(site.getSiteKey());
+                                jParams.setCurrentLocale(defaultLocale);
+    
+    
+                            } catch (Exception e) {
+                                logger.error("Cannot create site " + infos.get("sitetitle"), e);
+                            }
                         }
                     }
                 }
+            } finally {
+                for (Map<Object, Object> infos : importsInfos) {
+                    FileUtils.deleteQuietly((File) infos.get("importFile"));
+                }                
             }
 
             CompositeSpellChecker.updateSpellCheckerIndex();

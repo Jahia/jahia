@@ -131,6 +131,7 @@ public class Url {
     public static String appendServerNameIfNeeded(JCRNodeWrapper node, String nodeURL, HttpServletRequest request) throws RepositoryException, MalformedURLException {
         if (!isLocalhost(request.getServerName()) &&
                 !isLocalhost(node.getResolveSite().getServerName()) &&
+                !StringUtils.isEmpty(node.getResolveSite().getServerName()) &&
                 !request.getServerName().equals(node.getResolveSite().getServerName())
                 ) {
             int serverPort = request.getServerPort();

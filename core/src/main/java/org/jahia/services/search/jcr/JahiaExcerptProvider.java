@@ -68,8 +68,16 @@ public class JahiaExcerptProvider implements ExcerptProvider {
                     InternalValue[] values = propState.getValues();
                     for (InternalValue value : values) {
                         text.append(separator);
+                        String s = "###"+(propStateName.getLocalName().equals(TAG_TYPE)?TAG_TYPE:CATEGORY_TYPE)+"#";
+                        if (query.toString().contains(value.getString())) {
+                            s +="<span class=\"searchHighlightedText\">";
+                        }
+                        s += value.getString();
+                        if (query.toString().contains(value.getString())) {
+                            s+="</span>";
+                        }
+                        s += "###";
                         separator = ",";
-                        String s = "###"+(propStateName.getLocalName().equals(TAG_TYPE)?TAG_TYPE:CATEGORY_TYPE)+"#" + value.getString() + "###";
                         text.append(s);
                     }
 

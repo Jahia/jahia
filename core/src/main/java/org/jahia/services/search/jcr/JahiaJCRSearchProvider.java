@@ -268,12 +268,19 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                 JahiaResourceBundle.getJahiaInternalResource("label.category",context.getRequest().getLocale());
                         String s1 = s.substring(s.indexOf("###"), s.lastIndexOf("###"));
                         String identifier = s1.substring(s1.lastIndexOf("#") + 1);
+                        String v = "";
+                        if (identifier.startsWith("<span")) {
+                            identifier = identifier.substring(identifier.indexOf(">") + 1, identifier.lastIndexOf("</span>"));
+                            v = "<span class=\" searchHighlightedText\">" + node.getSession().getNodeByUUID(identifier).getDisplayableName() + "</span>";
+                        } else {
+                            v = node.getSession().getNodeByUUID(identifier).getDisplayableName();
+                        }
                         if (!type.equals(s2)) {
                             r += s2 + ":";
                             type = s2;
                             separator = "";
                         }
-                        r +=separator + node.getSession().getNodeByUUID(identifier).getDisplayableName();
+                        r +=separator + v;
                         separator = ", ";
 
                     }

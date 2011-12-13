@@ -1867,8 +1867,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         gwtProps.add(new GWTJahiaNodeProperty("remoteUrl", props.get("remoteUrl")));
         gwtProps.add(new GWTJahiaNodeProperty("remotePath", props.get("remotePath")));
         gwtProps.add(new GWTJahiaNodeProperty("remoteUser", props.get("remoteUser")));
-        gwtProps.add(new GWTJahiaNodeProperty("remotePassword", properties.encryptPassword(props
-                .get("remotePassword"))));
+        gwtProps.add(new GWTJahiaNodeProperty("remotePassword", props.get("remotePassword")));
         gwtProps.add(new GWTJahiaNodeProperty("node", props.get("node")));
         gwtProps.add(new GWTJahiaNodeProperty("schedule", props.get("schedule")));
 

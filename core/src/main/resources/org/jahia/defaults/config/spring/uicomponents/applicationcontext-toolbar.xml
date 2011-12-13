@@ -835,7 +835,7 @@
                 <property name="allowedNodeTypes">
                     <list>
                         <value>jnt:folder</value>
-                        <value>jnt:vfsMountPoint</value>
+                        <value>jnt:mountPoint</value>
                     </list>
                 </property>
             </bean>
@@ -1051,7 +1051,7 @@
                 <property name="allowedNodeTypes">
                     <list>
                         <value>jnt:folder</value>
-                        <value>jnt:vfsMountPoint</value>
+                        <value>jnt:mountPoint</value>
                     </list>
                 </property>
             </bean>

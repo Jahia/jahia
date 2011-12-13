@@ -115,6 +115,9 @@ public class FormFieldCreator {
                             field = new TextField<String>();
                             break;
                     }
+                    if (definition.getSelectorOptions().get("password") != null) {
+                        ((TextField)field).setPassword(true);
+                    }
                     break;
                 case GWTJahiaNodeSelectorType.TEXTAREA:
                     field = new TextArea();

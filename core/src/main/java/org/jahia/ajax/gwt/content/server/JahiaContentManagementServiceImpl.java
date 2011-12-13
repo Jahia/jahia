@@ -48,7 +48,6 @@ import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.apache.jackrabbit.core.security.PrivilegeImpl;
 import org.jahia.ajax.gwt.client.data.*;
@@ -93,7 +92,6 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
-import org.jahia.utils.EncryptionUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Url;
 import org.slf4j.Logger;
@@ -1869,7 +1867,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         gwtProps.add(new GWTJahiaNodeProperty("remoteUrl", props.get("remoteUrl")));
         gwtProps.add(new GWTJahiaNodeProperty("remotePath", props.get("remotePath")));
         gwtProps.add(new GWTJahiaNodeProperty("remoteUser", props.get("remoteUser")));
-        gwtProps.add(new GWTJahiaNodeProperty("remotePassword", encryptPassword(props
+        gwtProps.add(new GWTJahiaNodeProperty("remotePassword", properties.encryptPassword(props
                 .get("remotePassword"))));
         gwtProps.add(new GWTJahiaNodeProperty("node", props.get("node")));
         gwtProps.add(new GWTJahiaNodeProperty("schedule", props.get("schedule")));
@@ -1879,10 +1877,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 new HashMap<String, List<GWTJahiaNodeProperty>>());
 
         return true;
-    }
-
-    private String encryptPassword(String pwd) {
-        return StringUtils.isNotEmpty(pwd) ? EncryptionUtils.passwordBaseEncrypt(pwd) : StringUtils.EMPTY;
     }
 
     public Integer deleteAllCompletedJobs() throws GWTJahiaServiceException {

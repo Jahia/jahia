@@ -40,26 +40,6 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.nodetype.NodeDefinition;
-import javax.jcr.nodetype.PropertyDefinition;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.StringValue;
 import org.apache.tika.io.IOUtils;
@@ -78,9 +58,17 @@ import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.EncryptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.*;
+import javax.jcr.nodetype.NodeDefinition;
+import javax.jcr.nodetype.PropertyDefinition;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * Helper class for setting node properties based on GWT bean values.
@@ -120,7 +108,7 @@ public class PropertiesHelper {
                 Property prop = it.nextProperty();
                 PropertyDefinition def = prop.getDefinition();
                 // definition can be null if the file is versionned
-                if (def != null && !ignoredProperties.contains(def.getName())) {
+                if (def != null && !ignoredProperties.contains(def.getName()) && ((ExtendedPropertyDefinition) def).getSelectorOptions().get("password") == null) {
                     propName = def.getName();
                     // create the corresponding GWT bean
                     GWTJahiaNodeProperty nodeProp = new GWTJahiaNodeProperty();
@@ -362,7 +350,14 @@ public class PropertiesHelper {
                                     content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
                                 }
                             } else {
-                                if (propValue != null && propValue.getString() != null) {
+                                ExtendedPropertyDefinition epd = objectNode.getPrimaryNodeType().getPropertyDefinitionsAsMap().get(prop.getName());
+                                if (epd != null && epd.getSelectorOptions().containsKey("password")) {
+                                    if (propValue != null && propValue.getString() != null) {
+                                        String enc = encryptPassword(propValue.getString());
+                                        Value value = new StringValue(enc);
+                                        objectNode.setProperty(prop.getName(), value);
+                                    }
+                                } else if (propValue != null && propValue.getString() != null) {
                                     Value value = contentDefinition.convertValue(propValue);
                                     objectNode.setProperty(prop.getName(), value);
                                 } else {
@@ -413,5 +408,9 @@ public class PropertiesHelper {
         } else {
             this.ignoredProperties = Collections.emptySet();
         }
+    }
+
+    public String encryptPassword(String pwd) {
+        return StringUtils.isNotEmpty(pwd) ? EncryptionUtils.passwordBaseEncrypt(pwd) : StringUtils.EMPTY;
     }
 }

@@ -66,24 +66,21 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * high load is running on the system.
  */
 public class ThreadMonitor {
-    
-    private static class ThreadDumpTask extends TimerTask {
 
-        private static void out(String msg) {
-            System.out.println(msg);
-        }
+    public static final String THREAD_MONITOR_DEACTIVATED = "ThreadMonitor deactivated.";
+
+    private class ThreadDumpTask extends TimerTask {
+
         private int executionCount;
         private int numberOfExecutions;
         private File targetFile;
-        private Timer timer;
 
         private boolean toSystemOut;
 
-        ThreadDumpTask(Timer timer, int numberOfExecutions, boolean toSystemOut, File targetFile) {
+        ThreadDumpTask(int numberOfExecutions, boolean toSystemOut, File targetFile) {
             super();
             this.numberOfExecutions = numberOfExecutions;
             this.targetFile = targetFile;
-            this.timer = timer;
             this.toSystemOut = toSystemOut;
             out("Starting thread dump task for " + numberOfExecutions + " executions into a file " + targetFile);
         }
@@ -115,10 +112,10 @@ public class ThreadMonitor {
                 if (targetFile != null) {
                     IOUtils.closeQuietly(out);
                     long dumpTime = System.currentTimeMillis() - startTime;
-                    out("Wrote thread dump to file " + targetFile.getAbsolutePath() + " in " + dumpTime + " ms");
+                    debug("Appended thread dump to file " + targetFile.getAbsolutePath() + " in " + dumpTime + " ms");
                 }
                 if (executionCount >= numberOfExecutions) {
-                    timer.cancel();
+                    cancelTimer();
                     out("Stopping thread dump task after " + executionCount + " executions into a file " + targetFile);
                     ThreadMonitor.getInstance().releaseAlreadyDumping();
                 }
@@ -141,6 +138,16 @@ public class ThreadMonitor {
                 + ".out");
     }
 
+    private void debug(String msg) {
+        if (debugLogging) {
+            System.out.println(msg);
+        }
+    }
+
+    private static void out(String msg) {
+        System.out.println(msg);
+    }
+
     private String dumpPrefix = "\nFull thread dump ";
     
     private MBeanServerConnection server;
@@ -151,7 +158,7 @@ public class ThreadMonitor {
 
     private Timer timer;
 
-    private boolean loggingConcurrentCalls = false;
+    private boolean debugLogging = false;
 
     private AtomicBoolean alreadyDumping = new AtomicBoolean(false);
 
@@ -160,6 +167,8 @@ public class ThreadMonitor {
     private long minimalIntervalBetweenDumps = 20;
 
     private long lastDumpTime = -1;
+
+    private long dumpsGenerated = 0;
 
     /**
      * Constructs a ThreadMonitor object to get thread information in the local JVM.
@@ -208,16 +217,16 @@ public class ThreadMonitor {
         instance = null;
     }
 
-    public boolean isLoggingConcurrentCalls() {
-        return loggingConcurrentCalls;
+    public boolean isDebugLogging() {
+        return debugLogging;
     }
 
     /**
      * Activate this to output concurrent call logging to System.out
-     * @param loggingConcurrentCalls
+     * @param debugLogging
      */
-    public void setLoggingConcurrentCalls(boolean loggingConcurrentCalls) {
-        this.loggingConcurrentCalls = loggingConcurrentCalls;
+    public void setDebugLogging(boolean debugLogging) {
+        this.debugLogging = debugLogging;
     }
 
     public boolean isActivated() {
@@ -248,36 +257,45 @@ public class ThreadMonitor {
         this.minimalIntervalBetweenDumps = minimalIntervalBetweenDumps;
     }
 
+    public boolean isDumping() {
+        return alreadyDumping.get();
+    }
+
     private void shutdown() {
         if (timer != null) {
             timer.cancel();
         }
     }
 
-    private boolean isAlreadyDumping() {
-        boolean dumping = !alreadyDumping.compareAndSet(false, true);
-        if (!dumping) {
+    private boolean acquireAlreadyDumping() {
+        boolean dumping = alreadyDumping.get();
+        if (dumping) {
+            debug("Thread dump already in progress, ignoring...");
+            return true;
+        } else {
             // let's check the interval since that last dump.
             long currentTime = System.currentTimeMillis();
             if ((currentTime - lastDumpTime) <= minimalIntervalBetweenDumps) {
-                if (loggingConcurrentCalls) {
-                    System.out.println("Cannot dump threads as minimal interval ("+minimalIntervalBetweenDumps+"ms) between dumps has not elapsed (=" + (currentTime - lastDumpTime) + "ms)");
-                }
+                debug("Cannot dump threads as minimal interval ("+minimalIntervalBetweenDumps+"ms) between dumps has not elapsed (=" + (currentTime - lastDumpTime) + "ms)");
                 return true;
             } else {
+                debug("More than minimal interval (" + minimalIntervalBetweenDumps + "ms) has elapsed (=" + (currentTime - lastDumpTime) + "ms), letting dump go through...");
+                alreadyDumping.set(true);
                 return false;
             }
-        } else {
-            if (loggingConcurrentCalls) {
-                System.out.println("Thread dump already in progress, ignoring...");
-            }
-            return dumping;
         }
     }
 
     private void releaseAlreadyDumping() {
         lastDumpTime = System.currentTimeMillis();
+        dumpsGenerated++;
         alreadyDumping.set(false);
+        debug("Released dumping lock, alreadyDumping=" + alreadyDumping.get());
+    }
+
+    private void cancelTimer() {
+        timer.cancel();
+        timer = null;
     }
 
     /**
@@ -295,7 +313,7 @@ public class ThreadMonitor {
             return;
         }
 
-        if (isAlreadyDumping()) {
+        if (acquireAlreadyDumping()) {
             return;
         }
 
@@ -310,7 +328,7 @@ public class ThreadMonitor {
             try {
                 FileUtils.writeStringToFile(dumpFile, threadInfo, "UTF-8");
                 long dumpTime = System.currentTimeMillis() - startTime;
-                System.out.println("Wrote thread dump to file " + dumpFile.getAbsolutePath() + " in " + dumpTime + " ms");
+                out("Wrote thread dump to file " + dumpFile.getAbsolutePath() + " in " + dumpTime + " ms");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -368,16 +386,18 @@ public class ThreadMonitor {
             return;
         }
 
-        if (isAlreadyDumping()) {
+        if (acquireAlreadyDumping()) {
             return;
         }
 
         if (timer == null) {
-            timer = new Timer(true);
+            timer = new Timer("DumpThreadInfoWithInterval", true);
         }
         File file = toFile ? getNextThreadDumpFile("-" + threadDumpCount + "-executions") : null;
-        timer.schedule(new ThreadDumpTask(timer, threadDumpCount, toSysOut, file), 0,
+        timer.schedule(new ThreadDumpTask(threadDumpCount, toSysOut, file), 0,
                 intervalSeconds * 1000L);
+
+        // releaseAlreadyDumping is done in ThreadDumpTask class.
     }
 
     /**
@@ -386,16 +406,17 @@ public class ThreadMonitor {
     public String findDeadlock() {
 
         if (!activated) {
-            return "ThreadMonitor deactivated.";
+            return THREAD_MONITOR_DEACTIVATED;
         }
 
-        if (isAlreadyDumping()) {
+        if (acquireAlreadyDumping()) {
             return "Dead lock detection already in progress in another thread, will not report";
         }
 
         StringBuilder dump = new StringBuilder();
         long[] tids = tmbean.findMonitorDeadlockedThreads();
         if (tids == null) {
+            releaseAlreadyDumping();
             return null;
         }
         dump.append("\n\nFound one Java-level deadlock:\n");
@@ -420,14 +441,14 @@ public class ThreadMonitor {
     public void generateThreadInfo(Writer writer) {
         if (!activated) {
             try {
-                writer.write("ThreadMonitor deactivated.");
+                writer.write(THREAD_MONITOR_DEACTIVATED);
             } catch (IOException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
             return;
         }
 
-        if (isAlreadyDumping()) {
+        if (acquireAlreadyDumping()) {
             try {
                 writer.write("Thread info generation already in progress in another thread.");
             } catch (IOException e) {
@@ -523,7 +544,7 @@ public class ThreadMonitor {
     }
 
     private void setDumpPrefix() {
-        RuntimeMXBean rmbean = (RuntimeMXBean) ManagementFactory.getRuntimeMXBean();
+        RuntimeMXBean rmbean = ManagementFactory.getRuntimeMXBean();
         dumpPrefix += rmbean.getVmName() + " (" + rmbean.getVmVersion()
                 + ")\n";
     }
@@ -538,4 +559,11 @@ public class ThreadMonitor {
         this.tmbean = (ThreadMXBean) ManagementFactory.getThreadMXBean();
     }
 
+    public long getDumpsGenerated() {
+        return dumpsGenerated;
+    }
+
+    public long getLastDumpTime() {
+        return lastDumpTime;
+    }
 }

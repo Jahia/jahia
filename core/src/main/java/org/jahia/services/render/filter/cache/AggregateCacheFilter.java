@@ -142,7 +142,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             if (requestParameters != null && !"".equals(requestParameters.trim())) {
                 chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", requestParameters.split(","));
             } else {
-                chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", new String[]{""});
+                chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", null);
             }
             if (Boolean.valueOf(scriptProperties.getProperty("cache.additional.key.useMainResourcePath")!=null?
                 scriptProperties.getProperty("cache.additional.key.useMainResourcePath"):defaultScriptProperties.getProperty("cache.additional.key.useMainResourcePath", "false"))) {

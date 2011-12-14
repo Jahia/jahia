@@ -36,7 +36,7 @@ Error: <c:out value="${not empty requestScope['org.jahia.exception'] ? requestSc
 </pre>
 <strong>System Status Information at <%= new Date() %></strong>
 <pre>
-    <% ErrorFileDumper.outputSystemInfoAll(new PrintWriter(pageContext.getOut())); %>
+    <% ErrorFileDumper.outputSystemInfo(new PrintWriter(pageContext.getOut())); %>
 </pre>
 </div>
 </c:if>

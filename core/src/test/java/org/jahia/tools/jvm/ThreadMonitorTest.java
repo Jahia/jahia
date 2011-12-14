@@ -158,6 +158,7 @@ public class ThreadMonitorTest {
                 for (int i=0; i < LOOP_COUNT; i++) {
                     StringWriter stringWriter = new StringWriter();
                     ThreadMonitor.getInstance().generateThreadInfo(stringWriter);
+                    stringWriter.toString();
                     stringWriter = null;
                 }
             }

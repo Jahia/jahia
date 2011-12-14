@@ -52,7 +52,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.Cache;
-import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.RequestLoadAverage;
@@ -62,6 +61,7 @@ import java.io.*;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * System information utility.
@@ -81,6 +81,13 @@ public class ErrorFileDumper {
     private static long exceptionCount = 0L;
 
     private static ExecutorService executorService;
+    private static int maximumTasksAllowed = 100;
+    private static AtomicInteger tasksSubmitted = new AtomicInteger(0);
+    private static long lastCallToDump = 0;
+    private static final long MIN_INTERVAL_BETWEEN_QUEUE_WARNING = 1000L;
+    private static double highLoadBoundary = 10.0;
+    private static long lastHighLoadMessageTime = 0;
+    private static final long MIN_INTERVAL_BETWEEN_HIGHLOAD_WARNING = 1000L;
 
     /**
      * A low priority thread factory
@@ -161,6 +168,7 @@ public class ErrorFileDumper {
         public void run() {
             try {
                 performDumpToFile(t, requestData);
+                tasksSubmitted.decrementAndGet();
             } catch (IOException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
@@ -200,18 +208,63 @@ public class ErrorFileDumper {
         return (executorService == null);
     }
 
+    public static void setFileDumpActivated(boolean fileDumpActivated) {
+        if (fileDumpActivated && isShutdown()) {
+            start();
+        } else if (!fileDumpActivated && isFileDumpActivated()) {
+            shutdown();
+        }
+    }
+
+    public static boolean isFileDumpActivated() {
+        return !isShutdown();
+    }
+
     public static void dumpToFile(Throwable t, HttpServletRequest request) throws IOException {
         if (isShutdown()) {
             return;
         }
 
-        HttpRequestData requestData = null;
-        if (request != null) {
-           requestData = new HttpRequestData(request);
+        if (isHighLoad()) {
+            return;
         }
-        Future<?> dumperFuture = executorService.submit(new FileDumperRunnable(t, requestData));
+
+        if (tasksSubmitted.get() < maximumTasksAllowed) {
+            HttpRequestData requestData = null;
+            if (request != null) {
+               requestData = new HttpRequestData(request);
+            }
+            Future<?> dumperFuture = executorService.submit(new FileDumperRunnable(t, requestData));
+            tasksSubmitted.incrementAndGet();
+            lastCallToDump = System.currentTimeMillis();
+        } else {
+            long now = System.currentTimeMillis();
+            if ((now - lastCallToDump) > MIN_INTERVAL_BETWEEN_QUEUE_WARNING) {
+                System.out.println(maximumTasksAllowed + " error dumps already submitted, not allowing any more.");
+                lastCallToDump = now;
+            }
+        }
     }
 
+    public static int getMaximumTasksAllowed() {
+        return maximumTasksAllowed;
+    }
+
+    /**
+     * Sets the maximum number of parallel dumping tasks allowed to be queued. Default value is 10.
+     * @param maximumTasksAllowed
+     */
+    public static void setMaximumTasksAllowed(int maximumTasksAllowed) {
+        ErrorFileDumper.maximumTasksAllowed = maximumTasksAllowed;
+    }
+
+    /**
+     * Retrieves the number of queued tasks for generating error dumps.
+     * @return
+     */
+    public static int getTasksSubmitted() {
+        return tasksSubmitted.get();
+    }
 
     public static ExecutorService getExecutorService() {
         return executorService;
@@ -250,7 +303,11 @@ public class ErrorFileDumper {
 
     public static StringWriter generateErrorReport(HttpRequestData requestData, Throwable t, int lastExceptionOccurences,
                                                    Throwable lastException) {
+
         StringWriter msgBodyWriter = new StringWriter();
+        if (isHighLoad()) {
+            return msgBodyWriter;
+        }
         PrintWriter strOut = new PrintWriter(msgBodyWriter);
         if (lastExceptionOccurences > 1) {
             strOut.println("");
@@ -311,7 +368,7 @@ public class ErrorFileDumper {
         String stackTraceStr = stackTraceToString(t);
         strOut.println(stackTraceStr);
 
-        outputSystemInfoConsiderLoad(strOut);
+        outputSystemInfo(strOut);
 
         strOut.println("");
         strOut.println(
@@ -323,22 +380,42 @@ public class ErrorFileDumper {
         return msgBodyWriter;
     }
 
-    public static void outputSystemInfoAll(PrintWriter strOut) {
-        outputSystemInfo(strOut, true, true, true, true, true, true, true);
-    }
-    
-    public static void outputSystemInfoConsiderLoad(PrintWriter strOut) {
-        boolean highLoad = false;
-        RequestLoadAverage loadAverage = RequestLoadAverage.getInstance();
-        highLoad = loadAverage != null && loadAverage.getOneMinuteLoad() > 10; 
-        outputSystemInfo(strOut, true, true, true, true, !highLoad, !highLoad, true);
-    }
-    
-    public static void outputSystemInfo(PrintWriter strOut, boolean systemProperties, boolean jahiaSettings, boolean memory, boolean caches, boolean threads, boolean deadlocks) {
-        outputSystemInfo(strOut, systemProperties, jahiaSettings, memory, caches, threads, deadlocks, true);
+    public static void outputSystemInfo(PrintWriter strOut) {
+        outputSystemInfoConsiderLoad(strOut);
     }
 
-    public static void outputSystemInfo(PrintWriter strOut, boolean systemProperties, boolean jahiaSettings, boolean memory, boolean caches, boolean threads, boolean deadlocks, boolean loadAverage) {
+    public static double getHighLoadBoundary() {
+        return highLoadBoundary;
+    }
+
+    /**
+     * Sets the boundary load value above which all reporting will automatically deactivate. The default value is 10.0
+     * @param highLoadBoundary
+     */
+    public static void setHighLoadBoundary(double highLoadBoundary) {
+        ErrorFileDumper.highLoadBoundary = highLoadBoundary;
+    }
+
+    private static void outputSystemInfoConsiderLoad(PrintWriter strOut) {
+        boolean highLoad = isHighLoad();
+        outputSystemInfo(strOut, !highLoad, !highLoad, !highLoad, !highLoad, !highLoad, !highLoad, true);
+    }
+
+    private static boolean isHighLoad() {
+        boolean highLoad = false;
+        RequestLoadAverage loadAverage = RequestLoadAverage.getInstance();
+        highLoad = loadAverage != null && loadAverage.getOneMinuteLoad() > highLoadBoundary;
+        if (highLoad) {
+            long now = System.currentTimeMillis();
+            if ((now - lastHighLoadMessageTime) > MIN_INTERVAL_BETWEEN_HIGHLOAD_WARNING) {
+                System.out.println("High load (" + loadAverage.getOneMinuteLoad() + ") detected, will deactivate reporting...");
+            }
+            lastHighLoadMessageTime = System.currentTimeMillis();
+        }
+        return highLoad;
+    }
+
+    private static void outputSystemInfo(PrintWriter strOut, boolean systemProperties, boolean jahiaSettings, boolean memory, boolean caches, boolean threads, boolean deadlocks, boolean loadAverage) {
         if (systemProperties) {
             // now let's output the system properties.
             strOut.println();

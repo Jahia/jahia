@@ -51,9 +51,26 @@ public class RequestLoadAverage extends LoadAverage {
     private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(RequestLoadAverage.class);
     private static transient RequestLoadAverage instance = null;
 
+    public interface RequestCountProvider {
+        public long getRequestCount();
+    }
+
+    private RequestCountProvider requestCountProvider;
+
     public RequestLoadAverage(String threadName) {
         super(threadName);
         instance = this;
+    }
+
+    /**
+     * This contructor is useful for unit testing.
+     * @param threadName
+     * @param requestCountProvider
+     */
+    public RequestLoadAverage(String threadName, RequestCountProvider requestCountProvider) {
+        super(threadName);
+        instance = this;
+        this.requestCountProvider = requestCountProvider;
     }
 
     public static RequestLoadAverage getInstance() {
@@ -62,7 +79,11 @@ public class RequestLoadAverage extends LoadAverage {
 
     @Override
     public double getCount() {
-        return (double) JahiaContextLoaderListener.getRequestCount();
+        if (requestCountProvider != null) {
+            return (double) requestCountProvider.getRequestCount();
+        } else {
+            return (double) JahiaContextLoaderListener.getRequestCount();
+        }
     }
 
     @Override

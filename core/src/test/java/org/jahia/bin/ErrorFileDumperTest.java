@@ -42,7 +42,7 @@ package org.jahia.bin;
 
 import org.apache.commons.io.FileUtils;
 import org.jahia.bin.errors.ErrorFileDumper;
-import org.jahia.settings.SettingsBean;
+import org.jahia.utils.RequestLoadAverage;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -55,11 +55,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Test unit for error file dumper sub system.
@@ -82,10 +81,106 @@ public class ErrorFileDumperTest {
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
         FileUtils.deleteDirectory(todaysDirectory);
+        RequestLoadAverage.getInstance().stop();
+    }
+
+    @Test
+    public void testDumperActivation() throws InterruptedException {
+
+        logger.info("Starting testDumperInSequence test...");
+
+        ErrorFileDumper.start();
+
+        logger.info("Activating Error file dumping...");
+        ErrorFileDumper.setFileDumpActivated(true);
+
+        File[] files = todaysDirectory.listFiles();
+        int fileCountBeforeTest = (files == null ? 0 : files.length);
+
+        generateExceptions();
+
+        Thread.sleep(5000);
+
+        files = todaysDirectory.listFiles();
+        int fileCountAfterTest = (files == null ? 0 : files.length);
+        Assert.assertTrue("File count after test should be higher but it is not", (fileCountAfterTest > fileCountBeforeTest));
+
+        logger.info("De-activating Error file dumping...");
+
+        ErrorFileDumper.setFileDumpActivated(false);
+
+        files = todaysDirectory.listFiles();
+        fileCountBeforeTest = (files == null ? 0 : files.length);
+
+        generateExceptions();
+
+        Thread.sleep(5000);
+
+        files = todaysDirectory.listFiles();
+        fileCountAfterTest = (files == null ? 0 : files.length);
+
+        Assert.assertEquals("File count after test should be the same as before", fileCountBeforeTest, fileCountAfterTest);
+
+        ErrorFileDumper.shutdown(10000L);
+
+    }
+
+    @Test
+    public void testHighLoadDeactivation() throws InterruptedException {
+
+        logger.info("Starting testHighLoadDeactivation test...");
+
+        RequestLoadAverage.RequestCountProvider requestCountProvider = new RequestLoadAverage.RequestCountProvider() {
+            public long getRequestCount() {
+                return 100;
+            }
+        };
+
+        RequestLoadAverage requestLoadAverage = new RequestLoadAverage("requestLoadAverage", requestCountProvider);
+        requestLoadAverage.start();
+        logger.info("Waiting for load average to reach 10...");
+        while (requestLoadAverage.getOneMinuteLoad() < 10.0) {
+            Thread.sleep(500);
+        }
+
+        StopWatch stopWatch = new StopWatch("testHighLoadDeactivation");
+        stopWatch.start(Thread.currentThread().getName() + " generating error dumps");
+
+        int fileCountBeforeTest = 0;
+        if (todaysDirectory.exists()) {
+            File[] files = todaysDirectory.listFiles();
+            fileCountBeforeTest = (files == null ? 0 : files.length);
+        }
+
+        ErrorFileDumper.setHighLoadBoundary(10.0);
+        ErrorFileDumper.start();
+
+        generateExceptions();
+
+        stopWatch.stop();
+        long totalTime = stopWatch.getTotalTimeMillis();
+        double averageTime = ((double) totalTime) / ((double) LOOP_COUNT);
+        logger.info("Milliseconds per exception = " + averageTime);
+        logger.info(stopWatch.prettyPrint());
+
+        ErrorFileDumper.shutdown(10000L);
+
+        RequestLoadAverage.getInstance().stop();
+
+        int fileCountAfterTest = 0;
+        if (todaysDirectory.exists()) {
+            File[] files = todaysDirectory.listFiles();
+            fileCountAfterTest = (files == null ? 0 : files.length);
+        }
+
+        Assert.assertEquals("File count should stay the same because high load deactivates file dumping !", fileCountBeforeTest, fileCountAfterTest);
     }
 
     @Test
     public void testDumperInSequence() throws InterruptedException {
+
+        logger.info("Starting testDumperInSequence test...");
+
         StopWatch stopWatch = new StopWatch("testDumperInSequence");
         stopWatch.start(Thread.currentThread().getName() + " generating error dumps");
 
@@ -107,6 +202,9 @@ public class ErrorFileDumperTest {
 
     @Test
     public void testDumperInParallel() throws IOException, InterruptedException {
+
+        logger.info("Starting testDumperInParallel test...");
+
         StopWatch stopWatch = new StopWatch("testDumperInParallel");
         stopWatch.start(Thread.currentThread().getName() + " generating error dumps");
 
@@ -146,6 +244,8 @@ public class ErrorFileDumperTest {
     @Test
     public void testOutputSystemInfoAllInParallel() throws InterruptedException {
 
+        logger.info("Starting testOutputSystemInfoAllInParallel test...");
+
         StopWatch stopWatch = new StopWatch("testDumperInParallel");
         stopWatch.start(Thread.currentThread().getName() + " generating error dumps");
 
@@ -158,7 +258,10 @@ public class ErrorFileDumperTest {
 
                 public void run() {
                     // this is the call made in errors.jsp file.
-                    ErrorFileDumper.outputSystemInfoAll(new PrintWriter(System.out));
+                    StringWriter stringWriter = new StringWriter();
+                    ErrorFileDumper.outputSystemInfo(new PrintWriter(stringWriter));
+                    stringWriter.toString();
+                    stringWriter = null;
                 }
             }, "ErrorFileDumperTestThread" + i);
             threadSet.add(newThread);

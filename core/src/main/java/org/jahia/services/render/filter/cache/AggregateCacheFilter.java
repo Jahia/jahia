@@ -585,7 +585,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         if (logger.isDebugEnabled()) {
                             logger.debug("Missing content: {}", mrCacheKey);
                         }
-                        generateContent(renderContext, outputDocument, segment, mrCacheKey, moduleParams,areaIdentifier);
+                        generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams,areaIdentifier);
                     }
                 } else {
                     if (logger.isDebugEnabled()) {
@@ -626,11 +626,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             try {
                 node = currentUserSession.getNode(keyAttrbs.get("path"));
             } catch (PathNotFoundException e) {
-            if(logger.isDebugEnabled()) {
-                    logger.debug("Node {} is not longer available."
-                            + " Replacing output with empty content.", keyAttrbs.get("path"));
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Node {} is no longer available." + " Replacing output with empty content.",
+                            keyAttrbs.get("path"));
                 }
-                outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), StringUtils.EMPTY);
+                outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
+                        StringUtils.EMPTY);
                 return;
             }
             if(logger.isDebugEnabled()) {
@@ -671,6 +672,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 }
             }
             String content = RenderService.getInstance().render(resource, renderContext);
+            if(content==null || "".equals(content.trim())) {
+                 logger.error("Empty generated content for key " + cacheKey + " with attributes : " +
+                             new ToStringBuilder(keyAttrbs,ToStringStyle.MULTI_LINE_STYLE)+ "\nmodule params : " +
+                             ToStringBuilder.reflectionToString(moduleParams,ToStringStyle.MULTI_LINE_STYLE)+
+                " areaIdentifier "+ areaIdentifier);
+            }
             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);
             if (oldOne!=null) {
                 renderContext.getRequest().setAttribute("previousTemplate", oldOne);

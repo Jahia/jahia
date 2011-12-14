@@ -519,7 +519,7 @@ public class JCRStoreProvider {
         List<File> files = NodeTypeRegistry.getInstance().getFiles(systemId);
         boolean needUpdate = false;
         for (File file : files) {
-            if (p.getProperty(file.getPath()) == null || Long.parseLong(p.getProperty(file.getPath())) < file.lastModified()) {
+            if (p.getProperty(file.getPath()) == null || Long.parseLong(p.getProperty(file.getPath())) != file.lastModified()) {
                 needUpdate = true;
                 p.setProperty(file.getPath(), Long.toString(file.lastModified()));
             }

@@ -869,13 +869,11 @@ public class NavigationHelper {
                 for (Map.Entry<String, List<String>> entry : infos.entrySet()) {
                     for (String s : entry.getValue()) {
                         JCRNodeLockType type = JCRContentUtils.getLockType(s);
-                        if (JCRNodeLockType.USER != type) {
                             if (!results.containsKey(entry.getKey())) {
                                 results.put(entry.getKey(), new LinkedList<String>());
                             }
                             results.get(entry.getKey()).add("label.locked.by." + type.toString().toLowerCase());
 
-                        }
                     }
                 }
             }

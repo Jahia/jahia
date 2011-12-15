@@ -42,8 +42,7 @@ JCRCallback callback = new JCRCallback<Integer>() {
                     parent.getNode(newName).setProperty("j:targetNode", path);
                     next.remove();
                     count++;
-                    log.debug("    done");
-                    log.info("updated ${next.path} node, converted j:targetNode value from ${targetUuid} to ${path}");
+                    log.debug("updated ${next.path} node, converted j:targetNode value from ${targetUuid} to ${path}");
                 } catch (ItemNotFoundException e) {
                     log.debug("    target no longer exists -> skipped");
                 }

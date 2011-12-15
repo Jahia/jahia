@@ -23,7 +23,7 @@
     <div class="idTabsContainer"><!--start idTabsContainer-->
 
         <ul class="idTabs">
-            <c:forEach items="${currentNode.nodes}" var="subList" varStatus="status">
+            <c:forEach items="${jcr:getChildrenOfType(currentNode, 'jnt:contentList')}" var="subList" varStatus="status">
                 <c:if test="${status.first}">
                     <c:set var="displayList" value="${subList}"/>
                 </c:if>
@@ -33,9 +33,6 @@
                     </c:if>
                 </c:if>
                 <c:choose>
-                	<c:when test="${subList.displayableName == 'j:acl'}">
-                	  	<!-- nothing to do, we won't display the j:acl list -->
-                	</c:when>	                
                     <c:when test="${(empty displayTab and status.first) or (displayTab eq subList.name)}">
                         <li>
                             <a class="selected"><span>${fn:escapeXml(subList.displayableName)}</span></a>

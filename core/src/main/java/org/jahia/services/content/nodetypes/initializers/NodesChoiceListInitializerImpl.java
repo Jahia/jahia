@@ -135,9 +135,9 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                 String displayName = nodeWrapper.getDisplayableName();
                 listValues.add(new ChoiceListValue(displayName, new HashMap<String, Object>(), new ValueImpl(
                         "name".equals(returnType)?nodeWrapper.getName():nodeWrapper.getIdentifier(), PropertyType.STRING, false)));
-                if (subTree) {
-                    addSubnodes(listValues, nodetype, nodeWrapper, subTree, returnType);
-                }
+            }
+            if (subTree) {
+                addSubnodes(listValues, nodetype, nodeWrapper, subTree, returnType);
             }
         }
     }

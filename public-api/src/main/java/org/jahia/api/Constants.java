@@ -41,7 +41,9 @@
 package org.jahia.api;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Commmon Jahia constants.
@@ -263,13 +265,13 @@ public class Constants {
     public static final String MARKED_FOR_DELETION_DATE = "j:deletionDate";
     public static final String MARKED_FOR_DELETION_MESSAGE = "j:deletionMessage";
     
-    public static final List<String> forbiddenPropertiesToCopy = Arrays.asList(PROCESSID,JCR_FROZENUUID,
+    public static final Set<String> forbiddenPropertiesToCopy = new HashSet<String>(Arrays.asList(PROCESSID,JCR_FROZENUUID,
             JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_UUID,JCR_BASEVERSION,JCR_MIXINTYPES,JCR_PRIMARYTYPE,
             JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT, JCR_CREATED, JCR_CREATEDBY, JAHIA_LOCKTYPES,
             JAHIA_LOCKTOKEN, JCR_LOCKOWNER, JCR_LOCKISDEEP, JAHIA_SOURCE_TEMPLATE, PUBLISHED, MARKED_FOR_DELETION_DATE,
-            MARKED_FOR_DELETION_MESSAGE, MARKED_FOR_DELETION_USER);
+            MARKED_FOR_DELETION_MESSAGE, MARKED_FOR_DELETION_USER));
 
-    public static final List<String> forbiddenMixinToCopy = Arrays.asList(JAHIAMIX_WORKFLOW, JAHIAMIX_MARKED_FOR_DELETION, JAHIAMIX_MARKED_FOR_DELETION_ROOT);
+    public static final Set<String> forbiddenMixinToCopy = new HashSet<String>(Arrays.asList(JAHIAMIX_WORKFLOW, JAHIAMIX_MARKED_FOR_DELETION, JAHIAMIX_MARKED_FOR_DELETION_ROOT));
 
     public static final String JCR_LASTLOGINDATE = "lastLoginDate";
     public static final String J_ROLES = "j:roles";
@@ -277,9 +279,9 @@ public class Constants {
     public static final String JAHIANT_ROLE = "jnt:role";
     public static final String JAHIANT_ROLES = "jnt:roles";
 
-    public static final List<String> forbiddenPropertiesToSerialize = Arrays.asList(PROCESSID,JCR_FROZENUUID,
+    public static final Set<String> forbiddenPropertiesToSerialize = new HashSet<String>(Arrays.asList(PROCESSID,JCR_FROZENUUID,
             JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_BASEVERSION,
-            JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT);
+            JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT));
 
     public static final String JAHIA_PROJECT_VERSION = "${project.version}"; // this is filtered by Maven.
 }

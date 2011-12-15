@@ -103,6 +103,9 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                     } else if (type == Event.NODE_ADDED || type == Event.NODE_MOVED || type == Event.NODE_REMOVED) {
                         flushParent = true;
                     }
+                    if(path.contains("vanityUrlMapping")) {
+                        flushParent=true;
+                    }
                     if (path.contains("j:acl") || path.contains("jnt:group") || flushRoles || type == Event.NODE_MOVED) {
                         // Flushing cache of acl key for users as a group or an acl has been updated
                         CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();

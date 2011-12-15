@@ -2154,21 +2154,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return copy;
     }
 
-    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Set<String> skipProperties) throws RepositoryException {
-        Map<String, List<String>> references = new HashMap<String, List<String>>();
-        boolean copy = copy(dest, name, allowsExternalSharedNodes, references, skipProperties);
-        ReferencesHelper.resolveCrossReferences(getSession(), references);
-        return copy;
-    }
-    
     /**
      * {@inheritDoc}
      */
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references) throws RepositoryException {
-        return copy(dest, name, allowsExternalSharedNodes, references, null);
-    }
-
-    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references, Set<String> skipProperties) throws RepositoryException {
         JCRNodeWrapper copy = null;
         try {
             copy = (JCRNodeWrapper) session
@@ -2204,7 +2193,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (hasProperty("jcr:language")) {
                 copy.setProperty("jcr:language", getProperty("jcr:language").getString());
             }
-            copyProperties(copy, references, skipProperties);
+            copyProperties(copy, references);
         }
 
         NodeIterator ni = getNodes();
@@ -2227,18 +2216,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         return true;
     }
-    
-    public void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references) throws RepositoryException {
-        copyProperties(destinationNode, references, null);
-    }
 
-    public void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references, Set<String> skipProperties) throws RepositoryException {
+    public void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references) throws RepositoryException {
         PropertyIterator props = getProperties();
 
         while (props.hasNext()) {
             Property property = props.nextProperty();
             try {
-                if (!Constants.forbiddenPropertiesToCopy.contains(property.getName()) && (skipProperties == null || !skipProperties.contains(property.getName()))) {
+                if (!Constants.forbiddenPropertiesToCopy.contains(property.getName())) {
                     if (property.getType() == PropertyType.REFERENCE || property.getType() == PropertyType.WEAKREFERENCE) {
                         if (property.getDefinition().isMultiple() && (property.isMultiple())) {
                             Value[] values = property.getValues();
@@ -2260,7 +2245,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
     }
-    
+
     private void keepReference(JCRNodeWrapper destinationNode, Map<String, List<String>> references, Property property, String value) throws RepositoryException {
         if (!references.containsKey(value)) {
             references.put(value, new ArrayList<String>());

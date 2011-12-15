@@ -1,16 +1,16 @@
 import org.jahia.services.content.*
 
-import java.util.*
-
 import javax.jcr.*
 import javax.jcr.nodetype.NoSuchNodeTypeException
 import javax.jcr.query.InvalidQueryException
 import javax.jcr.query.Query
 
+import org.apache.log4j.Level
+import org.apache.log4j.LogManager
+import org.apache.log4j.Logger
+
 def log = log;
 log.info("Start patch for social activity nodes")
-Set<String> skip = new HashSet<String>(1);
-skip.add("j:targetNode");
 
 JCRCallback callback = new JCRCallback<Integer>() {
     public Integer doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -38,7 +38,7 @@ JCRCallback callback = new JCRCallback<Integer>() {
                     Node parent = next.parent;
                     session.checkout(parent);
                     String newName = next.name + "c";
-                    next.copy(parent, newName, true, skip);
+                    next.copy(parent.path, newName);
                     parent.getNode(newName).setProperty("j:targetNode", path);
                     next.remove();
                     count++;
@@ -65,6 +65,11 @@ JCRCallback callback = new JCRCallback<Integer>() {
     }
 };
 
+Logger imLogger = LogManager.getLogger("org.apache.jackrabbit.core.ItemManager");
+Level oldLevel = imLogger.getLevel();
+imLogger.setLevel(Level.ERROR);
+
+try {
 log.info("---------------------------------------------------");
 log.info("  Looking in default workspace");
 int defaulCount = JCRTemplate.getInstance().doExecuteWithSystemSession(callback);
@@ -78,3 +83,6 @@ log.info("---------------------------------------------------");
 
 
 log.info("...done patch for social activity nodes.");
+} finally {
+imLogger.setLevel(oldLevel);
+}

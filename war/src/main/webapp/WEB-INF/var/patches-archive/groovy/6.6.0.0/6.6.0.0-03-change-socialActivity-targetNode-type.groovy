@@ -1,5 +1,7 @@
 import org.jahia.services.content.*
 
+import java.util.*
+
 import javax.jcr.*
 import javax.jcr.nodetype.NoSuchNodeTypeException
 import javax.jcr.query.InvalidQueryException
@@ -7,6 +9,8 @@ import javax.jcr.query.Query
 
 def log = log;
 log.info("Start patch for social activity nodes")
+Set<String> skip = new HashSet<String>(1);
+skip.add("j:targetNode");
 
 JCRCallback callback = new JCRCallback<Integer>() {
     public Integer doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -34,7 +38,7 @@ JCRCallback callback = new JCRCallback<Integer>() {
                     Node parent = next.parent;
                     session.checkout(parent);
                     String newName = next.name + "c";
-                    next.copy(parent.path, newName);
+                    next.copy(parent, newName, true, skip);
                     parent.getNode(newName).setProperty("j:targetNode", path);
                     next.remove();
                     count++;

@@ -21,7 +21,7 @@
         <jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
         <c:if test="${not empty picture}">
             <div class='image'>
-          <div class='itemImage itemImageLeft'><img class="userProfileImage" src="${picture.node.thumbnailUrls['avatar_120']}" alt="${title} ${firstname} ${lastname}" width="60"
+          <div class='itemImage itemImageLeft'><img class="userProfileImage" src="${picture.node.thumbnailUrls['avatar_120']}" alt="${fn:escapeXml(title)} ${fn:escapeXml(firstname)} ${fn:escapeXml(lastname)}" width="60"
                  height="60"/></div>
         </div><div class="clear"></div>
         </c:if>
@@ -29,6 +29,12 @@
             <c:if test="${not empty country}">
             <img src="<c:url value='${url.base}/../../../css/images/flags/plain/flag_${fn:toLowerCase(country.string)}.png'/>"/>
         </c:if>
-            <a href=mailto:${email}>${firstname}&nbsp;${lastname}</a> (${currentNode.name})</p>
+            <c:if test="${not empty email}">
+            <a href=mailto:${fn:escapeXml(email)}>${fn:escapeXml(firstname)}&nbsp;${fn:escapeXml(lastname)}</a>
+            </c:if>
+            <c:if test="${empty email}">
+            ${fn:escapeXml(firstname)}&nbsp;${fn:escapeXml(lastname)}
+            </c:if>
+            (${fn:escapeXml(currentNode.name)})</p>
     </div>
 </div>

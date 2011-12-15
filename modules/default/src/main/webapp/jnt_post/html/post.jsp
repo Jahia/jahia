@@ -31,7 +31,7 @@
             <jcr:nodeProperty var="picture" node="${userNode}" name="j:picture"/>
             <c:if test="${not empty picture}"><img
                     src="${picture.node.thumbnailUrls['avatar_60']}"
-                    alt="${title} ${firstname} ${lastname}"
+                    alt="${fn:escapeXml(title)} ${fn:escapeXml(firstname)} ${fn:escapeXml(lastname)}"
                     width="60"
                     height="60"/>
             </c:if>

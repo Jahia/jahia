@@ -16,7 +16,7 @@
 <div class="user-profile-view">
 		<jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
         <c:if test="${not empty picture}">
-          <img class='user-profile-img userProfileImage' src="${picture.node.thumbnailUrls['avatar_120']}" alt="${title} ${firstname} ${lastname}" width="60"
+          <img class='user-profile-img userProfileImage' src="${picture.node.thumbnailUrls['avatar_120']}" alt="${fn:escapeXml(title)} ${fn:escapeXml(firstname)} ${fn:escapeXml(lastname)}" width="60"
                  height="60"/>
         </c:if>
         <c:if test="${empty picture}">

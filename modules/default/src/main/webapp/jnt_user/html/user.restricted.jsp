@@ -60,7 +60,7 @@
         </c:if>
     </c:if>
     <div class="aboutMeBody"><!--start aboutMeBody -->
-        <h5><a href="<c:url value='${url.base}${currentNode.path}.html'/>">${person}</a></h5>
+        <h5><a href="<c:url value='${url.base}${currentNode.path}.html'/>">${fn:escapeXml(person)}</a></h5>
         <c:if test="${currentResource.moduleParams.displayBirthDate}">
             <c:if test="${not empty birthDate}">
                 <p class="aboutMeAge"><fmt:message
@@ -78,7 +78,7 @@
         <c:if test="${currentResource.moduleParams.displayEmail}">
             <c:if test="${not empty fields['j:email']}">
                 <p class="aboutMeMail"><fmt:message
-                        key="jnt_user.j_email"/>: ${fields['j:email']}</p>
+                        key="jnt_user.j_email"/>: ${fn:escapeXml(fields['j:email'])}</p>
             </c:if>
         </c:if>
         <div class="clear"></div>

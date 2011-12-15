@@ -77,6 +77,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         if (property != null) {
             try {
                 this.localPath = property.getPath();
+                this.localPathInProvider = localPath;
                 this.name = property.getName();
                 this.def = def;
             } catch (RepositoryException e) {
@@ -91,7 +92,8 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         this.property = property;
         setItem(property);
         this.name = name;
-        this.localPath = node.getPath() + "/" + name;
+        this.localPath = node.getPath() + "/" + name; // todo : node.getPath() returns the global path, not local path - should use node.getRealNode()
+        this.localPathInProvider = localPath;
         this.def = def;
     }
 
@@ -228,7 +230,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public void addValue(Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        addValues(new Value[] { value });
+        addValues(new Value[]{value});
     }
 
     public void addValues(Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -313,6 +315,11 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
             default:
                 throw new ValueFormatException("Property value cannot be converted to a PATH, REFERENCE or WEAKREFERENCE");
         }
+    }
+
+    public JCRNodeWrapper getContextualizedNode() throws ValueFormatException, RepositoryException {
+        JCRNodeWrapper ref = getNode();
+        return session.getNode(getParent().getPath()+JCRSessionWrapper.DEREF_SEPARATOR+ref.getRealNode().getName());
     }
 
     public JCRNodeWrapper getReferencedNode() throws ValueFormatException, RepositoryException {

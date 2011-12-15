@@ -706,11 +706,13 @@ public class JCRStoreProvider {
     }
 
     private JCRNodeWrapper createWrapper(Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper wrapper =  objectNode != null ? session.getCachedNode(objectNode.getIdentifier()) : null;
-        if (wrapper != null) {
-            return wrapper;
+        if (path == null || !path.contains(JCRSessionWrapper.DEREF_SEPARATOR)) {
+            JCRNodeWrapper wrapper =  objectNode != null ? session.getCachedNode(objectNode.getIdentifier()) : null;
+            if (wrapper != null) {
+                return wrapper;
+            }
         }
-            
+
         if (session.getVersionDate() != null || session.getVersionLabel() != null) {
             try {
                 if (objectNode.isNodeType(Constants.NT_FROZENNODE)) {

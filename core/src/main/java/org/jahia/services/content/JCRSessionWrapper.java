@@ -40,6 +40,7 @@
 
 package org.jahia.services.content;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
@@ -95,6 +96,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class JCRSessionWrapper implements Session {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRSessionWrapper.class);
+    public static final String DEREF_SEPARATOR = "@/";
 
     private JCRSessionFactory sessionFactory;
     private JahiaUser user;
@@ -281,6 +283,10 @@ public class JCRSessionWrapper implements Session {
         if (sessionCacheByPath.containsKey(path)) {
             return sessionCacheByPath.get(path);
         }
+        if (path.contains(DEREF_SEPARATOR)) {
+            JCRNodeWrapper parent = (JCRNodeWrapper) getItem(StringUtils.substringBeforeLast(path, DEREF_SEPARATOR), checkVersion);
+            return dereference(parent, StringUtils.substringAfterLast(path, DEREF_SEPARATOR));
+        }
         Map<String, JCRStoreProvider> dynamicMountPoints = sessionFactory.getDynamicMountPoints();
         for (Map.Entry<String, JCRStoreProvider> mp : dynamicMountPoints.entrySet()) {
             if (path.startsWith(mp.getKey() + "/")) {
@@ -300,7 +306,7 @@ public class JCRSessionWrapper implements Session {
             if (key.equals("/") || path.equals(key) || path.startsWith(key + "/")) {
                 String localPath = path;
                 if (!key.equals("/")) {
-                    localPath = path.substring(key.length());
+                    localPath = localPath.substring(key.length());
                 }
                 JCRStoreProvider provider = mp.getValue();
                 if (localPath.equals("")) {
@@ -344,6 +350,25 @@ public class JCRSessionWrapper implements Session {
         throw new PathNotFoundException(path);
     }
 
+    private JCRNodeWrapper dereference(JCRNodeWrapper parent, String refPath) throws RepositoryException {
+        JCRStoreProvider provider = parent.getProvider();
+        JCRNodeWrapper wrapper;
+        Node referencedNode = parent.getRealNode().getProperty("j:node").getNode();
+        String fullPath = parent.getPath() + DEREF_SEPARATOR + refPath;
+        if (parent.getPath().startsWith(referencedNode.getPath())) {
+            throw new PathNotFoundException(fullPath);
+        }
+        refPath = StringUtils.substringAfter(refPath, "/");
+        if (refPath.equals("")) {
+            wrapper = provider.getNodeWrapper(referencedNode, fullPath, parent, this);
+        } else {
+            Node node = referencedNode.getNode(refPath);
+            wrapper = provider.getNodeWrapper(node, fullPath, null, this);
+        }
+        sessionCacheByPath.put(fullPath, wrapper);
+        return wrapper;
+    }
+    
     public JCRNodeWrapper getNode(String path) throws PathNotFoundException, RepositoryException {
         return getNode(path, true);
     }

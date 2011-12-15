@@ -121,9 +121,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 path = StringUtils.substringBeforeLast(path , "/");
             }
             this.localPath = path;
+            this.localPathInProvider = path;
+            if (localPathInProvider.contains(JCRSessionWrapper.DEREF_SEPARATOR)) {
+                try {
+                    this.localPathInProvider = objectNode.getPath();
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
         } else {
             try {
                 this.localPath = objectNode.getPath();
+                this.localPathInProvider = objectNode.getPath();
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -300,7 +309,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (accessControlManager != null) {
 //                        List<Privilege> privileges = convertPermToPrivileges(perm, accessControlManager);
 
-                return accessControlManager.hasPrivileges(localPath, new Privilege[]{accessControlManager.privilegeFromName(perm)});
+                return accessControlManager.hasPrivileges(localPathInProvider, new Privilege[]{accessControlManager.privilegeFromName(perm)});
             }
             return true;
         } catch (AccessControlException e) {
@@ -322,7 +331,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             AccessControlManager accessControlManager = getAccessControlManager();
             if (accessControlManager != null) {
-                Privilege[] p = accessControlManager.getPrivileges(localPath);
+                Privilege[] p = accessControlManager.getPrivileges(localPathInProvider);
                 for (Privilege privilege : p) {
                     result.add(privilege.getName());
                     for (Privilege privilege1 : privilege.getAggregatePrivileges()) {
@@ -340,8 +349,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         BitSet b = null;
         try {
             AccessControlManager accessControlManager = getAccessControlManager();
-            List<Privilege> app = Arrays.asList(accessControlManager.getPrivileges(localPath));
-            List<Privilege> pr = Arrays.asList(accessControlManager.getSupportedPrivileges(localPath));
+            List<Privilege> app = Arrays.asList(accessControlManager.getPrivileges(localPathInProvider));
+            List<Privilege> pr = Arrays.asList(accessControlManager.getSupportedPrivileges(localPathInProvider));
             b = new BitSet(pr.size());
             for (Privilege privilege : app) {
                 b.set(pr.indexOf(privilege));
@@ -383,7 +392,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public boolean changeRoles(String principalKey, Map<String, String> roles) throws RepositoryException {
         if (!objectNode.isCheckedOut() && objectNode.isNodeType(Constants.MIX_VERSIONABLE)) {
-            objectNode.getSession().getWorkspace().getVersionManager().checkout(objectNode.getPath());
+            objectNode.getSession().getWorkspace().getVersionManager().checkout(localPathInProvider);
         }
 
         List<String> gr = new ArrayList<String>();
@@ -663,7 +672,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             uuid = objectNode.getIdentifier();
         } catch (RepositoryException e) {
-            uuid = localPath;
+            uuid = localPathInProvider;
         }
         return provider.getKey() + ":" + uuid;
     }
@@ -706,12 +715,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public String getWebdavUrl() {
-        try {
-            return Jahia.getContextPath() + provider.getWebdavPath() + "/" + session.getWorkspace().getName() + objectNode.getPath();
-        } catch (RepositoryException e) {
-            logger.error("Cannot get file path", e);
-        }
-        return "";
+        return Jahia.getContextPath() + provider.getWebdavPath() + "/" + session.getWorkspace().getName() + localPathInProvider;
     }
 
     /**
@@ -920,7 +924,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public String getName() {
         try {
-            if ((objectNode.getPath().equals("/") || objectNode.getPath().equals(provider.getRelativeRoot())) && provider.getMountPoint().length() > 1) {
+            if ((localPathInProvider.equals("/") || localPathInProvider.equals(provider.getRelativeRoot())) && provider.getMountPoint().length() > 1) {
                 String mp = provider.getMountPoint();
                 return mp.substring(mp.lastIndexOf('/') + 1);
             } else {
@@ -2106,12 +2110,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         getSession().move(getPath(), parent.getPath() + "/" + newName);
-        this.localPath = parent.getPath() + "/" + newName;
+        this.localPathInProvider = parent.getPath() + "/" + newName;
         String mountPoint = getProvider().getMountPoint();
-        if (mountPoint.length() > 1 && localPath.startsWith(mountPoint)) {
-            localPath = StringUtils.substringAfter(localPath, mountPoint);
+        if (mountPoint.length() > 1 && localPathInProvider.startsWith(mountPoint)) {
+            localPathInProvider = StringUtils.substringAfter(localPathInProvider, mountPoint);
         }
-        this.objectNode = getSession().getProviderSession(getProvider()).getNode(localPath);
+        this.objectNode = getSession().getProviderSession(getProvider()).getNode(localPathInProvider);
         if ((nodePositionFound) && (parent.getPrimaryNodeType().hasOrderableChildNodes())) {
             parent.orderBefore(newName, nextNodeName);
         }
@@ -2341,7 +2345,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 objectNode.unlock();
             }
         } else {
-            logger.error("Lost lock ! " + objectNode.getPath());
+            logger.error("Lost lock ! " + localPathInProvider);
         }
     }
 
@@ -2594,7 +2598,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         }
                     }
                 } catch (ItemNotFoundException e) {
-                    logger.debug("checkLock : no i18n node for node " + objectNode.getPath());
+                    logger.debug("checkLock : no i18n node for node " + localPathInProvider);
                 }
             }
         }
@@ -2702,7 +2706,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKPOINT, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    session.getWorkspace().getVersionManager().checkpoint(localPath);
+                    session.getWorkspace().getVersionManager().checkpoint(localPathInProvider);
                     return null;
                 }
             });
@@ -2858,7 +2862,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public void doneMerge(Version version) throws VersionException, InvalidItemStateException, UnsupportedRepositoryOperationException, RepositoryException {
         VersionManager versionManager = session.getWorkspace().getVersionManager();
-        versionManager.doneMerge(objectNode.getPath(), ((JCRVersion) version).getRealNode());
+        versionManager.doneMerge(localPathInProvider, ((JCRVersion) version).getRealNode());
     }
 
     /**
@@ -2866,7 +2870,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public void cancelMerge(Version version) throws VersionException, InvalidItemStateException, UnsupportedRepositoryOperationException, RepositoryException {
         VersionManager versionManager = session.getWorkspace().getVersionManager();
-        versionManager.cancelMerge(objectNode.getPath(), ((JCRVersion) version).getRealNode());
+        versionManager.cancelMerge(localPathInProvider, ((JCRVersion) version).getRealNode());
     }
 
     /**
@@ -2904,12 +2908,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public boolean isCheckedOut() throws RepositoryException {
         VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
-        boolean co = versionManager.isCheckedOut(objectNode.getPath());
+        boolean co = versionManager.isCheckedOut(localPathInProvider);
         if (co && session.getLocale() != null) {
             try {
                 co &= versionManager.isCheckedOut(getI18N(session.getLocale()).getPath());
             } catch (ItemNotFoundException e) {
-                logger.debug("isCheckedOut : no i18n node for node " + objectNode.getPath());
+                logger.debug("isCheckedOut : no i18n node for node " + localPathInProvider);
             }
         }
 

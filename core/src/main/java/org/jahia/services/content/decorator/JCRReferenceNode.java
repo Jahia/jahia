@@ -41,6 +41,7 @@
 package org.jahia.services.content.decorator;
 
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapperImpl;
 import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
@@ -77,5 +78,9 @@ public class JCRReferenceNode extends JCRNodeDecorator {
             logger.warn("JCRReferenceNode : error while trying to display reference " + this.getPath());
         }
         return name;
+    }
+    
+    public Node getContextualizedNode() throws RepositoryException {
+        return getProperty("j:node").getContextualizedNode();
     }
 }

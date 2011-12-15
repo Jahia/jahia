@@ -58,6 +58,7 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
     protected JCRStoreProvider provider;
     protected Item item;
     protected String localPath;
+    protected String localPathInProvider;
     protected JCRSessionWrapper session;
     protected Workspace workspace;
 

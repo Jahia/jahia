@@ -90,6 +90,8 @@ public interface JCRPropertyWrapper extends Property, JCRItemWrapper {
 
     Value[] getRealValues() throws ValueFormatException,RepositoryException;
 
-    public String getLocale() throws RepositoryException;
+    JCRNodeWrapper getContextualizedNode() throws ValueFormatException, RepositoryException;
+
+    String getLocale() throws RepositoryException;
 
 }

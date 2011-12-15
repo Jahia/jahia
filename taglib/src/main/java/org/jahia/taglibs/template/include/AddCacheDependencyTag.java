@@ -41,10 +41,14 @@
 package org.jahia.taglibs.template.include;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.Resource;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
@@ -64,8 +68,13 @@ public class AddCacheDependencyTag extends TagSupport {
         this.node = node;
     }
 
-    public void setUuid(String uuid) {
-        this.stringDependency = uuid;
+    public void setUuid(final String uuid) {
+        try {
+            Resource resource = (Resource) pageContext.getRequest().getAttribute("currentResource");
+            setPath(resource.getNode().getSession().getNodeByIdentifier(uuid).getPath());
+        } catch (RepositoryException e) {
+            this.stringDependency = uuid;
+        }
     }
 
     public void setPath(String path) {

@@ -40,16 +40,20 @@
 
 package org.jahia.services.render.filter;
 
+import com.yahoo.platform.yui.compressor.CssCompressor;
+import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
+import com.yahoo.platform.yui.org.mozilla.javascript.ErrorReporter;
+import com.yahoo.platform.yui.org.mozilla.javascript.EvaluatorException;
 import net.htmlparser.jericho.*;
 import org.apache.commons.collections.ComparatorUtils;
-import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.functors.NOPTransformer;
-import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.collections.map.LazySortedMap;
 import org.apache.commons.collections.map.TransformedSortedMap;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.render.AssetsMapFactory;
 import org.jahia.services.render.RenderContext;
@@ -67,8 +71,10 @@ import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.SimpleScriptContext;
+import javax.servlet.ServletContext;
 import java.io.*;
 import java.net.URLDecoder;
+import java.security.MessageDigest;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -88,6 +94,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     };
 
     private static final FastHashMap RANK;
+
     static {
         RANK = new FastHashMap();
         RANK.put("css", Integer.valueOf(1));
@@ -141,6 +148,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private String template;
     private String templateExtension;
 
+    private boolean aggregateAndCompress;
+
     private static final Pattern CLEANUP_RESOURCE_REGEXP = Pattern.compile(
             "<jahia:resource .*/>");
 
@@ -153,8 +162,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         Source source = new Source(previousOut);
 
         @SuppressWarnings("unchecked")
-        Map<String, Map<String,Map<String,String>>> assets = LazySortedMap.decorate(
-                TransformedSortedMap.decorate(new TreeMap<String, Map<String,Map<String,String>>>(ASSET_COMPARATOR), LOW_CASE_TRANSFORMER, NOPTransformer.INSTANCE), new AssetsMapFactory());
+        Map<String, Map<String, Map<String, String>>> assets = LazySortedMap.decorate(
+                TransformedSortedMap.decorate(new TreeMap<String, Map<String, Map<String, String>>>(ASSET_COMPARATOR), LOW_CASE_TRANSFORMER, NOPTransformer.INSTANCE), new AssetsMapFactory());
 
         List<StartTag> esiResourceTags = source.getAllStartTags("jahia:resource");
         Set<String> keys = new HashSet<String>();
@@ -167,7 +176,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             String resourceS = esiResourceTag.getAttributeValue("resource");
             String title = esiResourceTag.getAttributeValue("title");
             String key = esiResourceTag.getAttributeValue("key");
-            Map<String,String> optionsMap = new HashMap<String, String>();
+            Map<String, String> optionsMap = new HashMap<String, String>();
 
             // Manage Options
             if (title != null && !"".equals(title.trim())) {
@@ -177,21 +186,21 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 optionsMap.put("media", media);
             }
 
-            Map<String,Map<String,String>> stringMap = assets.get(type);
-            if (stringMap  == null) {
-                Map<String,Map<String,String>> assetMap = new LinkedHashMap<String, Map<String, String>>();
-                stringMap = assets.put(type,assetMap);
+            Map<String, Map<String, String>> stringMap = assets.get(type);
+            if (stringMap == null) {
+                Map<String, Map<String, String>> assetMap = new LinkedHashMap<String, Map<String, String>>();
+                stringMap = assets.put(type, assetMap);
             }
 
             if (insert) {
-                Map<String,Map<String,String>> my = new LinkedHashMap<String,Map<String,String>>();
+                Map<String, Map<String, String>> my = new LinkedHashMap<String, Map<String, String>>();
                 my.put(path, optionsMap);
                 my.putAll(stringMap);
                 stringMap = my;
             } else {
                 if ("".equals(key) || !keys.contains(key)) {
-                    Map<String,Map<String,String>> my = new LinkedHashMap<String,Map<String,String>>();
-                    my.put(path,optionsMap);
+                    Map<String, Map<String, String>> my = new LinkedHashMap<String, Map<String, String>>();
+                    my.put(path, optionsMap);
                     stringMap.putAll(my);
                     keys.add(key);
                 }
@@ -233,9 +242,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             if (renderContext.isEditMode()) {
                 // Add static div for edit mode
                 List<Element> bodyElementList = source.getAllElements(HTMLElementName.BODY);
-                Map<String,Map<String,String>> javascript = assets.get("javascript");
+                Map<String, Map<String, String>> javascript = assets.get("javascript");
                 if (javascript == null) {
-                    assets.put("javascript", (javascript = new HashMap<String, Map<String,String>>()));
+                    assets.put("javascript", (javascript = new HashMap<String, Map<String, String>>()));
                 }
                 javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.min.js", null);
                 javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.Jcrop.js", null);
@@ -273,6 +282,12 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(templateExtension);
                     ScriptContext scriptContext = new AssetsScriptContext();
                     final Bindings bindings = scriptEngine.createBindings();
+
+                    if (resource.getWorkspace().equals("live") && aggregateAndCompress) {
+                        assets.put("css", aggregate(assets.get("css"), "css"));
+                        assets.put("javascript", aggregate(assets.get("javascript"), "js"));
+                    }
+
                     bindings.put("renderContext", renderContext);
                     bindings.put("resource", resource);
                     bindings.put("contextPath", renderContext.getRequest().getContextPath());
@@ -289,18 +304,18 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     }
                 }
                 String header = renderContext.getRequest().getHeader("user-agent");
-                if (header!=null && header.contains("MSIE")) {
+                if (header != null && header.contains("MSIE")) {
                     int idx = element.getBegin() + element.toString().indexOf(">");
                     String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=8\">";
-                    outputDocument.replace(idx,idx + 1,str);
+                    outputDocument.replace(idx, idx + 1, str);
                 }
                 if (renderContext.isContributionMode() || renderContext.isPreviewMode()) {
                     for (Element title : element.getAllElements(HTMLElementName.TITLE)) {
                         int idx = title.getBegin() + title.toString().indexOf(">");
-                        String str = renderContext.isContributionMode()?JahiaResourceBundle.getJahiaInternalResource("label.contribute",renderContext.getUILocale()):
-                                JahiaResourceBundle.getJahiaInternalResource("label.preview",renderContext.getUILocale());
-                        str = "> " + str  + " - ";
-                        outputDocument.replace(idx, idx + 1,str);
+                        String str = renderContext.isContributionMode() ? JahiaResourceBundle.getJahiaInternalResource("label.contribute", renderContext.getUILocale()) :
+                                JahiaResourceBundle.getJahiaInternalResource("label.preview", renderContext.getUILocale());
+                        str = "> " + str + " - ";
+                        outputDocument.replace(idx, idx + 1, str);
                     }
                 }
 
@@ -310,6 +325,133 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
         out = CLEANUP_RESOURCE_REGEXP.matcher(out).replaceAll("");
         return out.trim();
+    }
+
+    private Map<String, Map<String, String>> aggregate(Map<String, Map<String, String>> map, String type) throws IOException {
+        List<Map.Entry<String, Map<String, String>>> entries = new ArrayList<Map.Entry<String, Map<String, String>>>(map.entrySet());
+        Map<String, Map<String, String>> newCss = new LinkedHashMap<String, Map<String, String>>();
+
+        int i = 0;
+        for (; i < entries.size(); ) {
+            long cssFilesDates = 0;
+            ServletContext context = JahiaContextLoaderListener.getServletContext();
+
+            List<String> aggregated = new ArrayList<String>();
+            Vector<InputStream> files = new Vector<InputStream>();
+            for (; i < entries.size(); i++) {
+                Map.Entry<String, Map<String, String>> entry = entries.get(i);
+                File file = new File(context.getRealPath(entry.getKey()));
+                if (file.exists() && entry.getValue().isEmpty()) {
+                    aggregated.add(entry.getKey());
+                    files.add(new FileInputStream(file));
+                    long lastModified = file.lastModified();
+                    if (cssFilesDates < lastModified) {
+                        cssFilesDates = lastModified;
+                    }
+                } else {
+                    // CSS has options - will not be aggregated and added at the end
+                    break;
+                }
+            }
+            if (!aggregated.isEmpty()) {
+                String aggregatedKey = generateAggregateName(aggregated);
+
+                new File(context.getRealPath("/resources")).mkdirs();
+
+                String minifiedPath = "/resources/" + aggregatedKey + ".min." + type;
+                String minifiedRealPath = context.getRealPath(minifiedPath);
+                File minifiedFile = new File(minifiedRealPath);
+
+                if (!minifiedFile.exists() || minifiedFile.lastModified() < cssFilesDates) {
+                    String aggregatedPath = context.getRealPath("/resources/" + aggregatedKey + "." + type);
+                    try {
+
+                        OutputStream outMerged = new FileOutputStream(aggregatedPath);
+                        for (InputStream file : files) {
+                            if (type.equals("css")) {
+                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                IOUtils.copy(file, stream);
+                                IOUtils.closeQuietly(file);
+                                String s = stream.toString("UTF-8");
+
+                                s = s.replace("url( ", "url(");
+                                s = s.replace("url(\"", "url(\".." + StringUtils.substringBeforeLast(aggregated.get(files.indexOf(file)), "/") + "/");
+                                s = s.replace("url(", "url(.." + StringUtils.substringBeforeLast(aggregated.get(files.indexOf(file)), "/") + "/");
+                                file = new ByteArrayInputStream(s.getBytes("UTF-8"));
+                            }
+                            IOUtils.copy(file, outMerged);
+                            IOUtils.closeQuietly(file);
+                        }
+                        IOUtils.closeQuietly(outMerged);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    Reader reader = new InputStreamReader(new FileInputStream(aggregatedPath), "UTF-8");
+                    Writer writer = new OutputStreamWriter(new FileOutputStream(context.getRealPath(minifiedPath)), "UTF-8");
+                    if (type.equals("css")) {
+                        CssCompressor compressor = new CssCompressor(reader);
+                        compressor.compress(writer, -1);
+                    } else if (type.equals("js")) {
+                        JavaScriptCompressor compressor = new JavaScriptCompressor(reader, new ErrorReporter() {
+                            public void warning(String message, String sourceName,
+                                                int line, String lineSource, int lineOffset) {
+                                if (line < 0) {
+                                    logger.warn(message);
+                                } else {
+                                    logger.warn(line + ':' + lineOffset + ':' + message);
+                                }
+                            }
+
+                            public void error(String message, String sourceName,
+                                              int line, String lineSource, int lineOffset) {
+                                if (line < 0) {
+                                    logger.error(message);
+                                } else {
+                                    logger.error(line + ':' + lineOffset + ':' + message);
+                                }
+                            }
+
+                            public EvaluatorException runtimeError(String message, String sourceName,
+                                                                   int line, String lineSource, int lineOffset) {
+                                error(message, sourceName, line, lineSource, lineOffset);
+                                return new EvaluatorException(message);
+                            }
+                        });
+                        compressor.compress(writer, -1, true, true, false, false);
+                    } else {
+                        IOUtils.copy(reader, writer);
+                    }
+                    IOUtils.closeQuietly(reader);
+                    IOUtils.closeQuietly(writer);
+                }
+
+                newCss.put(minifiedPath, new HashMap<String, String>());
+            }
+            if (i < entries.size()) {
+                newCss.put(entries.get(i).getKey(), entries.get(i).getValue());
+                i++;
+            }
+        }
+        return newCss;
+    }
+
+    public String generateAggregateName(List<String> m) {
+        StringBuilder sb = new StringBuilder();
+        for (String s1 : m) {
+            sb.append(s1);
+        }
+        try {
+            MessageDigest digester = MessageDigest.getInstance("MD5");
+            byte[] digest = digester.digest(sb.toString().getBytes("UTF-8"));
+            StringBuilder hexString = new StringBuilder();
+            for (byte aDigest : digest) {
+                hexString.append(Integer.toHexString(0xFF & aDigest));
+            }
+            return hexString.toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected String getAjaxResolvedTemplate() throws IOException {
@@ -348,6 +490,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         if (template != null) {
             templateExtension = StringUtils.substringAfterLast(template, ".");
         }
+    }
+
+    public void setAggregateAndCompress(boolean aggregateAndCompress) {
+        this.aggregateAndCompress = aggregateAndCompress;
     }
 
     public void onApplicationEvent(TemplatePackageRedeployedEvent event) {

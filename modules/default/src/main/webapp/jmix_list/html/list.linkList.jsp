@@ -42,5 +42,8 @@
         </c:if>
     </ul>
 </c:if>
+<c:if test="${moduleMap.editable and renderContext.editMode && !resourceReadOnly}">
+    <template:module path="*"/>
+ </c:if>
 <div class="clear"></div>
 <template:include view="hidden.footer"/>

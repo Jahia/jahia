@@ -164,7 +164,7 @@ public class ThreadMonitor {
 
     private boolean activated = true;
 
-    private long minimalIntervalBetweenDumps = 20;
+    private long minimalIntervalBetweenDumps = 500;
 
     private long lastDumpTime = -1;
 

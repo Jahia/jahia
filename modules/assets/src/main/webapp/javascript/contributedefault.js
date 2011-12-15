@@ -31,13 +31,13 @@ $(window).unload( function() {
     });
 });
 
-function initEditFields(id) {
+function initEditFields(id, escapeTextValue) {
     $(".edit" + id).editable(function (value, settings) {
         var data = {'jcrMethodToCall':'put'};
         var submitId = $(this).attr('jcr:id');
         data[submitId] = value;
         $.post($(this).attr('jcr:url'), data, null, "json");
-        return(value);
+        return escapeTextValue ? $('<div/>').text(value).html() : value;
     }, {
         type    : 'text',
         onblur : 'ignore',

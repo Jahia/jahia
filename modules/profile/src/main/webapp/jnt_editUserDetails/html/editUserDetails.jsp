@@ -59,7 +59,7 @@
 <template:addResources>
 <script type="text/javascript">
     $(document).ready(function() {
-        initEditFields("${currentNode.identifier}");
+        initEditFields("${currentNode.identifier}", true);
         $(".userPicture${currentNode.identifier}").editable('', {
             type : 'ajaxupload',
             onblur : 'ignore',

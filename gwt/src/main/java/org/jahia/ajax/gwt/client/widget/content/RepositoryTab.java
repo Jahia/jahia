@@ -101,7 +101,11 @@ public class RepositoryTab extends ContentPanel {
         factory.setNodeTypes(config.getFolderTypes());
         factory.setMimeTypes(config.getMimeTypes());
         factory.setFilters(config.getFilters());
-        factory.setFields(config.getTreeColumnKeys());
+
+        List<String> keys = new ArrayList<String>(config.getTreeColumnKeys());
+        keys.add(GWTJahiaNode.PUBLICATION_INFO);
+        factory.setFields(keys);
+
         factory.setSelectedPath(selectedPaths);
         factory.setHiddenTypes(config.getHiddenTypes());
         factory.setHiddenRegex(config.getHiddenRegex());

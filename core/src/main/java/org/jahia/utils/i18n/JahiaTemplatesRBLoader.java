@@ -151,7 +151,7 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
             } else {
                 String fileName = NAME_PATTERN.matcher(name).replaceAll(File.separator);
                 if (aPackage != null) {
-                    String path = aPackage.getRootFolderPath() + fileName;
+                    String path = aPackage.getRootFolderPath() + (!fileName.startsWith("/") ? "/" : "") + fileName;
                     path = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path) != null ? path : null;
                     if (path != null) {
                         stream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path);
@@ -164,9 +164,11 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
                     }
                 }
                 try {
-                    File file = new File(Jahia.getSettings().getClassDiskPath(), fileName);
-                    if (file.exists()) {
-                    	return new BufferedInputStream(new FileInputStream(file));
+                    if (Jahia.getSettings() != null) {
+                        File file = new File(Jahia.getSettings().getClassDiskPath(), fileName);
+                        if (file.exists()) {
+                            return new BufferedInputStream(new FileInputStream(file));
+                        }
                     }
                 } catch (FileNotFoundException e) {
                     logger.warn(e.getMessage(), e);

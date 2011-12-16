@@ -55,15 +55,19 @@ public class AreaResourceFilter extends AbstractFilter {
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-            JCRNodeWrapper node = resource.getNode();
-
-            final HttpServletRequest request = renderContext.getRequest();
-            if (node.isNodeType("jnt:area") || node.isNodeType("jnt:mainResourceDisplay")) {
-                chain.pushAttribute(request,"areaListResource",resource.getNode());
-            } else if (node.isNodeType("jmix:list")) {
-                 chain.pushAttribute(request,"areaResource",request.getAttribute("areaListResource"));
-                 chain.pushAttribute(request,"areaListResource",null);
+        JCRNodeWrapper node = resource.getNode();
+        final HttpServletRequest request = renderContext.getRequest();
+        if (node.isNodeType("jnt:area") || node.isNodeType("jnt:mainResourceDisplay")) {
+            chain.pushAttribute(request, "areaListResource", resource.getNode());
+        } else if (node.isNodeType("jmix:list")) {
+            if (request.getAttribute("areaListResource") == null) {
+                chain.pushAttribute(request, "areaResource", resource.getNode());
+            } else {
+                chain.pushAttribute(request, "areaResource", request.getAttribute("areaListResource"));
             }
+            chain.pushAttribute(request, "areaListResource", null);
+        }
         return null;
+
     }
 }

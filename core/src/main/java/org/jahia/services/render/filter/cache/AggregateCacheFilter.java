@@ -324,28 +324,24 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 Set<String> depNodeWrappers = resource.getDependencies();
                 for (String path : depNodeWrappers) {
                     Element element1 = dependenciesCache.get(path);
-                    Set<String> dependencies = new LinkedHashSet<String>();
-                    if (element1 != null) {
-                        dependencies = (Set<String>) element1.getValue();
-                    }
-                    Set<String> newDependencies = new LinkedHashSet<String>();
+                    Set<String> dependencies = element1 != null ? (Set<String>) element1.getValue() : Collections.<String>emptySet();
+                    Set<String> newDependencies = new LinkedHashSet<String>(dependencies.size() + 1);
                     newDependencies.addAll(dependencies);
-                    newDependencies.add(perUserKey);
-                    dependenciesCache.put(new Element(path, newDependencies));
+                    if (newDependencies.add(perUserKey)) {
+                        dependenciesCache.put(new Element(path, newDependencies));
+                    }
                 }
                 resource.getDependencies().clear();
                 final Cache regexpDependenciesCache = cacheProvider.getRegexpDependenciesCache();
                 Set<String> regexpDepNodeWrappers = resource.getRegexpDependencies();
                 for (String regexp : regexpDepNodeWrappers) {
                     Element element1 = regexpDependenciesCache.get(regexp);
-                    Set<String> dependencies = new LinkedHashSet<String>();
-                    if (element1 != null) {
-                        dependencies = (Set<String>) element1.getValue();
-                    }
-                    Set<String> newDependencies = new LinkedHashSet<String>();
+                    Set<String> dependencies = element1 != null ? (Set<String>) element1.getValue() : Collections.<String> emptySet();
+                    Set<String> newDependencies = new LinkedHashSet<String>(dependencies.size() + 1);
                     newDependencies.addAll(dependencies);
-                    newDependencies.add(perUserKey);
-                    regexpDependenciesCache.put(new Element(regexp, newDependencies));
+                    if (newDependencies.add(perUserKey)) {
+                        regexpDependenciesCache.put(new Element(regexp, newDependencies));
+                    }
                 }
                 resource.getRegexpDependencies().clear();
 

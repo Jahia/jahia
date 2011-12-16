@@ -40,6 +40,11 @@
 
 package org.jahia.services.content;
 
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -187,6 +192,67 @@ public final class RBACUtils {
             role.setProperty("j:permissions",
                     new Value[] { session.getValueFactory().createValue(permission, true) });
             logger.info("Granted permission {} to role {}", permission.getPath(), role.getPath());
+        }
+
+        return modified;
+    }
+
+    /**
+     * Grants the specified permission to the role. Both permission and role nodes have to exist. The {@link Session#save()} is not called
+     * by this method; it is the responsibility of the caller.
+     * 
+     * @param permissionPath
+     *            the path of the permission to be granted
+     * @param rolePath
+     *            the path of the role the permission should be granted to
+     * @param session
+     *            current JCR session
+     * @return <code>true</code> if any modification was done; if the role already has that permission assigned, <code>false</code> is
+     *         returned.
+     * @throws RepositoryException
+     *             in case of an error
+     */
+    public static boolean revokePermissionFromRole(String permissionPath, String rolePath,
+            JCRSessionWrapper session) throws RepositoryException {
+        if (permissionPath == null || !permissionPath.startsWith("/permissions/")) {
+            throw new IllegalArgumentException("Illegal value for the permission path: "
+                    + permissionPath);
+        }
+        if (rolePath == null || rolePath.length() == 0) {
+            throw new IllegalArgumentException("Illegal value for the role: " + rolePath);
+        }
+
+        boolean modified = true;
+
+        JCRNodeWrapper permission = session.getNode(permissionPath);
+        String permissionId = permission.getIdentifier();
+        JCRNodeWrapper role = session.getNode(rolePath.contains("/") ? rolePath : "/roles/"
+                + rolePath);
+
+        if (role.hasProperty("j:permissions")) {
+            return false;
+        }
+        Value[] values = role.getProperty("j:permissions").getValues();
+        if (values == null || values.length == 0) {
+            return false;
+        }
+        List<Value> newValues = new LinkedList<Value>();
+        Collections.addAll(newValues, values);
+        boolean found = false;
+        for (Iterator<Value> valueIterator = newValues.iterator(); valueIterator.hasNext();) {
+            if (StringUtils.equals(permissionId, valueIterator.next().getString())) {
+                found = true;
+                valueIterator.remove();
+            }
+        }
+        if (found) {
+            modified = true;
+            if (newValues.isEmpty()) {
+                role.setProperty("j:permissions", (Value[]) null);
+            } else {
+                role.setProperty("j:permissions", newValues.toArray(new Value[] {}));
+            }
+            logger.info("Revoked permission {} from role {}", permission.getPath(), role.getPath());
         }
 
         return modified;

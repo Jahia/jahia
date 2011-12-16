@@ -1505,22 +1505,24 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 dumpLocks(nodeWrapper);
 
                 // get node type
-                final List<GWTJahiaNodeType> theseTypes =
-                        contentDefinition.getNodeTypes(nodeWrapper.getNodeTypes(), getUILocale());
                 if (nodeTypes == null) {
+                    final List<GWTJahiaNodeType> theseTypes =
+                            contentDefinition.getNodeTypes(nodeWrapper.getNodeTypes(), getUILocale());
                     nodeTypes = theseTypes;
                 } else {
-                    GWTJahiaNodeType p = nodeTypes.get(0);
-                    nodeTypes.retainAll(theseTypes);
-
-                    if (!nodeWrapper.isNodeType(p.getName())) {
-                        nodeTypes.remove(0);
-                        List<String> superTypes = p.getSuperTypes();
-                        for (String s : superTypes) {
-                            if (nodeWrapper.isNodeType(s)) {
-                                nodeTypes.add(0, contentDefinition.getNodeType(s, getUILocale()));
-                                break;
+                    List<GWTJahiaNodeType> previousTypes = new ArrayList<GWTJahiaNodeType>(nodeTypes);
+                    nodeTypes.clear();
+                    for (GWTJahiaNodeType p : previousTypes) {
+                        if (!nodeWrapper.isNodeType(p.getName())) {
+                            List<String> superTypes = p.getSuperTypes();
+                            for (String s : superTypes) {
+                                if (nodeWrapper.isNodeType(s)) {
+                                    nodeTypes.add(0, contentDefinition.getNodeType(s, getUILocale()));
+                                    break;
+                                }
                             }
+                        } else {
+                            nodeTypes.add(p);
                         }
                     }
                 }

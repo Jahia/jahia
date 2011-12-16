@@ -58,15 +58,7 @@ public class CopyActionItem extends BaseActionItem{
     public void onComponentSelection() {
         final List<GWTJahiaNode> selectedItems = linker.getSelectionContext().getMultipleSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
-            final List<GWTJahiaNode> copyOfSelectedItems = new LinkedList<GWTJahiaNode>();
-            for (GWTJahiaNode selectedItem : selectedItems) {
-                if(selectedItem.getReferencedNode()!=null) {
-                    copyOfSelectedItems.add(selectedItem.getReferencedNode());
-                } else {
-                    copyOfSelectedItems.add(selectedItem);
-                }
-            }
-            CopyPasteEngine.getInstance().setCopiedPaths(copyOfSelectedItems);
+            CopyPasteEngine.getInstance().setCopiedPaths(selectedItems);
             linker.select(null);
         }
     }

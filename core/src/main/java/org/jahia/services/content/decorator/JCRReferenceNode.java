@@ -71,7 +71,7 @@ public class JCRReferenceNode extends JCRNodeDecorator {
     public String getDisplayableName() {
         String name = super.getDisplayableName();
         try {
-            if (getNode() != null && !this.getIdentifier().equals(getNode().getIdentifier())) {
+            if (getName().equals(name) && getNode() != null && !this.getIdentifier().equals(getNode().getIdentifier())) {
                 name = ((JCRNodeWrapper) getNode()).getDisplayableName();
             }
         } catch (RepositoryException e) {

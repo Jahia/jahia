@@ -153,4 +153,12 @@ public class ListOrderingContentTabItem extends ContentTabItem {
         }
         return manualListOrderingEditor.getOrderedNodes();
     }
+    
+    public void setProcessed(boolean processed) {
+        if (!processed && langPropertiesEditorMap != null) {
+            manualListOrderingEditor = null;
+        }
+        super.setProcessed(processed);
+    }
+    
 }

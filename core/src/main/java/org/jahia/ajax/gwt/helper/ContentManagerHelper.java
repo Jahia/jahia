@@ -293,7 +293,7 @@ public class ContentManagerHelper {
 
                 // node has been deleted
                 if (!newChildrenList.contains(comparingGWTJahiaNode) && currentChildNode.isNodeType("jnt:content")) {
-                    currentChildNode.remove();
+                    currentChildNode.markForDeletion("");
                 }
 
             }

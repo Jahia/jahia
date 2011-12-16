@@ -849,7 +849,7 @@
         <property name="requiredPermission" value="editorialContentManager"/>
         <property name="nodeTypes">
             <list>
-                <value>jmix:editorialContent</value>
+                <value>jnt:content</value>
             </list>
         </property>
 
@@ -857,6 +857,8 @@
             <list>
                 <value>jnt:virtualsite</value>
                 <value>jnt:contentFolder</value>
+                <value>jmix:editorialContent</value>
+                <value>jnt:contentList</value>
             </list>
         </property>
 

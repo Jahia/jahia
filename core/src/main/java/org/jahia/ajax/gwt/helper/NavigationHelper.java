@@ -1239,8 +1239,7 @@ public class NavigationHelper {
 
         // constraints
         try {
-            Set<String> cons = node.getPrimaryNodeType().getUnstructuredChildNodeDefinitions().keySet();
-            n.setChildConstraints(new HashSet<String>(cons));
+            n.setChildConstraints(ConstraintsHelper.getConstraints(node));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

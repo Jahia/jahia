@@ -191,7 +191,7 @@ public class RepositoryTab extends ContentPanel {
                         } else {
                             final Set<String> constraints = new HashSet(source.getInheritedNodeTypes());
                             constraints.addAll(source.getNodeTypes());
-                            constraints.retainAll(target.getChildConstraints());
+                            constraints.retainAll(Arrays.asList(target.getChildConstraints().split(" ")));
                             if (constraints.isEmpty()) {
                                 event.getStatus().setStatus(false);
                             }

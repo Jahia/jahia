@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.google.gwt.core.client.impl.StringBufferImplConcat;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
@@ -53,6 +54,7 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -63,7 +65,7 @@ import java.util.List;
 */
 public class NewContentActionItem extends BaseActionItem  {
     private String nodeTypes = "";
-    protected String parentTypes = "jnt:contentList jnt:contentFolder";
+    protected String parentTypes = "jnt:contentList jnt:contentFolder jmix:editorialContent";
     protected List<String> parentTypesAsList;
     private boolean useEngine = true;
     private String label;
@@ -105,7 +107,8 @@ public class NewContentActionItem extends BaseActionItem  {
             if (nodeTypes.length() > 0) {
                 ContentActions.showContentWizard(linker, nodeTypes, includeSubTypes);
             } else {
-                ContentActions.showContentWizard(linker, null, includeSubTypes);
+                ContentActions.showContentWizard(linker,
+                        linker.getSelectionContext().getSingleSelection().getChildConstraints(), includeSubTypes);
             }
         } else {
             ContentActions.createNode(linker,getGwtToolbarItem().getTitle(),nodeTypes, useMainNode);
@@ -128,7 +131,7 @@ public class NewContentActionItem extends BaseActionItem  {
                     break;
                 }
             }
-            setEnabled(isValidParent
+            setEnabled(isValidParent && !"".equals(n.getChildConstraints().trim())
                     && !lh.isLocked()
                     && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()));
         } else {

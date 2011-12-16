@@ -67,6 +67,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -259,7 +260,7 @@ public class TableView extends AbstractView {
         }
 
         private boolean checkTarget(GWTJahiaNode source, GWTJahiaNode target) {
-            final Set<String> constraints = new HashSet(target.getChildConstraints());
+            final Set<String> constraints = new HashSet(Arrays.asList(target.getChildConstraints().split(" ")));
             constraints.retainAll(source.getInheritedNodeTypes());
             return !constraints.isEmpty();
         }

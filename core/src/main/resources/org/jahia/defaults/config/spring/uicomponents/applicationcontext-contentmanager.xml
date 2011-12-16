@@ -231,8 +231,17 @@
     <!-- portlet manager -->
     <bean id="portletmanager" parent="abstractmanager">
         <property name="requiredPermission" value="portletManager"/>
-        <property name="nodeTypes" value="jnt:portlet"/>
-        <property name="folderTypes" value="jnt:portletFolder"/>
+        <property name="nodeTypes">
+            <list>
+                <value>jnt:portlet</value>
+                <value>jnt:portletFolder</value>
+            </list>
+        </property>
+        <property name="folderTypes">
+            <list>
+                <value>jnt:portletFolder</value>
+            </list>
+        </property>
         <property name="toolbars">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">

@@ -1,18 +1,31 @@
-<%@page import="org.jahia.params.ParamBean" %>
 <%@include file="/admin/include/header.inc" %>
+<%@page import="org.apache.commons.lang.StringUtils"%>
+<%@page import="org.jahia.data.templates.JahiaTemplatesPackage"%>
+<%@page import="org.jahia.params.ParamBean,org.jahia.services.sites.JahiaSite" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
     final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
     String warningMsg = (String) request.getAttribute("warningMsg");
+    JahiaSite site = (JahiaSite) request.getAttribute("site");
     String siteTitle = (String) request.getAttribute("siteTitle");
     String siteServerName = (String) request.getAttribute("siteServerName");
     String siteDescr = (String) request.getAttribute("siteDescr");
     String siteKey = (String) request.getAttribute("siteKey");
     Boolean defaultSite = (Boolean) request.getAttribute("defaultSite");
     
-    pageContext.setAttribute("templatePackageByNodeName", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByNodeName());
-
+    if (site.getInstalledModules() != null && !site.getInstalledModules().isEmpty()) {
+        List<String> installedModules = new LinkedList<String>();
+        Map<String, JahiaTemplatesPackage> templatePackageByNodeName = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByNodeName();
+        for (String module : site.getInstalledModules()) {
+            JahiaTemplatesPackage pkg = templatePackageByNodeName.get(module);
+            if (pkg != null) {
+                installedModules.add(pkg.getName());
+            }
+        }
+        Collections.sort(installedModules);
+        pageContext.setAttribute("installedModules", StringUtils.join(installedModules, ", "));
+    }
 
     String gaUserAccountCustom = (String) request.getAttribute("gaUserAccountCustom");
     String gaProfileCustom = (String) request.getAttribute("gaProfileCustom");
@@ -120,9 +133,7 @@
         <fmt:message key="label.modules"/>
     </td>
     <td>
-        :&nbsp;<c:if test="${not empty site.installedModules && fn:length(site.installedModules) > 1}">
-            <c:forEach var="module" items="${site.installedModules}" varStatus="status" begin="1">${status.index > 1 ? ', ' : ''}${fn:escapeXml(templatePackageByNodeName[module].name)}</c:forEach>
-        </c:if>
+        :&nbsp;${not empty installedModules ? fn:escapeXml(installedModules) : ''}
     </td>
 </tr>
 <tr>

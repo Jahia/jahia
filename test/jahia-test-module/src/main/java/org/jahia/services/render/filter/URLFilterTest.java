@@ -47,6 +47,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 
@@ -75,6 +76,7 @@ import com.google.common.collect.Sets;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit test for the {@link URLFilter} User: toto Date: Nov 26, 2009 Time: 12:57:51 PM
@@ -414,15 +416,23 @@ public class URLFilterTest {
                 .getVanityUrlForWorkspaceAndLocale(pageNode,
                         Constants.EDIT_WORKSPACE, Locale.FRENCH, TESTSITE_NAME).getUrl()
                 .equals("/testpage/french2"));
-        URLResolver urlResolver = getUrlResolverFactory().createURLResolver("/edit/default/testpage", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/edit/default/testpage"));
-        JCRNodeWrapper resolvedNode = urlResolver.getNode();
-        assertEquals("Node should not be returned as edit servlet does not resolve vanity URLs",
-                "/", resolvedNode.getPath());
+        URLResolver urlResolver = null;
 
-        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage"));
-        resolvedNode = urlResolver.getNode();
-        assertEquals("Node should not be returned as it is not published yet", "/",
-                resolvedNode.getPath());
+        JCRNodeWrapper resolvedNode;
+
+        try {
+            urlResolver = getUrlResolverFactory().createURLResolver("/edit/default/testpage", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/edit/default/testpage"));
+            urlResolver.getNode();
+            fail("Node should not be returned as edit servlet does not resolve vanity URLs");
+        } catch (PathNotFoundException e) {
+        }
+
+        try {
+            urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage"));
+            urlResolver.getNode();
+            fail("Node should not be returned as it is not published yet");
+        } catch (PathNotFoundException e) {
+        }
 
         languages.clear();
         languages.add("en");
@@ -435,11 +445,13 @@ public class URLFilterTest {
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "en".equals(resolvedNode.getLanguage()));
-        
-        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage2"));
-        resolvedNode = urlResolver.getNode();
-        assertEquals("Node should not be returned as mapping is not active", "/",
-                resolvedNode.getPath());
+
+        try {
+            urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage2"));
+            urlResolver.getNode();
+            fail("Node should not be returned as mapping is not active");
+        } catch (PathNotFoundException e) {
+        }
 
         urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage/page3", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/page3"));
         resolvedNode = urlResolver.getNode();

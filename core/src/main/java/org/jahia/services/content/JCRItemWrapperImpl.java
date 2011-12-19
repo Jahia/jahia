@@ -88,7 +88,7 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
     /**
      * {@inheritDoc}
      */
-    public String getNonContextualizedPath() {
+    public String getCanonicalPath() {
         if ("/".equals(provider.getMountPoint())) {
             return localPathInProvider;
         } else if ("/".equals(localPathInProvider)) {

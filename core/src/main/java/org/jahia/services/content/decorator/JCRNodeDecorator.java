@@ -790,7 +790,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.toString();
     }
 
-    public String getNonContextualizedPath() {
-        return node.getNonContextualizedPath();
+    public String getCanonicalPath() {
+        return node.getCanonicalPath();
     }
 }

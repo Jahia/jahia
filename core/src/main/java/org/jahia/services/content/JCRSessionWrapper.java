@@ -358,6 +358,10 @@ public class JCRSessionWrapper implements Session {
         if (parent.getPath().startsWith(referencedNode.getPath())) {
             throw new PathNotFoundException(fullPath);
         }
+        String refRootName = StringUtils.substringBefore(refPath, "/");
+        if (!referencedNode.getName().equals(refRootName)) {
+            throw new PathNotFoundException(fullPath);
+        }
         refPath = StringUtils.substringAfter(refPath, "/");
         if (refPath.equals("")) {
             wrapper = provider.getNodeWrapper(referencedNode, fullPath, parent, this);

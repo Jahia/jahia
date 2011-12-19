@@ -167,6 +167,6 @@ public interface JCRItemWrapper extends Item {
      */
     void saveSession()  throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException;
 
-    String getNonContextualizedPath();
+    String getCanonicalPath();
 
 }

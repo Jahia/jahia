@@ -41,9 +41,6 @@
 package org.jahia.taglibs.template.include;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.Resource;
@@ -100,7 +97,7 @@ public class AddCacheDependencyTag extends TagSupport {
     public int doEndTag() throws JspException {
         Resource resource = (Resource) pageContext.getRequest().getAttribute("currentResource");
         if (node != null) {
-            resource.getDependencies().add(node.getNonContextualizedPath());
+            resource.getDependencies().add(node.getCanonicalPath());
         } else if (stringDependency != null) {
             resource.getDependencies().add(stringDependency);
         } else if(flushOnPathMatchingRegexp != null) {

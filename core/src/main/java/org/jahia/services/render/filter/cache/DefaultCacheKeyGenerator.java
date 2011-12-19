@@ -48,7 +48,6 @@ import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.jahia.api.Constants;
-import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.*;
 import org.jahia.services.render.RenderContext;

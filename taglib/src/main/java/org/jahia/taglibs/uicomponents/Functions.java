@@ -90,7 +90,7 @@ public class Functions {
             }
             if (bindedComponentNode != null && !bindedComponentNode.getPath().equals(
                     renderContext.getMainResource().getNode().getPath())) {
-                renderContext.getResourcesStack().peek().getDependencies().add(bindedComponentNode.getNonContextualizedPath());
+                renderContext.getResourcesStack().peek().getDependencies().add(bindedComponentNode.getCanonicalPath());
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

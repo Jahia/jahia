@@ -298,14 +298,14 @@ public class PropertiesHelper {
 
                                 if (end != null) {
                                     try {
-                                        if (objectNode.hasNode(prop.getName())) {
-                                            objectNode.getNode(prop.getName()).remove();
-                                        }
-
                                         if (!clear) {
+                                            Node content;
                                             String s = end.getRequiredPrimaryTypeNames()[0];
-                                            Node content = objectNode.addNode(prop.getName(), s.equals("nt:base") ? "jnt:resource" : s);
-
+                                            if (objectNode.hasNode(prop.getName())) {
+                                                content = objectNode.getNode(prop.getName());
+                                            } else {
+                                                content = objectNode.addNode(prop.getName(), s.equals("nt:base") ? "jnt:resource" : s);
+                                            }
                                             content.setProperty(Constants.JCR_MIMETYPE, fileItem.getContentType());
                                             InputStream is = fileItem.getStream();
                                             try {
@@ -315,6 +315,10 @@ public class PropertiesHelper {
                                                 fileItem.dispose();
                                             }
                                             content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
+                                        } else {
+                                            if (objectNode.hasNode(prop.getName())) {
+                                                objectNode.getNode(prop.getName()).remove();
+                                            }
                                         }
                                     } catch (Throwable e) {
                                         logger.error(e.getMessage(), e);

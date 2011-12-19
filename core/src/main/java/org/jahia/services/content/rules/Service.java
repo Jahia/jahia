@@ -564,7 +564,7 @@ public class Service extends JahiaService {
         final JobDataMap map = jobDetail.getJobDataMap();
         map.put(ActionJob.JOB_ACTION_TO_EXECUTE, actionToExecute);
         map.put(ActionJob.JOB_NODE_UUID, uuid);
-        map.put("workspace", ((String) drools.getWorkingMemory().getGlobal("workspace")));
+        map.put(ActionJob.JOB_WORKSPACE, ((String) drools.getWorkingMemory().getGlobal("workspace")));
         // cancel the scheduled job if exists
         schedulerService.getScheduler().deleteJob(jobDetail.getName(), jobDetail.getGroup());
         if (trigger != null) {

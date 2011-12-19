@@ -63,8 +63,9 @@ public class ActionJob extends BackgroundJob {
     
     private static transient Logger logger = LoggerFactory.getLogger(ActionJob.class);
 
-    public static final String JOB_NODE_UUID = "node";
     public static final String JOB_ACTION_TO_EXECUTE = "actionToExecute";
+    public static final String JOB_NODE_UUID = "node";
+    public static final String JOB_WORKSPACE = "workspace";
     
     public static final String getJobGroup(String actionName) {
     	return BackgroundJob.getGroupName(ActionJob.class) + "." + actionName;
@@ -83,7 +84,7 @@ public class ActionJob extends BackgroundJob {
             if (action != null) {
                 BackgroundAction backgroundAction = (BackgroundAction) action;
                 final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
-                final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession();
+                final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession(map.getString(ActionJob.JOB_WORKSPACE));
                 try {
                     JCRNodeWrapper node = jcrSessionWrapper.getNodeByUUID(map.getString(JOB_NODE_UUID));
                     backgroundAction.executeBackgroundAction(node);

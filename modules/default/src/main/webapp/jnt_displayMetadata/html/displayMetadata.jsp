@@ -33,7 +33,6 @@
                                         pattern="dd, MMMM yyyy HH:mm"/></dd>
             </c:if>
             <c:if test="${props.creator.boolean}">
-                <dl>
                     <dt><fmt:message key="mix_created.jcr_createdBy"/></dt>
                     <dd>${bindedComponent.properties['jcr:createdBy'].string}</dd>
             </c:if>

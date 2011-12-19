@@ -20,7 +20,6 @@
                 <value>org.apache.jackrabbit.test.api.util.TestAll</value>
                 <value>org.apache.jackrabbit.test.api.version.TestAll</value>
                 <value>org.apache.jackrabbit.test.api.version.simple.TestAll</value>
-                <value>org.jahia.bin.ErrorFileDumperTest</value>
                 <value>org.jahia.bin.FindPrincipalTest</value>
                 <value>org.jahia.bin.FindTest</value>
                 <value>org.jahia.bin.RenderTest</value>

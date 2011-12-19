@@ -88,6 +88,10 @@ public class MyCustomAuthValve extends AutoRegisteredBaseAuthValve {
                 JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService()
                         .lookupUser(username);
                 if (user != null) {
+                    // check if the user account is not locked
+                    if (isAccountLocked(user)) {
+                        return;
+                    }
                     // user found
                     // 1) set the current JCR session user
                     authContext.getSessionFactory().setCurrentUser(user);
@@ -127,11 +131,13 @@ public class MyCustomAuthValve extends AutoRegisteredBaseAuthValve {
   [[2]] Contact the external service, which did the authentication, in order to verify the ticket validity
         and obtain the corresponding username.  
   
-  [[3]] Lookup the <<<JahiaUser>>> by hte obtained username. 
+  [[3]] Lookup the <<<JahiaUser>>> by the obtained username. 
   
-  [[4]] Update the JCR and HTTP session objects with the found user. 
+  [[4]] Check if the user account is not locked. 
   
-  [[5]] If all successful, stop the execution of the authentication pipeline,
+  [[5]] Update the JCR and HTTP session objects with the found user. 
+  
+  [[6]] If all successful, stop the execution of the authentication pipeline,
         otherwise invoke the next valve in the pipeline.
   
   [] 

@@ -88,6 +88,19 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
     /**
      * {@inheritDoc}
      */
+    public String getNonContextualizedPath() {
+        if ("/".equals(provider.getMountPoint())) {
+            return localPathInProvider;
+        } else if ("/".equals(localPathInProvider)) {
+            return provider.getMountPoint();
+        }
+
+        return provider.getMountPoint() + localPathInProvider.substring(provider.getRelativeRoot().length());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public String getName() throws RepositoryException {
         return item.getName();
     }

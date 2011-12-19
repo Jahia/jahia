@@ -93,7 +93,7 @@ public class Resource {
         this.template = template;
         this.contextConfiguration = contextConfiguration;
         dependencies = new LinkedHashSet<String>();
-        dependencies.add(node.getPath());
+        dependencies.add(node.getNonContextualizedPath());
         regexpDependencies = new LinkedHashSet<String>();
         missingResources = new ArrayList<String>();
         wrappers = new Stack<String>();

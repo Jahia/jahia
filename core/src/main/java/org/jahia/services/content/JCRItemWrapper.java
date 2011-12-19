@@ -166,4 +166,7 @@ public interface JCRItemWrapper extends Item {
      * @throws javax.jcr.RepositoryException if another error occurs.
      */
     void saveSession()  throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException;
+
+    String getNonContextualizedPath();
+
 }

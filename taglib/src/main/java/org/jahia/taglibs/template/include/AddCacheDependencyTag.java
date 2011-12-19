@@ -100,7 +100,7 @@ public class AddCacheDependencyTag extends TagSupport {
     public int doEndTag() throws JspException {
         Resource resource = (Resource) pageContext.getRequest().getAttribute("currentResource");
         if (node != null) {
-            resource.getDependencies().add(node.getPath());
+            resource.getDependencies().add(node.getNonContextualizedPath());
         } else if (stringDependency != null) {
             resource.getDependencies().add(stringDependency);
         } else if(flushOnPathMatchingRegexp != null) {

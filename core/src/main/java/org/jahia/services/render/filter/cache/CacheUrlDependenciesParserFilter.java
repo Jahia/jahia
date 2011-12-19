@@ -68,7 +68,7 @@ public class CacheUrlDependenciesParserFilter implements HtmlTagAttributeTravers
             try {
                 URLResolver urlResolver = urlResolverFactory.createURLResolver(value, context);
                 JCRNodeWrapper nodeWrapper = urlResolver.getNode();
-                resource.getDependencies().add(nodeWrapper.getPath());
+                resource.getDependencies().add(nodeWrapper.getNonContextualizedPath());
             } catch (Exception e) {
                 logger.debug(e.getMessage(), e);
             }

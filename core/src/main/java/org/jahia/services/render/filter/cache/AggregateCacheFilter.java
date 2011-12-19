@@ -152,7 +152,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     l = new ArrayList();
                     resource.getModuleParams().put("module.cache.additional.key",l);
                 }
-                l.add(renderContext.getMainResource().getNode().getPath());
+                l.add(renderContext.getMainResource().getNode().getNonContextualizedPath());
             }
         }
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
@@ -268,7 +268,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", null);
             }
         }
-        resource.getDependencies().add(resource.getNode().getPath());
+        resource.getDependencies().add(resource.getNode().getNonContextualizedPath());
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
         @SuppressWarnings("unchecked")
         Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
@@ -276,11 +276,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             return previousOut;
         }
         if (key.contains("_mr_")) {
-            resource.getDependencies().add(renderContext.getMainResource().getNode().getPath());
+            resource.getDependencies().add(renderContext.getMainResource().getNode().getNonContextualizedPath());
             if (scriptProperties != null && defaultScriptProperties!=null &&
                 Boolean.valueOf(scriptProperties.getProperty("cache.mainResource.flushParent")!=null?scriptProperties.getProperty("cache.mainResource.flushParent"):defaultScriptProperties.getProperty("cache.mainResource.flushParent", "false"))) {
                 try {
-                    resource.getDependencies().add(renderContext.getMainResource().getNode().getParent().getPath());
+                    resource.getDependencies().add(renderContext.getMainResource().getNode().getParent().getNonContextualizedPath());
                 } catch (ItemNotFoundException e) {
                 }
             }
@@ -468,7 +468,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
 
         return key.replaceAll(DefaultCacheKeyGenerator.PER_USER, renderContext.getUser().getUsername()).replaceAll("_mr_",
-                renderContext.getMainResource().getNode().getPath() +
+                renderContext.getMainResource().getNode().getNonContextualizedPath() +
                 renderContext.getMainResource().getResolvedTemplate());
     }
 
@@ -489,10 +489,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     resource.getDependencies().add(ref.getProperty("j:reference").getString());
                 } catch (PathNotFoundException e) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("j:reference property is not found on node {}", ref.getPath());
+                        logger.debug("j:reference property is not found on node {}", ref.getNonContextualizedPath());
                     }
                 } catch (Exception e) {
-                    logger.warn("Error adding dependency to node " + resource.getNode().getPath(), e);
+                    logger.warn("Error adding dependency to node " + resource.getNode().getNonContextualizedPath(), e);
                 }
             }
         }

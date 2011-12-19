@@ -42,6 +42,7 @@ package org.jahia.taglibs.uicomponents;
 
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.render.RenderContext;
 import org.slf4j.Logger;
 
@@ -63,12 +64,12 @@ public class Functions {
      */
     public static JCRNodeWrapper getBindedComponent(JCRNodeWrapper currentNode, RenderContext renderContext,
                                                     String property) {
-        Node bindedComponentNode = null;
+        JCRNodeWrapper bindedComponentNode = null;
         try {
             if (currentNode.hasProperty(property)) {
-                Property bindedComponentProp = currentNode.getProperty(property);
+                JCRPropertyWrapper bindedComponentProp = currentNode.getProperty(property);
                 if (bindedComponentProp != null) {
-                    bindedComponentNode = bindedComponentProp.getNode();
+                    bindedComponentNode = (JCRNodeWrapper) bindedComponentProp.getNode();
                 }
                 if (bindedComponentNode != null) {
                     if (bindedComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY) ||
@@ -89,7 +90,7 @@ public class Functions {
             }
             if (bindedComponentNode != null && !bindedComponentNode.getPath().equals(
                     renderContext.getMainResource().getNode().getPath())) {
-                renderContext.getResourcesStack().peek().getDependencies().add(bindedComponentNode.getPath());
+                renderContext.getResourcesStack().peek().getDependencies().add(bindedComponentNode.getNonContextualizedPath());
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

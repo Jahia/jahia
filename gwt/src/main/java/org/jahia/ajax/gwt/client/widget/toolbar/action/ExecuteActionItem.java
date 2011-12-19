@@ -51,6 +51,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * User: david
@@ -63,6 +64,7 @@ public class ExecuteActionItem extends BaseActionItem {
 	public static final int STATUS_CODE_OK = 200;
     private String action;
     private String confirmationMessageKey;
+    private Set<String> requiredNodeTypes;
 
     public void onComponentSelection() {
 		if (confirmationMessageKey != null) {
@@ -114,7 +116,17 @@ public class ExecuteActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
 
-        setEnabled(lh.getMultipleSelection().size() > 0);
+        boolean enabled = lh.getMultipleSelection().size() > 0;
+        if (enabled && requiredNodeTypes != null && !requiredNodeTypes.isEmpty()) {
+            for (GWTJahiaNode selected : lh.getMultipleSelection()) {
+                if (!selected.isNodeType(requiredNodeTypes)) {
+                    enabled = false;
+                    break;
+                }
+            }
+            
+        }
+        setEnabled(enabled);
     }
 
     public void setAction(String action) {
@@ -123,6 +135,10 @@ public class ExecuteActionItem extends BaseActionItem {
 
 	public void setConfirmationMessageKey(String confirmationMessageKey) {
     	this.confirmationMessageKey = confirmationMessageKey;
+    }
+
+    public void setRequiredNodeTypes(Set<String> requiredNodeTypes) {
+        this.requiredNodeTypes = requiredNodeTypes;
     }
 }
 

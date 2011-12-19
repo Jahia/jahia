@@ -624,7 +624,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return getNodeTypes().contains(nodeType) || getInheritedNodeTypes().contains(nodeType);
     }
 
-    public boolean isNodeType(List<String> nodeTypes) {
+    public boolean isNodeType(Collection<String> nodeTypes) {
         for (String nodeType : nodeTypes) {
             if(isNodeType(nodeType)) {
                 return true;

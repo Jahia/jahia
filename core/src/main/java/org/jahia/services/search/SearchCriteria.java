@@ -57,6 +57,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.lucene.analysis.ISOLatin1AccentFilter;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.utils.DateUtils;
 
@@ -643,7 +644,9 @@ public class SearchCriteria implements Serializable {
         private MatchType match = MatchType.AS_IS;
 
         private String term;
-
+        
+        private boolean applyFilter;
+        
         public SearchFields getFields() {
             return fields;
         }
@@ -655,7 +658,7 @@ public class SearchCriteria implements Serializable {
         public String getTerm() {
             return term;
         }
-
+       
         public boolean isEmpty() {
             return isValueEmpty(term);
         }
@@ -678,6 +681,13 @@ public class SearchCriteria implements Serializable {
                     TO_STRING_STYLE);
         }
 
+        public boolean isApplyFilter() {
+            return applyFilter;
+        }
+
+        public void setApplyFilter(boolean applyFilter) {
+            this.applyFilter = applyFilter;
+        }
     }
 
     private static final long serialVersionUID = 4633533116047727827L;

@@ -12,6 +12,8 @@
 <%@ attribute name="searchInSelectionOptions" required="false" type="java.lang.String"
               description="Comma separated list of fields to search in that are available for user selection.
               This option has effect only in case the searchInAllowSelection attribute is set to true. [siteContent,files]" %>
+<%@ attribute name="applyFilterOnWildcardTerm" required="false" type="java.lang.Boolean"
+              description="As Lucene omits running analysers on terms with wildcards, control whether Jahia should run the ISOLatin1AccentFilter on wildcard terms instead. [true]" %>              
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -29,6 +31,7 @@
 <c:set var="searchInAllowSelection" value="${functions:default(searchInAllowSelection, false)}"/>
 <c:set var="searchInSelectionOptions" value="${functions:default(searchInSelectionOptions, 'siteContent,files')}"/>
 <input ${functions:attributes(attributes)} value="${fn:escapeXml(value)}"/>
+<input type="hidden" name="src_terms[${termIndex}].applyFilter" value="${functions:default(applyFilterOnWildcardTerm, true)}"/>
 <c:if test="${not empty match && match != 'as_is'}">
     <c:set var="key" value="src_terms[${termIndex}].match"/>
     <input type="hidden" name="${key}" value="${fn:escapeXml(functions:default(param[key], match))}"/>

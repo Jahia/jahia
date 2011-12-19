@@ -380,10 +380,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         sortedNodes.addAll(nodes);
 
 //        final String xsl = (String) params.get(XSL_PATH);
-        zout.putNextEntry(new ZipEntry(REPOSITORY_XML));
-        exportNodes(rootNode, sortedNodes, zout, typesToIgnore, externalReferences, params);
-        zout.closeEntry();
-        exportNodesBinary(rootNode, sortedNodes, zout, typesToIgnore, "/content");
         if (params.containsKey(INCLUDE_LIVE_EXPORT)) {
             final JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live");
             rootNode = liveSession.getNodeByIdentifier(rootNode.getIdentifier());
@@ -401,6 +397,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             zout.closeEntry();
             exportNodesBinary(rootNode, sortedNodes, zout, typesToIgnore, "/live-content");
         }
+        zout.putNextEntry(new ZipEntry(REPOSITORY_XML));
+        exportNodes(rootNode, sortedNodes, zout, typesToIgnore, externalReferences, params);
+        zout.closeEntry();
+        exportNodesBinary(rootNode, sortedNodes, zout, typesToIgnore, "/content");
     }
 
     private void exportNodes(JCRNodeWrapper rootNode, TreeSet<JCRNodeWrapper> sortedNodes, OutputStream outputStream,

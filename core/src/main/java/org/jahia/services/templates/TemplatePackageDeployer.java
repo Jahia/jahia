@@ -708,7 +708,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     private void cleanTemplates(String moduleName, JCRSessionWrapper session) throws RepositoryException {
         final QueryManager queryManager = session.getWorkspace().getQueryManager();
         QueryResult result = queryManager.createQuery(
-                "select * from [jnt:virtualsite] as n where isdescendantnode(n,['/templateSets']) and n.[j:installedModules] = '" + moduleName + "'", Query.JCR_SQL2).execute();
+                "select * from [jnt:virtualsite] as n where isdescendantnode(n,['/templateSets']) and name(n) = '" + moduleName + "'", Query.JCR_SQL2).execute();
         final NodeIterator iterator = result.getNodes();
         while (iterator.hasNext()) {
             Node n = iterator.nextNode();

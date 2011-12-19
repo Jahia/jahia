@@ -23,8 +23,7 @@ when we flush this entry we will flush the whole cache
         A value of 0 disables groups cache
         -->
         <property name="groupsSizeLimit" value="0"/>
-        <!-- When set to null the MBean server won't be started -->
-        <property name="managedBeanServerName"><null/></property>
+        <property name="jmxActivated" value="true"/>
         <!-- enable cache statistics by default -->
         <property name="statisticsEnabled" value="true"/>
     </bean>

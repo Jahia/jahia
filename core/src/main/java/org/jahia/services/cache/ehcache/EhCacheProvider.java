@@ -53,6 +53,7 @@ import net.sf.ehcache.management.ManagementService;
 
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
+import java.lang.management.ManagementFactory;
 
 /**
  * EHCache based cache provider implementation.
@@ -67,23 +68,31 @@ public class EhCacheProvider implements CacheProvider {
     private CacheManager cacheManager = null;
     private int groupsSizeLimit = 100;
     private String configurationResource = "/ehcache-jahia.xml";
-    private String managedBeanServerName = "SimpleAgent";
     private boolean statisticsEnabled;
+    private boolean jmxActivated = true;
+    private boolean initialized = false;
     
     public void init(SettingsBean settingsBean, CacheService cacheService) throws JahiaInitializationException {
+        if (initialized) {
+            return;
+        }
    		cacheManager = CacheManager.create(getClass().getResource(configurationResource));
-    	if (StringUtils.isNotEmpty(managedBeanServerName)) {
-	        MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer(managedBeanServerName);
-	        ManagementService.registerMBeans(cacheManager, mBeanServer, false, false, false, true, false);
+    	if (jmxActivated) {
+	        MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+	        ManagementService.registerMBeans(cacheManager, mBeanServer, true, true, true, true, true);
     	}
+        initialized = true;
     }
 
     public void shutdown() {
-        logger.info("Shutting down cache provider, serializing to disk if active. Please wait...");
-        long startTime = System.currentTimeMillis();
-        cacheManager.shutdown();
-        long totalTime = System.currentTimeMillis() - startTime;
-        logger.info("Cache provider shutdown completed in " + totalTime + "[ms]");
+        if (initialized) {
+            logger.info("Shutting down cache provider, serializing to disk if active. Please wait...");
+            long startTime = System.currentTimeMillis();
+            cacheManager.shutdown();
+            long totalTime = System.currentTimeMillis() - startTime;
+            logger.info("Cache provider shutdown completed in " + totalTime + "[ms]");
+            initialized = false;
+        }
     }
 
     public CacheImplementation<?, ?> newCacheImplementation(String name) {
@@ -106,11 +115,11 @@ public class EhCacheProvider implements CacheProvider {
     	this.configurationResource = configurationResource;
     }
 
-	public void setManagedBeanServerName(String managedBeanServerName) {
-    	this.managedBeanServerName = managedBeanServerName;
+    public void setJmxActivated(boolean jmxActivated) {
+        this.jmxActivated = jmxActivated;
     }
 
-	public void setStatisticsEnabled(boolean statisticsEnabled) {
+    public void setStatisticsEnabled(boolean statisticsEnabled) {
 	    this.statisticsEnabled = statisticsEnabled;
     }
 

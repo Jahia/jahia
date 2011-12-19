@@ -266,15 +266,17 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                                     null);
                         }
 
+                        currentResource.getDependencies().add(node.getCanonicalPath());
                         render(renderContext, resource);
-                        //Copy dependencies to parent Resource
+                        //Copy dependencies to parent Resource (only for include of the same node)
                         currentResource.getRegexpDependencies().addAll(resource.getRegexpDependencies());
                         currentResource.getDependencies().addAll(resource.getDependencies());
                         printModuleEnd();
                     } else {
                         resource.getModuleParams().put("readOnly", Boolean.TRUE);
+                        currentResource.getDependencies().add(node.getCanonicalPath());
                         render(renderContext, resource);
-                        //Copy dependencies to parent Resource
+                        //Copy dependencies to parent Resource (only for include of the same node)
                         currentResource.getRegexpDependencies().addAll(resource.getRegexpDependencies());
                         currentResource.getDependencies().addAll(resource.getDependencies());
                     }

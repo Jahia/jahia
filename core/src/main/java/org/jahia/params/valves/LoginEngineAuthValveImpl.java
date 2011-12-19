@@ -115,7 +115,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
                         theUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
                         if (theUser != null) {
                             if (theUser.verifyPassword(password)) {
-                                if (!isAccounteLocked(theUser)) {
+                                if (!isAccountLocked(theUser)) {
                                     ok = true;
                                 } else {
                                     logger.warn("Login failed: account for user " + theUser.getUsername() + " is locked.");

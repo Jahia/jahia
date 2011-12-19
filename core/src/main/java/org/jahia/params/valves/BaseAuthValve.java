@@ -82,7 +82,14 @@ public abstract class BaseAuthValve implements Valve, BeanNameAware {
         }
     }
 
+    /**
+     * @deprecated use {@link #isAccountLocked(JahiaUser)} instead
+     */
     protected boolean isAccounteLocked(JahiaUser user) {
+        return isAccountLocked(user);
+    }
+
+    protected boolean isAccountLocked(JahiaUser user) {
         return !user.isRoot() && Boolean.valueOf(user.getProperty("j:accountLocked"));
     }
 

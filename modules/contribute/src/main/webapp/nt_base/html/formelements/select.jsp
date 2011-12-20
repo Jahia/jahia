@@ -18,7 +18,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <label class="left" for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
 <jcr:propertyInitializers var="options" nodeType="${type.name}"
-                          name="${propertyDefinition.name}" node="${currentNode}"/>
+                          name="${propertyDefinition.name}" node="${not empty currentNodeOverride ? currentNodeOverride : currentNode}"/>
 <select name="${propertyDefinition.name}"
         id="${fn:replace(propertyDefinition.name,':','_')}">
     <c:forEach items="${options}" var="option">

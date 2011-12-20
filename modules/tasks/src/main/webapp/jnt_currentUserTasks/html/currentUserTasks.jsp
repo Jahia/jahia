@@ -201,6 +201,7 @@
                                                 <template:param name="workflowTaskFormCallbackURL" value="${myUrl}"/>
                                                 <template:param name="workflowTaskFormCallbackJS"
                                                                 value=""/>
+                                                <template:param name="workflowTaskNodeUuid" value="${node.identifier}"/>
                                             </template:include>
                                         </div>
                                     </td>

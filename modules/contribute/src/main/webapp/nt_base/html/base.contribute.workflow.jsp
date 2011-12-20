@@ -77,6 +77,9 @@
 
                 </c:if>
             </c:forEach>
+            <c:if test="${not empty currentResource.moduleParams.workflowTaskNodeUuid}">
+                <jcr:node var="currentNodeOverride" uuid="${currentResource.moduleParams.workflowTaskNodeUuid}"/>
+            </c:if>
             <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
                 <c:if test="${!propertyDefinition.multiple and propertyDefinition.contentItem and !(propertyDefinition.name eq 'jcr:title')}">
                     <p class="field">

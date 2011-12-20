@@ -330,7 +330,7 @@ public class DocumentViewExporter {
                         }
                     }
                 }
-                return path;
+                return ISO9075.encode(path);
             } catch (ItemNotFoundException e) {
                 return "";
             }

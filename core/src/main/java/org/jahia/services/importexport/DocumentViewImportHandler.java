@@ -491,7 +491,8 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
                 if (propDef.getRequiredType() == PropertyType.REFERENCE || propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
                     if (attrValue.length() > 0) {
-                        String[] values = attrValue.split(" ");
+                        String decodedValue = ISO9075.decode(attrValue);
+                        String[] values = propDef.isMultiple() ? ISO9075.decode(decodedValue).split(" ") : new String[]{decodedValue};
                         for (String value : values) {
                             if (!StringUtils.isEmpty(value)) {
                                 if (value.startsWith("$currentSite")) {

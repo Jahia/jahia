@@ -140,13 +140,14 @@ public class Logout implements Controller {
                 if (url.startsWith("/edit/")) {
                     url = "/render/" + StringUtils.substringAfter(url,"/edit/");
                     urls.add(url);
-                }
-                if (url.startsWith("/contribute/")) {
+                } else if (url.startsWith("/contribute/")) {
                     url = "/render/" + StringUtils.substringAfter(url,"/contribute/");
                     urls.add(url);
-                }
-                if (url.startsWith("/render/default/")) {
+                } else if (url.startsWith("/render/default/")) {
                     url = "/render/live/" + StringUtils.substringAfter(url,"/render/default/");
+                    urls.add(url);
+                } else if (!url.startsWith("/render/live")) {
+                    url = "/render/live/" + StringUtils.substringAfter(url,"/");
                     urls.add(url);
                 }
                 for (String currentUrl : urls) {

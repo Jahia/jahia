@@ -7,9 +7,6 @@
 
 <template:addResources type="css" resources="simplesearchform.css" />
 
-<template:addResources>
-<c:url var="findUrl" value="${url.find}"/>
-</template:addResources>
 <template:addCacheDependency uuid="${currentNode.properties.result.string}"/>
 <c:if test="${not empty currentNode.properties.result.node}">
 <c:url value='${url.base}${currentNode.properties.result.node.path}.html' var="searchUrl"/>

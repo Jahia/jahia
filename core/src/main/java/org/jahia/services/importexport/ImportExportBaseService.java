@@ -377,12 +377,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 return o1.getPath().compareTo(o2.getPath());
             }
         });
-        sortedNodes.addAll(nodes);
 
 //        final String xsl = (String) params.get(XSL_PATH);
         if (params.containsKey(INCLUDE_LIVE_EXPORT)) {
             final JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live");
-            rootNode = liveSession.getNodeByIdentifier(rootNode.getIdentifier());
+            JCRNodeWrapper liveRootNode = liveSession.getNodeByIdentifier(rootNode.getIdentifier());
             sortedNodes.clear();
             for (JCRNodeWrapper node : nodes) {
                 try {
@@ -393,10 +392,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
             zout.putNextEntry(new ZipEntry(LIVE_REPOSITORY_XML));
 
-            exportNodes(rootNode, sortedNodes, zout, typesToIgnore, externalReferences, params);
+            exportNodes(liveRootNode, sortedNodes, zout, typesToIgnore, externalReferences, params);
             zout.closeEntry();
-            exportNodesBinary(rootNode, sortedNodes, zout, typesToIgnore, "/live-content");
+            exportNodesBinary(liveRootNode, sortedNodes, zout, typesToIgnore, "/live-content");
         }
+        sortedNodes.clear();
+        sortedNodes.addAll(nodes);
         zout.putNextEntry(new ZipEntry(REPOSITORY_XML));
         exportNodes(rootNode, sortedNodes, zout, typesToIgnore, externalReferences, params);
         zout.closeEntry();

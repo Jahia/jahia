@@ -4,6 +4,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="workflow" uri="http://www.jahia.org/tags/workflow" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
 <%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
@@ -23,7 +24,7 @@
 <template:addResources type="javascript" resources="jquery.form.js"/>
 <template:addResources type="javascript" resources="timepicker.js"/>
 <template:addResources type="css" resources="timepicker.css"/>
-
+<utility:setBundle basename="modules.tasks.resources.JahiaTasks" useUILocale="true"/>
 
 <c:if test="${currentResource.workspace eq 'live'}">
     <div id="tasks${currentNode.identifier}"/>
@@ -102,7 +103,7 @@
                                                     <script type="text/javascript">
                                                         animatedcollapse.addDiv('task${node.identifier}-${task.id}', 'fade=1,speed=100');
                                                     </script>
-                                                    <input class="workflowaction" type="button" value="${task.name}"
+                                                    <input class="workflowaction" type="button" value="${task.displayName}"
                                                            onclick="animatedcollapse.toggle('task${node.identifier}-${task.id}');$('#taskrow${node.identifier}-${task.id}').toggleClass('hidden');"/>
                                                     <input class="workflowaction"  type="button" onclick="window.open('${preview}','<fmt:message key="label.preview"/>')" value="<fmt:message key='label.preview'/>">
                                                 </c:when>
@@ -116,8 +117,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <jcr:nodeProperty node="${node}" name="jcr:created" var="created"/>
-                                        <fmt:formatDate value="${created.time}" dateStyle="full"/>
+                                        <fmt:formatDate value="${task.createTime}" type="both" timeStyle="short"/>
                                     </td>
                                 </tr>
                                 <c:if test="${not empty task.formResourceName}">

@@ -128,6 +128,7 @@ public class JCRSQLTag extends AbstractJCRTag {
         var = null;
         limit = 0;
         offset = 0;
+        useRootUser = false; 
         super.resetState();
     }
 

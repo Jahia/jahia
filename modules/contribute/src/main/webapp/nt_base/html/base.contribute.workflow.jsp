@@ -67,11 +67,11 @@
             </c:otherwise>
         </c:choose>
         <fieldset>
-            <legend>${jcr:label(type,renderContext.mainResourceLocale)}</legend>
+            <legend>${jcr:label(type,renderContext.UILocale)}</legend>
             <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
                 <c:if test="${propertyDefinition.name eq 'jcr:title'}">
                     <label class="left"
-                           for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
+                           for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}</label>
                     <input type="text" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                            name="${propertyDefinition.name}" <c:if test="${not empty workflowTaskFormTask}">value="${workflowTaskFormTask.variables[propertyDefinition.name][0].value}"</c:if>/>
 
@@ -108,7 +108,7 @@
                             </c:when>
                             <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.BOOLEAN}">
                                 <label class="left"
-                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
+                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}</label>
                                 <input type="radio" value="true" class="radio"
                                        id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                                        name="${propertyDefinition.name}" checked="true"/><fmt:message key="label.yes"/>
@@ -118,7 +118,7 @@
                             </c:when>
                             <c:otherwise>
                                 <label class="left"
-                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
+                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}</label>
                                 <input type="text" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                                        name="${propertyDefinition.name}"/>
                             </c:otherwise>
@@ -135,15 +135,16 @@
                     </c:when>
                     <c:when test="${not empty currentResource.moduleParams.workflowTaskForm}">
                         <c:forEach items="${workflowTaskFormTask.outcomes}" var="outcome" varStatus="status">
+                            <c:set var="outcomeIcon" value="${workflowTaskFormTask.outcomeIcons[status.index]}"/>
                             <button type="button" class="form-button"
                                     onclick="$('#outcome').val('${outcome}');$('.form-button').attr('disabled',true);$('.form-button').addClass('disabled');$('#${jsNodeName}${scriptTypeName}').ajaxSubmit(options${jsNodeName}${scriptTypeName});"><span
-                                    class="icon-contribute icon-accept"></span>&nbsp;${workflowTaskFormTask.displayOutcomes[status.index]}
+                                    class="icon-contribute ${empty outcomeIcon ? 'icon-accept' : ''}"><c:if test="${not empty outcomeIcon}"><img src="<c:url value='${outcomeIcon}'/>" alt=" "/></c:if></span>&nbsp;${workflowTaskFormTask.displayOutcomes[status.index]}
                             </button>
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
                         <label class="left"
-                               for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
+                               for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}</label>
                         <input type="text" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                                name="${propertyDefinition.name}"/>
                     </c:otherwise>

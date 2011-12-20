@@ -48,14 +48,20 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.render.RenderContext;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.utils.LanguageCodeConverters;
+
+import com.google.common.base.Functions;
+import com.google.common.collect.Ordering;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -71,7 +77,8 @@ import java.util.*;
  * Time: 15:46:07
  */
 public class JCRTagUtils {
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JCRTagUtils.class);
+    
+    private static final transient Logger logger = LoggerFactory.getLogger(JCRTagUtils.class);
 
     /**
      * Get the node or property display name depending on the locale
@@ -427,21 +434,6 @@ public class JCRTagUtils {
             }
         }
 
-//        if (typelistValues != null) {
-//            for (Value value : typelistValues) {
-//                ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(value.getString());
-//
-//                if (!t.isAbstract() && !t.isMixin() && node.getResolveSite().getInstalledModules().contains(t.getTemplatePackage().getRootFolder())) {
-//                    types.add(t);
-//                }
-//                for (ExtendedNodeType sub : t.getSubtypesAsList()) {
-//                    if (!sub.isAbstract() && !sub.isMixin() && node.getResolveSite().getInstalledModules().contains(t.getTemplatePackage().getRootFolder())) {
-//                        types.add(sub);
-//                    }
-//                }
-//            }
-//        }
-
         String[] constraints = ConstraintsHelper.getConstraints(node).split(" ");
         List<ExtendedNodeType> finaltypes = new ArrayList<ExtendedNodeType>();
         for (ExtendedNodeType type : types) {
@@ -454,6 +446,96 @@ public class JCRTagUtils {
         return finaltypes;
     }
 
+    public static Map<String, String> getContributeTypesDisplay(final JCRNodeWrapper node,
+            JCRNodeWrapper areaNode, Value[] typelistValues, Locale displayLocale) throws Exception {
+        if (node == null) {
+            return Collections.emptyMap();
+        }
+
+        if (typelistValues == null && node.hasProperty("j:contributeTypes")) {
+            typelistValues = node.getProperty("j:contributeTypes").getValues();
+        }
+        if (typelistValues == null && areaNode != null && areaNode.hasProperty("j:contributeTypes")) {
+            typelistValues = areaNode.getProperty("j:contributeTypes").getValues();
+        }
+
+        if (typelistValues == null) {
+            return Collections.emptyMap();
+        }
+
+        final List<String> typeList = new LinkedList<String>();
+        for (Value value : typelistValues) {
+            typeList.add(value.getString());
+        }
+
+        if (displayLocale == null || displayLocale.equals(node.getSession().getLocale())) {
+            return getContributeTypesDisplay(node, typeList);
+        } else {
+            return JCRTemplate.getInstance().doExecuteWithUserSession(
+                    node.getSession().getUser().getUsername(),
+                    node.getSession().getWorkspace().getName(), displayLocale,
+                    new JCRCallback<Map<String, String>>() {
+
+                        public Map<String, String> doInJCR(JCRSessionWrapper session)
+                                throws RepositoryException {
+                            return getContributeTypesDisplay(
+                                    session.getNodeByUUID(node.getIdentifier()), typeList);
+                        }
+                    });
+        }
+    }
+
+    private static Map<String, String> getContributeTypesDisplay(JCRNodeWrapper node,
+            List<String> typeList) throws PathNotFoundException, RepositoryException {
+        Map<ExtendedNodeType, JCRNodeWrapper> typeComponentMap = new HashMap<ExtendedNodeType, JCRNodeWrapper>();
+        List<JCRNodeWrapper> components = new LinkedList<JCRNodeWrapper>();
+
+        components.add(node.getResolveSite().getNode("components"));
+        for (int i = 0; i < components.size(); i++) {
+            JCRNodeWrapper n = components.get(i);
+            if (n.isNodeType("jnt:componentFolder")) {
+                NodeIterator nodeIterator = n.getNodes();
+                while (nodeIterator.hasNext()) {
+                    JCRNodeWrapper next = (JCRNodeWrapper) nodeIterator.next();
+                    components.add(next);
+                }
+            } else if (n.isNodeType("jnt:simpleComponent") && n.hasPermission("useComponent")) {
+                ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(n.getName());
+                for (String s : typeList) {
+                    if (t.isNodeType(s)) {
+                        typeComponentMap.put(t, n);
+                        break;
+                    }
+                }
+            }
+        }
+
+        String[] constraints = ConstraintsHelper.getConstraints(node).split(" ");
+        Set<ExtendedNodeType> finaltypes = new HashSet<ExtendedNodeType>();
+        for (ExtendedNodeType type : typeComponentMap.keySet()) {
+            for (String s : constraints) {
+                if (!finaltypes.contains(type) && type.isNodeType(s)) {
+                    finaltypes.add(type);
+                    continue;
+                }
+            }
+        }
+
+        if (finaltypes.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, String> finalCompoenents = new HashMap<String, String>(finaltypes.size());
+        for (ExtendedNodeType type : finaltypes) {
+            finalCompoenents.put(type.getName(), typeComponentMap.get(type).getDisplayableName());
+        }
+        
+        SortedMap<String, String> sortedCompoenents = new TreeMap<String, String>(Ordering.natural().onResultOf(Functions.forMap(finalCompoenents)));
+        sortedCompoenents.putAll(finalCompoenents);
+
+        return sortedCompoenents;
+    }
+    
     public static JCRNodeWrapper findDisplayableNode(JCRNodeWrapper node, RenderContext context) {
         return JCRContentUtils.findDisplayableNode(node, context);
     }

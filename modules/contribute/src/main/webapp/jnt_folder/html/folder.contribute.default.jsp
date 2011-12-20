@@ -143,7 +143,7 @@
                 <c:forTokens items="${types}" delims="," var="type" varStatus="status">
                     <jcr:nodeType name="${type}" var="nodeType"/>
                     <button onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');"><span
-                            class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.mainResourceLocale)}
+                            class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.UILocale)}
                     </button>
                 </c:forTokens>
             </div>

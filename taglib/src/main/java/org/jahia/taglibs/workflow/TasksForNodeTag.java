@@ -47,13 +47,11 @@ import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.*;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.slf4j.Logger;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * 
@@ -63,7 +61,6 @@ import java.util.Locale;
  * 
  */
 public class TasksForNodeTag extends AbstractJahiaTag {
-    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(TasksForNodeTag.class);
 
     private JCRNodeWrapper node;
     private String var;
@@ -94,7 +91,7 @@ public class TasksForNodeTag extends AbstractJahiaTag {
                 }
             }
         } else if (user != null) {
-            tasks = WorkflowService.getInstance().getTasksForUser(user, Locale.ENGLISH);
+            tasks = WorkflowService.getInstance().getTasksForUser(user, getUILocale());
         }
 
         pageContext.setAttribute(var, tasks, scope);

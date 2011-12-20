@@ -700,6 +700,12 @@
         <function-signature>java.lang.String getSystemSitePath()</function-signature>
     </function>
     <function>
+        <description>Returns a Map of allowed components in contribute mode (key is a node type name, value is a localized disaply label)</description>
+        <name>getContributeTypesDisplay</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>java.util.Map getContributeTypesDisplay(org.jahia.services.content.JCRNodeWrapper, org.jahia.services.content.JCRNodeWrapper, javax.jcr.Value[], java.util.Locale)</function-signature>
+    </function>
+    <function>
         <description>get contribute types</description>
         <name>getContributeTypes</name>
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>

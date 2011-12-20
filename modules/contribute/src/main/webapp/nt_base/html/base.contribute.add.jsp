@@ -54,13 +54,13 @@
         <input type="hidden" name="jcrNewNodeOutputFormat" value="html"/>
         <input type="hidden" name="jcrNormalizeNodeName" value="true"/>
         <fieldset>
-            <legend>${jcr:label(type,renderContext.mainResourceLocale)}</legend>
+            <legend>${jcr:label(type,renderContext.UILocale)}</legend>
             <label class="left" for="JCRnodeName"><fmt:message key="label.name"/></label>
             <input type="text" id="JCRnodeName" name="jcrNodeName"/>
             <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
                 <c:if test="${propertyDefinition.name eq 'jcr:title'}">
                     <label class="left"
-                           for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
+                           for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}</label>
                     <input type="text" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                            name="${propertyDefinition.name}"/>
                 </c:if>
@@ -93,7 +93,7 @@
                             </c:when>
                             <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.BOOLEAN}">
                                 <label class="left"
-                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
+                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}</label>
                                 <input type="radio" value="true" class="radio"
                                        id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                                        name="${propertyDefinition.name}" checked="true"/><fmt:message key="label.yes"/>
@@ -103,7 +103,7 @@
                             </c:when>
                             <c:otherwise>
                                 <label class="left"
-                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
+                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}</label>
                                 <input type="text" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                                        name="${propertyDefinition.name}"/>
                             </c:otherwise>
@@ -113,7 +113,7 @@
             </c:forEach>
             <c:if test="${resourceNodeType eq 'jnt:folder'}">
                 <p class="field"><label class="left"
-                                        for="${scriptTypeName}jnt_folder">${jcr:label('jnt:folder',renderContext.mainResourceLocale)}</label>
+                                        for="${scriptTypeName}jnt_folder">${jcr:label('jnt:folder',renderContext.UILocale)}</label>
                     <input type="text" id="${scriptTypeName}jnt_folder" name="jcrNodeName"/>
                     <c:if test="${currentResource.properties['j:editableInContribution'].boolean}">
                         <input type="hidden" name="jcr:mixinTypes" value="jmix:contributeMode"/>
@@ -127,7 +127,7 @@
             <c:if test="${resourceNodeType eq 'jnt:file'}">
                 <p class="field">
                     <label class="left"
-                           for="${scriptTypeName}jnt_folder">${jcr:label('jnt:folder',renderContext.mainResourceLocale)}</label>
+                           for="${scriptTypeName}jnt_folder">${jcr:label('jnt:folder',renderContext.UILocale)}</label>
                     <input type="hidden" name="jcrTargetDirectory" value="${currentNode.path}"/>
                     <input type="file" name="file"/>
 

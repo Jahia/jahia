@@ -18,7 +18,7 @@
 <c:if test="${not empty bindedComponent and jcr:isNodeType(bindedComponent, 'jmix:list')}">
     <template:addCacheDependency node="${bindedComponent}"/>
     <template:option node="${bindedComponent}" nodetype="${bindedComponent.primaryNodeTypeName},jmix:list" view="hidden.header"/>
-<c:set var="pagesizeid" value="pagesize${bindedComponent.identifier}"/>
+    <c:set var="pagesizeid" value="pagesize${bindedComponent.identifier}"/>
     <c:choose>
         <c:when test="${not empty param[pagesizeid]}">
             <c:set var="pageSize" value="${param[pagesizeid]}"/>
@@ -32,6 +32,6 @@
     </c:choose>
     <template:initPager totalSize="${moduleMap.listTotalSize}" pageSize="${pageSize}" id="${bindedComponent.identifier}"/>
     <c:if test="${currentNode.properties.displayPager.boolean}">
-        <template:displayPagination id="${bindedComponent.identifier}"/>
+        <template:displayPagination id="${bindedComponent.identifier}" nbOfPages="${currentNode.properties.nbOfPages.string}" displayNumberOfItemsPerPage="${currentNode.properties.displayNbOfItemsPerPage.boolean}"/>
     </c:if>
 </c:if>

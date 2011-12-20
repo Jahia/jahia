@@ -13,6 +13,8 @@
 <%@ attribute name="displayNumberOfItemsPerPage" required="false" type="java.lang.Boolean" description="Display the Number Of Items Per Page select list"  %>              
 <%@ attribute name="id" required="false" type="java.lang.String"
               description="The ID of the paginated list."  %>
+<%@ attribute name="nbOfPages" required="true" type="java.lang.String"
+              description="The number of pagination pages to display"  %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
 <%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
@@ -86,6 +88,12 @@
                 &nbsp;
             </c:if>
             <c:if test="${moduleMap .currentPage>1}">
+                <c:url value="${basePaginationUrl}" context="/" var="beginUrl">
+                    <c:param name="${beginid}" value="0"/>
+                    <c:param name="${endid}" value="${moduleMap.pageSize-1}"/>
+                    <c:param name="${pagesizeid}" value="${moduleMap.pageSize}"/>
+                </c:url>
+                <a class="previousLink" href="${fn:escapeXml(beginUrl) }"><fmt:message key="pagination.begin"/></a>
                 <c:url value="${basePaginationUrl}" context="/" var="previousUrl">
                     <c:param name="${beginid}" value="${(moduleMap.currentPage-2) * moduleMap.pageSize }"/>
                     <c:param name="${endid}" value="${ (moduleMap.currentPage-1)*moduleMap.pageSize-1}"/>
@@ -93,7 +101,23 @@
                 </c:url>
                 <a class="previousLink" href="${fn:escapeXml(previousUrl) }"><fmt:message key="pagination.previous"/></a>
             </c:if>
-            <c:forEach begin="1" end="${moduleMap.nbPages}" var="i">
+            <c:choose>
+                <c:when test="${nbOfPages > 1}">
+                     <c:set var="paginationBegin" value="${moduleMap.currentPage < nbOfPages ? 1 : moduleMap.currentPage - (nbOfPages - 2)}" />
+                </c:when>
+                <c:otherwise>
+                    <c:set var="paginationBegin" value="${moduleMap.currentPage}"/>
+                </c:otherwise>
+            </c:choose>
+            <c:choose>
+                <c:when test="${nbOfPages > 1}">
+                     <c:set var="paginationEnd" value="${(paginationBegin + (nbOfPages-1)) > moduleMap.nbPages ? moduleMap.nbPages : (paginationBegin + (nbOfPages-1))}" />
+                </c:when>
+                <c:otherwise>
+                    <c:set var="paginationEnd" value="${moduleMap.currentPage}"/>
+                </c:otherwise>
+            </c:choose>
+            <c:forEach begin="${paginationBegin}" end="${paginationEnd}" var="i">
                 <c:if test="${i != moduleMap.currentPage}">
                     <c:url value="${basePaginationUrl}" context="/" var="paginationPageUrl">
                         <c:param name="${beginid}" value="${ (i-1) * moduleMap.pageSize }"/>
@@ -114,6 +138,12 @@
                     <c:param name="${pagesizeid}" value="${moduleMap.pageSize}"/>
                 </c:url>
                 <a class="nextLink" href="${fn:escapeXml(nextUrl)}"><fmt:message key="pagination.next"/></a>
+                  <c:url value="${basePaginationUrl}" context="/" var="endUrl">
+                    <c:param name="${beginid}" value="${(moduleMap.nbPages-1) * moduleMap.pageSize }"/>
+                    <c:param name="${endid}" value="${(moduleMap.nbPages-1) * moduleMap.pageSize +  moduleMap.pageSize}"/>
+                    <c:param name="${pagesizeid}" value="${moduleMap.pageSize}"/>
+                </c:url>
+                <a class="nextLink" href="${fn:escapeXml(endUrl)}"><fmt:message key="pagination.end"/></a>
             </c:if>
         </div>
 

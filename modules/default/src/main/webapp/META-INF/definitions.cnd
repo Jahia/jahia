@@ -33,6 +33,8 @@
 [jnt:pager] > jnt:content, jmix:siteComponent, jmix:bindedComponent
  - pageSize (long) = 10 autocreated
  - displayPager (boolean) = true autocreated
+ - nbOfPages (long) = 10 autocreated
+ - displayNbOfItemsPerPage (boolean) = true autocreated
 
 [jnt:fileList] > jnt:content, jmix:listContent, jmix:editorialContent, jmix:bindedComponent
  - folder (weakreference, picker[type='folder'])

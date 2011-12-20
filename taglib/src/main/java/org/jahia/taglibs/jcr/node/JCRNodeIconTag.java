@@ -40,7 +40,6 @@
 
 package org.jahia.taglibs.jcr.node;
 
-import org.apache.jackrabbit.core.nodetype.EffectiveNodeType;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -48,10 +47,9 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeType;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
@@ -61,10 +59,10 @@ import javax.servlet.jsp.PageContext;
  * Time: 14:25
  */
 public class JCRNodeIconTag extends AbstractJCRTag {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRNodeTypeTag.class);
+    private transient static Logger logger = LoggerFactory.getLogger(JCRNodeTypeTag.class);
 
     private JCRNodeWrapper node;
-    private ExtendedNodeType type;
+    private Object type;
     private String var;
     private int scope = PageContext.PAGE_SCOPE;
 
@@ -72,7 +70,7 @@ public class JCRNodeIconTag extends AbstractJCRTag {
         this.node = node;
     }
 
-    public void setType(ExtendedNodeType type) {
+    public void setType(Object type) {
         this.type = type;
     }
 
@@ -89,7 +87,7 @@ public class JCRNodeIconTag extends AbstractJCRTag {
             if (node != null) {
                 pageContext.setAttribute(var, JCRContentUtils.getIcon(node), scope);
             } else if (type != null) {
-                pageContext.setAttribute(var, JCRContentUtils.getIcon(type), scope);
+                pageContext.setAttribute(var, JCRContentUtils.getIcon(type instanceof ExtendedNodeType ? (ExtendedNodeType) type : NodeTypeRegistry.getInstance().getNodeType(String.valueOf(type))), scope);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -114,6 +112,7 @@ public class JCRNodeIconTag extends AbstractJCRTag {
     @Override
     protected void resetState() {
         node = null;
+        type = null;
         var = null;
         scope = PageContext.PAGE_SCOPE;
         super.resetState();

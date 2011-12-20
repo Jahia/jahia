@@ -223,8 +223,8 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                                 if (node.get("isRootNode") == null) {
                                     for (TabItem item : tabs.getItems()) {
                                         EditEngineTabItem tabItem = (EditEngineTabItem) item.getData("item");
-                                        if ((tabItem.getHideForTypes().isEmpty() || !node.isNodeType(tabItem.getHideForTypes())) &&
-                                                (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes())) &&
+                                        if ((tabItem.getHideForTypes().isEmpty() || !result.getNode().isNodeType(tabItem.getHideForTypes())) &&
+                                                (tabItem.getShowForTypes().isEmpty() || result.getNode().isNodeType(tabItem.getShowForTypes())) &&
                                                 (tabItem.getGwtEngineTab().getRequiredPermission() == null || tabItem.getGwtEngineTab().getRequiredPermission() != null && PermissionsUtils.isPermitted(tabItem.getGwtEngineTab().getRequiredPermission(), selectedNodes.get(0).getPermissions()))) {
                                             item.setEnabled(true);
                                         }

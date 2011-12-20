@@ -98,7 +98,7 @@ public class InfoTabItem extends EditEngineTabItem {
                 if (id != null) {
                     flowPanel.add(new HTML("<b>" + Messages.get("label.id", "ID") + ":</b> " + id));
                 }
-                if (selectedNode.isFile()) {
+                if (selectedNode.isFile() != null &&selectedNode.isFile()) {
                     Long s = selectedNode.getSize();
                     if (s != null) {
                         flowPanel.add(new HTML("<b>" + Messages.get("label.size") + ":</b> " +
@@ -110,7 +110,7 @@ public class InfoTabItem extends EditEngineTabItem {
                     flowPanel.add(new HTML("<b>" + Messages.get("label.lastModif") + ":</b> " +
                             org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
                 }
-                if (selectedNode.isLocked() && selectedNode.getLockInfos() != null) {
+                if (selectedNode.isLocked() != null && selectedNode.isLocked() && selectedNode.getLockInfos() != null) {
                     String infos = "";
                     if (selectedNode.getLockInfos().containsKey(null) && selectedNode.getLockInfos().size() == 1) {
                         for (String s : selectedNode.getLockInfos().get(null)) {

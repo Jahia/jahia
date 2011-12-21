@@ -907,7 +907,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 for (Map.Entry<String, List<String>> entry : values.entrySet()) {
                     List<String> stringList = entry.getValue();
                     List<String> parameterValues = parameters.get(entry.getKey());
-                    if (!CollectionUtils.isEqualCollection(stringList, parameterValues)) {
+                    if (parameterValues == null || !CollectionUtils.isEqualCollection(stringList, parameterValues)) {
                         if (entry.getKey().equals(CAPTCHA)) {
                             Map<String, String[]> formDatas = new HashMap<String, String[]>();
                             Set<Map.Entry<String, List<String>>> set = parameters.entrySet();

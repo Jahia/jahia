@@ -707,7 +707,7 @@ public class ContentTest {
             NavigationHelper navigationHelper = (NavigationHelper) SpringContextSingleton.getInstance().getContext().getBean("NavigationHelper");
             List<String> paths = new ArrayList<String>();
             paths.add(testFile1.getPath());
-            List<GWTJahiaNodeUsage> usages = navigationHelper.getUsages(paths, session);
+            List<GWTJahiaNodeUsage> usages = navigationHelper.getUsages(paths, session, Locale.getDefault());
             assertEquals(providerRoot + " : Invalid number of file usages !", 1, usages.size());
             GWTJahiaNodeUsage firstUsage = usages.iterator().next();
             assertEquals(providerRoot + " : Expected path for node pointing to file is invalid !", refNode.getPath(), firstUsage.getPath());
@@ -757,7 +757,7 @@ public class ContentTest {
             paths.clear();
             paths.add(testFile1.getPath());
             paths.add(testFile2.getPath());
-            usages = navigationHelper.getUsages(paths, session);
+            usages = navigationHelper.getUsages(paths, session, Locale.getDefault());
             assertEquals(providerRoot + " : Usages should be empty but they are not !" + usages, 0, usages.size());
             assertFalse(providerRoot + " : single reference property should no longer exist !", refNode.hasProperty(SIMPLE_REFERENCE_PROPERTY_NAME));
             assertFalse(providerRoot + " : multiple reference property should no longer exist !", refNode.hasProperty(MULTIPLE_I18N_REFERENCE_PROPERTY_NAME));
@@ -803,12 +803,12 @@ public class ContentTest {
             fields.add("jcr:lastModified");
             for (GWTJahiaNode rootNode : rootNodes) {
                 assertGWTJahiaNode(rootNode, "/mounts");
-                List<GWTJahiaNode> childNodes = navigationHelper.ls(rootNode, nodeTypes, new ArrayList<String>(), new ArrayList<String>(), fields, session);
+                List<GWTJahiaNode> childNodes = navigationHelper.ls(rootNode, nodeTypes, new ArrayList<String>(), new ArrayList<String>(), fields, session, Locale.getDefault());
                 assertEquals("Mounted providers in /mounts does not to correspond to expected amount", mountLocations.size(), childNodes.size());
                 for (GWTJahiaNode childNode : childNodes) {
                     assertTrue("Path to mount location does not correspond ! Path=" + childNode.getPath(), mountLocations.contains(childNode.getPath()));
                     assertGWTJahiaNode(childNode, "/mounts/" + childNode.getName());
-                    List<GWTJahiaNode> childChildNodes = navigationHelper.ls(childNode, nodeTypes, new ArrayList<String>(), new ArrayList<String>(), fields, session);
+                    List<GWTJahiaNode> childChildNodes = navigationHelper.ls(childNode, nodeTypes, new ArrayList<String>(), new ArrayList<String>(), fields, session, Locale.getDefault());
                     for (GWTJahiaNode childChildNode : childChildNodes) {
                         assertGWTJahiaNode(childChildNode, "/mounts/" + childNode.getName() + "/" + childChildNode.getName());
                     }

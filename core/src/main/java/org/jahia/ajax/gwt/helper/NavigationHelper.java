@@ -129,25 +129,27 @@ public class NavigationHelper {
     /**
      * like ls unix command on the folder
      *
+     *
      * @param gwtParentNode
      * @param nodeTypes
      * @param mimeTypes
      * @param nameFilters
      * @param fields
      * @param currentUserSession @return
+     * @param uiLocale
      * @throws GWTJahiaServiceException
      */
     public List<GWTJahiaNode> ls(GWTJahiaNode gwtParentNode, List<String> nodeTypes, List<String> mimeTypes,
-                                 List<String> nameFilters, List<String> fields, JCRSessionWrapper currentUserSession)
+                                 List<String> nameFilters, List<String> fields, JCRSessionWrapper currentUserSession, Locale uiLocale)
             throws GWTJahiaServiceException {
         return ls(gwtParentNode, nodeTypes, mimeTypes, nameFilters, fields, false, false, null, null, currentUserSession,
-                false);
+                false, uiLocale);
     }
 
     public List<GWTJahiaNode> ls(GWTJahiaNode gwtParentNode, List<String> nodeTypes, List<String> mimeTypes,
                                  List<String> nameFilters, List<String> fields, boolean checkSubChild,
                                  boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex,
-                                 JCRSessionWrapper currentUserSession, boolean showOnlyNodesWithTemplates) throws GWTJahiaServiceException {
+                                 JCRSessionWrapper currentUserSession, boolean showOnlyNodesWithTemplates, Locale uiLocale) throws GWTJahiaServiceException {
         JCRNodeWrapper node = null;
         try {
             node = currentUserSession.getNode(gwtParentNode != null ? gwtParentNode.getPath() : "/");
@@ -156,15 +158,15 @@ public class NavigationHelper {
         }
 
         if (node == null) {
-            throw new GWTJahiaServiceException("Parent node is null");
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.parent.node.is.null",uiLocale));
         }
         if (node.isFile()) {
-            throw new GWTJahiaServiceException("Can't list the children of a file");
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.can.t.list.the.children.of.a.file",uiLocale));
         }
         final List<GWTJahiaNode> gwtNodeChildren = new ArrayList<GWTJahiaNode>();
         try {
             getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, node, gwtNodeChildren, checkSubChild,
-                    displayHiddenTypes, hiddenTypes, hiddenRegex, showOnlyNodesWithTemplates);
+                    displayHiddenTypes, hiddenTypes, hiddenRegex, showOnlyNodesWithTemplates, uiLocale);
 
             return gwtNodeChildren;
         } catch (RepositoryException e) {
@@ -176,7 +178,7 @@ public class NavigationHelper {
     private void getMatchingChilds(List<String> nodeTypes, List<String> mimeTypes, List<String> nameFilters,
                                    List<String> fields, JCRNodeWrapper node, List<GWTJahiaNode> gwtNodeChildren,
                                    boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes,
-                                   String hiddenRegex, boolean showOnlyNodesWithTemplates) throws RepositoryException, GWTJahiaServiceException {
+                                   String hiddenRegex, boolean showOnlyNodesWithTemplates, Locale uiLocale) throws RepositoryException, GWTJahiaServiceException {
         final NodeIterator nodesIterator;
         if(node instanceof JCRQueryNode) {
             final Query q = node.getSession().getWorkspace().getQueryManager().getQuery(node.getRealNode());
@@ -190,7 +192,7 @@ public class NavigationHelper {
         boolean hasOrderableChildren = node.getPrimaryNodeType().hasOrderableChildNodes();
 
         if (nodesIterator == null) {
-            throw new GWTJahiaServiceException("Children list is null");
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.children.list.is.null", uiLocale));
         }
 
         int i = 1;
@@ -248,7 +250,7 @@ public class NavigationHelper {
                 gwtNodeChildren.add(gwtChildNode);
             } else if (checkSubChild && childNode.hasNodes()) {
                 getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, childNode, gwtNodeChildren, checkSubChild,
-                        displayHiddenTypes, hiddenTypes, hiddenRegex, showOnlyNodesWithTemplates);
+                        displayHiddenTypes, hiddenTypes, hiddenRegex, showOnlyNodesWithTemplates, uiLocale);
             }
         }
     }
@@ -354,7 +356,7 @@ public class NavigationHelper {
                                 if (matchPath) {
                                     node.setExpandOnLoad(true);
                                     List<GWTJahiaNode> list = ls(node, nodeTypes, mimeTypes, filters, fields, checkSubChild,
-                                            displayHiddenTypes, hiddenTypes, hiddenRegex, currentUserSession, false);
+                                            displayHiddenTypes, hiddenTypes, hiddenRegex, currentUserSession, false, uiLocale);
                                     for (int j = 0; j < list.size(); j++) {
                                         node.insert(list.get(j), j);
                                         allNodes.add(list.get(j));
@@ -423,7 +425,7 @@ public class NavigationHelper {
                 if (path.endsWith("/*")) {
 //                    NodeIterator ni =
 //                            currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")).getNodes();
-                    getMatchingChilds(nodeTypes, mimeTypes, filters, fields, currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")), userNodes ,checkSubChild, displayHiddenTypes, hiddenTypes,hiddenRegex,false);
+                    getMatchingChilds(nodeTypes, mimeTypes, filters, fields, currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")), userNodes ,checkSubChild, displayHiddenTypes, hiddenTypes,hiddenRegex,false, uiLocale);
 //                    while (ni.hasNext()) {
 //                        GWTJahiaNode node = getGWTJahiaNode((JCRNodeWrapper) ni.next(), fields);
 ////                        if (displayName != "") {
@@ -460,16 +462,18 @@ public class NavigationHelper {
     /**
      * Return a node if existing exception otherwise
      *
+     *
      * @param path               the path to test an dget the node if existing
      * @param currentUserSession @return the existing node
+     * @param uiLocale
      * @throws GWTJahiaServiceException it node does not exist
      */
-    public GWTJahiaNode getNode(String path, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public GWTJahiaNode getNode(String path, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         try {
             return getGWTJahiaNode(currentUserSession.getNode(path));
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(
-                    new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
+                    new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
         }
     }
 
@@ -536,7 +540,7 @@ public class NavigationHelper {
         return node.getUrl();
     }
 
-    public String getAbsolutePath(String path, JCRSessionWrapper currentUserSession, final HttpServletRequest request)
+    public String getAbsolutePath(String path, JCRSessionWrapper currentUserSession, final HttpServletRequest request, Locale uiLocale)
             throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
@@ -544,12 +548,12 @@ public class NavigationHelper {
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(
-                    new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
+                    new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
         }
         return node.getAbsoluteWebdavUrl(request);
     }
 
-    public List<GWTJahiaNodeUsage> getUsages(List<String> paths, JCRSessionWrapper currentUserSession)
+    public List<GWTJahiaNodeUsage> getUsages(List<String> paths, JCRSessionWrapper currentUserSession, Locale uiLocale)
             throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         List<GWTJahiaNodeUsage> result = new ArrayList<GWTJahiaNodeUsage>();
@@ -559,7 +563,7 @@ public class NavigationHelper {
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 throw new GWTJahiaServiceException(
-                        new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
+                        new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
             }
             try {
                 NodeIterator usages = node.getSharedSet();

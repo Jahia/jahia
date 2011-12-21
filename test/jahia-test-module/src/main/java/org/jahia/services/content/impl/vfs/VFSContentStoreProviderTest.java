@@ -204,10 +204,10 @@ public class VFSContentStoreProviderTest {
         fields.add("jcr:lastModified");
         for (GWTJahiaNode rootNode : rootNodes) {
             assertGWTJahiaNode(rootNode, "/mounts");
-            List<GWTJahiaNode> childNodes = navigationHelper.ls(rootNode, nodeTypes, new ArrayList<String>(), new ArrayList<String>(), fields, session);
+            List<GWTJahiaNode> childNodes = navigationHelper.ls(rootNode, nodeTypes, new ArrayList<String>(), new ArrayList<String>(), fields, session, Locale.getDefault());
             for (GWTJahiaNode childNode : childNodes) {
                 assertGWTJahiaNode(childNode, "/mounts/" + childNode.getName());
-                List<GWTJahiaNode> childChildNodes = navigationHelper.ls(childNode, nodeTypes, new ArrayList<String>(), new ArrayList<String>(), fields, session);                
+                List<GWTJahiaNode> childChildNodes = navigationHelper.ls(childNode, nodeTypes, new ArrayList<String>(), new ArrayList<String>(), fields, session, Locale.getDefault());
             }
         }
     }
@@ -226,7 +226,7 @@ public class VFSContentStoreProviderTest {
     public void testDynamicMount() throws GWTJahiaServiceException, RepositoryException {
         ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext().getBean("ContentHubHelper");
         JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
-        contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser);
+        contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser, Locale.getDefault());
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         assertRootNavigation(session);
@@ -283,7 +283,7 @@ public class VFSContentStoreProviderTest {
     public void testReferencing() throws Exception, RepositoryException, UnsupportedEncodingException {
         ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext().getBean("ContentHubHelper");
         JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
-        contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser);
+        contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser, Locale.getDefault());
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
@@ -412,7 +412,7 @@ public class VFSContentStoreProviderTest {
     public void testMarkForDeletion() throws Exception, RepositoryException, UnsupportedEncodingException {
         ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext().getBean("ContentHubHelper");
         JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
-        contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser);
+        contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser, Locale.getDefault());
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 

@@ -51,13 +51,14 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.*;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.text.MessageFormat;import java.util.*;
 
 /**
  * User: toto
@@ -88,11 +89,12 @@ public class TemplateHelper {
      * @param request
      * @param response
      * @param currentUserSession
+     * @param uiLocale
      */
     public GWTRenderResult getRenderedContent(String path, String template, String configuration,
                                               final Map<String, List<String>> contextParams, boolean editMode, String configName,
                                               HttpServletRequest request, HttpServletResponse response,
-                                              JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+                                              JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         GWTRenderResult result = null;
         try {
             JCRNodeWrapper node = currentUserSession.getNode(path);
@@ -152,7 +154,7 @@ public class TemplateHelper {
 
             if (permission != null) {
                 if (!node.hasPermission(permission)) {
-                    throw new GWTJahiaServiceException("Access denied");
+                    throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.access.denied",uiLocale));
                 }
             }
 
@@ -178,13 +180,13 @@ public class TemplateHelper {
             }
             result = new GWTRenderResult(res, m, constraints, node.getDisplayableName());
         } catch (PathNotFoundException e) {
-            throw new GWTJahiaServiceException(path + " not found for user " + currentUserSession.getUser().getName());
+            throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.not.found.for.user",uiLocale), path, currentUserSession.getUser().getName()));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Repository exception on path " + path);
+            throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.repository.exception.on.path",uiLocale), path));
         } catch (RenderException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Render exception "+e.getMessage());
+            throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.render.exception",uiLocale), e.getMessage()));
         }
         return result;
     }

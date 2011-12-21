@@ -61,6 +61,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.EncryptionUtils;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +69,7 @@ import javax.jcr.*;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -92,13 +94,13 @@ public class PropertiesHelper {
         this.navigation = navigation;
     }
 
-    public Map<String, GWTJahiaNodeProperty> getProperties(String path, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public Map<String, GWTJahiaNodeProperty> getProperties(String path, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         JCRNodeWrapper objectNode;
         try {
             objectNode = currentUserSession.getNode(path);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
-            throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
+            throw new GWTJahiaServiceException(new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
         }
         Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>();
         String propName = "null";
@@ -214,10 +216,10 @@ public class PropertiesHelper {
      * @param nodes    the nodes to save the properties of
      * @param newProps the new properties
      * @param removedTypes
-     *@param currentUserSession  @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
-     *          sthg bad happened
+     * @param currentUserSession  @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
+     * @param uiLocale
      */
-    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, Set<String> removedTypes, JahiaUser user, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, Set<String> removedTypes, JahiaUser user, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         for (GWTJahiaNode aNode : nodes) {
             JCRNodeWrapper objectNode;
             try {
@@ -258,7 +260,7 @@ public class PropertiesHelper {
                 setProperties(objectNode, newProps);
                 objectNode.saveSession();
             } catch (RepositoryException e) {
-                throw new GWTJahiaServiceException("Could not save node " + objectNode.getName() + ", " + e.getMessage());
+                throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.save.node", uiLocale), objectNode.getName(), e.getMessage()));
             }
         }
     }

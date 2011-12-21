@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.services.content.*;
@@ -51,6 +52,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -69,7 +71,7 @@ public class ContentHubHelper {
         this.sessionFactory = sessionFactory;
     }
 
-    public void mount(final String name, final String root, final JahiaUser user) throws GWTJahiaServiceException {
+    public void mount(final String name, final String root, final JahiaUser user,final Locale uiLocale) throws GWTJahiaServiceException {
         if (user.isRoot()) {
             try {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(user.getName(), new JCRCallback<Object>() {
@@ -105,22 +107,22 @@ public class ContentHubHelper {
                             boolean valid = childNode.checkMountPointValidity();
                             if (!valid) {
                                 childNode.remove();
-                                throw new RepositoryException("Invalid path");
+                                throw new RepositoryException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.invalid.path",uiLocale));
                             }
                             session.save();
                         }
                         if (childNode == null) {
-                            throw new RepositoryException("A system error happened");
+                            throw new RepositoryException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.system.error.happened",uiLocale));
                         }
                         return null;
                     }
                 });
             } catch (RepositoryException e) {
-                logger.error("A system error happened", e);
-                throw new GWTJahiaServiceException("A system error happened");
+                logger.error(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.system.error.happened",uiLocale), e);
+                throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.system.error.happened",uiLocale));
             }
         } else {
-            throw new GWTJahiaServiceException("Only root can mount folders");
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.only.root.can.mount.folders",uiLocale));
         }
     }
 

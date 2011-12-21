@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -66,6 +67,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.RepositoryException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -102,7 +104,7 @@ public class PortletHelper {
         this.contentManager = contentManager;
     }
 
-    public List<GWTJahiaPortletDefinition> searchPortlets(String match, JahiaUser user, Locale locale, JCRSessionWrapper session) {
+    public List<GWTJahiaPortletDefinition> searchPortlets(String match, JahiaUser user, Locale locale, JCRSessionWrapper session, Locale uiLocale) {
         List<GWTJahiaPortletDefinition> results = new ArrayList<GWTJahiaPortletDefinition>();
         try {
             List<ApplicationBean> appList = new LinkedList<ApplicationBean>();
@@ -120,7 +122,7 @@ public class PortletHelper {
                 if (JCRContentUtils.hasPermission(session.getWorkspace().getName(), Constants.JCR_READ_RIGHTS, appBean.getID())) {
                     List<EntryPointDefinition> l = appBean.getEntryPointDefinitions();
                     for (EntryPointDefinition aL : l) {
-                        results.add(createGWTJahiaPortletDefinition(appBean, aL, locale));
+                        results.add(createGWTJahiaPortletDefinition(appBean, aL, locale, uiLocale));
                     }
                 }
             }
@@ -140,7 +142,7 @@ public class PortletHelper {
      * @throws org.jahia.exceptions.JahiaException
      *          sthg bad happened
      */
-    public GWTJahiaPortletDefinition createGWTJahiaPortletDefinition(ApplicationBean appBean, EntryPointDefinition entryPointDefinition, Locale locale) throws JahiaException {
+    public GWTJahiaPortletDefinition createGWTJahiaPortletDefinition(ApplicationBean appBean, EntryPointDefinition entryPointDefinition, Locale locale, Locale uiLocale) throws JahiaException {
         String portletType = null;
         int expTime = 0;
         String cacheScope = null;
@@ -162,29 +164,31 @@ public class PortletHelper {
     /**
      * Create a  GWTJahiaNode object that represents a portlet instance.
      *
+     *
      * @param parentPath                 where to create the node
      * @param gwtJahiaNewPortletInstance the portlet instance
      * @param currentUserSession
+     * @param uiLocale
      * @return a node
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          sthg bad happened
      */
-    public GWTJahiaNode createPortletInstance(String parentPath, GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public GWTJahiaNode createPortletInstance(String parentPath, GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         try {
             String name = gwtJahiaNewPortletInstance.getInstanceName();
 
             if (name == null) {
                 name = gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName().replaceAll("/", "___") + Math.round(Math.random() * 1000000l);
             }
-            if (contentManager.checkExistence(parentPath + "/" + name, currentUserSession)) {
-                throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
+            if (contentManager.checkExistence(parentPath + "/" + name, currentUserSession, uiLocale)) {
+                throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.already.exists.with.name",uiLocale), name));
             }
             JCRNodeWrapper parentNode = currentUserSession.getNode(parentPath);
             if (!parentNode.isCheckedOut()) {
                 parentNode.checkout();
             }
 
-            JCRPortletNode node = (JCRPortletNode) contentManager.addNode(parentNode, name, gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getPortletType(), null, gwtJahiaNewPortletInstance.getProperties());
+            JCRPortletNode node = (JCRPortletNode) contentManager.addNode(parentNode, name, gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getPortletType(), null, gwtJahiaNewPortletInstance.getProperties(), uiLocale);
 
             node.setApplication(gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getApplicationId(), gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName());
             node.revokeAllRoles();
@@ -215,12 +219,12 @@ public class PortletHelper {
                 parentNode.save();
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
-                throw new GWTJahiaServiceException("A system error happened");
+                throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.system.error.happened",uiLocale));
             }
             return navigation.getGWTJahiaNode(node);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("error");
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error",uiLocale));
         }
     }
 
@@ -238,10 +242,10 @@ public class PortletHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *
      */
-    public GWTJahiaNode createPortletInstance(String parentPath, String instanceName, String appName, String entryPointName, List<GWTJahiaNodeProperty> gwtJahiaNodeProperties, JCRSiteNode site, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public GWTJahiaNode createPortletInstance(String parentPath, String instanceName, String appName, String entryPointName, List<GWTJahiaNodeProperty> gwtJahiaNodeProperties, JCRSiteNode site, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         try {
             // get RSS GWTJahiaPortletDefinition
-            GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName(appName, entryPointName, currentUserSession.getLocale(), currentUserSession.getUser(), currentUserSession.getWorkspace().getName());
+            GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName(appName, entryPointName, currentUserSession.getLocale(), currentUserSession.getUser(), currentUserSession.getWorkspace().getName(), uiLocale);
             if (gwtJahiaPortletDefinition == null) {
                 logger.error("[" + appName + "," + entryPointName + "]" + " portlet defintion not found --> Aboard creating  portlet instance");
             }
@@ -289,7 +293,7 @@ public class PortletHelper {
 
             // set name
             gwtJahiaNewPortletInstance.setInstanceName(instanceName);
-            return createPortletInstance(parentPath, gwtJahiaNewPortletInstance, currentUserSession);
+            return createPortletInstance(parentPath, gwtJahiaNewPortletInstance, currentUserSession, uiLocale);
         } catch (GWTJahiaServiceException e) {
             throw e;
         } catch (Exception e) {
@@ -310,10 +314,10 @@ public class PortletHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *
      */
-    public GWTJahiaNode createRSSPortletInstance(String parentPath, String name, String url, JCRSiteNode site, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public GWTJahiaNode createRSSPortletInstance(String parentPath, String name, String url, JCRSiteNode site, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance = new GWTJahiaNewPortletInstance();
         final String appName = Jahia.getContextPath().length() > 0 ? Jahia.getContextPath().substring(1) + "/rss" : "rss";
-        GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName(appName, "JahiaRSSPortlet", currentUserSession.getLocale(), currentUserSession.getUser(), currentUserSession.getWorkspace().getName());
+        GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName(appName, "JahiaRSSPortlet", currentUserSession.getLocale(), currentUserSession.getUser(), currentUserSession.getWorkspace().getName(), uiLocale);
         if (gwtJahiaPortletDefinition == null) {
             logger.error("RSS portlet defintion not found --> Abort creating RSS portlet instance");
         }
@@ -326,7 +330,7 @@ public class PortletHelper {
         gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:expirationTime", new GWTJahiaNodePropertyValue("0", GWTJahiaNodePropertyType.LONG)));
         gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("url", new GWTJahiaNodePropertyValue(url, GWTJahiaNodePropertyType.STRING)));
 
-        return createPortletInstance(parentPath, name, appName, "JahiaRSSPortlet", gwtJahiaNodeProperties, site, currentUserSession);
+        return createPortletInstance(parentPath, name, appName, "JahiaRSSPortlet", gwtJahiaNodeProperties, site, currentUserSession, uiLocale);
     }
 
     /**
@@ -341,11 +345,11 @@ public class PortletHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *
      */
-    public GWTJahiaNode createGoogleGadgetPortletInstance(String parentPath, String name, String script, JCRSiteNode site, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public GWTJahiaNode createGoogleGadgetPortletInstance(String parentPath, String name, String script, JCRSiteNode site, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance = new GWTJahiaNewPortletInstance();
         final String appName = Jahia.getContextPath().length() > 0 ? Jahia.getContextPath().substring(1) + "/googlegadget" : "googlegadget";
         // get RSS GWTJahiaPortletDefinition
-        GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName(appName, "JahiaGoogleGadget", currentUserSession.getLocale(), currentUserSession.getUser(), currentUserSession.getWorkspace().getName());
+        GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName(appName, "JahiaGoogleGadget", currentUserSession.getLocale(), currentUserSession.getUser(), currentUserSession.getWorkspace().getName(), uiLocale);
         if (gwtJahiaPortletDefinition == null) {
             logger.error("Google gadget portlet defintion not found --> Abort creating Google Gadget portlet instance");
         }
@@ -358,7 +362,7 @@ public class PortletHelper {
         gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:expirationTime", new GWTJahiaNodePropertyValue("0", GWTJahiaNodePropertyType.LONG)));
         gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("code", new GWTJahiaNodePropertyValue(script, GWTJahiaNodePropertyType.STRING)));
 
-        return createPortletInstance(parentPath, name, appName, "JahiaGoogleGadget", gwtJahiaNodeProperties, site, currentUserSession);
+        return createPortletInstance(parentPath, name, appName, "JahiaGoogleGadget", gwtJahiaNodeProperties, site, currentUserSession, uiLocale);
     }
 
     /**
@@ -370,7 +374,7 @@ public class PortletHelper {
      * @param workspaceName
      * @return
      */
-    public GWTJahiaPortletDefinition createJahiaGWTPortletDefinitionByName(String appName, String entryPointName, Locale locale, JahiaUser user, String workspaceName) {
+    public GWTJahiaPortletDefinition createJahiaGWTPortletDefinitionByName(String appName, String entryPointName, Locale locale, JahiaUser user, String workspaceName, Locale uiLocale) {
         if (appName != null && entryPointName != null) {
             try {
                 // TO DO: replace this part of the method by a more perfoming one
@@ -381,7 +385,7 @@ public class PortletHelper {
                         for (EntryPointDefinition aL : l) {
                             boolean foundEntryPointDefinition = appName.equalsIgnoreCase(anAppList.getName()) && aL.getName().equalsIgnoreCase(entryPointName);
                             if (foundEntryPointDefinition) {
-                                return createGWTJahiaPortletDefinition(anAppList, aL, locale);
+                                return createGWTJahiaPortletDefinition(anAppList, aL, locale, uiLocale);
                             }
                         }
                     }

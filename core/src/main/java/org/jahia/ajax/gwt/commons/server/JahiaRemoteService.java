@@ -112,7 +112,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
             return JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale, useSiteFallbackLanguage ? getFallbackLocale() : null);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Cannot open user session");
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.cannot.open.user.session",getUILocale()));
         }
     }
 
@@ -143,7 +143,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
             return null;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Cannot open user session");
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.cannot.open.user.session", getUILocale()));
         }
     }
 

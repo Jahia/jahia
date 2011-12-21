@@ -44,6 +44,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.*;
+import org.apache.jackrabbit.value.StringValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.services.content.*;
@@ -791,13 +792,13 @@ public class ContentDefinitionHelper {
                             GWTJahiaNode comp = new GWTJahiaNode();
                             comp.setPath(compPath);
                             list = navigation.ls(comp, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
-                                    false, null, null, session, false);
+                                    false, null, null, session, false,uiLocale);
                         } else {
                             list = Collections.emptyList();
                         }
                     } else {
                         list = navigation.ls(node, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
-                                false, null, null, session, false);
+                                false, null, null, session, false, uiLocale);
                     }
                 } catch (GWTJahiaServiceException e) {
                     e.printStackTrace();

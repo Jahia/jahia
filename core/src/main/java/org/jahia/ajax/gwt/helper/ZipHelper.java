@@ -44,6 +44,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.spi.commons.conversion.MalformedPathException;
 import org.apache.jackrabbit.util.Text;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
@@ -58,8 +59,9 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import java.io.*;
-import java.util.ArrayList;
+import java.text.MessageFormat;import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Helper class for ZIP file manipulations.
@@ -257,7 +259,7 @@ public class ZipHelper {
         }
     }
 
-    public void zip(List<String> paths, String archiveName, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public void zip(List<String> paths, String archiveName, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         if (!archiveName.endsWith(".zip") && !archiveName.endsWith(".ZIP")) {
             archiveName = new StringBuilder(archiveName).append(".zip").toString();
         }
@@ -269,7 +271,7 @@ public class ZipHelper {
                 nodeToZip = currentUserSession.getNode(path);
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
-                missedPaths.add(new StringBuilder(path).append(" could not be accessed : ").append(e.toString()).toString());
+                missedPaths.add(new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
                 continue;
             }
             nodesToZip.add(nodeToZip);
@@ -288,24 +290,24 @@ public class ZipHelper {
                 parent = currentUserSession.getNode(parentPath);
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
-                throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
+                throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
             }
             if (parent.hasPermission("jcr:addChildNodes") && !parent.isLocked()) {
                 List<String> errorPaths = zipFiles(parent, archiveName, nodesToZip);
                 if (errorPaths != null) {
                     errorPaths.addAll(missedPaths);
-                    StringBuilder errors = new StringBuilder("The following files could not be zipped:");
+                    StringBuilder errors = new StringBuilder(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.the.following.files.could.not.be.zipped",uiLocale));
                     for (String err : errorPaths) {
                         errors.append("\n").append(err);
                     }
                     throw new GWTJahiaServiceException(errors.toString());
                 }
             } else {
-                throw new GWTJahiaServiceException("Directory " + parent.getPath() + " is not writable.");
+                throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.directory.is.not.writable",uiLocale), parent.getPath()));
             }
         }
         if (missedPaths.size() > 0) {
-            StringBuilder errors = new StringBuilder("The following files could not be zipped:");
+            StringBuilder errors = new StringBuilder(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.the.following.files.could.not.be.zipped",uiLocale));
             for (String err : missedPaths) {
                 errors.append("\n").append(err);
             }
@@ -313,7 +315,7 @@ public class ZipHelper {
         }
     }
 
-    public void unzip(List<String> paths, boolean removeArchive, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public void unzip(List<String> paths, boolean removeArchive, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
         List<JCRNodeWrapper> nodesToUnzip = new ArrayList<JCRNodeWrapper>();
         for (String path : paths) {
@@ -322,7 +324,7 @@ public class ZipHelper {
                 nodeToUnzip = currentUserSession.getNode(JCRContentUtils.escapeNodePath(path));
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
-                missedPaths.add(new StringBuilder(path).append(" could not be accessed : ").append(e.toString()).toString());
+                missedPaths.add(new StringBuilder(path).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
                 continue;
             }
             nodesToUnzip.add(nodeToUnzip);
@@ -341,7 +343,7 @@ public class ZipHelper {
                 parent = currentUserSession.getNode(parentPath);
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
-                throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
+                throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
             }
             if (parent.hasPermission("jcr:addChildNodes") && !parent.isLocked()) {
                 for (JCRNodeWrapper nodeToUnzip : nodesToUnzip) {
@@ -352,7 +354,7 @@ public class ZipHelper {
                             try {
                                 nodeToUnzip.remove();
                             } catch (RepositoryException e) {
-                                logger.error("Issue when trying to delete original archive " + nodeToUnzip.getPath(), e);
+                                logger.error(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.issue.when.trying.to.delete.original.archive",uiLocale), nodeToUnzip.getPath()), e);
                             }
                         }
                     } catch (RepositoryException e) {
@@ -361,7 +363,7 @@ public class ZipHelper {
                     }
                 }
             } else {
-                throw new GWTJahiaServiceException("Directory " + parent.getPath() + " is not writable.");
+                throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.directory.is.not.writable",uiLocale), parent.getPath()));
             }
             try {
                 parent.saveSession();

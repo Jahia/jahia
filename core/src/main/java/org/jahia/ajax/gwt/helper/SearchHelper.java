@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -59,10 +60,7 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Search utility class.
@@ -220,10 +218,10 @@ public class SearchHelper {
      * @return
      * @throws GWTJahiaServiceException
      */
-    public GWTJahiaNode saveSearch(String searchString, String name, JCRSiteNode site, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public GWTJahiaNode saveSearch(String searchString, String name, JCRSiteNode site, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         try {
             if (name == null) {
-                throw new GWTJahiaServiceException("Could not store query with null name");
+                throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.store.query.with.null.name",uiLocale));
             }
             Query q = createQuery(searchString, currentUserSession);
             JCRNodeWrapper user;
@@ -231,7 +229,7 @@ public class SearchHelper {
                 user = jcrService.getUserFolder(currentUserSession.getUser());
             } catch (Exception e) {
                 logger.error("no user folder for site " + site.getSiteKey() + " and user " + currentUserSession.getUser().getUsername());
-                throw new GWTJahiaServiceException("No user folder to store query");
+                throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.no.user.folder.to.store.query",uiLocale));
             }
 
             JCRNodeWrapper queryStore;
@@ -243,7 +241,7 @@ public class SearchHelper {
                 currentUserSession.checkout(queryStore);
             }
             String path = queryStore.getPath() + "/" + name;
-            if (contentManager.checkExistence(path, currentUserSession)) {
+            if (contentManager.checkExistence(path, currentUserSession, uiLocale)) {
                 throw new ExistingFileException("The node " + path + " alreadey exists.");
             }
             q.storeAsNode(path);
@@ -251,27 +249,29 @@ public class SearchHelper {
             return navigation.getGWTJahiaNode(currentUserSession.getNode(path));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Could not store query");
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.store.query",uiLocale));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Could not store query");
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.store.query",uiLocale));
         }
     }
 
     /**
      * Save search
      *
+     *
      * @param search
      * @param path
      * @param name
      * @param session
+     * @param uiLocale
      * @return
      * @throws GWTJahiaServiceException
      */
-    public GWTJahiaNode saveSearch(GWTJahiaSearchQuery search, String path, String name, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public GWTJahiaNode saveSearch(GWTJahiaSearchQuery search, String path, String name, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
         try {
             if (name == null) {
-                throw new GWTJahiaServiceException("Could not store query with null name");
+                throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.store.query.with.null.name",uiLocale));
             }
 
             JCRNodeWrapper parent = null;
@@ -297,10 +297,10 @@ public class SearchHelper {
             return navigation.getGWTJahiaNode(session.getNode(saveSearchPath));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Could not store query");
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.store.query",uiLocale));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Could not store query");
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.store.query",uiLocale));
         }
     }
 

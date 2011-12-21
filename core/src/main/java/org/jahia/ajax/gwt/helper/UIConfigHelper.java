@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory;
 import javax.script.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.StringWriter;
-import java.util.*;
+import java.text.MessageFormat;import java.util.*;
 
 /**
  * User: ktlili
@@ -106,7 +106,7 @@ public class UIConfigHelper {
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Error during loading toolbars due to " + e.getMessage());
+            throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.during.loading.toolbars",uiLocale), e.getMessage()));
         }
     }
 
@@ -170,7 +170,7 @@ public class UIConfigHelper {
             return gwtJahiaStateInfo;
         } catch (Exception e) {
             logger.error("Error when triing to load Jahia state info due to", e);
-            throw new GWTJahiaServiceException("Error when triing to load Jahia state.");
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.when.trying.to.load.jahia.state",uiLocale));
         }
     }
 
@@ -330,7 +330,7 @@ public class UIConfigHelper {
                 return gwtConfig;
             } else {
                 logger.error("Config. " + name + " not found.");
-                throw new GWTJahiaServiceException("Config. " + name + " not found.");
+                throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.config.not.found",uiLocale), name));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -538,7 +538,7 @@ public class UIConfigHelper {
                 gwtConfig.setSitesLocation(config.getSitesLocation());
                 return gwtConfig;
             } else {
-                throw new GWTJahiaServiceException("Bean. 'editconfig'  not found in spring config file");
+                throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.bean.editconfig.not.found.in.spring.config.file",uiLocale));
             }
         } catch (GWTJahiaServiceException e) {
             logger.error(e.getMessage(), e);

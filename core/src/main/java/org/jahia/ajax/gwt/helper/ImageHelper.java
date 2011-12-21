@@ -40,24 +40,22 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import ij.ImagePlus;
-import ij.io.Opener;
-import ij.process.ImageProcessor;
 import org.apache.commons.io.IOUtils;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
-import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.image.Image;
 import org.jahia.services.image.JahiaImageService;
-import org.jahia.tools.imageprocess.ImageProcess;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.text.MessageFormat;
+import java.util.Locale;
 
 public class ImageHelper {
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(ImageHelper.class);
@@ -73,11 +71,11 @@ public class ImageHelper {
         this.imageService = imageService;
     }
 
-    public void crop(String path, String target, int top, int left, int width, int height, boolean forceReplace, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public void crop(String path, String target, int top, int left, int width, int height, boolean forceReplace, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper node = session.getNode(path);
             if (contentManager
-                    .checkExistence(node.getPath().replace(node.getName(), target), session) &&
+                    .checkExistence(node.getPath().replace(node.getName(), target), session, uiLocale) &&
                     !forceReplace) {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
@@ -101,13 +99,13 @@ public class ImageHelper {
         }
     }
 
-    public void resizeImage(String path, String target, int width, int height, boolean forceReplace, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public void resizeImage(String path, String target, int width, int height, boolean forceReplace, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper node = session.getNode(path);
             if (contentManager
-                    .checkExistence(node.getPath().replace(node.getName(), target), session) &&
+                    .checkExistence(node.getPath().replace(node.getName(), target), session, uiLocale) &&
                     !forceReplace) {
-                throw new ExistingFileException("The file " + target + " already exists.");
+                throw new ExistingFileException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("file.already.exists", uiLocale), target));
             }
             Image image = imageService.getImage(node);
             File f = File.createTempFile("image", null);
@@ -129,13 +127,13 @@ public class ImageHelper {
         }
     }
 
-    public void rotateImage(String path, String target, boolean clockwise, boolean forceReplace, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public void rotateImage(String path, String target, boolean clockwise, boolean forceReplace, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper node = session.getNode(path);
             if (contentManager
-                    .checkExistence(node.getPath().replace(node.getName(), target), session) &&
+                    .checkExistence(node.getPath().replace(node.getName(), target), session, uiLocale) &&
                     !forceReplace) {
-                throw new ExistingFileException("The file " + target + " already exists.");
+                throw new ExistingFileException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("file.already.exists", uiLocale), target));
             }
             Image image = imageService.getImage(node);
             File f = File.createTempFile("image", null);

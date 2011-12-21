@@ -188,7 +188,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                 try {
                     ZipHelper zip = ZipHelper.getInstance();
                     //todo : in which workspace do we upload ?
-                    zip.unzip(pathsToUnzip, true, JCRSessionFactory.getInstance().getCurrentUserSession());
+                    zip.unzip(pathsToUnzip, true, JCRSessionFactory.getInstance().getCurrentUserSession(),(Locale) request.getSession().getAttribute(ParamBean.SESSION_UI_LOCALE));
                 } catch (RepositoryException e) {
                     logger.error("Auto-unzipping failed", e);
                 } catch (GWTJahiaServiceException e) {
@@ -215,6 +215,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
             }
         }
     }
+
 
     private String extractFileName(String rawFileName, Map<String, FileItem> uploads) {
         String basename;

@@ -44,7 +44,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.*;
-import org.apache.jackrabbit.value.StringValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.services.content.*;
@@ -787,10 +786,15 @@ public class ContentDefinitionHelper {
                     if (node == root) {
                         list = navigation.retrieveRoot(paths, null, null, null, fields, site, uiLocale, session, false, true, null, null);
                     } else if (node.getNodeTypes().contains("jnt:virtualsite")) {
-                        GWTJahiaNode comp = new GWTJahiaNode();
-                        comp.setPath(node.getPath()+"/components");
-                        list = navigation.ls(comp, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
-                                false, null, null, session, false);
+                        String compPath = node.getPath()+"/components";
+                        if (session.nodeExists(compPath)) {
+                            GWTJahiaNode comp = new GWTJahiaNode();
+                            comp.setPath(compPath);
+                            list = navigation.ls(comp, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
+                                    false, null, null, session, false);
+                        } else {
+                            list = Collections.emptyList();
+                        }
                     } else {
                         list = navigation.ls(node, Arrays.asList("jnt:component", "jnt:componentFolder"), null, null, fields, true,
                                 false, null, null, session, false);

@@ -91,7 +91,7 @@
         </attribute>
     </tag>
     <tag>
-        <description>Exposes a JCR node as a JCRNodeWrapper object</description>
+        <description>Sorts the specified list of JCRNodeWrapper objects</description>
         <name>sort</name>
         <tag-class>org.jahia.taglibs.jcr.node.JCRSortTag</tag-class>
         <body-content>empty</body-content>

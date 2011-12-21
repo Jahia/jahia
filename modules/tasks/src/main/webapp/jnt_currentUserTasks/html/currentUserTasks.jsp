@@ -156,7 +156,7 @@
                                            value="${not empty task.displayName ? task.displayName : task.name} - ${task.variables['jcr:title'][0].value}"/>
                                     <c:set var="path" value="${jcr:findDisplayableNode(node, renderContext).path}"/>
                                     <c:if test="${not empty path}">
-                                        <c:url var="preview" value="/cms/render/${task.variables.workspace}/${task.variables.locale}${path}.html"/>
+                                        <c:url var="preview" value="${renderContext.servletPath}/${task.variables.workspace}/${task.variables.locale}${path}.html"/>
                                         <a target="_blank" href="${preview}">${fn:escapeXml(taskTitle)}</a>
                                     </c:if>
                                     <c:if test="${empty path}">
@@ -183,8 +183,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <jcr:nodeProperty node="${node}" name="jcr:created" var="created"/>
-                                    <fmt:formatDate value="${created.time}" dateStyle="full"/>
+                                    <fmt:formatDate value="${task.createTime}" type="both" timeStyle="short"/>
                                 </td>
                             </tr>
                             <c:if test="${not empty task.formResourceName}">

@@ -148,7 +148,7 @@ function setFileEdit(id) {
                         $("#renderingOfFile" + id).html(data);
                     });
                 }
-                $(".file"+id).html(result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")]);
+                $(".file"+id).html(decodeURI(result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")]));
             }, "json");
         }
     });

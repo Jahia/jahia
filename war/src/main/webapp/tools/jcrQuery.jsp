@@ -5,7 +5,9 @@
 <%@page import="java.io.StringWriter"%>
 <%@page import="java.util.Locale"%>
 <%@page import="org.apache.commons.lang.StringUtils"%>
+<%@page import="javax.jcr.Node"%>
 <%@page import="javax.jcr.ItemNotFoundException"%>
+<%@page import="javax.jcr.NodeIterator"%>
 <%@page import="javax.jcr.query.Query"%>
 <%@page import="javax.jcr.query.QueryManager"%>
 <%@page import="javax.jcr.query.QueryResult"%>
@@ -129,6 +131,30 @@ JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSes
         <p style="color: red">Node with identifier <strong>${fn:escapeXml(param.target)}</strong> cannot be found</p>
     </c:if>
 </c:if>
+<c:if test="${param.action == 'deleteAll' && not empty param.query}">
+    <% 
+       try {
+           Query q = jcrSession.getWorkspace().getQueryManager().createQuery(request.getParameter("query"), (String) pageContext.getAttribute("lang"));
+           QueryResult result = q.execute();
+           int count = 0;
+           for (NodeIterator it = result.getNodes(); it.hasNext();) {
+               Node target = it.nextNode();
+               try {
+                   jcrSession.checkout(target.getParent());    
+                   target.remove();
+                   count++;
+               } catch (Exception e) {
+                   e.printStackTrace();
+               }
+           }
+           jcrSession.save();
+           pageContext.setAttribute("deletedCount", Integer.valueOf(count));
+       } catch (ItemNotFoundException e) {
+           // not found
+       }
+    %>
+    <p style="color: blue">${deletedCount} nodes were deleted</p>
+</c:if>
 <%
 try {
     String query = request.getParameter("query");
@@ -148,6 +174,11 @@ try {
 <c:if test="${not empty param.query}">
 <fieldset>
     <legend>Displaying <strong>${count} nodes</strong> (query took ${took} ms)</legend>
+    <c:if test="${showActions}">
+        <div style="position: absolute; right: 20px;">
+            <a href="#delete" onclick='if (!confirm("You are about to permanently delete ALL the nodes this query is matching. Continue?")) return false; go("action", "deleteAll"); return false;' title="Delete All"><img src="<c:url value='/icons/delete.png'/>" height="16" width="16" title="Delete All" border="0"/> Delete ALL</a>
+        </div>
+    </c:if>
 <ol start="${offset + 1}">
 <c:forEach var="node" items="${nodes}" varStatus="status">
     <li>
@@ -172,27 +203,6 @@ try {
     </li>
 </c:forEach>
 </ol>
-
-<%--
-<table border="1" cellspacing="0" cellpadding="5">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Path</th>
-            <th>UUID</th>
-        </tr>
-    </thead>
-    <tbody>
-<c:forEach var="node" items="${nodes}" varStatus="status">
-    <tr>
-    <td>${status.count}</td>
-    <td>${fn:escapeXml(node.path)}</td>
-    <td>${node.UUID}</td>
-    </tr>
-</c:forEach>
-    </tbody>
-</table>
---%>
 </fieldset>
 </c:if>
 <%} catch (Exception e) {

@@ -93,7 +93,7 @@
                                         <c:if test="${!jcr:isNodeType(node,'jnt:page')}">
                                             <c:set var="path" value="${jcr:getParentOfType(node,'jnt:page').path}"/>
                                         </c:if>
-                                        <c:url var="preview" value="/cms/render/${task.variables.workspace}/${task.variables.locale}${path}.html"/>
+                                        <c:url var="preview" value="${renderContext.servletPath}/${task.variables.workspace}/${task.variables.locale}${path}.html"/>
                                         <a target="_blank" href="${preview}">${fn:escapeXml(taskTitle)}</a>
                                     </td>
                                     <td>

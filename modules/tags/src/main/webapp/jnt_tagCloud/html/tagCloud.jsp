@@ -16,7 +16,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="tags.css"/>
-<c:set var="edit" value="${renderContext.servletPath eq '/cms/edit' || renderContext.servletPath eq '/cms/edit'}" />
+<c:set var="edit" value="${renderContext.editMode}" />
 
 <c:set var="usageThreshold"
        value="${not empty currentNode.properties['j:usageThreshold'] ? currentNode.properties['j:usageThreshold'].string : 1}"/>

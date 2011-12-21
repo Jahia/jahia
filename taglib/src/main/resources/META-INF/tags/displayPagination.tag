@@ -13,8 +13,8 @@
 <%@ attribute name="displayNumberOfItemsPerPage" required="false" type="java.lang.Boolean" description="Display the Number Of Items Per Page select list"  %>              
 <%@ attribute name="id" required="false" type="java.lang.String"
               description="The ID of the paginated list."  %>
-<%@ attribute name="nbOfPages" required="true" type="java.lang.String"
-              description="The number of pagination pages to display"  %>
+<%@ attribute name="nbOfPages" required="false" type="java.lang.String"
+              description="The number of pagination pages to display" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
 <%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
@@ -100,6 +100,9 @@
                     <c:param name="${pagesizeid}" value="${moduleMap.pageSize}"/>
                 </c:url>
                 <a class="previousLink" href="${fn:escapeXml(previousUrl) }"><fmt:message key="pagination.previous"/></a>
+            </c:if>
+            <c:if test="${empty nbOfPages}">
+                <c:set var="nbOfPages" value="5"/>
             </c:if>
             <c:choose>
                 <c:when test="${nbOfPages > 1}">

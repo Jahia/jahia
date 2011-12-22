@@ -288,7 +288,7 @@
                                     <ref bean="Toolbar.Item.NavMenuText"/>
                                     <ref bean="Toolbar.Item.Publish"/>
                                     <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Undelete"/>
                                     <ref bean="Toolbar.Item.DeletePermanently"/>

@@ -721,7 +721,13 @@
         </property>
         <property name="titleKey" value="label.edit"/>
         <property name="icon" value="editContent"/>
-
+    </bean>
+    <bean id="Toolbar.Item.EditContentRootNodeEditable" parent="Toolbar.Item.EditContent" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.EditContentActionItem">
+                <property name="allowRootNodeEditing" value="true"/>
+            </bean>
+        </property>
     </bean>
     <bean id="Toolbar.Item.EditSourceContent" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">

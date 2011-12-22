@@ -61,7 +61,6 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
@@ -220,7 +219,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                                 ok.setEnabled(true);
                                 acl = result.getAcl();
                                 referencesWarnings = result.getReferencesWarnings();
-                                if (node.get("isRootNode") == null) {
+                                if (config.isAllowRootNodeEditing() || node.get("isRootNode") == null) {
                                     for (TabItem item : tabs.getItems()) {
                                         EditEngineTabItem tabItem = (EditEngineTabItem) item.getData("item");
                                         if ((tabItem.getHideForTypes().isEmpty() || !result.getNode().isNodeType(tabItem.getHideForTypes())) &&

@@ -1143,6 +1143,7 @@
         <property name="searchInFile" value="false"/>
         <property name="defaultView" value="list"/>
 
+        <property name="allowRootNodeEditing" value="true"/>
 
         <!-- accordion -->
         <property name="repositories">

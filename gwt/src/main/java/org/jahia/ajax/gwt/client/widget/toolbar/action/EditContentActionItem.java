@@ -52,6 +52,11 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 * Time: 6:59:03 PM
 */
 public class EditContentActionItem extends BaseActionItem {
+    
+    private static final long serialVersionUID = 1899385924986263120L;
+    
+    private boolean allowRootNodeEditing;
+    
     public void onComponentSelection() {
         EngineLoader.showEditEngine(linker, linker.getSelectionContext().getSingleSelection());
     }
@@ -60,7 +65,11 @@ public class EditContentActionItem extends BaseActionItem {
         LinkerSelectionContext lh = linker.getSelectionContext();
         final GWTJahiaNode singleSelection = lh.getSingleSelection();
         setEnabled(singleSelection != null
-                && !lh.isRootNode()
+                && (allowRootNodeEditing || !lh.isRootNode())
                 && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions()));
+    }
+
+    public void setAllowRootNodeEditing(boolean allowRootNodeEditing) {
+        this.allowRootNodeEditing = allowRootNodeEditing;
     }
 }

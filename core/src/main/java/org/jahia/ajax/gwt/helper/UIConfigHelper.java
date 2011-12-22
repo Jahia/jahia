@@ -70,7 +70,8 @@ import org.slf4j.LoggerFactory;
 import javax.script.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.StringWriter;
-import java.text.MessageFormat;import java.util.*;
+import java.text.MessageFormat;
+import java.util.*;
 
 /**
  * User: ktlili
@@ -274,6 +275,7 @@ public class UIConfigHelper {
                 gwtConfig.setEnableFileDoubleClick(config.isEnableFileDoubleClick());
                 gwtConfig.setAllowsMultipleSelection(config.isAllowsMultipleSelection());
                 gwtConfig.setExpandRoot(config.isExpandRoot());
+                gwtConfig.setAllowRootNodeEditing(config.isAllowRootNodeEditing());
                 gwtConfig.setDisplaySearch(config.isDisplaySearch());
                 gwtConfig.setDisplaySearchInPage(config.isDisplaySearchInPage());
                 gwtConfig.setDisplaySearchInTag(config.isDisplaySearchInTag());

@@ -82,6 +82,8 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private GWTJahiaToolbar contextMenu;
 
     private boolean expandRoot = false;
+    
+    private boolean allowRootNodeEditing;
 
     private boolean displaySearch = true;
 
@@ -368,5 +370,13 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     public void setShowOnlyNodesWithTemplates(boolean showOnlyNodesWithTemplates) {
         this.showOnlyNodesWithTemplates = showOnlyNodesWithTemplates;
+    }
+
+    public boolean isAllowRootNodeEditing() {
+        return allowRootNodeEditing;
+    }
+
+    public void setAllowRootNodeEditing(boolean allowRootNodeEditing) {
+        this.allowRootNodeEditing = allowRootNodeEditing;
     }
 }

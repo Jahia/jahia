@@ -83,6 +83,8 @@ public class ManagerConfiguration implements Serializable {
 
 
     private boolean expandRoot = false;
+    
+    private boolean allowRootNodeEditing;
 
     private boolean displaySearch = true;
 
@@ -335,5 +337,13 @@ public class ManagerConfiguration implements Serializable {
 
     public void setShowOnlyNodesWithTemplates(boolean showOnlyNodesWithTemplates) {
         this.showOnlyNodesWithTemplates = showOnlyNodesWithTemplates;
+    }
+
+    public boolean isAllowRootNodeEditing() {
+        return allowRootNodeEditing;
+    }
+
+    public void setAllowRootNodeEditing(boolean allowRootNodeEditing) {
+        this.allowRootNodeEditing = allowRootNodeEditing;
     }
 }

@@ -1006,64 +1006,69 @@ public class JCRPublicationService extends JahiaService {
                                                    Map<String, PublicationInfoNode> infosMap,
                                                    List<PublicationInfo> infos) throws RepositoryException {
 
+        PublicationInfoNode info = null;
         final String uuid = node.getIdentifier();
-        if (infosMap.containsKey(uuid)) {
-            return infosMap.get(uuid);
-        }
-
-        PublicationInfoNode info = new PublicationInfoNode(node.getIdentifier(), node.getPath());
-        infosMap.put(uuid, info);
-        
-        if (JCRContentUtils.isNotJcrUuid(uuid)) {
-            info.setStatus(PublicationInfo.PUBLISHED);
+        info = infosMap.get(uuid);
+        if (info != null && (!allsubtree || info.isSubtreeProcessed())) {
             return info;
         }
 
-        if (node.hasProperty("j:deletedChildren")) {
-            JCRPropertyWrapper p = node.getProperty("j:deletedChildren");
-            Value[] values = p.getValues();
-            for (Value value : values) {
-                try {
-                    JCRNodeWrapper deletedNode = destinationSession.getNodeByUUID(value.getString());
-                    PublicationInfoNode deletedInfo = new PublicationInfoNode(deletedNode.getIdentifier(), deletedNode.getPath());
-                    deletedInfo.setStatus(PublicationInfo.DELETED);
-                    info.addChild(deletedInfo);
-                } catch (ItemNotFoundException e) {
-                    logger.debug("Cannot find deleted subnode of "+node.getPath() + " : " + value.getString()+", we keep the reference until next publication to be sure to erase it from the live workspace.");
+        if (info != null && JCRContentUtils.isNotJcrUuid(uuid)) {
+            info.setStatus(PublicationInfo.PUBLISHED);
+            return info;
+        }
+        
+        if (info == null) {
+            info = new PublicationInfoNode(node.getIdentifier(), node.getPath());
+            info.setSubtreeProcessed(allsubtree);
+            infosMap.put(uuid, info);
+        
+            if (node.hasProperty("j:deletedChildren")) {
+                JCRPropertyWrapper p = node.getProperty("j:deletedChildren");
+                Value[] values = p.getValues();
+                for (Value value : values) {
+                    try {
+                        JCRNodeWrapper deletedNode = destinationSession.getNodeByUUID(value.getString());
+                        PublicationInfoNode deletedInfo = new PublicationInfoNode(deletedNode.getIdentifier(), deletedNode.getPath());
+                        deletedInfo.setStatus(PublicationInfo.DELETED);
+                        info.addChild(deletedInfo);
+                    } catch (ItemNotFoundException e) {
+                        logger.debug("Cannot find deleted subnode of "+node.getPath() + " : " + value.getString()+", we keep the reference until next publication to be sure to erase it from the live workspace.");
+                    }
                 }
             }
-        }
-
-        info.setStatus(getStatus(node, destinationSession, languages));
-        if (info.getStatus() == PublicationInfo.CONFLICT) {
+    
+            info.setStatus(getStatus(node, destinationSession, languages));
+            if (info.getStatus() == PublicationInfo.CONFLICT) {
+                if(languages == null || languages.isEmpty()) {
+                    info.setCanPublish(true,"");
+                } else {
+                    for (String language : languages) {
+                        info.setCanPublish(false,language);
+                    }
+                }
+                return info;
+            }
+            if (node.hasProperty(JAHIA_LOCKTYPES)) {
+                Value[] lockTypes = node.getProperty(JAHIA_LOCKTYPES).getValues();
+                for (Value lockType : lockTypes) {
+                    if (lockType.getString().endsWith(":validation")) {
+                        info.setLocked(true);
+                    }
+                }
+            }
+    
+            // todo : performance problem on permission check
+    //        info.setCanPublish(stageNode.hasPermission(JCRNodeWrapper.WRITE_LIVE));
             if(languages == null || languages.isEmpty()) {
                 info.setCanPublish(true,"");
             } else {
                 for (String language : languages) {
-                    info.setCanPublish(false,language);
-                }
-            }
-            return info;
-        }
-        if (node.hasProperty(JAHIA_LOCKTYPES)) {
-            Value[] lockTypes = node.getProperty(JAHIA_LOCKTYPES).getValues();
-            for (Value lockType : lockTypes) {
-                if (lockType.getString().endsWith(":validation")) {
-                    info.setLocked(true);
+                    info.setCanPublish(canPublish(node, language),language);
                 }
             }
         }
-
-        // todo : performance problem on permission check
-//        info.setCanPublish(stageNode.hasPermission(JCRNodeWrapper.WRITE_LIVE));
-        if(languages == null || languages.isEmpty()) {
-            info.setCanPublish(true,"");
-        } else {
-            for (String language : languages) {
-                info.setCanPublish(canPublish(node, language),language);
-            }
-        }
-
+            
         if (includesReferences || includesSubnodes) {
             if (includesReferences) {
                 getReferences(node, languages, includesReferences, includesSubnodes, sourceSession, destinationSession,

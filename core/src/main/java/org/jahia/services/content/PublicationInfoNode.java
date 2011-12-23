@@ -63,6 +63,8 @@ public class PublicationInfoNode implements Serializable {
     private List<PublicationInfoNode> child = new LinkedList<PublicationInfoNode>();
     private List<PublicationInfo> references = new LinkedList<PublicationInfo>();
     private List<String> pruned;
+    
+    private boolean subtreeProcessed;
 
     public PublicationInfoNode() {
         super();
@@ -143,5 +145,13 @@ public class PublicationInfoNode implements Serializable {
         final PublicationInfo ref = new PublicationInfo(uuid, path);
         references.add(ref);
         return ref;
+    }
+
+    public boolean isSubtreeProcessed() {
+        return subtreeProcessed;
+    }
+
+    public void setSubtreeProcessed(boolean subtreeProcessed) {
+        this.subtreeProcessed = subtreeProcessed;
     }
 }

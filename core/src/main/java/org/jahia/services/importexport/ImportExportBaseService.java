@@ -372,7 +372,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     private void exportNodesWithBinaries(JCRNodeWrapper rootNode, Set<JCRNodeWrapper> nodes, ZipOutputStream zout, Set<String> typesToIgnore, Set<String> externalReferences, Map<String, Object> params)
             throws SAXException, IOException, RepositoryException, JDOMException {
-        TreeSet<JCRNodeWrapper> sortedNodes = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
+        TreeSet<JCRNodeWrapper> liveSortedNodes = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
             public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
                 return o1.getPath().compareTo(o2.getPath());
             }
@@ -382,22 +382,32 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         if (params.containsKey(INCLUDE_LIVE_EXPORT)) {
             final JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live");
             JCRNodeWrapper liveRootNode = liveSession.getNodeByIdentifier(rootNode.getIdentifier());
-            sortedNodes.clear();
             for (JCRNodeWrapper node : nodes) {
                 try {
-                    sortedNodes.add(liveSession.getNodeByIdentifier(node.getIdentifier()));
+                    liveSortedNodes.add(liveSession.getNodeByIdentifier(node.getIdentifier()));
                 } catch (ItemNotFoundException e) {
                 }
             }
 
             zout.putNextEntry(new ZipEntry(LIVE_REPOSITORY_XML));
 
-            exportNodes(liveRootNode, sortedNodes, zout, typesToIgnore, externalReferences, params);
+            exportNodes(liveRootNode, liveSortedNodes, zout, typesToIgnore, externalReferences, params);
             zout.closeEntry();
-            exportNodesBinary(liveRootNode, sortedNodes, zout, typesToIgnore, "/live-content");
+            exportNodesBinary(liveRootNode, liveSortedNodes, zout, typesToIgnore, "/live-content");
         }
-        sortedNodes.clear();
+        TreeSet<JCRNodeWrapper> sortedNodes = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
+            public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
+                return o1.getPath().compareTo(o2.getPath());
+            }
+        });
         sortedNodes.addAll(nodes);
+        for (JCRNodeWrapper liveSortedNode : liveSortedNodes) {
+            try {
+                sortedNodes.add(rootNode.getSession().getNodeByIdentifier(liveSortedNode.getIdentifier()));
+            } catch (ItemNotFoundException e) {
+                // Node does not exist in default do nothing
+            }
+        }
         zout.putNextEntry(new ZipEntry(REPOSITORY_XML));
         exportNodes(rootNode, sortedNodes, zout, typesToIgnore, externalReferences, params);
         zout.closeEntry();

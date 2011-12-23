@@ -27,6 +27,7 @@
     <ul>
         <li><a href="jcrBrowser.jsp">JCR repository browser</a></li>
         <li><a href="jcrQuery.jsp">JCR query tool</a></li>
+        <li><a href="jcrConsole.jsp">JCR console</a></li>
         <li><a href="jcrGc.jsp">JCR Data Store Garbage Collection</a></li>
         <li><a href="modulesBrowser.jsp">Installed modules browser</a></li>
         <li><a href="definitionsBrowser.jsp">Installed definitions browser</a></li>

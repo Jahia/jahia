@@ -44,6 +44,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.DisposableBean;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -70,7 +71,7 @@ import java.util.*;
  * Date: 6 juil. 2007
  * Time: 18:03:47
  */
-public class RulesListener extends DefaultEventListener {
+public class RulesListener extends DefaultEventListener implements DisposableBean {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(RulesListener.class);
 
     private static List<RulesListener> instances = new ArrayList<RulesListener>();
@@ -554,5 +555,16 @@ public class RulesListener extends DefaultEventListener {
         } else if(operationType==JCRObservationManager.WORKSPACE_CLONE) {
             nodeFact.setOperationType("clone");
         }
+    }
+
+    public void destroy() throws Exception {
+        if (rulesTimer != null) {
+            try {
+                rulesTimer.cancel();
+            } catch (Exception e) {
+                logger.warn("Error terminating timer thread", e);
+            }
+        }
+
     }
 }

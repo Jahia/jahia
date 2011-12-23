@@ -394,13 +394,13 @@ public class JCRStoreProvider {
 
             // The thread should always checks if the session is still alive and reconnect it if lost
             running = true;
-            Thread t = new Thread() {
+            Thread t = new Thread("JCRStoreProvider") {
                 public void run() {
                     while (isRunning() && session.isLive()) {
                         try {
                             session.refresh(false);
                         } catch (RepositoryException e) {
-                            if (logger != null) logger.error(e.getMessage(), e);
+                            if (running && logger != null) logger.error(e.getMessage(), e);
                         }
                         try {
                             Thread.sleep(5000);
@@ -408,7 +408,7 @@ public class JCRStoreProvider {
                             // ignore
                         }
                     }
-                    if (logger != null) logger.info("System session closed, deregister listeners");
+                    if (running && logger != null) logger.info("System session closed, deregister listeners");
                 }
             };
             t.setDaemon(true); 
@@ -483,6 +483,13 @@ public class JCRStoreProvider {
     public void stop() {
         running = false;
         getSessionFactory().removeProvider(key);
+        if (rmibind != null) {
+            try {
+                Naming.unbind(rmibind);
+            } catch (Exception e) {
+                logger.warn("Unable to unbind the JCR repository in RMI");
+            }
+        }
     }
 
     public boolean isRunning() {

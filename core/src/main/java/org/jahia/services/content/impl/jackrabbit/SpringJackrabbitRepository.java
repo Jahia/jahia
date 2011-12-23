@@ -134,7 +134,7 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
             servletContext.setAttribute(servletContextAttributeName, this);
         }
 
-        hook = new Thread() {
+        hook = new Thread("SpringJackrabbitRepository") {
             public void run() {
                 shutdown();
             }

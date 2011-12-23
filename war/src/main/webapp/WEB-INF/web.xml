@@ -243,11 +243,15 @@
 <!-- End of Shindig filter mappings -->   
 
     <listener>
-        <listener-class>org.jahia.bin.listeners.LoggingConfigListener</listener-class>
+        <listener-class>org.jahia.bin.listeners.InitLoggingConfigListener</listener-class>
     </listener>
     
     <listener>
         <listener-class>org.jahia.bin.listeners.JahiaContextLoaderListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.jahia.bin.listeners.ShutdownLoggingConfigListener</listener-class>
     </listener>
 
     <listener>

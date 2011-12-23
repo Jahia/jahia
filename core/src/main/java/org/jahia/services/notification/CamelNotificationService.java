@@ -107,6 +107,7 @@ public class CamelNotificationService implements CamelContextAware, DisposableBe
         this.camelContext = camelContext;
         template = camelContext.createProducerTemplate();
         queueProcessor = new Thread(this, queueProcessorThreadName);
+        queueProcessor.setDaemon(true);
         queueProcessor.start();
     }
 

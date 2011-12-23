@@ -96,6 +96,7 @@ public class ErrorFileDumper {
 
         public Thread newThread(Runnable runnable) {
             Thread lowPriorityThread = new Thread(runnable);
+            lowPriorityThread.setName("LowPriorityThread");
             lowPriorityThread.setPriority(Thread.MIN_PRIORITY);
             lowPriorityThread.setName("ErrorFileDumperThread");
             return lowPriorityThread;

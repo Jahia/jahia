@@ -60,7 +60,10 @@ public class JCRReferenceNode extends JCRNodeDecorator {
     }
 
     public Node getNode() throws RepositoryException {
-        return getProperty("j:node").getNode();
+        if (hasProperty("j:node")) {
+            return getProperty("j:node").getNode();
+        }
+        return null;
     }
 
     public void setNode(JCRNodeWrapper node) throws RepositoryException {
@@ -81,6 +84,9 @@ public class JCRReferenceNode extends JCRNodeDecorator {
     }
     
     public Node getContextualizedNode() throws RepositoryException {
-        return getProperty("j:node").getContextualizedNode();
+        if (hasProperty("j:node")) {
+            return getProperty("j:node").getContextualizedNode();
+        }
+        return null;
     }
 }

@@ -67,11 +67,15 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 
 import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -166,11 +170,11 @@ public class LegacyImportHandler extends DefaultHandler {
      */
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+        int ctx = -1;
         try {
             currentNode = localName;
             String uuid = attributes.getValue("jcr:uuid");
 
-            int ctx = -1;
             if (!currentCtx.isEmpty()) {
                 ctx = currentCtx.peek().ctx.peek();
             }
@@ -223,16 +227,31 @@ public class LegacyImportHandler extends DefaultHandler {
                         ExtendedNodeDefinition nodeDef = getCurrentContentType().getChildNodeDefinitionsAsMap()
                                 .get(StringUtils.substringBeforeLast(localName, "List"));
 
-                        createContentList(nodeDef, uuid, getMetadataForNodeCreation(attributes));
-                        setMetadata(attributes);
-                        setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
+                        try {
+                            createContentList(nodeDef, uuid, getMetadataForNodeCreation(attributes));
+                            setMetadata(attributes);
+                            setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
+                        } catch (ConstraintViolationException cve) {
+                            logger.error(MessageFormat.format("Error when creating contentList with def={0} (localname={1} , uuid={2} , currentContentType={3})",
+                                    nodeDef.getName(), localName, uuid, getCurrentContentType().getName()));
+                        }
                     } else {
-                        // System.out.println("create field " + localName);
+                        logger.debug("create field " + localName);
                         ExtendedItemDefinition itemDef;
                         if (getCurrentContentType().getChildNodeDefinitionsAsMap().containsKey(localName)) {
                             itemDef = getCurrentContentType().getChildNodeDefinitionsAsMap().get(localName);
                         } else {
                             itemDef = getCurrentContentType().getPropertyDefinitionsAsMap().get(localName);
+                        }
+                        if (itemDef == null) {
+                            logger.warn("Definition not found for field " + localName + " in node " + getCurrentContentType().getName() + " , uuid=" + uuid);
+                        } else if (logger.isDebugEnabled()) {
+                            if (itemDef.isNode()) {
+                                logger.debug(MessageFormat.format("The field {0} is a subnode of the node type {1} (child node definition = {2})"
+                                        , localName, getCurrentContentType().getName(), itemDef.getName()));
+                            } else {
+                                logger.debug("The field is a property: " + localName);
+                            }
                         }
                         if (itemDef != null && (itemDef.isNode() || setPropertyField(getCurrentContentType(), localName,
                                 attributes.getValue("jahia:value")))) {
@@ -352,12 +371,12 @@ public class LegacyImportHandler extends DefaultHandler {
                     break;
             }
         } catch (RepositoryException e) {
-            logger.error("Error while processing element: [uri=" + uri + "], [localName=" + localName + "], [qName=" + qName + "]");
+            logger.error("Error while processing element: [uri=" + uri + "], [localName=" + localName + "], [qName=" + qName + "], [ctx=" + ctx + "]");
             throw new SAXException(e);
         }
 
     }
-    
+
     private Map<String, String> convertToProperties(Attributes attributes) {
         Map<String, String> properties = new HashMap<String, String>();
         int l = attributes.getLength();
@@ -598,16 +617,21 @@ public class LegacyImportHandler extends DefaultHandler {
             if (StringUtils.isEmpty(nodeType)) {
                 nodeType = Constants.JAHIANT_CONTENTLIST;
             }
-            node = parent.addNode(
-                    nodeName,
-                    nodeType,
-                    null,
-                    !StringUtils.isEmpty(creationMetadata.get("jcr:created")) ? ISO8601
-                            .parse(creationMetadata.get("jcr:created")) : null,
-                    creationMetadata.get("jahia:createdBy"),
-                    !StringUtils.isEmpty(creationMetadata.get("jcr:lastModified")) ? ISO8601
-                            .parse(creationMetadata.get("jcr:lastModified")) : null,
-                    creationMetadata.get("jahia:lastModifiedBy"));
+            try {
+                node = parent.addNode(
+                        nodeName,
+                        nodeType,
+                        null,
+                        !StringUtils.isEmpty(creationMetadata.get("jcr:created")) ? ISO8601
+                                .parse(creationMetadata.get("jcr:created")) : null,
+                        creationMetadata.get("jahia:createdBy"),
+                        !StringUtils.isEmpty(creationMetadata.get("jcr:lastModified")) ? ISO8601
+                                .parse(creationMetadata.get("jcr:lastModified")) : null,
+                        creationMetadata.get("jahia:lastModifiedBy"));
+            } catch(ConstraintViolationException cve) {
+                throw new ConstraintViolationException(MessageFormat.format("Error while adding node {0} of type {1} to node {2}",
+                        nodeName, nodeType, parent.getPath()));
+            }
             if (!CollectionUtils.isEmpty(followingNodeNames)) {
                 boolean takeNextName = false;
                 for (NodeIterator it = parent.getNodes(); it.hasNext();) {
@@ -741,7 +765,12 @@ public class LegacyImportHandler extends DefaultHandler {
 
             if (currentCtx.peek().properties.peek() != null) {
                 for (Map.Entry<String, String> entry : currentCtx.peek().properties.peek().entrySet()) {
-                    setPropertyField(getCurrentContentType(), entry.getKey(), entry.getValue());
+                    final ExtendedNodeType currentContentType = getCurrentContentType();
+                    final String fieldName = entry.getKey();
+                    logger.debug(MessageFormat.format("About to import field {0}/{1}", currentContentType.getName(), fieldName));
+                    if (!setPropertyField(currentContentType, fieldName, entry.getValue()) && !"#skip".equals(fieldName)) {
+                        logger.warn(MessageFormat.format("Not imported field {0}/{1}", currentContentType.getName(), fieldName));
+                    }
                 }
             }
         }
@@ -787,12 +816,12 @@ public class LegacyImportHandler extends DefaultHandler {
             setPropertyField(null, name, attributes.getValue(i));
         }
     }
-    
+
     private void setMetadata(Map<String, String> properties) throws RepositoryException {
         for (Map.Entry<String, String> property : properties.entrySet()) {
             setPropertyField(null, property.getKey(), property.getValue());
         }
-    }    
+    }
 
     private void setAcl(String acl) {
         if (acl != null) {
@@ -1019,11 +1048,24 @@ public class LegacyImportHandler extends DefaultHandler {
                                             ref = StringUtils.substringBefore(ref, "?");
                                         }
                                         ref = correctFilename(ref);
-                                        buf.replace(from, to, "##doc-context##/{mode}/##ref:link" + count + "##");                                                                                
+                                        buf.replace(from, to, "##doc-context##/{mode}/##ref:link" + count + "##");
                                     } else {
                                         ref = StringUtils.substringAfterLast(ref, "/");
                                         buf.replace(from, to, "##cms-context##/{mode}/{lang}/##ref:link" + count + "##.html");
                                     }
+                                    try {
+                                        ref = URLDecoder.decode(ref, "UTF-8");
+                                    } catch (UnsupportedEncodingException e) {
+                                    }
+//                                    if (ref.startsWith("/shared")) {
+//                                        ref = "/sites/" + currentSiteNode.getName() + "/files" + ref;
+//                                    } else if (ref.startsWith("/users/")) {
+//                                        Matcher m = Pattern.compile("/users/([^/]+)(/.*)?").matcher(ref);
+//                                        if (m.matches()) {
+//                                            ref = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));
+//                                            ref = ref + "/files" + ((m.group(2) != null) ? m.group(2) : "");
+//                                        }
+//                                    }
 
                                     if (!references.containsKey(ref)) {
                                         references.put(ref, new ArrayList<String>());
@@ -1054,7 +1096,7 @@ public class LegacyImportHandler extends DefaultHandler {
                                                 .getBytes(InternalValueFactory.DEFAULT_ENCODING)), "text/html");
                                     } catch (Exception e) {
                                         logger.warn("Unable to parse description", e);
-                                    }                                    
+                                    }
                                 }
 
                                 value = baseType != null ? mapping.getMappedPropertyValue(baseType, localName, value) :
@@ -1146,7 +1188,7 @@ public class LegacyImportHandler extends DefaultHandler {
         }
         return null;
     }
-    
+
     private String correctFilename(String value) {
         if (value.startsWith("/users/")) {
             Matcher m = Pattern.compile("/users/([^/]+)(/.*)?").matcher(value);

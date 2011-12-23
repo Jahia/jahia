@@ -149,6 +149,8 @@ public class ReferencesHelper {
                         r.setProperty("j:propertyName", pName);
                         r.setProperty("j:originalUuid", uuid);
                     }
+                } catch (RepositoryException e) {
+                    logger.error("Repository exception",e);
                 }
             }
             if(resolved) {

@@ -131,6 +131,9 @@ public class FilesAclImportHandler extends DefaultHandler {
                     return;
                 }
                 JCRNodeWrapper f;
+                path = JCRContentUtils.escapeNodePath(path);
+                path = path.replace(":","_");
+
                 String parentPath = StringUtils.substringBeforeLast(path, "/");
                 try {
                     f = session.getNode(parentPath);

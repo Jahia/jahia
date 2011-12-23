@@ -377,7 +377,7 @@ public class EditContentEngine extends AbstractContentEngine {
 
                     public void onSuccess(Object o) {
                         Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
-                        int refresh = Linker.REFRESH_MAIN;
+                        int refresh = Linker.REFRESH_MAIN + Linker.REFRESH_MAIN_IMAGES;
                         EditLinker l = null;
                         if (linker instanceof SidePanelTabItem.SidePanelLinker) {
                             l = ((SidePanelTabItem.SidePanelLinker) linker).getEditLinker();

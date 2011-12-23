@@ -40,9 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget;
 
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 
 import java.util.List;
 
@@ -56,6 +54,7 @@ import java.util.List;
 public interface Linker {
     public final static int REFRESH_ALL = 63;
     public final static int REFRESH_MAIN = 1;
+    public final static int REFRESH_MAIN_IMAGES = 512;
     public final static int REFRESH_PAGES = 2;
     public final static int REFRESH_LAST_CONTENT = 4;
     public final static int REFRESH_FOLDERS = 8;

@@ -46,13 +46,11 @@ import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
-import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -95,7 +93,7 @@ public class MainModule extends Module {
     private GWTEditConfiguration config;
 
     private InfoLayers infoLayers = new InfoLayers();
-    private Map<String, Boolean> activeLayers = new HashMap();
+    private Map<String, Boolean> activeLayers = new HashMap<String, Boolean>();
 
     Map<Element, Module> m;
     protected LayoutContainer scrollContainer;
@@ -200,11 +198,11 @@ public class MainModule extends Module {
 
     public void refresh(int flag) {
         if ((flag & Linker.REFRESH_MAIN) != 0) {
-            refresh(path, template);
+            refresh(path, template, (flag & Linker.REFRESH_MAIN_IMAGES) != 0);
         }
     }
 
-    private void refresh(final String previousPath, final String previousTemplate) {
+    private void refresh(final String previousPath, final String previousTemplate, final boolean forceImageRefresh) {
         JahiaContentManagementService.App.getInstance()
                 .getRenderedContent(path, null, editLinker.getLocale(), template, "gwt", moduleParams, true,
                         config.getName(), new BaseAsyncCallback<GWTRenderResult>() {
@@ -216,7 +214,7 @@ public class MainModule extends Module {
                                 Hover.getInstance().removeAll();
                                 infoLayers.removeAll();
 
-                                display(result.getResult());
+                                display(result.getResult(), forceImageRefresh);
 
                                 scrollContainer.setVScrollPosition(i);
                                 List<String> list = new ArrayList<String>(1);
@@ -371,9 +369,16 @@ public class MainModule extends Module {
 
 
     private void display(String result) {
+        display(result, false);
+    }
+
+    private void display(String result, boolean forceImageReload) {
         scrollContainer.removeAll();
         scrollContainer.setScrollMode(Style.Scroll.AUTO);
         html = new HTML(result);
+        if (forceImageReload) {
+            refreshImages(html);
+        }
         scrollContainer.add(html);
         ModuleHelper.tranformLinks(html);
         ModuleHelper.initAllModules(this, html);
@@ -382,6 +387,23 @@ public class MainModule extends Module {
         parse();
         Log.info("Parse : "+(System.currentTimeMillis() - start));
         layout();
+    }
+
+    private void refreshImages(HTML html) {
+        NodeList<com.google.gwt.dom.client.Element> elementsByTagName = html.getElement()
+                .getElementsByTagName("img");
+        if (elementsByTagName == null) {
+            return;
+        }
+        String base = JahiaGWTParameters.getContextPath() + "/files/default/";
+        String suffix = "tst=" + System.currentTimeMillis();
+        for (int i = 0; i < elementsByTagName.getLength(); i++) {
+            com.google.gwt.dom.client.Element el = elementsByTagName.getItem(i);
+            String url = el.getAttribute("src");
+            if (url != null && url.startsWith(base)) {
+                el.setAttribute("src", url + (url.indexOf("?") == -1 ? "?" : "&") + suffix);
+            }
+        }
     }
 
     @Override
@@ -510,7 +532,7 @@ public class MainModule extends Module {
 
         module.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
         setUrlMarker(path, template, param);
-        module.refresh(previousPath, previousTemplate);
+        module.refresh(previousPath, previousTemplate, false);
 
     }
 

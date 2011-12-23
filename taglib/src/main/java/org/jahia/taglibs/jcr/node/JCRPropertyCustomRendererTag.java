@@ -93,14 +93,16 @@ public class JCRPropertyCustomRendererTag extends AbstractJahiaTag {
         try {
             final Property property = node.getProperty(name);
             if (property != null) {
+                boolean isMultiple = property.getDefinition().isMultiple();
                 if (!"".equals(renderer)) {
                     final ChoiceListRenderer renderer1 = ChoiceListRendererService.getInstance().getRenderers().get(
                             renderer);
                     final RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext",
                                                                                            PageContext.REQUEST_SCOPE);
                     List<Map<String,Object>> l = new ArrayList<Map<String,Object>>();
+                    Map<String,Object> m = new HashMap<String,Object>();
                     String s = "";
-                    if (property.isMultiple()) {
+                    if (isMultiple) {
                         for (Value v : property.getValues()) {
                             if (var != null) {
                                 l.add(renderer1.getObjectRendering(renderContext, (ExtendedPropertyDefinition) property.getDefinition(), v.getString()));
@@ -110,14 +112,13 @@ public class JCRPropertyCustomRendererTag extends AbstractJahiaTag {
                         }
                     } else {
                         if (var !=null) {
-                            l.add(renderer1.getObjectRendering(renderContext,(JCRPropertyWrapper) property));
+                            m = renderer1.getObjectRendering(renderContext,(JCRPropertyWrapper) property);
                         } else {
                             s = renderer1.getStringRendering(renderContext,(JCRPropertyWrapper) property);
                         }
                     }
                     if (var != null) {
-                        pageContext.setAttribute(var, l);
-
+                        pageContext.setAttribute(var, isMultiple ?l:m);
                         returnValue = EVAL_BODY_INCLUDE;
                     } else {
                         pageContext.getOut().print(s);
@@ -125,12 +126,12 @@ public class JCRPropertyCustomRendererTag extends AbstractJahiaTag {
                     }
                 } else if (var != null) {
                     returnValue = EVAL_BODY_INCLUDE;
-                    if (property.getDefinition().isMultiple()) {
+                    if (isMultiple) {
                         pageContext.setAttribute(var, property.getValues());
                     } else {
                         pageContext.setAttribute(var, property.getValue());
                     }
-                } else if (!property.getDefinition().isMultiple()) {
+                } else if (!isMultiple) {
                     pageContext.getOut().print(property.getValue().getString());
                 } else {
                     Value[] values1 = property.getValues();

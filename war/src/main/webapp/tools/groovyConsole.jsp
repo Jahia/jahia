@@ -69,8 +69,8 @@ pageContext.setAttribute("took", System.currentTimeMillis() - timer);
 <form id="groovyForm" action="?" method="post">
 <p>Paste here the Groovy code you would like to execute against Jahia:</p>
 <p><textarea rows="25" style="width: 100%" id="text" name="script"
-    onkeyup="if ((event || window.event).keyCode == 13 && (event || window.event).ctrlKey) document.getElementById('groovyForm').submit();">${param.script}</textarea></p>
-<p><input type="submit" value="Execute ([Ctrl+Enter])" onclick="if (false && !confirm('WARNING: You are about to execute a script, which can manipulate the repository data or execute services in Jahia. Are you sure, you want to continue?')) { return false; }" /></p>
+    onkeyup="if ((event || window.event).keyCode == 13 && (event || window.event).ctrlKey && confirm('WARNING: You are about to execute a script, which can manipulate the repository data or execute services in Jahia. Are you sure, you want to continue?')) document.getElementById('groovyForm').submit();">${param.script}</textarea></p>
+<p><input type="submit" value="Execute ([Ctrl+Enter])" onclick="if (!confirm('WARNING: You are about to execute a script, which can manipulate the repository data or execute services in Jahia. Are you sure, you want to continue?')) { return false; }" /></p>
 </form>
 <p>
     <img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;

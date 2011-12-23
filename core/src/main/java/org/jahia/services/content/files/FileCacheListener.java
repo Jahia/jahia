@@ -107,9 +107,14 @@ public class FileCacheListener extends DefaultEventListener {
                 }
                 if (event.getType() == Event.NODE_MOVED) {
                     Map eventInfo = event.getInfo();
-                    final String srcAbsPath = eventInfo.get("srcAbsPath").toString();
-                    final String destAbsPath = eventInfo.get("destAbsPath").toString();
-                    flushSubNodes(destAbsPath, srcAbsPath, destAbsPath);
+                    if (eventInfo != null) {
+                        Object absPath = eventInfo.get("srcAbsPath");
+                        if (absPath != null) {
+                            final String srcAbsPath = absPath.toString();
+                            final String destAbsPath = eventInfo.get("destAbsPath").toString();
+                            flushSubNodes(destAbsPath, srcAbsPath, destAbsPath);
+                        }
+                    }
                 }
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);

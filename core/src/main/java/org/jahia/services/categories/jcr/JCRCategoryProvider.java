@@ -242,8 +242,7 @@ public class JCRCategoryProvider {
             Session session = sessionFactory.getCurrentUserSession();
             if (session.getWorkspace().getQueryManager() != null) {
 				StringBuilder query = new StringBuilder("SELECT * FROM ["
-				        + Constants.JAHIANT_CATEGORY + "] as cat WHERE cat.[" + Constants.NODENAME
-				        + "] = '");
+				        + Constants.JAHIANT_CATEGORY + "] as cat WHERE localname(cat) = '");
                 query.append(categoryKey);
                 query.append("' ");
                 if (logger.isDebugEnabled()) {
@@ -277,10 +276,10 @@ public class JCRCategoryProvider {
             if (session.getWorkspace().getQueryManager() != null) {
             	StringBuilder query = new StringBuilder("SELECT * FROM ["
                         + Constants.JAHIANT_CATEGORY
-                        + "] as cat WHERE cat.[" + Constants.NODENAME + "] LIKE '");
+                        + "] as cat WHERE localname(cat) LIKE '");
                 query.append(categoryKey);
                 query.append("%' ");
-                query.append(" ORDER BY cat.[" + Constants.NODENAME+"]");
+                query.append(" ORDER BY localname(cat)");
                 if (logger.isDebugEnabled()) {
                     logger.debug(query.toString());
                 }

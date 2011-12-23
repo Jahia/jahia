@@ -88,6 +88,9 @@ public class FullpathListener extends DefaultEventListener {
 
                         String path = event.getPath();
                         if (event.getType() == Event.NODE_ADDED) {
+                            if(logger.isDebugEnabled()) {
+                                logger.debug("Node has been added, we are updating its fullpath properties : "+path);
+                            }
                             JCRNodeWrapper item = (JCRNodeWrapper) session.getItem(path);
                             nodeAdded(item);
                             sessions.add(item.getRealNode().getSession());
@@ -108,9 +111,9 @@ public class FullpathListener extends DefaultEventListener {
     }
 
     private void nodeAdded(JCRNodeWrapper node) throws RepositoryException {
-        if (node.isNodeType(JAHIAMIX_SHAREABLE) && node.hasProperty(FULLPATH)) {
-            String oldPath = node.getProperty(FULLPATH).getString();
-
+        String oldPath = null;
+        String path = node.getPath();
+        /*if (node.isNodeType(JAHIAMIX_SHAREABLE) && node.hasProperty(FULLPATH)) {
             NodeIterator ni = node.getSharedSet();
             while (ni.hasNext()) {
                 JCRNodeWrapper shared = (JCRNodeWrapper) ni.next();
@@ -118,15 +121,24 @@ public class FullpathListener extends DefaultEventListener {
                     return;
                 }
             }
-        }
+        }*/
         if (node.isNodeType(JAHIAMIX_NODENAMEINFO)) {
             if (!node.isCheckedOut()) {
                 node.checkout();
             }
-            node.setProperty(FULLPATH, node.getPath());
+            if (!node.isNew()) {
+                oldPath = node.getProperty(FULLPATH).getString();
+            }
+            if (logger.isDebugEnabled() && !node.isNew()) {
+                logger.debug(
+                        "Node has been added, we are updating its fullpath properties (old,new): (" + oldPath + "," +
+                        path + ")");
+
+            }
+            node.setProperty(FULLPATH, path);
             node.setProperty(NODENAME, node.getName());
         }
-        if (node.isNodeType(NT_FOLDER)) {
+        if (!node.isNew() && oldPath!=null && !oldPath.equals(path)) {
             for (NodeIterator ni = node.getNodes(); ni.hasNext();) {
                 nodeAdded((JCRNodeWrapper) ni.nextNode());
             }

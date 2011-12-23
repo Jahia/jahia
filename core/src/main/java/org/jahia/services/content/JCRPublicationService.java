@@ -793,6 +793,9 @@ public class JCRPublicationService extends JahiaService {
             logger.debug("Checkin node " + node.getPath() + " in workspace " + session.getWorkspace().getName() +
                 " with current version " + versionManager.getBaseVersion(node.getPath()).getName());
         }
+        if (node.isNodeType(JAHIAMIX_NODENAMEINFO)) {
+            node.setProperty(FULLPATH, node.getPath());
+        }
         session.save();
         Version version = versionManager.checkpoint(node.getPath());
         if (logger.isDebugEnabled()) {

@@ -620,7 +620,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     /**
-     * This method allows you to define where you want to redircet the user after request.
+     * This method allows you to define where you want to redirect the user after request.
      *
      * @param url
      * @param path

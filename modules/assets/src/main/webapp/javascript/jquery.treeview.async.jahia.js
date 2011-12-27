@@ -18,6 +18,10 @@
     function load(url, callback, child, container,preview,previewPath) {
         $.getJSON(url, function(response) {
             function createNode(parent) {
+                // fix display
+                if (child.attr("style") == "display: none; ") {
+                    child.attr("style", "display: block;");
+                }
                 var path = this.path || "";
                 var current = $("<li/>").attr("id", "id-" + this.id).attr("rel",
                         path).html("<span class='treepreview' src='"+previewPath + path + "'>" + this.text +

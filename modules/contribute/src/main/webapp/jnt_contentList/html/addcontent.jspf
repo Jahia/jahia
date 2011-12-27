@@ -18,6 +18,7 @@
         contributeReplaceUrl: "<c:url value='${url.mainResource}.ajax?jarea=${areaResource.identifier}'/>"
     };
     contributeParams[contributeParams.length] = contributeParameters${fn:replace(currentNode.UUID,"-" ,"_")};
+    var contributeConstraintParameters = new Array();
 </script>
 <style>
 
@@ -51,6 +52,9 @@
         <jcr:icon var="icon" type="${nodeType.key}"/>
         <li><a href="<c:url value='${url.base}${currentNode.path}.contribute.add.html.ajax?resourceNodeType=${nodeType.key}&path=${renderContext.mainResource.node.path}'/>" id="addButton${currentNode.identifier}-${status.index}"
         ><img title="" align="absmiddle" alt="" src="<c:url value='${url.templatesPath}/${icon}.png'/>"/>${fn:escapeXml(nodeType.value)}</a></li>
+        <script>
+            contributeConstraintParameters[${status.index}] = "${nodeType.key}";
+        </script>
     </c:forEach>
     </ul>
     <script type="text/javascript">

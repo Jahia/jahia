@@ -131,8 +131,19 @@
         function showClipboard() {
             $.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.checkclipboard.do'/>", {}, function(data) {
                 if (data != null && data.size > 0) {
-                    $(".titleaddnewcontent").show();
-                    $(".pastelink").show();
+                    var nodetypes = data.nodetypes;
+                    var showPaste = true;
+                    for (var j=0; j < contributeConstraintParameters.length && showPaste;j++) {
+                        for (var k=0; k < nodetypes.length && showPaste;k++) {
+                            if(nodetypes[k].indexOf(contributeConstraintParameters[j]) < 0){
+                                showPaste = false;
+                            }
+                        }
+                    }
+                    if(showPaste) {
+                        $(".pastelink").show();
+                        $(".titleaddnewcontent").show();
+                    }
                     $("#empty-${currentNode.identifier}").show();
                     $("#clipboard-${currentNode.identifier}").html("<fmt:message key="label.clipboard.contains"/> " + data.size +
                             ' element(s)</span></a>');

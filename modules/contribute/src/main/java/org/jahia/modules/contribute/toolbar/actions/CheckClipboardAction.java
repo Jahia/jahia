@@ -43,6 +43,7 @@ package org.jahia.modules.contribute.toolbar.actions;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -80,13 +81,25 @@ public class CheckClipboardAction extends Action {
             JSONObject json = new JSONObject();
             json.put(URLEncoder.encode(MultipleCopyAction.UUIDS,"UTF-8"), uuids);
             List<String> paths = new LinkedList<String>();
+            List<String> nodetypes = new LinkedList<String>();
             for (String uuid : uuids) {
                 try {
-                    paths.add(resource.getNode().getSession().getNodeByUUID(uuid).getPath());
+                    JCRNodeWrapper nodeByUUID = session.getNodeByUUID(uuid);
+                    paths.add(nodeByUUID.getPath());
+                    List<String> nodeTypes = nodeByUUID.getNodeTypes();
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (String nodeType : nodeTypes) {
+                        if(stringBuilder.length()>0) {
+                            stringBuilder.append(" ");
+                        }
+                        stringBuilder.append(nodeType);
+                    }
+                    nodetypes.add(stringBuilder.toString());
                 } catch (RepositoryException e) {                    
                 }
             }
             json.put("paths",paths);
+            json.put("nodetypes",nodetypes);
             json.put("size", uuids.size());
             return new ActionResult(HttpServletResponse.SC_OK, null, json);
         } else {

@@ -105,9 +105,13 @@ public class JCRNodeTag extends AbstractJCRTag {
             }
             pageContext.setAttribute(var, node, scope);
         } catch (PathNotFoundException e) {
-            logger.debug("Item not found '" + path + "'", e);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Item not found '" + path + "'", e);
+            }
         } catch (ItemNotFoundException e) {
-            logger.debug("Item not found '" + path + "'", e);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Item not found '" + path + "'", e);
+            }
         } catch (RepositoryException e) {
             logger.error("Could not retrieve JCR node using path '" + path + "'", e);
         }
@@ -124,6 +128,7 @@ public class JCRNodeTag extends AbstractJCRTag {
         path = null;
         scope = PageContext.PAGE_SCOPE;
         var = null;
+        uuid = null;
         super.resetState();
     }
 }

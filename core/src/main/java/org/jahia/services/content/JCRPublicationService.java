@@ -105,9 +105,13 @@ public class JCRPublicationService extends JahiaService {
      *
      * @return the singleton instance of the JCRPublicationService
      */
-    public synchronized static JCRPublicationService getInstance() {
+    public static JCRPublicationService getInstance() {
         if (instance == null) {
-            instance = new JCRPublicationService();
+            synchronized (JCRPublicationService.class) {
+                if (instance == null) {
+                    instance = new JCRPublicationService();
+                }
+            }
         }
         return instance;
     }

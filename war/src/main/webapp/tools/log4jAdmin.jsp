@@ -152,7 +152,7 @@
 %>
 <div id="content">
 <h1>Log4j Administration</h1>
-
+<p>Please note that these settings are valid only during server run time and are not persisted between server restarts.</p>
 <div class="filterForm">
 
     <form action="" name="logFilterForm">Filter Loggers:&nbsp;&nbsp;

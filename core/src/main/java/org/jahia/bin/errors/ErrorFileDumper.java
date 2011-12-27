@@ -179,6 +179,7 @@ public class ErrorFileDumper {
     public static void start() {
         if (isShutdown()) {
             executorService = Executors.newSingleThreadExecutor(new LowPriorityThreadFactory());
+            System.out.println("Started error file dumper executor service");
         }
     }
 
@@ -201,6 +202,7 @@ public class ErrorFileDumper {
                 e.printStackTrace();
             }
             executorService = null;
+            System.out.println("...done shutting down error file dumper executor service.");
         }
 
     }

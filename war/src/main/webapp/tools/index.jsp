@@ -9,21 +9,39 @@
 </head>
 <body>
 <h1>Jahia Tools Area (<%= org.jahia.bin.Jahia.getFullProductVersion() %>)</h1>
+<table width="100%" border="0">
+    <tr>
+        <td width="50%" valign="top">
 <fieldset>
-    <legend>System</legend>
+    <legend>System and Maintenance</legend>
     <ul>
         <li><a href="systemInfo.jsp">System information</a></li>
         <li><a href="threadDumpMgmt.jsp">Thread state information</a></li>
-        <li><a href="log4jAdmin.jsp">Log4j administration</a></li>
         <li><a href="maintenance.jsp">System maintenance</a></li>
-        <%--
-        <li><a href="viewsession.jsp">View HTTP session information</a></li>
-        --%>
         <li><a href="precompileServlet">JSP pre-compilation</a></li>
     </ul>
 </fieldset>
 <fieldset>
-    <legend>Data</legend>
+    <legend>Logging (runtime only)</legend>
+    <ul>
+        <li><a href="log4jAdmin.jsp">Log4j administration</a></li>
+        <li><a href="errorFileDumper.jsp">Error file dumper</a></li>
+    </ul>
+</fieldset>
+<fieldset>
+    <legend>Administration and Guidance</legend>
+    <ul>
+        <li><a href="jobadmin.jsp">Background job administration</a></li>
+        <li><a href="search.jsp">Search engine management</a></li>
+        <li><a href="dbQuery.jsp">DB query tool</a></li>
+        <li><a href="groovyConsole.jsp">Groovy console</a></li>
+    </ul>
+</fieldset>
+        </td>
+        
+        <td width="50%" valign="top">
+<fieldset>
+    <legend>JCR Data and Rendering</legend>
     <ul>
         <li><a href="jcrBrowser.jsp">JCR repository browser</a></li>
         <li><a href="jcrQuery.jsp">JCR query tool</a></li>
@@ -32,10 +50,6 @@
         <li><a href="modulesBrowser.jsp">Installed modules browser</a></li>
         <li><a href="definitionsBrowser.jsp">Installed definitions browser</a></li>
         <li><a href="renderFilters.jsp">Render filters</a></li>
-        <li><a href="jobadmin.jsp">Background job administration</a></li>
-        <li><a href="search.jsp">Search engine management</a></li>
-        <li><a href="dbQuery.jsp">DB query tool</a></li>
-        <li><a href="groovyConsole.jsp">Groovy console</a></li>
     </ul>
 </fieldset>
 <fieldset>
@@ -47,14 +61,17 @@
     </ul>
 </fieldset>
 <fieldset>
-    <legend>Miscellaneous</legend>
+    <legend>Miscellaneous Tools</legend>
     <ul>
+        <li><a href="pwdEncrypt.jsp">Password encryption</a></li>
         <li><a href="docConverter.jsp">Document converter</a></li>
         <li><a href="textExtractor.jsp">Document text extractor</a></li>
         <li><a href="wcagChecker.jsp">WCAG checker</a></li>
-        <li><a href="pwdEncrypt.jsp">Password encryption</a></li>
     </ul>
 </fieldset>
+        </td>
+    </tr>
+</table>
 <p>&copy; Copyright 2002-2011 Jahia Solutions Group SA - All rights reserved.</p> 
 </body>
 </html>

@@ -13,3 +13,6 @@ body {
 pre, code {
     font-size: 120%;
 }
+legend {
+	font-weight: bold;
+}

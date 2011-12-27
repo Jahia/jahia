@@ -214,6 +214,19 @@ public class ReferencesHelper {
             if (propertyDefinition == null) {
                 throw new ConstraintViolationException("Couldn't find definition for property "+pName );
             }
+            String[] constraints = propertyDefinition.getValueConstraints();
+            if (constraints != null) {
+                boolean b = false;
+                JCRNodeWrapper target = session.getNodeByUUID(value);
+                for (int i = 0; i < constraints.length; i++) {
+                    String constraint = constraints[i];
+                    b |= target.isNodeType(constraint);
+                }
+                if (!b) {
+                    logger.warn("Cannot set reference to " + target.getPath() + ", constraint on " + n.getPath() );
+                    return;
+                }
+            }
             if (propertyDefinition.isMultiple()) {
                 Value[] newValues;
                 if (n.hasProperty(pName)) {

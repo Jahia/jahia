@@ -793,6 +793,8 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      */
     Node getOrCreateI18N(Locale locale) throws RepositoryException;
 
+    Node getOrCreateI18N(Locale locale, Calendar created, String createdBy, Calendar lastModified, String lastModifiedBy) throws RepositoryException;
+
     /**
      * Retrieves the list of locales available on a node.
      *

@@ -45,8 +45,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.value.InternalValueFactory;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.util.ISO8601;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -62,6 +60,8 @@ import org.jahia.services.importexport.DefinitionsMapping.AddNode;
 import org.jahia.services.importexport.DefinitionsMapping.SetProperties;
 import org.jahia.services.textextraction.TextExtractionService;
 import org.jahia.utils.i18n.ResourceBundleMarker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -70,7 +70,6 @@ import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
-
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -571,23 +570,27 @@ public class LegacyImportHandler extends DefaultHandler {
 //                node = parent.getNode(nodeName);
 //                node.setProperty("j:sourceTemplate", template);
 //            } else {
+
+            Calendar created = !StringUtils.isEmpty(creationMetadata.get("jcr:created")) ? ISO8601
+                            .parse(creationMetadata.get("jcr:created")) : null;
+                    String createdBy = creationMetadata.get("jahia:createdBy");
+                    Calendar lastModified = !StringUtils.isEmpty(creationMetadata.get("jcr:lastModified")) ? ISO8601
+                            .parse(creationMetadata.get("jcr:lastModified")) : null;
+                    String lastModifiedBy = creationMetadata.get("jahia:lastModifiedBy");
+
             node = parent.addNode(
                     nodeName,
-                    Constants.JAHIANT_PAGE,
-                    null,
-                    !StringUtils.isEmpty(creationMetadata.get("jcr:created")) ? ISO8601
-                            .parse(creationMetadata.get("jcr:created")) : null,
-                    creationMetadata.get("jahia:createdBy"),
-                    !StringUtils.isEmpty(creationMetadata.get("jcr:lastModified")) ? ISO8601
-                            .parse(creationMetadata.get("jcr:lastModified")) : null,
-                    creationMetadata.get("jahia:lastModifiedBy"));
+                    Constants.JAHIANT_PAGE, null, created, createdBy, lastModified, lastModifiedBy);
+            node.getOrCreateI18N(locale, created, createdBy, lastModified, lastModifiedBy);
+
             if (template != null) {
                 node.setProperty("j:templateNode", template);
                 Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:area] as a where isdescendantnode(a,['" + template.getPath() + "'])", Query.JCR_SQL2);
                 NodeIterator ni = q.execute().getNodes();
                 while (ni.hasNext()) {
                     JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) ni.next();
-                    node.addNode(nodeWrapper.getName(), "jnt:contentList");
+                    JCRNodeWrapper list = node.addNode(nodeWrapper.getName(), "jnt:contentList", null, created, createdBy, lastModified, lastModifiedBy);
+                    list.getOrCreateI18N(locale, created, createdBy, lastModified, lastModifiedBy);
                 }
             }
 //            }
@@ -618,16 +621,14 @@ public class LegacyImportHandler extends DefaultHandler {
                 nodeType = Constants.JAHIANT_CONTENTLIST;
             }
             try {
-                node = parent.addNode(
-                        nodeName,
-                        nodeType,
-                        null,
-                        !StringUtils.isEmpty(creationMetadata.get("jcr:created")) ? ISO8601
-                                .parse(creationMetadata.get("jcr:created")) : null,
-                        creationMetadata.get("jahia:createdBy"),
-                        !StringUtils.isEmpty(creationMetadata.get("jcr:lastModified")) ? ISO8601
-                                .parse(creationMetadata.get("jcr:lastModified")) : null,
-                        creationMetadata.get("jahia:lastModifiedBy"));
+                Calendar created = !StringUtils.isEmpty(creationMetadata.get("jcr:created")) ? ISO8601
+                        .parse(creationMetadata.get("jcr:created")) : null;
+                String createdBy = creationMetadata.get("jahia:createdBy");
+                Calendar lastModified = !StringUtils.isEmpty(creationMetadata.get("jcr:lastModified")) ? ISO8601
+                        .parse(creationMetadata.get("jcr:lastModified")) : null;
+                String lastModifiedBy = creationMetadata.get("jahia:lastModifiedBy");
+                node = parent.addNode(nodeName, nodeType, null, created, createdBy, lastModified, lastModifiedBy);
+                node.getOrCreateI18N(locale, created, createdBy, lastModified, lastModifiedBy);
             } catch(ConstraintViolationException cve) {
                 throw new ConstraintViolationException(MessageFormat.format("Error while adding node {0} of type {1} to node {2}",
                         nodeName, nodeType, parent.getPath()));

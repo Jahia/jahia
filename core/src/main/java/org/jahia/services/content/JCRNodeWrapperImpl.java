@@ -1280,6 +1280,32 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    public Node getOrCreateI18N(Locale locale, Calendar created, String createdBy, Calendar lastModified, String lastModifiedBy) throws RepositoryException {
+        JahiaSessionImpl jrSession = (JahiaSessionImpl) objectNode.getSession();
+
+        try {
+            return getI18N(locale, false);
+        } catch (RepositoryException e) {
+            try {
+                jrSession.getNodeTypeInstanceHandler().setCreated(created);
+                jrSession.getNodeTypeInstanceHandler().setCreatedBy(createdBy);
+                jrSession.getNodeTypeInstanceHandler().setLastModified(lastModified);
+                jrSession.getNodeTypeInstanceHandler().setLastModifiedBy(lastModifiedBy);
+
+                Node t = objectNode.addNode("j:translation_" + locale, Constants.JAHIANT_TRANSLATION);
+                t.setProperty("jcr:language", locale.toString());
+
+                i18NobjectNodes.put(locale, t);
+                return t;
+            } finally {
+                jrSession.getNodeTypeInstanceHandler().setCreated(null);
+                jrSession.getNodeTypeInstanceHandler().setCreatedBy(null);
+                jrSession.getNodeTypeInstanceHandler().setLastModified(null);
+                jrSession.getNodeTypeInstanceHandler().setLastModifiedBy(null);
+            }
+        }
+    }
+
     /**
      * {@inheritDoc}
      */

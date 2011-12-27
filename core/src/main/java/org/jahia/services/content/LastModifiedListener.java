@@ -40,17 +40,19 @@
 
 package org.jahia.services.content;
 
-import static org.jahia.api.Constants.*;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.slf4j.Logger;
 
-import javax.jcr.*;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
-
 import java.util.*;
+
+import static org.jahia.api.Constants.*;
 
 /**
  * Listener implementation used to update last modification date.
@@ -192,6 +194,11 @@ public class LastModifiedListener extends DefaultEventListener {
             }
             n.setProperty(JCR_LASTMODIFIED,c);
             n.setProperty(JCR_LASTMODIFIEDBY, userId);
+            if (n.isNodeType("nt:resource")) {
+                JCRNodeWrapper file = n.getParent();
+                file.setProperty(JCR_LASTMODIFIED, c);
+                file.setProperty(JCR_LASTMODIFIEDBY, userId);
+            }
         }
     }
 

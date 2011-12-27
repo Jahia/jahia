@@ -74,6 +74,7 @@ public class JCRObservationManager implements ObservationManager {
 
     private static ThreadLocal<Boolean> eventsDisabled = new ThreadLocal<Boolean>();
     private static ThreadLocal<JCRSessionWrapper> currentSession = new ThreadLocal<JCRSessionWrapper>();
+    private static ThreadLocal<Integer> lastOp = new ThreadLocal<Integer>();
     private static ThreadLocal<Map<JCRSessionWrapper, List<Event>>> events =
             new ThreadLocal<Map<JCRSessionWrapper, List<Event>>>();
     private static List<EventConsumer> listeners = new ArrayList<EventConsumer>();
@@ -211,11 +212,9 @@ public class JCRObservationManager implements ObservationManager {
         }
     }
 
-    private static void setCurrentSession(JCRSessionWrapper session) {
-        currentSession.set(session);
-    }
-
     private static void consume(JCRSessionWrapper session, int operationType) throws RepositoryException {
+        operationType = lastOp.get();
+
         Map<JCRSessionWrapper, List<Event>> map = events.get();
         events.set(null);
         currentSession.set(null);
@@ -296,13 +295,23 @@ public class JCRObservationManager implements ObservationManager {
 
     public static <X> X doWorkspaceWriteCall(JCRSessionWrapper session, int operationType, JCRCallback<X> callback)
             throws RepositoryException {
-        setCurrentSession(session);
+        currentSession.set(session);
         X res;
         try {
             res = callback.doInJCR(session);
         } finally {
-            consume(session, operationType);
-            setCurrentSession(null);
+            boolean x = lastOp.get() == null;
+            try {
+                if (x) {
+                    lastOp.set(operationType);
+                }
+                consume(session, operationType);
+            } finally {
+                currentSession.set(null);
+                if (x) {
+                    lastOp.set(null);
+                }
+            }
         }
         return res;
     }

@@ -732,6 +732,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getOrCreateI18N(locale);
     }
 
+    public Node getOrCreateI18N(Locale locale, Calendar created, String createdBy, Calendar lastModified, String lastModifiedBy) throws RepositoryException {
+        return node.getOrCreateI18N(locale, created,  createdBy, lastModified, lastModifiedBy);
+    }
+
     public JCRNodeWrapper clone(JCRNodeWrapper sharedNode, String name) throws ItemExistsException, VersionException, ConstraintViolationException, LockException, RepositoryException {
         return node.clone(sharedNode, name);
     }

@@ -1013,17 +1013,10 @@ public class LegacyImportHandler extends DefaultHandler {
                         String[] strings = value.split("\\$\\$\\$");
                         List<Value> values = new ArrayList<Value>();
                         for (String s : strings) {
-                            Value v = createReferenceValue(s, propertyDefinition.getSelector());
-                            if (v != null) {
-                                values.add(v);
-                            }
+                            createReferenceValue(s, propertyDefinition.getSelector(), n, propertyName);
                         }
-                        n.setProperty(propertyName, values.toArray(new Value[values.size()]));
                     } else {
-                        Value v = createReferenceValue(value, propertyDefinition.getSelector());
-                        if (v != null) {
-                            n.setProperty(propertyName, v);
-                        }
+                        createReferenceValue(value, propertyDefinition.getSelector(), n, propertyName);
                     }
                     break;
 
@@ -1147,7 +1140,7 @@ public class LegacyImportHandler extends DefaultHandler {
         return true;
     }
 
-    private Value createReferenceValue(String value, int selector) throws RepositoryException {
+    private void createReferenceValue(String value, int selector, Node node, String prop) throws RepositoryException {
         try {
             switch (selector) {
                 case SelectorType.CATEGORY: {
@@ -1155,39 +1148,34 @@ public class LegacyImportHandler extends DefaultHandler {
                     if (c.isEmpty()) {
                         logger.warn("Cannot find category : " + value);
                     } else {
-                        Value v = new ValueImpl(c.get(0).getID(), PropertyType.REFERENCE);
+                        if (!references.containsKey(c.get(0).getID())) {
+                            references.put(c.get(0).getID(), new ArrayList<String>());
+                        }
+                        references.get(c.get(0).getID()).add(node.getIdentifier() + "/" + prop);
                         if (c.size() > 1) {
                             logger.warn("Multiple category match : " + value);
                         }
-                        return v;
                     }
                 }
                 default: {
                     if (value.startsWith("/")) {
-                        try {
-                            JCRNodeWrapper file = session.getNode(correctFilename(value));
-                            return new ValueImpl(file.getIdentifier(), PropertyType.WEAKREFERENCE);
-                        } catch (PathNotFoundException e) {
-
+                        value = correctFilename(value);
+                        if (!references.containsKey(value)) {
+                            references.put(value, new ArrayList<String>());
                         }
+                        references.get(value).add(node.getIdentifier() + "/" + prop);
                     } else {
-                        try {
-                            String providerKey = StringUtils.substringBefore(value, ":");
-                            String uuid = StringUtils.substringAfter(value, ":");
-                            if (!uuid.equals("/")) {
-                                JCRNodeWrapper file = session.getNodeByUUID(providerKey, uuid);
-                                return new ValueImpl(file.getIdentifier(), PropertyType.WEAKREFERENCE);
-                            }
-                        } catch (ItemNotFoundException e) {
-                        } catch (UnsupportedRepositoryOperationException e) {
+                        String uuid = StringUtils.substringAfter(value, ":");
+                        if (!references.containsKey(uuid)) {
+                            references.put(uuid, new ArrayList<String>());
                         }
+                        references.get(uuid).add(node.getIdentifier() + "/" + prop);
                     }
                 }
             }
         } catch (JahiaException e) {
             logger.error("Cannot get categories", e);
         }
-        return null;
     }
 
     private String correctFilename(String value) {
@@ -1202,12 +1190,6 @@ public class LegacyImportHandler extends DefaultHandler {
             if (m.matches()) {
                 value = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));
                 value = value + ((m.group(2) != null) ? m.group(2) : "");
-            }
-        } else if (pathMapping != null) {
-            for (String map : pathMapping.keySet()) {
-                if (value.startsWith(map)) {
-                    value = pathMapping.get(map) + value.substring(map.length());
-                }
             }
         }
         return value;

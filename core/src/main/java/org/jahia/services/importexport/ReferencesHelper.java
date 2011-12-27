@@ -215,7 +215,7 @@ public class ReferencesHelper {
                 throw new ConstraintViolationException("Couldn't find definition for property "+pName );
             }
             String[] constraints = propertyDefinition.getValueConstraints();
-            if (constraints != null) {
+            if (constraints != null && constraints.length > 0) {
                 boolean b = false;
                 JCRNodeWrapper target = session.getNodeByUUID(value);
                 for (int i = 0; i < constraints.length; i++) {

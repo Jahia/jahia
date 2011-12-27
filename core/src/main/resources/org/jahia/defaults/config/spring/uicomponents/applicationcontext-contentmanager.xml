@@ -719,6 +719,9 @@
                                     <ref bean="Toolbar.Item.PasteReference"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
+                                    <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.PublishAll"/>
+                                    <ref bean="Toolbar.Item.Unpublish"/>
                                 </list>
                             </property>
                         </bean>
@@ -794,6 +797,9 @@
                         <ref bean="Toolbar.Item.Unzip"/>
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
+                        <ref bean="Toolbar.Item.Publish"/>
+                        <ref bean="Toolbar.Item.PublishAll"/>
+                        <ref bean="Toolbar.Item.Unpublish"/>
                     </list>
                 </property>
             </bean>
@@ -857,6 +863,7 @@
                 <value>primaryTypeLabel,100,label.type</value>
                 <value>mix:created.jcr:created,100</value>
                 <value>mix:created.jcr:createdBy,100</value>
+                <value>publicationInfo,40</value>
             </list>
         </property>
     </bean>
@@ -1064,22 +1071,8 @@
                                     <ref bean="Toolbar.Item.PasteReference"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem"/>
-                                        </property>
-                                        <property name="titleKey" value="label.publish"/>
-                                        <property name="icon" value="publish"/>
-                                        <!--<property name="workflowAction" value="publish"/>-->
-                                    </bean>
-
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishAllActionItem"/>
-                                        </property>
-                                        <property name="titleKey" value="label.publishall"/>
-                                        <property name="icon" value="publishAll"/>
-                                    </bean>
+                                    <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.PublishAll"/>
                                 </list>
                             </property>
                         </bean>
@@ -1115,22 +1108,8 @@
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
                         <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-                            <property name="actionItem">
-                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem"/>
-                            </property>
-                            <property name="titleKey" value="label.publish"/>
-                            <property name="icon" value="publish"/>
-                            <!--<property name="workflowAction" value="publish"/>-->
-                        </bean>
-
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-                            <property name="actionItem">
-                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishAllActionItem"/>
-                            </property>
-                            <property name="titleKey" value="label.publishall"/>
-                            <property name="icon" value="publishAll"/>
-                        </bean>
+                        <ref bean="Toolbar.Item.Publish"/>
+                        <ref bean="Toolbar.Item.PublishAll"/>
                     </list>
                 </property>
             </bean>

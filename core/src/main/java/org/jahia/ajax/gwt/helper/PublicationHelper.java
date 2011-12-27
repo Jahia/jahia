@@ -40,8 +40,6 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import org.apache.commons.collections.OrderedMap;
-import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -183,7 +181,7 @@ public class PublicationHelper {
         try {
             List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, languages, !checkForUnpublication, true, allSubTree, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE,
                     checkForUnpublication);
-            LinkedHashMap<String, GWTJahiaPublicationInfo> res = new LinkedHashMap();
+            LinkedHashMap<String, GWTJahiaPublicationInfo> res = new LinkedHashMap<String, GWTJahiaPublicationInfo>();
             for (String language : languages) {
                 final List<GWTJahiaPublicationInfo> infoList = convert(infos, currentUserSession, language);
                 String lastGroup = null;
@@ -221,18 +219,18 @@ public class PublicationHelper {
         return gwtInfos;
     }
 
-    private OrderedMap convert(PublicationInfo pubInfo, PublicationInfoNode root, List<String> mainPaths, JCRSessionWrapper currentUserSession, String language) {
-        OrderedMap gwtInfos = new LinkedMap();
+    private Map<String, GWTJahiaPublicationInfo> convert(PublicationInfo pubInfo, PublicationInfoNode root, List<String> mainPaths, JCRSessionWrapper currentUserSession, String language) {
+        Map<String, GWTJahiaPublicationInfo> gwtInfos = new LinkedHashMap<String, GWTJahiaPublicationInfo>();
         return convert(pubInfo, root, mainPaths, currentUserSession, language, gwtInfos);
     }
 
-    private OrderedMap convert(PublicationInfo pubInfo, PublicationInfoNode root, List<String> mainPaths, JCRSessionWrapper currentUserSession, String language, OrderedMap gwtInfos) {
+    private Map<String, GWTJahiaPublicationInfo> convert(PublicationInfo pubInfo, PublicationInfoNode root, List<String> mainPaths, JCRSessionWrapper currentUserSession, String language, Map<String, GWTJahiaPublicationInfo> gwtInfos) {
         PublicationInfoNode node = pubInfo.getRoot();
         List<PublicationInfo> references = new ArrayList<PublicationInfo>();
 
         convert(gwtInfos, root, mainPaths, null, node, references, currentUserSession, language);
 
-        OrderedMap res = new LinkedMap();
+        Map<String, GWTJahiaPublicationInfo> res = new LinkedHashMap<String, GWTJahiaPublicationInfo>();
 
         res.putAll(gwtInfos);
         for (PublicationInfo pi : references) {
@@ -243,7 +241,7 @@ public class PublicationHelper {
         return res;
     }
 
-    private GWTJahiaPublicationInfo convert(OrderedMap all, PublicationInfoNode root, List<String> mainPaths,
+    private GWTJahiaPublicationInfo convert(Map<String, GWTJahiaPublicationInfo> all, PublicationInfoNode root, List<String> mainPaths,
                                             WorkflowRule lastRule, PublicationInfoNode node, List<PublicationInfo> references,
                                             JCRSessionWrapper currentUserSession, String language) {
         GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(node.getUuid(), node.getStatus(), node.isCanPublish(language));

@@ -47,6 +47,7 @@ import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
@@ -854,22 +855,41 @@ public class JCRPublicationService extends JahiaService {
         } else {
             username = null;
         }
+        
+        final Set<String> ignoredNodes = new HashSet<String>();
+        
         JCRTemplate.getInstance().doExecute(true, username, EDIT_WORKSPACE, null, new JCRCallback<Object>() {
             public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
+                Set<String> translationLanguages = new HashSet<String>();
                 boolean first = true;
+                VersionManager vm = sourceSession.getWorkspace().getVersionManager();
+                List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>(uuids.size()); 
                 for (String uuid : uuids) {
                     try {
                         JCRNodeWrapper node = sourceSession.getNodeByIdentifier(uuid);
-                        VersionManager vm = sourceSession.getWorkspace().getVersionManager();
-                        if (!vm.isCheckedOut(node.getPath())) {
-                            vm.checkout(node.getPath());
-                        }
-                        if (first && !node.isNodeType("jmix:publication")) {
-                            node.addMixin("jmix:publication");
+                        if (first && !node.isNodeType(Constants.JAHIAMIX_PUBLICATION)) {
+                            if (!vm.isCheckedOut(node.getPath())) {
+                                vm.checkout(node.getPath());
+                            }
+                            node.addMixin(Constants.JAHIAMIX_PUBLICATION);
                             first = false;
                         }
-                        unpublish(node, languages);
-                        sourceSession.save();
+                        if (!node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                            nodes.add(node);
+                            
+                            if (languages != null){
+                                NodeIterator ni = node.getNodes("j:translation*");
+                                if (!ni.hasNext()) {
+                                    ignoredNodes.add(node.getPath());
+                                }
+                                while (ni.hasNext()) {
+                                    JCRNodeWrapper i18n = (JCRNodeWrapper) ni.next();
+                                    if (i18n.hasProperty("j:published") && i18n.getProperty("j:published").getBoolean()) {
+                                        translationLanguages.add(i18n.getProperty("jcr:language").getString());
+                                    }
+                                }   
+                            }
+                        } 
                     } catch (ItemNotFoundException e) {
                         if (logger.isInfoEnabled()) {
                             logger.info("Node {} does not exist in the default workspace any longer."+
@@ -877,15 +897,36 @@ public class JCRPublicationService extends JahiaService {
                         }
                     }
                 }
+                // if not all languages are unpublished now, then also do not unpublish the
+                // nodes having no translations
+                if (languages != null) {
+                    if (languages.containsAll(translationLanguages)) {
+                        ignoredNodes.clear();
+                    } else {
+                        for (Iterator<JCRNodeWrapper> it = nodes.iterator(); it.hasNext();) {
+                            if (ignoredNodes.contains(it.next().getPath())) {
+                                it.remove();
+                            }
+                        }
+                    }
+                }
+                for (ListIterator<JCRNodeWrapper> it = nodes.listIterator(nodes.size()); it.hasPrevious();) {
+                    JCRNodeWrapper node = it.previous();
+                    unpublish(node, languages, ignoredNodes);
+                    sourceSession.save();
+                }
                 return null;
             }
         });
 
         JCRTemplate.getInstance().doExecute(true, username, LIVE_WORKSPACE, new JCRCallback<Object>() {
             public Object doInJCR(final JCRSessionWrapper destinationSession) throws RepositoryException {
-                for (String uuid : uuids) {
+                for (ListIterator<String> it = uuids.listIterator(uuids.size()); it.hasPrevious();) {
+                    String uuid = it.previous();
                     JCRNodeWrapper destNode = destinationSession.getNodeByIdentifier(uuid);
-                    unpublish(destNode, languages);
+                    if (!destNode.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                        unpublish(destNode, languages, ignoredNodes);
+                    }
                     destinationSession.save();
                 }
                 return null;
@@ -894,9 +935,13 @@ public class JCRPublicationService extends JahiaService {
 
     }
 
-    private void unpublish(JCRNodeWrapper node, Set<String> languages) throws RepositoryException {
-        node.setProperty("j:published", false);
+    private void unpublish(JCRNodeWrapper node, Set<String> languages, Set<String> nodesNotUnpublished) throws RepositoryException {
+        boolean allLanguagesUnpublished = true;
         NodeIterator ni = node.getNodes("j:translation*");
+        // if there are nodes not unpublished then we have to keep the ones without translations
+        if (!nodesNotUnpublished.isEmpty() && !ni.hasNext()) {
+            allLanguagesUnpublished = false;
+        }
         while (ni.hasNext()) {
             JCRNodeWrapper i18n = (JCRNodeWrapper) ni.next();
             if (languages == null || languages.contains(i18n.getProperty("jcr:language").getString())) {
@@ -904,7 +949,28 @@ public class JCRPublicationService extends JahiaService {
                     i18n.checkout();
                 }
                 i18n.setProperty("j:published", false);
+            } else if (i18n.hasProperty("j:published") && i18n.getProperty("j:published").getBoolean()) {
+                allLanguagesUnpublished = false;
             }
+        }
+        if (allLanguagesUnpublished) {
+            boolean allChildrenUnpublished = true;
+            for (String nodeNotUnpublished : nodesNotUnpublished) {
+                if (nodeNotUnpublished.startsWith(node.getPath())) {
+                    allChildrenUnpublished = false;
+                    break;
+                }
+            }
+            if (allChildrenUnpublished) {
+                if (!node.isCheckedOut()) {
+                    node.checkout();
+                }
+                node.setProperty("j:published", false);
+            } else { 
+                nodesNotUnpublished.add(node.getPath());
+            }
+        } else {
+            nodesNotUnpublished.add(node.getPath());
         }
         if (loggingService.isEnabled()) { 
             String userID = node.getSession().getUserID();
@@ -1084,30 +1150,31 @@ public class JCRPublicationService extends JahiaService {
             NodeIterator ni = node.getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
-                boolean hasIndependantPublication = hasIndependantPublication(n);
-                if (allsubtree && hasIndependantPublication) {
-                    PublicationInfo newinfo = new PublicationInfo();
-                    infos.add(newinfo);
-                    newinfo.setRoot(getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree,
-                            sourceSession, destinationSession, infosMap, infos));
-                }
-                if (!hasIndependantPublication) {
-                    if (languages != null && n.isNodeType("jnt:translation")) {
-                        String translationLanguage = n.getProperty("jcr:language").getString();
-                        if (languages.contains(translationLanguage)) {
-                            PublicationInfoNode child =
-                                    getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree,
-                                            sourceSession, destinationSession, infosMap, infos);
-                            info.addChild(child);
-                        }
-                    } else if (n.isNodeType("jmix:lastPublished")) {
+                if (languages != null && n.isNodeType("jnt:translation")) {
+                    String translationLanguage = n.getProperty("jcr:language").getString();
+                    if (languages.contains(translationLanguage)) {
                         PublicationInfoNode child =
                                 getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree,
                                         sourceSession, destinationSession, infosMap, infos);
                         info.addChild(child);
-                    } else {
-                        getReferences(n, languages, includesReferences, includesSubnodes, sourceSession,
-                                destinationSession, infosMap, infos, info);
+                    }
+                } else {
+                    boolean hasIndependantPublication = hasIndependantPublication(n);
+                    if (allsubtree && hasIndependantPublication) {
+                        PublicationInfo newinfo = new PublicationInfo();
+                        infos.add(newinfo);
+                        newinfo.setRoot(getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree, sourceSession,
+                                destinationSession, infosMap, infos));
+                    }
+                    if (!hasIndependantPublication) {
+                        if (n.isNodeType("jmix:lastPublished")) {
+                            PublicationInfoNode child = getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree,
+                                    sourceSession, destinationSession, infosMap, infos);
+                            info.addChild(child);
+                        } else {
+                            getReferences(n, languages, includesReferences, includesSubnodes, sourceSession, destinationSession, infosMap,
+                                    infos, info);
+                        }
                     }
                 }
             }

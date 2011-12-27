@@ -146,6 +146,7 @@ public class Constants {
     public static final String JAHIAMIX_LASTPUBLISHED = "jmix:lastPublished";
     public static final String JAHIAMIX_NODENAMEINFO = "jmix:nodenameInfo";
     public static final String JAHIAMIX_SHAREABLE = "jmix:shareable";
+    public static final String JAHIAMIX_PUBLICATION = "jmix:publication";
 
     public final static String JAHIAMIX_IMAGE = "jmix:image";
 

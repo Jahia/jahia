@@ -290,4 +290,16 @@ public abstract class AbstractView extends TopRightComponent {
     public interface ContentSource {
         public void refreshTable();
     }
+
+    protected boolean isNodeTypeAllowed(GWTJahiaNode selectedNode) {
+        if (selectedNode == null) {
+            return true;
+        }
+        return (configuration.getForbiddenNodeTypesForDragAndDrop() == null || !selectedNode.isNodeType(configuration.getForbiddenNodeTypesForDragAndDrop()))
+                && (configuration.getAllowedNodeTypesForDragAndDrop() == null || selectedNode.isNodeType(configuration.getAllowedNodeTypesForDragAndDrop()));
+
+    }
+
+
+
 }

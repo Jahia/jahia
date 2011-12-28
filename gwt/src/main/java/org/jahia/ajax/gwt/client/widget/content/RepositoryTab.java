@@ -62,6 +62,7 @@ import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
@@ -79,7 +80,8 @@ public class RepositoryTab extends ContentPanel {
     private ContentRepositoryTabs folderTreeContainer;
     private TreeGrid<GWTJahiaNode> m_tree;
     private GWTJahiaNodeTreeFactory factory;
-
+    private GWTManagerConfiguration config;
+    
     /**
      * Constructor
      *
@@ -154,6 +156,17 @@ public class RepositoryTab extends ContentPanel {
             }
         }));
         add(m_tree);
+        
+        this.config = config;
+    }
+
+    protected boolean isNodeTypeAllowed(GWTJahiaNode selectedNode) {
+        if (selectedNode == null) {
+            return true;
+        }
+        return (config.getForbiddenNodeTypesForDragAndDrop() == null || !selectedNode.isNodeType(config.getForbiddenNodeTypesForDragAndDrop()))
+                && (config.getAllowedNodeTypesForDragAndDrop() == null || selectedNode.isNodeType(config.getAllowedNodeTypesForDragAndDrop()));
+
     }
 
     /**
@@ -171,7 +184,12 @@ public class RepositoryTab extends ContentPanel {
                     List<BaseTreeModel> l = e.getData();
                     List<GWTJahiaNode> r = new ArrayList<GWTJahiaNode>();
                     for (BaseTreeModel model : l) {
-                        r.add((GWTJahiaNode) model.get("model"));
+                        GWTJahiaNode jahiaNode = (GWTJahiaNode) model.get("model");
+                        if (!isNodeTypeAllowed(jahiaNode) || !PermissionsUtils.isPermitted("jcr:removeNode", jahiaNode.getPermissions())) {
+                            e.setCancelled(true);
+                            break;
+                        }
+                        r.add(jahiaNode);
                     }
                     e.setData(r);
                 }

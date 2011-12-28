@@ -75,6 +75,8 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     private String defaultView;
     private boolean enableDragAndDrop = true;
+    private List<String> allowedNodeTypesForDragAndDrop;
+    private List<String> forbiddenNodeTypesForDragAndDrop;
     private boolean enableFileDoubleClick = true;
     private boolean allowsMultipleSelection = true;
 
@@ -226,6 +228,22 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     public void setEnableDragAndDrop(boolean enableDragAndDrop) {
         this.enableDragAndDrop = enableDragAndDrop;
+    }
+
+    public List<String> getAllowedNodeTypesForDragAndDrop() {
+        return allowedNodeTypesForDragAndDrop;
+    }
+
+    public void setAllowedNodeTypesForDragAndDrop(List<String> allowedNodeTypesForDragAndDrop) {
+        this.allowedNodeTypesForDragAndDrop = allowedNodeTypesForDragAndDrop;
+    }
+
+    public List<String> getForbiddenNodeTypesForDragAndDrop() {
+        return forbiddenNodeTypesForDragAndDrop;
+    }
+
+    public void setForbiddenNodeTypesForDragAndDrop(List<String> forbiddenNodeTypesForDragAndDrop) {
+        this.forbiddenNodeTypesForDragAndDrop = forbiddenNodeTypesForDragAndDrop;
     }
 
     public boolean isEnableFileDoubleClick() {

@@ -35,6 +35,8 @@
                 <ref bean="Engine.Tab.Usages"/>
             </list>
         </property>
+
+        <property name="forbiddenNodeTypesForDragAndDrop" ref="forbidDeleteRenameCutForNodeTypes"/>
     </bean>
 
     <!-- file manager -->

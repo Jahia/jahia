@@ -75,6 +75,8 @@ public class ManagerConfiguration implements Serializable {
     private boolean enableDragAndDrop = true;
     private boolean enableFileDoubleClick = true;
     private boolean allowsMultipleSelection = true;
+    private List<String> allowedNodeTypesForDragAndDrop;
+    private List<String> forbiddenNodeTypesForDragAndDrop;
 
     private List<EngineTab> engineTabs;
 
@@ -185,6 +187,22 @@ public class ManagerConfiguration implements Serializable {
 
     public void setEnableDragAndDrop(boolean enableDragAndDrop) {
         this.enableDragAndDrop = enableDragAndDrop;
+    }
+
+    public List<String> getAllowedNodeTypesForDragAndDrop() {
+        return allowedNodeTypesForDragAndDrop;
+    }
+
+    public void setAllowedNodeTypesForDragAndDrop(List<String> allowedNodeTypesForDragAndDrop) {
+        this.allowedNodeTypesForDragAndDrop = allowedNodeTypesForDragAndDrop;
+    }
+
+    public List<String> getForbiddenNodeTypesForDragAndDrop() {
+        return forbiddenNodeTypesForDragAndDrop;
+    }
+
+    public void setForbiddenNodeTypesForDragAndDrop(List<String> forbiddenNodeTypesForDragAndDrop) {
+        this.forbiddenNodeTypesForDragAndDrop = forbiddenNodeTypesForDragAndDrop;
     }
 
     public boolean isEnableFileDoubleClick() {

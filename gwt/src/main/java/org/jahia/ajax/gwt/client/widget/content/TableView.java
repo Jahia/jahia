@@ -61,16 +61,14 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Table view component for the content manager widget.
@@ -144,6 +142,18 @@ public class TableView extends AbstractView {
             GridDragSource source = new GridDragSource(m_grid) {
                 @Override
                 protected void onDragDrop(DNDEvent e) {
+                }
+
+                @Override
+                protected void onDragStart(DNDEvent e) {
+                    super.onDragStart(e);
+                    List<GWTJahiaNode> l = e.getData();
+                    for (GWTJahiaNode node : l) {
+                        if (!isNodeTypeAllowed(node) || !PermissionsUtils.isPermitted("jcr:removeNode", node.getPermissions())) {
+                            e.setCancelled(true);
+                            break;
+                        }
+                    }
                 }
             };
             source.addDNDListener(linker.getDndListener());

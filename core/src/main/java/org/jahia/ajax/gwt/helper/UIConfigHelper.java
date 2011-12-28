@@ -272,6 +272,8 @@ public class UIConfigHelper {
                 gwtConfig.setHiddenTypes(config.getHiddenTypes());
                 gwtConfig.setDefaultView(config.getDefaultView());
                 gwtConfig.setEnableDragAndDrop(config.isEnableDragAndDrop());
+                gwtConfig.setAllowedNodeTypesForDragAndDrop(config.getAllowedNodeTypesForDragAndDrop());
+                gwtConfig.setForbiddenNodeTypesForDragAndDrop(config.getForbiddenNodeTypesForDragAndDrop());
                 gwtConfig.setEnableFileDoubleClick(config.isEnableFileDoubleClick());
                 gwtConfig.setAllowsMultipleSelection(config.isAllowsMultipleSelection());
                 gwtConfig.setExpandRoot(config.isExpandRoot());

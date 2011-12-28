@@ -318,11 +318,11 @@ public final class JCRContentUtils {
         StringBuilder buffer = new StringBuilder(name.length() * 2);
         for (int i = 0; i < name.length(); i++) {
             char ch = name.charAt(i);
-            if (ch == '/' || ch == '[' || ch == ']' || ch == '*' || ch == '|') {
+            if (ch == '[' || ch == ']' || ch == '*' || ch == '|') {
                 buffer.append('%');
                 buffer.append(Character.toUpperCase(Character.forDigit(ch / 16, 16)));
                 buffer.append(Character.toUpperCase(Character.forDigit(ch % 16, 16)));
-            } else if (ch == '\t' || ch == '\r' || ch == '\n') {
+            } else if (ch == '/' ||  ch == '\\' || ch == '\t' || ch == '\r' || ch == '\n') {
                 buffer.append(' ');
             } else {
                 buffer.append(ch);

@@ -57,7 +57,7 @@ public class CopyPasteEngine {
     private static CopyPasteEngine m_instance = null ;
 
     // Copy-paste
-    private List<GWTJahiaNode> copiedPaths = new ArrayList<GWTJahiaNode>();
+    private List<GWTJahiaNode> copiedPaths;
     private boolean cut ;
 
     public static CopyPasteEngine getInstance() {
@@ -75,16 +75,12 @@ public class CopyPasteEngine {
 
     public void setCopiedPaths(List<GWTJahiaNode> copiedPaths) {
         cut = false ;
-        for(GWTJahiaNode node : copiedPaths) {
-            this.copiedPaths.add(node);
-        }
+        this.copiedPaths = new ArrayList<GWTJahiaNode>(copiedPaths);
         ClipboardActionItem.setCopied(copiedPaths);
     }
 
     public void setCutPaths(List<GWTJahiaNode> cutPaths) {
-        for(GWTJahiaNode node : cutPaths) {
-            this.copiedPaths.add(node);
-        }
+        this.copiedPaths = new ArrayList<GWTJahiaNode>(cutPaths);
         this.copiedPaths = cutPaths;
         cut = true ;
         ClipboardActionItem.setCopied(cutPaths);

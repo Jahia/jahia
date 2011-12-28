@@ -149,7 +149,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private String templateExtension;
 
     private boolean aggregateAndCompress;
-
+    private List<String> excludesFromAggregateAndCompress = new ArrayList<String>();
+    
     private static final Pattern CLEANUP_RESOURCE_REGEXP = Pattern.compile(
             "<jahia:resource .*/>");
 
@@ -304,7 +305,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     }
                 }
                 String header = renderContext.getRequest().getHeader("user-agent");
-                if (!renderContext.isPreviewMode() && !renderContext.isLiveMode() && header!=null && header.contains("MSIE")) {
+                if (!renderContext.isPreviewMode() && !renderContext.isLiveMode() && header != null && header.contains("MSIE")) {
                     int idx = element.getBegin() + element.toString().indexOf(">");
                     String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=8\">";
                     outputDocument.replace(idx, idx + 1, str);
@@ -333,100 +334,120 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
         int i = 0;
         for (; i < entries.size(); ) {
-            long cssFilesDates = 0;
+            long filesDates = 0;
             ServletContext context = JahiaContextLoaderListener.getServletContext();
 
-            List<String> aggregated = new ArrayList<String>();
+            List<String> pathsToAggregate = new ArrayList<String>();
             Vector<InputStream> files = new Vector<InputStream>();
             for (; i < entries.size(); i++) {
                 Map.Entry<String, Map<String, String>> entry = entries.get(i);
                 File file = new File(context.getRealPath(entry.getKey()));
-                if (file.exists() && entry.getValue().isEmpty()) {
-                    aggregated.add(entry.getKey());
+                if (file.exists() && entry.getValue().isEmpty() && !excludesFromAggregateAndCompress.contains(entry.getKey())) {
+                    pathsToAggregate.add(entry.getKey());
                     files.add(new FileInputStream(file));
                     long lastModified = file.lastModified();
-                    if (cssFilesDates < lastModified) {
-                        cssFilesDates = lastModified;
+                    if (filesDates < lastModified) {
+                        filesDates = lastModified;
                     }
                 } else {
                     // CSS has options - will not be aggregated and added at the end
                     break;
                 }
             }
-            if (!aggregated.isEmpty()) {
-                String aggregatedKey = generateAggregateName(aggregated);
+            if (!pathsToAggregate.isEmpty()) {
+                String aggregatedKey = generateAggregateName(pathsToAggregate);
 
-                new File(context.getRealPath("/resources")).mkdirs();
+                String minifiedAggregatedPath = "/resources/" + aggregatedKey + ".min." + type;
+                String minifiedAggregatedRealPath = context.getRealPath(minifiedAggregatedPath);
+                File minifiedAggregatedFile = new File(minifiedAggregatedRealPath);
 
-                String minifiedPath = "/resources/" + aggregatedKey + ".min." + type;
-                String minifiedRealPath = context.getRealPath(minifiedPath);
-                File minifiedFile = new File(minifiedRealPath);
+                if (!minifiedAggregatedFile.exists() || minifiedAggregatedFile.lastModified() < filesDates) {
+                    new File(context.getRealPath("/resources")).mkdirs();
 
-                if (!minifiedFile.exists() || minifiedFile.lastModified() < cssFilesDates) {
-                    String aggregatedPath = context.getRealPath("/resources/" + aggregatedKey + "." + type);
+                    List<String> minifiedPaths = new ArrayList<String>();
+                    for (String path : pathsToAggregate) {
+                        File f = new File(context.getRealPath(path));
+                        String minifiedPath = "/resources/" + path.replace('/','_') + ".min." + type;
+                        File minifiedFile = new File(context.getRealPath(minifiedPath));
+                        if (!minifiedFile.exists() || minifiedFile.lastModified() < f.lastModified()) {
+                            Reader reader = new InputStreamReader(new FileInputStream(f), "UTF-8");
+                            Writer writer = new OutputStreamWriter(new FileOutputStream(context.getRealPath(minifiedPath)), "UTF-8");
+                        
+                            if (type.equals("css")) {
+                                CssCompressor compressor = new CssCompressor(reader);
+                                compressor.compress(writer, -1);
+                            } else if (type.equals("js")) {
+                                JavaScriptCompressor compressor = null;
+                                try {
+                                    compressor = new JavaScriptCompressor(reader, new ErrorReporter() {
+                                        public void warning(String message, String sourceName,
+                                                            int line, String lineSource, int lineOffset) {
+                                            if (line < 0) {
+                                                logger.debug(message);
+                                            } else {
+                                                logger.debug(line + ':' + lineOffset + ':' + message);
+                                            }
+                                        }
+
+                                        public void error(String message, String sourceName,
+                                                          int line, String lineSource, int lineOffset) {
+                                            if (line < 0) {
+                                                logger.error(message);
+                                            } else {
+                                                logger.error(line + ':' + lineOffset + ':' + message);
+                                            }
+                                        }
+
+                                        public EvaluatorException runtimeError(String message, String sourceName,
+                                                                               int line, String lineSource, int lineOffset) {
+                                            error(message, sourceName, line, lineSource, lineOffset);
+                                            return new EvaluatorException(message);
+                                        }
+                                    });
+                                    compressor.compress(writer, -1, true, true, false, false);
+                                } catch (EvaluatorException e) {
+                                    logger.error("Error when minifying " + path, e);
+                                    IOUtils.closeQuietly(reader);
+                                    IOUtils.closeQuietly(writer);
+                                    reader = new InputStreamReader(new FileInputStream(f), "UTF-8");
+                                    writer = new OutputStreamWriter(new FileOutputStream(context.getRealPath(minifiedPath)), "UTF-8");
+                                    IOUtils.copy(reader, writer);
+                                }
+                            } else {
+                                IOUtils.copy(reader, writer);
+                            }
+                            IOUtils.closeQuietly(reader);
+                            IOUtils.closeQuietly(writer);
+                        }
+                        minifiedPaths.add(minifiedPath);
+                    }
+
                     try {
-
-                        OutputStream outMerged = new FileOutputStream(aggregatedPath);
-                        for (InputStream file : files) {
+                        OutputStream outMerged = new FileOutputStream(minifiedAggregatedRealPath);
+                        for (String minifiedFile : minifiedPaths) {
+                            InputStream is = new FileInputStream(context.getRealPath(minifiedFile));
                             if (type.equals("css")) {
                                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                IOUtils.copy(file, stream);
-                                IOUtils.closeQuietly(file);
+                                IOUtils.copy(is, stream);
+                                IOUtils.closeQuietly(is);
                                 String s = stream.toString("UTF-8");
 
                                 s = s.replace("url( ", "url(");
-                                s = s.replace("url(\"", "url(\".." + StringUtils.substringBeforeLast(aggregated.get(files.indexOf(file)), "/") + "/");
-                                s = s.replace("url(", "url(.." + StringUtils.substringBeforeLast(aggregated.get(files.indexOf(file)), "/") + "/");
-                                file = new ByteArrayInputStream(s.getBytes("UTF-8"));
+                                s = s.replace("url(\"", "url(\".." + StringUtils.substringBeforeLast(pathsToAggregate.get(minifiedPaths.indexOf(minifiedFile)), "/") + "/");
+                                s = s.replace("url('", "url('.." + StringUtils.substringBeforeLast(pathsToAggregate.get(minifiedPaths.indexOf(minifiedFile)), "/") + "/");
+                                s = s.replaceAll("url\\(([^'\"])", "url(.." + StringUtils.substringBeforeLast(pathsToAggregate.get(minifiedPaths.indexOf(minifiedFile)), "/") + "/$1");
+                                is = new ByteArrayInputStream(s.getBytes("UTF-8"));
                             }
-                            IOUtils.copy(file, outMerged);
-                            IOUtils.closeQuietly(file);
+                            IOUtils.copy(is, outMerged);
+                            IOUtils.closeQuietly(is);
                         }
                         IOUtils.closeQuietly(outMerged);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
-                    Reader reader = new InputStreamReader(new FileInputStream(aggregatedPath), "UTF-8");
-                    Writer writer = new OutputStreamWriter(new FileOutputStream(context.getRealPath(minifiedPath)), "UTF-8");
-                    if (type.equals("css")) {
-                        CssCompressor compressor = new CssCompressor(reader);
-                        compressor.compress(writer, -1);
-                    } else if (type.equals("js")) {
-                        JavaScriptCompressor compressor = new JavaScriptCompressor(reader, new ErrorReporter() {
-                            public void warning(String message, String sourceName,
-                                                int line, String lineSource, int lineOffset) {
-                                if (line < 0) {
-                                    logger.warn(message);
-                                } else {
-                                    logger.warn(line + ':' + lineOffset + ':' + message);
-                                }
-                            }
-
-                            public void error(String message, String sourceName,
-                                              int line, String lineSource, int lineOffset) {
-                                if (line < 0) {
-                                    logger.error(message);
-                                } else {
-                                    logger.error(line + ':' + lineOffset + ':' + message);
-                                }
-                            }
-
-                            public EvaluatorException runtimeError(String message, String sourceName,
-                                                                   int line, String lineSource, int lineOffset) {
-                                error(message, sourceName, line, lineSource, lineOffset);
-                                return new EvaluatorException(message);
-                            }
-                        });
-                        compressor.compress(writer, -1, true, true, false, false);
-                    } else {
-                        IOUtils.copy(reader, writer);
-                    }
-                    IOUtils.closeQuietly(reader);
-                    IOUtils.closeQuietly(writer);
                 }
 
-                newCss.put(minifiedPath, new HashMap<String, String>());
+                newCss.put(minifiedAggregatedPath, new HashMap<String, String>());
             }
             if (i < entries.size()) {
                 newCss.put(entries.get(i).getKey(), entries.get(i).getValue());
@@ -494,6 +515,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     public void setAggregateAndCompress(boolean aggregateAndCompress) {
         this.aggregateAndCompress = aggregateAndCompress;
+    }
+
+    public void setExcludesFromAggregateAndCompress(List<String> skipAggregation) {
+        this.excludesFromAggregateAndCompress = skipAggregation;
     }
 
     public void onApplicationEvent(TemplatePackageRedeployedEvent event) {

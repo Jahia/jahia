@@ -404,7 +404,9 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 internalValue = StringEscapeUtils.unescapeHtml((String) internalValue);
             }
         }
-
+        if (internalValue == null) {
+            return;
+        }
         super.addStringValue(doc, fieldName, internalValue, tokenized, includeInNodeIndex, boost,
                 useInExcerpt);
         if (tokenized) {

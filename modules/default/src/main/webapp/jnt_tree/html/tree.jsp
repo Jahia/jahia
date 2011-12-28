@@ -19,7 +19,7 @@
         $("#tree${currentNode.identifier}").treeview();
     });
 </script>
-<c:set var="pageNode" value="${jcr:getParentOfType(currentNode, 'jnt:page')}"/>
+<c:set var="pageNode" value="${renderContext.mainResource.node}"/>
 <c:set var="nodeTypeForTree" value="${currentNode.properties.nodeType.string}" scope="request"/>
 <c:set var="templateForTree" value="${currentNode.properties.templateForLink.string}" scope="request"/>
 <ul id="tree${currentNode.identifier}" class="filetree">

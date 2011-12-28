@@ -44,7 +44,6 @@ import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.map.LazyMap;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -64,11 +63,6 @@ import java.util.*;
  */
 public class ComponentLinkerChoiceListInitializer implements ChoiceListInitializer {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ComponentLinkerChoiceListInitializer.class);
-    private JCRSessionFactory sessionFactory;
-
-    public void setSessionFactory(JCRSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
 
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {

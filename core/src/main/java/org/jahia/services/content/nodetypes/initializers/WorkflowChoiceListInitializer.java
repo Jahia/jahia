@@ -42,13 +42,11 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
@@ -75,8 +73,8 @@ public class WorkflowChoiceListInitializer implements ChoiceListInitializer {
                 defs = workflowService.getWorkflows(locale);
             }
             for (WorkflowDefinition def : defs) {
-                choiceListValues.add(new ChoiceListValue(def.getName(), new HashMap<String, Object>(),
-                        new ValueImpl(def.getProvider() + ":" + def.getKey(), PropertyType.STRING, false)));
+                choiceListValues.add(new ChoiceListValue(def.getName(), def.getProvider() + ":"
+                        + def.getKey()));
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

@@ -45,12 +45,10 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.nodetypes.renderer.AbstractChoiceListRenderer;
 import org.jahia.services.render.RenderContext;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 
 import java.util.*;
@@ -72,8 +70,8 @@ public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListR
             List<ChoiceListValue> l = new ArrayList<ChoiceListValue>();
             String[] constr = epd.getValueConstraints();
             for (String s : constr) {
-                ChoiceListValue bean = new ChoiceListValue(rb.get(epd.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(s), s), new HashMap<String, Object>(),
-                                                           new ValueImpl(s, PropertyType.STRING, false));
+                ChoiceListValue bean = new ChoiceListValue(rb.get(epd.getResourceBundleKey() + "."
+                        + JCRContentUtils.replaceColon(s), s), s);
 
                 l.add(bean);
             }

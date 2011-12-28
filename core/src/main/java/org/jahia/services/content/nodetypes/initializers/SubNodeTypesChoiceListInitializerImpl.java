@@ -47,9 +47,7 @@ import org.slf4j.Logger;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.ValueImpl;
 
-import javax.jcr.PropertyType;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeTypeIterator;
 import java.util.*;
@@ -88,20 +86,14 @@ public class SubNodeTypesChoiceListInitializerImpl implements ChoiceListInitiali
                 ExtendedNodeType nodeType = NodeTypeRegistry.getInstance()
                         .getNodeType(nodeTypeName);
                 if (!isExcludedType(nodeType, excludedTypes)) {
-                    listValues.add(new ChoiceListValue(nodeType
-                            .getLabel(locale), new HashMap<String, Object>(),
-                            new ValueImpl(nodeType.getName(),
-                                    PropertyType.STRING, false)));
+                    listValues.add(new ChoiceListValue(nodeType.getLabel(locale), nodeType
+                            .getName()));
                 }
                 NodeTypeIterator nti = nodeType.getSubtypes();
                 while (nti.hasNext()) {
                     ExtendedNodeType type = (ExtendedNodeType) nti.next();
                     if (!isExcludedType(type, excludedTypes)) {
-                        listValues.add(new ChoiceListValue(type
-                                .getLabel(locale),
-                                new HashMap<String, Object>(), new ValueImpl(
-                                        type.getName(), PropertyType.STRING,
-                                        false)));
+                        listValues.add(new ChoiceListValue(type.getLabel(locale), type.getName()));
                     }
                 }
             }
@@ -109,9 +101,12 @@ public class SubNodeTypesChoiceListInitializerImpl implements ChoiceListInitiali
             logger.error("Cannot get type", e);
         }
        
-        return new ArrayList<ChoiceListValue>(listValues);
+        return new LinkedList<ChoiceListValue>(listValues);
     }
     private boolean isExcludedType(ExtendedNodeType nodeType, Set<String> excludedTypes) {
+        if (excludedTypes.contains(nodeType.getName())) {
+            return true;
+        }
         boolean isExcluded = false;
         for (String excludedType : excludedTypes) {
             if (nodeType.isNodeType(excludedType)) {

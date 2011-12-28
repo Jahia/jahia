@@ -41,18 +41,10 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.ValueImpl;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesBaseService;
-import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 
-import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.PropertyType;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
@@ -84,8 +76,7 @@ public class MenusChoiceListInitializerImpl implements ChoiceListInitializer{
             while (ni.hasNext()) {
                 JCRNodeWrapperImpl nodeWrapper = (JCRNodeWrapperImpl) ni.nextNode();
                 String displayName = nodeWrapper.getDisplayableName();
-                set.add(new ChoiceListValue(displayName, new HashMap<String, Object>(), new ValueImpl(
-                        nodeWrapper.getIdentifier(), PropertyType.STRING, false)));
+                set.add(new ChoiceListValue(displayName, nodeWrapper.getIdentifier()));
             }
 
         } catch (Exception e) {

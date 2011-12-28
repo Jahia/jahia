@@ -48,14 +48,12 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
@@ -133,8 +131,8 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
             JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();
             if (nodeWrapper.isNodeType(nodetype)) {
                 String displayName = nodeWrapper.getDisplayableName();
-                listValues.add(new ChoiceListValue(displayName, new HashMap<String, Object>(), new ValueImpl(
-                        "name".equals(returnType)?nodeWrapper.getName():nodeWrapper.getIdentifier(), PropertyType.STRING, false)));
+                listValues.add(new ChoiceListValue(displayName, 
+                        "name".equals(returnType)?nodeWrapper.getName():nodeWrapper.getIdentifier()));
             }
             if (subTree) {
                 addSubnodes(listValues, nodetype, nodeWrapper, subTree, returnType);

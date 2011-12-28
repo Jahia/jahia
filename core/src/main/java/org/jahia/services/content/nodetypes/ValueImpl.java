@@ -65,6 +65,10 @@ public class ValueImpl implements Value {
     protected String value;
     protected int type;
 
+    public ValueImpl(String v) {
+        this(v, PropertyType.STRING);
+    }
+
     public ValueImpl(String v, int type) {
         this(v, type, false);
     }

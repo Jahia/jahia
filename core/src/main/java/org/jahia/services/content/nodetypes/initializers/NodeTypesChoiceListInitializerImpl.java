@@ -45,9 +45,7 @@ import org.slf4j.Logger;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.ValueImpl;
 
-import javax.jcr.PropertyType;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeTypeIterator;
 import java.util.*;
@@ -71,8 +69,7 @@ public class NodeTypesChoiceListInitializerImpl implements ChoiceListInitializer
             NodeTypeIterator nti = nodeType.getSubtypes();
             while (nti.hasNext()) {
                 ExtendedNodeType type = (ExtendedNodeType) nti.next();
-                listValues.add(new ChoiceListValue(type.getLabel(locale),new HashMap<String, Object>(), new ValueImpl(
-                                type.getName(), PropertyType.STRING, false)));
+                listValues.add(new ChoiceListValue(type.getLabel(locale), type.getName()));
             }
         } catch (NoSuchNodeTypeException e) {
             logger.error("Cannot get type",e);

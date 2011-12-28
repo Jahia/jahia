@@ -91,7 +91,7 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
 
     public Map<String, Object> getObjectRendering(RenderContext context,
             ExtendedPropertyDefinition propDef, Object propertyValue) throws RepositoryException {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<String, Object>(2);
         final String displayName = new Locale("en", propertyValue.toString())
                 .getDisplayCountry(context.getMainResource().getLocale());
         final String enDisplayName = new Locale("en", propertyValue.toString())

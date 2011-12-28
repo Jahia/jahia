@@ -43,6 +43,7 @@ package org.jahia.services.content.nodetypes.initializers;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
+import org.jahia.services.content.nodetypes.ValueImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +69,10 @@ public class ChoiceListValue implements Comparable<ChoiceListValue> {
         this.displayName = displayName;
         this.properties = properties;
         this.value = value;
+    }
+
+    public ChoiceListValue(String displayName, String stringValue) {
+        this(displayName, null, new ValueImpl(stringValue));
     }
 
     public String getDisplayName() {

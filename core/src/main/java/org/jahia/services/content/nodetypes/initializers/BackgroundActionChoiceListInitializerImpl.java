@@ -40,33 +40,27 @@
 
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.slf4j.Logger;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 
-import javax.jcr.PropertyType;
 import java.util.*;
 
 /**
- * 
- *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
- *        Created : 21 mai 2010
+ * Created : 21 mai 2010
  */
 public class BackgroundActionChoiceListInitializerImpl implements ChoiceListInitializer {
 
     private JahiaTemplateManagerService templateManagerService;
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(BackgroundActionChoiceListInitializerImpl.class);
 
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
         final Map<String, BackgroundAction> map = templateManagerService.getBackgroundActions();
         List<ChoiceListValue> choiceListValues = new ArrayList<ChoiceListValue>();
         for (String s : map.keySet()) {
-            choiceListValues.add(new ChoiceListValue(s,new HashMap<String, Object>(), new ValueImpl(s, PropertyType.STRING)));
+            choiceListValues.add(new ChoiceListValue(s, s));
         }
         return choiceListValues;
     }

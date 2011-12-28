@@ -41,19 +41,15 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.workflow.WorkflowService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.jcr.PropertyType;
 import java.util.*;
 
 /**
  * Initializer that returns the list of all workflow definitions
  */
 public class WorkflowTypesChoiceListInitializer implements ChoiceListInitializer {
-    private static final Logger logger = LoggerFactory.getLogger(WorkflowTypesChoiceListInitializer.class);
+
     private WorkflowService workflowService;
 
     public void setWorkflowService(WorkflowService workflowService) {
@@ -64,8 +60,7 @@ public class WorkflowTypesChoiceListInitializer implements ChoiceListInitializer
                                                      Map<String, Object> context) {
         List<ChoiceListValue> choiceListValues = new ArrayList<ChoiceListValue>();
         for (String s : workflowService.getTypesOfWorkflow()) {
-            choiceListValues.add(new ChoiceListValue(s, new HashMap<String, Object>(),
-                    new ValueImpl(s, PropertyType.STRING, false)));
+            choiceListValues.add(new ChoiceListValue(s, s));
         }
         return choiceListValues;
     }

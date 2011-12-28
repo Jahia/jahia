@@ -444,7 +444,11 @@ public class DefinitionsMapping {
         
         public String getNewType() {
             return newType;
-        }        
+        } 
+        
+        public String getNewName() {
+            return (newType != null ? newType + "|" : "") + newName ;
+        }      
     }
 
     public static class PropertyMapping extends Mapping {

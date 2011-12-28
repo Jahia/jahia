@@ -489,10 +489,7 @@ body {
 	float:right;
 
 }
-.bodywrapper .alphabeticalNavigation a:link,
-.bodywrapper .alphabeticalNavigation a:visited,
-.bodywrapper .alphabeticalNavigation a:hover,
-.bodywrapper .alphabeticalNavigation a:active {
+.bodywrapper .alphabeticalNavigation .alphabeticalLetter {
 		height:28px;
 		line-height:28px;
 		border:1px solid #ccc;

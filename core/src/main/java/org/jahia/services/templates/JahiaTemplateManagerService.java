@@ -101,7 +101,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public static final String MODULE_TYPE_MODULE = "module";
     
-    public static final String MODULE_TYPE_PROFILE_MODULE = "profileModule";
+    public static final String MODULE_TYPE_PROFILE_MODULE = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_PROFILE_MODULE;
     
     public static final String MODULE_TYPE_SYSTEM = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_SYSTEM;
     

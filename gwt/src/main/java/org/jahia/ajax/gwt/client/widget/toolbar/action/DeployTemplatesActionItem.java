@@ -114,7 +114,10 @@ public class DeployTemplatesActionItem extends BaseActionItem {
 
         menu.removeAll();
         
-        if (Constants.MODULE_TYPE_TEMPLATES_SET.equals(JahiaGWTParameters.getSiteNode().get("j:siteType"))) {
+        String siteType = JahiaGWTParameters.getSiteNode().get("j:siteType");
+        boolean isTemplateSet = Constants.MODULE_TYPE_TEMPLATES_SET.equals(siteType); 
+        boolean isProfileModule = Constants.MODULE_TYPE_PROFILE_MODULE.equals(siteType);
+        if (isTemplateSet) {
             if (sitesMap != null && sitesMap.containsKey(JahiaGWTParameters.getSiteKey())) {
                 for (GWTJahiaSite site : sitesMap.get(JahiaGWTParameters.getSiteKey())) {
                     MenuItem item = new MenuItem(site.getSiteKey());
@@ -124,9 +127,8 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                 }
             }
         } else {
-            List<String> dependencies = JahiaGWTParameters.getSiteNode().get("j:dependencies");
+//            List<String> dependencies = JahiaGWTParameters.getSiteNode().get("j:dependencies");
             for (GWTJahiaSite site : sites) {
-                String label = site.getSiteKey();
                 // dependencies are not required modules anymore
                 // todo: add a way to manage required modules
 /*
@@ -136,6 +138,12 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                     }
                 }
 */
+                // for profile modules we use only systemsite as a target
+                if (isProfileModule && !site.getSiteKey().equals("systemsite")) {
+                    continue;
+                }
+                
+                String label = site.getSiteKey();
                 if (site.getInstalledModules().contains(JahiaGWTParameters.getSiteKey())) {
                     label += " *";
                 }

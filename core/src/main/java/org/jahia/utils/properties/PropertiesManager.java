@@ -138,11 +138,15 @@ public class PropertiesManager
 	 */
     private void loadProperties()
     {
+        properties  = new Properties();
+        File file =  new File(propertiesFilePath);
+        if (!file.exists()) {
+            return;
+        } 
     	InputStream inputStream = null;
         try
         {
-            inputStream =  new BufferedInputStream(new FileInputStream( propertiesFilePath ));
-            properties  = new Properties();
+            inputStream =  new BufferedInputStream(new FileInputStream( file ));
             properties.load( inputStream );
 
         } catch (IOException ioe) {
@@ -225,10 +229,6 @@ public class PropertiesManager
     public void storeProperties( String propertiesFilePath )
     throws NullPointerException
     {
-        boolean     baseObjectExists         =  true;
-        List      bufferList             =  new ArrayList();
-        String      lineReaded               =  null;
-
         File        propertiesFileObject     =  new File( propertiesFilePath );
         File        propertiesFileFolder     =  propertiesFileObject.getParentFile();
 
@@ -238,17 +238,13 @@ public class PropertiesManager
             propertiesFileFolder = null;
         }
 
-        // try to create a file object via the propertiesFilePath...
-        try {
-            new File(this.propertiesFilePath);
-        } catch (NullPointerException npe) {
-            baseObjectExists = false;
-        }
-
         try
         {
-            if(baseObjectExists)
+            if(new File(this.propertiesFilePath).exists())
             {
+                List      bufferList             =  new ArrayList();
+                String      lineReaded               =  null;
+
                 BufferedReader buffered                  =  new BufferedReader( new FileReader( this.propertiesFilePath ) );
                 int            position                  =  0;
 

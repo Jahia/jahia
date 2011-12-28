@@ -59,6 +59,7 @@
 package org.jahia.settings;
 
 import org.apache.commons.collections.FastHashMap;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.utils.PathResolver;
@@ -316,7 +317,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             mail_maxRegroupingOfPreviousException = getInt("mail_maxRegroupingOfPreviousException", 500);
 
             // paranoia settings...
-            mail_paranoia = getString("mail_paranoia", "Disabled");
+            mail_paranoia = StringUtils.defaultIfEmpty(getString("mail_paranoia", "Disabled"), "Disabled");
 
             isProcessingServer = getBoolean("processingServer", true);
 

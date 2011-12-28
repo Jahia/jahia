@@ -284,8 +284,8 @@ public class NodeTypeRegistry implements NodeTypeManager {
         }
     }
 
-    public boolean hasNodeType(String name) throws RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+    public boolean hasNodeType(String name) {
+        return nodetypes.get(new Name(name, namespaces)) != null;
     }
 
     public NodeTypeTemplate createNodeTypeTemplate() throws UnsupportedRepositoryOperationException, RepositoryException {

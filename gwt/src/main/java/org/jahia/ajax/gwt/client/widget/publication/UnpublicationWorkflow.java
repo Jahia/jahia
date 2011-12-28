@@ -176,6 +176,7 @@ public class UnpublicationWorkflow implements CustomWorkflow {
                                     WorkInProgressActionItem.removeStatus(status);
                                     Info.display(Messages.get("label.content.unpublished"), Messages.get(
                                             "label.content.unpublished"));
+                                    dialog.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
                                 }
                             });
                 }

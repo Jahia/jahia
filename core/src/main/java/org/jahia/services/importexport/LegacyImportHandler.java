@@ -95,7 +95,7 @@ public class LegacyImportHandler extends DefaultHandler {
     private final static int CTX_SKIP = 4;
     private final static int CTX_SHAREABLE = 5;
     // private final static int CTX_MERGED = 5;
-    private final static int CTX_BOX = 6;
+
     private final static int CTX_NAVLINK = 7;
 
     private NodeTypeRegistry registry;
@@ -183,7 +183,7 @@ public class LegacyImportHandler extends DefaultHandler {
             }
             level++;
             if (ctx == -1 && HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
-                // System.out.println("create page" + attributes.getValue("jahia:title"));
+                // logger.info("create page" + attributes.getValue("jahia:title"));
                 createPage(attributes.getValue(Name.NS_JCR_URI, "primaryType"), attributes.getValue("jahia:title"),
                         attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"),
                         uuid, getMetadataForNodeCreation(attributes), attributes.getValue("jahia:pid"));
@@ -196,7 +196,7 @@ public class LegacyImportHandler extends DefaultHandler {
                     if (localName.endsWith("List") && getCurrentContentType() != null &&
                             getCurrentContentType().getChildNodeDefinitionsAsMap()
                                     .containsKey(StringUtils.substringBeforeLast(localName, "List"))) {
-                        // System.out.println("create list " + localName);
+                        // logger.info("create list " + localName);
                         // Must be a container list
                         ExtendedNodeDefinition nodeDef = getCurrentContentType().getChildNodeDefinitionsAsMap()
                                 .get(StringUtils.substringBeforeLast(localName, "List"));
@@ -221,7 +221,7 @@ public class LegacyImportHandler extends DefaultHandler {
                     if (localName.endsWith("List") && getCurrentContentType() != null &&
                             getCurrentContentType().getChildNodeDefinitionsAsMap()
                                     .containsKey(StringUtils.substringBeforeLast(localName, "List"))) {
-                        // System.out.println("create list " + localName);
+                        // logger.info("create list " + localName);
                         // Must be a container list
                         ExtendedNodeDefinition nodeDef = getCurrentContentType().getChildNodeDefinitionsAsMap()
                                 .get(StringUtils.substringBeforeLast(localName, "List"));
@@ -275,38 +275,6 @@ public class LegacyImportHandler extends DefaultHandler {
                         }
                     }
                     break;
-                case CTX_BOX:
-                    boolean isNode = false;
-                    if (localName.endsWith("List") && getCurrentContentType() != null) {
-                        String mappedName = mapping.getMappedItem(getCurrentContentType(),
-                                StringUtils.substringBeforeLast(localName, "List"));
-
-                        if (getCurrentContentType().getChildNodeDefinitionsAsMap().containsKey(
-                                mappedName)) {
-                            isNode = true;
-
-                            if (!isSingleContainerBox(mappedName)) {
-                                ExtendedNodeDefinition nodeDef = getCurrentContentType()
-                                        .getChildNodeDefinitionsAsMap().get(mappedName);
-
-                                createContentList(nodeDef, uuid, getMetadataForNodeCreation(attributes));
-                                setMetadata(attributes);
-                                setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG,"acl"));
-                            } else {
-                                currentCtx.peek().pushBox(null);
-                            }
-                        }
-                    }
-                    if (!isNode) {
-                        String propertyName = mapping.getMappedProperty(getCurrentContentType(),
-                                localName);
-                        currentCtx.peek().properties.peek().put(
-                                propertyName,
-                                mapping.getMappedPropertyValue(getCurrentContentType(), localName,
-                                        attributes.getValue("jahia:value")));
-                        currentCtx.peek().pushField(propertyName);
-                    }
-                    break;
                 case CTX_LIST:
                     /**
                      * ExtendedNodeDefinition ctnDefinition =
@@ -327,7 +295,7 @@ public class LegacyImportHandler extends DefaultHandler {
                     break;
 
                 case CTX_SHAREABLE:
-                    // System.out.println("create shareable "+localName);
+                    // logger.info("create shareable "+localName);
                     if ("#shareableSource".equals(mapping.getMappedNode(getCurrentContentType(), localName))) {
                         createShareableNode(attributes.getValue("jahia:value"));
                     } else {
@@ -335,7 +303,7 @@ public class LegacyImportHandler extends DefaultHandler {
                     }
                     break;
                 case CTX_SKIP:
-                    // System.out.println("skipped " + localName);
+                    // logger.info("skipped " + localName);
                     currentCtx.peek().pushSkip();
                     break;
                 case CTX_NAVLINK:
@@ -346,7 +314,7 @@ public class LegacyImportHandler extends DefaultHandler {
                     String title = attributes.getValue("jahia:title");
                     if (HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
                         String acl = null;
-                        System.out.println(currentCtx.peek().acls);
+                        logger.info(currentCtx.peek().acls.toString());
                         for (String a : currentCtx.peek().acls) {
                             if (a != null) {
                                 acl = a;
@@ -395,17 +363,6 @@ public class LegacyImportHandler extends DefaultHandler {
         metadataMap.put("jcr:lastModified", (date != null && date.length() == 19) ? date + ".000Z" : date);
         return metadataMap;
     }
-    private boolean isSingleContainerBox(String listName) {
-        boolean isSingleContainer = false;
-        for (String requiredPrimaryType : getCurrentContentType().getChildNodeDefinitionsAsMap()
-                .get(listName).getRequiredPrimaryTypeNames()) {
-            if (requiredPrimaryType.contains(listName) && requiredPrimaryType.endsWith("Single")) {
-                isSingleContainer = true;
-                break;
-            }
-        }
-        return isSingleContainer;
-    }
 
     /**
      * Receive notification of the end of an element.
@@ -429,11 +386,11 @@ public class LegacyImportHandler extends DefaultHandler {
             currentCtx.pop();
             if (!currentCtx.isEmpty()) {
                 currentCtx.peek().pop();
-                System.out.println(StringUtils.repeat(" ", level) + "</" + localName + "> , popped full ctx , ctx = " + (currentCtx.peek().ctx.empty() ? "empty" : currentCtx.peek().ctx.peek()));
+                logger.info(StringUtils.repeat(" ", level) + "</" + localName + "> , popped full ctx , ctx = " + (currentCtx.peek().ctx.empty() ? "empty" : currentCtx.peek().ctx.peek()));
             }
         } else {
             level--;
-            System.out.println(StringUtils.repeat(" ", level) + "</" + localName + "> , ctx = " + currentCtx.peek().ctx.peek());
+            logger.info(StringUtils.repeat(" ", level) + "</" + localName + "> , ctx = " + currentCtx.peek().ctx.peek());
             currentCtx.peek().pop();
         }
     }
@@ -529,7 +486,7 @@ public class LegacyImportHandler extends DefaultHandler {
         if (uuidMapping.containsKey(uuid)) {
             sub = session.getNodeByIdentifier(uuidMapping.get(uuid));
         } else {
-            // System.out.println("link Field-node : " + localName);
+            // logger.info("link Field-node : " + localName);
 
             sub = addOrCheckoutNode(page, "link_" + (ctnId++), nodeType, null, creationMetadata);
             if (!references.containsKey(reference)) {
@@ -727,8 +684,6 @@ public class LegacyImportHandler extends DefaultHandler {
 
         if (nodeType.equals("#skip")) {
             currentCtx.peek().pushSkip();
-        } else if (nodeType.equals("#box")) {
-            currentCtx.peek().pushBox(t);
         } else if (nodeType.equals("#navlink")) {
             currentCtx.peek().pushNavLink(t, null);
         } else if (nodeType.equals("#shareable")) {
@@ -901,7 +856,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
             // todo : add a link here ??
         } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && LINK.equals(localName)) {
-            // System.out.println("link Field-node : " + localName);
+            // logger.info("link Field-node : " + localName);
             String reference = attributes.getValue("jahia:reference");
             if (!isProperty && !node.hasNode(propertyName)) {
                 JCRNodeWrapper sub = addOrCheckoutNode(node, propertyName, "jnt:nodeLink", null, getMetadataForNodeCreation(attributes));
@@ -925,7 +880,7 @@ public class LegacyImportHandler extends DefaultHandler {
             }
             currentCtx.peek().pushSkip();
         } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && localName.equals("url")) {
-            // System.out.println("external link Field-node : " + localName);
+            // logger.info("external link Field-node : " + localName);
 
             String value = attributes.getValue("jahia:value");
             if (!node.hasNode(propertyName)) {
@@ -980,7 +935,7 @@ public class LegacyImportHandler extends DefaultHandler {
             return false;
         }
         if (propertyDefinition.isProtected()) {
-            // System.out.println("protected : " + propertyName);
+            // logger.info("protected : " + propertyName);
             return false;
         }
         Node n = parent;
@@ -1225,7 +1180,7 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         void pushList(JCRNodeWrapper node, ExtendedNodeType type) {
-            System.out.println(" push " + currentNode + " , ctx = " + CTX_LIST);
+            logger.info(" push " + currentNode + " , ctx = " + CTX_LIST);
             contents.push(node);
             contentsType.push(type);
             propertyNames.push(null);
@@ -1235,7 +1190,7 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         void pushContainer(JCRNodeWrapper node, ExtendedNodeType type) {
-            System.out.println(" push " + currentNode + " , ctx = " + CTX_CTN);
+            logger.info(" push " + currentNode + " , ctx = " + CTX_CTN);
             contents.push(node);
             contentsType.push(type);
             propertyNames.push(null);
@@ -1245,7 +1200,7 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         void pushField(String propertyName) {
-            System.out.println(" push " + currentNode + " , ctx = " + CTX_FIELD);
+            logger.info(" push " + currentNode + " , ctx = " + CTX_FIELD);
             contents.push(contents.peek());
             contentsType.push(contentsType.peek());
             propertyNames.push(propertyName);
@@ -1254,24 +1209,8 @@ public class LegacyImportHandler extends DefaultHandler {
             ctx.push(CTX_FIELD);
         }
 
-        void pushBox(ExtendedNodeType t) {
-            contents.push(contents.peek());
-            contentsType.push(t);
-            propertyNames.push(null);
-            acls.push(null);
-            if (ctx.peek() == CTX_LIST) {
-                ctx.push(CTX_BOX);
-                properties.push(new HashMap<String, String>());
-                System.out.println(" box push " + currentNode + " , ctx = " + CTX_BOX);
-            } else {
-                ctx.push(CTX_LIST);
-                properties.push(properties.peek());
-                System.out.println(" box push " + currentNode + " , ctx = " + CTX_LIST);
-            }
-        }
-
         void pushNavLink(ExtendedNodeType t, String acl) {
-            System.out.println(" push " + currentNode + " , ctx = " + CTX_NAVLINK);
+            logger.info(" push " + currentNode + " , ctx = " + CTX_NAVLINK);
             contents.push(contents.peek());
             contentsType.push(contentsType.peek());
             propertyNames.push(null);
@@ -1281,7 +1220,7 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         void pushSkip() {
-            System.out.println(" push " + currentNode + " , ctx = " + CTX_SKIP);
+            logger.info(" push " + currentNode + " , ctx = " + CTX_SKIP);
             contents.push(contents.peek());
             contentsType.push(contentsType.peek());
             propertyNames.push(null);
@@ -1291,7 +1230,7 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         void pushShareable(ExtendedNodeType t) {
-            System.out.println(" push " + currentNode + " , ctx = " + CTX_SHAREABLE);
+            logger.info(" push " + currentNode + " , ctx = " + CTX_SHAREABLE);
             contents.push(contents.peek());
             contentsType.push(t);
             propertyNames.push(null);

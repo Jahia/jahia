@@ -162,11 +162,11 @@ public class DefinitionsMapping {
         TypeMapping s = types.get(type.getName());
         if (s == null) {
             if (type.isNodeType("jnt:box")) {
-                return "#box";
+                return "jnt:contentList";
             }
             return type.getName();
         } else if ("jnt:box".equals(s.getNewName())) {
-            return "#box";            
+            return "jnt:contentList";
         }
         return s.getNewName();
     }

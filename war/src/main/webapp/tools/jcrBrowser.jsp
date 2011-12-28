@@ -21,7 +21,7 @@
 <c:set var="showNodes" value="${functions:default(param.showNodes, 'true')}"/>
 <c:set var="showActions" value="${functions:default(param.showActions, 'false')}"/>
 <c:set var="workspace" value="${functions:default(param.workspace, 'default')}"/>
-<c:set var="nodeId" value="${not empty param.uuid ? param.uuid : 'cafebabe-cafe-babe-cafe-babecafebabe'}"/>
+<c:set var="nodeId" value="${not empty param.uuid ? fn:trim(param.uuid) : 'cafebabe-cafe-babe-cafe-babecafebabe'}"/>
 <%
 JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
 JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"));

@@ -76,6 +76,7 @@ public interface ImportExportService {
     String INCLUDE_DEFINITIONS = "definitions";
     String INCLUDE_LIVE_EXPORT = "includeLive";
     String INCLUDE_USERS = "includeUsers";
+    String INCLUDE_ROLES = "includeRoles";
     String VIEW_CONTENT = "content";
     String VIEW_VERSION = "version";
     String VIEW_METADATA = "metadata";

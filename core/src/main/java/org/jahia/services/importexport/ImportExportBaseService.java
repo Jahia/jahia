@@ -311,6 +311,18 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
             zzout.finish();
         }
+        if (params.containsKey(INCLUDE_ROLES)) {
+            // export roles
+            zout.putNextEntry(new ZipEntry("roles.zip"));
+            ZipOutputStream zzout = new ZipOutputStream(zout);
+
+            try {
+                exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/roles")), zzout, tti, externalReferences, params);
+            } catch (Exception e) {
+                logger.error("Cannot export",e);
+            }
+            zzout.finish();
+        }
 
         Set<JCRNodeWrapper> refs = new HashSet<JCRNodeWrapper>();
         for (String reference : externalReferences) {

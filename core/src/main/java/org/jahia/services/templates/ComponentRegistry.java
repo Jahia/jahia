@@ -40,11 +40,21 @@
 
 package org.jahia.services.templates;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.query.InvalidQueryException;
 
@@ -54,11 +64,16 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Functions;
+import com.google.common.collect.Ordering;
 
 /**
  * Components service.
@@ -66,6 +81,8 @@ import org.slf4j.LoggerFactory;
  * @author Sergiy Shyrkov
  */
 public class ComponentRegistry {
+
+    private static final Ordering<String> CASE_INSENSITIVE_ORDERING = Ordering.from(String.CASE_INSENSITIVE_ORDER);
 
     private static final String JMIX_DROPPABLE_CONTENT = "jmix:droppableContent";
     
@@ -81,8 +98,139 @@ public class ComponentRegistry {
 
     private static final String NODE_COMPONENTS = "components";
 
-    private TemplatePackageRegistry templatePackageRegistry;
+    private static boolean allowType(ExtendedNodeType t, List<String> includeTypeList,
+            List<String> excludeTypeList) {
+        boolean include = true;
+        String typeName = t.getName();
 
+        if (excludeTypeList != null && !excludeTypeList.isEmpty()) {
+            include = !excludeTypeList.contains(typeName);
+            if (include) {
+                for (String s : excludeTypeList) {
+                    if (t.isNodeType(s)) {
+                        include = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!include) {
+            return false;
+        }
+
+        if (includeTypeList != null && !includeTypeList.isEmpty()) {
+            include = false;
+            include = includeTypeList.contains(typeName);
+            if (!include) {
+                for (String s : includeTypeList) {
+                    if (t.isNodeType(s)) {
+                        include = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return include;
+    }
+
+    private static Map<String, String> getComponentTypes(JCRNodeWrapper node,
+            List<String> includeTypeList, List<String> excludeTypeList)
+            throws PathNotFoundException, RepositoryException {
+
+        Map<ExtendedNodeType, JCRNodeWrapper> typeComponentMap = new HashMap<ExtendedNodeType, JCRNodeWrapper>();
+        List<JCRNodeWrapper> components = new LinkedList<JCRNodeWrapper>();
+
+        JCRSiteNode resolvedSite = node.getResolveSite();
+        if (resolvedSite != null && resolvedSite.hasNode("components")) {
+            components.add(resolvedSite.getNode("components"));
+        }
+        if (resolvedSite.isNodeType(Constants.JAHIANT_VIRTUALSITE)
+                && resolvedSite.hasProperty("j:dependencies")) {
+            for (Value dep : resolvedSite.getProperty("j:dependencies").getValues()) {
+                String path = "/templateSets/" + dep.getString() + "/components";
+                if (resolvedSite.getSession().nodeExists(path)) {
+                    components.add(resolvedSite.getSession().getNode(path));
+                }
+            }
+        }
+        for (int i = 0; i < components.size(); i++) {
+            JCRNodeWrapper n = components.get(i);
+            if (n.isNodeType("jnt:componentFolder")) {
+                NodeIterator nodeIterator = n.getNodes();
+                while (nodeIterator.hasNext()) {
+                    JCRNodeWrapper next = (JCRNodeWrapper) nodeIterator.next();
+                    components.add(next);
+                }
+            } else if (n.isNodeType("jnt:simpleComponent") && n.hasPermission("useComponent")) {
+                ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(n.getName());
+                if (allowType(t, includeTypeList, excludeTypeList)) {
+                    typeComponentMap.put(t, n);
+                }
+            }
+        }
+
+        String[] constraints = ConstraintsHelper.getConstraints(node).split(" ");
+        Set<ExtendedNodeType> finaltypes = new HashSet<ExtendedNodeType>();
+        for (ExtendedNodeType type : typeComponentMap.keySet()) {
+            for (String s : constraints) {
+                if (!finaltypes.contains(type) && type.isNodeType(s)) {
+                    finaltypes.add(type);
+                    continue;
+                }
+            }
+        }
+
+        if (finaltypes.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, String> finalCompoenents = new HashMap<String, String>(finaltypes.size());
+        for (ExtendedNodeType type : finaltypes) {
+            finalCompoenents.put(type.getName(), typeComponentMap.get(type).getDisplayableName());
+        }
+
+        SortedMap<String, String> sortedComponents = new TreeMap<String, String>(
+                CASE_INSENSITIVE_ORDERING.onResultOf(Functions.forMap(finalCompoenents)));
+        sortedComponents.putAll(finalCompoenents);
+
+        return sortedComponents;
+    }
+
+    public static Map<String, String> getComponentTypes(final JCRNodeWrapper node,
+            final List<String> includeTypeList, final List<String> excludeTypeList,
+            Locale displayLocale) throws PathNotFoundException, RepositoryException {
+
+        long timer = System.currentTimeMillis();
+
+        Map<String, String> sortedComponents = null;
+
+        if (displayLocale == null || displayLocale.equals(node.getSession().getLocale())) {
+            sortedComponents = getComponentTypes(node, includeTypeList, excludeTypeList);
+        } else {
+            sortedComponents = JCRTemplate.getInstance().doExecuteWithUserSession(
+                    node.getSession().getUser().getUsername(),
+                    node.getSession().getWorkspace().getName(), displayLocale,
+                    new JCRCallback<Map<String, String>>() {
+
+                        public Map<String, String> doInJCR(JCRSessionWrapper session)
+                                throws RepositoryException {
+                            return getComponentTypes(session.getNodeByUUID(node.getIdentifier()),
+                                    includeTypeList, excludeTypeList);
+                        }
+                    });
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Execution took {} ms", (System.currentTimeMillis() - timer));
+        }
+
+        return sortedComponents;
+    }
+    
+    private TemplatePackageRegistry templatePackageRegistry;
+    
     private JCRNodeWrapper findComponent(JCRNodeWrapper components, String name,
             JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {
         if (components.hasNode(name)) {
@@ -179,7 +327,7 @@ public class ComponentRegistry {
         }
         return created;
     }
-    
+
     /**
      * Performs the registration of the components from modules into JCR tree.
      */
@@ -214,7 +362,7 @@ public class ComponentRegistry {
                     (System.currentTimeMillis() - timer));
         }
     }
-
+    
     /**
      * Performs the registration of the components from the specified module into JCR tree.
      * 
@@ -268,4 +416,5 @@ public class ComponentRegistry {
     public void setTemplatePackageRegistry(TemplatePackageRegistry tmplPackageRegistry) {
         templatePackageRegistry = tmplPackageRegistry;
     }
+
 }

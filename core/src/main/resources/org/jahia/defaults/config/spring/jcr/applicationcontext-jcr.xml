@@ -316,9 +316,7 @@
         <property name="showProtected" value="true"/>
     </bean>
     <bean id="commponentLinkerInitializer"
-          class="org.jahia.services.content.nodetypes.initializers.ComponentLinkerChoiceListInitializer">
-        <property name="sessionFactory" ref="jcrSessionFactory"/>
-    </bean>
+          class="org.jahia.services.content.nodetypes.initializers.ComponentLinkerChoiceListInitializer"/>
     <bean id="workflowInitializer"
           class="org.jahia.services.content.nodetypes.initializers.WorkflowChoiceListInitializer">
         <property name="workflowService" ref="workflowService"/>
@@ -331,6 +329,7 @@
           class="org.jahia.services.content.nodetypes.initializers.SortChoiceListInitializerImpl"/>
     <bean id="nodeReferenceRenderer"
           class="org.jahia.services.content.nodetypes.renderer.NodeReferenceChoiceListRenderer"/>
+    <bean id="componentTypesInitializer" class="org.jahia.services.content.nodetypes.initializers.ComponentTypesChoiceListInitializerImpl"/>
 
     <bean id="choiceListInitializers"
           class="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService"
@@ -355,6 +354,7 @@
                 <entry key="workflow" value-ref="workflowInitializer"/>
                 <entry key="workflowTypes" value-ref="workflowTypesInitializer"/>
                 <entry key="sort" value-ref="sortInitializer"/>
+                <entry key="componenttypes" value-ref="componentTypesInitializer"/>
             </map>
         </property>
     </bean>

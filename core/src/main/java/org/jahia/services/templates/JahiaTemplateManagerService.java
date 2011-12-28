@@ -96,7 +96,17 @@ import java.util.regex.Pattern;
  * @author Sergiy Shyrkov
  */
 public class JahiaTemplateManagerService extends JahiaService implements ApplicationEventPublisherAware, ApplicationListener<ApplicationEvent> {
+    
+    public static final String MODULE_TYPE_JAHIAPP = "jahiapp";
 
+    public static final String MODULE_TYPE_MODULE = "module";
+    
+    public static final String MODULE_TYPE_PROFILE_MODULE = "profileModule";
+    
+    public static final String MODULE_TYPE_SYSTEM = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_SYSTEM;
+    
+    public static final String MODULE_TYPE_TEMPLATES_SET = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_TEMPLATES_SET;
+    
     private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/templateSets/[^/]*/templates/(.*)");
 
     /**
@@ -701,7 +711,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         NodeIterator ni = sites.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper site = (JCRNodeWrapper) ni.next();
-            if (tpl.hasProperty("j:siteType") && "templatesSet".equals(tpl.getProperty("j:siteType").getString())) {
+            if (tpl.hasProperty("j:siteType") && MODULE_TYPE_TEMPLATES_SET.equals(tpl.getProperty("j:siteType").getString())) {
                 if (tpl.getName().equals(site.getResolveSite().getTemplateFolder())) {
                     deployModule(modulePath, site.getPath(), sessionWrapper);
                 }

@@ -855,8 +855,8 @@ public class ManageSites extends AbstractAdministrationModule {
 
             request.setAttribute("selectedTmplSet", selectedTmplSet);
             request.setAttribute("tmplSets", orderedTemplateSets.values());
-            request.setAttribute("modules", getModulesOfType("module").values());
-            request.setAttribute("jahiApps", getModulesOfType("jahiapp").values());
+            request.setAttribute("modules", getModulesOfType(JahiaTemplateManagerService.MODULE_TYPE_MODULE).values());
+            request.setAttribute("jahiApps", getModulesOfType(JahiaTemplateManagerService.MODULE_TYPE_JAHIAPP).values());
             request.setAttribute("selectedModules", jParams.getParameterValues("selectedModules"));
             request.setAttribute("selectedPackage", selectedPackage);
             Locale currentLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_LOCALE);
@@ -2166,7 +2166,7 @@ public class ManageSites extends AbstractAdministrationModule {
     }
 
     private TreeMap<String, JCRNodeWrapper> getTemplatesSets() throws RepositoryException {
-        return getModulesOfType("templatesSet");
+        return getModulesOfType(JahiaTemplateManagerService.MODULE_TYPE_TEMPLATES_SET);
     }
 
     private TreeMap<String, JCRNodeWrapper> getModulesOfType(String... moduleTypes) throws RepositoryException {

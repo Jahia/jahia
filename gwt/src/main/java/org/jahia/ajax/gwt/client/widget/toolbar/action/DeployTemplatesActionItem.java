@@ -52,6 +52,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
 
         menu.removeAll();
         
-        if ("templatesSet".equals(JahiaGWTParameters.getSiteNode().get("j:siteType"))) {
+        if (Constants.MODULE_TYPE_TEMPLATES_SET.equals(JahiaGWTParameters.getSiteNode().get("j:siteType"))) {
             if (sitesMap != null && sitesMap.containsKey(JahiaGWTParameters.getSiteKey())) {
                 for (GWTJahiaSite site : sitesMap.get(JahiaGWTParameters.getSiteKey())) {
                     MenuItem item = new MenuItem(site.getSiteKey());
@@ -173,7 +174,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
 
                 final String[] parts = nodePath.split("/");
                 nodePath = "/" + parts[1] + "/" + parts[2];
-                if ("templatesSet".equals(JahiaGWTParameters.getSiteNode().get("j:siteType"))) {
+                if (Constants.MODULE_TYPE_TEMPLATES_SET.equals(JahiaGWTParameters.getSiteNode().get("j:siteType"))) {
                     if (sitesMap != null && sitesMap.containsKey(JahiaGWTParameters.getSiteKey())) {
                         for (final GWTJahiaSite site : sitesMap.get(JahiaGWTParameters.getSiteKey())) {
                             linker.loading(Messages.getWithArgs(

@@ -51,6 +51,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.importexport.validation.*;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.slf4j.Logger;
@@ -1119,7 +1120,7 @@ public class ContentManagerHelper {
 //                    templateSet.getNode("templates/base").setProperty("j:view", shortName);
 //                }
                 session.save();
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName, siteType, "templatesSet".equals(siteType));
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName, siteType, JahiaTemplateManagerService.MODULE_TYPE_TEMPLATES_SET.equals(siteType));
 
                 return navigation.getGWTJahiaNode(templateSet, GWTJahiaNode.DEFAULT_SITE_FIELDS);
             } catch (IOException e) {
@@ -1136,7 +1137,7 @@ public class ContentManagerHelper {
                 siteType = session.getNode("/templateSets/" + baseSet).getProperty("j:siteType").getValue().getString();
                 session.getNode("/templateSets/" + shortName).setProperty("j:title", key);
 
-                boolean isTemplatesSet = "templatesSet".equals(siteType);
+                boolean isTemplatesSet = JahiaTemplateManagerService.MODULE_TYPE_TEMPLATES_SET.equals(siteType);
 
                 if (isTemplatesSet) {
                     Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:template] as t where t.[j:view]='" + baseSet + "' and isdescendantnode(t,'/templateSets/" + shortName + "')", Query.JCR_SQL2);

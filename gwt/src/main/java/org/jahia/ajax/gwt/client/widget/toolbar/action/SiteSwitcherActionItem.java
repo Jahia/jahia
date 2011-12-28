@@ -56,6 +56,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
@@ -135,7 +136,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         Set<String> moduleSet = new LinkedHashSet<String>();
         for (GWTJahiaNode s : sites) {
             String moduleType;
-            if (s.getProperties().get("j:siteType") != null && !(moduleType = (String) s.getProperties().get("j:siteType")).equals("system")) {
+            if (s.getProperties().get("j:siteType") != null && !(moduleType = (String) s.getProperties().get("j:siteType")).equals(Constants.MODULE_TYPE_SYSTEM)) {
                 String r = Messages.get("moduleType." + moduleType + ".label", moduleType);
                 modulesTypes.put(r, moduleType);
                 moduleSet.add(r);

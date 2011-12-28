@@ -78,5 +78,6 @@ public abstract class Constants {
     public static final int MODE_PREVIEW = 1;
     public static final int MODE_STAGING = 2;
 
-
+    public static final String MODULE_TYPE_SYSTEM = "system";
+    public static final String MODULE_TYPE_TEMPLATES_SET = "templatesSet";
 }

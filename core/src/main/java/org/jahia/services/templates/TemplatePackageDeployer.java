@@ -629,14 +629,14 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     }
 
     private String guessModuleType(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
-        String moduleType = "module";
+        String moduleType = JahiaTemplateManagerService.MODULE_TYPE_MODULE;
         if (session.itemExists("/templateSets/" + pack.getRootFolder() + "/j:siteType")) {
             moduleType = session.getNode("/templateSets/"+pack.getRootFolder()).getProperty("j:siteType").getValue().getString();
         } else {
             List<String> files = new ArrayList<String>(Arrays.asList(new File(pack.getFilePath()).list()));
             files.removeAll(Arrays.asList("META-INF","WEB-INF", "resources"));
             if (files.isEmpty()) {
-                moduleType = "system";
+                moduleType = JahiaTemplateManagerService.MODULE_TYPE_SYSTEM;
             }
         }
         return moduleType;

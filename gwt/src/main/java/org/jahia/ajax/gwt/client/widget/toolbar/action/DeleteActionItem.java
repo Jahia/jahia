@@ -131,7 +131,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                     updateTitle(getGwtToolbarItem().getTitle() + " : " + selection.get(0).getDisplayName());
                 }
             } else {
-                updateTitle(getGwtToolbarItem().getTitle() + " : " + selection.get(0).getDisplayName());
+                updateTitle(getGwtToolbarItem().getTitle() + " " + selection.size() + " " + Messages.get("label.items"));
             }
         }
         boolean enabled = selection != null && selection.size() > 0

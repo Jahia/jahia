@@ -140,7 +140,6 @@
                         </goals>
                         <configuration>
                             <cssSourceFiles>
-                                <cssSourceFile>contribute-toolbar.css</cssSourceFile>
                                 <cssSourceFile>jquery.fancybox.css</cssSourceFile>
                                 <cssSourceFile>contentlist.css</cssSourceFile>
                                 <cssSourceFile>timepicker.css</cssSourceFile>
@@ -152,6 +151,7 @@
                                 <cssSourceFile>ui.slider.css</cssSourceFile>
                                 <cssSourceFile>jquery-ui.smoothness.css</cssSourceFile>
                                 <cssSourceFile>jquery-ui.smoothness-jahia.css</cssSourceFile>
+                                <cssSourceFile>contribute-toolbar.css</cssSourceFile>
                             </cssSourceFiles>
                             <cssFinalFile>contribute.css</cssFinalFile>
                         </configuration>

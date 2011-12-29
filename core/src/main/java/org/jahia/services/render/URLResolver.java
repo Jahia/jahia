@@ -438,7 +438,8 @@ public class URLResolver {
         if (nodePathCache.containsKey(cacheKey) && siteInfoCache.containsKey(cacheKey)) {
             nodePath = (String) nodePathCache.get(cacheKey);
             siteInfo = (SiteInfo) siteInfoCache.get(cacheKey);
-        } else {
+        }
+        if (nodePath == null || siteInfo == null) {
             nodePath = JCRTemplate.getInstance().doExecuteWithSystemSession(null,
                     workspace, locale, new JCRCallback<String>() {
                         public String doInJCR(JCRSessionWrapper session)

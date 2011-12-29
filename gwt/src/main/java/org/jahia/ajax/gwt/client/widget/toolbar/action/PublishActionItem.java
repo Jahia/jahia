@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -176,7 +177,11 @@ public class PublishActionItem extends BaseActionItem {
 
                             public void onSuccess(List<GWTJahiaPublicationInfo> result) {
                                 linker.loaded();
-                                PublicationWorkflow.create(result, linker);
+                                if (result.isEmpty()) {
+                                    MessageBox.info(Messages.get("label.publish", "Publication"), Messages.get("label.publication.nothingToPublish", "Nothing to publish"), null);
+                                } else {
+                                    PublicationWorkflow.create(result, linker);
+                                }
                             }
                         });
             }

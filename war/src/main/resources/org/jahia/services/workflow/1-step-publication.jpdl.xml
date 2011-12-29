@@ -10,15 +10,8 @@
     </custom>
 
     <mail class="org.jahia.services.workflow.jbpm.JBPMMailProducer" name="sendStartMail" g="216,53,80,40">
-        <property name="template">
-            <object method="getTemplate">
-                <factory>
-                    <ref type="org.jbpm.pvm.internal.email.impl.MailTemplateRegistry"/>
-                </factory>
-                <arg>
-                    <string value="start-publication-template"/>
-                </arg>
-            </object>
+        <property name="templateKey">
+            <string value="start-publication-template"/>
         </property>
         <transition to="review"/>
     </mail>
@@ -31,29 +24,15 @@
     </task>
 
     <mail class="org.jahia.services.workflow.jbpm.JBPMMailProducer" name="alertReject" g="454,94,80,40">
-        <property name="template">
-            <object method="getTemplate">
-                <factory>
-                    <ref type="org.jbpm.pvm.internal.email.impl.MailTemplateRegistry"/>
-                </factory>
-                <arg>
-                    <string value="alert-reject-template"/>
-                </arg>
-            </object>
+        <property name="templateKey">
+            <string value="alert-reject-template"/>
         </property>
         <transition to="unlock"/>
     </mail>
 
     <mail class="org.jahia.services.workflow.jbpm.JBPMMailProducer" name="alertPublish" g="450,16,80,40">
-        <property name="template">
-            <object method="getTemplate">
-                <factory>
-                    <ref type="org.jbpm.pvm.internal.email.impl.MailTemplateRegistry"/>
-                </factory>
-                <arg>
-                    <string value="alert-publish-template"/>
-                </arg>
-            </object>
+        <property name="templateKey">
+            <string value="alert-publish-template"/>
         </property>
         <transition to="publish"/>
     </mail>

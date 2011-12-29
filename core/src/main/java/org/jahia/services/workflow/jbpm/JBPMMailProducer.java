@@ -43,6 +43,7 @@ package org.jahia.services.workflow.jbpm;
 import org.apache.commons.lang.WordUtils;
 import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
@@ -53,10 +54,9 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jbpm.api.Execution;
+import org.jbpm.api.ProcessEngine;
 import org.jbpm.api.cmd.Environment;
-import org.jbpm.pvm.internal.email.impl.AddressTemplate;
-import org.jbpm.pvm.internal.email.impl.AttachmentTemplate;
-import org.jbpm.pvm.internal.email.impl.MailProducerImpl;
+import org.jbpm.pvm.internal.email.impl.*;
 import org.jbpm.pvm.internal.env.EnvironmentImpl;
 import org.jbpm.pvm.internal.model.ExecutionImpl;
 import org.slf4j.Logger;
@@ -72,8 +72,6 @@ import java.security.Principal;
 import java.util.*;
 
 /**
- * 
- *
  * @author : rincevent
  * @since JAHIA 6.5
  *        Created : 14 sept. 2010
@@ -84,38 +82,73 @@ public class JBPMMailProducer extends MailProducerImpl {
     ScriptEngine scriptEngine;
     private Bindings bindings;
 
-    public Collection<Message> produce(Execution execution) {
-        if (ServicesRegistry.getInstance().getMailService().isEnabled() && getTemplate()!=null) {
-            try {
-                scriptEngine = ScriptEngineUtils.getInstance().getEngineByName(getTemplate().getLanguage());
-                bindings = null;
-                Message email = instantiateEmail();
-                fillFrom(execution, email);
+    private String templateKey;
 
-                fillRecipients(execution, email);
-                fillSubject(execution, email);
-                fillContent(execution, email);
-                Address[] addresses = email.getRecipients(Message.RecipientType.TO);
-                if (addresses != null && addresses.length > 0) {
-                    return Collections.singleton(email);
-                } else {
-                    return Collections.emptyList();
+    public String getTemplateKey() {
+        return templateKey;
+    }
+
+    public void setTemplateKey(String templateKey) {
+        this.templateKey = templateKey;
+    }
+
+    public Collection<Message> produce(final Execution execution) {
+        final Map<String, Object> vars = ((ExecutionImpl) execution).getVariables();
+        Locale locale = (Locale) vars.get("locale");
+        
+        if (templateKey != null) {
+            MailTemplate template = null;
+            MailTemplateRegistry templateRegistry = ((ProcessEngine) SpringContextSingleton.getBean("processEngine")).get(MailTemplateRegistry.class);
+            if (locale != null) {
+                template = (templateRegistry.getTemplate(templateKey + "." + locale.toString()));
+                if (template == null) {
+                    template = (templateRegistry.getTemplate(templateKey + "." + locale.getLanguage()));
                 }
-            } catch (MessagingException e) {
-                logger.error(e.getMessage(),e);
-            } catch (ScriptException e) {
+            }
+            if (template == null) {
+                template = templateRegistry.getTemplate(templateKey);
+            }
+            setTemplate(template);
+        }
+
+        if (ServicesRegistry.getInstance().getMailService().isEnabled() && getTemplate() != null) {
+            try {
+                return JCRTemplate.getInstance().doExecuteWithSystemSession(null,"default",locale,new JCRCallback<Collection<Message>>() {
+                    public Collection<Message> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        try {
+                            scriptEngine = ScriptEngineUtils.getInstance().getEngineByName(getTemplate().getLanguage());
+                            bindings = null;
+                            Message email = instantiateEmail();
+                            fillFrom(execution, email, session);
+                            fillRecipients(execution, email, session);
+                            fillSubject(execution, email, session);
+                            fillContent(execution, email, session);
+                            Address[] addresses = email.getRecipients(Message.RecipientType.TO);
+                            if (addresses != null && addresses.length > 0) {
+                                return Collections.singleton(email);
+                            } else {
+                                return Collections.emptyList();
+                            }
+                        } catch (MessagingException e) {
+                            logger.error(e.getMessage(), e);
+                        } catch (ScriptException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                        return Collections.emptyList();
+                    }
+                });
+            } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
         }
         return Collections.emptyList();
     }
 
-    @Override
-    protected void fillSubject(Execution execution, Message email) throws MessagingException {
+    protected void fillSubject(Execution execution, Message email, JCRSessionWrapper session) throws MessagingException {
         String subject = getTemplate().getSubject();
         if (subject != null) {
             try {
-                String evaluatedSubject = evaluateExpression(execution, subject).replaceAll("[\r\n]", "");
+                String evaluatedSubject = evaluateExpression(execution, subject, session).replaceAll("[\r\n]", "");
                 email.setSubject(WordUtils.abbreviate(evaluatedSubject, 60, 74, "..."));
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
@@ -125,79 +158,11 @@ public class JBPMMailProducer extends MailProducerImpl {
         }
     }
 
-    @Override
-    protected void fillRecipients(Execution execution, Message email) throws MessagingException {
+    protected void fillRecipients(Execution execution, Message email, JCRSessionWrapper session) throws MessagingException {
         try {
-            ExecutionImpl exe = (ExecutionImpl) execution;
-            SortedSet<String> emails = new TreeSet<String>();
-            AddressTemplate addressTemplate = getTemplate().getTo();
-            String s = "";
-            if (addressTemplate != null) {
-                s = addressTemplate.getUsers();
-                if (!"".equals(s)) {
-                    if ("assignable".equals(s)) {
-                        emails.addAll(getAssignables(exe, s));
-                    } else {
-                        emails.add(evaluateExpression(execution, s));
-                    }
-
-                    for (String m : emails) {
-                        if (m != null && !"".equals(m)) {
-                            try {
-                                InternetAddress address = new InternetAddress(m);
-                                address.validate();
-                                email.addRecipient(Message.RecipientType.TO, address);
-                            } catch (MessagingException e) {
-                                logger.debug(e.getMessage(), e);
-                            }
-                        }
-                    }
-
-                    emails.clear();
-                }
-            }
-            if (!"".equals(s)) {
-                addressTemplate = getTemplate().getCc();
-                if (addressTemplate != null) {
-                    s = addressTemplate.getUsers();
-                    if ("assignable".equals(s)) {
-                        emails.addAll(getAssignables(exe, s));
-                    } else {
-                        emails.add(evaluateExpression(execution, s));
-                    }
-                    for (String m : emails) {
-                        if (m != null && !"".equals(m)) {
-                            try {
-                                InternetAddress address = new InternetAddress(m);
-                                address.validate();
-                                email.addRecipient(Message.RecipientType.CC, address);
-                            } catch (MessagingException e) {
-                                logger.debug(e.getMessage(), e);
-                            }
-                        }
-                    }
-                }
-                addressTemplate = getTemplate().getBcc();
-                if (addressTemplate != null) {
-                    s = addressTemplate.getUsers();
-                    if ("assignable".equals(s)) {
-                        emails.addAll(getAssignables(exe, s));
-                    } else {
-                        emails.add(evaluateExpression(execution, s));
-                    }
-                    for (String m : emails) {
-                        if (m != null && !"".equals(m)) {
-                            try {
-                                InternetAddress address = new InternetAddress(m);
-                                address.validate();
-                                email.addRecipient(Message.RecipientType.BCC, address);
-                            } catch (MessagingException e) {
-                                logger.debug(e.getMessage(), e);
-                            }
-                        }
-                    }
-                }
-            }
+            fillRecipients(execution, email, session, getTemplate().getTo(), Message.RecipientType.TO);
+            fillRecipients(execution, email, session, getTemplate().getCc(), Message.RecipientType.CC);
+            fillRecipients(execution, email, session, getTemplate().getBcc(), Message.RecipientType.BCC);
         } catch (ScriptException e) {
             logger.error(e.getMessage(), e);
         } catch (RepositoryException e) {
@@ -205,7 +170,39 @@ public class JBPMMailProducer extends MailProducerImpl {
         }
     }
 
-    private SortedSet<String> getAssignables(ExecutionImpl exe, String s) throws RepositoryException {
+    private void fillRecipients(Execution execution, Message email, JCRSessionWrapper session, AddressTemplate addressTemplate, Message.RecipientType type) throws RepositoryException, ScriptException {
+        String s;
+        SortedSet<String> emails = new TreeSet<String>();
+        if (addressTemplate != null) {
+            s = addressTemplate.getUsers();
+            if (!"".equals(s)) {
+                s = evaluateExpression(execution, s, session);
+                String[] mails = s.split(",");
+                for (String mail : mails) {
+                    mail = mail.replace('\n', ' ').trim();
+                    if ("assignable".equals(mail)) {
+                        emails.addAll(getAssignables((ExecutionImpl) execution));
+                    } else {
+                        emails.add(mail);
+                    }
+                }
+
+                for (String m : emails) {
+                    if (m != null && !"".equals(m)) {
+                        try {
+                            InternetAddress address = new InternetAddress(m);
+                            address.validate();
+                            email.addRecipient(type, address);
+                        } catch (MessagingException e) {
+                            logger.debug(e.getMessage(), e);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private SortedSet<String> getAssignables(ExecutionImpl exe) throws RepositoryException {
         SortedSet<String> emails = new TreeSet<String>();
         WorkflowDefinition def = (WorkflowDefinition) exe.getVariable("workflow");
         String id = (String) exe.getVariable("nodeId");
@@ -236,15 +233,14 @@ public class JBPMMailProducer extends MailProducerImpl {
      *
      * @see {@link javax.mail.internet.InternetAddress#getLocalAddress(javax.mail.Session)}
      */
-    @Override
-    protected void fillFrom(Execution execution, Message email) throws MessagingException {
+    protected void fillFrom(Execution execution, Message email, JCRSessionWrapper session) throws MessagingException {
         try {
             if (getTemplate().getFrom() == null) {
                 email.setFrom(new InternetAddress(SettingsBean.getInstance().getMail_from()));
                 return;
             }
             String scriptToExecute = getTemplate().getFrom().getUsers();
-            String scriptResult = evaluateExpression(execution, scriptToExecute);
+            String scriptResult = evaluateExpression(execution, scriptToExecute, session);
             email.setFrom(new InternetAddress(scriptResult));
         } catch (ScriptException e) {
             logger.error(e.getMessage(), e);
@@ -253,8 +249,7 @@ public class JBPMMailProducer extends MailProducerImpl {
         }
     }
 
-    @Override
-    protected void fillContent(Execution execution, Message email) throws MessagingException {
+    protected void fillContent(Execution execution, Message email, JCRSessionWrapper session) throws MessagingException {
         String text = getTemplate().getText();
         String html = getTemplate().getHtml();
         List<AttachmentTemplate> attachmentTemplates = getTemplate().getAttachmentTemplates();
@@ -267,15 +262,15 @@ public class JBPMMailProducer extends MailProducerImpl {
                 // text
                 if (text != null) {
                     BodyPart textPart = new MimeBodyPart();
-                    text = evaluateExpression(execution, text);
-                    textPart.setText(text);
+                    text = evaluateExpression(execution, text, session);
+                    textPart.setContent(text, "text/plain; charset=UTF-8");
                     multipart.addBodyPart(textPart);
                 }
 
                 // html
                 if (html != null) {
                     BodyPart htmlPart = new MimeBodyPart();
-                    html = evaluateExpression(execution, html);
+                    html = evaluateExpression(execution, html, session);
                     htmlPart.setContent(html, "text/html");
                     multipart.addBodyPart(htmlPart);
                 }
@@ -288,7 +283,7 @@ public class JBPMMailProducer extends MailProducerImpl {
                 email.setContent(multipart);
             } else if (text != null) {
                 // unipart
-                text = evaluateExpression(execution, text);
+                text = evaluateExpression(execution, text, session);
                 email.setText(text);
             }
         } catch (RepositoryException e) {
@@ -298,20 +293,23 @@ public class JBPMMailProducer extends MailProducerImpl {
         }
     }
 
-    private String evaluateExpression(Execution execution, String scriptToExecute)
+    private String evaluateExpression(Execution execution, String scriptToExecute, JCRSessionWrapper session)
             throws RepositoryException, ScriptException {
         ScriptContext scriptContext = scriptEngine.getContext();
         if (bindings == null) {
-            bindings = getBindings(execution);
+            bindings = getBindings(execution, session);
         }
         scriptContext.setWriter(new StringWriter());
         scriptContext.setErrorWriter(new StringWriter());
         scriptEngine.eval(scriptToExecute, bindings);
         String error = scriptContext.getErrorWriter().toString();
+        if (!error.isEmpty()) {
+            logger.error("Scripting error : " + error);
+        }
         return scriptContext.getWriter().toString().trim();
     }
 
-    private Bindings getBindings(Execution execution) throws RepositoryException {
+    private Bindings getBindings(Execution execution, JCRSessionWrapper session) throws RepositoryException {
         EnvironmentImpl environment = EnvironmentImpl.getCurrent();
         final Map<String, Object> vars = ((ExecutionImpl) execution).getVariables();
         Locale locale = (Locale) vars.get("locale");
@@ -330,16 +328,16 @@ public class JBPMMailProducer extends MailProducerImpl {
         bindings.put("submissionDate", Calendar.getInstance());
         bindings.put("locale", locale);
         bindings.put("workspace", vars.get("workspace"));
-        bindings.put("nodes", JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                @SuppressWarnings("unchecked") List<String> stringList = (List<String>) vars.get("nodeIds");
-                List<JCRNodeWrapper> nodes = new LinkedList<JCRNodeWrapper>();
-                for (String s : stringList) {
-                    nodes.add(session.getNodeByUUID(s));
-                }
-                return nodes;
+
+        List<JCRNodeWrapper> nodes = new LinkedList<JCRNodeWrapper>();
+        @SuppressWarnings("unchecked") List<String> stringList = (List<String>) vars.get("nodeIds");
+        for (String s : stringList) {
+            JCRNodeWrapper nodeByUUID = session.getNodeByUUID(s);
+            if (!nodeByUUID.isNodeType("jnt:translation")) {
+                nodes.add(nodeByUUID);
             }
-        }));
+        }
+        bindings.put("nodes", nodes);
         return bindings;
     }
 

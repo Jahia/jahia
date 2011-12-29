@@ -19,6 +19,11 @@
                 <value>classpath*:org/jahia/services/workflow/*.jpdl.xml</value>
             </list>
         </property>
+        <property name="mailTemplates">
+            <list>
+                <value>classpath*:org/jahia/services/workflow/*.mail</value>
+            </list>
+        </property>
         <property name="userManager" ref="JahiaUserManagerService"/>
         <property name="groupManager" ref="JahiaGroupManagerService"/>
         <property name="cacheService" ref="JahiaCacheService"/>

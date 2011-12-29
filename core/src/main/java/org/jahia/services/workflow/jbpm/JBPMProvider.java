@@ -40,6 +40,7 @@
 
 package org.jahia.services.workflow.jbpm;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
@@ -65,6 +66,9 @@ import org.jbpm.jpdl.internal.activity.TaskActivity;
 import org.jbpm.jpdl.internal.model.JpdlProcessDefinition;
 import org.jbpm.pvm.internal.cmd.DeleteDeploymentCmd;
 import org.jbpm.pvm.internal.cmd.DeployCmd;
+import org.jbpm.pvm.internal.email.impl.AddressTemplate;
+import org.jbpm.pvm.internal.email.impl.MailTemplate;
+import org.jbpm.pvm.internal.email.impl.MailTemplateRegistry;
 import org.jbpm.pvm.internal.model.ActivityImpl;
 import org.jbpm.pvm.internal.model.EventImpl;
 import org.jbpm.pvm.internal.model.EventListenerReference;
@@ -75,7 +79,9 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -95,7 +101,9 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     private ExecutionService executionService;
     private HistoryService historyService;
     private ManagementService managementService;
+    private MailTemplateRegistry mailTemplateRegistry;
     private Resource[] processes;
+    private Resource[] mailTemplates;
     private TaskService taskService;
     private static Map<String, String> participationRoles = new HashMap<String, String>();
     private static Map<String, String> participationRolesInverted = new HashMap<String, String>();
@@ -145,6 +153,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         taskService = processEngine.getTaskService();
         historyService = processEngine.getHistoryService();
         managementService = processEngine.getManagementService();
+        mailTemplateRegistry = processEngine.get(MailTemplateRegistry.class);
     }
 
     public static JBPMProvider getInstance() {
@@ -211,10 +220,82 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             }
             logger.info("...workflow processes deployed.");
         }
+        if (mailTemplates != null && mailTemplates.length > 0) {
+            logger.info("Found " + processes.length + " workflow mail templates to be deployed.");
+
+            List keys = Arrays.asList("from","to","cc","bcc","subject","text","html","language");
+
+            for (Resource mailTemplateResource : mailTemplates) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(mailTemplateResource.getInputStream(), "UTF-8"));
+                MailTemplate mailTemplate = new MailTemplate();
+                mailTemplate.setLanguage("velocity");
+                int currentField = -1;
+                String currentLine;
+                StringBuilder buf = new StringBuilder();
+                while ((currentLine = reader.readLine()) != null) {
+                    if (currentLine.contains(":")) {
+                        String prefix = StringUtils.substringBefore(currentLine,  ":");
+                        if (keys.contains(prefix.toLowerCase())) {
+                            setMailTemplateField(mailTemplate, currentField, buf);
+                            buf = new StringBuilder();
+                            currentField = keys.indexOf(prefix.toLowerCase());
+                            currentLine = StringUtils.substringAfter(currentLine,  ":").trim();
+                        }
+                    } else {
+                        buf.append('\n');
+                    }
+                    buf.append(currentLine);
+                }
+                setMailTemplateField(mailTemplate, currentField, buf);
+                mailTemplateRegistry.addTemplate(StringUtils.substringBeforeLast(mailTemplateResource.getFilename(),"."), mailTemplate);
+            }
+        }
+
+    }
+
+    private void setMailTemplateField(MailTemplate t, int currentField, StringBuilder buf) {
+        switch (currentField) {
+            case 0:
+                AddressTemplate from = new AddressTemplate();
+                from.setUsers(buf.toString());
+                t.setFrom(from);
+                break;
+            case 1:
+                AddressTemplate to = new AddressTemplate();
+                to.setUsers(buf.toString());
+                t.setTo(to);
+                break;
+            case 2:
+                AddressTemplate cc = new AddressTemplate();
+                cc.setUsers(buf.toString());
+                t.setTo(cc);
+                break;
+            case 3:
+                AddressTemplate bcc = new AddressTemplate();
+                bcc.setUsers(buf.toString());
+                t.setTo(bcc);
+                break;
+            case 4:
+                t.setSubject(buf.toString());
+                break;
+            case 5:
+                t.setText(buf.toString());
+                break;
+            case 6:
+                t.setHtml(buf.toString());
+                break;
+            case 7:
+                t.setLanguage(buf.toString());
+                break;
+        }
     }
 
     public void setProcesses(Resource[] processes) {
         this.processes = processes;
+    }
+
+    public void setMailTemplates(Resource[] mailTemplates) {
+        this.mailTemplates = mailTemplates;
     }
 
     public List<WorkflowDefinition> getAvailableWorkflows(Locale locale) {

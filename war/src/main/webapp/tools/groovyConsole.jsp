@@ -51,16 +51,21 @@ pageContext.setAttribute("took", System.currentTimeMillis() - timer);
     if (e instanceof ScriptException && e.getMessage() != null && e.getMessage().startsWith("Script engine not found for extension")) {
         %><p>Groovy engine is not available.</p><%
     } else {
-        pageContext.setAttribute("error", e);
+        Throwable ex = e.getCause() != null ? e.getCause() : e;
+        if (ex instanceof ScriptException && e.getCause() != null) {
+            ex = ex.getCause();
+        }
+        pageContext.setAttribute("error", ex);
         StringWriter sw = new StringWriter();
-        e.printStackTrace(new PrintWriter(sw));
+        ex.printStackTrace(new PrintWriter(sw));
         sw.flush();
         pageContext.setAttribute("stackTrace", sw.getBuffer().toString());
         %>
         <fieldset>
             <legend style="color: red">Error</legend>
-            <p style="color: red">${fn:escapeXml(error.message)}</p>
-            <pre>${stackTrace}</pre>
+            <p style="color: red">${fn:escapeXml(error)}</p>
+            <a href="#show-stacktrace" onclick="var st=document.getElementById('stacktrace').style; st.display=st.display == 'none' ? '' : 'none'; return false;">show stacktrace</a>
+            <pre id="stacktrace" style="display:none">${stackTrace}</pre>
         </fieldset>
         <%
     }

@@ -372,7 +372,7 @@ function go(id1, value1, id2, value2, id3, value3) {
 <%} catch (Exception e) {
 %>
 <body>
-<p style="color:red;"><strong>Error: </strong><%=e %><% e.printStackTrace(new java.io.PrintWriter(out)); %></p>
+<p style="color:red;"><strong>Error: </strong><%=e %><pre style="color:red;"><% e.printStackTrace(new java.io.PrintWriter(out)); %></pre></p>
 <%} finally {
     JCRSessionFactory.getInstance().setCurrentUser(null);
 }%>

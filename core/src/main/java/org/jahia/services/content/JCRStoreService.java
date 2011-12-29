@@ -64,6 +64,7 @@ import javax.jcr.observation.ObservationManager;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +98,8 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     private InterceptorChain interceptorChain;
     private Map<String,ExternalProvider> externalProviders = new HashMap<String, ExternalProvider>();
     private List<PropertyInterceptor> interceptors = new LinkedList<PropertyInterceptor>();
-
+    private Set<String> noValidityCheckTypes = new HashSet<String>();
+    
     private Map<String,List<DefaultEventListener>> listeners;
 
     private JCRSessionFactory sessionFactory;
@@ -307,5 +309,13 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     }
 
     public void stop() throws JahiaException {
+    }
+
+    public Set<String> getNoValidityCheckTypes() {
+        return noValidityCheckTypes;
+    }
+
+    public void setNoValidityCheckTypes(Set<String> noValidityCheckTypes) {
+        this.noValidityCheckTypes = noValidityCheckTypes;
     }
 }

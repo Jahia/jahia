@@ -135,14 +135,13 @@ public class VanityUrlManager {
                                                   String siteKey, JCRSessionWrapper session) throws RepositoryException {
         VanityUrl vanityUrl = null;
         if (contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED)) {
+            boolean isSite = (contentNode.getResolveSite().getSiteKey().equals(siteKey));
             String currentLanguage = session.getLocale().toString();
-            contentNode = session.getNodeByUUID(contentNode.getIdentifier());
-            for (NodeIterator it = contentNode.getNode(VANITYURLMAPPINGS_NODE).getNodes(); it
+            for (NodeIterator it = session.getNode(contentNode.getPath() + "/" + VANITYURLMAPPINGS_NODE).getNodes(); it
                     .hasNext();) {
                 JCRNodeWrapper currentNode = (JCRNodeWrapper) it.next();
                 if (currentNode.getPropertyAsString(JCR_LANGUAGE).equals(
                         currentLanguage)) {
-                    boolean isSite = (currentNode.getResolveSite().getSiteKey().equals(siteKey));
                     if (currentNode.getProperty(PROPERTY_DEFAULT).getBoolean() && isSite) {
                         vanityUrl = populateJCRData(currentNode,
                                 new VanityUrl());

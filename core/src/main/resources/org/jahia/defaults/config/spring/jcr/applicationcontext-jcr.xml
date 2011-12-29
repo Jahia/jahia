@@ -89,6 +89,23 @@
                 <entry key="jnt:componentFolder" value="org.jahia.services.content.decorator.JCRComponentNode"/>
             </map>
         </property>
+        <property name="noValidityCheckTypes">
+            <set>
+                <value>jnt:componentFolder</value>
+                <value>jnt:contentFolder</value>
+                <value>jnt:groupsFolder</value>
+                <value>jnt:pageTemplate</value>
+                <value>jnt:portletFolder</value>
+                <value>jnt:tagList</value>
+                <value>jnt:template</value>
+                <value>jnt:templatesFolder</value>
+                <value>jnt:vanityUrl</value>
+                <value>jnt:vanityUrls</value>
+                <value>jnt:virtualsite</value>
+                <value>jnt:virtualsitesFolder</value>                
+                <value>rep:root</value>
+            </set>
+        </property>
         <property name="listeners">
             <map>
                 <entry key="default">

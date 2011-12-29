@@ -882,11 +882,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return provider.getNodeWrapper(objectNode.getNode(s), session);
             }
         }
-        List<JCRNodeWrapper> c = getChildren();
-        for (JCRNodeWrapper jcrNodeWrapper : c) {
-            if (jcrNodeWrapper.getName().equals(s)) {
-                return jcrNodeWrapper;
-            }
+        List<JCRNodeWrapper> c = getChildren(s);
+        if (!c.isEmpty()) {
+            return c.get(0);
         }
         throw new PathNotFoundException(s);
     }
@@ -3351,7 +3349,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public boolean checkValidity() {
         final JCRSessionWrapper jcrSessionWrapper = getSession();
         try {
-            if (Constants.LIVE_WORKSPACE.equals(jcrSessionWrapper.getWorkspace().getName())) {
+            if (Constants.LIVE_WORKSPACE.equals(jcrSessionWrapper.getWorkspace().getName()) && !JCRStoreService.getInstance().getNoValidityCheckTypes().contains(getPrimaryNodeTypeName())) {
                 boolean isLocaleDefined = jcrSessionWrapper.getLocale() != null;
                 if (isLocaleDefined) {
                     if (objectNode.hasProperty("j:published") && !objectNode.getProperty("j:published").getBoolean()) {

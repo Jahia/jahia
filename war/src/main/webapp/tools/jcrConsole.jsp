@@ -44,6 +44,7 @@ code.append("import java.util.*\n");
 
 code.append("import javax.jcr.*\n");
 code.append("import javax.jcr.query.*\n");
+code.append("import javax.jcr.version.*\n");
 
 code.append("import org.apache.commons.lang.StringUtils\n");
 

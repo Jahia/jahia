@@ -311,7 +311,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                                 final PublicationWorkflow custom = new PublicationWorkflow(infoList);
                                 new WorkflowActionDialog(infoList.get(0).getMainPath(),Messages.getWithArgs("label.workflow.start.message",
                                         "{0} started by {1} on {2} - {3} content items involved",
-                                        new Object[]{result.get(workflowDefinition),JahiaGWTParameters.getCurrentUser(),DateTimeFormat.getShortDateFormat().format(new Date()),infoList.size()})
+                                        new Object[]{result.get(workflowDefinition).getDisplayName(),JahiaGWTParameters.getCurrentUser(),DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_SHORT).format(new Date()),infoList.size()})
                                          , result.get(workflowDefinition),
                                         linker, custom, cards);
                             } else {

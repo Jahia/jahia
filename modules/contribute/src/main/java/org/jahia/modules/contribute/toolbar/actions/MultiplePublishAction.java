@@ -44,16 +44,21 @@ import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 import org.jahia.ajax.gwt.helper.PublicationHelper;
-import org.jahia.bin.ActionResult;
 import org.jahia.bin.Action;
+import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.WorkflowVariable;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
+import javax.jcr.PropertyType;
 import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -95,6 +100,13 @@ public class MultiplePublishAction extends Action {
         for (Map.Entry<PublicationWorkflow, WorkflowDefinition> entry : workflows.entrySet()) {
             final HashMap<String, Object> map = new HashMap<String, Object>();
             map.put("customWorkflowInfo", entry.getKey());
+
+            String title = MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.workflow.start.message", session.getLocale(), "{0} started by {1} on {2} - {3} content items involved"),
+                    entry.getValue().getDisplayName(), session.getUser().getName(), DateFormat.getDateInstance(DateFormat.SHORT, session.getLocale()).format(new Date()), pubInfos.size());
+
+            WorkflowVariable var = new WorkflowVariable(title, PropertyType.STRING);
+            map.put("jcr:title",Arrays.asList(var));
+            
             if (entry.getValue() != null) {
                 workflowService.startProcessAsJob(entry.getKey().getAllUuids(),
                         session, entry.getValue().getKey(),

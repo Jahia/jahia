@@ -73,6 +73,9 @@
                         <p class="field">
                             <label class="left" for="captcha"><fmt:message key="label.captcha"/></label>
                             <template:captcha/>
+                            <c:if test="${not empty sessionScope.formError}">
+                                <label class="error">${fn:escapeXml(sessionScope.formError)}</label>
+                            </c:if>
                         </p>
                         <p class="field">
                             <label class="left" for="captcha"><fmt:message key="label.captcha.enter"/></label>

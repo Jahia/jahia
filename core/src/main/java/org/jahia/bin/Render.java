@@ -67,6 +67,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.Url;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
@@ -877,14 +878,15 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     for (Map.Entry<String, List<String>> params : set) {
                         formDatas.put(params.getKey(), params.getValue().toArray(new String[params.getValue().size()]));
                     }
+                    String errorMessage = JahiaResourceBundle.getJahiaInternalResource("failure.captcha", urlResolver.getLocale(), "Your captcha is invalid");
                     if (!isAjaxRequest) {
                         req.getSession().setAttribute("formDatas", formDatas);
-                        req.getSession().setAttribute("formError", "Your captcha is invalid");
+                        req.getSession().setAttribute("formError", errorMessage);
                         performRedirect(urlResolver.getRedirectUrl(), urlResolver.getPath(), req, resp, parameters, true);
                     } else {
                         resp.setContentType("application/json");
                         Map<String,String> res = new HashMap<String,String>();
-                        res.put("status","Your captcha is invalid");
+                        res.put("status", errorMessage);
                         new JSONObject(res).write(resp.getWriter());
                     }
                     return;
@@ -914,15 +916,16 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                             for (Map.Entry<String, List<String>> params : set) {
                                 formDatas.put(params.getKey(), params.getValue().toArray(new String[params.getValue().size()]));
                             }
+                            String errorMessage = JahiaResourceBundle.getJahiaInternalResource("failure.captcha", urlResolver.getLocale(), "Your captcha is invalid");
                             if (!isAjaxRequest) {
                                 req.getSession().setAttribute("formDatas", formDatas);
-                                req.getSession().setAttribute("formError", "Your captcha is invalid");
+                                req.getSession().setAttribute("formError", errorMessage);
                                 performRedirect(renderContext.getMainResource().getNode().getPath(), urlResolver.getPath(), req, resp, parameters,
                                         true);
                             } else {
                                 resp.setContentType("application/json");
                                 Map<String,String> res = new HashMap<String,String>();
-                                res.put("status","Your captcha is invalid");
+                                res.put("status", errorMessage);
                                 new JSONObject(res).write(resp.getWriter());
                             }
                             return;

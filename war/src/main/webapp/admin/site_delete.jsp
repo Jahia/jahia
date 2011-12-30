@@ -75,19 +75,18 @@ usrProviders = new ArrayList();
                         <textarea class="input" name="siteDescr" rows="2" cols='45'><%=siteDescr %></textarea>
                       </td>
                     </tr>
+                    <%-- 
                     <tr>
                       <td>
                         <fmt:message key="org.jahia.admin.site.ManageSites.purgeOptions.label"/>&nbsp;:
                       </td>
                       <td>
                         <table border="0" cellpadding="0" cellspacing="0">
-                        <%-- 
                           <tr>
                             <td>
                               <input name="deleteTemplates" type="checkbox" value="1" checked>&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.deleteSiteTemplates.label"/>
                             </td>
                           </tr>
-                          --%>
                           <tr>
                             <td>
                               <input name="deleteFileRepository" type="checkbox" value="1" checked>&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.deleteSiteFileRepository.label"/>
@@ -96,6 +95,7 @@ usrProviders = new ArrayList();
                         </table>
                       </td>
                     </tr>
+                    --%>
                   </table>
                 </form>
               </div>

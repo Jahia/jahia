@@ -84,6 +84,7 @@ stretcherToOpen   = 0; %>
                     <%
                     } %>
                   </table>
+                  <%--
                   <div class="head headtop">
                     <div class="object-title">
                       <fmt:message key="org.jahia.admin.site.ManageSites.purgeOptions.label"/>
@@ -93,13 +94,11 @@ stretcherToOpen   = 0; %>
                     <tr>
                       <td>
                         <table border="0" cellpadding="0" cellspacing="0">
-                        <%-- 
                           <tr>
                             <td>
                               <input name="deleteTemplates" type="checkbox" value="1" checked>&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.deleteSiteTemplates.label"/>
                             </td>
                           </tr>
-                          --%>
                           <tr>
                             <td>
                               <input name="deleteFileRepository" type="checkbox" value="1" checked>&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.deleteSiteFileRepository.label"/>
@@ -109,6 +108,7 @@ stretcherToOpen   = 0; %>
                       </td>
                     </tr>
                   </table>
+                  --%>
                 </form><% } %>
               </div>
             </div>

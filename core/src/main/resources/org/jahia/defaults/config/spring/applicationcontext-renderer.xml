@@ -59,7 +59,7 @@
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
         <property name="ajaxTemplate" value="/modules/assets/WEB-INF/scripts/ajaxResources.groovy"/>
         <property name="template" value="/modules/assets/WEB-INF/scripts/resources.groovy"/>
-        <property name="aggregateAndCompress" value="true"/>
+        <property name="aggregateAndCompress" value="${aggregateAndCompressAssets:true}"/>
         <property name="excludesFromAggregateAndCompress">
             <list>
                 <value>/modules/assets/javascript/ckeditor/ckeditor.js</value>

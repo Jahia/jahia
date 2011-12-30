@@ -794,7 +794,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             workflow.setDisplayName(workflow.getName());
         }
         if (title != null) {
-            workflow.setDisplayName(title + " - " + workflow.getDisplayName());
+            workflow.setDisplayName(title);
         }
         return workflow;
     }

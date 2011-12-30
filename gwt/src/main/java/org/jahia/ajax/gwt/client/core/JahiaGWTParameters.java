@@ -176,6 +176,9 @@ public class JahiaGWTParameters {
 
     private static native void setNativeSiteUUID(String newSiteUUID) /*-{
         $wnd.jahiaGWTParameters.siteUuid  = newSiteUUID;
+        if ($wnd.contextJsParameters) {
+            $wnd.contextJsParameters.siteUuid = newSiteUUID;
+        }
     }-*/;
 
     public static String getSiteKey() {

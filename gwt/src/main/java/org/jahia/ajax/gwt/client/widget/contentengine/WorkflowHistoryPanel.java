@@ -68,6 +68,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
@@ -171,7 +172,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                     new WorkflowActionDialog(parent.getRunningWorkflow(), task, linker,
                                             parent.getRunningWorkflow().getCustomWorkflowInfo(), container);
                                     container.showEngine();
-                                    container.addListener(Events.Close,new Listener<BaseEvent>() {
+                                    container.addListener(Events.Close, new Listener<BaseEvent>() {
                                         public void handleEvent(BaseEvent be) {
                                             engine.show();
                                             init();
@@ -211,18 +212,18 @@ public class WorkflowHistoryPanel extends LayoutContainer {
              */
             public Object render(GWTJahiaWorkflowHistoryItem model, String property, ColumnData config,
                                  int rowIndex, int colIndex,
-                                 ListStore<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemListStore,
-                                 Grid<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemGrid) {
+                                 ListStore<GWTJahiaWorkflowHistoryItem> store,
+                                 Grid<GWTJahiaWorkflowHistoryItem> grid) {
                 final GWTJahiaNode wrapper = (GWTJahiaNode) model.getProperties().get("nodeWrapper");
 
                 if (wrapper != null) {
                     return new Label(wrapper.getDisplayName() + " (" + wrapper.getPath() + ")");
                 }
-                List<GWTJahiaWorkflowHistoryItem> models = gwtJahiaWorkflowHistoryItemListStore.getModels();
+                List<GWTJahiaWorkflowHistoryItem> models = store.getModels();
                 for (final GWTJahiaWorkflowHistoryItem historyItem : models) {
                     final GWTJahiaNode nodewrapper = (GWTJahiaNode) historyItem.getProperties().get("nodeWrapper");
-                    if (nodewrapper!=null && historyItem.getProcessId().equals(model.getProcessId()) &&
-                        historyItem instanceof GWTJahiaWorkflowHistoryProcess) {
+                    if (nodewrapper != null && historyItem.getProcessId().equals(model.getProcessId()) &&
+                            historyItem instanceof GWTJahiaWorkflowHistoryProcess) {
                         Button button = new Button(Messages.get("label.preview"));
                         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                             @Override
@@ -231,16 +232,16 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                 String locale = JahiaGWTParameters.getLanguage();
                                 JahiaContentManagementService.App.getInstance().getNodeURL("render", path, null, null,
                                         "default", locale, new BaseAsyncCallback<String>() {
-                                            public void onSuccess(String url) {
-                                                Window window = new Window();
-                                                window.setMaximizable(true);
-                                                window.setSize(800,600);
-                                                window.setUrl(url);
-                                                window.setPosition(engine.getPosition(true).x+50,engine.getPosition(true).y+50);
-                                                window.show();
-                                            }
+                                    public void onSuccess(String url) {
+                                        Window window = new Window();
+                                        window.setMaximizable(true);
+                                        window.setSize(800, 600);
+                                        window.setUrl(url);
+                                        window.setPosition(engine.getPosition(true).x + 50, engine.getPosition(true).y + 50);
+                                        window.show();
+                                    }
 
-                                        });
+                                });
                             }
                         });
                         return button;
@@ -277,10 +278,10 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                         display = ((long) (time / 1000)) + " " + Messages.get("label.seconds", "sec");
                     } else if (time < 1000 * 60 * 60L) {
                         display = ((long) (time / (1000 * 60L))) + " " + Messages.get("label.minutes", "min") + " " +
-                                  ((long) ((time % (1000 * 60L)) / 1000)) + " " + Messages.get("label.seconds", "sec");
+                                ((long) ((time % (1000 * 60L)) / 1000)) + " " + Messages.get("label.seconds", "sec");
                     } else {
                         display = ((long) (time / (1000 * 60 * 60L))) + " " + Messages.get("label_hours", "h") + " " +
-                                  ((long) ((time % (1000 * 60 * 60L)) / (1000 * 60L))) + " " + Messages.get(
+                                ((long) ((time % (1000 * 60 * 60L)) / (1000 * 60L))) + " " + Messages.get(
                                 "label.minutes", "min");
                     }
                 }
@@ -288,6 +289,36 @@ public class WorkflowHistoryPanel extends LayoutContainer {
             }
         });
         config.add(column);
+
+        if (PermissionsUtils.isPermitted("viewWorkflowTab", JahiaGWTParameters.getSiteNode().getPermissions())) {
+            column = new ColumnConfig("operation", Messages.get("label.operation", "Operation"), 100);
+            column.setRenderer(new GridCellRenderer<GWTJahiaWorkflowHistoryItem>() {
+                public Object render(final GWTJahiaWorkflowHistoryItem model, String property, ColumnData config,
+                                     int rowIndex, int colIndex,
+                                     ListStore<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemListStore,
+                                     Grid<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemGrid) {
+                    if (model instanceof GWTJahiaWorkflowHistoryProcess && !((GWTJahiaWorkflowHistoryProcess)model).isFinished()) {
+                        Button button = new Button(Messages.get("label.abort","Abort"));
+                        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                            @Override
+                            public void componentSelected(ButtonEvent ce) {
+                                JahiaContentManagementService.App.getInstance().abortWorkflow(model.getId(), model.getProvider(), new BaseAsyncCallback<String>() {
+                                    public void onSuccess(String url) {
+                                        store.removeAll();
+                                        loader.load();
+                                    }
+
+                                });
+                            }
+                        });
+                        button.setIcon(StandardIconsProvider.STANDARD_ICONS.delete());
+                        return button;
+                    }
+                    return "";
+                }
+            });
+            config.add(column);
+        }
 
         ColumnModel cm = new ColumnModel(config);
 

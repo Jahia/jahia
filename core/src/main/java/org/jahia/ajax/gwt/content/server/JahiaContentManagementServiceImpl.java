@@ -1080,6 +1080,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         workflow.startWorkflow(uuids, def, retrieveCurrentSession(), properties, comments, args);
     }
 
+    public void abortWorkflow(String processId, String provider) throws GWTJahiaServiceException {
+        workflow.abortWorkflow(processId, provider);
+    }
+
 
     public void assignAndCompleteTask(GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome,
                                       List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {

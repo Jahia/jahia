@@ -451,6 +451,16 @@ public class WorkflowService implements BeanPostProcessor {
         lookupProvider(provider).signalProcess(processId, transitionName, signalName, args);
     }
 
+    /**
+     * This method will call the underlying provider to signal the identified process.
+     *
+     * @param processId      the process we want to advance
+     * @param provider       The provider executing the process
+     */
+    public void abortProcess(String processId, String provider) {
+        lookupProvider(provider).abortProcess(processId);
+    }
+
     public void startProcessAsJob(List<String> nodeIds, JCRSessionWrapper session, String processKey, String provider,
                              Map<String, Object> args, List<String> comments) throws RepositoryException, SchedulerException {
         JobDetail jobDetail = BackgroundJob.createJahiaJob("StartProcess", StartProcessJob.class);

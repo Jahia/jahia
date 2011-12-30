@@ -214,6 +214,8 @@ public interface JahiaContentManagementService extends RemoteService {
     public void startWorkflow(List<String> uuids, GWTJahiaWorkflowDefinition def,
                               List<GWTJahiaNodeProperty> properties, List<String> comments, Map<String, Object> args) throws GWTJahiaServiceException;
 
+    public void abortWorkflow(String processId, String provider) throws GWTJahiaServiceException;
+    
     public void assignAndCompleteTask(GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
 
     /**

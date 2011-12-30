@@ -70,6 +70,8 @@ public interface WorkflowProvider {
 
     void signalProcess(String processId, String transitionName, String signalName, Map<String, Object> args);
 
+    void abortProcess(String processId);
+
     Workflow getWorkflow(String processId, Locale locale);
 
     Set<WorkflowAction> getAvailableActions(String processId, Locale locale);

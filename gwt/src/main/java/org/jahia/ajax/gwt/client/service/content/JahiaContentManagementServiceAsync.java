@@ -207,6 +207,8 @@ public interface JahiaContentManagementServiceAsync {
     void startWorkflow(List<String> uuids, GWTJahiaWorkflowDefinition def,
                               List<GWTJahiaNodeProperty> properties, List<String> comments, Map<String, Object> args, AsyncCallback async);
 
+    void abortWorkflow(String processId, String provider, AsyncCallback async);
+
     void assignAndCompleteTask(GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
 
     /**

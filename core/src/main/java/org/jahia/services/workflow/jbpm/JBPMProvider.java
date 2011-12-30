@@ -411,6 +411,11 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         executionService.signalExecutionById(in.getId(), signalName, args);
     }
 
+    public void abortProcess(String processId) {
+        final Execution in = executionService.findProcessInstanceById(processId);
+        executionService.deleteProcessInstance(processId);
+    }
+    
     public Workflow getWorkflow(String processId, Locale locale) {
         ProcessInstance pi = executionService.findProcessInstanceById(processId);
         if(pi!=null) {

@@ -67,6 +67,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 import javax.script.*;
+import javax.swing.plaf.multi.MultiPanelUI;
 import java.io.StringWriter;
 import java.security.Principal;
 import java.util.*;
@@ -257,22 +258,27 @@ public class JBPMMailProducer extends MailProducerImpl {
         try {
             if (html != null || !attachmentTemplates.isEmpty()) {
                 // multipart
-                Multipart multipart = new MimeMultipart("related");
+                MimeMultipart multipart = new MimeMultipart("related");
+
+                BodyPart p = new MimeBodyPart();
+                Multipart alternatives = new MimeMultipart("alternative");
+                p.setContent(alternatives, "multipart/alternative");
+                multipart.addBodyPart(p);
+
+                // html
+                if (html != null) {
+                    BodyPart htmlPart = new MimeBodyPart();
+                    html = evaluateExpression(execution, html, session);
+                    htmlPart.setContent(html, "text/html; charset=UTF-8");
+                    alternatives.addBodyPart(htmlPart);
+                }
 
                 // text
                 if (text != null) {
                     BodyPart textPart = new MimeBodyPart();
                     text = evaluateExpression(execution, text, session);
                     textPart.setContent(text, "text/plain; charset=UTF-8");
-                    multipart.addBodyPart(textPart);
-                }
-
-                // html
-                if (html != null) {
-                    BodyPart htmlPart = new MimeBodyPart();
-                    html = evaluateExpression(execution, html, session);
-                    htmlPart.setContent(html, "text/html");
-                    multipart.addBodyPart(htmlPart);
+                    alternatives.addBodyPart(textPart);
                 }
 
                 // attachments
@@ -319,11 +325,7 @@ public class JBPMMailProducer extends MailProducerImpl {
         bindings.put("bundle", resourceBundle);
         JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(
                 (String) vars.get("user"));
-        if (jahiaUser.getProperty("j:email") != null) {
-            bindings.put("user", jahiaUser);
-        } else {
-            bindings.put("user", null);
-        }
+        bindings.put("user", jahiaUser);
         bindings.put("date", new DateTool());
         bindings.put("submissionDate", Calendar.getInstance());
         bindings.put("locale", locale);

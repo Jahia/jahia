@@ -44,13 +44,22 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mail.MailEndpoint;
+import org.apache.james.mime4j.message.BodyPart;
 import org.springframework.beans.factory.DisposableBean;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.mail.MailServiceImpl;
 import org.jbpm.pvm.internal.email.spi.MailSession;
 
 import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMultipart;
+import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
+import java.util.Properties;
 
 /**
  * Mail session used in the jBPM processes.
@@ -71,11 +80,38 @@ public class JBPMMailSession implements MailSession, DisposableBean {
     public void send(Collection<Message> emails) {
         if (mailService.isEnabled()) {
             for (Message email : emails) {
-                CamelContext context = mailService.getCamelContext();
-                MailEndpoint endpoint = (MailEndpoint) context.getEndpoint(mailService.getEndpointUri());
-                Exchange exchange = endpoint.createExchange(email);
-                template.send("seda:mailUsers?multipleConsumers=true",
-                        exchange);
+//                Properties props = System.getProperties();
+//                props.put("mail.smtp.host", "smtp.free.fr");
+//                Session session = Session.getDefaultInstance(props, null);
+//
+//                try {
+//                    Transport.send(email);
+//                } catch (MessagingException e) {
+//                    e.printStackTrace();
+//                }
+                try {
+                    CamelContext context = mailService.getCamelContext();
+                    MailEndpoint endpoint = (MailEndpoint) context.getEndpoint(mailService.getEndpointUri());
+                    Exchange exchange = endpoint.createExchange(email);
+
+                    // Message transformation for camel bindings
+                    MimeMultipart multipart = (MimeMultipart) email.getContent();
+                    MimeMultipart alt = (MimeMultipart) multipart.getBodyPart(0).getContent();
+
+                    exchange.getIn().setBody(alt.getBodyPart(0).getDataHandler().getContent());
+                    exchange.getIn().setHeader("contentType", alt.getBodyPart(0).getDataHandler().getContentType());
+
+                    if (alt.getCount() == 2) {
+                        exchange.getIn().setHeader("CamelMailAlternativeBody", alt.getBodyPart(1).getDataHandler().getContent());
+                    }
+                    for (int i = 1 ; i<multipart.getCount(); i++) {
+                        exchange.getIn().addAttachment("part"+i, multipart.getBodyPart(i).getDataHandler());
+                    }
+                    template.send("seda:mailUsers?multipleConsumers=true",
+                            exchange);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

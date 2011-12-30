@@ -164,6 +164,9 @@
                             <property name="cacheKeyGenerator" ref="cacheKeyGenerator"/>
                         </bean>
                         <ref bean="urlResolverListener" />
+                        <bean class="org.jahia.services.history.NodeVersionHistoryListener">
+                            <property name="schedulerService" ref="SchedulerService"/>
+                        </bean>
                     </list>
                 </entry>
                 <entry key="live">
@@ -241,6 +244,9 @@
                         </bean>
                         <bean class="org.jahia.services.content.JCRUserPropertyModificationListener"/>
                         <ref bean="urlResolverListener" />
+                        <bean class="org.jahia.services.history.NodeVersionHistoryListener">
+                            <property name="schedulerService" ref="SchedulerService"/>
+                        </bean>
                     </list>
                 </entry>
             </map>

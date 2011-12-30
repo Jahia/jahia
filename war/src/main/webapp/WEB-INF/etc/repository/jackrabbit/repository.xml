@@ -146,9 +146,9 @@
     -->
     <SearchIndex class="org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex">
         <param name="path" value="${rep.home}/index"/>
-            <!-- setting textFilterClasses to empty value disables Jackrabbit document extraction -->
+        <param name="indexingConfiguration" value="${rep.home}/indexing_configuration_version.xml"/>
+        <!-- setting textFilterClasses to empty value disables Jackrabbit document extraction -->
         <param name="textFilterClasses" value=""/>
-        <param name="supportHighlighting" value="true"/>
         
         <param name="onWorkspaceInconsistency" value="${jahia.jackrabbit.onWorkspaceInconsistency}"/>
     </SearchIndex>

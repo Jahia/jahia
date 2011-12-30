@@ -303,7 +303,7 @@ public class JBPMMailProducer extends MailProducerImpl {
         scriptContext.setErrorWriter(new StringWriter());
         scriptEngine.eval(scriptToExecute, bindings);
         String error = scriptContext.getErrorWriter().toString();
-        if (!error.isEmpty()) {
+        if (error.length() > 0) {
             logger.error("Scripting error : " + error);
         }
         return scriptContext.getWriter().toString().trim();

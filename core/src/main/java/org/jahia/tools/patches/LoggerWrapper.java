@@ -95,6 +95,10 @@ public class LoggerWrapper extends org.slf4j.ext.LoggerWrapper {
         super.error(msg, t);
     }
 
+    public void info(Object msg) {
+        info(String.valueOf(msg));
+    }
+    
     @Override
     public void info(String msg) {
         out(msg, null, null);

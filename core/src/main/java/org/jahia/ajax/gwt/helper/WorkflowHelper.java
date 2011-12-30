@@ -41,7 +41,6 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
-import org.drools.base.evaluators.StringFactory;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -429,8 +428,8 @@ public class WorkflowHelper {
             final Set<String> workflowTypes = service.getTypesOfWorkflow();
             for (String workflowType : workflowTypes) {
                 List<GWTJahiaWorkflowDefinition> definitions = new ArrayList<GWTJahiaWorkflowDefinition>();
-                List<WorkflowDefinition> workflowDefinitions = service.getWorkflowsForAction(workflowType,
-                                                                                                   locale);
+                List<WorkflowDefinition> workflowDefinitions = service.getWorkflowDefinitionsForType(workflowType,
+                        locale);
                 for (WorkflowDefinition definition : workflowDefinitions) {
                     final GWTJahiaWorkflowDefinition workflowDefinition = getGWTJahiaWorkflowDefinition(definition);
                     definitions.add(workflowDefinition);
@@ -478,8 +477,8 @@ public class WorkflowHelper {
             final Set<String> workflowTypes = service.getTypesOfWorkflow();
             List<GWTJahiaWorkflowDefinition> definitions = new ArrayList<GWTJahiaWorkflowDefinition>();
             for (String workflowType : workflowTypes) {
-                final List<WorkflowDefinition> workflowDefinitions = service.getWorkflowsForAction(workflowType,
-                                                                                                   locale);
+                final List<WorkflowDefinition> workflowDefinitions = service.getWorkflowDefinitionsForType(workflowType,
+                        locale);
                 for (WorkflowDefinition definition : workflowDefinitions) {
                     definitions.add(getGWTJahiaWorkflowDefinition(definition));
                 }

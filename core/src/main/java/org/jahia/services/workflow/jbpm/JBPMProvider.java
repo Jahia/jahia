@@ -40,6 +40,7 @@
 
 package org.jahia.services.workflow.jbpm;
 
+import com.ctc.wstx.evt.WDTD;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
@@ -475,6 +476,15 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         return availableActions;
     }
 
+    public List<Workflow> getWorkflowsForDefinition(String definition, Locale locale) {
+        List<Workflow> list = new ArrayList<Workflow>();
+        List<ProcessInstance> pi = executionService.createProcessInstanceQuery().processDefinitionId(getProcessDefinitionByKey(definition).getId()).list();
+        for (ProcessInstance processInstance : pi) {
+            list.add(convertToWorkflow(processInstance, locale));
+        }
+        return list;        
+    }
+    
     public List<Workflow> getWorkflowsForUser(JahiaUser user, Locale locale) {
         List<Workflow> list = new ArrayList<Workflow>();
         List<ProcessInstance> pi = executionService.createProcessInstanceQuery().list();

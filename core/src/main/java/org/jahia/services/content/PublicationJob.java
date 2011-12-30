@@ -42,11 +42,14 @@ package org.jahia.services.content;
 
 import org.jahia.api.Constants;
 import org.jahia.services.scheduler.BackgroundJob;
+import org.jahia.services.workflow.Workflow;
+import org.jahia.services.workflow.WorkflowService;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -79,5 +82,16 @@ public class PublicationJob extends BackgroundJob {
 
         String label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
         JCRVersionService.getInstance().addVersionLabel(uuids, label, Constants.LIVE_WORKSPACE);
+
+        // Clean up other workflows that are not relevant anymore
+        WorkflowService workflowService = WorkflowService.getInstance();
+        List<Workflow> l =  workflowService.getWorkflowsForType("publish", null);
+        for (Workflow workflow : l) {
+            List<String> nodeIds = (List<String>) workflow.getVariables().get("nodeIds");
+            if (uuids.containsAll(nodeIds)) {
+                JCRPublicationService.getInstance().unlockForPublication(nodeIds, (String)workflow.getVariables().get("workspace"), "publication-process-" + workflow.getId());
+                workflowService.abortProcess(workflow.getId(), workflow.getProvider());
+            }
+        }
     }
 }

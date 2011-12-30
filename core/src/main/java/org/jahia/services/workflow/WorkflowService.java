@@ -41,7 +41,6 @@
 package org.jahia.services.workflow;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
@@ -179,8 +178,8 @@ public class WorkflowService implements BeanPostProcessor {
         return workflowsByProvider;
     }
 
-    public List<WorkflowDefinition> getWorkflowsForAction(String actionName, Locale locale) throws RepositoryException {
-        List<String> l = workflowTypes.get(actionName);
+    public List<WorkflowDefinition> getWorkflowDefinitionsForType(String type, Locale locale) throws RepositoryException {
+        List<String> l = workflowTypes.get(type);
         List<WorkflowDefinition> workflowsByProvider = new ArrayList<WorkflowDefinition>();
         for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
             List<WorkflowDefinition> defs = providerEntry.getValue().getAvailableWorkflows(locale);
@@ -211,16 +210,16 @@ public class WorkflowService implements BeanPostProcessor {
     }
 
     /**
-     * This method return the workflow associated to an action, for the specified node.
+     * This method return the workflow associated to an type, for the specified node.
      *
      * @param node
      * @param checkPermission
      * @return A list of available workflows per provider.
      */
-    public WorkflowDefinition getPossibleWorkflowForAction(final JCRNodeWrapper node, final boolean checkPermission,
-                                                           final String action, final Locale locale)
+    public WorkflowDefinition getPossibleWorkflowForType(final JCRNodeWrapper node, final boolean checkPermission,
+                                                         final String type, final Locale locale)
             throws RepositoryException {
-        final List<WorkflowDefinition> workflowDefinitionList = getPossibleWorkflows(node, checkPermission, action, locale);
+        final List<WorkflowDefinition> workflowDefinitionList = getPossibleWorkflows(node, checkPermission, type, locale);
         if (workflowDefinitionList.isEmpty()) {
             return null;
         }
@@ -235,11 +234,11 @@ public class WorkflowService implements BeanPostProcessor {
      * @return A list of available workflows per provider.
      */
     private List<WorkflowDefinition> getPossibleWorkflows(final JCRNodeWrapper node, final boolean checkPermission,
-                                                          final String action, final Locale locale)
+                                                          final String type, final Locale locale)
             throws RepositoryException {
         final Set<WorkflowDefinition> workflows = new LinkedHashSet<WorkflowDefinition>();
 
-        Collection<WorkflowRule> rules = getWorkflowRulesForAction(node, checkPermission, action, null);
+        Collection<WorkflowRule> rules = getWorkflowRulesForType(node, checkPermission, type, null);
         for (WorkflowRule ruledef : rules) {
             WorkflowDefinition definition =
                     lookupProvider(ruledef.getProviderKey()).getWorkflowDefinitionByKey(ruledef.getWorkflowDefinitionKey(), locale);
@@ -561,6 +560,24 @@ public class WorkflowService implements BeanPostProcessor {
         return workflow;
     }
 
+    public List<Workflow> getWorkflowsForType(String type, Locale locale) {
+        List<Workflow> list = new ArrayList<Workflow>();
+        List<String> keys = workflowTypes.get(type);
+        for (String key : keys) {
+            list.addAll(getWorkflowsForDefinition(key, locale));
+        }
+        return list;
+    }
+
+    public List<Workflow> getWorkflowsForDefinition(String definition, Locale locale) {
+        List<Workflow> list = new ArrayList<Workflow>();
+        for (WorkflowProvider provider : providers.values()) {
+           list.addAll(provider.getWorkflowsForDefinition(definition,locale));
+        }
+        return list;
+    }
+
+
     public void assignTask(String taskId, String provider, JahiaUser user) {
         if (logger.isDebugEnabled()) {
             logger.debug("Assigning user " + user + " to task " + taskId);
@@ -706,12 +723,13 @@ public class WorkflowService implements BeanPostProcessor {
      * This method list all currently active workflow for the specified node.
      *
      * @param node
+     * @param type
      * @return A list of active workflows per provider
      */
-    public boolean hasActivePublishWorkflow(JCRNodeWrapper node) {
+    public boolean hasActiveWorkflowForType(JCRNodeWrapper node, String type) {
         List<Workflow> workflows = new ArrayList<Workflow>();
         try {
-            final List<WorkflowDefinition> forAction = getWorkflowsForAction("publish", null);
+            final List<WorkflowDefinition> forAction = getWorkflowDefinitionsForType(type, null);
             if (node.isNodeType(Constants.JAHIAMIX_WORKFLOW) && node.hasProperty(Constants.PROCESSID)) {
                 addActiveWorkflows(workflows, node.getProperty(Constants.PROCESSID), node.getSession().getLocale());
             }
@@ -735,7 +753,7 @@ public class WorkflowService implements BeanPostProcessor {
     }
 
     public WorkflowRule getWorkflowRuleForAction(JCRNodeWrapper objectNode, boolean checkPermission, String action, Locale locale) throws RepositoryException {
-        Collection<WorkflowRule> rules = getWorkflowRulesForAction(objectNode, checkPermission, action, locale);
+        Collection<WorkflowRule> rules = getWorkflowRulesForType(objectNode, checkPermission, action, locale);
         if (rules.isEmpty()) {
             return null;
         } else {
@@ -743,7 +761,7 @@ public class WorkflowService implements BeanPostProcessor {
         }
     }
 
-    private Collection<WorkflowRule> getWorkflowRulesForAction(JCRNodeWrapper objectNode, boolean checkPermission, String action, Locale locale) throws RepositoryException {
+    private Collection<WorkflowRule> getWorkflowRulesForType(JCRNodeWrapper objectNode, boolean checkPermission, String type, Locale locale) throws RepositoryException {
 
         Collection<WorkflowRule> results = new HashSet<WorkflowRule>();
         Collection<WorkflowRule> rules = getWorkflowRules(objectNode, locale);
@@ -751,7 +769,7 @@ public class WorkflowService implements BeanPostProcessor {
         JCRSiteNode site = objectNode.getResolveSite();
 
         for (WorkflowRule rule : rules) {
-            if (action == null || workflowTypeByDefinition.get(rule.getWorkflowDefinitionKey()).equals(action)) {
+            if (type == null || workflowTypeByDefinition.get(rule.getWorkflowDefinitionKey()).equals(type)) {
                 Map<String,String> perms = workflowPermissions.get(rule.getWorkflowDefinitionKey());
                 if (perms != null && checkPermission) {
                     String permName = perms.get("start");

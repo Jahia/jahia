@@ -54,7 +54,6 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.jbpm.JBPMProvider;
-import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.TestHelper;
 import org.jbpm.api.JbpmException;
 import org.junit.*;
@@ -168,7 +167,7 @@ public class WorkflowServiceTest {
         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
         map.put("startDate",values);
         map.put("endDate",values);
-        final List<WorkflowDefinition> workflowList = service.getWorkflowsForAction("publish", Locale.ENGLISH);
+        final List<WorkflowDefinition> workflowList = service.getWorkflowDefinitionsForType("publish", Locale.ENGLISH);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
@@ -292,7 +291,7 @@ public class WorkflowServiceTest {
         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
         map.put("startDate",values);
         map.put("endDate",values);
-        final List<WorkflowDefinition> workflowList = service.getWorkflowsForAction("publish", Locale.ENGLISH);
+        final List<WorkflowDefinition> workflowList = service.getWorkflowDefinitionsForType("publish", Locale.ENGLISH);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
@@ -406,7 +405,7 @@ public class WorkflowServiceTest {
         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
         map.put("startDate",values);
         map.put("endDate",values);
-        final List<WorkflowDefinition> workflowList = service.getWorkflowsForAction("publish", Locale.ENGLISH);
+        final List<WorkflowDefinition> workflowList = service.getWorkflowDefinitionsForType("publish", Locale.ENGLISH);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {

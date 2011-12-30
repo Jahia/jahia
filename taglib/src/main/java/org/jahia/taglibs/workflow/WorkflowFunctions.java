@@ -55,6 +55,6 @@ public class WorkflowFunctions {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowFunctions.class);
 
     public static boolean hasActivePublicationWorkflow(JCRNodeWrapper node) {
-        return WorkflowService.getInstance().hasActivePublishWorkflow(node);
+        return WorkflowService.getInstance().hasActiveWorkflowForType(node, "publish");
     }
 }

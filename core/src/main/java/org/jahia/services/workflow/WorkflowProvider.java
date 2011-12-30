@@ -78,6 +78,8 @@ public interface WorkflowProvider {
 
     List<WorkflowTask> getTasksForUser(JahiaUser user, Locale locale);
 
+    List<Workflow> getWorkflowsForDefinition(String definition, Locale locale);
+
     List<Workflow> getWorkflowsForUser(JahiaUser user, Locale locale);
 
     void assignTask(String taskId, JahiaUser user);

@@ -57,6 +57,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.notification.HttpClientService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.workflow.Workflow;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowRule;
 import org.jahia.services.workflow.WorkflowService;

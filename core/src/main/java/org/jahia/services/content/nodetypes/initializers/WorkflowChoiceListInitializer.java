@@ -68,7 +68,7 @@ public class WorkflowChoiceListInitializer implements ChoiceListInitializer {
 
             List<WorkflowDefinition> defs;
             if (!StringUtils.isEmpty(param)) {
-                defs = workflowService.getWorkflowsForAction(param, locale);
+                defs = workflowService.getWorkflowDefinitionsForType(param, locale);
             } else {
                 defs = workflowService.getWorkflows(locale);
             }

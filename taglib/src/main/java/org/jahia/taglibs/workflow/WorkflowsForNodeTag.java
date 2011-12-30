@@ -78,7 +78,7 @@ public class WorkflowsForNodeTag extends AbstractJahiaTag {
         List<WorkflowDefinition> defs = null;
         try {
             if (workflowAction != null) {
-                WorkflowDefinition workflowForAction = WorkflowService.getInstance().getPossibleWorkflowForAction(node, checkPermission, workflowAction, getUILocale());
+                WorkflowDefinition workflowForAction = WorkflowService.getInstance().getPossibleWorkflowForType(node, checkPermission, workflowAction, getUILocale());
                 if (workflowForAction != null) {
                     defs = Collections.singletonList(workflowForAction);
                 } else {

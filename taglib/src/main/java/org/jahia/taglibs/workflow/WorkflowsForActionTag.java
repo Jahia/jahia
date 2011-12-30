@@ -1,7 +1,6 @@
 package org.jahia.taglibs.workflow;
 
 import org.apache.taglibs.standard.tag.common.core.Util;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.taglibs.AbstractJahiaTag;
@@ -10,8 +9,6 @@ import org.slf4j.Logger;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,7 +27,7 @@ public class WorkflowsForActionTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         List<WorkflowDefinition> defs = null;
         try {
-            defs = WorkflowService.getInstance().getWorkflowsForAction(workflowAction, getUILocale());
+            defs = WorkflowService.getInstance().getWorkflowDefinitionsForType(workflowAction, getUILocale());
         } catch (RepositoryException e) {
             logger.error("Could not retrieve workflows", e);
         }

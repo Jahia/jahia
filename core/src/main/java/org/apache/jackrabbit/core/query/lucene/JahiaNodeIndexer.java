@@ -163,7 +163,9 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 }
             }
         } catch (NoSuchNodeTypeException e) {
-            logger.debug(e.getMessage(), e);
+            if (logger.isDebugEnabled()) {
+                logger.debug(e.getMessage(), e);
+            }
         } catch (RepositoryException e) {
             logger.warn(e.getMessage(), e);
         }
@@ -177,10 +179,11 @@ public class JahiaNodeIndexer extends NodeIndexer {
      * @return <code>true</code> if it should be used to create an excerpt; <code>false</code> otherwise.
      */
     protected boolean useInExcerpt(Name propertyName) {
-        ExtendedPropertyDefinition propDef = getExtendedPropertyDefinition(nodeType, node, getPropertyName(propertyName));
-
-        boolean useInExcerpt = propDef != null ? propDef.isFullTextSearchable() : super
-                .useInExcerpt(propertyName);
+        boolean useInExcerpt = super.useInExcerpt(propertyName);
+        if (useInExcerpt) {
+            ExtendedPropertyDefinition propDef = getExtendedPropertyDefinition(nodeType, node, getPropertyName(propertyName));
+            useInExcerpt = propDef == null || propDef.isFullTextSearchable();
+        }
         return useInExcerpt;
     }
 
@@ -190,7 +193,9 @@ public class JahiaNodeIndexer extends NodeIndexer {
         try {
             propertyNameBuilder.append(namespaceRegistry.getPrefix(name.getNamespaceURI()));
         } catch (RepositoryException e) {
-            logger.debug("Cannot get namespace prefix for: " + name.getNamespaceURI(), e);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Cannot get namespace prefix for: " + name.getNamespaceURI(), e);
+            }
         }
 
         if (propertyNameBuilder.length() > 0) {
@@ -256,7 +261,9 @@ public class JahiaNodeIndexer extends NodeIndexer {
                     }
                 }
             } catch (Exception e) {
-                logger.debug("Error finding language property", e);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Error finding language property", e);
+                }
             }
         }
         return language;
@@ -319,7 +326,9 @@ public class JahiaNodeIndexer extends NodeIndexer {
                     propDef = findDefinitionForPropertyInNode(nodeType, null, fieldName);
                 }
             } catch (Exception e) {
-                logger.debug("Error finding language property", e);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Error finding language property", e);
+                }
             }
         }
         return propDef;
@@ -347,7 +356,13 @@ public class JahiaNodeIndexer extends NodeIndexer {
      * @return <code>true</code> if it should be added to the node scope index; <code>false</code> otherwise.
      */
     protected boolean isIncludedInNodeIndex(Name propertyName) {
-        return useInExcerpt(propertyName);
+        boolean isIncludedInNodeIndex = super.isIncludedInNodeIndex(propertyName);
+        if (isIncludedInNodeIndex) {
+            ExtendedPropertyDefinition propDef = getExtendedPropertyDefinition(nodeType, node,
+                    getPropertyName(propertyName));
+            isIncludedInNodeIndex = propDef == null || propDef.isFullTextSearchable();
+        }
+        return isIncludedInNodeIndex;
     }
 
     /**
@@ -358,9 +373,13 @@ public class JahiaNodeIndexer extends NodeIndexer {
      * @return <code>true</code> if the property should be fulltext indexed; <code>false</code> otherwise.
      */
     protected boolean isIndexed(Name propertyName) {
-        ExtendedPropertyDefinition propDef = getExtendedPropertyDefinition(nodeType, node, getPropertyName(propertyName));
-        boolean isIndexed = propDef != null ? propDef.getIndex() != ExtendedPropertyDefinition.INDEXED_NO
-                : super.isIndexed(propertyName);
+        boolean isIndexed = super.isIndexed(propertyName);
+        if (isIndexed) {
+            ExtendedPropertyDefinition propDef = getExtendedPropertyDefinition(nodeType, node,
+                    getPropertyName(propertyName));
+            isIndexed = propDef == null
+                    || propDef.getIndex() != ExtendedPropertyDefinition.INDEXED_NO;
+        }
         return isIndexed;
     }
 
@@ -448,8 +467,10 @@ public class JahiaNodeIndexer extends NodeIndexer {
                     propertyName = fieldName.replaceFirst("(\\d+)", prefix);
                 }
             } catch (RepositoryException e) {
-                logger.debug(
+                if (logger.isDebugEnabled()) {
+                    logger.debug(
                         "Cannot convert Lucene fieldName '" + fieldName + "' to property name", e);
+                }
             }
         }
         return propertyName;

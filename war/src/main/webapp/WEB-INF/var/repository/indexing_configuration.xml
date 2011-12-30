@@ -146,7 +146,6 @@ The following example creates an index aggregate on jnt:file that includes the c
             <property>j:style</property>
             <property>j:classname</property>
             <property>j:id</property>
-            <property>j:type</property>
             <property>priority</property>
             <property>state</property>
             <property>type</property>
@@ -178,7 +177,6 @@ The following example creates an index aggregate on jnt:file that includes the c
             <property>businessUnit</property>
             <property>date</property>
             <property>changefreq</property>
-            <property>priority</property>
         </analyzer>
     </analyzers>            
 </configuration>

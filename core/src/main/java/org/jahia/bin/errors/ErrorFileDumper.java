@@ -418,7 +418,7 @@ public class ErrorFileDumper {
         return highLoad;
     }
 
-    private static void outputSystemInfo(PrintWriter strOut, boolean systemProperties, boolean jahiaSettings, boolean memory, boolean caches, boolean threads, boolean deadlocks, boolean loadAverage) {
+    public static void outputSystemInfo(PrintWriter strOut, boolean systemProperties, boolean jahiaSettings, boolean memory, boolean caches, boolean threads, boolean deadlocks, boolean loadAverage) {
         if (systemProperties) {
             // now let's output the system properties.
             strOut.println();

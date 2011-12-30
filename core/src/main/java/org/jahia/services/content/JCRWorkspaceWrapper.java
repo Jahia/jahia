@@ -390,8 +390,9 @@ public class JCRWorkspaceWrapper implements Workspace {
         }
 
         public VersionHistory getVersionHistory(String absPath) throws UnsupportedRepositoryOperationException, RepositoryException {
-            VersionManager versionManager = session.getProviderSession(service.getProvider(absPath)).getWorkspace().getVersionManager();
-            return (VersionHistory) session.getNode(absPath).getProvider().getNodeWrapper(versionManager.getVersionHistory(absPath), session);
+            JCRStoreProvider provider = service.getProvider(absPath);
+            VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
+            return (VersionHistory) provider.getNodeWrapper(versionManager.getVersionHistory(absPath), session);
         }
 
         public Version getBaseVersion(String absPath) throws UnsupportedRepositoryOperationException, RepositoryException {

@@ -492,7 +492,7 @@
         </tr>
         <tr class="oddLine">
             <td colspan="2" align="left">
-                <a href="?do=status&amp;sub=display&amp;gc=true&amp;timestamp=${timestamp}#memory"><img src="<c:url value='/icons/refresh.png'/>" height="16" width="16" alt=" " align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.runGarbageCollector"/></a>
+                <a href="?do=status&amp;sub=display&amp;gc=true&amp;timestamp=${timestamp}#memory"><img src="<c:url value='/icons/showTrashboard.png'/>" height="16" width="16" alt=" " align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.runGarbageCollector"/></a>
             </td>
         </tr>
     </table>

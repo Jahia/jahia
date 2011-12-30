@@ -201,6 +201,11 @@
                 </bean>
             </list>
         </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="permission" value="contributeModeAccess"/>
+            </bean>
+        </property>
     </bean>   
 
 

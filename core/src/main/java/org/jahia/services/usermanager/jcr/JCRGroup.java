@@ -417,7 +417,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
 
     private boolean removeMember(JCRSessionWrapper session, Node members, String memberIdentifier) throws RepositoryException {
         if (session.getWorkspace().getQueryManager() != null) {
-            String query = "SELECT * FROM [jnt:member] as m where m.[j:member] = '" + memberIdentifier + "' AND ISCHILDNODE(m, '" + members.getPath() + "') ORDER BY m.[j:nodename]";
+            String query = "SELECT * FROM [jnt:member] as m where m.[j:member] = '" + memberIdentifier + "' AND ISCHILDNODE(m, '" + members.getPath() + "') ORDER BY localname(m)";
             Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
             QueryResult qr = q.execute();
             NodeIterator nodes = qr.getNodes();

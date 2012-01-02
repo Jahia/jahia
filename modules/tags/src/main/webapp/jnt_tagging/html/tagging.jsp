@@ -59,7 +59,7 @@
         $(document).ready(function() {
 
             function getText(node) {
-                return node["j:nodename"];
+                return node["nodename"];
             }
 
             function format(result) {
@@ -82,7 +82,7 @@
                     return format(item);
                 },
                 extraParams: {
-                    query : "select * from [jnt:tag] as tags where isdescendantnode(tags,'${renderContext.site.path}/tags') and contains(tags.[j:nodename],'{$q}*')",
+                    query : "select * from [jnt:tag] as tags where isdescendantnode(tags,'${renderContext.site.path}/tags') and localname(tags) like '%{$q}%'",
                     escapeColon : "false",
                     propertyMatchRegexp : "{$q}.*",
                     removeDuplicatePropValues : "false"

@@ -304,13 +304,13 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                 public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     List<String> users = new ArrayList<String>();
                     if (session.getWorkspace().getQueryManager() != null) {
-                        String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "] ORDER BY [j:nodename]";
+                        String query = "SELECT * FROM [" + Constants.JAHIANT_USER + "] ORDER BY localname()";
                         Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                         QueryResult qr = q.execute();
-                        RowIterator rows = qr.getRows();
+                        NodeIterator rows = qr.getNodes();
                         while (rows.hasNext()) {
-                            Row usersFolderNode = rows.nextRow();
-                            String userName = usersFolderNode.getValue("j:nodename").getString();
+                            Node usersFolderNode = rows.nextNode();
+                            String userName = usersFolderNode.getName();
                             if (!users.contains(userName)) {
                                 users.add(userName);
                             }
@@ -489,9 +489,6 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                                     while (objectIterator.hasNext()) {
                                         Map.Entry<Object, Object> entry = objectIterator.next();
                                         String propertyKey = (String) entry.getKey();
-                                        if ("username".equals(propertyKey)) {
-                                            propertyKey = "j:nodename";
-                                        }
                                         String propertyValue = (String) entry.getValue();
                                         if ("*".equals(propertyValue)) {
                                             propertyValue = "%";
@@ -503,12 +500,15 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                                             }
                                         }
                                         if ("*".equals(propertyKey)) {
-                                            query.append("(CONTAINS(u.*,'" + propertyValue.replaceAll("%", "")
-                                                    + "') OR LOWER(u.[j:nodename]) LIKE '")
+                                            query.append("(CONTAINS(u.*,'").append(propertyValue.replaceAll("%",
+                                                    "")).append("') OR LOWER(localname()) LIKE '")
                                                     .append(propertyValue.toLowerCase()).append("') ");
+                                        } else if ("username".equals(propertyKey)) {
+                                            query.append("LOWER(localname()) LIKE '")
+                                                    .append(propertyValue.toLowerCase()).append("'");
                                         } else {
-                                            query.append("LOWER(u.[" + propertyKey.replaceAll("\\.", "\\\\.") + "])").append(
-                                                    " LIKE '").append(propertyValue.toLowerCase()).append("'");
+                                            query.append("LOWER(u.[").append(propertyKey.replaceAll("\\.",
+                                                    "\\\\.")).append("])").append(" LIKE '").append(propertyValue.toLowerCase()).append("'");
                                         }
                                         if (objectIterator.hasNext()) {
                                             query.append(" OR ");
@@ -522,7 +522,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                             query.insert(0, "WHERE ");
                         }
                         query.insert(0, "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u ");
-                        query.append(" ORDER BY u.[j:nodename]");
+                        query.append(" ORDER BY localname(u)");
                         if (logger.isDebugEnabled()) {
                             logger.debug(query.toString());
                         }
@@ -579,7 +579,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     if (session.getWorkspace().getQueryManager() != null) {
-                        String query = "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u WHERE u.[j:nodename] = '" + name + "' AND u.[" + JCRUser.J_EXTERNAL + "] = 'false'";
+                        String query = "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u WHERE localname(u) = '" + name + "' AND u.[" + JCRUser.J_EXTERNAL + "] = 'false'";
                         Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                         QueryResult qr = q.execute();
                         NodeIterator ni = qr.getNodes();

@@ -308,6 +308,7 @@ public class Find extends BaseFindController {
         jsonObject.put("identifier", currentNode.getIdentifier());
         jsonObject.put("index", currentNode.getIndex());
         jsonObject.put("depth", currentNode.getDepth());
+        jsonObject.put("nodename", currentNode.getName());
         jsonObject.put("primaryNodeType", currentNode.getPrimaryNodeType().getName());
         if (propertyMatchRegexp != null) {
             jsonObject.put("matchingProperties", new JSONArray(matchingProperties));

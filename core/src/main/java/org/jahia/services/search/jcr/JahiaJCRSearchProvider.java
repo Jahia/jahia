@@ -662,7 +662,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     }
                     StringBuilder nameSearchConstraints = new StringBuilder(256);
                     for (String term : terms) {
-                        String termConstraint = "jcr:like(@j:nodename, "
+                        String termConstraint = "jcr:like(fn:name(), "
                                 + (term.contains("*") ? stringToQueryLiteral(StringUtils
                                         .replaceChars(term, '*', '%'))
                                         : stringToQueryLiteral("%" + term + "%"))

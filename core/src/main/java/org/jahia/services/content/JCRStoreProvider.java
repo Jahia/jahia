@@ -845,7 +845,7 @@ public class JCRStoreProvider {
 
     public JCRNodeWrapper getUserFolder(JahiaUser user) throws RepositoryException {
         String username = ISO9075.encode(user.getUsername());
-        String sql = "select * from [jnt:user] as user where user.[j:nodename]= '" + username + "'";
+        String sql = "select * from [jnt:user] as user where localname(user) = '" + username + "'";
 
         List<JCRNodeWrapper> results = queryFolders(sessionFactory.getCurrentUserSession(), sql);
         if (results.isEmpty()) {
@@ -856,11 +856,11 @@ public class JCRStoreProvider {
 
     public List<JCRNodeWrapper> getImportDropBoxes(String site, JahiaUser user) throws RepositoryException {
         String username = ISO9075.encode(user.getUsername());
-        String sql = "select imp.* from [jnt:importDropBox] as imp right outer join [jnt:user] as user on ischildnode(imp,user) where user.[j:nodename]= '" + username + "'";
+        String sql = "select imp.* from [jnt:importDropBox] as imp right outer join [jnt:user] as user on ischildnode(imp,user) where localname(user)= '" + username + "'";
 
         if (site != null) {
             site = ISO9075.encode(site);
-            sql = "select imp.* from jnt:importDropBox as imp right outer join [jnt:user] as user on ischildnode(imp,user) right outer join [jnt:virtualsite] as site on isdescendantnode(imp,site) where user.[j:nodename]= '" + username + "' and site.[j:nodename] = '" + site + "'";
+            sql = "select imp.* from jnt:importDropBox as imp right outer join [jnt:user] as user on ischildnode(imp,user) right outer join [jnt:virtualsite] as site on isdescendantnode(imp,site) where localname(user)= '" + username + "' and localname(site) = '" + site + "'";
         }
 
         List<JCRNodeWrapper> results = queryFolders(sessionFactory.getCurrentUserSession(), sql);
@@ -872,7 +872,7 @@ public class JCRStoreProvider {
 
     public JCRNodeWrapper getSiteFolder(String site) throws RepositoryException {
         site = ISO9075.encode(site);
-        String xp = "select * from [jnt:virtualsite] as site where site.[j:nodename] = '" + site + "'";
+        String xp = "select * from [jnt:virtualsite] as site where localname(site) = '" + site + "'";
 
         final List<JCRNodeWrapper> list = queryFolders(sessionFactory.getCurrentUserSession(), xp);
         if (list.isEmpty()) {

@@ -79,11 +79,9 @@ public class FindUser extends BaseFindController {
         return "/cms/findUser";
     }
 
-    protected Set<String> displayProperties = new HashSet<String>(Arrays.asList("j:lastName",
-            "j:firstName"));
+    protected Set<String> displayProperties = new HashSet<String>(Arrays.asList("j:lastName", "j:firstName"));
 
-    protected Set<String> searchProperties = new HashSet<String>(Arrays.asList("j:nodename",
-            "j:lastName", "j:firstName", "username"));
+    protected Set<String> searchProperties = new HashSet<String>(Arrays.asList("j:lastName", "j:firstName", "username"));
 
     protected JahiaUserManagerService userService;
 

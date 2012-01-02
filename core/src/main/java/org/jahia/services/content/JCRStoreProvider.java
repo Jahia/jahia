@@ -148,6 +148,8 @@ public class JCRStoreProvider {
 
     private final Object syncRepoInit = new Object();
 
+    private long sessionKeepAliveCheckInterval = 5000L;
+
     public String getKey() {
         return key;
     }
@@ -303,6 +305,14 @@ public class JCRStoreProvider {
         this.publicationService = publicationService;
     }
 
+    public long getSessionKeepAliveCheckInterval() {
+        return sessionKeepAliveCheckInterval;
+    }
+
+    public void setSessionKeepAliveCheckInterval(long sessionKeepAliveCheckInterval) {
+        this.sessionKeepAliveCheckInterval = sessionKeepAliveCheckInterval;
+    }
+
     public void start() throws JahiaInitializationException {
         try {
             String tmpAuthenticationType = authenticationType;
@@ -394,16 +404,19 @@ public class JCRStoreProvider {
 
             // The thread should always checks if the session is still alive and reconnect it if lost
             running = true;
-            Thread t = new Thread("JCRStoreProvider") {
+            Thread t = new Thread(ws + "-WorkspaceObserverKeepAlive") {
                 public void run() {
                     while (isRunning() && session.isLive()) {
                         try {
-                            session.refresh(false);
+                            // we retrieve root node to keep the session alive (note : in Jackrabbit sessions never
+                            // time-out but as this is possible in the spec, we do a simple read call in case we
+                            // use other implementations).
+                            Node rootNode = session.getRootNode();
                         } catch (RepositoryException e) {
                             if (running && logger != null) logger.error(e.getMessage(), e);
                         }
                         try {
-                            Thread.sleep(5000);
+                            Thread.sleep(sessionKeepAliveCheckInterval);
                         } catch (InterruptedException e) {
                             // ignore
                         }

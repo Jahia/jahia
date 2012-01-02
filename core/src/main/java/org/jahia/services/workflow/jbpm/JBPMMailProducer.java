@@ -45,19 +45,19 @@ import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.workflow.WorkflowDefinition;
-import org.jahia.services.workflow.WorkflowService;
-import org.jahia.settings.SettingsBean;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jbpm.api.Execution;
+import org.jbpm.api.JbpmException;
 import org.jbpm.api.ProcessEngine;
 import org.jbpm.api.cmd.Environment;
+import org.jbpm.api.identity.Group;
+import org.jbpm.api.identity.User;
 import org.jbpm.pvm.internal.email.impl.*;
+import org.jbpm.pvm.internal.email.spi.AddressResolver;
 import org.jbpm.pvm.internal.env.EnvironmentImpl;
+import org.jbpm.pvm.internal.identity.spi.IdentitySession;
 import org.jbpm.pvm.internal.model.ExecutionImpl;
 import org.slf4j.Logger;
 
@@ -67,9 +67,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 import javax.script.*;
-import javax.swing.plaf.multi.MultiPanelUI;
 import java.io.StringWriter;
-import java.security.Principal;
 import java.util.*;
 
 /**
@@ -120,10 +118,10 @@ public class JBPMMailProducer extends MailProducerImpl {
                             scriptEngine = ScriptEngineUtils.getInstance().getEngineByName(getTemplate().getLanguage());
                             bindings = null;
                             Message email = instantiateEmail();
-                            fillFrom(execution, email, session);
-                            fillRecipients(execution, email, session);
-                            fillSubject(execution, email, session);
-                            fillContent(execution, email, session);
+                            fillFrom(email, execution, session);
+                            fillRecipients(email, execution, session);
+                            fillSubject(email, execution, session);
+                            fillContent(email, execution, session);
                             Address[] addresses = email.getRecipients(Message.RecipientType.TO);
                             if (addresses != null && addresses.length > 0) {
                                 return Collections.singleton(email);
@@ -145,7 +143,128 @@ public class JBPMMailProducer extends MailProducerImpl {
         return Collections.emptyList();
     }
 
-    protected void fillSubject(Execution execution, Message email, JCRSessionWrapper session) throws MessagingException {
+    /**
+       * Fills the <code>from</code> attribute of the given email. The sender addresses are an
+       * optional element in the mail template. If absent, each mail server supplies the current
+       * user's email address.
+       *
+       * @see {@link InternetAddress#getLocalAddress(Session)}
+     */
+    protected void fillFrom(Message email, Execution execution, JCRSessionWrapper session) throws MessagingException {
+        try {
+            AddressTemplate fromTemplate = getTemplate().getFrom();
+            // "from" attribute is optional
+            if (fromTemplate == null) return;
+
+            // resolve and parse addresses
+            String addresses = fromTemplate.getAddresses();
+            if (addresses != null) {
+                addresses = evaluateExpression(execution, addresses, session);
+                // non-strict parsing applies to a list of mail addresses entered by a human
+                email.addFrom(InternetAddress.parse(addresses, false));
+            }
+
+            EnvironmentImpl environment = EnvironmentImpl.getCurrent();
+            IdentitySession identitySession = environment.get(IdentitySession.class);
+            AddressResolver addressResolver = environment.get(AddressResolver.class);
+
+            // resolve and tokenize users
+            String userList = fromTemplate.getUsers();
+            if (userList != null) {
+                String[] userIds = tokenizeActors(userList, execution, session);
+                List<User> users = identitySession.findUsersById(userIds);
+                email.addFrom(resolveAddresses(users, addressResolver));
+            }
+
+            // resolve and tokenize groups
+            String groupList = fromTemplate.getGroups();
+            if (groupList != null) {
+                for (String groupId : tokenizeActors(groupList, execution, session)) {
+                    Group group = identitySession.findGroupById(groupId);
+                    email.addFrom(addressResolver.resolveAddresses(group));
+                }
+            }
+        } catch (ScriptException e) {
+            logger.error(e.getMessage(), e);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    protected void fillRecipients(Message email, Execution execution, JCRSessionWrapper session) throws MessagingException {
+        try {
+            // to
+            AddressTemplate to = getTemplate().getTo();
+            if (to != null) {
+                fillRecipients(to, email, Message.RecipientType.TO, execution, session);
+            }
+
+            // cc
+            AddressTemplate cc = getTemplate().getCc();
+            if (cc != null) {
+                fillRecipients(cc, email, Message.RecipientType.CC, execution, session);
+            }
+
+            // bcc
+            AddressTemplate bcc = getTemplate().getBcc();
+            if (bcc != null) {
+                fillRecipients(bcc, email, Message.RecipientType.BCC, execution, session);
+            }
+        } catch (ScriptException e) {
+            logger.error(e.getMessage(), e);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    private void fillRecipients(AddressTemplate addressTemplate, Message email, Message.RecipientType recipientType, Execution execution, JCRSessionWrapper session) throws MessagingException, RepositoryException, ScriptException {
+        // resolve and parse addresses
+        String addresses = addressTemplate.getAddresses();
+        if (addresses != null) {
+            addresses = evaluateExpression(execution, addresses, session);
+            // non-strict parsing applies to a list of mail addresses entered by a human
+            email.addRecipients(recipientType, InternetAddress.parse(addresses, false));
+        }
+
+        EnvironmentImpl environment = EnvironmentImpl.getCurrent();
+        IdentitySession identitySession = environment.get(IdentitySession.class);
+        AddressResolver addressResolver = environment.get(AddressResolver.class);
+
+        // resolve and tokenize users
+        String userList = addressTemplate.getUsers();
+        if (userList != null) {
+            String[] userIds = tokenizeActors(userList, execution, session);
+            List<User> users = identitySession.findUsersById(userIds);
+            email.addRecipients(recipientType, resolveAddresses(users, addressResolver));
+        }
+
+        // resolve and tokenize groups
+        String groupList = addressTemplate.getGroups();
+        if (groupList != null) {
+            for (String groupId : tokenizeActors(groupList, execution, session)) {
+                Group group = identitySession.findGroupById(groupId);
+                email.addRecipients(recipientType, addressResolver.resolveAddresses(group));
+            }
+        }
+    }
+
+    private String[] tokenizeActors(String recipients, Execution execution, JCRSessionWrapper session) throws RepositoryException, ScriptException{
+        String[] actors = evaluateExpression(execution, recipients, session).split("[,;\\s]+");
+        if (actors.length == 0) throw new JbpmException("recipient list is empty: " + recipients);
+        return actors;
+    }
+
+    /** construct recipient addresses from user entities */
+    private Address[] resolveAddresses(List<User> users, AddressResolver addressResolver) {
+        int userCount = users.size();
+        Address[] addresses = new Address[userCount];
+        for (int i = 0; i < userCount; i++) {
+            addresses[i] = addressResolver.resolveAddress(users.get(i));
+        }
+        return addresses;
+    }
+
+    protected void fillSubject(Message email, Execution execution, JCRSessionWrapper session) throws MessagingException {
         String subject = getTemplate().getSubject();
         if (subject != null) {
             try {
@@ -159,98 +278,7 @@ public class JBPMMailProducer extends MailProducerImpl {
         }
     }
 
-    protected void fillRecipients(Execution execution, Message email, JCRSessionWrapper session) throws MessagingException {
-        try {
-            fillRecipients(execution, email, session, getTemplate().getTo(), Message.RecipientType.TO);
-            fillRecipients(execution, email, session, getTemplate().getCc(), Message.RecipientType.CC);
-            fillRecipients(execution, email, session, getTemplate().getBcc(), Message.RecipientType.BCC);
-        } catch (ScriptException e) {
-            logger.error(e.getMessage(), e);
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
-
-    private void fillRecipients(Execution execution, Message email, JCRSessionWrapper session, AddressTemplate addressTemplate, Message.RecipientType type) throws RepositoryException, ScriptException {
-        String s;
-        SortedSet<String> emails = new TreeSet<String>();
-        if (addressTemplate != null) {
-            s = addressTemplate.getUsers();
-            if (!"".equals(s)) {
-                s = evaluateExpression(execution, s, session);
-                String[] mails = s.split(",");
-                for (String mail : mails) {
-                    mail = mail.replace('\n', ' ').trim();
-                    if ("assignable".equals(mail)) {
-                        emails.addAll(getAssignables((ExecutionImpl) execution));
-                    } else {
-                        emails.add(mail);
-                    }
-                }
-
-                for (String m : emails) {
-                    if (m != null && !"".equals(m)) {
-                        try {
-                            InternetAddress address = new InternetAddress(m);
-                            address.validate();
-                            email.addRecipient(type, address);
-                        } catch (MessagingException e) {
-                            logger.debug(e.getMessage(), e);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private SortedSet<String> getAssignables(ExecutionImpl exe) throws RepositoryException {
-        SortedSet<String> emails = new TreeSet<String>();
-        WorkflowDefinition def = (WorkflowDefinition) exe.getVariable("workflow");
-        String id = (String) exe.getVariable("nodeId");
-        JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
-        List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def,
-                exe.getActivity().getDefaultOutgoingTransition().getDestination().getName(), exe.getProcessInstance().getId());
-        for (JahiaPrincipal principal : principals) {
-            if (principal instanceof JahiaGroup) {
-                Collection<Principal> members = ((JahiaGroup) principal).getMembers();
-                for (Principal member : members) {
-                    if (member instanceof JahiaUser) {
-                        final String property = ((JahiaUser) member).getProperty("j:email");
-                        if (property != null) emails.add(property);
-                    }
-                }
-            } else if (principal instanceof JahiaUser) {
-                final String property = ((JahiaUser) principal).getProperty("j:email");
-                if (property != null) emails.add(property);
-            }
-        }
-        return emails;
-    }
-
-    /**
-     * Fills the <code>from</code> attribute of the given email. The sender addresses are an
-     * optional element in the mail template. If absent, each mail server supplies the current
-     * user's email address.
-     *
-     * @see {@link javax.mail.internet.InternetAddress#getLocalAddress(javax.mail.Session)}
-     */
-    protected void fillFrom(Execution execution, Message email, JCRSessionWrapper session) throws MessagingException {
-        try {
-            if (getTemplate().getFrom() == null) {
-                email.setFrom(new InternetAddress(SettingsBean.getInstance().getMail_from()));
-                return;
-            }
-            String scriptToExecute = getTemplate().getFrom().getUsers();
-            String scriptResult = evaluateExpression(execution, scriptToExecute, session);
-            email.setFrom(new InternetAddress(scriptResult));
-        } catch (ScriptException e) {
-            logger.error(e.getMessage(), e);
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
-
-    protected void fillContent(Execution execution, Message email, JCRSessionWrapper session) throws MessagingException {
+    protected void fillContent(Message email, Execution execution, JCRSessionWrapper session) throws MessagingException {
         String text = getTemplate().getText();
         String html = getTemplate().getHtml();
         List<AttachmentTemplate> attachmentTemplates = getTemplate().getAttachmentTemplates();

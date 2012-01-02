@@ -100,7 +100,7 @@ public class JBPMIdentitySession implements IdentitySession {
                     List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def,
                             execution.getActivity().getIncomingTransitions().get(0).getSource().getName(), execution.getProcessInstance().getId());
                     iterateOverPrincipals(emails, userId, principals);
-                } else if (userId.equals("nextTaskAssignable")) {
+                } else if (userId.equals("nextTaskAssignable") || userId.equals("assignable")) {
                     JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
                     List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def,
                             execution.getActivity().getDefaultOutgoingTransition().getDestination().getName(), execution.getProcessInstance().getId());

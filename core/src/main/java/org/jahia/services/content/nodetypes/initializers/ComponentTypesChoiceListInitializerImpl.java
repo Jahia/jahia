@@ -80,9 +80,14 @@ public class ComponentTypesChoiceListInitializerImpl implements ChoiceListInitia
 
         List<ChoiceListValue> choiceList = new LinkedList<ChoiceListValue>();
 
+        JCRNodeWrapper contextNode = (JCRNodeWrapper) context.get("contextNode");
+        if (contextNode == null) {
+             contextNode = (JCRNodeWrapper) context.get("contextParent");
+        }
+
         try {
             for (Map.Entry<String, String> comp : ComponentRegistry.getComponentTypes(
-                    (JCRNodeWrapper) context.get("contextNode"), includes, excludes, locale)
+                    contextNode, includes, excludes, locale)
                     .entrySet()) {
                 choiceList.add(new ChoiceListValue(comp.getValue(), comp.getKey()));
             }

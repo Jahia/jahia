@@ -44,16 +44,12 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mail.MailEndpoint;
-import org.apache.james.mime4j.message.BodyPart;
 import org.springframework.beans.factory.DisposableBean;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.mail.MailServiceImpl;
 import org.jbpm.pvm.internal.email.spi.MailSession;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
@@ -95,17 +91,25 @@ public class JBPMMailSession implements MailSession, DisposableBean {
                     Exchange exchange = endpoint.createExchange(email);
 
                     // Message transformation for camel bindings
-                    MimeMultipart multipart = (MimeMultipart) email.getContent();
-                    MimeMultipart alt = (MimeMultipart) multipart.getBodyPart(0).getContent();
+                    if (email.getContent() instanceof MimeMultipart) {
+                        MimeMultipart multipart = (MimeMultipart) email.getContent();
+                        for (int i = 0; i < multipart.getCount(); i++) {
+                            Object content = multipart.getBodyPart(i).getContent();
+                            if (content instanceof MimeMultipart) {
+                                MimeMultipart alt = (MimeMultipart) content;
+                                if (alt.getContentType().startsWith("multipart/alternative")) {
+                                    exchange.getIn().setBody(alt.getBodyPart(0).getDataHandler().getContent());
+                                    exchange.getIn().setHeader("contentType", alt.getBodyPart(0).getDataHandler().getContentType());
 
-                    exchange.getIn().setBody(alt.getBodyPart(0).getDataHandler().getContent());
-                    exchange.getIn().setHeader("contentType", alt.getBodyPart(0).getDataHandler().getContentType());
-
-                    if (alt.getCount() == 2) {
-                        exchange.getIn().setHeader("CamelMailAlternativeBody", alt.getBodyPart(1).getDataHandler().getContent());
-                    }
-                    for (int i = 1 ; i<multipart.getCount(); i++) {
-                        exchange.getIn().addAttachment("part"+i, multipart.getBodyPart(i).getDataHandler());
+                                    if (alt.getCount() == 2) {
+                                        exchange.getIn().setHeader("CamelMailAlternativeBody", alt.getBodyPart(1).getDataHandler().getContent());
+                                    }
+                                }
+                            }
+                        }
+                        for (int i = 1 ; i<multipart.getCount(); i++) {
+                            exchange.getIn().addAttachment("part"+i, multipart.getBodyPart(i).getDataHandler());
+                        }
                     }
                     template.send("seda:mailUsers?multipleConsumers=true",
                             exchange);

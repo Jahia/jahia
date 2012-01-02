@@ -272,13 +272,13 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                 public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     List<String> users = new ArrayList<String>();
                     if (session.getWorkspace().getQueryManager() != null) {
-                        String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "] ORDER BY [j:nodename]";
+                        String query = "SELECT * FROM [" + Constants.JAHIANT_USER + "] AS username ORDER BY localname(username)";
                         Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                         QueryResult qr = q.execute();
                         RowIterator rows = qr.getRows();
                         while (rows.hasNext()) {
                             Row usersFolderNode = rows.nextRow();
-                            String userName = "{jcr}" + usersFolderNode.getValue("j:nodename").getString();
+                            String userName = "{jcr}" + usersFolderNode.getNode().getName();
                             if (!users.contains(userName)) {
                                 users.add(userName);
                             }

@@ -75,6 +75,7 @@ import org.jbpm.pvm.internal.model.EventImpl;
 import org.jbpm.pvm.internal.model.EventListenerReference;
 import org.jbpm.pvm.internal.svc.HistoryServiceImpl;
 import org.jbpm.pvm.internal.task.TaskDefinitionImpl;
+import org.jbpm.pvm.internal.task.TaskImpl;
 import org.jbpm.pvm.internal.wire.usercode.UserCodeActivityBehaviour;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
@@ -548,7 +549,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         action.setDueDate(task.getDuedate());
         action.setDescription(task.getDescription());
         action.setCreateTime(task.getCreateTime());
-        action.setProcessId(task.getExecutionId());
+        action.setProcessId(executionService.findExecutionById(task.getExecutionId()).getProcessInstance().getId());
         if (task.getAssignee() != null) {
             action.setAssignee(
                     ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(task.getAssignee()));

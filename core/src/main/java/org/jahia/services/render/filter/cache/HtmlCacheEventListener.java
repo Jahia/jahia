@@ -44,10 +44,11 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.observation.EventImpl;
-import org.apache.jackrabbit.core.observation.EventState;
+import org.jahia.services.content.DefaultEventListener;
+import org.jahia.services.content.ExternalEventListener;
+import org.jahia.services.content.JCREventIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jahia.services.content.*;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -122,7 +123,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                     try {
                         flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propageToOtherClusterNodes);
                     } catch (PathNotFoundException e) {
-                        if(event instanceof EventImpl) {
+                        if(event instanceof EventImpl && (((EventImpl) event).getChildId() != null)) {
                             flushDependenciesOfPath(depCache, flushed,((EventImpl)event).getChildId().toString(), propageToOtherClusterNodes);
                         }
                     }
@@ -133,7 +134,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                         try {
                             flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propageToOtherClusterNodes);
                         } catch (PathNotFoundException e) {
-                            if (event instanceof EventImpl) {
+                            if (event instanceof EventImpl  && (((EventImpl) event).getParentId() != null)) {
                                 flushDependenciesOfPath(depCache, flushed, ((EventImpl) event).getParentId().toString(),
                                         propageToOtherClusterNodes);
                             }

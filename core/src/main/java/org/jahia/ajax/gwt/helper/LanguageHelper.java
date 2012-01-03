@@ -85,7 +85,7 @@ public class LanguageHelper {
                         GWTJahiaLanguage item = new GWTJahiaLanguage();
                         item.setLanguage(langCode);
                         item.setDisplayName(getDisplayName(langCode));
-                        item.setImage(getLangIcon(Jahia.getContextPath(), langCode));
+                        item.setImage(getLangIcon(Jahia.getContextPath(), LanguageCodeConverters.languageCodeToLocale(langCode)));
                         item.setCurrent(langCode.equalsIgnoreCase(currentLocale.toString()));
                         item.setActive(activeLanguages.contains(langCode));
                         item.setMandatory(mandatoryLanguages.contains(langCode));
@@ -104,7 +104,7 @@ public class LanguageHelper {
                     GWTJahiaLanguage item = new GWTJahiaLanguage();
                     item.setLanguage(langCode);
                     item.setDisplayName(getDisplayName(langCode));
-                    item.setImage(getLangIcon(Jahia.getContextPath(), langCode));
+                    item.setImage(getLangIcon(Jahia.getContextPath(), LanguageCodeConverters.languageCodeToLocale(langCode)));
                     item.setCurrent(langCode.equalsIgnoreCase(currentLocale.toString()));
                     item.setActive(activeLanguages.contains(langCode));
                     item.setMandatory(mandatoryLanguages.contains(langCode));
@@ -129,18 +129,22 @@ public class LanguageHelper {
         GWTJahiaLanguage item = new GWTJahiaLanguage();
         item.setLanguage(langCode);
         item.setDisplayName(getDisplayName(langCode));
-        item.setImage(getLangIcon(Jahia.getContextPath(), langCode));
+        item.setImage(getLangIcon(Jahia.getContextPath(), locale));
         return item;
     }
 
     /**
      * Get icon style depending and the selected language
      *
+     *
      * @param locale
      * @return
      */
-    public static String getLangIcon(String contextPath, String locale) {
-        return contextPath + "/css/images/flags/" + locale + "_on.png";
+    public static String getLangIcon(String contextPath, Locale locale) {
+        if("".equals(locale.getCountry()))
+            return contextPath + "/css/images/flags/" + locale.getLanguage().toLowerCase() + "_on.png";
+        else
+            return contextPath + "/css/images/flags/plain/flag_" + locale.getDisplayCountry(Locale.ENGLISH).toLowerCase() + ".png";
     }
 
     /**

@@ -79,6 +79,7 @@ public class WorkflowService implements BeanPostProcessor {
     private Map<String, Map<String,String>> workflowPermissions = new HashMap<String, Map<String, String>>();
     private Map<String, String> workflowTypeByDefinition;
     public static final String WORKFLOWRULES_NODE_NAME = "j:workflowRules";
+    private JCRTemplate jcrTemplate;
 
     public static WorkflowService getInstance() {
         if (instance == null) {
@@ -124,7 +125,7 @@ public class WorkflowService implements BeanPostProcessor {
     public void addProvider(final WorkflowProvider provider) {
         providers.put(provider.getKey(), provider);
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     List<WorkflowDefinition> definitions = provider.getAvailableWorkflows(null);
                     for (WorkflowDefinition definition : definitions) {
@@ -151,7 +152,7 @@ public class WorkflowService implements BeanPostProcessor {
                 }
             });
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error("Issue while registering provider "+provider.getKey(),e);
         }
         /*try {
             List<WorkflowDefinition> list = getWorkflows();
@@ -249,7 +250,7 @@ public class WorkflowService implements BeanPostProcessor {
 
     public List<JahiaPrincipal> getAssignedRole(final JCRNodeWrapper node, final WorkflowDefinition definition,
                                                 final String activityName, final String processId) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<JahiaPrincipal>>() {
+        return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<List<JahiaPrincipal>>() {
             public List<JahiaPrincipal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
                 List<JahiaPrincipal> principals = new ArrayList<JahiaPrincipal>();
@@ -869,4 +870,7 @@ public class WorkflowService implements BeanPostProcessor {
         return bean;
     }
 
+    public void setJcrTemplate(JCRTemplate jcrTemplate) {
+        this.jcrTemplate = jcrTemplate;
+    }
 }

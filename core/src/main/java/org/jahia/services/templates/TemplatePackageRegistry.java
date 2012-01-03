@@ -41,6 +41,8 @@
 package org.jahia.services.templates;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.nodetypes.renderer.ChoiceListRendererService;
+import org.jahia.services.content.nodetypes.renderer.ModuleChoiceListRenderer;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.services.workflow.WorkflowService;
@@ -96,6 +98,8 @@ class TemplatePackageRegistry {
         
         private ChoiceListInitializerService choiceListInitializers;
 
+        private ChoiceListRendererService choiceListRendererService;
+        
         private RenderService renderService;
 
         private WorkflowService workflowService;
@@ -133,6 +137,14 @@ class TemplatePackageRegistry {
                     logger.debug("Registering ModuleChoiceListInitializer '" + moduleChoiceListInitializer.getKey() + "' (" + beanName + ")");
                 }
                 choiceListInitializers.getInitializers().put(moduleChoiceListInitializer.getKey(),moduleChoiceListInitializer);
+            }
+            
+            if (bean instanceof ModuleChoiceListRenderer) {
+                ModuleChoiceListRenderer choiceListRenderer = (ModuleChoiceListRenderer) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Registering ChoiceListRenderer '" + choiceListRenderer.getKey() + "' (" + beanName + ")");
+                }
+                choiceListRendererService.getRenderers().put(choiceListRenderer.getKey(),choiceListRenderer);
             }
             if (bean instanceof ModuleGlobalObject) {
                 ModuleGlobalObject moduleGlobalObject = (ModuleGlobalObject) bean;
@@ -216,6 +228,10 @@ class TemplatePackageRegistry {
          */
         public void setChoiceListInitializers(ChoiceListInitializerService choiceListInitializers) {
             this.choiceListInitializers = choiceListInitializers;
+        }
+
+        public void setChoiceListRendererService(ChoiceListRendererService choiceListRendererService) {
+            this.choiceListRendererService = choiceListRendererService;
         }
 
         /**

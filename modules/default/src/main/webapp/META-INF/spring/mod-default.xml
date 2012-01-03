@@ -12,6 +12,7 @@
 
 	<bean name="org.jahia.modules.default.ModuleRegistry" class="org.jahia.services.templates.TemplatePackageRegistry$ModuleRegistry">
 		<property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
+        <property name="choiceListRendererService" ref="choiceListRenderers"/>
         <property name="choiceListInitializers" ref="choiceListInitializers"/>
         <property name="renderService" ref="RenderService"/>
         <property name="staticAssetMapping" ref="org.jahia.services.render.StaticAssetMappingRegistry"/>

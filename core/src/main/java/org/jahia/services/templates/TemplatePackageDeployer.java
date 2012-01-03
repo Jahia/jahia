@@ -164,7 +164,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 }
             }
             if (settingsBean.isDevelopmentMode()) {
-                List<File> remaining = new LinkedList<File>();
+                LinkedHashSet<File> remaining = new LinkedHashSet<File>();
     
                 IOFileFilter fileFilter = new NotFileFilter(new SuffixFileFilter(new String[] {".pkg"}));
 
@@ -225,18 +225,20 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 }
 
                 if (!remaining.isEmpty()) {
-                    List<JahiaTemplatesPackage> remainingPackages = new LinkedList<JahiaTemplatesPackage>();
+                    LinkedHashSet<JahiaTemplatesPackage> remainingPackages = new LinkedHashSet<JahiaTemplatesPackage>();
                     for (File pkgFolder : remaining) {
                         JahiaTemplatesPackage packageHandler = getPackage(pkgFolder);
                         if (packageHandler != null) {
                             remainingPackages.add(packageHandler);
                         }
                     }
+                    remainingPackages.addAll(unresolvedDependencies);
                     for (JahiaTemplatesPackage pack : getOrderedPackages(remainingPackages).values()) {
                         if (unzippedPackages.contains(pack.getRootFolder())) {
                             unzippedPackages.remove(pack.getRootFolder());
                             initialImports.add(pack);
                         }
+                        unresolvedDependencies.remove(pack);
                         templatePackageRegistry.register(pack);
                         changed = true;
                     }
@@ -269,6 +271,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
 
     private List<JahiaTemplatesPackage> initialImports = new LinkedList<JahiaTemplatesPackage>();
     private List<String> unzippedPackages = new LinkedList<String>();
+    private Set<JahiaTemplatesPackage> unresolvedDependencies = new HashSet<JahiaTemplatesPackage>();
 
     private TemplatePackageApplicationContextLoader contextLoader;
 
@@ -296,7 +299,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         if (templatesRoot.isDirectory()) {
             File[] dirs = templatesRoot.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
 
-            List<JahiaTemplatesPackage> remaining = new LinkedList<JahiaTemplatesPackage>();
+            LinkedHashSet<JahiaTemplatesPackage> remaining = new LinkedHashSet<JahiaTemplatesPackage>();
 
             for (int i = 0; i < dirs.length; i++) {
                 JahiaTemplatesPackage packageHandler = getPackage(dirs[i]);
@@ -729,11 +732,11 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         }
     }
 
-    private Map<String, JahiaTemplatesPackage> getOrderedPackages(List<JahiaTemplatesPackage> remaining) {
+    private Map<String, JahiaTemplatesPackage> getOrderedPackages(LinkedHashSet<JahiaTemplatesPackage> remaining) {
         LinkedHashMap<String, JahiaTemplatesPackage> toDeploy = new LinkedHashMap<String, JahiaTemplatesPackage>();
         Set<String> folderNames = new HashSet<String>();
-         while (!remaining.isEmpty()) {
-            List<JahiaTemplatesPackage> newRemaining = new LinkedList<JahiaTemplatesPackage>();
+        while (!remaining.isEmpty()) {
+            LinkedHashSet<JahiaTemplatesPackage> newRemaining = new LinkedHashSet<JahiaTemplatesPackage>();
             for (JahiaTemplatesPackage pack : remaining) {
                 Set<String> allDeployed = new HashSet<String>(templatePackageRegistry.getPackageNames());
                 allDeployed.addAll(templatePackageRegistry.getPackageFileNames());
@@ -750,9 +753,10 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             if (newRemaining.equals(remaining)) {
                 String str = "";
                 for (JahiaTemplatesPackage item : newRemaining) {
+                    unresolvedDependencies.add(item);
                     str += item.getName() + ",";
                 }
-                logger.error("Cannot deploy packages " + str + ", unresolved dependencies");
+                logger.error("Cannot deploy packages " + str + " unresolved dependencies");
                 break;
             } else {
                 remaining = newRemaining;

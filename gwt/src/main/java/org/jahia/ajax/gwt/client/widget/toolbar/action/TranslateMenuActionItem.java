@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
@@ -83,20 +84,21 @@ public class TranslateMenuActionItem extends BaseActionItem {
                     final LinkerSelectionContext lh = linker.getSelectionContext();
 
                     if (PermissionsUtils.isPermitted("jcr:modifyProperties_" + JahiaGWTParameters.getWorkspace() + "_" + destLang.getLanguage(), lh.getSelectionPermissions())) {
-                        MenuItem item = new MenuItem(
-                                sourceLang.getDisplayName() + "->" + destLang.getDisplayName());
+                        final GWTJahiaNode selection = lh.getSingleSelection();
+                        if (selection != null && (!selection.isLocked() || !selection.getLockInfos().containsKey(destLang.getLanguage()))) {
+                            MenuItem item = new MenuItem(
+                                    sourceLang.getDisplayName() + "->" + destLang.getDisplayName());
 
-                        item.addSelectionListener(new SelectionListener<MenuEvent>() {
-                            @Override
-                            public void componentSelected(MenuEvent ce) {
-                                if (lh.getSingleSelection() != null) {
-                                    new TranslateContentEngine(lh.getSingleSelection(), linker,
-                                            sourceLang, destLang).show();
+                            item.addSelectionListener(new SelectionListener<MenuEvent>() {
+                                @Override
+                                public void componentSelected(MenuEvent ce) {
+                                    new TranslateContentEngine(selection, linker, sourceLang,
+                                            destLang).show();
                                 }
-                            }
-                        });
-                        menu.add(item);
-                        notEmpty = true;
+                            });
+                            menu.add(item);
+                            notEmpty = true;
+                        }
                     }
                 }
             }

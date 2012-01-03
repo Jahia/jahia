@@ -46,8 +46,10 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.ColorPalette;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.menu.ColorMenu;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
@@ -61,6 +63,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig;
+import org.jahia.ajax.gwt.client.widget.content.ColorPickerField;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.content.CronField;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
@@ -163,6 +166,7 @@ public class FormFieldCreator {
 
                     break;
                 case GWTJahiaNodeSelectorType.COLOR:
+                    field = new ColorPickerField();
                     break;
                 case GWTJahiaNodeSelectorType.CRON:
                     field = new CronField();

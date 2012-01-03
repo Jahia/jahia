@@ -42,6 +42,7 @@
             </item>
             <item name="Internationalized Web Site" href="i18n/i18n.html"/>
             <item name="Node types definitions" href="./definitions/definitions.html"/>
+            <item name="Node types input mask" href="./definitions/inputMasks.html"/>
             <item name="Notifications" href="notifications/notifications.html"/>
             <item name="Users batch creation" href="./users_batch_creation.html"/>
             <item name="Development">

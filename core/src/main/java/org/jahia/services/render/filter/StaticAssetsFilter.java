@@ -97,6 +97,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     static {
         RANK = new FastHashMap();
+        RANK.put("inlinebefore", Integer.valueOf(0));
         RANK.put("css", Integer.valueOf(1));
         RANK.put("inlinecss", Integer.valueOf(2));
         RANK.put("javascript", Integer.valueOf(3));
@@ -172,6 +173,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             String type = esiResourceTag.getAttributeValue("type");
             String path = esiResourceTag.getAttributeValue("path");
             String media = esiResourceTag.getAttributeValue("media");
+            String condition = esiResourceTag.getAttributeValue("condition");
             path = URLDecoder.decode(path, "UTF-8");
             Boolean insert = Boolean.parseBoolean(esiResourceTag.getAttributeValue("insert"));
             String resourceS = esiResourceTag.getAttributeValue("resource");
@@ -185,6 +187,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             }
             if (media != null && !"".equals(media.trim())) {
                 optionsMap.put("media", media);
+            }
+            if (condition != null && !"".equals(condition.trim())) {
+                optionsMap.put("condition", condition);
             }
 
             Map<String, Map<String, String>> stringMap = assets.get(type);

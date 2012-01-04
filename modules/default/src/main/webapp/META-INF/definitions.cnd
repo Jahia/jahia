@@ -42,8 +42,8 @@
 [jnt:frame] > jnt:content, mix:title, jmix:structuredContent, jmix:siteComponent
  - source (string) i18n indexed=no
  - name (string) indexed=no
- - width (long) indexed=no
- - height (long) indexed=no
+ - width (long) indexed=no mandatory
+ - height (long) indexed=no mandatory
  - frameborder (boolean) indexed=no
  - marginwidth (long) = '0' indexed=no
  - marginheight (long) = '0' indexed=no

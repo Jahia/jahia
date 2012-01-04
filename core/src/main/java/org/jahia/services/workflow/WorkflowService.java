@@ -42,8 +42,10 @@ package org.jahia.services.workflow;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.scheduler.BackgroundJob;
@@ -67,7 +69,7 @@ import java.util.*;
  * @since JAHIA 6.5
  *        Created : 2 févr. 2010
  */
-public class WorkflowService implements BeanPostProcessor {
+public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializationService {
     private transient static Logger logger = LoggerFactory.getLogger(WorkflowService.class);
 
 
@@ -124,6 +126,19 @@ public class WorkflowService implements BeanPostProcessor {
 
     public void addProvider(final WorkflowProvider provider) {
         providers.put(provider.getKey(), provider);
+        initializePermission(provider);
+        /*try {
+            List<WorkflowDefinition> list = getWorkflows();
+            for (WorkflowDefinition definition : list) {
+                addWorkflowRule("/","nt:base",definition,START_ROLE,"webmaster");
+                iter()
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot register default workflow rule",e);
+        }*/
+    }
+
+    private void initializePermission(final WorkflowProvider provider) {
         try {
             jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -152,17 +167,8 @@ public class WorkflowService implements BeanPostProcessor {
                 }
             });
         } catch (RepositoryException e) {
-            logger.error("Issue while registering provider "+provider.getKey(),e);
+            logger.debug("Issue while registering provider " + provider.getKey(), e);
         }
-        /*try {
-            List<WorkflowDefinition> list = getWorkflows();
-            for (WorkflowDefinition definition : list) {
-                addWorkflowRule("/","nt:base",definition,START_ROLE,"webmaster");
-                iter()
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot register default workflow rule",e);
-        }*/
     }
 
     /**
@@ -872,5 +878,11 @@ public class WorkflowService implements BeanPostProcessor {
 
     public void setJcrTemplate(JCRTemplate jcrTemplate) {
         this.jcrTemplate = jcrTemplate;
+    }
+
+    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+        for (WorkflowProvider provider : providers.values()) {
+            initializePermission(provider);
+        }
     }
 }

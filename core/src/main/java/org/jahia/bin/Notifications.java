@@ -120,9 +120,15 @@ public class Notifications extends JahiaMultiActionController {
 
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().append(e.getCause().getMessage());
             logger.warn("Error sending test e-mail message. Cause: " + e.getMessage(), e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            if(response.getWriter()!=null) {
+                if(e.getCause()!=null) {
+                    response.getWriter().append(e.getCause().getMessage());
+                } else {
+                    response.getWriter().append(e.getMessage());
+                }
+            }
         }
     }
 }

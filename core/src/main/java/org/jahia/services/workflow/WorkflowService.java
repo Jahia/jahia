@@ -126,16 +126,6 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
 
     public void addProvider(final WorkflowProvider provider) {
         providers.put(provider.getKey(), provider);
-        initializePermission(provider);
-        /*try {
-            List<WorkflowDefinition> list = getWorkflows();
-            for (WorkflowDefinition definition : list) {
-                addWorkflowRule("/","nt:base",definition,START_ROLE,"webmaster");
-                iter()
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot register default workflow rule",e);
-        }*/
     }
 
     private void initializePermission(final WorkflowProvider provider) {

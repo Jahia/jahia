@@ -323,7 +323,9 @@ public final class JCRContentUtils {
                 buffer.append(Character.toUpperCase(Character.forDigit(ch / 16, 16)));
                 buffer.append(Character.toUpperCase(Character.forDigit(ch % 16, 16)));
             } else if (ch == '/' ||  ch == '\\' || ch == '\t' || ch == '\r' || ch == '\n') {
-                buffer.append(' ');
+                if (buffer.length() > 0) {
+                    buffer.append(' ');
+                }
             } else {
                 buffer.append(ch);
             }

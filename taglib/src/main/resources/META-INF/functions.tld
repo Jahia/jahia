@@ -428,6 +428,6 @@
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
         <function-signature>java.lang.Boolean
             hasScriptView(org.jahia.services.content.JCRNodeWrapper,java.lang.String,org.jahia.services.render.RenderContext)</function-signature>
-        <example>${functions:hasScriptView(node,"basic")}</example>
+        <example>${functions:hasScriptView(node,"basic",renderContext)}</example>
     </function>
 </taglib>

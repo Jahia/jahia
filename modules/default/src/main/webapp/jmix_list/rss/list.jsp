@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -35,8 +36,13 @@
         <link><c:url value="${url.server}${url.base}${currentNode.path}.html" context="/"/></link>
         <description>${fn:escapeXml(description)}</description>
         <generator>Jahia <%= Jahia.VERSION + " r" + Jahia.getBuildNumber() %>, http://www.jahia.org</generator>
-            <c:forEach items="${moduleMap.currentList}" var="subchild">
+        <c:forEach items="${moduleMap.currentList}" var="subchild">
+            <c:if test="${!empty subchild.properties['j:view'] &&!functions:hasScriptView(subchild,subchild.properties['j:view'].string , renderContext)}">
+                <template:module node="${subchild}" editable="false" view="default"/>
+            </c:if>
+            <c:if test="${!(!empty subchild.properties['j:view'] &&!functions:hasScriptView(subchild,subchild.properties['j:view'].string , renderContext))}">
                 <template:module node="${subchild}" editable="false"/>
-            </c:forEach>
+            </c:if>
+        </c:forEach>
     </channel>
 </rss>

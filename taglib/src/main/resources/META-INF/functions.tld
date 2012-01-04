@@ -422,5 +422,12 @@
             ${functions:decodeFacetUrlParam(param[facetParamVarName])}
         </example>
     </function>
-
+    <function>
+        <description>Test if the node has a specific view</description>
+        <name>hasView</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.Boolean
+            hasScriptView(org.jahia.services.content.JCRNodeWrapper,java.lang.String,org.jahia.services.render.RenderContext)</function-signature>
+        <example>${functions:hasScriptView(node,"basic")}</example>
+    </function>
 </taglib>

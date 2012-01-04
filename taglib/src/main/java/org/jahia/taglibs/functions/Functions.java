@@ -48,12 +48,18 @@ import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderService;
+import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.Url;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.RangeIterator;
+import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspTagException;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -273,5 +279,16 @@ public class Functions {
      */
     public static String decodeUrlParam(String inputString) {
         return Url.decodeUrlParam(inputString);
+    }
+
+    public static Boolean hasScriptView(JCRNodeWrapper node, String viewName, RenderContext renderContext) {
+        try {
+            return RenderService.getInstance().resolveScript(new org.jahia.services.render.Resource(node, renderContext.getMainResource().getTemplateType(), viewName, renderContext.getMainResource().getContextConfiguration()), renderContext) != null;
+        } catch (TemplateNotFoundException e) {
+            //Do nothing
+        } catch (RepositoryException e) {
+           //Do nothing
+        }
+        return false;
     }
 }

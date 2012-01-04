@@ -67,6 +67,9 @@ import javax.jcr.query.qom.*;
 import java.io.IOException;
 import java.util.*;
 
+import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO;
+import static org.apache.jackrabbit.core.query.lucene.FieldNames.LOCAL_NAME;
+import static org.apache.jackrabbit.core.query.lucene.TransformConstants.TRANSFORM_NONE;
 import static org.apache.lucene.search.BooleanClause.Occur.MUST;
 
 /**

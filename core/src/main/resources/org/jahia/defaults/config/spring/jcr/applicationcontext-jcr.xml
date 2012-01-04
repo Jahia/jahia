@@ -111,7 +111,7 @@
             <map>
                 <entry key="default">
                     <list>
-                        <!--<bean class="org.jahia.services.content.FullpathListener"/>-->
+                        <bean class="org.jahia.services.content.NodenameListener"/>
                         <bean class="org.jahia.services.content.DefaultValueListener"/>
                         <bean class="org.jahia.services.content.LastModifiedListener"/>
                         <bean class="org.apache.jackrabbit.core.security.PrivilegesListener"/>
@@ -172,9 +172,9 @@
                 </entry>
                 <entry key="live">
                     <list>
-                        <!--<bean class="org.jahia.services.content.FullpathListener">
+                        <bean class="org.jahia.services.content.NodenameListener">
                             <property name="availableDuringPublish" value="true"/>
-                        </bean>-->
+                        </bean>
                         <bean class="org.jahia.services.content.DefaultValueListener"/>
                         <bean class="org.jahia.services.content.LastModifiedListener"/>
                         <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">

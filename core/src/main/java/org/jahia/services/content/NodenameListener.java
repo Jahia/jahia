@@ -41,32 +41,27 @@
 package org.jahia.services.content;
 
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
-import org.jahia.ajax.gwt.client.util.Constants;
 import org.slf4j.Logger;
 import static org.jahia.api.Constants.*;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Listener implementation used to update field references when a node is moved/renamed.
+ * Listener implementation used to update node name property a node is added/moved/renamed.
  * User: toto
  * Date: Jul 21, 2008
  * Time: 2:36:05 PM
  */
-public class FullpathListener extends DefaultEventListener {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FullpathListener.class);
+public class NodenameListener extends DefaultEventListener {
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(NodenameListener.class);
 
     public int getEventTypes() {
-        return Event.NODE_ADDED + Event.NODE_REMOVED;
+        return Event.NODE_ADDED;
     }
 
     public void onEvent(final EventIterator eventIterator) {
@@ -94,8 +89,6 @@ public class FullpathListener extends DefaultEventListener {
                             JCRNodeWrapper item = (JCRNodeWrapper) session.getItem(path);
                             nodeAdded(item);
                             sessions.add(item.getRealNode().getSession());
-//                        } else if (event.getType() == Event.NODE_REMOVED) {
-//                            nodeRemoved(session, path);
                         }
                     }
                     for (Session jcrsession : sessions) {
@@ -111,8 +104,6 @@ public class FullpathListener extends DefaultEventListener {
     }
 
     private void nodeAdded(JCRNodeWrapper node) throws RepositoryException {
-        String oldPath = null;
-        String path = node.getPath();
         /*if (node.isNodeType(JAHIAMIX_SHAREABLE) && node.hasProperty(FULLPATH)) {
             NodeIterator ni = node.getSharedSet();
             while (ni.hasNext()) {
@@ -126,30 +117,13 @@ public class FullpathListener extends DefaultEventListener {
             if (!node.isCheckedOut()) {
                 node.checkout();
             }
-            if (!node.isNew()) {
-                oldPath = node.getProperty(FULLPATH).getString();
-            }
             if (logger.isDebugEnabled() && !node.isNew()) {
                 logger.debug(
-                        "Node has been added, we are updating its fullpath properties (old,new): (" + oldPath + "," +
-                        path + ")");
+                        "Node has been added, we are updating its name " +node.getName() + ")");
 
             }
-            node.setProperty(FULLPATH, path);
             node.setProperty(NODENAME, node.getName());
         }
-        if (!node.isNew() && oldPath!=null && !oldPath.equals(path)) {
-            for (NodeIterator ni = node.getNodes(); ni.hasNext();) {
-                nodeAdded((JCRNodeWrapper) ni.nextNode());
-            }
-        }
     }
-
-    private void nodeRemoved(JCRSessionWrapper session, String path) throws RepositoryException {
-//        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jmix:shareable] as node where node.[j:fullpath]= "+JCRContentUtils.stringToQueryLiteral(path), Query.JCR_SQL2);
-//        QueryResult qr = q.execute();
-        // todo : update shared set if removed path was in j:fullpath
-    }
-
 
 }

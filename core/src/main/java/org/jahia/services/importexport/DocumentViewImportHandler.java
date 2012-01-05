@@ -163,11 +163,14 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         }
 
         batchCount++;
-
+        // do a session.save each maxBatch
         if (batchCount > maxBatch) {
             try {
                 session.save();
                 batchCount = 0;
+            } catch (ConstraintViolationException e) {
+                // save on the next node when next node is needed (like content node for files)
+                batchCount = maxBatch -1;
             } catch (RepositoryException e) {
                 throw new SAXException("Cannot save batch", e);
             }

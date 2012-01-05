@@ -40,11 +40,20 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 
 /**
  * 
@@ -70,6 +79,10 @@ public class SwitchModeActionItem extends BaseActionItem {
 
     @Override
     public void onComponentSelection() {
+        onComponentSelection(false);
+    }
+
+    private void onComponentSelection(final boolean openWindow) {
         final String workspace = getPropertyValue(getGwtToolbarItem(), "workspace");
         final String urlParams = getPropertyValue(getGwtToolbarItem(), "urlParams");
         final String servlet = getPropertyValue(getGwtToolbarItem(), "servlet");
@@ -80,13 +93,31 @@ public class SwitchModeActionItem extends BaseActionItem {
             JahiaContentManagementService.App.getInstance()
                     .getNodeURL(servlet, path, null, null, workspace, locale, new BaseAsyncCallback<String>() {
                         public void onSuccess(String url) {
-                            String url1 = url + ((urlParams !=null) ? "?" + urlParams :"");
-                            com.google.gwt.user.client.Window.open(url1, "mode"+ workspace, "");
+                            String url1 = url + ((urlParams != null) ? "?" + urlParams : "");
+                            if (openWindow) {
+                                Window.open(url1, "_blank", "");
+                            } else {
+                                Window.Location.assign(url1);
+                            }
                         }
-
                     });
         }
-
     }
 
+    @Override
+    public Component getTextToolItem() {
+        Component c = super.getTextToolItem();
+        Menu m = new Menu();
+        MenuItem menuItem = new MenuItem(Messages.get("label.openInNewWindow","Open in new window"));
+        menuItem.setIcon(ToolbarIconProvider.getInstance().getIcon("openWindow"));
+        menuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                onComponentSelection(true);
+            }
+        });
+        m.add(menuItem);
+        c.setContextMenu(m);
+        return c;
+    }
 }

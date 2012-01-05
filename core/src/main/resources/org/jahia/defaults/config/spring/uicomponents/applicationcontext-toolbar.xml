@@ -231,7 +231,7 @@
 
     <bean id="Toolbar.Item.Studio" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectOrOpenWindowActionItem"/>
         </property>
         <property name="titleKey" value="label.studio"/>
         <property name="icon" value="studio"/>
@@ -240,6 +240,10 @@
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="js.url"/>
                     <property name="value" value="studioUrl"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="target"/>
+                    <property name="value" value="_blank"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="no-options"/>
@@ -258,7 +262,7 @@
 
     <bean id="Toolbar.Item.EditMode" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectOrOpenWindowActionItem"/>
         </property>
         <property name="titleKey" value="label.editMode"/>
         <property name="icon" value="editMode"/>
@@ -268,6 +272,10 @@
 					<property name="name" value="url" />
 					<property name="value" value="$context/welcome/edit" />
 				</bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="target"/>
+                    <property name="value" value="_blank"/>
+                </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="no-options"/>
                     <property name="value" value=""/>

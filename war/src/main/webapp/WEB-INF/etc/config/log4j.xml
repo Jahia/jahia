@@ -179,7 +179,7 @@
     </category>
 
     <category name="profilerLoggingService" additivity="false">
-        <priority value="debug"/>
+        <priority value="info"/>
         <appender-ref ref="profilerLogs"/>
     </category>
 

@@ -428,9 +428,13 @@ public class RenderService {
     private boolean checkTemplatePermission(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode) throws RepositoryException {
         if (templateNode.hasProperty("j:requiredMode")) {
             String req = templateNode.getProperty("j:requiredMode").getString();
-            if (renderContext.isContributionMode() && !req.equals("contribute")) {
+            if (!renderContext.isContributionMode() && req.equals("contribute")) {
                 return false;
-            } else if (!renderContext.isContributionMode() && !req.equals("live")) {
+            } else if (!renderContext.isEditMode() && req.equals("edit")) {
+                return false;
+            } else if (!renderContext.isLiveMode() && req.equals("live")) {
+                return false;
+            } else if (!renderContext.isPreviewMode() && !renderContext.isLiveMode() && req.equals("live-or-preview")) {
                 return false;
             }
 

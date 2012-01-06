@@ -95,6 +95,8 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                     throw new AccessDeniedException("Content can only be accessed in edit");
                 } else if (!renderContext.isLiveMode() && req.equals("live")) {
                     throw new AccessDeniedException("Content can only be accessed in live");
+                } else if (!renderContext.isPreviewMode() && !renderContext.isLiveMode() && req.equals("live-or-preview")) {
+                    throw new AccessDeniedException("Content can only be accessed in live");
                 }
             }
         }

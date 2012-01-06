@@ -957,6 +957,9 @@
                         <ref bean="Toolbar.Item.Unlock"/>
                         <ref bean="Toolbar.Item.ClearLock"/>
                         <ref bean="Toolbar.Item.ClearAllLocks"/>
+                        <ref bean="Toolbar.Item.Publish"/>
+                        <ref bean="Toolbar.Item.PublishAll"/>
+                        <ref bean="Toolbar.Item.Unpublish"/>
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
                     </list>
@@ -1023,6 +1026,7 @@
                 <value>primaryTypeLabel,140,label.type</value>
                 <value>mix:created.jcr:created,100</value>
                 <value>mix:created.jcr:createdBy,100</value>
+                <value>publicationInfo,40</value>
             </list>
         </property>
     </bean>

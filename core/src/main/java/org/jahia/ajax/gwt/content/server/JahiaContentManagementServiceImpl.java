@@ -504,7 +504,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut)
             throws GWTJahiaServiceException {
         contentManager
-                .copy(pathsToCopy, destinationPath, newName, false, cut, false, false, retrieveCurrentSession(getLocale()));
+                .copy(pathsToCopy, destinationPath, newName, false, cut, false, true, retrieveCurrentSession(getLocale()));
     }
 
     public void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName)

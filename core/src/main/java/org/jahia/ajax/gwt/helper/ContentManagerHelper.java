@@ -239,8 +239,7 @@ public class ContentManagerHelper {
         return newNode;
     }
 
-    public String findAvailableName(JCRNodeWrapper dest, String name)
-            throws GWTJahiaServiceException {
+    public String findAvailableName(JCRNodeWrapper dest, String name) {
         return JCRContentUtils.findAvailableNodeName(dest, name);
     }
 
@@ -403,66 +402,83 @@ public class ContentManagerHelper {
         }
     }
 
-    public List<GWTJahiaNode> copy(List<String> pathsToCopy, String destinationPath, String newName, boolean moveOnTop,
-                                   boolean cut, boolean reference, boolean templateToPage,
+    public List<GWTJahiaNode> copy(final List<String> pathsToCopy, final String destinationPath, final String newName, final boolean moveOnTop,
+                                   final boolean cut, final boolean reference, boolean allLanguages,
                                    JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
-        List<GWTJahiaNode> res = new ArrayList<GWTJahiaNode>();
-
-        List<String> missedPaths = new ArrayList<String>();
-
-        final JCRNodeWrapper targetParent;
-        JCRNodeWrapper targetNode;
-        try {
-            targetNode = currentUserSession.getNode(destinationPath);
-
-            if (moveOnTop) {
-                targetParent = (JCRNodeWrapper) targetNode.getParent();
-            } else {
-                targetParent = targetNode;
-            }
-        } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
+        final List<String> missedPaths = new ArrayList<String>();
+        final List<GWTJahiaNode> res = new ArrayList<GWTJahiaNode>();
 
         try {
-            for (String aNode : pathsToCopy) {
-                JCRNodeWrapper node = currentUserSession.getNode(aNode);
-                String name = newName != null ? newName : node.getName();
-                try {
-                    name = findAvailableName(targetParent, name);
-                    if (targetParent.hasPermission("jcr:addChildNodes") && !targetParent.isLocked()) {
-                        final JCRNodeWrapper copy = doPaste(targetParent, node, name, cut, reference);
+            JCRCallback<List<String>> callback = new JCRCallback<List<String>>() {
+                public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
-                        if (moveOnTop && targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {
-                            targetParent.orderBefore(name, targetNode.getName());
-                        }
-                        currentUserSession.save();
-                        res.add(navigation.getGWTJahiaNode(copy,Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.PERMISSIONS)));
+                    List<String> res = new ArrayList<String>();
+
+
+                    final JCRNodeWrapper targetParent;
+                    JCRNodeWrapper targetNode;
+
+                    targetNode = session.getNode(destinationPath);
+
+                    if (moveOnTop) {
+                        targetParent = (JCRNodeWrapper) targetNode.getParent();
                     } else {
-                        missedPaths
-                                .add(new StringBuilder("File ").append(name).append(" could not be referenced in ")
-                                        .append(targetParent.getPath()).toString());
+                        targetParent = targetNode;
                     }
-                } catch (RepositoryException e) {
-                    logger.error("Exception", e);
-                    missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ")
-                            .append(targetParent.getPath()).toString());
-                } catch (JahiaException e) {
-                    logger.error("Exception", e);
-                    missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ")
-                            .append(targetParent.getPath()).toString());
+
+                    for (String aNode : pathsToCopy) {
+                        JCRNodeWrapper node = session.getNode(aNode);
+                        String name = newName != null ? newName : node.getName();
+                        try {
+                            name = findAvailableName(targetParent, name);
+                            if (targetParent.hasPermission("jcr:addChildNodes") && !targetParent.isLocked()) {
+                                final JCRNodeWrapper copy = doPaste(targetParent, node, name, cut, reference);
+
+                                if (moveOnTop && targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {
+                                    targetParent.orderBefore(name, targetNode.getName());
+                                }
+                                session.save();
+                                res.add(copy.getIdentifier());
+                            } else {
+                                missedPaths
+                                        .add(new StringBuilder("File ").append(name).append(" could not be referenced in ")
+                                                .append(targetParent.getPath()).toString());
+                            }
+                        } catch (RepositoryException e) {
+                            logger.error("Exception", e);
+                            missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ")
+                                    .append(targetParent.getPath()).toString());
+                        } catch (JahiaException e) {
+                            logger.error("Exception", e);
+                            missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ")
+                                    .append(targetParent.getPath()).toString());
+                        }
+                    }
+
+                    return res;
                 }
+            };
+
+            List<String> uuids;
+            if (allLanguages) {
+                uuids = JCRTemplate.getInstance().doExecute(false, currentUserSession.getUser().getUsername(), currentUserSession.getWorkspace().getName(), null, callback);
+            } else {
+                uuids = callback.doInJCR(currentUserSession);
+            }
+        
+            if (missedPaths.size() > 0) {
+                StringBuilder errors = new StringBuilder("The following files could not have their reference pasted:");
+                for (String err : missedPaths) {
+                    errors.append("\n").append(err);
+                }
+                throw new GWTJahiaServiceException(errors.toString());
+            }
+
+            for (String uuid : uuids) {
+                res.add(navigation.getGWTJahiaNode(currentUserSession.getNodeByUUID(uuid), Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.PERMISSIONS)));
             }
         } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
-
-        if (missedPaths.size() > 0) {
-            StringBuilder errors = new StringBuilder("The following files could not have their reference pasted:");
-            for (String err : missedPaths) {
-                errors.append("\n").append(err);
-            }
-            throw new GWTJahiaServiceException(errors.toString());
+            throw new GWTJahiaServiceException(e);
         }
         return res;
     }
@@ -1133,7 +1149,7 @@ public class ContentManagerHelper {
                 JCRNodeWrapper node = session.getNode("/templateSets");
                 shortName = JCRContentUtils.findAvailableNodeName(node, shortName);
 
-                List<GWTJahiaNode> result = copy(Arrays.asList("/templateSets/" + baseSet), "/templateSets", shortName, false, false, false, false, session);
+                List<GWTJahiaNode> result = copy(Arrays.asList("/templateSets/" + baseSet), "/templateSets", shortName, false, false, false, true, session);
                 siteType = session.getNode("/templateSets/" + baseSet).getProperty("j:siteType").getValue().getString();
                 session.getNode("/templateSets/" + shortName).setProperty("j:title", key);
 

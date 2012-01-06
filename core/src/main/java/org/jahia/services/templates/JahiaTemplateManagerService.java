@@ -491,7 +491,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public void duplicateModule(String moduleName, String moduleType, final String sourceModule) {
-        File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), moduleName);
+        final File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), moduleName);
         if (tmplRootFolder.exists()) {
             return;
         }
@@ -499,17 +499,18 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             logger.info("Start duplicating template package '" + sourceModule + "' to moduleName + '"+moduleName+"'");
 
             try {
-                final List<File> files = new ArrayList<File>();
-                FileUtils.copyDirectory(new File(settingsBean.getJahiaTemplatesDiskPath(), sourceModule), tmplRootFolder, new FileFilter() {
+                final List<String> files = new ArrayList<String>();
+                final File source = new File(settingsBean.getJahiaTemplatesDiskPath(), sourceModule);
+                FileUtils.copyDirectory(source, tmplRootFolder, new FileFilter() {
                     public boolean accept(File pathname) {
                         if (pathname.toString().endsWith("."+sourceModule+".jsp")) {
-                            files.add(pathname);
+                            files.add(pathname.getPath().replace(source.getPath(), tmplRootFolder.getPath()));
                         }
                         return true;
                     }
                 });
-                for (File file : files) {
-                    FileUtils.moveFile(file, new File(file.getPath().replace("."+sourceModule+".jsp", "."+moduleName+".jsp")));
+                for (String file : files) {
+                    FileUtils.moveFile(new File(file), new File(file.replace("."+sourceModule+".jsp", "."+moduleName+".jsp")));
                 }
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);

@@ -316,7 +316,7 @@
     <!-- Administration -->
     <bean id="Toolbar.Item.Admin" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectOrOpenWindowActionItem"/>
         </property>
         <property name="titleKey" value="label.administration"/>
         <property name="icon" value="admin"/>

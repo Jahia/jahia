@@ -102,7 +102,7 @@ import java.util.regex.Pattern;
 
 /**
  * Service used to perform all import/export operations for content and documents.
- * 
+ *
  * @author Thomas Draier
  */
 public class ImportExportBaseService extends JahiaService implements ImportExportService {
@@ -171,7 +171,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         return contentType;
     }
-    
+
     protected ImportExportBaseService() {
     }
 
@@ -560,10 +560,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     public void importSiteZip(final File file, final JahiaSite site, final Map<Object, Object> infos) throws RepositoryException, IOException {
-        importSiteZip(file, site, infos, null);
+        importSiteZip(file, site, infos, null, null);
     }
 
-    public void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath) throws RepositoryException, IOException {
+    public void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath) throws RepositoryException, IOException {
         final CategoriesImportHandler categoriesImportHandler = new CategoriesImportHandler();
         final UsersImportHandler usersImportHandler = new UsersImportHandler(site);
         JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, null);
@@ -760,6 +760,17 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 mapping = new DefinitionsMapping();
                 mapping.load(new FileInputStream(legacyMappingFilePath));
             }
+            if(legacyDefinitionsFilePath!=null) {
+                reg = new NodeTypeRegistry();
+                try {
+                    File cndFile = new File(legacyDefinitionsFilePath);
+                    JahiaCndReaderLegacy r = new JahiaCndReaderLegacy(new InputStreamReader(new FileInputStream(legacyDefinitionsFilePath), "UTF-8"), cndFile.getName(),
+                            file.getName(), reg);
+                    r.parse();
+                } catch (ParseException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
             // Old import
             JCRNodeWrapper siteFolder = session.getNode("/sites/" + site.getSiteKey());
 
@@ -933,7 +944,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
         mandatoryLanguages.clear();
 
-        String templateSet = site.getTemplatePackageName(); 
+        String templateSet = site.getTemplatePackageName();
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         try {
             templateManagerService.deployModule("/templateSets/" + templateSet, "/sites/" + site.getSiteKey(), JCRSessionFactory.getInstance().getCurrentUser().getUsername());
@@ -1207,7 +1218,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             });
         }
     }
-    
+
     /**
      * Validates a JCR content import file in document format and returns expected failures.
      *
@@ -1259,7 +1270,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             throws IOException, RepositoryException {
         importZip(parentNodePath, file, rootBehaviour, session, Collections.<String>emptySet());
     }
-    
+
     public void importZip(String parentNodePath, File file, int rootBehaviour, JCRSessionWrapper session, Set<String> filesToIgnore)
             throws IOException, RepositoryException {
         Map<String, Long> sizes = new HashMap<String, Long>();
@@ -1271,7 +1282,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         NoCloseZipInputStream zis;
 
         boolean importLive = sizes.containsKey(LIVE_REPOSITORY_XML);
-        
+
         List<String> liveUuids = null;
         if (importLive) {
             // Import live content
@@ -1430,7 +1441,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     private class OrderedProperties extends Properties {
         private static final long serialVersionUID = -2418536708883832686L;
-        
+
         Vector<Object> keys = new Vector<Object>();
 
         @Override

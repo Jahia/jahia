@@ -176,7 +176,7 @@ public abstract class JahiaSitesService extends JahiaService {
     public abstract JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                                       Locale selectedLocale, String selectTmplSet, String[] modulesToDeploy, String firstImport, File fileImport, String fileImportName,
                                       Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease,
-                                      String legacyMappingFilePath) throws JahiaException, IOException;
+                                      String legacyMappingFilePath, String legacyDefinitionsFilePath) throws JahiaException, IOException;
 
 
 

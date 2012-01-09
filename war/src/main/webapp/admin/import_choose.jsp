@@ -40,7 +40,7 @@
         	workInProgressOverlay.launch();
 		}
 	}
-	
+
 	function toggle(itemId) {
 		var st = document.getElementById(itemId).style;
 		st.display = st.display == 'none' ? 'block' : 'none';
@@ -195,6 +195,31 @@
                                                 for (File legacyMapping : legacyMappings) {
                                             %>
                                             <option value="<%=legacyMapping.getAbsolutePath()%>" <% if (legacyMapping.getName().equals(infos.get("templates"))) { %>selected<% } %>><%=legacyMapping.getName()%>
+                                            </option>
+                                            <%
+                                                }
+                                            %>
+                                        </select>
+
+                                    </td>
+                                </tr>
+                                <%
+                                    }
+                                    List<java.io.File> legacyDefinitions = (List<File>) infos.get("legacyDefinitions");
+                                    if (legacyDefinitions != null && !legacyDefinitions.isEmpty()) {
+                                %>
+                                <tr>
+                                    <td>
+                                        <fmt:message
+                                                key="org.jahia.admin.site.ManageSites.selectLegacyDefinitions"/>
+                                    </td>
+                                    <td>
+                                        <select name="<%=siteKey%>legacyDefinitions">
+                                            <option value="">No definitions file or zip internal definitions file</option>
+                                            <%
+                                                for (File legacyDefinition : legacyDefinitions) {
+                                            %>
+                                            <option value="<%=legacyDefinition.getAbsolutePath()%>" <% if (legacyDefinition.getName().equals(infos.get("templates"))) { %>selected<% } %>><%=legacyDefinition.getName()%>
                                             </option>
                                             <%
                                                 }

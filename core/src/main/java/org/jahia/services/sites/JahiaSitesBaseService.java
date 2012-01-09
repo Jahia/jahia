@@ -235,7 +235,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
             }
             site.setInactiveLanguages(languagesList);
         }
-        
+
         if (node.hasProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES)) {
             languagesList = new LinkedHashSet<String>();
             for (Value language : node.getProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES).getValues()) {
@@ -243,7 +243,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
             }
             site.setInactiveLiveLanguages(languagesList);
         }
-        
+
         languages = node.getProperty(SitesSettings.MANDATORY_LANGUAGES).getValues();
         languagesList = new LinkedHashSet<String>();
         for (Value language : languages) {
@@ -423,19 +423,19 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
             Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException {
         return addSite(currentUser, title, serverName, siteKey, descr, selectedLocale,
                 selectTmplSet, null, firstImport, fileImport, fileImportName, asAJob,
-                doImportServerPermissions, originatingJahiaRelease, null);
+                doImportServerPermissions, originatingJahiaRelease, null, null);
     }
-    
+
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, File fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException {
         return addSite(currentUser,title, serverName, siteKey, descr, selectedLocale, selectTmplSet,modulesToDeploy, firstImport, fileImport, fileImportName,
-                asAJob, doImportServerPermissions, originatingJahiaRelease, null);
+                asAJob, doImportServerPermissions, originatingJahiaRelease, null, null);
     }
 
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy,  String firstImport, File fileImport, String fileImportName,
-                             Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease,String legacyMappingFilePath) throws JahiaException, IOException {
+                             Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease,String legacyMappingFilePath,String legacyDefinitionsFilePath) throws JahiaException, IOException {
         JahiaSite site = new JahiaSite(-1, title, serverName, siteKey, descr, null, "/sites/"+siteKey);
 
         if (selectTmplSet != null) {
@@ -628,7 +628,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                     try {
                         Map<Object, Object> importInfos = new HashMap<Object, Object>();
                         importInfos.put("originatingJahiaRelease", originatingJahiaRelease);
-                        ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, site, importInfos, legacyMappingFilePath);
+                        ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, site, importInfos, legacyMappingFilePath, legacyDefinitionsFilePath);
                     } catch (RepositoryException e) {
                         logger.warn("Error importing site ZIP", e);
                     }
@@ -980,7 +980,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
      */
     public JahiaSite getSiteByIdenifier(final String jcrSiteIdentifier) throws JahiaException {
         // TODO add cache by UUID
-        
+
         JahiaSite site = null;
         try {
             site = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JahiaSite>() {
@@ -993,7 +993,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         } catch (RepositoryException e) {
             logger.error("Cannot get site for UUID " + jcrSiteIdentifier, e);
         }
-        
+
         return site;
     }
 }

@@ -140,7 +140,7 @@ public interface ImportExportService {
     /**
      * Performs an import of the XML content, detecting its type: users,
      * categories or general JCR content.
-     * 
+     *
      * @param parentNodePath
      *            the path of the parent node, where the content should be
      *            imported
@@ -160,7 +160,7 @@ public interface ImportExportService {
 
     /**
      * Performs an import of the ZIP file. The format of XML files will be detected, as if they were imported with
-     * importXML(String, InputStream) method. Binary content will be  
+     * importXML(String, InputStream) method. Binary content will be
      *
      * @param parentNodePath
      * @param file
@@ -213,7 +213,7 @@ public interface ImportExportService {
      */
     void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException;
 
-    void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath) throws RepositoryException, IOException;
+    void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath) throws RepositoryException, IOException;
 
     void importCategories(Category rootCategory, InputStream is);
 

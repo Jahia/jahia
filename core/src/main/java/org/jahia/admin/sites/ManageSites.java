@@ -120,7 +120,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
 	// authorized chars
     private static final String AUTHORIZED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789.-";
-    
+
     private static final HashSet<String> NON_SITE_IMPORTS = new HashSet<String>(Arrays.asList("serverPermissions.xml", "users.xml", "users.zip", JahiaSitesBaseService.SYSTEM_SITE_KEY + ".zip", "references.zip", "roles.zip"));
 
     private static final Map<String, Integer> RANK;
@@ -140,7 +140,7 @@ public class ManageSites extends AbstractAdministrationModule {
             return rank1.compareTo(rank2);
         }
     };
-    
+
 // ------------------------------ FIELDS ------------------------------
 
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ManageSites.class);
@@ -291,7 +291,7 @@ public class ManageSites extends AbstractAdministrationModule {
             }
         } catch (JahiaException ex) {
             logger.error("Error while retrieving site list", ex);
-            jahiaDisplayMessage = 
+            jahiaDisplayMessage =
                     getMessage("message.generalError");
         }
         // set request attributes...
@@ -408,7 +408,7 @@ public class ManageSites extends AbstractAdministrationModule {
         } catch (JahiaException je) {
             logger.error("Error while retrieving number of site in database", je);
             // set request attributes...
-            jahiaDisplayMessage = 
+            jahiaDisplayMessage =
                     getMessage("message.generalError");
             request.setAttribute("jahiaDisplayMessage", jahiaDisplayMessage);
             // redirect...
@@ -448,28 +448,28 @@ public class ManageSites extends AbstractAdministrationModule {
             if (siteTitle != null && (siteTitle.length() > 0) && siteServerName != null &&
                     (siteServerName.length() > 0) && siteKey != null && (siteKey.length() > 0)) {
                 if (!isSiteKeyValid(siteKey)) {
-                    warningMsg = 
+                    warningMsg =
                             getMessage("org.jahia.admin.warningMsg.onlyLettersDigitsUnderscore.label");
                 } else if (siteKey.equals("site")) {
-                    warningMsg = 
+                    warningMsg =
                             getMessage("org.jahia.admin.warningMsg.chooseAnotherSiteKey.label");
                 } else if (!isServerNameValid(siteServerName)) {
-                    warningMsg = 
+                    warningMsg =
                             getMessage("org.jahia.admin.warningMsg.invalidServerName.label");
                 } else if (siteServerName.equals("default")) {
-                    warningMsg = 
+                    warningMsg =
                             getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
                 } else if (!Url.isLocalhost(siteServerName) && sMgr.getSite(siteServerName) != null) {
-                    warningMsg = 
+                    warningMsg =
                             getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
                 } else if (sMgr.getSiteByKey(siteKey) != null) {
-                    warningMsg = 
+                    warningMsg =
                             getMessage("org.jahia.admin.warningMsg.chooseAnotherSiteKey.label");
                 } else {
                     processError = false;
                 }
             } else {
-                warningMsg = 
+                warningMsg =
                         getMessage("org.jahia.admin.warningMsg.completeRequestInfo.label");
             }
 
@@ -506,7 +506,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 displayAdd(request, response, session);
             }
         } catch (JahiaException ex) {
-            warningMsg = 
+            warningMsg =
                     getMessage("label.error.processingRequestError");
             request.setAttribute("warningMsg", warningMsg);
             displayAdd(request, response, session);
@@ -758,13 +758,13 @@ public class ManageSites extends AbstractAdministrationModule {
         JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
 
          if (adminUsername.length() == 0) {
-            warningMsg = 
+            warningMsg =
                     getMessage("org.jahia.admin.userMessage.specifyUserName.label");
         } else if (!adminPassword.equals(adminConfirm)) {
-            warningMsg = 
+            warningMsg =
                     getMessage("org.jahia.admin.JahiaDisplayMessage.confirmPasswdBeSame.label");
         } else if (adminPassword.length() == 0) {
-            warningMsg = 
+            warningMsg =
                     getMessage("org.jahia.admin.userMessage.specifyPassword.label");
         } else if (!userManager.isUsernameSyntaxCorrect(adminUsername)) {
             warningMsg = StringUtils.capitalize(getMessage(
@@ -966,7 +966,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 jahiaSite.getLanguages().addAll(site.getLanguages());
                 sMgr.updateSite(jahiaSite);
             } else {
-                warningMsg = 
+                warningMsg =
                         getMessage("label.error.processingRequestError");
                 request.setAttribute("warningMsg", warningMsg);
 
@@ -991,7 +991,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
             logger.error("Error while adding site", ex);
 
-            warningMsg = 
+            warningMsg =
                     getMessage("label.error.processingRequestError");
             request.setAttribute("warningMsg", warningMsg);
             return false;
@@ -1025,7 +1025,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
         if (adminSelected == null) {     // it's only the choice of site... display user list.
             request.setAttribute("selectedSite", siteID);
-            String jahiaDisplayMessage = 
+            String jahiaDisplayMessage =
                     getMessage("org.jahia.admin.JahiaDisplayMessage.chooseUserInList.label");
             request.setAttribute(CLASS_NAME + "jahiaDisplayMessage", jahiaDisplayMessage);
             displaySelectExistantAdmin(request, response, session);
@@ -1088,7 +1088,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
         request.setAttribute("siteAdminOption", siteAdminOption);
         request.setAttribute("selectedTmplSet", selectTmplSet);
-        
+
         request.setAttribute("selectedModules", jParams.getParameterValues("selectedModules"));
 
         String firstImport = jParams.getParameter("firstImport");
@@ -1231,7 +1231,7 @@ public class ManageSites extends AbstractAdministrationModule {
         } catch (Exception e) {
             logger.error("Error while displaying site edition UI", e);
             // redirect to list...
-            String jahiaDisplayMessage = 
+            String jahiaDisplayMessage =
                     getMessage("org.jahia.admin.JahiaDisplayMessage.processingError.label");
             session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", jahiaDisplayMessage);
             displayList(request, response, session);
@@ -1328,7 +1328,7 @@ public class ManageSites extends AbstractAdministrationModule {
         } catch (Exception e) {
             logger.error("Error while displaying new site values", e);
             // redirect to list...
-            String jahiaDisplayMessage = 
+            String jahiaDisplayMessage =
                     getMessage("org.jahia.admin.JahiaDisplayMessage.processingError.label");
             session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", jahiaDisplayMessage);
             displayList(request, response, session);
@@ -1391,18 +1391,18 @@ public class ManageSites extends AbstractAdministrationModule {
             if (siteTitle != null && (siteTitle.trim().length() > 0) && siteServerName != null &&
                     (siteServerName.trim().length() > 0)) {
                 if (!isServerNameValid(siteServerName)) {
-                    warningMsg = 
+                    warningMsg =
                             getMessage("org.jahia.admin.warningMsg.invalidServerName.label");
                     processError = true;
                 } else if (!site.getServerName().equals(siteServerName)) {
                     if (!Url.isLocalhost(siteServerName) && sMgr.getSite(siteServerName) != null) {
-                        warningMsg = 
+                        warningMsg =
                                 getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
                         processError = true;
                     }
                 }
             } else {
-                warningMsg = 
+                warningMsg =
                         getMessage("org.jahia.admin.warningMsg.completeRequestInfo.label");
             }
 
@@ -1438,7 +1438,7 @@ public class ManageSites extends AbstractAdministrationModule {
             }
         } catch (JahiaException ex) {
             logger.warn("Error while processing site edition", ex);
-            warningMsg = 
+            warningMsg =
                     getMessage("label.error.processingRequestError");
             request.setAttribute("warningMsg", warningMsg);
             displayEdit(request, response, session);
@@ -1512,7 +1512,7 @@ public class ManageSites extends AbstractAdministrationModule {
         } catch (Exception e) {
             logger.error("Error while display site delete UI", e);
             // redirect to list...
-            String jahiaDisplayMessage = 
+            String jahiaDisplayMessage =
                     getMessage("org.jahia.admin.warningMsg..processingError.label");
             session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", jahiaDisplayMessage);
             displayList(request, response, session);
@@ -1554,7 +1554,7 @@ public class ManageSites extends AbstractAdministrationModule {
             displayList(request, response, session);
         } catch (JahiaException ex) {
             logger.error("Error while processing site deletion", ex);
-            String warningMsg = 
+            String warningMsg =
                     getMessage("label.error.processingRequestError");
             request.setAttribute("warningMsg", warningMsg);
             displayEdit(request, response, session);
@@ -1642,7 +1642,7 @@ public class ManageSites extends AbstractAdministrationModule {
             displayList(request, response, session);
         } catch (JahiaException ex) {
             logger.error("Error while deleting multiple sites", ex);
-            String warningMsg = 
+            String warningMsg =
                     getMessage("label.error.processingRequestError");
             request.setAttribute("warningMsg", warningMsg);
             displayEdit(request, response, session);
@@ -1806,12 +1806,17 @@ public class ManageSites extends AbstractAdministrationModule {
                     if (value != null) {
                         Object legacyImport = value.get("legacyImport");
                         if (legacyImport!=null && (Boolean) legacyImport && jParams instanceof ParamBean) {
-                        try {
-                            value.put("legacyMappings", FileUtils.listFiles(new File(((ParamBean)jParams).getContext().getRealPath("/WEB-INF/var/legacymappings")), new String[]{"map"}, false));
-                        } catch (Exception e) {
-                            logger.debug("Legacy mappings not found", e);
+                            try {
+                                value.put("legacyMappings", FileUtils.listFiles(new File(((ParamBean)jParams).getContext().getRealPath("/WEB-INF/var/legacymappings")), new String[]{"map"}, false));
+                            } catch (Exception e) {
+                                logger.debug("Legacy mappings not found", e);
+                            }
+                            try {
+                                value.put("legacyDefinitions", FileUtils.listFiles(new File(((ParamBean)jParams).getContext().getRealPath("/WEB-INF/var/legacymappings")), new String[]{"cnd"}, false));
+                            } catch (Exception e) {
+                                logger.debug("Legacy definitions not found", e);
+                            }
                         }
-                    }
                         importsInfos.add(value);
                     }
                 }
@@ -1822,7 +1827,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 for (Map<Object, Object> info : importsInfos) {
                     sorted.add((File) info.get("importFile"));
                 }
-                
+
                 jParams.getSessionState().setAttribute("importsInfos", importsInfos);
                 jParams.getSessionState().setAttribute("importsInfosSorted", sorted);
             } catch (IOException e) {
@@ -2029,23 +2034,24 @@ public class ManageSites extends AbstractAdministrationModule {
             infos.put("selected", request.getParameter(file.getName() + "selected"));
             infos.put("templates", request.getParameter(file.getName() + "templates"));
             infos.put("legacyMapping", request.getParameter(file.getName() + "legacyMapping"));
+            infos.put("legacyDefinitions", request.getParameter(file.getName() + "legacyDefinitions"));
             if (request.getParameter(file.getName() + "selected") != null) {
                 try {
                     if (NON_SITE_IMPORTS.contains(infos.get("importFileName"))) {
 
                     } else {
-                       	infos.put("siteTitleInvalid", StringUtils.isEmpty((String) infos.get("sitetitle"))); 
-	                    
+                       	infos.put("siteTitleInvalid", StringUtils.isEmpty((String) infos.get("sitetitle")));
+
                         String siteKey = (String) infos.get("sitekey");
 	                    boolean valid = isSiteKeyValid(siteKey);
 	                    infos.put("siteKeyInvalid", !valid);
                        	infos.put("siteKeyExists", valid && jahiaSitesService.getSiteByKey(siteKey) != null);
 
-                       	String serverName = (String) infos.get("siteservername");                        
+                       	String serverName = (String) infos.get("siteservername");
 	                    valid = isServerNameValid(serverName);
 	                    infos.put("siteServerNameInvalid", !valid);
                        	infos.put("siteServerNameExists", valid && !Url.isLocalhost(serverName) && jahiaSitesService.getSite(serverName) != null);
-                       	
+
 						stillBad = (Boolean) infos.get("siteKeyInvalid")
 						        || (Boolean) infos.get("siteKeyExists")
 						        || (Boolean) infos.get("siteServerNameInvalid")
@@ -2106,11 +2112,11 @@ public class ManageSites extends AbstractAdministrationModule {
                         if (infos.get("type").equals("files")) {
                             try {
                                 JahiaSite system = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
-    
+
                                 Map<String,String> pathMapping = JCRSessionFactory.getInstance().getCurrentUserSession().getPathMapping();
                                 pathMapping.put("/shared/files/", "/sites/" + system.getSiteKey() + "/files/");
                                 pathMapping.put("/shared/mashups/", "/sites/" + system.getSiteKey() + "/portlets/");
-    
+
                                 ImportExportBaseService.getInstance().importSiteZip(file, system, infos);
                             } catch (Exception e) {
                                 logger.error("Error when getting templates", e);
@@ -2118,7 +2124,7 @@ public class ManageSites extends AbstractAdministrationModule {
                         } else if (infos.get("type").equals("xml") &&
                                 (infos.get("importFileName").equals("serverPermissions.xml") ||
                                         infos.get("importFileName").equals("users.xml"))) {
-    
+
                         } else if (infos.get("type").equals("site")) {
                             // site import
                             String tpl = (String) infos.get("templates");
@@ -2127,10 +2133,15 @@ public class ManageSites extends AbstractAdministrationModule {
                             }
                             Object legacyImport = infos.get("legacyImport");
                             String legacyImportFilePath = null;
+                            String legacyDefinitionsFilePath = null;
                             if(legacyImport != null && (Boolean) legacyImport) {
                                 legacyImportFilePath = (String) infos.get("legacyMapping");
                                 if (legacyImportFilePath != null && "".equals(legacyImportFilePath.trim())){
                                     legacyImportFilePath = null;
+                                }
+                                legacyDefinitionsFilePath = (String) infos.get("legacyDefinitions");
+                                if (legacyDefinitionsFilePath != null && "".equals(legacyDefinitionsFilePath.trim())){
+                                    legacyDefinitionsFilePath = null;
                                 }
                             }
                             Locale defaultLocale = determineDefaultLocale(jParams, infos);
@@ -2139,14 +2150,14 @@ public class ManageSites extends AbstractAdministrationModule {
                                         .addSite(jParams.getUser(), (String) infos.get("sitetitle"),
                                                 (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
                                                 defaultLocale, tpl, null, "fileImport", file,
-                                                (String) infos.get("importFileName"), false, false, (String) infos.get("originatingJahiaRelease"),legacyImportFilePath);
+                                                (String) infos.get("importFileName"), false, false, (String) infos.get("originatingJahiaRelease"),legacyImportFilePath,legacyDefinitionsFilePath);
                                 session.setAttribute(ProcessingContext.SESSION_SITE, site);
                                 jParams.setSite(site);
                                 jParams.setSiteID(site.getID());
                                 jParams.setSiteKey(site.getSiteKey());
                                 jParams.setCurrentLocale(defaultLocale);
-    
-    
+
+
                             } catch (Exception e) {
                                 logger.error("Cannot create site " + infos.get("sitetitle"), e);
                             }
@@ -2156,11 +2167,11 @@ public class ManageSites extends AbstractAdministrationModule {
             } finally {
                 for (Map<Object, Object> infos : importsInfos) {
                     FileUtils.deleteQuietly((File) infos.get("importFile"));
-                }                
+                }
             }
 
             CompositeSpellChecker.updateSpellCheckerIndex();
-            
+
             redirectAfterAdd(request, response, session);
         }
     }
@@ -2247,7 +2258,7 @@ public class ManageSites extends AbstractAdministrationModule {
         if (JahiaSitesBaseService.SYSTEM_SITE_KEY.equals(name)) {
         	return false;
         }
-        
+
         boolean valid = true;
         for (char toBeTested : name.toCharArray()) {
         	if (AUTHORIZED_CHARS.indexOf(toBeTested) == -1) {

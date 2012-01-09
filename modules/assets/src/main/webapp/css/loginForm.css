@@ -1,6 +1,9 @@
 /******************************************************************************
 *  loginForm
 ******************************************************************************/
+.bodywrapper .loginForm {
+    overflow:hidden;
+}
 .bodywrapper .loginForm fieldset{
 	border:1px solid #eaeaea;
 	padding:0.5em;

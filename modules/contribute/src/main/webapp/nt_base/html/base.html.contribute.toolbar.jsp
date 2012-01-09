@@ -276,6 +276,12 @@ $(document).ready(function () {
                                                        alt=" " role="presentation"
                                                        style="position:relative; top: 4px; margin-right:2px; "><fmt:message
                 key="label.preview"/></a>
+    <c:if test="${jcr:hasPermission(currentNode, 'editModeAccess')}">
+        <a href="<c:url value='${url.edit}'/>"><img src="<c:url value='/icons/editMode.png'/>" width="16" height="16"
+                                                       alt=" " role="presentation"
+                                                       style="position:relative; top: 4px; margin-right:2px; "><fmt:message
+                key="label.editMode"/></a>
+    </c:if>
         <span> </span>
         <c:if test="${jcr:hasPermission(currentNode, 'jcr:removeChildNodes_default')}">
             <a href="#" id="delete-${currentNode.identifier}" onclick="deleteNodes(true); return false;"><img

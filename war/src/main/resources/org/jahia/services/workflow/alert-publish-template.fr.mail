@@ -1,5 +1,5 @@
 to: ${user.getProperty('j:email')}
-cc: nextTaskAssignable
+cc-users: nextTaskAssignable
 subject: Publication acceptée par ${user.getUsername()}
 text: Bonjour,
 

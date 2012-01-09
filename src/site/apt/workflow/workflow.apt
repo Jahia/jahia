@@ -160,7 +160,7 @@ Workflow Integration
 
 +--------------------------------
 to: ${user.getProperty('j:email')}
-cc: nextTaskAssignable
+cc-users: nextTaskAssignable
 subject: Publication workflow by ${user.getUsername()}
 text: Hi,
 

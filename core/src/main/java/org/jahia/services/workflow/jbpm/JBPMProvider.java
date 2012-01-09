@@ -225,23 +225,29 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         if (mailTemplates != null && mailTemplates.length > 0) {
             logger.info("Found " + processes.length + " workflow mail templates to be deployed.");
 
-            List keys = Arrays.asList("from","to","cc","bcc","subject","text","html","language");
+            List keys = Arrays.asList("from", "to", "cc", "bcc", "from-users", "to-users", "cc-users", "bcc-users", "from-groups", "to-groups", "cc-groups", "bcc-groups", "subject", "text", "html", "language");
 
             for (Resource mailTemplateResource : mailTemplates) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(mailTemplateResource.getInputStream(), "UTF-8"));
                 MailTemplate mailTemplate = new MailTemplate();
                 mailTemplate.setLanguage("velocity");
+                mailTemplate.setFrom(new AddressTemplate());
+                mailTemplate.setTo(new AddressTemplate());
+                mailTemplate.setCc(new AddressTemplate());
+                mailTemplate.setBcc(new AddressTemplate());
+        
+
                 int currentField = -1;
                 String currentLine;
                 StringBuilder buf = new StringBuilder();
                 while ((currentLine = reader.readLine()) != null) {
                     if (currentLine.contains(":")) {
-                        String prefix = StringUtils.substringBefore(currentLine,  ":");
+                        String prefix = StringUtils.substringBefore(currentLine, ":");
                         if (keys.contains(prefix.toLowerCase())) {
                             setMailTemplateField(mailTemplate, currentField, buf);
                             buf = new StringBuilder();
                             currentField = keys.indexOf(prefix.toLowerCase());
-                            currentLine = StringUtils.substringAfter(currentLine,  ":").trim();
+                            currentLine = StringUtils.substringAfter(currentLine, ":").trim();
                         }
                     } else {
                         buf.append('\n');
@@ -249,7 +255,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                     buf.append(currentLine);
                 }
                 setMailTemplateField(mailTemplate, currentField, buf);
-                mailTemplateRegistry.addTemplate(StringUtils.substringBeforeLast(mailTemplateResource.getFilename(),"."), mailTemplate);
+                mailTemplateRegistry.addTemplate(StringUtils.substringBeforeLast(mailTemplateResource.getFilename(), "."), mailTemplate);
             }
         }
 
@@ -258,35 +264,51 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     private void setMailTemplateField(MailTemplate t, int currentField, StringBuilder buf) {
         switch (currentField) {
             case 0:
-                AddressTemplate from = new AddressTemplate();
-                from.setUsers(buf.toString());
-                t.setFrom(from);
+                t.getFrom().setAddresses(buf.toString());
                 break;
             case 1:
-                AddressTemplate to = new AddressTemplate();
-                to.setUsers(buf.toString());
-                t.setTo(to);
+                t.getTo().setAddresses(buf.toString());
                 break;
             case 2:
-                AddressTemplate cc = new AddressTemplate();
-                cc.setUsers(buf.toString());
-                t.setTo(cc);
+                t.getCc().setAddresses(buf.toString());
                 break;
             case 3:
-                AddressTemplate bcc = new AddressTemplate();
-                bcc.setUsers(buf.toString());
-                t.setTo(bcc);
+                t.getBcc().setAddresses(buf.toString());
                 break;
             case 4:
-                t.setSubject(buf.toString());
+                t.getFrom().setUsers(buf.toString());
                 break;
             case 5:
-                t.setText(buf.toString());
+                t.getTo().setUsers(buf.toString());
                 break;
             case 6:
-                t.setHtml(buf.toString());
+                t.getCc().setUsers(buf.toString());
                 break;
             case 7:
+                t.getBcc().setUsers(buf.toString());
+                break;
+            case 8:
+                t.getFrom().setGroups(buf.toString());
+                break;
+            case 9:
+                t.getTo().setGroups(buf.toString());
+                break;
+            case 10:
+                t.getCc().setGroups(buf.toString());
+                break;
+            case 11:
+                t.getBcc().setGroups(buf.toString());
+                break;
+            case 12:
+                t.setSubject(buf.toString());
+                break;
+            case 13:
+                t.setText(buf.toString());
+                break;
+            case 14:
+                t.setHtml(buf.toString());
+                break;
+            case 15:
                 t.setLanguage(buf.toString());
                 break;
         }
@@ -417,11 +439,11 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         final Execution in = executionService.findProcessInstanceById(processId);
         executionService.deleteProcessInstance(processId);
     }
-    
+
     public Workflow getWorkflow(String processId, Locale locale) {
         ProcessInstance pi = executionService.findProcessInstanceById(processId);
-        if(pi!=null) {
-        return convertToWorkflow(pi, locale);
+        if (pi != null) {
+            return convertToWorkflow(pi, locale);
         } else {
             return null;
         }
@@ -483,14 +505,14 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         for (ProcessInstance processInstance : pi) {
             list.add(convertToWorkflow(processInstance, locale));
         }
-        return list;        
+        return list;
     }
-    
+
     public List<Workflow> getWorkflowsForUser(JahiaUser user, Locale locale) {
         List<Workflow> list = new ArrayList<Workflow>();
         List<ProcessInstance> pi = executionService.createProcessInstanceQuery().list();
         for (ProcessInstance processInstance : pi) {
-            String userkey = (String) executionService.getVariable(processInstance.getId(),"user");
+            String userkey = (String) executionService.getVariable(processInstance.getId(), "user");
             if (userkey != null && user.getUserKey().equals(userkey)) {
                 list.add(convertToWorkflow(processInstance, locale));
             }
@@ -532,7 +554,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             workflow.setDuedate(job.getDueDate());
         }
         workflow.setStartTime(historyService.createHistoryProcessInstanceQuery().processInstanceId(instance.getId()).orderAsc(HistoryProcessInstanceQuery.PROPERTY_STARTTIME).uniqueResult().getStartTime());
-        
+
         Object user = executionService.getVariable(instance.getId(), "user");
         if (user != null) {
             workflow.setStartUser(user.toString());
@@ -721,7 +743,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     public List<HistoryWorkflow> getHistoryWorkflowsForNode(String nodeId, Locale locale) {
         HistoryProcessInstanceByVariableQuery q = new HistoryProcessInstanceByVariableQuery();
         q.setCommandService(((HistoryServiceImpl) historyService).getCommandService());
-        q.variable("nodeId",nodeId);
+        q.variable("nodeId", nodeId);
         List<HistoryProcessInstance> list = q.list();
 
         List<HistoryWorkflow> historyItems = new LinkedList<HistoryWorkflow>();
@@ -737,7 +759,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     public List<HistoryWorkflow> getHistoryWorkflowsForPath(String path, Locale locale) {
         HistoryProcessInstanceByVariableQuery q = new HistoryProcessInstanceByVariableQuery();
         q.setCommandService(((HistoryServiceImpl) historyService).getCommandService());
-        q.variableLike("nodePath",path);
+        q.variableLike("nodePath", path);
         List<HistoryProcessInstance> list = q.list();
 
         List<HistoryWorkflow> historyItems = new LinkedList<HistoryWorkflow>();
@@ -787,7 +809,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
 
     private HistoryWorkflow convertToHistoryWorkflow(HistoryProcessInstance jbpmHistoryItem, Locale locale) {
         ProcessDefinition def = repositoryService.createProcessDefinitionQuery()
-                    .processDefinitionId(jbpmHistoryItem.getProcessDefinitionId()).uniqueResult();
+                .processDefinitionId(jbpmHistoryItem.getProcessDefinitionId()).uniqueResult();
         final String startUser =
                 (String) historyService.getVariable(jbpmHistoryItem.getProcessInstanceId(), "user");
         final String nodeId =
@@ -866,7 +888,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 for (HistoryActivityInstance activityInstance : l) {
                     if (activityInstance.getStartTime().equals(jbpmHistoryTask.getCreateTime())
                             && ((activityInstance.getEndTime() == null && jbpmHistoryTask.getEndTime() == null) || (activityInstance
-                                    .getEndTime() != null && activityInstance.getEndTime().equals(jbpmHistoryTask.getEndTime())))) {
+                            .getEndTime() != null && activityInstance.getEndTime().equals(jbpmHistoryTask.getEndTime())))) {
                         name = activityInstance.getActivityName();
                         break;
                     }
@@ -916,14 +938,14 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     }
 
     private ResourceBundle getResourceBundle(Locale locale, final String definitionKey) {
-    	try {
-    	    return JahiaResourceBundle
-                .lookupBundle(WorkflowService.class.getPackage().getName() + "." + definitionKey.replaceAll(" ", ""),
-                        locale);
-    	} catch (Exception e) {
-    		logger.error(e.getMessage(), e);
-    		return null;
-    	}
+        try {
+            return JahiaResourceBundle
+                    .lookupBundle(WorkflowService.class.getPackage().getName() + "." + definitionKey.replaceAll(" ", ""),
+                            locale);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
     }
 
     private void i18nOfWorkflowAction(Locale displayLocale, WorkflowAction workflowAction, final String definitionKey) {
@@ -977,7 +999,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
 
     public <T> boolean canProcess(Command<T> command) {
         if ((command instanceof DeployCmd) ||
-           ((command instanceof DeleteDeploymentCmd))) {
+                ((command instanceof DeleteDeploymentCmd))) {
             return true;
         }
         return false;  //To change body of implemented methods use File | Settings | File Templates.

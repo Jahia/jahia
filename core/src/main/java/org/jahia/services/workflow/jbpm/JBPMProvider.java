@@ -864,8 +864,9 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                     l.addAll(historyService.createHistoryActivityInstanceQuery().processInstanceId(id).list());
                 }
                 for (HistoryActivityInstance activityInstance : l) {
-                    if (activityInstance.getStartTime().equals(jbpmHistoryTask.getCreateTime()) &&
-                            activityInstance.getEndTime() != null && activityInstance.getEndTime().equals(jbpmHistoryTask.getEndTime())) {
+                    if (activityInstance.getStartTime().equals(jbpmHistoryTask.getCreateTime())
+                            && ((activityInstance.getEndTime() == null && jbpmHistoryTask.getEndTime() == null) || (activityInstance
+                                    .getEndTime() != null && activityInstance.getEndTime().equals(jbpmHistoryTask.getEndTime())))) {
                         name = activityInstance.getActivityName();
                         break;
                     }

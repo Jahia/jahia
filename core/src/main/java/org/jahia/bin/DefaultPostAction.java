@@ -53,9 +53,11 @@ import org.json.JSONObject;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -148,16 +150,20 @@ public class DefaultPostAction extends Action {
             } else {
                 forceCreation = true;
             }
-            newNode = createNode(req, parameters, node, nodeType, nodeName, forceCreation);
-            final FileUpload fileUpload = (FileUpload) req.getAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE);
-            if (fileUpload != null && fileUpload.getFileItems() != null && fileUpload.getFileItems().size() > 0) {
-                final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
-                for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
-                    newNode.uploadFile(itemEntry.getValue().getName(), itemEntry.getValue().getInputStream(),
-                            itemEntry.getValue().getContentType());
+            try {
+                newNode = createNode(req, parameters, node, nodeType, nodeName, forceCreation);
+                final FileUpload fileUpload = (FileUpload) req.getAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE);
+                if (fileUpload != null && fileUpload.getFileItems() != null && fileUpload.getFileItems().size() > 0) {
+                    final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
+                    for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
+                        newNode.uploadFile(itemEntry.getValue().getName(), itemEntry.getValue().getInputStream(),
+                                itemEntry.getValue().getContentType());
+                    }
                 }
+                session.save();
+            } catch (ConstraintViolationException e) {
+                return new ActionResult(HttpServletResponse.SC_BAD_REQUEST);
             }
-            session.save();
 
             final String nodeId = newNode.getIdentifier();
             if (parameters.containsKey(Render.AUTO_ASSIGN_ROLE) && JahiaUserManagerService.isNotGuest(session.getUser())) {

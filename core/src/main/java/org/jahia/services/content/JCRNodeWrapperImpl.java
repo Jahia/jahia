@@ -605,9 +605,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRNodeWrapper addNode(String name, String type) throws RepositoryException {
         checkLock();
-
         Node n = objectNode.addNode(name, type);
-        return provider.getNodeWrapper(n, buildSubnodePath(name), this, session);
+        JCRNodeWrapper newNode = provider.getNodeWrapper(n, buildSubnodePath(name), this, session);
+        session.registerNewNode(newNode);
+        return newNode;
     }
 
     public JCRNodeWrapper addNode(String name, String type, String identifier, Calendar created, String createdBy, Calendar lastModified, String lastModifiedBy) throws ItemExistsException, PathNotFoundException, NoSuchNodeTypeException, LockException, VersionException, ConstraintViolationException, RepositoryException {
@@ -1549,6 +1550,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             // if the type doesn't match the required type, we attempt a conversion.
             value = getSession().getValueFactory().createValue(value.getString(), epd.getRequiredType());
         }
+
+        if (!session.isSystem() && !epd.isProtected() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), value)) {
+            throw new ConstraintViolationException();
+        }
+
         value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);
 
         if (value instanceof ExternalReferenceValue) {
@@ -1583,6 +1589,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (epd == null) {
             throw new ConstraintViolationException("Couldn't find definition for property " + name);
         }
+
+        if (!session.isSystem() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), value)) {
+            throw new ConstraintViolationException();
+        }
+
         value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);
 
         if (value instanceof ExternalReferenceValue) {
@@ -1629,6 +1640,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
 
+        if (!session.isSystem() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), values)) {
+            throw new ConstraintViolationException();
+        }
+
         values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(this, name, epd, values);
 
         if (hasExternalReferenceValue) {
@@ -1654,6 +1669,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
         if (epd == null) {
             throw new ConstraintViolationException("Couldn't find definition for property " + name);
+        }
+
+        if (!session.isSystem() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), values)) {
+            throw new ConstraintViolationException();
         }
 
         values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(this, name, epd, values);

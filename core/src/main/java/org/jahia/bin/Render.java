@@ -78,6 +78,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.ServletConfig;
 import javax.servlet.http.*;
 import java.io.File;
@@ -296,25 +297,30 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
         }
         Set<Map.Entry<String, String[]>> set = parameters.entrySet();
-        for (Map.Entry<String, String[]> entry : set) {
-            String key = entry.getKey();
-            if (!reservedParameters.contains(key)) {
-                String[] values = entry.getValue();
-                final ExtendedPropertyDefinition propertyDefinition =
-                        ((JCRNodeWrapper) node).getApplicablePropertyDefinition(key);
-                if (propertyDefinition == null) {
-                    continue;
-                }
-                if (propertyDefinition.isMultiple()) {
-                    node.setProperty(key, values);
-                } else if (propertyDefinition.getRequiredType() == PropertyType.DATE) {
-                    // Expecting ISO date yyyy-MM-dd'T'HH:mm:ss
-                    DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(values[0]);
-                    node.setProperty(key, dateTime.toCalendar(Locale.ENGLISH));
-                } else {
-                    node.setProperty(key, values[0]);
+        try {
+            for (Map.Entry<String, String[]> entry : set) {
+                String key = entry.getKey();
+                if (!reservedParameters.contains(key)) {
+                    String[] values = entry.getValue();
+                    final ExtendedPropertyDefinition propertyDefinition =
+                            ((JCRNodeWrapper) node).getApplicablePropertyDefinition(key);
+                    if (propertyDefinition == null) {
+                        continue;
+                    }
+                    if (propertyDefinition.isMultiple()) {
+                        node.setProperty(key, values);
+                    } else if (propertyDefinition.getRequiredType() == PropertyType.DATE) {
+                        // Expecting ISO date yyyy-MM-dd'T'HH:mm:ss
+                        DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(values[0]);
+                        node.setProperty(key, dateTime.toCalendar(Locale.ENGLISH));
+                    } else {
+                        node.setProperty(key, values[0]);
+                    }
                 }
             }
+        } catch (ConstraintViolationException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "bad parameter");
+            return;
         }
         session.save();
         if (req.getParameter(AUTO_CHECKIN) != null && req.getParameter(AUTO_CHECKIN).length() > 0) {

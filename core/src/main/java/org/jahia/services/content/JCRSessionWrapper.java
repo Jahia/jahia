@@ -45,6 +45,8 @@ import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
@@ -110,6 +112,7 @@ public class JCRSessionWrapper implements Session {
 
     private Map<String, JCRNodeWrapper> sessionCacheByPath = new HashMap<String, JCRNodeWrapper>();
     private Map<String, JCRNodeWrapper> sessionCacheByIdentifier = new HashMap<String, JCRNodeWrapper>();
+    private Set<JCRNodeWrapper> newNodes = new HashSet<JCRNodeWrapper>();
 
     private Map<String, String> nsToPrefix = new HashMap<String, String>();
     private Map<String, String> prefixToNs = new HashMap<String, String>();
@@ -408,9 +411,27 @@ public class JCRSessionWrapper implements Session {
         save(JCRObservationManager.SESSION_SAVE);
     }
 
+    void registerNewNode(JCRNodeWrapper node) {
+        newNodes.add(node);
+    }
+    
     public void save(final int operationType)
             throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException,
             VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
+        if (!isSystem()) {
+            for (JCRNodeWrapper node : newNodes) {
+                for (String s : node.getNodeTypes()) {
+                    ExtendedPropertyDefinition[] propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitions();
+                    for (ExtendedPropertyDefinition propDef : propDefs) {
+                        if (propDef.isMandatory() && !propDef.isProtected() && !node.hasProperty(propDef.getName())) {
+                            throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
+                        }
+                    }
+                }
+            }
+        }
+        newNodes.clear();
+
         JCRObservationManager.doWorkspaceWriteCall(this, operationType, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper thisSession) throws RepositoryException {
                 for (Session session : sessions.values()) {

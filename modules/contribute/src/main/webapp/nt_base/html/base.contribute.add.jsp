@@ -147,7 +147,12 @@
                 window.location.reload();
             },
             dataType: "json",
-            clearForm: true
+            clearForm: true,
+            error: function(jqXHR, textStatus, errorThrown) {
+ 		       alert('<fmt:message key="failure.invalid.constraint.nohighlight.label"/>');
+                $('.form-button').attr('disabled',false);
+                $('.form-button').removeClass('disabled');
+            }
         };// wait for the DOM to be loaded
     </script>
 </div>

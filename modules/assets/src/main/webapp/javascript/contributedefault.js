@@ -2,6 +2,7 @@ var richTextEditors = {};
 var contributionI18n = {
     'ok': 'OK',
     'cancel': 'Cancel',
+    'invalidconstraint': 'There are some validation errors! Correct the input and save again',
     'edit': 'Click to edit',
     'uploaded': 'file uploaded click on preview to see the new file',
     'error' : 'an error occurred, please check the file you try to upload',
@@ -31,26 +32,50 @@ $(window).unload( function() {
     });
 });
 
+function errorOnSave(thisField) {
+    return function(jqXHR, textStatus, errorThrown) {
+        alert(contributionI18n['invalidconstraint']);
+        thisField.editing = true;
+        thisField.reset();
+    }
+}
+
 function initEditFields(id, escapeTextValue) {
     $(".edit" + id).editable(function (value, settings) {
         var data = {'jcrMethodToCall':'put'};
         var submitId = $(this).attr('jcr:id');
         data[submitId] = value;
-        $.post($(this).attr('jcr:url'), data, null, "json");
+        var thisField = this;
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('jcr:url'),
+            data: data,
+            dataType: "json",
+            error:errorOnSave(thisField)
+        });
+
         return escapeTextValue ? $('<div/>').text(value).html() : value;
     }, {
         type    : 'text',
         onblur : 'ignore',
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
-        tooltip : contributionI18n['edit']
+        tooltip : contributionI18n['edit'],
     });
 
     $(".ckeditorEdit" + id).editable(function (value, settings) {
         var submitId = $(this).attr('jcr:id');
         var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
-        $.post($(this).attr('jcr:url'), data, null, "json");
+
+        $.ajax({
+          type: 'POST',
+          url: $(this).attr('jcr:url'),
+          data: data,
+          dataType: "json",
+          error:errorOnSave(thisField)
+        });
+
         return(value);
     }, {
         type : 'ckeditor',
@@ -72,8 +97,15 @@ function initEditFields(id, escapeTextValue) {
         var submitId = $(this).attr('jcr:id');
         var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
-        $.post($(this).attr('jcr:url'), data, function(result) {
-        }, "json");
+
+        $.ajax({
+          type: 'POST',
+          url: $(this).attr('jcr:url'),
+          data: data,
+          dataType: "json",
+          error:errorOnSave(thisField)
+        });
+
         return(value.replace("T", " "));
     }, {
         type : 'datepicker',
@@ -88,8 +120,15 @@ function initEditFields(id, escapeTextValue) {
         var submitId = $(this).attr('jcr:id');
         var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
-        $.post($(this).attr('jcr:url'), data, function(result) {
-        }, "json");
+
+        $.ajax({
+          type: 'POST',
+          url: $(this).attr('jcr:url'),
+          data: data,
+          dataType: "json",
+          error:errorOnSave(thisField)
+        });
+
         return(value.replace("T", " "));
     }, {
         type : 'datetimepicker',
@@ -108,7 +147,15 @@ function setChoiceListEdit(id) {
         var submitId = $(this).attr('jcr:id').replace("_", ":");
         var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
-        $.post($(this).attr('jcr:url'), data, null, "json");
+
+        $.ajax({
+          type: 'POST',
+          url: $(this).attr('jcr:url'),
+          data: data,
+          dataType: "json",
+            error:errorOnSave(thisField)
+        });
+
         return eval("values=" + $(this).attr('jcr:options'))[value];
     }, {
         type    : 'select',

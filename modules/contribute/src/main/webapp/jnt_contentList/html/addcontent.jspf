@@ -35,6 +35,8 @@
             z-index:9999;
         }
     </style>
+
+<c:if test="${empty areaResource.properties['j:numberOfItems'] or fn:length(moduleMap.currentList) lt areaResource.properties['j:numberOfItems'].long}">
 <h3 class="titleaddnewcontent">
     <img title="" alt="" src="<c:url value='${url.currentModule}/images/add.png'/>"/><fmt:message key="label.add.new.content"/>
 </h3>
@@ -81,3 +83,4 @@
 <div id="addNewContent" style="display:none;" >
 
 </div>
+</c:if>

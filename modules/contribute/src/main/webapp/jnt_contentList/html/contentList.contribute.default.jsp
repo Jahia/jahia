@@ -74,9 +74,9 @@
     </c:if>
     <template:include templateType="html" view="hidden.footer"/>
 
-</div>
 <div class="clear"></div>
 
-<c:if test="${not renderContext.ajaxRequest and jcr:hasPermission(currentNode, 'jcr:addChildNodes_default')}">
+<c:if test="${jcr:hasPermission(currentNode, 'jcr:addChildNodes_default')}">
     <%@include file="addcontent.jspf" %>
 </c:if>
+</div>

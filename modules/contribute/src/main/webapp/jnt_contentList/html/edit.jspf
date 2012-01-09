@@ -10,7 +10,7 @@
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
                       scope="application"/>
 <div class="listEditToolbar">
-    <input type="checkbox" name="${child.identifier}" ${locked ? 'disabled=true':''}/>
+    <input type="checkbox" class="jahiaCBoxContributeContent" name="${child.identifier}" ${locked ? 'disabled=true':''}/>
     <c:set var="initEditFields" value="'initEditFields(\\\'${child.identifier}\\\');"/>
     <c:forEach items="${child.primaryNodeType.propertyDefinitions}" var="propertyDefinition">
         <c:if test="${!propertyDefinition.multiple and propertyDefinition.itemType eq contentType and not propertyDefinition.hidden and !(propertyDefinition.name eq 'jcr:title') and !(propertyDefinition.name eq '*')}">

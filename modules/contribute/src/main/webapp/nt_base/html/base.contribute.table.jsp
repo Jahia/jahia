@@ -36,7 +36,7 @@
     <c:set var="animatedTasks" value=""/>
     <c:set var="animatedWFs" value=""/>
 
-    <input type="checkbox" checked="true" name="${currentNode.identifier}" visible="false" style="display:none"/>
+    <input type="checkbox" class="jahiaCBoxContributeContent" checked="true" name="${currentNode.identifier}" visible="false" style="display:none"/>
 
     <h3>
         <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentFolder') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">

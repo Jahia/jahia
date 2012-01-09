@@ -186,14 +186,14 @@ public class ComponentRegistry {
             return Collections.emptyMap();
         }
 
-        Map<String, String> finalCompoenents = new HashMap<String, String>(finaltypes.size());
+        Map<String, String> finalComponents = new HashMap<String, String>(finaltypes.size());
         for (ExtendedNodeType type : finaltypes) {
-            finalCompoenents.put(type.getName(), typeComponentMap.get(type).getDisplayableName());
+            finalComponents.put(type.getName(), typeComponentMap.get(type).getDisplayableName());
         }
 
         SortedMap<String, String> sortedComponents = new TreeMap<String, String>(
-                CASE_INSENSITIVE_ORDERING.onResultOf(Functions.forMap(finalCompoenents)));
-        sortedComponents.putAll(finalCompoenents);
+                CASE_INSENSITIVE_ORDERING.onResultOf(Functions.forMap(finalComponents)));
+        sortedComponents.putAll(finalComponents);
 
         return sortedComponents;
     }

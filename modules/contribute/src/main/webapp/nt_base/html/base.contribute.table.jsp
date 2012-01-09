@@ -36,11 +36,23 @@
     <c:set var="animatedTasks" value=""/>
     <c:set var="animatedWFs" value=""/>
 
+    <c:set var="suffix" value=".html"/>
+    <c:set var="parent" value="${jcr:getParentOfType(currentNode,'jnt:content')}"/>
+    <c:if test="${empty parent}">
+        <c:set var="parent" value="${jcr:getParentOfType(currentNode,'jnt:folder')}"/>
+    </c:if>
+    <c:if test="${empty parent or jcr:isNodeType(parent, 'jnt:contentList')}">
+        <c:set var="parent" value="${jcr:getParentOfType(currentNode,'jnt:page')}"/>
+    </c:if>
+
     <input type="checkbox" class="jahiaCBoxContributeContent" checked="true" name="${currentNode.identifier}" visible="false" style="display:none"/>
 
     <h3>
-        <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentFolder') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
-            <a title="parent" href="<c:url value='${url.base}${currentNode.parent.path}.html'/>"><img height="16" width="16"
+        <c:if test="${not empty parent}">
+            <c:if test="${jcr:isNodeType(parent, 'jnt:content') and not jcr:isNodeType(parent, 'jnt:contentFolder')}">
+                <c:set var="suffix" value=".editContent.html"/>
+            </c:if>
+            <a title="parent" href="<c:url value='${url.base}${parent.path}${suffix}'/>"><img height="16" width="16"
                                                                                      border="0"
                                                                                      style="cursor: pointer;"
                                                                                      title="parent" alt="parent"

@@ -41,7 +41,7 @@
                             }, 'json')">
 
 
-                <span class="icon-contribute icon-edit"></span><fmt:message key="label.edit"/>&nbsp;</button>
+                <span class="icon-contribute icon-edit"></span><fmt:message key="label.quickedit"/>&nbsp;</button>
         </c:if>
         <button id="lockbtn-${child.identifier}" style="${locked ne 'true' ? 'display:none;' : '' }">
             <span class="icon-contribute icon-locked"></span><fmt:message key="label.locked"/>
@@ -115,5 +115,13 @@
         </c:if>
     </c:if>
 
-    <c:set var="previousChild" value="${child}"/>
+    <c:if test="${inSite eq 'true'}">
+        <c:if test="${locked ne 'true'}">
+            <button id="fulleditbtn-${child.identifier}"
+                    onclick="window.location.assign('${url.base}${child.path}.editContent.html')">
+                <span class="icon-contribute icon-edit"></span><fmt:message key="label.edit"/>&nbsp;</button>
+
+            <c:set var="previousChild" value="${child}"/>
+        </c:if>
+    </c:if>
 </div>

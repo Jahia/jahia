@@ -28,7 +28,8 @@
         $(document).ready(function() {
             $("#addButton${currentNode.identifier}-${status.index}").fancybox({
                 'onComplete':function() {
-                    $(".newContentCkeditorContribute${target.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor(); alert('ckeditorInstance: ' + $(this).data('ckeditorInstance')); alert('wcagCompliant: ' + wcagCompliant);})
+                    $(".newContentCkeditorContribute${target.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor(); })
+                    
                 },
 
                 'onCleanup':function() {
@@ -41,5 +42,6 @@
                 }
             })
         });
+        $("#add${currentNode.identifier}-${status.index}").css({'max-height':(window.innerHeight-100)+'px'});
     </script>
 </c:forEach>

@@ -391,24 +391,11 @@ public class JCRTagUtils {
 
     public static List<ExtendedNodeType> getContributeTypes(JCRNodeWrapper node, JCRNodeWrapper areaNode, Value[] typelistValues) throws Exception {
         List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
-        if (node == null) {
-            return types;
-        }
-        if (typelistValues == null && node.hasProperty("j:contributeTypes")) {
-            typelistValues = node.getProperty("j:contributeTypes").getValues();
-        }
-        if (typelistValues == null && areaNode != null && areaNode.hasProperty("j:contributeTypes")) {
-            typelistValues = areaNode.getProperty("j:contributeTypes").getValues();
-        }
 
-        List<JCRNodeWrapper> components = new ArrayList<JCRNodeWrapper>();
+        List<String> typeList = getContributeTypesAsString(node, areaNode, typelistValues);
 
-        List<String> typeList = new ArrayList<String>();
-        if (typelistValues != null) {
-            for (Value value : typelistValues) {
-                typeList.add(value.getString());
-            }
-
+        if (!typeList.isEmpty()) {
+            List<JCRNodeWrapper> components = new ArrayList<JCRNodeWrapper>();
             components.add(node.getResolveSite().getNode("components"));
             for (int i = 0; i < components.size(); i++) {
                 JCRNodeWrapper n = components.get(i);
@@ -429,7 +416,7 @@ public class JCRTagUtils {
                 }
             }
         }
-
+        
         String[] constraints = ConstraintsHelper.getConstraints(node).split(" ");
         List<ExtendedNodeType> finaltypes = new ArrayList<ExtendedNodeType>();
         for (ExtendedNodeType type : types) {
@@ -448,6 +435,15 @@ public class JCRTagUtils {
             return Collections.emptyMap();
         }
 
+        List<String> typeList = getContributeTypesAsString(node, areaNode, typelistValues);
+
+        return ComponentRegistry.getComponentTypes(node, typeList, null, displayLocale);
+    }
+
+    private static List<String> getContributeTypesAsString(JCRNodeWrapper node, JCRNodeWrapper areaNode, Value[] typelistValues) throws RepositoryException {
+        if ((typelistValues == null || typelistValues.length == 0) && !node.isNodeType("jnt:contentList") && !node.isNodeType("jnt:contentFolder")) {
+            return Arrays.asList(ConstraintsHelper.getConstraints(node).split(" "));
+        }
         if (typelistValues == null && node.hasProperty("j:contributeTypes")) {
             typelistValues = node.getProperty("j:contributeTypes").getValues();
         }
@@ -456,15 +452,14 @@ public class JCRTagUtils {
         }
 
         if (typelistValues == null) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
 
-        final List<String> typeList = new LinkedList<String>();
+        List<String> typeList = new LinkedList<String>();
         for (Value value : typelistValues) {
             typeList.add(value.getString());
         }
-
-        return ComponentRegistry.getComponentTypes(node, typeList, null, displayLocale);
+        return typeList;
     }
 
     public static JCRNodeWrapper findDisplayableNode(JCRNodeWrapper node, RenderContext context) {

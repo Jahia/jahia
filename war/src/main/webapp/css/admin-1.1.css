@@ -619,6 +619,9 @@ li.section a:hover {
 }
 
 .dex-TabBar {
+	zoom: 1;
+	background: url(images/andromeda/bkg-tab.png) 0 -192px;
+	overflow:hidden;
 }
 
 .dex-TabBarItem-wrapper {

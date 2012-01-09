@@ -2139,6 +2139,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (mountPoint.length() > 1 && localPathInProvider.startsWith(mountPoint)) {
             localPathInProvider = StringUtils.substringAfter(localPathInProvider, mountPoint);
         }
+        this.localPath = localPathInProvider;
+        
         this.objectNode = getSession().getProviderSession(getProvider()).getNode(localPathInProvider);
         if ((nodePositionFound) && (parent.getPrimaryNodeType().hasOrderableChildNodes())) {
             parent.orderBefore(newName, nextNodeName);

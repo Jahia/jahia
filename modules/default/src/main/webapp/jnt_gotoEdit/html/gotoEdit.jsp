@@ -17,7 +17,11 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="css" resources="goto-links.css"/>
-<c:if test="${!renderContext.settings.distantPublicationServerMode and renderContext.mainResource.node.properties['j:originWS'].string ne 'live' and not jcr:isNodeType(renderContext.mainResource.node.resolveSite, 'jmix:remotelyPublished')}">
+<c:if test="${!renderContext.settings.distantPublicationServerMode
+and renderContext.mainResource.node.properties['j:originWS'].string ne 'live'
+and not jcr:isNodeType(renderContext.mainResource.node.resolveSite, 'jmix:remotelyPublished')
+and !(renderContext.editMode and renderContext.editModeConfigName != 'studiomode')
+}">
     <img src="${url.context}/icons/editMode.png" width="16" height="16" alt=" " role="presentation"
          style="position:relative; top: 4px; margin-right:2px; ">
     <a href="<c:url value='${url.edit}'/>">
@@ -27,5 +31,6 @@
     <c:if test="${empty currentNode.properties['jcr:title']}">
         <fmt:message key="label.editMode"/>
     </c:if>
+    </a>
 </c:if>
-</a>
+

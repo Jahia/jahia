@@ -210,13 +210,11 @@ function showClipboard() {
         if (data != null && data.size > 0) {
             var nodetypes = data.nodetypes;
             var showPaste = true;
-            for (var j = 0; j < contributeConstraintParameters.length && showPaste; j++) {
                 for (var k = 0; k < nodetypes.length && showPaste; k++) {
-                    if (nodetypes[k].indexOf(contributeConstraintParameters[j]) < 0) {
+                    if (contributeConstraintParameters.indexOf(nodetypes[k]) < 0) {
                         showPaste = false;
                     }
                 }
-            }
             if (showPaste) {
                 $(".pastelink").show();
                 $(".titleaddnewcontent").show();

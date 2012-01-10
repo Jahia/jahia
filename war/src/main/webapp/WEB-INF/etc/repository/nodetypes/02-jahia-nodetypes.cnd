@@ -350,7 +350,7 @@
 [jmix:renderable] mixin
  extends = jnt:content, jnt:query
  itemtype = layout
- - j:view (string, choicelist[templates,resourceBundle]) nofulltext mandatory
+ - j:view (string, choicelist[templates,resourceBundle]) nofulltext
 
 [jmix:hasTemplateNode] mixin
  itemtype = layout

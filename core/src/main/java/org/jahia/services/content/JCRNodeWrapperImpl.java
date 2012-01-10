@@ -1590,7 +1590,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             throw new ConstraintViolationException("Couldn't find definition for property " + name);
         }
 
-        if (!session.isSystem() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), value)) {
+        if (!session.isSystem() && !epd.isProtected() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), value)) {
             throw new ConstraintViolationException();
         }
 
@@ -1640,7 +1640,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
 
-        if (!session.isSystem() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), values)) {
+        if (!session.isSystem() && !epd.isProtected() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), values)) {
             throw new ConstraintViolationException();
         }
 
@@ -1671,7 +1671,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             throw new ConstraintViolationException("Couldn't find definition for property " + name);
         }
 
-        if (!session.isSystem() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), values)) {
+        if (!session.isSystem() && !epd.isProtected() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), values)) {
             throw new ConstraintViolationException();
         }
 

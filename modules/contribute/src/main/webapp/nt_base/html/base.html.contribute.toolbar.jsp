@@ -47,6 +47,9 @@ function reload() {
 
         $("#" + contributeParams[i].contributeReplaceTarget).load(contributeParams[i].contributeReplaceUrl, '', null);
     }
+    if (contributeParams.length==0) {
+    	window.location.reload();
+    }
 }
 
 function deleteSingleNode(id, markForDeletion) {
@@ -210,14 +213,16 @@ function showClipboard() {
         if (data != null && data.size > 0) {
             var nodetypes = data.nodetypes;
             var showPaste = true;
+            if (contributeConstraintParameters != null) {
                 for (var k = 0; k < nodetypes.length && showPaste; k++) {
                     if (contributeConstraintParameters.indexOf(nodetypes[k]) < 0) {
                         showPaste = false;
                     }
                 }
-            if (showPaste) {
-                $(".pastelink").show();
-                $(".titleaddnewcontent").show();
+                if (showPaste) {
+                    $(".pastelink").show();
+                    $(".titlepaste").show();
+                }
             }
             $("#empty-${currentNode.identifier}").show();
             $("#clipboard-${currentNode.identifier}").html("<fmt:message key="label.clipboard.contains"/> " + data.size +
@@ -238,7 +243,7 @@ function showClipboard() {
 }
 
 function hideClipboard() {
-    $(".titleaddnewcontent").hide();
+    $(".titlepaste").hide();
     $(".pastelink").hide();
     $("#empty-${currentNode.identifier}").hide();
     $("#clipboard-${currentNode.identifier}").hide();

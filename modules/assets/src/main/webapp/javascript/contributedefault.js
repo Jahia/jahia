@@ -334,7 +334,11 @@ function checkWCAGCompliace(richTexts) {
 function invert(source, target, urlbase, callbackId, callbackUrl,callbackJS) {
     $.post(urlbase + source + ".move.do", {"action":"moveBefore", "target":target, "source":source},
         function(result) {
-            jreplace(callbackId, callbackUrl,null, callbackJS);
+			if (callbackUrl!=null) {
+	            jreplace(callbackId, callbackUrl,null, callbackJS);
+			} else {
+				window.location.reload();
+			}
         },
         'json'
     );

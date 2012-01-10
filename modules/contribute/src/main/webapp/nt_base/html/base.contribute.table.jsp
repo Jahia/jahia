@@ -45,7 +45,7 @@
         <c:set var="parent" value="${jcr:getParentOfType(currentNode,'jnt:page')}"/>
     </c:if>
 
-    <input type="checkbox" class="jahiaCBoxContributeContent" checked="true" name="${currentNode.identifier}" visible="false" style="display:none"/>
+
 
     <h3>
         <c:if test="${not empty parent}">
@@ -58,7 +58,7 @@
                                                                                      title="parent" alt="parent"
                                                                                      src="<c:url value='${url.templatesPath}/default/images/icons/folder_up.png'/>"></a>
         </c:if>
-        ${fn:escapeXml(currentNode.displayableName)}
+        <input type="checkbox" class="jahiaCBoxContributeContent" name="${currentNode.identifier}" /> ${fn:escapeXml(currentNode.displayableName)}
     </h3>
 </div>
 

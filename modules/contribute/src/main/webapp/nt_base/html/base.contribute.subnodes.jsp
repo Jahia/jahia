@@ -18,7 +18,32 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 <ul>
-<c:forEach items="${jcr:getChildrenOfType(currentNode, 'jnt:content')}" var="child">
-    <li><a href="<c:url value="${url.base}${child.path}.editContent.html"/>">${fn:escapeXml(child.displayableName)}</a></li>
+<c:forEach items="${jcr:getChildrenOfType(currentNode, 'jnt:content')}" var="child" varStatus="status">
+    <c:set var="markedForDeletion" value="${jcr:isNodeType(child, 'jmix:markedForDeletion')}"/>
+    <c:set var="markedForDeletionRoot" value="${jcr:isNodeType(child, 'jmix:markedForDeletionRoot')}"/>
+    <c:set var="nodeName" value="${!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.name}"/>
+    <li>
+        <input type="checkbox" class="jahiaCBoxContributeContent" name="${child.identifier}" ${child.locked ? 'disabled=true':''}/>
+        <c:if test="${markedForDeletion}">
+            <span class="markedForDeletion">
+        </c:if>
+        <c:url value="${url.base}${child.path}.editContent.html" var="childUrl"/>
+        <a href="${childUrl}">${fn:escapeXml(nodeName)}</a>
+        <c:if test="${markedForDeletion}">
+            </span>
+        </c:if>
+
+        <c:if test="${not status.first}">
+            <button id="moveUp-${currentNode.identifier}-${status.index}"
+                    onclick="var callback = '$(\'.addContentContributeDiv\').each(function(index,value){animatedcollapse.addDiv($(this).attr(\'id\'), \'fade=1,speed=700,group=tasks\');});animatedcollapse.reinit();if (navigator.userAgent.indexOf(\'MSIE\') > 0) {location.reload();}';invert('${child.path}','${previousChild.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',callback)">
+                <span class="icon-contribute icon-moveup"></span><fmt:message key="label.move.up"/></button>
+        </c:if>
+        <c:if test="${not status.last}">
+            <button id="moveDown-${currentNode.identifier}-${status.index}"
+                    onclick="document.getElementById('moveUp-${currentNode.identifier}-${status.index+1}').onclick()">
+                <span class="icon-contribute icon-movedown"></span><fmt:message key="label.move.down"/></button>
+        </c:if>
+        <c:set var="previousChild" value="${child}"/>
+    </li>
 </c:forEach>
 </ul>

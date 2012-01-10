@@ -423,7 +423,10 @@ public class JCRSessionWrapper implements Session {
                 for (String s : node.getNodeTypes()) {
                     ExtendedPropertyDefinition[] propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitions();
                     for (ExtendedPropertyDefinition propDef : propDefs) {
-                        if (propDef.isMandatory() && !propDef.isProtected() && !node.hasProperty(propDef.getName())) {
+                        if (propDef.isMandatory() &&
+                                propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
+                                propDef.getRequiredType() != PropertyType.REFERENCE &&
+                                !propDef.isProtected() && !node.hasProperty(propDef.getName())) {
                             throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
                         }
                     }

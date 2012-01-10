@@ -36,7 +36,7 @@ $.ajaxSetup({
 function getUuids() {
     var uuids = new Array();
     var i = 0;
-    $(".jahiaCBoxContributeContent,input:checked").each(function (index) {
+    $("input:checked").filter(".jahiaCBoxContributeContent").each(function (index) {
         uuids[i++] = $(this).attr("name");
     });
     return uuids;

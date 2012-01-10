@@ -10,7 +10,7 @@ CKEDITOR.editorConfig = function( config )
     config.contentlanguage = (typeof contextJsParameters != 'undefined') ? contextJsParameters.lang : 'en';
     config.siteUuid = (typeof contextJsParameters != 'undefined') ? contextJsParameters.siteUuid : '';
     config.skin = 'jahia';
-    config.enterMode = CKEDITOR.ENTER_BR;
+    
     config.filebrowserWindowWidth = '810';
     config.filebrowserWindowHeight = '650';
     config.filebrowserLinkWindowHeight = '800';

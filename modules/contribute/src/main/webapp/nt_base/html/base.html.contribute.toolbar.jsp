@@ -266,6 +266,25 @@ $(document).ready(function () {
     });
 });
 
+$(document).ready(function() {
+
+                $(".openEdit").click(function () {
+                    $(this).toggleClass("active");
+                    $(".editActions").slideToggle("medium");
+                    return false;
+                });
+
+});
+
+$(document).ready(function() {
+
+                $(".openGoTo").click(function () {
+                    $(this).toggleClass("active");
+                    $(".goToActions").slideToggle("medium");
+                    return false;
+                });
+});
+
 </script>
 </template:addResources>
 <div id="contributeToolbar">
@@ -285,21 +304,31 @@ $(document).ready(function () {
                                                        style="position:relative; top: 4px; margin-right:2px; "><fmt:message
                 key="label.editMode"/></a>
     </c:if>
-        <span> </span>
-        <c:if test="${jcr:hasPermission(currentNode, 'jcr:removeChildNodes_default')}">
-            <a href="#" id="delete-${currentNode.identifier}" onclick="deleteNodes(true); return false;"><img
-                    src="<c:url value='/icons/delete.png'/>" width="16" height="16" alt=" " role="presentation"
-                    style="position:relative; top: 4px; margin-right:2px; "><fmt:message
-                    key="label.delete"/></a>
-        </c:if>
-        <a href="#" id="copy-${currentNode.identifier}" onclick="copyNodes(); return false;"><img
-                src="<c:url value='/icons/copy.png'/>" width="16" height="16" alt=" " role="presentation"
-                style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.copy"/></a>
-        <c:if test="${jcr:hasPermission(currentNode, 'jcr:removeChildNodes_default')}">
-            <a href="#" id="cut-${currentNode.identifier}" onclick="cutNodes();"><img
-                    src="<c:url value='/icons/cut.png'/>" width="16" height="16" alt=" " role="presentation"
-                    style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.cut"/></a>
-        </c:if>
+
+        <span></span>
+        <div class="relative">
+        <a class="subnav openEdit" href="#"><img src="<c:url value='/icons/editContent.png'/>" width="16" height="16"
+                                                       alt=" " role="presentation"
+                                                       style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.edit"/></a>
+
+            <div class="Actions editActions">
+                <c:if test="${jcr:hasPermission(currentNode, 'jcr:removeChildNodes_default')}">
+                    <a href="#" id="delete-${currentNode.identifier}" onclick="deleteNodes(true); return false;"><img
+                            src="<c:url value='/icons/delete.png'/>" width="16" height="16" alt=" " role="presentation"
+                            style="position:relative; top: 4px; margin-right:2px; "><fmt:message
+                            key="label.delete"/></a>
+                </c:if>
+                <a href="#" id="copy-${currentNode.identifier}" onclick="copyNodes(); return false;"><img
+                        src="<c:url value='/icons/copy.png'/>" width="16" height="16" alt=" " role="presentation"
+                        style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.copy"/></a>
+                <c:if test="${jcr:hasPermission(currentNode, 'jcr:removeChildNodes_default')}">
+                    <a href="#" id="cut-${currentNode.identifier}" onclick="cutNodes();"><img
+                            src="<c:url value='/icons/cut.png'/>" width="16" height="16" alt=" " role="presentation"
+                            style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.cut"/></a>
+                </c:if>
+            </div>
+        </div>
+
         <c:if test="${jcr:hasPermission(currentNode, 'jcr:write_default')}">
             <a href="#" id="publish-${currentNode.identifier}" onclick="publishNodes(); return false;"><img
                     src="<c:url value='/icons/publish.png'/>" width="16" height="16" alt=" " role="presentation"
@@ -352,17 +381,26 @@ $(document).ready(function () {
                 </c:if>
             </c:otherwise>
         </c:choose>
-        <span><fmt:message key="label.goto"/>: </span>
-        <a href="<c:url value='${url.base}${currentNode.resolveSite.home.path}.html'/>"><img
-                src="<c:url value='/icons/siteManager.png'/>" width="16" height="16" alt=" " role="presentation"
-                style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteHomepage"/></a>
-        <a href="<c:url value='${url.base}${currentNode.resolveSite.path}/contents.html'/>"><img
-                src="<c:url value='/icons/content-manager-1616.png'/>" width="16" height="16" alt=" "
-                role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
-                key="label.siteContent"/></a>
-        <a href="<c:url value='${url.base}${currentNode.resolveSite.path}/files.html'/>"><img
-                src="<c:url value='/icons/files-manager-1616.png'/>" width="16" height="16" alt=" " role="presentation"
-                style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteFiles"/></a>
+
+        <span></span>
+        <div class="relative">
+        <a class="subnav openGoTo" href="#"><img src="<c:url value='/icons/goto.png'/>" width="16" height="16"
+                                                       alt=" " role="presentation"
+                                                       style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.goto"/>:</a>
+            <div class="Actions goToActions">
+            <a href="<c:url value='${url.base}${currentNode.resolveSite.home.path}.html'/>"><img
+                    src="<c:url value='/icons/siteManager.png'/>" width="16" height="16" alt=" " role="presentation"
+                    style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteHomepage"/></a>
+            <a href="<c:url value='${url.base}${currentNode.resolveSite.path}/contents.html'/>"><img
+                    src="<c:url value='/icons/content-manager-1616.png'/>" width="16" height="16" alt=" "
+                    role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
+                    key="label.siteContent"/></a>
+            <a href="<c:url value='${url.base}${currentNode.resolveSite.path}/files.html'/>"><img
+                    src="<c:url value='/icons/files-manager-1616.png'/>" width="16" height="16" alt=" " role="presentation"
+                    style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteFiles"/></a>
+            </div>
+        </div>
+
         <a href="<c:url value='${url.logout}'/>"><img src="<c:url value='/icons/logout.png'/>" width="16" height="16"
                                                       alt=" " role="presentation"
                                                       style="position:relative; top: 4px; margin-right:2px; "><fmt:message

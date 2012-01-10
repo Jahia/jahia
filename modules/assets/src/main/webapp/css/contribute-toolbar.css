@@ -9,7 +9,7 @@
 	font-size:11px !important;
 	color:#FFF;
 	padding: 4px;
-	border-left: 2px groove #03C;
+	border-left: 1px groove #03C;
 	}
 #contributeToolbar a, #contributeToolbar a:link, #contributeToolbar a:visited{
 	width:auto;
@@ -87,3 +87,60 @@
 .ui-widget-header {
     background: #247BBD;
 }
+
+#contributeToolbar .relative{
+    position:relative;
+    display:inline;
+}
+#contributeToolbar .Actions {
+    border: 1px solid #ccc;
+    width: 150px;
+    position:absolute;
+    top:24px;
+    left:0;
+    -webkit-box-shadow: 0 1px 3px #ccc;
+    -moz-box-shadow: 0 1px 3px #ccc;
+    box-shadow: 0 1px 3px #ccc;
+    z-index:9999;
+    background-color:#eaeaea;
+    display:none;
+}
+#contributeToolbar a.subnav, #contributeToolbar a.subnav:link, #contributeToolbar a.subnav:visited{
+    background:transparent url(img/contribute-toolbar-bg-a-nav.png) repeat-x  100% 0;
+    color: #fff;
+	padding:4px 16px 4px 4px;
+}
+#contributeToolbar a.subnav:hover, #contributeToolbar a.subnav:active{
+    background-position: 100% -24px;
+    color: #333;
+    -moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+#contributeToolbar a.active, #contributeToolbar a.active:link, #contributeToolbar a.active:visited,
+#contributeToolbar a.active:hover, #contributeToolbar a.active:active{
+   background-position:  100% -48px;
+   color: #333;
+   -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+#contributeToolbar .Actions a, #contributeToolbar .editActions a:link, #contributeToolbar .Actions a:visited{
+    background:none;
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	border-radius: 0;
+    display:block;
+    color: #333;
+	padding:4px;
+    margin:0;
+}
+#contributeToolbar .Actions a:hover, #contributeToolbar .Actions a:active{
+    background:none;
+    background-color:#c3d9f3;
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	border-radius: 0;
+}
+

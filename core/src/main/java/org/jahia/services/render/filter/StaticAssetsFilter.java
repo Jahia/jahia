@@ -152,10 +152,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private boolean aggregateAndCompress;
     private List<String> excludesFromAggregateAndCompress = new ArrayList<String>();
     
-    private static final Pattern CLEANUP_RESOURCE_REGEXP = Pattern.compile(
-            "<jahia:resource .*/>");
-
-
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
@@ -329,8 +325,14 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             out = outputDocument.toString();
         }
 
-        out = CLEANUP_RESOURCE_REGEXP.matcher(out).replaceAll("");
-        return out.trim();
+        // Clean all jahia:resource tags
+        source = new Source(out);
+        esiResourceTags = (new Source(out)).getAllStartTags("jahia:resource");
+        outputDocument = new OutputDocument(source);
+        for (StartTag segment : esiResourceTags) {
+            outputDocument.replace(segment.getElement().getContent(), "");
+        }
+        return outputDocument.toString().trim();
     }
 
     private Map<String, Map<String, String>> aggregate(Map<String, Map<String, String>> map, String type) throws IOException {

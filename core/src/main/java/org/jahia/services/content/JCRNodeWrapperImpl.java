@@ -1552,7 +1552,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         if (!session.isSystem() && !epd.isProtected() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), value)) {
-            throw new ConstraintViolationException();
+            throw new ConstraintViolationException("Invalid value for : "+epd.getName());
         }
 
         value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);
@@ -1591,7 +1591,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         if (!session.isSystem() && !epd.isProtected() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), value)) {
-            throw new ConstraintViolationException();
+            throw new ConstraintViolationException("Invalid value for : "+epd.getName());
         }
 
         value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);
@@ -1641,7 +1641,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         if (!session.isSystem() && !epd.isProtected() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), values)) {
-            throw new ConstraintViolationException();
+            throw new ConstraintViolationException("Invalid value for : "+epd.getName());
         }
 
         values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(this, name, epd, values);
@@ -1672,7 +1672,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         if (!session.isSystem() && !epd.isProtected() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), values)) {
-            throw new ConstraintViolationException();
+            throw new ConstraintViolationException("Invalid value for : "+epd.getName());
         }
 
         values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(this, name, epd, values);

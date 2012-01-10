@@ -236,6 +236,12 @@
                 <value>testValueAssumeTypeOfValue(org.apache.jackrabbit.test.api.SetPropertyAssumeTypeTest)</value>
                 <value>testNodeAssumeTypeOfValue(org.apache.jackrabbit.test.api.SetPropertyAssumeTypeTest)</value>
                 <value>testValuesAssumeTypeOfValue(org.apache.jackrabbit.test.api.SetPropertyAssumeTypeTest)</value>
+                <value>testSetSingleStringArrayValueFormatExceptionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyStringTest)</value>
+                <value>testSetSingleStringArrayValueFormatException(org.apache.jackrabbit.test.api.SetPropertyStringTest)</value>
+                <value>testSetMixedValueArrayValueFormatExceptionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
+                <value>testSetSingleValueArrayValueFormatExceptionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
+                <value>testSetMixedValueArrayValueFormatException(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
+                <value>testSetSingleValueArrayValueFormatException(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
                 <value>testFile(org.apache.jackrabbit.test.api.nodetype.PredefinedNodeTypeTest)</value>
                 <value>testLinkedFile(org.apache.jackrabbit.test.api.nodetype.PredefinedNodeTypeTest)</value>
                 <value>testMixLastModified(org.apache.jackrabbit.test.api.nodetype.PredefinedNodeTypeTest)</value>

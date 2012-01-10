@@ -49,12 +49,12 @@ import java.util.List;
 
 /**
  * 
-* User: toto
-* Date: Sep 25, 2009
-* Time: 6:57:46 PM
-* 
-*/
-public class CopyActionItem extends BaseActionItem{
+ * User: toto
+ * Date: Sep 25, 2009
+ * Time: 6:57:46 PM
+ *
+ */
+public class CopyActionItem extends NodeTypeAwareBaseActionItem{
     public void onComponentSelection() {
         final List<GWTJahiaNode> selectedItems = linker.getSelectionContext().getMultipleSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
@@ -66,6 +66,6 @@ public class CopyActionItem extends BaseActionItem{
     public void handleNewLinkerSelection() {
         final LinkerSelectionContext lh = linker.getSelectionContext();
         setEnabled(lh.getMultipleSelection() != null && lh.getMultipleSelection().size() > 0
-                && !lh.isSecondarySelection());
+                && !lh.isSecondarySelection() && isNodeTypeAllowed(lh.getMultipleSelection()));
     }
 }

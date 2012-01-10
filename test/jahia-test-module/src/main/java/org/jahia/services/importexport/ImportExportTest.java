@@ -208,7 +208,7 @@ public class ImportExportTest {
             "j:locktoken");
 
     private final static Set<String> optionalProperties = Sets.newHashSet("jcr:mixinTypes", "j:published", "j:lastPublished",
-            "j:lastPublishedBy", "j:deletedChildren");
+            "j:lastPublishedBy", "j:deletedChildren", "j:fullpath");
     
     private final static Set<String> optionalMixins = Sets.newHashSet("jmix:deletedChildren");
     

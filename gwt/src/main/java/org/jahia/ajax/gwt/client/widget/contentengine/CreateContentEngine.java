@@ -115,12 +115,13 @@ public class CreateContentEngine extends AbstractContentEngine {
     protected void initTabs() {
         for (GWTEngineTab tabConfig : config) {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
-            if (tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), targetNode)) {
-            if (tabItem.isHandleCreate() &&
+            if (tabConfig.getRequiredPermission() == null ||
+                PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), targetNode)) {
+                if (tabItem.isHandleCreate() &&
                     (tabItem.getHideForTypes().isEmpty() || !tabItem.getHideForTypes().contains(type.getName())) &&
                     (tabItem.getShowForTypes().isEmpty() || tabItem.getShowForTypes().contains(type.getName()))) {
-                tabs.add(tabItem.create(tabConfig, this));
-            }
+                    tabs.add(tabItem.create(tabConfig, this));
+                }
             }
         }
         tabs.setSelection(tabs.getItem(0));

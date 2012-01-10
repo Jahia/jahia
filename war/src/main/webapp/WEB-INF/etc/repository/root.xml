@@ -236,7 +236,8 @@
         <owner jcr:primaryType="jnt:role" j:roleGroup="live-role"
                j:permissions="/permissions/repository-permissions/jcr:all_default
                /permissions/repository-permissions/jcr:all_live
-               /permissions/actions"/>
+               /permissions/actions
+               /permissions/editMode/engineTabs"/>
 
         <privileged jcr:primaryType="jnt:role" j:roleGroup="edit-role"
                     j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default

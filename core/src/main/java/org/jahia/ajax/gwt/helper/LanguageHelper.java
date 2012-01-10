@@ -144,7 +144,7 @@ public class LanguageHelper {
         if("".equals(locale.getCountry()))
             return contextPath + "/css/images/flags/" + locale.getLanguage().toLowerCase() + "_on.png";
         else
-            return contextPath + "/css/images/flags/plain/flag_" + locale.getDisplayCountry(Locale.ENGLISH).toLowerCase() + ".png";
+            return contextPath + "/css/images/flags/plain/flag_" + locale.getDisplayCountry(Locale.ENGLISH).toLowerCase().replaceAll(" ","_") + ".png";
     }
 
     /**

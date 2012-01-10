@@ -414,6 +414,20 @@ public class JCRSessionWrapper implements Session {
     void registerNewNode(JCRNodeWrapper node) {
         newNodes.add(node);
     }
+
+    void unregisterNewNode(JCRNodeWrapper node) {
+        newNodes.remove(node);
+        try {
+            if (node.hasNodes()) {
+                NodeIterator it = node.getNodes();
+                while (it.hasNext()) {
+                    unregisterNewNode((JCRNodeWrapper)it.next());
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.warn("Error unregistering new nodes", e);
+        }
+    }    
     
     public void save(final int operationType)
             throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException,
@@ -845,8 +859,12 @@ public class JCRSessionWrapper implements Session {
             RepositoryException {
         JCRItemWrapper item = getItem(absPath);
         boolean flushNeeded = false;
-        if (item.isNode() && ((JCRNodeWrapper) item).hasNodes()) {
-            flushNeeded = true;
+        if (item.isNode()) {
+            JCRNodeWrapper node = (JCRNodeWrapper) item;
+            unregisterNewNode(node);
+            if (node.hasNodes()) {
+                flushNeeded = true;
+            }
         }
         item.remove();
         if (flushNeeded) {

@@ -2317,6 +2317,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 // no live
             }
         }
+        getSession().unregisterNewNode(this);
         if (!this.hasNodes()) {
             getSession().removeFromCache(this);
         } else {

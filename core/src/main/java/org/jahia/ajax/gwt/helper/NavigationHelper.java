@@ -390,18 +390,18 @@ public class NavigationHelper {
             String displayName = "";
             if (site != null && path.contains("$site/") || path.equals("$site")) {
                 path = path.replace("$site", site.getPath());
-                if (!path.endsWith("*")) {
-                    displayName = site.getSiteKey();
-                }
+//                if (!path.endsWith("*")) {
+//                    displayName = site.getSiteKey();
+//                }
             }
             if (path.contains("$systemsite/") || path.equals("$systemsite")) {
                 String systemSiteKey = JCRContentUtils.getSystemSitePath();
                 path = path.replace("$systemsite", systemSiteKey);
-                try {
-                    displayName = site.getSession().getNode(path).getDisplayableName();
-                } catch (PathNotFoundException e) {
-                    displayName = StringUtils.substringAfterLast(systemSiteKey, "/");
-                }
+//                try {
+//                    displayName = site.getSession().getNode(path).getDisplayableName();
+//                } catch (PathNotFoundException e) {
+//                    displayName = StringUtils.substringAfterLast(systemSiteKey, "/");
+//                }
             }
             if (site != null && path.contains("$sites")) {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
@@ -428,17 +428,17 @@ public class NavigationHelper {
                     getMatchingChilds(nodeTypes, mimeTypes, filters, fields, currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")), userNodes ,checkSubChild, displayHiddenTypes, hiddenTypes,hiddenRegex,false, uiLocale);
 //                    while (ni.hasNext()) {
 //                        GWTJahiaNode node = getGWTJahiaNode((JCRNodeWrapper) ni.next(), fields);
-////                        if (displayName != "") {
-////                            node.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
-////                        }
+//                        if (displayName != "") {
+//                            node.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
+//                        }
 //                        userNodes.add(node);
 //                    }
                 } else {
                     GWTJahiaNode root = getNode(path, fields, currentUserSession);
                     if (root != null) {
-//                        if (displayName != "") {
-//                            root.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
-//                        }
+                        if (!StringUtils.isEmpty(displayName)) {
+                            root.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
+                        }
                         userNodes.add(root);
                     }
                 }

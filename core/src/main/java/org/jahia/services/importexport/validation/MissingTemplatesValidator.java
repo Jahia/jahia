@@ -55,6 +55,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.slf4j.Logger;
@@ -180,7 +181,7 @@ public class MissingTemplatesValidator implements ImportValidator, ModuleDepende
             // no template attribute
             return;
         }
-
+        templateAttr = ISO9075.decode(templateAttr);
         Matcher matcher = TEMPLATE_PATTERN.matcher(templateAttr);
 
         String templatePath = matcher.matches() ? matcher.group(2) : null;

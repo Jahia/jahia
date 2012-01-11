@@ -226,11 +226,12 @@
         </property>
     </bean>
 
-    <bean id="ImageService" class="org.jahia.services.image.ImageJImageService" factory-method="getInstance"/>
+    <bean id="ImageJImageService" class="org.jahia.services.image.ImageJImageService"  factory-method="getInstance" />
 
-    <!--<bean id="ImageService" class="org.jahia.services.image.ImageMagickImageService" factory-method="getInstance" init-method="init">-->
-        <!--<property name="imageMagickPath" value="C:\Programs\ImageMagick;C:\Programs\exiftool"/>-->
-    <!--</bean>-->
+    <bean id="ImageMagickImageService" class="org.jahia.services.image.ImageMagickImageService" factory-method="getInstance" init-method="init">
+        <property name="imageMagickPath" value="${imageMagickPath}"/>
+    </bean>
+
     <bean id="visibilityService" class="org.jahia.services.visibility.VisibilityService" factory-method="getInstance">
         <property name="conditions">
             <map key-type="java.lang.String" value-type="org.jahia.services.visibility.VisibilityConditionRule"/>

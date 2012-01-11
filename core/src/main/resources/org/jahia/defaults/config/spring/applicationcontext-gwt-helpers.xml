@@ -113,7 +113,7 @@
     </bean>
 
     <bean name="ImageHelper" class="org.jahia.ajax.gwt.helper.ImageHelper">
-        <property name="imageService" ref="ImageService"/>
+        <property name="imageService" ref="${imageService}"/>
         <property name="contentManager" ref="ContentManagerHelper"/>
     </bean>
 

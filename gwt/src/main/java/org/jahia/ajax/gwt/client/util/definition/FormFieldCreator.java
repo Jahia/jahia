@@ -275,7 +275,9 @@ public class FormFieldCreator {
             return null;
         }
         setModifiers(field, definition);
-        field.setLabelSeparator( field.getLabelSeparator() + " :");
+        if (field.getLabelSeparator() != null) {
+            field.setLabelSeparator(field.getLabelSeparator() + " :");
+        }
         if (property != null) {
             fillValue(field, definition, property, initializer);
         }

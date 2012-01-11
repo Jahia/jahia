@@ -19,6 +19,9 @@
     <title>${fn:escapeXml(title)}</title>
     <internal:gwtGenerateDictionary/>
     <internal:gwtInit/>
+    <script type="text/javascript">
+        var contextJsParameters=jahiaGWTParameters;
+    </script>
     <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>
     <c:if test="${cfg == 'filemanager' || cfg == 'repositoryexplorer' || cfg == 'editorialcontentmanager'}">
         <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/modules/assets/css/jquery.Jcrop.css"/>

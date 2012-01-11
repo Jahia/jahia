@@ -53,6 +53,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>camel-core</module>
         <module>camel-stream</module>
         <module>concurrent</module>
         <module>jodconverter</module>

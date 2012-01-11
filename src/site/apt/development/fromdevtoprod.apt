@@ -14,66 +14,91 @@ mvn archetype:generate -DarchetypeCatalog=http://maven.jahia.org/maven2
 
  Create a template project :
 
-    * moduleName = myCustomTemplateSet
+    * artifactId = mycustomtemplateset
 
     * jahiaPackageVersion = (name of the jahia version you want to use) (for example 6.6.0.0)
 
-    * artifactId = mycustomtemplateset
+    * moduleName = myCustomTemplateSet
 
 Content of your project :
 
 +----------------------
-|-mycustomtemplateset
-   |---src
-   |-----main
-   |-------import
-   |-------java
-   |-------resources
-   |---------META-INF
-   |-------webapp
-   |---------css
-   |---------icons
-   |---------img
-   |---------javascript
-   |---------jnt_template
-   |-----------html
-   |---------META-INF
-   |-----------spring
-   |---------resources
-   |---------scripts
-   |-----site
-   |-------apt
+mycustomtemplateset
++── src
+    +── main
+    +   +── import
+    +   +── java
+    +   +── resources
+    +   │   +── META-INF
+    +   +── webapp
+    +       +── META-INF
+    +       │   +── spring
+    +       +── css
+    +       +── icons
+    +       +── img
+    +       +── javascript
+    +       +── jnt_template
+    +       │   +── html
+    +       +── resources
+    +       +── scripts
+    +── site
+        +── apt
 +------------------------
 
  In src/main/webapp/resources rename __resourceBundleName__.properties with moduleName.properties (ex:myCustomTemplateSet.properties).
+ Note that spaces in moduleName will be removed to be used for the resource bundle file. So if your moduleName was "My Custom Template Set" the properties file should be MyCustomTemplateSet.properties
 
  Now make sure you jahia is running
 
- Deploy your newly created template set inside your Jahia you should see something like this in the console :
+ Build and deploy your newly created template set using maven
 
 +-----------------------------
-2011-05-17 11:17:59,407: INFO  [TemplatePackageDeployer] - Start deploying new template package 'myCustomTemplateSet'
-2011-05-17 11:17:59,410: INFO  [TemplatePackageDeployer] - Deploying classes for module myCustomTemplateSet
-2011-05-17 11:17:59,411: INFO  [TemplatePackageDeployer] - Package 'myCustomTemplateSet' successfully deployed
-2011-05-17 11:17:59,517: INFO  [JackrabbitStoreProvider] - Custom node types registered for myCustomTemplateSet in 94 ms
-2011-05-17 11:17:59,520: INFO  [TemplatePackageRegistry] - Registered myCustomTemplateSet
-2011-05-17 11:17:59,553: INFO  [TemplatePackageApplicationContextLoader] - Reloading Spring application context for Jahia modules
-2011-05-17 11:17:59,855: INFO  [JobSchedulingBean] - Deleting job SitemapJob.SitemapJob
-2011-05-17 11:17:59,856: INFO  [JobSchedulingBean] - Scheduling RAM job SitemapJob.SitemapJob
-2011-05-17 11:17:59,857: INFO  [TemplatePackageApplicationContextLoader] - Jahia modules application context reload completed in 303 ms
-2011-05-17 11:17:59,857: INFO  [TemplatePackageDeployer] - Starting import for the template package 'myCustomTemplateSet' including: [META-INF/import.zip]
-2011-05-17 11:17:59,857: INFO  [TemplatePackageDeployer] - ... importing /home/rincevent/tools/apache-tomcat-6.0.29/webapps/jahia/modules/mycustomtemplateset/META-INF/import.zip into /
-2011-05-17 11:18:00,199: INFO  [ConflictResolver] - compare /templateSets/mycustomtemplateset version : 1.0 with (source) 1.0.0
-2011-05-17 11:18:00,207: INFO  [ConflictResolver] - compare /templateSets/mycustomtemplateset version : 1.1 with (target) 1.2
-2011-05-17 11:18:00,245: INFO  [RulesListener] - Rules executed for default [/templateSets/mycustomtemplateset/templates/content-template/pagecontent/main-resource-display/j:mainResourceView, /templateSets/mycustomtemplateset/templates/files/themes/default, /templateSets/mycustomtemplateset/templates/content-template/pagecontent/main-resource-display] ... and 24 other nodes in 104ms
-2011-05-17 11:18:00,281: INFO  [TemplatePackageDeployer] - ... finished initial import for template package 'myCustomTemplateSet'.
+mvn install jahia:deploy
 +-----------------------------
 
- Now go into the administration and modify your template using the studio, add some images/css/javascript as needed see the Jahia Template Development Documentation for more information about this.
+ inside your Jahia you should see something like this in the console :
+
++-----------------------------
+2012-01-11 11:32:03,223: INFO  [TemplatePackageDeployer] - Start deploying new module package 'myCustomTemplateSet' version=1.0-SNAPSHOT
+2012-01-11 11:32:03,230: INFO  [TemplatePackageDeployer] - Deploying JARs for module myCustomTemplateSet
+2012-01-11 11:32:03,390: INFO  [JackrabbitStoreProvider] - Custom node types registered for myCustomTemplateSet in 130 ms
+2012-01-11 11:32:03,400: INFO  [TemplatePackageRegistry] - Registered myCustomTemplateSet version=1.0-SNAPSHOT
+2012-01-11 11:32:03,415: INFO  [TemplatePackageApplicationContextLoader] - Reloading Spring application context for Jahia modules
+2012-01-11 11:32:04,527: INFO  [JobSchedulingBean] - Deleting job Maintenance.VisibilityActionPurgeJob
+2012-01-11 11:32:04,562: INFO  [JobSchedulingBean] - Scheduling persistent job Maintenance.VisibilityActionPurgeJob
+2012-01-11 11:32:04,585: INFO  [JobSchedulingBean] - Deleting job SitemapJob.SitemapJob
+2012-01-11 11:32:04,585: INFO  [JobSchedulingBean] - Scheduling RAM job SitemapJob.SitemapJob
+2012-01-11 11:32:04,587: INFO  [TemplatePackageApplicationContextLoader] - Jahia modules application context reload completed in 1172 ms
+2012-01-11 11:32:04,639: INFO  [TemplatePackageDeployer] - Checking for missing module nodes and initializing 0 of them took 52 ms
+2012-01-11 11:32:05,174: INFO  [RulesListener] - Rules executed for live [/templateSets/mycustomtemplateset, /templateSets/mycustomtemplateset/j:wcagCompliance] in 1ms
+2012-01-11 11:32:05,441: INFO  [RulesListener] - Rules executed for live [/templateSets/mycustomtemplateset/jcr:mixinTypes, /templateSets/mycustomtemplateset/priority, /templateSets/mycustomtemplateset/changefreq] in 0ms
+2012-01-11 11:32:05,479: INFO  [RulesListener] - Rules executed for default [/templateSets/mycustomtemplateset/templates/contents, /templateSets/mycustomtemplateset/templates/files, /templateSets/mycustomtemplateset/contents] ... and 3 other nodes in 116ms
+2012-01-11 11:32:05,492: INFO  [TemplatePackageDeployer] - Starting import for the module package 'myCustomTemplateSet' including: [META-INF/import.zip]
+2012-01-11 11:32:05,521: INFO  [TemplatePackageDeployer] - ... importing /home/user1/Ent-Jahia_xCM_v6.6/tomcat/webapps/ROOT/modules/mycustomtemplateset/META-INF/import.zip into /
+2012-01-11 11:32:05,524: ERROR [DocumentViewImportHandler] - Couldn't find definition for property j:displayInMenu
+2012-01-11 11:32:05,857: INFO  [RulesListener] - Rules executed for live [/templateSets/mycustomtemplateset/j:installedModules, /templateSets/mycustomtemplateset/j:siteType] in 0ms
+2012-01-11 11:32:05,918: INFO  [RulesListener] - Rules executed for default [deleted /templateSets, deleted /templateSets/mycustomtemplateset/templates/files, deleted /templateSets/mycustomtemplateset/templates/contents] ... and 23 other nodes in 20ms
+2012-01-11 11:32:06,025: INFO  [RulesListener] - Rules executed for live [/templateSets/mycustomtemplateset/j:installedModules, /templateSets/mycustomtemplateset/j:title, /templateSets/mycustomtemplateset/j:dependencies] in 1ms
+2012-01-11 11:32:06,062: INFO  [RulesListener] - Rules executed for default [/templateSets/mycustomtemplateset/j:siteType, /templateSets/mycustomtemplateset/j:installedModules, /templateSets/mycustomtemplateset/j:title] ... and 1 other nodes in 1ms
+2012-01-11 11:32:06,063: INFO  [TemplatePackageDeployer] - ... finished initial import for module package 'myCustomTemplateSet'.
+2012-01-11 11:32:06,063: INFO  [ComponentRegistry] - Start registering UI droppable components...
++-----------------------------
+
+ Now connect to your Jahia instance at http://127.0.0.1:8080/start and modify your template set using the studio, add some images/css/javascript as needed see the Jahia Template Development Documentation for more information about this.
 
  Once your template set looks near its done, export it, update your repository.xml file with the new content.
 
- Create a site with your template set (go to administration for that).
+ To export it, select "Export" from Export the top menu
+
+[../images/development/export.png]
+
+ And open the xml file
+
+[../images/development/export2.png]
+
+ Copy the content of the xml file to the ./src/main/import/repository.xml file
+
+Create a site with your template set (go to administration for that).
 
  From now on you can update your template (if modifying files you need to redeploy your template set) and/or create content on your site.
 

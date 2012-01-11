@@ -266,23 +266,45 @@ $(document).ready(function () {
     });
 });
 
-$(document).ready(function() {
 
-                $(".openEdit").click(function () {
-                    $(this).toggleClass("active");
-                    $(".editActions").slideToggle("medium");
-                    return false;
-                });
 
+$(function() {
+    var button = $('.openEdit');
+    var box = $('.editActions');
+
+    button.mouseup(function(login) {
+        box.slideDown("medium");
+        button.toggleClass('active');
+    });
+    button.mouseup(function() {
+        return false;
+    });
+    $(this).mouseup(function(login) {
+        if(!($(login.target).parent('.openEdit').length > 0)) {
+            button.removeClass('active');
+            box.slideUp("medium");
+        }
+    });
 });
 
-$(document).ready(function() {
 
-                $(".openGoTo").click(function () {
-                    $(this).toggleClass("active");
-                    $(".goToActions").slideToggle("medium");
-                    return false;
-                });
+$(function() {
+    var button = $('.openGoTo');
+    var box = $('.goToActions');
+
+    button.mouseup(function(login) {
+        box.slideDown("medium");
+        button.toggleClass('active');
+    });
+    button.mouseup(function() {
+        return false;
+    });
+    $(this).mouseup(function(login) {
+        if(!($(login.target).parent('.openEdit').length > 0)) {
+            button.removeClass('active');
+            box.slideUp("medium");
+        }
+    });
 });
 
 </script>
@@ -306,7 +328,7 @@ $(document).ready(function() {
     </c:if>
 
         <span></span>
-        <div class="relative">
+        <div id="dropdown1" class="relative">
         <a class="subnav openEdit" href="#"><img src="<c:url value='/icons/editContent.png'/>" width="16" height="16"
                                                        alt=" " role="presentation"
                                                        style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.edit"/></a>

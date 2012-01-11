@@ -110,7 +110,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         "supported_jdk_versions";
 
     static public final String COPYRIGHT =
-            "&copy; Copyright 2002-2011  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
+            "&copy; Copyright 2002-2012  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
 
     public final static String COPYRIGHT_TXT = "2011 Jahia Solutions Group SA" ;
 

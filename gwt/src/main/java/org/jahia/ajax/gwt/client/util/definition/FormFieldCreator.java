@@ -41,18 +41,26 @@
 package org.jahia.ajax.gwt.client.util.definition;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ColorPalette;
+import com.extjs.gxt.ui.client.widget.WidgetComponent;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.menu.ColorMenu;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Accessibility;
+import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -61,6 +69,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig;
 import org.jahia.ajax.gwt.client.widget.content.ColorPickerField;
@@ -252,7 +261,7 @@ public class FormFieldCreator {
             }
             if (propDefinition.isInternationalized()) {
                 field.setLabelSeparator(" <img width='11px' height='11px' src='" + JahiaGWTParameters.getContextPath() +
-                        "/css/images/sharedLang.gif'/> :");
+                        "/css/images/sharedLang.gif'/>");
             }
         } else {
             GWTJahiaNodeDefinition nodeDefinition = (GWTJahiaNodeDefinition) definition;
@@ -266,6 +275,7 @@ public class FormFieldCreator {
             return null;
         }
         setModifiers(field, definition);
+        field.setLabelSeparator( field.getLabelSeparator() + " :");
         if (property != null) {
             fillValue(field, definition, property, initializer);
         }
@@ -286,14 +296,15 @@ public class FormFieldCreator {
      * @param field
      * @param definition
      */
-    public static void setModifiers(Field field, GWTJahiaItemDefinition definition) {
+    public static void setModifiers(final Field field, GWTJahiaItemDefinition definition) {
         if (field == null || definition == null) {
             return;
         }
         field.setName(definition.getName());
         field.setFieldLabel(definition.getLabel());
         if(!"".equals(definition.getTooltip())) {
-            field.setToolTip(definition.getTooltip());
+            field.setLabelSeparator(field.getLabelSeparator() + " <img width='16px' height='16px' src='" + JahiaGWTParameters.getContextPath() +
+                    "/modules/default/images/icons/information.png' title='" + definition.getTooltip().replace("'", " ") + "'/>");
         }
         if (field.isReadOnly() || definition.isProtected()) {
             field.setReadOnly(true);

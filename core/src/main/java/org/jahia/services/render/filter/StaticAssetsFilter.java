@@ -330,7 +330,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         esiResourceTags = (new Source(out)).getAllStartTags("jahia:resource");
         outputDocument = new OutputDocument(source);
         for (StartTag segment : esiResourceTags) {
-            outputDocument.replace(segment.getElement().getContent(), "");
+            outputDocument.replace(segment,"");
         }
         return outputDocument.toString().trim();
     }

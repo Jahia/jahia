@@ -86,6 +86,9 @@ public class EditModeGridDragSource extends GridDragSource {
         sp.setData(EditModeDNDListener.TARGET_NODE, null);
         sp.setData(EditModeDNDListener.TARGET_PATH, null);
         sp.setData(EditModeDNDListener.SOURCE_NODES, null);
+        sp.setData(EditModeDNDListener.SOURCE_QUERY, null);
+        sp.setData(EditModeDNDListener.SOURCE_TEMPLATE, null);
+        sp.setData(EditModeDNDListener.SOURCE_NODETYPE, null);
         sp.setData(EditModeDNDListener.OPERATION_CALLED, null);
         e.setData(null);
     }

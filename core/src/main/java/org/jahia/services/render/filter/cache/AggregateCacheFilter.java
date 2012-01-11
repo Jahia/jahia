@@ -651,12 +651,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             }
 
             renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
-            String oldInArea = (String) renderContext.getRequest().getAttribute("inArea");
+            Object oldInArea = (Object) renderContext.getRequest().getAttribute("inArea");
             String inArea = keyAttrbs.get("inArea");
             if (inArea == null || "".equals(inArea)) {
                 renderContext.getRequest().removeAttribute("inArea");
             } else {
-                renderContext.getRequest().setAttribute("inArea", inArea);
+                renderContext.getRequest().setAttribute("inArea", Boolean.valueOf(inArea));
             }
             if(areaIdentifier!=null) {
                 renderContext.getRequest().setAttribute("areaListResource",currentUserSession.getNodeByIdentifier(areaIdentifier));

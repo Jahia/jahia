@@ -67,7 +67,7 @@ function initEditFields(id, escapeTextValue) {
         var submitId = $(this).attr('jcr:id');
         var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
-
+        var thisField = this;
         $.ajax({
           type: 'POST',
           url: $(this).attr('jcr:url'),
@@ -97,7 +97,7 @@ function initEditFields(id, escapeTextValue) {
         var submitId = $(this).attr('jcr:id');
         var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
-
+        var thisField = this;
         $.ajax({
           type: 'POST',
           url: $(this).attr('jcr:url'),
@@ -120,7 +120,7 @@ function initEditFields(id, escapeTextValue) {
         var submitId = $(this).attr('jcr:id');
         var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
-
+        var thisField = this;
         $.ajax({
           type: 'POST',
           url: $(this).attr('jcr:url'),
@@ -147,7 +147,7 @@ function setChoiceListEdit(id) {
         var submitId = $(this).attr('jcr:id').replace("_", ":");
         var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
-
+        var thisField = this;
         $.ajax({
           type: 'POST',
           url: $(this).attr('jcr:url'),

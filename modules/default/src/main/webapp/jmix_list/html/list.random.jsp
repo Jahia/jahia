@@ -14,13 +14,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:include view="hidden.header"/>
 <c:set var="children" value="${moduleMap.currentList}"/>
-
-<c:if test="${children.size eq -1}">
-    <c:set var="count" value="${moduleMap.listTotalSize}"/>
-</c:if>
-<c:if test="${!(children.size eq -1)}">
-    <c:set var="count" value="${children.size}"/>
-</c:if>
+<c:set var="count" value="${moduleMap.listTotalSize}"/>
 
 <c:if test="${count > 0}">
     <c:set value="${functions:randomInt(count)}" var="itemToDisplay"/>
@@ -30,7 +24,5 @@
     </c:forEach>
 </c:if>
 <c:if test="${renderContext.editMode}">
-    <c:if test="${children.size <= 0}">
-        <template:module path="*"/>
-    </c:if>
+    <template:module path="*"/>
 </c:if>

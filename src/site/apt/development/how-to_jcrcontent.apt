@@ -1,11 +1,11 @@
-How-to manipulate my content using the JCR API in Jahia 6.5
+How-to manipulate my content using the JCR API in Jahia 6.6
 
  First things to understand is that in the JCR everything happens in the context of a session
 (think something like an hibernate session for those of you that familiar with this framework).
 In the context of this session I can create/read/update/delete any content my session can access to.
 
  A session is open by one user, on one workspace, in one language. This means that at anytime in the context of my session
-I can only access content allowed to this user, that exist in this workspace (default or live in Jahia 6.5) in this particular
+I can only access content allowed to this user, that exist in this workspace (default or live in Jahia 6.6) in this particular
 language (if no language is provided you can only read non internationalized properties) but you can still access the nodes.
 
  So whenever you want to interact with the JCR first of all get a session.

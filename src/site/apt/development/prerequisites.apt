@@ -28,9 +28,9 @@ Prerequisites
 * {Jahia} runtime
   
   In order to work on modules and be able to deploy them, please download and install
-  the {{{http://beta65.jahia.org/cms/lang/en/Download}Jahia xCM}} e.g. with a bundled Apache Tomcat.
+  the {{{http://www.jahia.com/cms/home/download.html}Jahia xCM}} e.g. with a bundled Apache Tomcat.
   
-  If you have chosen another target application server, please, follow the corresponding <"How to install Jahia xCM 6.5 on ...">
+  If you have chosen another target application server, please, follow the corresponding <"How to install Jahia xCM 6.6 on ...">
   instructions and adjust the Maven Jahia Plugin configuration {{{Plugin}accordingly}}.
   
   server or deploy it to your custom application server.

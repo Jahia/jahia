@@ -1219,6 +1219,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.plugin.version}</version>
                 <configuration>
+                    <argLine>-Xmx1024m</argLine>
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
@@ -1325,6 +1326,7 @@
 		                <artifactId>maven-surefire-plugin</artifactId>
 		                <version>${surefire.plugin.version}</version>
 		                <configuration>
+                            <argLine>-Xmx1024m</argLine>
 		                    <skipTests>false</skipTests>
 		                </configuration>
             		</plugin>

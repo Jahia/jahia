@@ -4,7 +4,7 @@ Jahia Test Package
 
 - JMeter 2.4 or more recent
 - JDK 5 minimum
-- A default Jahia 6.5 installation, as delivered by either compiling it from source (including configuration), or
+- A default Jahia 6.6 installation, as delivered by either compiling it from source (including configuration), or
 installed with the package installer.
 - If you are on windows, this will run only under CYGWIN
 

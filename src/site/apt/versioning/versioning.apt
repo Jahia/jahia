@@ -1,6 +1,6 @@
 Versioning
 
- Jahia 6.5 came with a versioning system based on the JCR API.
+ Jahia 6.6 came with a versioning system based on the JCR API.
 
  The versioning system have two different behavior, one for files (binaries) and another one slightly different for other content types.
 
@@ -12,7 +12,7 @@ file so you can always restore an older version or access it.
  When you publish a batch of content and/or files we increment the version of the impacted elements
 (mainly all the modified contents that are part of this batch of publication).
 
- To see how it works, import the ACME demo site in your Jahia 6.5, publish everything.
+ To see how it works, import the ACME demo site in your Jahia 6.6, publish everything.
 
  Now select the rich text under "How to use this demonstration ?", edit it go to the versioning tab, you will see only
 one entry displaying your date of publication.
@@ -39,7 +39,7 @@ when you close everything your rich text is back to its original value, if you p
 Pages are much more complexed objects than what meets the eyes (If we restore a page what do we do of its child pages, do we restore also the templates, etc.)
 
  You can display any version of an URL by passing a date (in a long format) as a parameter
-<<<http://localhost:8080/jahia/cms/render/default/en/sites/ACME/home.html?v=1305815700000>>> Jahia 6.5 will retrieve the
+<<<http://localhost:8080/jahia/cms/render/default/en/sites/ACME/home.html?v=1305815700000>>> Jahia 6.6 will retrieve the
 state of the content at this date and all displayed content we will be displayed at this date (files, etc.) the only
 exception is the queries that will return results from the present and not from the past, indexes have no version.
 

@@ -58,7 +58,7 @@ Internationalization
 
 ** Deleting a language
 
-  Deleting a language in Jahia 6.5 is a non destructive action, this will only remove the language from the available
+  Deleting a language in Jahia 6.6 is a non destructive action, this will only remove the language from the available
   languages in your site, this will note erase any content from your repository (as your content could be reused
   anywhere in this language).
 

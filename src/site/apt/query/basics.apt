@@ -1,6 +1,6 @@
 Query basics
 
-  With Jahia 6.5 all the Jahia content is now stored in Jackrabbit, which itself provides powerful query capabilities. This
+  With Jahia 6.6 all the Jahia content is now stored in Jackrabbit, which itself provides powerful query capabilities. This
   made the proprietary query/indexing code of Jahia obsolete. In order to continue some supporting interesting features, we enhanced
   the index/query methods of Jackrabbit. Other features are achieved differently now, and some have been dropped or postponed for
   later releases. The move to Jackrabbit also opened up new powerful possibilities and more flexible querying.
@@ -27,7 +27,7 @@ Query basics
 ** JQOM
 
   Already in Jahia 5 we provided tags for container queries, which were heavily based on the Abstract Query Model. Because of this, these tag library
-  is still available in Jahia 6.5 and it is now not only limited to container queries, but you can use it for queries on any node type.
+  is still available in Jahia 6.6 and it is now not only limited to container queries, but you can use it for queries on any node type.
 
   The following example shows how to query all nodes having the mixin type "jmix:sitemap" and which are either the current node or a descendant of the
   current node.
@@ -243,7 +243,7 @@ SELECT * FROM [jnt:news] as news
   
 ** Query using workflow state
   
-  In Jahia 5 and 6 the required object state (live or staging) was part of the query. Since Jahia 6.5 this is no longer part of the query, 
+  In Jahia 5 and 6 the required object state (live or staging) was part of the query. Since Jahia 6.6 this is no longer part of the query,
   because we now have two workspaces: "live" and "default" (=edit mode). Now you either have to get the Query Manager from one of these
   two workspaces and then you either query all published "live" objects or the objects in the edit workspace.
   

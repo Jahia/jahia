@@ -1,6 +1,6 @@
 Search and indexing configuration
 
-  The configuration for search and indexing in Jahia 6.5 has changed a lot compared to previous versions as we are
+  The configuration for search and indexing in Jahia 6.6 has changed a lot compared to previous versions as we are
   now using the standard configuration possibilities of Apache Jackrabbit.
 
   This document lists the configuration possibilities to adapt search/indexing:
@@ -12,7 +12,7 @@ Search and indexing configuration
 *---------------*-----------------*-----------------+
 | <<Attribute>> | <<Possible values>> | <<Description>> |
 *---------------*-----------------*-----------------+
-|  nofulltext | empty | With this option you can control whether the field should be included when doing full-text search and if it should be part of the search hit excerpts. On default all date, boolean, float, integer, color, application fields are not fulltextsearchable, while the other field types are. The option can have the values: yes or no in order to change the default behaviour. In Jahia 6.5 you can also use the option nofulltext without values to specify that a field is not full-text searchable. |
+|  nofulltext | empty | With this option you can control whether the field should be included when doing full-text search and if it should be part of the search hit excerpts. On default all date, boolean, float, integer, color, application fields are not fulltextsearchable, while the other field types are. The option can have the values: yes or no in order to change the default behaviour. In Jahia 6.6 you can also use the option nofulltext without values to specify that a field is not full-text searchable. |
 *---------------*-----------------*-----------------+
 |  queryops | =, \<\>, \<, \<=, \>, \>=, LIKE | The supported query operators (not used for now) |
 *---------------*-----------------*-----------------+

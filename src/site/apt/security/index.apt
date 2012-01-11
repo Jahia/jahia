@@ -28,7 +28,7 @@ Security aspects
 
 ** Resetting root user password
 
-  The following is the procedure for resetting the password of the <root> user in Jahia 6.5:
+  The following is the procedure for resetting the password of the <root> user in Jahia 6.6:
   
   [[1]] Create a plain text file <<<\<jahia-web-app-root\>/WEB-INF/etc/config/root.pwd>>> with a new root
   user password in clear text
@@ -41,7 +41,7 @@ Security aspects
 
 ** Locking a user account
 
-  User account can be locked in Jahia 6.5 either using a User Management UI in Jahia Administration
+  User account can be locked in Jahia 6.6 either using a User Management UI in Jahia Administration
   or using the Content Manager and setting the <<<j:accountLocked>>> property on the corresponding
   user node to <<<true>>>. 
 

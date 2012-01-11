@@ -22,7 +22,7 @@ mvn archetype:generate -DarchetypeCatalog=http://maven.jahia.org/maven2
       
         * <<<artifactId>>> - Maven artifact ID for your module project (e.g. <<<myapp>>>)
         
-        * <<<jahiaPackageVersion>>> - target Jahia version (e.g. <<<6.5.0.0>>>)
+        * <<<jahiaPackageVersion>>> - target Jahia version (e.g. <<<6.6.0.0>>>)
         
         * <<<moduleName>>> - the module name (e.g. <<<myapp>>>)
         

@@ -16,7 +16,7 @@ Search features
     
     * Jahia automatically re-configures the index schema on-the-fly if new modules/templates are deployed or updated on a running server not requiring a server restart
     
-    * Since Jahia 6.5 is using Jackrabbit, each cluster node has to maintain its own local index
+    * Since Jahia 6.6 is using Jackrabbit, each cluster node has to maintain its own local index
     
     * Also due to Jackrabbit re-indexing without the need of restarting the server is no longer supported. You have to {{{http://wiki.apache.org/jackrabbit/Search#Rebuilding_the_Index}shutdown and manually delete the index folders}} 
     
@@ -114,7 +114,7 @@ Search features
 
   * Apache Jackrabbit using Apache Lucene (integrated library)
 
-    * From Jahia 6.5 onwards Jahia content is indexed and searched via Jackrabbit, which phased out the custom Jahia index and Compass integration.
+    * From Jahia 6.6 onwards Jahia content is indexed and searched via Jackrabbit, which phased out the custom Jahia index and Compass integration.
     
     * Abstract query object model is used as basis for our tags to create container queries    
     

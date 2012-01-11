@@ -16,7 +16,7 @@ mvn archetype:generate -DarchetypeCatalog=http://maven.jahia.org/maven2
 
     * moduleName = myCustomTemplateSet
 
-    * jahiaPackageVersion = (name of the jahia version you want to use) (for example 6.5-BETA-3)
+    * jahiaPackageVersion = (name of the jahia version you want to use) (for example 6.6.0.0)
 
     * artifactId = mycustomtemplateset
 
@@ -309,7 +309,7 @@ Content of your project :
  deployModule module1.war [module2.war ...] tomcat/webapp/ROOT
 +----------------
 
- Inside Jahia_xCM_EE_v6.5-SNAPSHOT/tomcat/webapps/ROOT/WEB-INF/var create if missing the following folder : prepackagedSites
+ Inside Ent-Jahia_xCM_v6.6.0.0/tomcat/webapps/ROOT/WEB-INF/var create if missing the following folder : prepackagedSites
 
  Then copy mycustomsite/target/mycustomsite-1.0-SNAPSHOT.zip inside this prepackagedSites folder
 

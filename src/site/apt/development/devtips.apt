@@ -1,6 +1,6 @@
 Development Tips
 
-    * If your modules will be used to create content by editors/contributors in the staging area of Jahia 6.5 then during the first phases of development only uses URLs of type (render/edit/contribute)/default, this way you will not have to bother about the HTML caches of Jahia 6.5 and you can see directly the changes you will made in your files.
+    * If your modules will be used to create content by editors/contributors in the staging area of Jahia 6.6 then during the first phases of development only uses URLs of type (render/edit/contribute)/default, this way you will not have to bother about the HTML caches of Jahia 6.6 and you can see directly the changes you will made in your files.
 
     * If your modules are to be used mainly to allow end users to create content like a Forum, Wiki, Blogs, Comments, etc. then as a first step of development we suggest that you deactivate the HTML caches, it will help you develop faster without the need of flushing the cache every time you modify a file. To deactivate the cache it is as simple as opening the file tomcat/webapps/ROOT/WEB-INF/etc/spring/applicationcontext-cache.xml and put in comment the following bean :
 
@@ -22,7 +22,7 @@ Development Tips
 +-----------------------------
 
 
- Jahia 6.5 use a pipeline of filter to render your page, each component of your page will pass through this pipeline. It is not always easy to understand what is going on when an issue arise.
+ Jahia 6.6 use a pipeline of filter to render your page, each component of your page will pass through this pipeline. It is not always easy to understand what is going on when an issue arise.
 
  You should then activate the log for the Rendering system that will show you exactly which filters are applied before and after your component is called. Here how to achieve that, modify your tomcat/webapps/ROOT/WEB-INF/etc/config/log4j.xml file by adding the following category at the end of your file before the <root/> tag :
 
@@ -32,7 +32,7 @@ Development Tips
 </category>
 +-----------------------------
 
- Before testing your templates/components for performances before production, you can/should look at the profiler logs provided by Jahia 6.5 that lists all the modules we have encounter during render phase and the time spent in each of them, by default this file is found in the bin folder of your tomcat installation, here an example of a listing for the home page of the site ACME provided as a demo :
+ Before testing your templates/components for performances before production, you can/should look at the profiler logs provided by Jahia 6.6 that lists all the modules we have encounter during render phase and the time spent in each of them, by default this file is found in the bin folder of your tomcat installation, here an example of a listing for the home page of the site ACME provided as a demo :
 
 +--------------------------------
 2011-05-18 09:52:33,392
@@ -113,14 +113,14 @@ Development Tips
 |-- Total                          [MAIN]   369.100 milliseconds.
 +--------------------------------------
 
- This is also a great way of understanding how Jahia 6.5 render your page between the templates defined in the studio and the content of your page.
+ This is also a great way of understanding how Jahia 6.6 render your page between the templates defined in the studio and the content of your page.
 
- If you have classes in your modules  that uses some Jahia 6.5 services directly, do not forget that Jahia 6.5 packages also its sources alongside the classes so this way you can, if you have asked maven to download the source code of your dependencies (mvn dependency:sources), see the source code of Jahia 6.5.
+ If you have classes in your modules  that uses some Jahia 6.6 services directly, do not forget that Jahia 6.6 packages also its sources alongside the classes so this way you can, if you have asked maven to download the source code of your dependencies (mvn dependency:sources), see the source code of Jahia 6.6.
 
  So now that your modules/templates are ready to be launched in the world you need to at least do a last verification, reactivate the cache filter if needed in the file tomcat/webapps/ROOT/WEB-INF/etc/spring/applicationcontext-cache.xml, test it in live mode (add/update/remove content etc.) and validate that all changes are correctly displayed in live mode. If not here a list of what can be wrong :
 
     * When your content is updated you do no see the changes in live this can be due to some missing dependencies (for example if your module execute some queries to find/display content then if you do not want to rely on expiration you will have to add some dependency so that your fragment is flushed on updates) (see https://github.com/Jahia/JahiApp-Blog/blob/master/src/main/webapp/jnt_latestBlogContent/html/latestBlogContent.hidden.load.jsp to have an example of how to do that).
     * If your module display content from other nodes than itself then you will have to add those nodes dependencies in your file
-    * If your module is mainly used from the studio to built templates and its display depend on the main resource but it is not a binded component then you need to add a property file alongside your template to tell Jahia 6.5 to cache this content per main resource (see https://github.com/Jahia/JahiApp-Blog/tree/master/src/main/webapp/jnt_pageTitle/html)
+    * If your module is mainly used from the studio to built templates and its display depend on the main resource but it is not a binded component then you need to add a property file alongside your template to tell Jahia 6.6 to cache this content per main resource (see https://github.com/Jahia/JahiApp-Blog/tree/master/src/main/webapp/jnt_pageTitle/html)
 
- Jahia 6.5 also provides some tools that can be found in your local installation under tomcat/webapps/ROOT/ one is really useful when having cache issues, you can access it directly from you browser at this URL http://localhost:8080/jahia/tools/ehcache/index.html, your browser will ask for a login/password this is the one you have defined in the wizard, if forgotten you can find them inside tomcat/conf/tomcat-users.xml. This tool shows you the content of your html cache with the dependencies.
+ Jahia 6.6 also provides some tools that can be found in your local installation under tomcat/webapps/ROOT/ one is really useful when having cache issues, you can access it directly from you browser at this URL http://localhost:8080/jahia/tools/ehcache/index.html, your browser will ask for a login/password this is the one you have defined in the wizard, if forgotten you can find them inside tomcat/conf/tomcat-users.xml. This tool shows you the content of your html cache with the dependencies.

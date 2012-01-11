@@ -208,8 +208,7 @@ http://my.acme.org/cms/de/home.html
 
   There are multiple improvement change requests submitted for this feature (one of them for
   removing <<</cms>>>, which can be achieved in most of the cases), based on our
-  internal usability tests and early {{{http://beta65.jahia.org/}Jahia 6.5 BETA program}} feedback,
-  which are scheduled to be addressed in the near future.
+  internal usability tests.
 
     
 * Controlling browser {caching}

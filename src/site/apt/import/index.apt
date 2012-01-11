@@ -60,7 +60,7 @@ Content Import and Export
 
 ** Legacy formats
 
-    Content export files from Jahia prior to version 6.5 uses a different format, based on the page / container lists /
+    Content export files from Jahia prior to version 6.6 uses a different format, based on the page / container lists /
     container structure. This format is still supported for compatibilty, and can eventually be used along with a mapping
     file for migration purpose.
 
@@ -108,7 +108,7 @@ Content Import and Export
 
 ** Migration
 
-    As Jahia supports legacy import formats, it can be used to migrate content from a version prior to 6.5. The use
+    As Jahia supports legacy import formats, it can be used to migrate content from a version prior to 6.6. The use
     of mapping files can help to map container and fields to a new content structure.
 
 ** External content import

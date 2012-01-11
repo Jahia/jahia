@@ -1,8 +1,8 @@
 Jahia And Camel
 
- Jahia 6.5 uses {{{http://camel.apache.org}Apache Camel 2.4.0}} for its interaction with many enterprise systems and network protocol.
+ Jahia 6.6 uses {{{http://camel.apache.org}Apache Camel 2.4.0}} for its interaction with many enterprise systems and network protocol.
 
- In Jahia 6.5 Apache Camel is mainly used for sending mail as notifications (workflow event, subscription, user registration,
+ In Jahia 6.6 Apache Camel is mainly used for sending mail as notifications (workflow event, subscription, user registration,
 form submission) and also make the system react in an asynchronous way to some event on the platform (page viewed, log history of content in database, etc.)
 
 * Send mail as notifications from Jahia
@@ -69,7 +69,7 @@ public ActionResult doExecute(HttpServletRequest req, RenderContext renderContex
 +----------------------------
 
  You can use the mail service from anywhere you want in your custom code (Actions, Tags, etc.). If you want to send some
-notifications in your custom rules, Jahia 6.5 provide a rules notifications service that you can use.
+notifications in your custom rules, Jahia 6.6 provide a rules notifications service that you can use.
 
 * Send mail as notifications from Rule example :
 
@@ -107,7 +107,7 @@ end
 * Integration with other framework
 
  If needed you can also call directly Apache Camel from the mail service to succeed on integrating an external system
-with Jahia 6.5, as an example we will show you how we use the mail service from Jahia 6.5 to override the mail
+with Jahia 6.6, as an example we will show you how we use the mail service from Jahia 6.6 to override the mail
 management in JBPM with our own :
 
 +-----------------------------------------
@@ -146,7 +146,7 @@ send them through the asynchronous channel dedicated to mail.
 
 * React asynchronously on events on the platform
 
- Jahia 6.5 redirect all its logs to Apache Camel through a log4j appender, this way you can define Apache Camel routes
+ Jahia 6.6 redirect all its logs to Apache Camel through a log4j appender, this way you can define Apache Camel routes
 that will listen to this log channel and then filter it to only use a subtract of those logs or use them all
 like our Content History Service that store all logs in the Database.
 
@@ -176,7 +176,7 @@ own code and then add a lot of system interaction in your enterprise with Apache
 
 * Use Camel to make Jahia interact with other systems
 
- So far we have seen how to listen to Jahia 6.5 and send notifications or call external systems, let us do it the other way around.
+ So far we have seen how to listen to Jahia 6.6 and send notifications or call external systems, let us do it the other way around.
 
  For example we might want to allow our users to create content using mail :
 
@@ -267,4 +267,4 @@ public class MyBean {
  We can also when we have found the user use its preferred language to enter the news in its language instead of Locale.ENGLISH.
 
  This is just a simple example with Apache Camel you can do much more than that {{{http://camel.apache.org/components.html} see Apache Camel Components page}}
-to have an idea of all the components you can use) but here you have an idea of how to use it inside Jahia 6.5, enjoy.
+to have an idea of all the components you can use) but here you have an idea of how to use it inside Jahia 6.6, enjoy.

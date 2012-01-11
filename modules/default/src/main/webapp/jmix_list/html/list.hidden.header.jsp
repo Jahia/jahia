@@ -69,7 +69,7 @@
 <c:if test="${!empty areaResource}">
     <c:if test="${jcr:isNodeType(areaResource, 'jmix:orderedList')}">
         <jcr:sort list="${moduleMap.currentList}"
-                  properties="${areaResource.properties.firstField.string},${areaResource.properties.firstDirection.string},${areaResource.properties.secondField.string},${areaResource.properties.secondDirection.string},${areaResource.properties.thirdField.string},${areaResource.properties.thirdDirection.string}"
+                  properties="${areaResource.properties.ignoreCase.string},${areaResource.properties.firstField.string},${areaResource.properties.firstDirection.string},${areaResource.properties.secondField.string},${areaResource.properties.secondDirection.string},${areaResource.properties.thirdField.string},${areaResource.properties.thirdDirection.string}"
                   var="currentList"/>
         <c:set value="${currentList}" target="${moduleMap}" property="currentList"/>
     </c:if>
@@ -80,7 +80,7 @@
 
 <c:if test="${jcr:isNodeType(currentNode, 'jmix:orderedList')}">
     <jcr:sort list="${moduleMap.currentList}"
-              properties="${currentNode.properties.firstField.string},${currentNode.properties.firstDirection.string},${currentNode.properties.secondField.string},${currentNode.properties.secondDirection.string},${currentNode.properties.thirdField.string},${currentNode.properties.thirdDirection.string}"
+              properties="${currentNode.properties.ignoreCase.string},${currentNode.properties.firstField.string},${currentNode.properties.firstDirection.string},${currentNode.properties.secondField.string},${currentNode.properties.secondDirection.string},${currentNode.properties.thirdField.string},${currentNode.properties.thirdDirection.string}"
               var="currentList"/>
     <c:set value="${currentList}" target="${moduleMap}" property="currentList"/>
     <c:set value="true" target="${moduleMap}" property="orderedList"/>

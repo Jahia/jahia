@@ -110,7 +110,9 @@ public class JCRSortTag extends AbstractJCRTag {
         }
 
         public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
-            for (int i = 0; i < props.length; i+=2) {
+        	boolean ignoreCase = Boolean.valueOf(props[0]).booleanValue();
+        	
+            for (int i = 1; i < props.length; i+=2) {
                 String prop = props[i];
                 String dir = props[i+1];
                 int d = "desc".equals(dir) ? -1 : 1;
@@ -144,7 +146,11 @@ public class JCRSortTag extends AbstractJCRTag {
                                     r = Double.compare(p1.getDouble(),p2.getDouble());
                                     break;
                                 default:
-                                    r = p1.getString().compareTo(p2.getString());
+                                	if (ignoreCase) {
+                                		r = p1.getString().compareToIgnoreCase(p2.getString());
+                                	} else {
+                                		r = p1.getString().compareTo(p2.getString());
+                                	}
                                     break;
                             }
                             if (r != 0) {

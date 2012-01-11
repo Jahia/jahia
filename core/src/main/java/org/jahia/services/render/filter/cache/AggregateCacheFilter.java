@@ -651,7 +651,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             }
 
             renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
-
+            String oldInArea = (String) renderContext.getRequest().getAttribute("inArea");
             String inArea = keyAttrbs.get("inArea");
             if (inArea == null || "".equals(inArea)) {
                 renderContext.getRequest().removeAttribute("inArea");
@@ -675,6 +675,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 " areaIdentifier "+ areaIdentifier);
             }
             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);
+            if(oldInArea!=null) {
+                renderContext.getRequest().setAttribute("inArea", oldInArea);
+            } else {
+                renderContext.getRequest().removeAttribute("inArea");
+            }
             if (oldOne!=null) {
                 renderContext.getRequest().setAttribute("previousTemplate", oldOne);
             } else {

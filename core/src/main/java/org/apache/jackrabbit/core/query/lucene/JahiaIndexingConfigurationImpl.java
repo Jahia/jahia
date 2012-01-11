@@ -51,6 +51,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.NamespaceRegistryImpl;
 import org.apache.jackrabbit.core.nodetype.xml.AdditionalNamespaceResolver;
 import org.apache.jackrabbit.core.query.QueryHandlerContext;
+import org.apache.jackrabbit.core.state.ItemStateException;
+import org.apache.jackrabbit.core.state.ItemStateManager;
+import org.apache.jackrabbit.core.state.NodeState;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.conversion.NameResolver;
 import org.apache.jackrabbit.spi.commons.conversion.ParsingNameResolver;
@@ -58,6 +61,7 @@ import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordAnalyzer;
+import org.jahia.api.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
@@ -71,13 +75,18 @@ import org.w3c.dom.NodeList;
  * Jahia specific {@link IndexingConfiguration} implementation. 
  */
 public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
-    
     private static final String FACET_EXPRESSION = ":" + JahiaNodeIndexer.FACET_PREFIX;    
+    private static final Name TRANSLATION_TYPE = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "translation");
     
     /**
      * The logger instance for this class.
      */
     private static final Logger logger = LoggerFactory.getLogger(JahiaIndexingConfigurationImpl.class);
+    
+    /**
+     * The item state manager to retrieve additional item states.
+     */
+    private ItemStateManager ism;
     
     /**
      * @param node a node.
@@ -146,6 +155,7 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
 
     @Override
     public void init(Element config, QueryHandlerContext context, NamespaceMappings nsMappings) throws Exception {
+        ism = context.getItemStateManager();
         Properties customNamespaces = getNamespaces(config);
         registerCustomNamespaces(context.getNamespaceRegistry(), customNamespaces);
         super.init(config, context, nsMappings);
@@ -191,5 +201,40 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean isIndexed(NodeState state, Name propertyName) {
+        return super.isIndexed(getUntranslatedNode(state), propertyName);
+    }
+
+    @Override
+    public float getPropertyBoost(NodeState state, Name propertyName) {
+        return super.getPropertyBoost(getUntranslatedNode(state), propertyName);
+    }
+
+    @Override
+    public float getNodeBoost(NodeState state) {
+        return super.getNodeBoost(getUntranslatedNode(state));
+    }
+
+    @Override
+    public boolean isIncludedInNodeScopeIndex(NodeState state, Name propertyName) {
+        return super.isIncludedInNodeScopeIndex(getUntranslatedNode(state), propertyName);
+    }
+
+    @Override
+    public boolean useInExcerpt(NodeState state, Name propertyName) {
+        return super.useInExcerpt(getUntranslatedNode(state), propertyName);
     }    
+    
+    private NodeState getUntranslatedNode(NodeState state) {
+        if (TRANSLATION_TYPE.equals(state.getNodeTypeName())) {
+            try {
+                state = (NodeState) ism.getItemState(state.getParentId());
+            } catch (ItemStateException e) {
+            }
+        }
+        return state;
+    }
 }

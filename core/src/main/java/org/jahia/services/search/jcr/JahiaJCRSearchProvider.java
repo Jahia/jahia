@@ -378,6 +378,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         }
 
         query = appendConstraints(params, query, session);
+        query.append(" order by jcr:score() descending");
         xpathQuery = query.toString();
 
         if (logger.isDebugEnabled()) {
@@ -633,8 +634,11 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
                 SearchFields searchFields = textSearch.getFields();
                 StringBuilder textSearchConstraints = new StringBuilder(256);
+                boolean titleConstraintAdded = false;
                 if (searchFields.isSiteContent() || (!searchFields.isTags() && !searchFields.isFileContent() && !searchFields.isDescription() && !searchFields.isTitle() && !searchFields.isKeywords() && !searchFields.isFilename())) {
                     addConstraint(textSearchConstraints, "or", "jcr:contains(., " + searchExpression + ")");
+                    addConstraint(textSearchConstraints, "or", "jcr:contains(@jcr:title, " + searchExpression + ")");
+                    titleConstraintAdded = true;
                 }
                 if (searchFields.isFileContent()) {
                     addConstraint(textSearchConstraints, "or", "jcr:contains(jcr:content, " + searchExpression + ")");
@@ -643,7 +647,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     addConstraint(textSearchConstraints, "or", "jcr:contains(@jcr:description, " + searchExpression
                             + ")");
                 }
-                if (searchFields.isTitle()) {
+                if (searchFields.isTitle() && !titleConstraintAdded) {
                     addConstraint(textSearchConstraints, "or", "jcr:contains(@jcr:title, " + searchExpression + ")");
                 }
                 if (searchFields.isKeywords()) {

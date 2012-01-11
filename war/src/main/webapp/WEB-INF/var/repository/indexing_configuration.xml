@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE configuration SYSTEM "http://jackrabbit.apache.org/dtd/indexing-configuration-1.2.dtd">
-<configuration xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:jnt='http://www.jahia.org/jahia/nt/1.0'>
+<configuration xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:jnt='http://www.jahia.org/jahia/nt/1.0' xmlns:mix="http://www.jcp.org/jcr/mix/1.0">
 
     <!-- see http://wiki.apache.org/jackrabbit/IndexingConfiguration for details -->
 
@@ -12,6 +12,16 @@ The following example creates an index aggregate on jnt:file that includes the c
     <aggregate primaryType="jnt:file">
         <include>jcr:content</include>
     </aggregate>
+    
+    <index-rule nodeType="jnt:page">
+        <property boost="3.0">jcr:title</property>
+        <property isRegexp="true">.*:.*</property>
+    </index-rule>
+
+	<index-rule nodeType="mix:title">
+        <property boost="2.0">jcr:title</property>
+        <property isRegexp="true">.*:.*</property>
+    </index-rule>
 
     <i18ncopy>
         <exclude-property>j:tags</exclude-property>    

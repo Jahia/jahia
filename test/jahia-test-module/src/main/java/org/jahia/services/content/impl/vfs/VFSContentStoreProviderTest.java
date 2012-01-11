@@ -227,35 +227,40 @@ public class VFSContentStoreProviderTest {
         ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext().getBean("ContentHubHelper");
         JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
         contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser, Locale.getDefault());
-
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        assertRootNavigation(session);
-
-        JCRNodeWrapper mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
-        assertNode(mountNode, 0);
-        createFolder(session, "folder1", mountNode);
-        JCRNodeWrapper folder1Node = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT + "/folder1");
-        assertNode(folder1Node, 0);
-        session.checkout(folder1Node);
-        folder1Node.remove();
-        session.save();
-
-        unMountDynamicMountPoint(jahiaRootUser);
-
-        // we must recycle session because of internal session caches.
-        session.refresh(false);
-        session.logout();
-
-        session = JCRSessionFactory.getInstance().getCurrentUserSession();
-
-        boolean mountNodeStillExists = false;
+        boolean mountNodeStillExists = true;
         try {
-            mountNode = session.getNode(MOUNTS_DYNAMIC_MOUNT_POINT);
-            mountNodeStillExists = true;
-        } catch (PathNotFoundException pnfe) {
-        }
-        assertFalse("Dynamic mount node should have been removed but is still present in repository !", mountNodeStillExists);
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            assertRootNavigation(session);
 
+            JCRNodeWrapper mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
+            assertNode(mountNode, 0);
+            createFolder(session, "folder1", mountNode);
+            JCRNodeWrapper folder1Node = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT + "/folder1");
+            assertNode(folder1Node, 0);
+            session.checkout(folder1Node);
+            folder1Node.remove();
+            session.save();
+
+            unMountDynamicMountPoint(jahiaRootUser);
+
+            // we must recycle session because of internal session caches.
+            session.refresh(false);
+            session.logout();
+
+            session = JCRSessionFactory.getInstance().getCurrentUserSession();
+
+            mountNodeStillExists = false;
+            try {
+                mountNode = session.getNode(MOUNTS_DYNAMIC_MOUNT_POINT);
+                mountNodeStillExists = true;
+            } catch (PathNotFoundException pnfe) {
+            }
+            assertFalse("Dynamic mount node should have been removed but is still present in repository !", mountNodeStillExists);
+        } finally {
+            if (mountNodeStillExists) {
+                unMountDynamicMountPoint(jahiaRootUser);
+            }
+        }
     }
 
     private static void unMountDynamicMountPoint(JahiaUser jahiaRootUser) throws RepositoryException {
@@ -281,131 +286,144 @@ public class VFSContentStoreProviderTest {
 
     @Test
     public void testReferencing() throws Exception, RepositoryException, UnsupportedEncodingException {
-        ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext().getBean("ContentHubHelper");
+        ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext()
+                .getBean("ContentHubHelper");
         JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
-        contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser, Locale.getDefault());
+        try {
+            contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser,
+                    Locale.getDefault());
 
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
-        JCRNodeWrapper mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
-        assertNode(mountNode, 0);
+            JCRNodeWrapper mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
+            assertNode(mountNode, 0);
 
-        String value = "This is a test";
-        String mimeType = "text/plain";
+            String value = "This is a test";
+            String mimeType = "text/plain";
 
-        InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+            InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
 
-        String name1 = "test1_" + System.currentTimeMillis() + ".txt";
-        JCRNodeWrapper vfsTestFile1 = mountNode.uploadFile(name1, is, mimeType);
+            String name1 = "test1_" + System.currentTimeMillis() + ".txt";
+            JCRNodeWrapper vfsTestFile1 = mountNode.uploadFile(name1, is, mimeType);
 
-        is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+            is = new ByteArrayInputStream(value.getBytes("UTF-8"));
 
-        String name2 = "test2_" + System.currentTimeMillis() + ".txt";
-        JCRNodeWrapper vfsTestFile2 = mountNode.uploadFile(name2, is, mimeType);
+            String name2 = "test2_" + System.currentTimeMillis() + ".txt";
+            JCRNodeWrapper vfsTestFile2 = mountNode.uploadFile(name2, is, mimeType);
 
-        session.save();
+            session.save();
 
-        JCRSiteNode siteNode = (JCRSiteNode) session.getNode(SITECONTENT_ROOT_NODE);
+            JCRSiteNode siteNode = (JCRSiteNode) session.getNode(SITECONTENT_ROOT_NODE);
 
-        // simple external referencing testing, with no language specified...
+            // simple external referencing testing, with no language specified...
 
-        JCRNodeWrapper fileReferenceNode = siteNode.addNode("externalReferenceNode", "jnt:fileReference");
-        fileReferenceNode.setProperty("j:node", vfsTestFile1);
-        session.save();
+            JCRNodeWrapper fileReferenceNode = siteNode.addNode("externalReferenceNode", "jnt:fileReference");
+            fileReferenceNode.setProperty("j:node", vfsTestFile1);
+            session.save();
 
-        Property externalReferenceProperty = fileReferenceNode.getProperty("j:node");
-        Node externalNode = externalReferenceProperty.getNode();
-        assertEquals("External node identifier retrieved from reference do not match", vfsTestFile1.getIdentifier(), externalNode.getIdentifier());
-        PropertyIterator weakReferenceProperties = vfsTestFile1.getWeakReferences("j:node");
-        boolean foundWeakReferenceProperty = false;
-        while (weakReferenceProperties.hasNext()) {
-            Property property = weakReferenceProperties.nextProperty();
-            if (property.getName().equals("j:node") && property.getParent().getIdentifier().equals(fileReferenceNode.getIdentifier())) {
-                foundWeakReferenceProperty = true;
-                break;
+            Property externalReferenceProperty = fileReferenceNode.getProperty("j:node");
+            Node externalNode = externalReferenceProperty.getNode();
+            assertEquals("External node identifier retrieved from reference do not match", vfsTestFile1.getIdentifier(),
+                    externalNode.getIdentifier());
+            PropertyIterator weakReferenceProperties = vfsTestFile1.getWeakReferences("j:node");
+            boolean foundWeakReferenceProperty = false;
+            while (weakReferenceProperties.hasNext()) {
+                Property property = weakReferenceProperties.nextProperty();
+                if (property.getName().equals("j:node") && property.getParent().getIdentifier().equals(fileReferenceNode.getIdentifier())) {
+                    foundWeakReferenceProperty = true;
+                    break;
+                }
             }
-        }
-        assertTrue("Expected to find weak reference property j:node but it wasn't found !", foundWeakReferenceProperty);
-        assertTrue("Expected to find j:node property when testing for it's presence but it wasn't found.", fileReferenceNode.hasProperty("j:node"));
+            assertTrue("Expected to find weak reference property j:node but it wasn't found !", foundWeakReferenceProperty);
+            assertTrue("Expected to find j:node property when testing for it's presence but it wasn't found.",
+                    fileReferenceNode.hasProperty("j:node"));
 
-        // Now let's test accessing using property iterator
+            // Now let's test accessing using property iterator
 
-        boolean foundReferenceProperty = false;
-        PropertyIterator fileReferenceProperties = fileReferenceNode.getProperties();
-        while (fileReferenceProperties.hasNext()) {
-            Property property = fileReferenceProperties.nextProperty();
-            if (property.getName().equals("j:node")) {
-                foundReferenceProperty = true;
-                break;
+            boolean foundReferenceProperty = false;
+            PropertyIterator fileReferenceProperties = fileReferenceNode.getProperties();
+            while (fileReferenceProperties.hasNext()) {
+                Property property = fileReferenceProperties.nextProperty();
+                if (property.getName().equals("j:node")) {
+                    foundReferenceProperty = true;
+                    break;
+                }
             }
-        }
-        assertTrue("Couldn't find property j:node using property iterators", foundReferenceProperty);
+            assertTrue("Couldn't find property j:node using property iterators", foundReferenceProperty);
 
-        fileReferenceProperties = fileReferenceNode.getProperties("j:nod* | j:*ode");
-        while (fileReferenceProperties.hasNext()) {
-            Property property = fileReferenceProperties.nextProperty();
-            if (property.getName().equals("j:node")) {
-                foundReferenceProperty = true;
-                break;
+            fileReferenceProperties = fileReferenceNode.getProperties("j:nod* | j:*ode");
+            while (fileReferenceProperties.hasNext()) {
+                Property property = fileReferenceProperties.nextProperty();
+                if (property.getName().equals("j:node")) {
+                    foundReferenceProperty = true;
+                    break;
+                }
             }
+            assertTrue("Couldn't find property j:node using property iterators and name patterns", foundReferenceProperty);
+
+            // as our own property iterators also support the Map interface, we will test that now.
+            Map fileReferencePropertiesMap = (Map) fileReferenceNode.getProperties("j:nod* | j:*ode");
+            assertTrue("Properties used as a map do not have the reference property j:node",
+                    fileReferencePropertiesMap.containsKey("j:node"));
+            Value refValue = (Value) fileReferencePropertiesMap.get("j:node");
+            assertTrue("Reference property could not be found in properties used as a map", refValue != null);
+            assertEquals("Reference property retrieved from properties used as a map does not contain proper reference",
+                    vfsTestFile1.getIdentifier(), refValue.getString());
+
+            // TODO add tests where we mix internal references AND external references in the same multi-valued property in different
+            // languages.
+            getCleanSession();
+            siteNode = (JCRSiteNode) englishEditSession.getNode(SITECONTENT_ROOT_NODE);
+            vfsTestFile1 = englishEditSession.getNode(MOUNTS_DYNAMIC_MOUNT_POINT + "/" + name1);
+            vfsTestFile2 = englishEditSession.getNode(MOUNTS_DYNAMIC_MOUNT_POINT + "/" + name2);
+
+            JCRNodeWrapper mixedFileReferenceNode = siteNode.addNode("externalMixedReferenceNode", TEST_EXTERNAL_WEAKREFERENCE_NODE_TYPE);
+            mixedFileReferenceNode.setProperty(SIMPLE_WEAKREFERENCE_PROPERTY_NAME, vfsTestFile1);
+            ValueFactory valueFactory = englishEditSession.getValueFactory();
+
+            List<Value> values = new ArrayList<Value>();
+            values.add(new ExternalReferenceValue(vfsTestFile2.getIdentifier(), PropertyType.WEAKREFERENCE));
+
+            is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+
+            JCRNodeWrapper siteFile1 = siteNode.uploadFile(name1, is, mimeType);
+            values.add(valueFactory.createValue(siteFile1));
+
+            Value[] multipleWeakRefs = values.toArray(new Value[values.size()]);
+
+            mixedFileReferenceNode.setProperty(MULTIPLE_WEAKREFERENCE_PROPERTY_NAME, multipleWeakRefs);
+            englishEditSession.save();
+
+            // let's get another session to make sure we don't have cache issues
+            getCleanSession();
+
+            mixedFileReferenceNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/externalMixedReferenceNode");
+
+            assertTrue("Couldn't find property when testing for it's presence with the hasProperty method",
+                    mixedFileReferenceNode.hasProperty(SIMPLE_WEAKREFERENCE_PROPERTY_NAME));
+            Property simpleRefProperty = mixedFileReferenceNode.getProperty(SIMPLE_WEAKREFERENCE_PROPERTY_NAME);
+            assertTrue("Reference property does not have proper value",
+                    simpleRefProperty.getNode().getIdentifier().equals(vfsTestFile1.getIdentifier()));
+
+            Property multipleRefProperty = mixedFileReferenceNode.getProperty(MULTIPLE_WEAKREFERENCE_PROPERTY_NAME);
+            assertTrue("Expected multiple property but it is not multi-valued", multipleRefProperty.isMultiple());
+            Value[] multipleRefPropertyValues = multipleRefProperty.getValues();
+            assertTrue("First property value type is not correct", multipleRefPropertyValues[0].getType() == PropertyType.WEAKREFERENCE);
+            assertTrue("First property value does not match VFS test file 2",
+                    multipleRefPropertyValues[0].getString().equals(vfsTestFile2.getIdentifier()));
+            assertTrue("Second property value type is not correct", multipleRefPropertyValues[1].getType() == PropertyType.WEAKREFERENCE);
+            assertTrue("Second property value does not match site test file 1",
+                    multipleRefPropertyValues[1].getString().equals(siteFile1.getIdentifier()));
+
+            // TODO we will have to set the last property in multiple languages. We will need multiple
+            // session objects for this.
+
+            // TODO add tests for reference removal, making sure we don't have dangling references.
+
+            // TODO add tests for handling missing reference targets.
+        } finally {
+            unMountDynamicMountPoint(jahiaRootUser);
         }
-        assertTrue("Couldn't find property j:node using property iterators and name patterns", foundReferenceProperty);
-
-        // as our own property iterators also support the Map interface, we will test that now.
-        Map fileReferencePropertiesMap = (Map) fileReferenceNode.getProperties("j:nod* | j:*ode");
-        assertTrue("Properties used as a map do not have the reference property j:node", fileReferencePropertiesMap.containsKey("j:node"));
-        Value refValue = (Value) fileReferencePropertiesMap.get("j:node");
-        assertTrue("Reference property could not be found in properties used as a map", refValue != null);
-        assertEquals("Reference property retrieved from properties used as a map does not contain proper reference", vfsTestFile1.getIdentifier(), refValue.getString());
-
-        // TODO add tests where we mix internal references AND external references in the same multi-valued property in different languages.
-        getCleanSession();
-        siteNode = (JCRSiteNode) englishEditSession.getNode(SITECONTENT_ROOT_NODE);
-        vfsTestFile1 = englishEditSession.getNode(MOUNTS_DYNAMIC_MOUNT_POINT + "/" + name1);
-        vfsTestFile2 = englishEditSession.getNode(MOUNTS_DYNAMIC_MOUNT_POINT + "/" + name2);
-
-        JCRNodeWrapper mixedFileReferenceNode = siteNode.addNode("externalMixedReferenceNode", TEST_EXTERNAL_WEAKREFERENCE_NODE_TYPE);
-        mixedFileReferenceNode.setProperty(SIMPLE_WEAKREFERENCE_PROPERTY_NAME, vfsTestFile1);
-        ValueFactory valueFactory = englishEditSession.getValueFactory();
-
-        List<Value> values = new ArrayList<Value>();
-        values.add(new ExternalReferenceValue(vfsTestFile2.getIdentifier(), PropertyType.WEAKREFERENCE));
-
-        is = new ByteArrayInputStream(value.getBytes("UTF-8"));
-
-        JCRNodeWrapper siteFile1 = siteNode.uploadFile(name1, is, mimeType);
-        values.add(valueFactory.createValue(siteFile1));
-
-        Value[] multipleWeakRefs = values.toArray(new Value[values.size()]);
-
-        mixedFileReferenceNode.setProperty(MULTIPLE_WEAKREFERENCE_PROPERTY_NAME, multipleWeakRefs);
-        englishEditSession.save();
-
-        // let's get another session to make sure we don't have cache issues
-        getCleanSession();
-
-        mixedFileReferenceNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/externalMixedReferenceNode");
-
-        assertTrue("Couldn't find property when testing for it's presence with the hasProperty method", mixedFileReferenceNode.hasProperty(SIMPLE_WEAKREFERENCE_PROPERTY_NAME));
-        Property simpleRefProperty = mixedFileReferenceNode.getProperty(SIMPLE_WEAKREFERENCE_PROPERTY_NAME);
-        assertTrue("Reference property does not have proper value", simpleRefProperty.getNode().getIdentifier().equals(vfsTestFile1.getIdentifier()));
-
-        Property multipleRefProperty = mixedFileReferenceNode.getProperty(MULTIPLE_WEAKREFERENCE_PROPERTY_NAME);
-        assertTrue("Expected multiple property but it is not multi-valued", multipleRefProperty.isMultiple());
-        Value[] multipleRefPropertyValues = multipleRefProperty.getValues();
-        assertTrue("First property value type is not correct", multipleRefPropertyValues[0].getType() == PropertyType.WEAKREFERENCE);
-        assertTrue("First property value does not match VFS test file 2", multipleRefPropertyValues[0].getString().equals(vfsTestFile2.getIdentifier()));
-        assertTrue("Second property value type is not correct", multipleRefPropertyValues[1].getType() == PropertyType.WEAKREFERENCE);
-        assertTrue("Second property value does not match site test file 1", multipleRefPropertyValues[1].getString().equals(siteFile1.getIdentifier()));
-
-        // TODO we will have to set the last property in multiple languages. We will need multiple
-        // session objects for this.
-
-        // TODO add tests for reference removal, making sure we don't have dangling references.
-
-        // TODO add tests for handling missing reference targets.
-
-        unMountDynamicMountPoint(jahiaRootUser);
     }
 
     @Test
@@ -413,57 +431,59 @@ public class VFSContentStoreProviderTest {
         ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext().getBean("ContentHubHelper");
         JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
         contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser, Locale.getDefault());
-
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-
-        JCRNodeWrapper mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
-        assertNode(mountNode, 0);
-
-        String value = "This is a test";
-        String mimeType = "text/plain";
-
-        InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
-
-        String name1 = "test1_" + System.currentTimeMillis() + ".txt";
-        JCRNodeWrapper vfsTestFile1 = mountNode.uploadFile(name1, is, mimeType);
-
-        is = new ByteArrayInputStream(value.getBytes("UTF-8"));
-
-        String name2 = "test2_" + System.currentTimeMillis() + ".txt";
-        JCRNodeWrapper vfsTestFile2 = mountNode.uploadFile(name2, is, mimeType);
-
-        session.save();
-
-        getCleanSession();
-
-        JCRSiteNode siteNode = (JCRSiteNode) englishEditSession.getNode(SITECONTENT_ROOT_NODE);
-        vfsTestFile1 = getNode(englishEditSession, MOUNTS_DYNAMIC_MOUNT_POINT + "/" + name1);
-        assertFalse("Node should not allow mark for deletion", vfsTestFile1.canMarkForDeletion());
-
-        boolean unsupportedRepositoryOperation = false;
         try {
-            vfsTestFile1.markForDeletion(DELETION_MESSAGE);
-        } catch (UnsupportedRepositoryOperationException uroe) {
-            unsupportedRepositoryOperation = true;
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+
+            JCRNodeWrapper mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
+            assertNode(mountNode, 0);
+
+            String value = "This is a test";
+            String mimeType = "text/plain";
+
+            InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+
+            String name1 = "test1_" + System.currentTimeMillis() + ".txt";
+            JCRNodeWrapper vfsTestFile1 = mountNode.uploadFile(name1, is, mimeType);
+
+            is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+
+            String name2 = "test2_" + System.currentTimeMillis() + ".txt";
+            JCRNodeWrapper vfsTestFile2 = mountNode.uploadFile(name2, is, mimeType);
+
+            session.save();
+
+            getCleanSession();
+
+            JCRSiteNode siteNode = (JCRSiteNode) englishEditSession.getNode(SITECONTENT_ROOT_NODE);
+            vfsTestFile1 = getNode(englishEditSession, MOUNTS_DYNAMIC_MOUNT_POINT + "/" + name1);
+            assertFalse("Node should not allow mark for deletion", vfsTestFile1.canMarkForDeletion());
+
+            boolean unsupportedRepositoryOperation = false;
+            try {
+                vfsTestFile1.markForDeletion(DELETION_MESSAGE);
+            } catch (UnsupportedRepositoryOperationException uroe) {
+                unsupportedRepositoryOperation = true;
+            }
+            assertTrue("Mark for deletion should not be allowed", unsupportedRepositoryOperation);
+            englishEditSession.save();
+
+            assertFalse("jmix:markedForDeletionRoot set", vfsTestFile1.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
+            assertFalse("jmix:markedForDeletion set", vfsTestFile1.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
+            assertFalse("marked for deletion comment not set",
+                    DELETION_MESSAGE.equals(vfsTestFile1.getPropertyAsString(Constants.MARKED_FOR_DELETION_MESSAGE)));
+            assertFalse("j:deletionUser not set", vfsTestFile1.hasProperty(Constants.MARKED_FOR_DELETION_USER));
+            assertFalse("j:deletionDate not set", vfsTestFile1.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
+
+            unsupportedRepositoryOperation = false;
+            try {
+                vfsTestFile1.unmarkForDeletion();
+            } catch (UnsupportedRepositoryOperationException uroe) {
+                unsupportedRepositoryOperation = true;
+            }
+            assertTrue("Unmark for deletion should not be allowed", unsupportedRepositoryOperation);
+        } finally {
+            unMountDynamicMountPoint(jahiaRootUser);
         }
-        assertTrue("Mark for deletion should not be allowed", unsupportedRepositoryOperation);
-        englishEditSession.save();
-
-        assertFalse("jmix:markedForDeletionRoot set", vfsTestFile1.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
-        assertFalse("jmix:markedForDeletion set", vfsTestFile1.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
-        assertFalse("marked for deletion comment not set", DELETION_MESSAGE.equals(vfsTestFile1.getPropertyAsString(Constants.MARKED_FOR_DELETION_MESSAGE)));
-        assertFalse("j:deletionUser not set", vfsTestFile1.hasProperty(Constants.MARKED_FOR_DELETION_USER));
-        assertFalse("j:deletionDate not set", vfsTestFile1.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
-
-        unsupportedRepositoryOperation = false;
-        try {
-            vfsTestFile1.unmarkForDeletion();
-        } catch (UnsupportedRepositoryOperationException uroe) {
-            unsupportedRepositoryOperation = true;
-        }
-        assertTrue("Unmark for deletion should not be allowed", unsupportedRepositoryOperation);
-
-        unMountDynamicMountPoint(jahiaRootUser);
     }
 
     private JCRNodeWrapper getNode(JCRSessionWrapper session, String path) throws RepositoryException {

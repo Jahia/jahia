@@ -111,8 +111,8 @@
     display:none;
 }
 #contributeToolbar a.subnav, #contributeToolbar a.subnav:link, #contributeToolbar a.subnav:visited{
-    background:transparent url(img/contribute-	padding:0;
-toolbar-bg-a-nav.png) repeat-x  100% 0;
+    background:transparent url(img/contribute-toolbar-bg-a-nav.png) repeat-x  100% 0;
+	padding:0;
     color: #fff;
 	padding:4px 16px 4px 4px;
 }

@@ -115,7 +115,7 @@ public class PublishActionItem extends BaseActionItem {
             }
         } else {
             gwtJahiaNode = ctx.getSingleSelection();
-            if (gwtJahiaNode != null && gwtJahiaNode.getWorkflowInfo() != null && !isChildOfMarkedForDeletion(ctx)) {
+            if (gwtJahiaNode != null && gwtJahiaNode.getWorkflowInfo() != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication"))) {
                 wf = gwtJahiaNode.getWorkflowInfo().getActiveWorkflows().get(new GWTJahiaWorkflowType("publish"));
                 if (wf != null) {
                     if (!wf.getAvailableTasks().isEmpty()) {

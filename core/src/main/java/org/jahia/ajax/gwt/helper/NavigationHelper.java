@@ -1022,7 +1022,14 @@ public class NavigationHelper {
             }
         }
 
-        if (fields.contains(GWTJahiaNode.PUBLICATION_INFO)) {
+        boolean supportsPublication = false;
+        try {
+            supportsPublication = node.getSession().getProviderSession(node.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED).getBoolean();
+            n.set("supportsPublication", Boolean.valueOf(supportsPublication));
+        } catch (Exception e) {
+            logger.error("Cannot get repository infos",e);
+        }
+        if (fields.contains(GWTJahiaNode.PUBLICATION_INFO) && supportsPublication) {
             try {
                 n.setAggregatedPublicationInfos(publication.getAggregatedPublicationInfosByLanguage(node.getIdentifier(),
                         Collections.singleton(node.getSession().getLocale().toString()), node.getSession()));
@@ -1036,7 +1043,7 @@ public class NavigationHelper {
             }
         }
 
-        if (fields.contains(GWTJahiaNode.PUBLICATION_INFOS)) {
+        if (fields.contains(GWTJahiaNode.PUBLICATION_INFOS) && supportsPublication) {
             try {
                 JCRSiteNode siteNode = node.getResolveSite();
                 if (siteNode != null) {

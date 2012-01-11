@@ -71,7 +71,7 @@ public class PublishAllActionItem extends PublishActionItem {
             }
         } else {
             gwtJahiaNode = ctx.getSingleSelection();
-            if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx)) {
+            if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication"))) {
                 setEnabled(true);
                 if(gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
                     updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());

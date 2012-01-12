@@ -52,11 +52,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.applications.pluto.JahiaPortalURLParserImpl;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.logging.MetricsLoggingService;
@@ -423,8 +419,25 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
             action = templateService.getActions().get(resource.getResolvedTemplate());
         } else {
-            String path = urlResolver.getPath();
-            resource = urlResolver.getResource((path.endsWith("*") ? StringUtils.substringBeforeLast(path, "/") : path) + ".html");
+            final String path = urlResolver.getPath();
+
+            String resourcePath = JCRTemplate.getInstance().doExecuteWithSystemSession(null,
+                    urlResolver.getWorkspace(), urlResolver.getLocale(), new JCRCallback<String>() {
+                public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    String resourcePath = path.endsWith("*") ? StringUtils.substringBeforeLast(path, "/") : path;
+                    do {
+                        try {
+                            session.getNode(resourcePath);
+                            break;
+                        } catch (PathNotFoundException e) {
+                            resourcePath = StringUtils.substringBeforeLast(resourcePath, "/");
+                        }
+                    } while (resourcePath.contains("/"));
+                    return resourcePath;
+                }
+            });
+
+            resource = urlResolver.getResource(resourcePath + ".html");
             renderContext.setMainResource(resource);
             try {
                 JCRSiteNode site = resource.getNode().getResolveSite();

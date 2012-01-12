@@ -50,3 +50,88 @@ padding:0;
 	font-weight:normal;
 	color: #666666
 }
+/******************************************************************************
+*  create Tasks Form
+******************************************************************************/
+.bodywrapper #createTasksForm legend {
+    display:none;
+}
+.bodywrapper #createTasksForm label {
+    display:block;
+}
+.bodywrapper #createTasksForm input.field, .bodywrapper #createTasksForm textarea {
+	width:90%;
+	clear:both
+}
+/******************************************************************************
+*  Tasks comment
+******************************************************************************/
+.bodywrapper .taskComment  {
+    clear: both;
+	padding:10px;
+	list-style:none;
+    border-bottom:1px solid #e5e5e5;
+    overflow:hidden;
+    margin-bottom:1em;
+}
+.bodywrapper .taskComment:last-child {
+	background:none;
+}
+.bodywrapper .taskComment p {
+    margin:0;
+    padding:0;
+}
+.bodywrapper .taskComment p.taskTitle {
+    font-weight:bold
+}
+.bodywrapper .taskComment p.taskdate {
+   font-size:0.8em;
+}
+.bodywrapper .taskComment p.taskaction {
+   float:right;
+}
+.bodywrapper .taskComment .user-profile-view p {
+    margin-left: 70px;
+    padding-bottom: 0.2em;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+    padding-top: 0.2em;
+}
+/******************************************************************************
+*  Planning tasks
+******************************************************************************/
+.bodywrapper ul.planningtasks  {
+	position:relative;
+	margin:0;
+	list-style:none;
+	padding:0;
+    margin-bottom:1em;
+}
+.bodywrapper .planningtasks li {
+	padding:10px;
+	margin:0;
+	margin-bottom:0px;
+	list-style:none;
+    border-bottom:1px solid #e5e5e5;
+}
+.bodywrapper .planningtasks li:last-child {
+
+}
+.bodywrapper .planningtasks li.now {
+    background-color:#ffffd7;
+    text-align:right;
+    color: #333;
+	white-space:nowrap;
+	padding:2px;
+    text-transform: uppercase;
+    font-size:0.8em;
+}
+.bodywrapper .planningtasks .date {
+    font-weight:bold;
+}
+.bodywrapper .planningtasks li.finishedTask {
+    border-left:4px solid #66cc66
+}
+.bodywrapper .planningtasks li.unfinishedTask {
+    border-left:4px solid #cc3333
+}

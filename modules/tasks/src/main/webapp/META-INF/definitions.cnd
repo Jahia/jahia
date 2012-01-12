@@ -8,7 +8,7 @@
  - state (string, choicelist[resourceBundle]) = 'active' nofulltext analyzer='keyword' < 'active', 'finished', 'suspended', 'cancelled'
  - type (string)
 
-[jnt:tasks] > jnt:content, mix:title, jmix:formContent
+[jnt:tasks] > jnt:content, mix:title
  orderable
  + * (jnt:task)
 
@@ -17,3 +17,19 @@
  - viewUserTasks (boolean)
  - viewWorkflowTasks (boolean)
  - workflowTypes (string, choicelist[workflow]) multiple nofulltext
+
+[jnt:createTaskForm] > jnt:content, mix:title, jmix:formContent, jmix:bindedComponent, jmix:studioOnly
+ - useDescription (boolean)
+ - useAssignee (boolean)
+ - usePriority (boolean)
+ - useDueDate (boolean)
+ - taskType (string)
+
+[jnt:taskList] > jnt:content, mix:title, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly, jmix:list
+ - filterOnTypes (string)
+
+[jnt:taskPlanning] > jnt:content, mix:title, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly
+// - filterOnCurrentUser (boolean)
+// - filterOnTypes (string)
+// - filterOnPriority (string,choicelist) multiple < 'very_low', 'low', 'medium', 'high', 'very_high'
+// - filterOnStates (string,choicelist) multiple < 'active', 'finished', 'suspended', 'cancelled'

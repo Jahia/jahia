@@ -28,6 +28,13 @@
 <template:addResources type="javascript" resources="timepicker.js"/>
 <template:addResources type="css" resources="timepicker.css"/>
 <c:if test="${currentResource.workspace eq 'live'}">
+    <form name="myform" method="post">
+        <input type="hidden" name="jcrNodeType" value="jnt:task">
+        <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>">
+        <input type="hidden" name="jcrNewNodeOutputFormat" value="<c:url value='${renderContext.mainResource.template}.html'/>">
+        <input type="hidden" name="state">
+    </form>
+
     <div id="currentUserTasks${currentNode.identifier}">
         <script type="text/javascript">
             $('#currentUserTasks${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>');
@@ -42,12 +49,14 @@
         <jcr:node var="user" path="${renderContext.user.localPath}"/>
     </c:if>
 
-    <form name="myform" method="post">
-        <input type="hidden" name="jcrNodeType" value="jnt:task">
-        <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${currentNode.path}.html${ps}'/>">
-        <input type="hidden" name="state">
-    </form>
-
+    <c:if test="${not renderContext.ajaxRequest}">
+        <form name="myform" method="post">
+            <input type="hidden" name="jcrNodeType" value="jnt:task">
+            <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>">
+            <input type="hidden" name="jcrNewNodeOutputFormat" value="<c:url value='${renderContext.mainResource.template}.html'/>">
+            <input type="hidden" name="state">
+        </form>
+    </c:if>
 
     <script type="text/javascript">
         function send(task, state) {
@@ -84,15 +93,13 @@
                 <c:set var="nodes" value="${tasks.nodes}"/>
                     <%--<c:set value="${jcr:getNodes(currentNode,'jnt:task')}" var="tasks"/>--%>
                 <c:if test="${currentNode.properties['viewUserTasks'].boolean}">
-                    <c:forEach items="${nodes}" var="task"
-                               begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
+                    <c:forEach items="${nodes}" var="task" varStatus="status">
                         <tr class="${status.count % 2 == 0 ? 'odd' : 'even'}">
                             <td class="center" headers="Type"><img alt=""
                                                                    src="<c:url value='${url.currentModule}/images/flag_16.png'/>" height="16"
                                                                    width="16"/>
                             </td>
-                            <td headers="Title"><a
-                                    href="<c:url value='${url.base}${task.path}.html'/>">${fn:escapeXml(task.propertiesAsString['jcr:title'])}</a></td>
+                            <td headers="Title">${fn:escapeXml(task.propertiesAsString['jcr:title'])}</td>
                             <td class="center" headers="State">
                                 <c:choose>
                                     <c:when test="${task.propertiesAsString.state == 'active'}">

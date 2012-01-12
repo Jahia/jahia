@@ -3,7 +3,7 @@ Content History configuration
  By default, content history is kept for a year, and a job is executed every year to purge the content that is older
  than a year. This document explains how to modify this default configuration to fit your needs.
 
- The following section in the <<<WEB-INF/etc/spring/applicationcontext-scheduler.xml>>> contains the configuration for the frequency of 
+ The following section in the <<<WEB-INF/etc/spring/applicationcontext-scheduler-jobs.xml>>> contains the configuration for the frequency of
  execution of the script that will purge the content history :
 
 +-------------------------------------

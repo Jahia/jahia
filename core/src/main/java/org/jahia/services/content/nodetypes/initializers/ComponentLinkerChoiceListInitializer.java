@@ -74,20 +74,20 @@ public class ComponentLinkerChoiceListInitializer implements ChoiceListInitializ
         }
         try {
             if (nodeWrapper.hasProperty(param)) {
-                JCRNodeWrapper bindedNode = (JCRNodeWrapper) nodeWrapper.getProperty(param).getNode();
-                if (bindedNode.isNodeType("jnt:contentList")  || bindedNode.isNodeType("jnt:absoluteArea") || bindedNode.isNodeType("jnt:levelAbsoluteArea") || bindedNode.isNodeType("jnt:area")) {
-                    if (bindedNode.hasProperty("j:allowedTypes") && bindedNode.isNodeType("jmix:listRestrictions")) {
-                        final Value[] values1 = bindedNode.getProperty("j:allowedTypes").getValues();
+                JCRNodeWrapper boundNode = (JCRNodeWrapper) nodeWrapper.getProperty(param).getNode();
+                if (boundNode.isNodeType("jnt:contentList")  || boundNode.isNodeType("jnt:absoluteArea") || boundNode.isNodeType("jnt:levelAbsoluteArea") || boundNode.isNodeType("jnt:area")) {
+                    if (boundNode.hasProperty("j:allowedTypes") && boundNode.isNodeType("jmix:listRestrictions")) {
+                        final Value[] values1 = boundNode.getProperty("j:allowedTypes").getValues();
                         propertyDefs = getCommonChildNodeDefinitions(values1, true, true,
                                                                      new LinkedHashSet<String>());
-                    } else if (bindedNode.hasNodes()) {
+                    } else if (boundNode.hasNodes()) {
                         propertyDefs = SortableFieldnamesChoiceListInitializerImpl.getCommonChildNodeDefinitions(
-                                bindedNode, true, true, new LinkedHashSet<String>()).getPropertyDefinitions();
+                                boundNode, true, true, new LinkedHashSet<String>()).getPropertyDefinitions();
                     } else {
                         return Collections.emptyList();
                     }
                 } else {
-                    propertyDefs = bindedNode.getPrimaryNodeType().getPropertyDefinitions();
+                    propertyDefs = boundNode.getPrimaryNodeType().getPropertyDefinitions();
                 }
             } else {
                 return Collections.emptyList();

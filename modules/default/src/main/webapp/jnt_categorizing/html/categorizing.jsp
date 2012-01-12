@@ -15,17 +15,17 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="pagecategorizing.css"/>
-<c:set var="bindedComponent"
+<c:set var="boundComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<c:if test="${not empty bindedComponent}">
-    <c:set var="nodeLocked" value="${jcr:isLockedAndCannotBeEdited(bindedComponent)}"/>
+<c:if test="${not empty boundComponent}">
+    <c:set var="nodeLocked" value="${jcr:isLockedAndCannotBeEdited(boundComponent)}"/>
     <div class="categorythispage">
-        <jcr:nodeProperty node="${bindedComponent}" name="j:defaultCategory" var="assignedCategories"/>
+        <jcr:nodeProperty node="${boundComponent}" name="j:defaultCategory" var="assignedCategories"/>
         <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ' ,')}"/>
         <c:if test="${not nodeLocked}">
-        <c:url var="postUrl" value="${url.base}${bindedComponent.path}"/>
+        <c:url var="postUrl" value="${url.base}${boundComponent.path}"/>
         <script type="text/javascript">
-            var uuidCategories = "${bindedComponent.identifier}";
+            var uuidCategories = "${boundComponent.identifier}";
             var uuids = new Array();
             <c:forEach items="${assignedCategories}" var="category" varStatus="status">
             <c:if test="${not empty category.node}">
@@ -69,7 +69,7 @@
         </c:forEach>
         <div class="categorized">
             <span><fmt:message key="label.categories"/>:</span>
-            <span id="jahia-categories-${bindedComponent.identifier}">
+            <span id="jahia-categories-${boundComponent.identifier}">
                 <c:choose>
                     <c:when test="${not empty filteredCategories}">
                         <c:forEach items="${filteredCategories}" var="category" varStatus="status">
@@ -83,7 +83,7 @@
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-                        <span class="nocategorizeditem${bindedComponent.identifier}"><fmt:message
+                        <span class="nocategorizeditem${boundComponent.identifier}"><fmt:message
                                 key="label.categories.noCategory"/></span>
                     </c:otherwise>
                 </c:choose>

@@ -123,13 +123,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             renderContext.getRequest().setAttribute("servedFromCache", servedFromCache);
         }
         final Script script = (Script) renderContext.getRequest().getAttribute("script");
-        boolean isBinded = resource.getNode().isNodeType("jmix:bindedComponent");
+        boolean isBound = resource.getNode().isNodeType("jmix:bindedComponent");
         if (script != null) {
             Properties scriptProperties = script.getView().getProperties();
             Properties defaultScriptProperties = script.getView().getDefaultProperties();
             chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
                     scriptProperties.getProperty("cache.perUser")!=null?scriptProperties.getProperty("cache.perUser"):defaultScriptProperties.getProperty("cache.perUser", "false")));
-            if(isBinded) {
+            if(isBound) {
                 chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.TRUE);
             } else {
                 chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
@@ -244,7 +244,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
-        boolean isBinded = resource.getNode().isNodeType("jmix:bindedComponent");
+        boolean isBound = resource.getNode().isNodeType("jmix:bindedComponent");
         final Script script = (Script) renderContext.getRequest().getAttribute("script");
         Properties scriptProperties = null;
         Properties defaultScriptProperties = null;
@@ -253,7 +253,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             defaultScriptProperties = script.getView().getDefaultProperties();
             chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
                     scriptProperties.getProperty("cache.perUser")!=null?scriptProperties.getProperty("cache.perUser"):defaultScriptProperties.getProperty("cache.perUser", "false")));
-            if(isBinded) {
+            if(isBound) {
                 chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.TRUE);
             } else {
                 chain.pushAttribute(renderContext.getRequest(), "cache.mainResource",

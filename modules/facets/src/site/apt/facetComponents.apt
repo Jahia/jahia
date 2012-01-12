@@ -66,7 +66,7 @@ Facet module and components
 
 ** Drill-down urls
 
-  For applying facet values as filters, we are using a query parameter named "N-<bindedcomponent.name>" and we are encoding the value of the parameter as for query
+  For applying facet values as filters, we are using a query parameter named "N-<boundcomponent.name>" and we are encoding the value of the parameter as for query
   facets the parameter is a Lucene query string. For some customers it could be a security hole if end-users would see the Lucene query and try to modify it, in order to 
   get access to other data. If you would like to have shorter URLs, you could also implement a mapping of certain keys to facet values or queries on your own.    
 

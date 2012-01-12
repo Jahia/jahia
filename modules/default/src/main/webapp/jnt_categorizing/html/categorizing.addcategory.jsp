@@ -15,9 +15,9 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
-<c:set var="bindedComponent"
+<c:set var="boundComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<c:if test="${not empty bindedComponent && !jcr:isLockedAndCannotBeEdited(bindedComponent)}">
+<c:if test="${not empty boundComponent && !jcr:isLockedAndCannotBeEdited(boundComponent)}">
     <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ' ,')}"/>
     <template:addResources type="javascript" resources="jquery.min.js"/>
     <template:addResources type="css" resources="jquery.autocomplete.css"/>
@@ -25,8 +25,8 @@
     <template:addResources type="javascript" resources="jquery.autocomplete.js"/>
     <template:addResources type="javascript" resources="jquery.bgiframe.min.js"/>
     <template:addResources type="javascript" resources="thickbox-compressed.js"/>
-    <jcr:nodeProperty node="${bindedComponent}" name="j:defaultCategory" var="assignedCategories"/>
-    <c:url var="postUrl" value="${url.base}${bindedComponent.path}"/>
+    <jcr:nodeProperty node="${boundComponent}" name="j:defaultCategory" var="assignedCategories"/>
+    <c:url var="postUrl" value="${url.base}${boundComponent.path}"/>
     <script type="text/javascript">
 
         function addCategory(uuid, separator) {
@@ -75,7 +75,7 @@
                              nodeTypes="jnt:category" selectableNodeTypes="jnt:category" displayIncludeChildren="false"
                              root="${jcr:getSystemSitePath()}/categories" label="${categoryLabel}" displayFieldId="category" onSelect="function(uuid, path, title) {$('#categorytoadd').val(uuid);$('#category').val(title);$('#categorySubmit').show();return false;}"/>
         <input type="submit" title="<fmt:message key='add'/>" value="<fmt:message key='add'/>" class="button"
-               onclick="addCategory('${bindedComponent.identifier}', '${separator}')" id="categorySubmit" style="display:none;">
+               onclick="addCategory('${boundComponent.identifier}', '${separator}')" id="categorySubmit" style="display:none;">
     </c:if>
 </c:if>
 

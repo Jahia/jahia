@@ -31,13 +31,13 @@
         });
     </script>
 </template:addResources>
-<c:set var="bindedComponent"
+<c:set var="boundComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<c:if test="${not empty bindedComponent}">
+<c:if test="${not empty boundComponent}">
     <a name="addComments"></a>
 
     <template:tokenizedForm>
-        <form action="<c:url value='${url.base}${bindedComponent.path}.addComment.do'/>" method="post" id="newCommentForm">
+        <form action="<c:url value='${url.base}${boundComponent.path}.addComment.do'/>" method="post" id="newCommentForm">
             <input type="hidden" name="jcrNodeType" value="jnt:post"/>
             <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
             <input type="hidden" name="jcrNewNodeOutputFormat" value="html"/>
@@ -61,9 +61,9 @@
                     </p>
 
                     <p class="field">
-                        <label class="left" for="jahia-comment-${bindedComponent.identifier}"><fmt:message
+                        <label class="left" for="jahia-comment-${boundComponent.identifier}"><fmt:message
                                 key="comment.body"/></label>
-                        <textarea rows="7" cols="35" id="jahia-comment-${bindedComponent.identifier}"
+                        <textarea rows="7" cols="35" id="jahia-comment-${boundComponent.identifier}"
                                   name="content"
                                   tabindex="2"><c:if
                                 test="${not empty sessionScope.formDatas['content']}">${fn:escapeXml(sessionScope.formDatas['content'][0])}</c:if></textarea>

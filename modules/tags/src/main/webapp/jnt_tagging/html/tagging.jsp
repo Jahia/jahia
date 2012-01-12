@@ -14,8 +14,8 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
-<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<c:if test="${not empty bindedComponent && not jcr:isLockedAndCannotBeEdited(bindedComponent)}">
+<c:set var="boundComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
+<c:if test="${not empty boundComponent && not jcr:isLockedAndCannotBeEdited(boundComponent)}">
     <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ', ')}"/>
     <template:addResources type="javascript" resources="jquery.min.js"/>
     <template:addResources type="css" resources="jquery.autocomplete.css"/>
@@ -92,13 +92,13 @@
 
     </script>
     <c:if test="${renderContext.user.name != 'guest'}">
-        <form action="<c:url value='${url.base}${bindedComponent.path}'/>" method="post">
+        <form action="<c:url value='${url.base}${boundComponent.path}'/>" method="post">
             <label><fmt:message key="label.add.tags"/></label>
             <input type="hidden" name="jcrMethodToCall" value="put"/>
             <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
             <input type="text" name="j:newTag" class="newTagInput" value=""/>
             <input type="submit" title="<fmt:message key='add'/>" value="<fmt:message key='add'/>" class="button"
-                   onclick="addNewTag(this.form, '${bindedComponent.identifier}', '${separator}'); return false;"/>
+                   onclick="addNewTag(this.form, '${boundComponent.identifier}', '${separator}'); return false;"/>
         </form>
     </c:if>
 </c:if>

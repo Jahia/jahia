@@ -90,4 +90,4 @@ reader.parse(new InputSource(new FileInputStream(file)))
 return newValues
 +--------------------------------------
 
-    Each script can also access to the list of values from its predecessors as it is binded to the <<<values>>> variable.  
+    Each script can also access to the list of values from its predecessors as it is bound to the <<<values>>> variable.  

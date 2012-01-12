@@ -65,12 +65,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BindedModule extends SimpleModule {
+public class BoundModule extends SimpleModule {
     private String property = "j:bindedComponent";
     private String headerText ;
     private Boolean linked = null;
 
-    public BindedModule(String id, String path, Element divElement, final MainModule mainModule) {
+    public BoundModule(String id, String path, Element divElement, final MainModule mainModule) {
         super(id, path, divElement, mainModule, false);
 
         final HorizontalPanel leftWidgetPanel = new HorizontalPanel();

@@ -297,7 +297,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
     }
 
     @Override
-    public void sendMessageWithTemplate(String template, Map<String, Object> bindedObjects, String toMail,
+    public void sendMessageWithTemplate(String template, Map<String, Object> boundObjects, String toMail,
             String fromMail, String ccList, String bcclist, Locale locale, String templatePackageName)
             throws RepositoryException, ScriptException {
         // Resolve template :
@@ -317,7 +317,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
             }
             final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
             bindings.put("bundle", resourceBundle);
-            bindings.putAll(bindedObjects);
+            bindings.putAll(boundObjects);
             Reader scriptContent = null;
             // Subject
             String subject;

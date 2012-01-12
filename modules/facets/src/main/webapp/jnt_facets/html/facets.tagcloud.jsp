@@ -18,11 +18,11 @@
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="facets.css"/>
 <template:addResources type="css" resources="tags.css"/>
-<c:set var="bindedComponent"
+<c:set var="boundComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<c:if test="${not empty bindedComponent}">
-    <c:set var="facetParamVarName" value="N-${bindedComponent.name}"/>
-    <c:set var="activeFacetMapVarName" value="afm-${bindedComponent.name}"/>
+<c:if test="${not empty boundComponent}">
+    <c:set var="facetParamVarName" value="N-${boundComponent.name}"/>
+    <c:set var="activeFacetMapVarName" value="afm-${boundComponent.name}"/>
     <c:if test="${not empty param[facetParamVarName] and empty activeFacetsVars[facetParamVarName]}">
         <c:if test="${activeFacetsVars == null}">
             <jsp:useBean id="activeFacetsVars" class="java.util.HashMap" scope="request"/>
@@ -39,7 +39,7 @@
 
     <query:definition var="listQuery" scope="request">
         <query:selector nodeTypeName="jnt:content"/>
-        <query:childNode path="${bindedComponent.path}"/>
+        <query:childNode path="${boundComponent.path}"/>
 
         <c:forEach items="${jcr:getNodes(currentNode, 'jnt:facet')}" var="facet">
             <jcr:nodeProperty node="${facet}" name="facet" var="currentFacetGroup"/>

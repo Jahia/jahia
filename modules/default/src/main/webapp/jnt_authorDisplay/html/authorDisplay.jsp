@@ -12,9 +12,9 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<c:set var="bindedComponent"
+<c:set var="boundComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<jcr:nodeProperty node="${bindedComponent}" name="j:defaultCategory" var="assignedCategories"/>
+<jcr:nodeProperty node="${boundComponent}" name="j:defaultCategory" var="assignedCategories"/>
 <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ', ')}"/>
 <jsp:useBean id="filteredCategories" class="java.util.LinkedHashMap"/>
 <c:set var="props" value="${currentNode.properties}"/>
@@ -30,7 +30,7 @@
         </div>
     </c:when>
     <c:otherwise>
-        <c:set var="user" value="${functions:lookupUser(bindedComponent.properties['jcr:createdBy'].string).localPath}"/>
+        <c:set var="user" value="${functions:lookupUser(boundComponent.properties['jcr:createdBy'].string).localPath}"/>
         <template:addCacheDependency path="${user}"/>
         <template:module path="${user}" view="${mainTemplate}">
             <template:param name="displayFirstName" value="${currentNode.properties['j:firstName'].string}"/>

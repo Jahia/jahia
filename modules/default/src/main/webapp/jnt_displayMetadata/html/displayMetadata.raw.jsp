@@ -12,30 +12,30 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<c:set var="bindedComponent"
+<c:set var="boundComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<jcr:nodeProperty node="${bindedComponent}" name="j:defaultCategory" var="assignedCategories"/>
+<jcr:nodeProperty node="${boundComponent}" name="j:defaultCategory" var="assignedCategories"/>
 <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ', ')}"/>
 <jsp:useBean id="filteredCategories" class="java.util.LinkedHashMap"/>
 <c:set var="props" value="${currentNode.properties}"/>
 <c:if test="${props.creationdate.boolean}">
-    ${bindedComponent.properties['jcr:created'].time}
+    ${boundComponent.properties['jcr:created'].time}
 </c:if>
 <c:if test="${props.creator.boolean}">
-    ${bindedComponent.properties['jcr:createdBy'].string}
+    ${boundComponent.properties['jcr:createdBy'].string}
 </c:if>
 <c:if test="${props.lastmodification.boolean}">
-    ${bindedComponent.properties['jcr:lastModified'].time}
+    ${boundComponent.properties['jcr:lastModified'].time}
 </c:if>
 <c:if test="${props.lastcontributor.boolean}">
-    ${bindedComponent.properties['jcr:lastModifiedBy'].string}
+    ${boundComponent.properties['jcr:lastModifiedBy'].string}
 </c:if>
 <c:if test="${props.description.boolean}">
-    ${bindedComponent.properties['jcr:description'].string}
+    ${boundComponent.properties['jcr:description'].string}
 </c:if>
 <c:if test="${props.keywords.boolean}">
-    <c:if test="${not empty bindedComponent.properties['j:keywords']}">
-        <c:forEach items="${bindedComponent.properties['j:keywords']}" var="keyword">
+    <c:if test="${not empty boundComponent.properties['j:keywords']}">
+        <c:forEach items="${boundComponent.properties['j:keywords']}" var="keyword">
             ${keyword.string}
         </c:forEach>
     </c:if>

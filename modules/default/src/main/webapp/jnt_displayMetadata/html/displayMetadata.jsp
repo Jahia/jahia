@@ -19,43 +19,43 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="contentinfo.css"/>
 
-<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
+<c:set var="boundComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <div class="contentinfos">
     <h3><fmt:message key="contentInformation"/></h3>
-    <jcr:nodeProperty node="${bindedComponent}" name="j:defaultCategory" var="assignedCategories"/>
+    <jcr:nodeProperty node="${boundComponent}" name="j:defaultCategory" var="assignedCategories"/>
     <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ', ')}"/>
     <jsp:useBean id="filteredCategories" class="java.util.LinkedHashMap"/>
     <c:set var="props" value="${currentNode.properties}"/>
         <dl>
             <c:if test="${props.creationdate.boolean}">
                     <dt><fmt:message key="mix_created.jcr_created"/></dt>
-                    <dd><fmt:formatDate value="${bindedComponent.properties['jcr:created'].time}"
+                    <dd><fmt:formatDate value="${boundComponent.properties['jcr:created'].time}"
                                         pattern="dd, MMMM yyyy HH:mm"/></dd>
             </c:if>
             <c:if test="${props.creator.boolean}">
                     <dt><fmt:message key="mix_created.jcr_createdBy"/></dt>
-                    <dd>${bindedComponent.properties['jcr:createdBy'].string}</dd>
+                    <dd>${boundComponent.properties['jcr:createdBy'].string}</dd>
             </c:if>
             <c:if test="${props.lastmodification.boolean}">
                     <dt><fmt:message key="mix_lastModified.jcr_lastModified"/></dt>
-                    <dd><fmt:formatDate value="${bindedComponent.properties['jcr:lastModified'].time}"
+                    <dd><fmt:formatDate value="${boundComponent.properties['jcr:lastModified'].time}"
                                         pattern="dd, MMMM yyyy HH:mm"/></dd>
             </c:if>
             <c:if test="${props.lastcontributor.boolean}">
                     <dt><fmt:message key="mix_lastModified.jcr_lastModifiedBy"/></dt>
-                    <dd>${bindedComponent.properties['jcr:lastModifiedBy'].string}</dd>
+                    <dd>${boundComponent.properties['jcr:lastModifiedBy'].string}</dd>
             </c:if>
             <c:if test="${props.description.boolean}">
                     <dt><fmt:message key="mix_title.jcr_description"/></dt>
-                    <c:if test="${not empty bindedComponent.properties['jcr:description']}">
-                            <dd>${bindedComponent.properties['jcr:description'].string}  </dd>
+                    <c:if test="${not empty boundComponent.properties['jcr:description']}">
+                            <dd>${boundComponent.properties['jcr:description'].string}  </dd>
                     </c:if>
             </c:if>
             <c:if test="${props.keywords.boolean}">
                     <dt><fmt:message key="jmix_keywords.j_keywords"/></dt>
-                    <c:if test="${not empty bindedComponent.properties['j:keywords']}">
+                    <c:if test="${not empty boundComponent.properties['j:keywords']}">
                         <dd>
-                        <c:forEach items="${bindedComponent.properties['j:keywords']}" var="keyword">
+                        <c:forEach items="${boundComponent.properties['j:keywords']}" var="keyword">
                                 ${keyword.string}
                             </c:forEach>
                         </dd>

@@ -6,9 +6,9 @@
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<c:set var="bindedComponent"
+<c:set var="boundComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 
 <div class="${currentNode.properties['divClass'].string}"><!--start preferences-->
-    <a title="${fn:escapeXml(currentNode.displayableName)}" class="${currentNode.properties['aClass'].string}" href="<c:url value='${url.base}${bindedComponent.path}.${currentNode.properties["targetTemplate"].string}.html'/>">${fn:escapeXml(currentNode.displayableName)}</a>
+    <a title="${fn:escapeXml(currentNode.displayableName)}" class="${currentNode.properties['aClass'].string}" href="<c:url value='${url.base}${boundComponent.path}.${currentNode.properties["targetTemplate"].string}.html'/>">${fn:escapeXml(currentNode.displayableName)}</a>
 </div>

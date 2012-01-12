@@ -192,7 +192,7 @@ public abstract class MailService extends JahiaService {
         throw new UnsupportedOperationException("Method not implemented");
     }
 
-    public abstract void sendMessageWithTemplate(String template, Map<String, Object> bindedObjects, String toMail,
+    public abstract void sendMessageWithTemplate(String template, Map<String, Object> boundObjects, String toMail,
             String fromMail, String ccList, String bcclist, Locale locale, String templatePackageName)
             throws RepositoryException, ScriptException;
 }

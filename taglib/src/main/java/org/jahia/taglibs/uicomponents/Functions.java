@@ -64,62 +64,62 @@ public class Functions {
      */
     public static JCRNodeWrapper getBindedComponent(JCRNodeWrapper currentNode, RenderContext renderContext,
                                                     String property) {
-        JCRNodeWrapper bindedComponentNode = null;
+        JCRNodeWrapper boundComponentNode = null;
         try {
             if (currentNode.hasProperty(property)) {
-                JCRPropertyWrapper bindedComponentProp = currentNode.getProperty(property);
-                if (bindedComponentProp != null) {
-                    bindedComponentNode = (JCRNodeWrapper) bindedComponentProp.getNode();
+                JCRPropertyWrapper boundComponentProp = currentNode.getProperty(property);
+                if (boundComponentProp != null) {
+                    boundComponentNode = (JCRNodeWrapper) boundComponentProp.getNode();
                 }
-                if (bindedComponentNode != null) {
-                    if (bindedComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY) ||
-                        bindedComponentNode.isNodeType("jnt:template")) {
-                        bindedComponentNode = renderContext.getMainResource().getNode();
-                    } else if (bindedComponentNode.isNodeType(Constants.JAHIANT_AREA)) {
-                        String areaName = bindedComponentNode.getName();
-                        bindedComponentNode = renderContext.getMainResource().getNode();
-                        if (bindedComponentNode.hasNode(areaName)) {
-                            bindedComponentNode = bindedComponentNode.getNode(areaName);
+                if (boundComponentNode != null) {
+                    if (boundComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY) ||
+                        boundComponentNode.isNodeType("jnt:template")) {
+                        boundComponentNode = renderContext.getMainResource().getNode();
+                    } else if (boundComponentNode.isNodeType(Constants.JAHIANT_AREA)) {
+                        String areaName = boundComponentNode.getName();
+                        boundComponentNode = renderContext.getMainResource().getNode();
+                        if (boundComponentNode.hasNode(areaName)) {
+                            boundComponentNode = boundComponentNode.getNode(areaName);
                         } else {
-                            bindedComponentNode = null;
+                            boundComponentNode = null;
                         }
                     }
                 }
             } else {
-                bindedComponentNode = renderContext.getMainResource().getNode();
+                boundComponentNode = renderContext.getMainResource().getNode();
             }
-            if (bindedComponentNode != null && !bindedComponentNode.getPath().equals(
+            if (boundComponentNode != null && !boundComponentNode.getPath().equals(
                     renderContext.getMainResource().getNode().getPath())) {
-                renderContext.getResourcesStack().peek().getDependencies().add(bindedComponentNode.getCanonicalPath());
+                renderContext.getResourcesStack().peek().getDependencies().add(boundComponentNode.getCanonicalPath());
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
-        return (JCRNodeWrapper) bindedComponentNode;
+        return (JCRNodeWrapper) boundComponentNode;
     }
 
     public static String getBindedComponentPath(JCRNodeWrapper currentNode, RenderContext renderContext,
                                                 String property) {
-        Node bindedComponentNode = null;
+        Node boundComponentNode = null;
         try {
             if (currentNode.hasProperty(property)) {
-                Property bindedComponentProp = currentNode.getProperty(property);
-                if (bindedComponentProp != null) {
-                    bindedComponentNode = bindedComponentProp.getNode();
+                Property boundComponentProp = currentNode.getProperty(property);
+                if (boundComponentProp != null) {
+                    boundComponentNode = boundComponentProp.getNode();
                 }
-                if (bindedComponentNode != null) {
-                    if (bindedComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY) ||
-                        bindedComponentNode.isNodeType("jnt:template")) {
-                        bindedComponentNode = renderContext.getMainResource().getNode();
-                    } else if (bindedComponentNode.isNodeType(Constants.JAHIANT_AREA)) {
-                        String areaName = bindedComponentNode.getName();
-                        bindedComponentNode = renderContext.getMainResource().getNode();
-                        return bindedComponentNode.getPath() + "/" + areaName;
+                if (boundComponentNode != null) {
+                    if (boundComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY) ||
+                        boundComponentNode.isNodeType("jnt:template")) {
+                        boundComponentNode = renderContext.getMainResource().getNode();
+                    } else if (boundComponentNode.isNodeType(Constants.JAHIANT_AREA)) {
+                        String areaName = boundComponentNode.getName();
+                        boundComponentNode = renderContext.getMainResource().getNode();
+                        return boundComponentNode.getPath() + "/" + areaName;
                     }
                 }
             }
-            if (bindedComponentNode != null) {
-                return bindedComponentNode.getPath();
+            if (boundComponentNode != null) {
+                return boundComponentNode.getPath();
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

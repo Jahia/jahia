@@ -17,10 +17,10 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="facets.css"/>
-<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<c:if test="${not empty bindedComponent}">
-    <c:set var="facetParamVarName" value="N-${bindedComponent.name}"/>
-    <c:set var="activeFacetMapVarName" value="afm-${bindedComponent.name}"/>
+<c:set var="boundComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
+<c:if test="${not empty boundComponent}">
+    <c:set var="facetParamVarName" value="N-${boundComponent.name}"/>
+    <c:set var="activeFacetMapVarName" value="afm-${boundComponent.name}"/>
     <c:if test="${not empty param[facetParamVarName] and empty activeFacetsVars[facetParamVarName]}">
         <c:if test="${activeFacetsVars == null}">
            <jsp:useBean id="activeFacetsVars" class="java.util.HashMap" scope="request"/>
@@ -37,7 +37,7 @@
 
     <query:definition var="listQuery" scope="request">
         <query:selector nodeTypeName="nt:base"/>
-        <c:set var="descendantNode" value="${fn:substringAfter(bindedComponent.path,'/sites/')}"/>
+        <c:set var="descendantNode" value="${fn:substringAfter(boundComponent.path,'/sites/')}"/>
         <c:set var="descendantNode" value="${fn:substringAfter(descendantNode,'/')}"/>
         <query:descendantNode path="/sites/${renderContext.site.name}/${descendantNode}"/>
 

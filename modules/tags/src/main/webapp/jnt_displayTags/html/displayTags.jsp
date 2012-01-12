@@ -16,16 +16,16 @@
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="pagetagging.css"/>
 <template:addResources type="css" resources="tagged.css"/>
-<c:set var="bindedComponent"
+<c:set var="boundComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<c:if test="${not empty bindedComponent}">
-    <c:set var="nodeLocked" value="${jcr:isLockedAndCannotBeEdited(bindedComponent)}"/>
-    <div id="tagThisPage${bindedComponent.identifier}" class="tagthispage">
+<c:if test="${not empty boundComponent}">
+    <c:set var="nodeLocked" value="${jcr:isLockedAndCannotBeEdited(boundComponent)}"/>
+    <div id="tagThisPage${boundComponent.identifier}" class="tagthispage">
 
-        <jcr:nodeProperty node="${bindedComponent}" name="j:tags" var="assignedTags"/>
+        <jcr:nodeProperty node="${boundComponent}" name="j:tags" var="assignedTags"/>
         <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ', ')}"/>
         <c:if test="${not nodeLocked}">
-        <c:url var="postUrl" value="${url.base}${bindedComponent.path}"/>
+        <c:url var="postUrl" value="${url.base}${boundComponent.path}"/>
         <script type="text/javascript">
             function deleteTag(tag) {
                 $.post("${postUrl}.removeTag.do", {"tag":tag}, function(result) {
@@ -33,8 +33,8 @@
 				tag = tag.replace(regExp, "-");
                     $("#tag-" + tag).hide();
                     if(result.size == "0"){
-                        var spanNotYetTag = $('<span><fmt:message key="label.tags.notag"/></span>').attr('class', 'notaggeditem${bindedComponent.identifier}');
-                        $("#jahia-tags-${bindedComponent.identifier}").append(spanNotYetTag)
+                        var spanNotYetTag = $('<span><fmt:message key="label.tags.notag"/></span>').attr('class', 'notaggeditem${boundComponent.identifier}');
+                        $("#jahia-tags-${boundComponent.identifier}").append(spanNotYetTag)
                     }
                 }, "json");
                 return false;
@@ -49,7 +49,7 @@
         </c:forEach>
         <div class="tagged">
             <span><fmt:message key="label.tags"/>:</span>
-            <span id="jahia-tags-${bindedComponent.identifier}">
+            <span id="jahia-tags-${boundComponent.identifier}">
                 <c:choose>
                     <c:when test="${not empty filteredTags}">
                         <c:forEach items="${filteredTags}" var="tag" varStatus="status">
@@ -63,7 +63,7 @@
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-                        <span class="notaggeditem${bindedComponent.identifier}"><fmt:message
+                        <span class="notaggeditem${boundComponent.identifier}"><fmt:message
                                 key="label.tags.notag"/></span>
                     </c:otherwise>
                 </c:choose>

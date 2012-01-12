@@ -76,7 +76,7 @@ Calling an Action from your forms
 </template:addResources>
 
 <template:tokenizedForm>
-    <form action="<c:url value='${url.base}${bindedComponent.path}.addComment.do'/>" method="post" id="newCommentForm">
+    <form action="<c:url value='${url.base}${boundComponent.path}.addComment.do'/>" method="post" id="newCommentForm">
 
         <input type="hidden" name="jcrNodeType" value="jnt:post"/>
         <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
@@ -102,9 +102,9 @@ Calling an Action from your forms
                     </p>
 
                     <p class="field">
-                        <label class="left" for="jahia-comment-${bindedComponent.identifier}"><fmt:message
+                        <label class="left" for="jahia-comment-${boundComponent.identifier}"><fmt:message
                                 key="comment.body"/></label>
-                        <textarea rows="7" cols="35" id="jahia-comment-${bindedComponent.identifier}"
+                        <textarea rows="7" cols="35" id="jahia-comment-${boundComponent.identifier}"
                                   name="content"
                                   tabindex="2"><c:if
                                 test="${not empty sessionScope.formDatas['content']}">${fn:escapeXml(sessionScope.formDatas['content'][0])}</c:if></textarea>
@@ -135,7 +135,7 @@ Calling an Action from your forms
  Here we see that for calling the Action we use simply the Action name in the url of the form action.
 
 -------------------------------------
-<form action="<c:url value='${url.base}${bindedComponent.path}.addComment.do'/>" method="post" id="newCommentForm">
+<form action="<c:url value='${url.base}${boundComponent.path}.addComment.do'/>" method="post" id="newCommentForm">
 -------------------------------------
 
 Form parameters and file uploading

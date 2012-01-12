@@ -13,12 +13,12 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<c:set var="bindedComponent"
+<c:set var="boundComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<c:if test="${not empty bindedComponent and jcr:isNodeType(bindedComponent, 'jmix:list')}">
-    <template:addCacheDependency node="${bindedComponent}"/>
-    <template:option node="${bindedComponent}" nodetype="${bindedComponent.primaryNodeTypeName},jmix:list" view="hidden.header"/>
-    <c:set var="pagesizeid" value="pagesize${bindedComponent.identifier}"/>
+<c:if test="${not empty boundComponent and jcr:isNodeType(boundComponent, 'jmix:list')}">
+    <template:addCacheDependency node="${boundComponent}"/>
+    <template:option node="${boundComponent}" nodetype="${boundComponent.primaryNodeTypeName},jmix:list" view="hidden.header"/>
+    <c:set var="pagesizeid" value="pagesize${boundComponent.identifier}"/>
     <c:choose>
         <c:when test="${not empty param[pagesizeid]}">
             <c:set var="pageSize" value="${param[pagesizeid]}"/>
@@ -30,8 +30,8 @@
             <c:set var="pageSize" value="${currentNode.properties['pageSize'].long}"/>
         </c:otherwise>
     </c:choose>
-    <template:initPager totalSize="${moduleMap.listTotalSize}" pageSize="${pageSize}" id="${bindedComponent.identifier}"/>
+    <template:initPager totalSize="${moduleMap.listTotalSize}" pageSize="${pageSize}" id="${boundComponent.identifier}"/>
     <c:if test="${currentNode.properties.displayPager.boolean}">
-        <template:displayPagination id="${bindedComponent.identifier}" nbOfPages="${currentNode.properties.nbOfPages.string}" displayNumberOfItemsPerPage="${currentNode.properties.displayNbOfItemsPerPage.boolean}"/>
+        <template:displayPagination id="${boundComponent.identifier}" nbOfPages="${currentNode.properties.nbOfPages.string}" displayNumberOfItemsPerPage="${currentNode.properties.displayNbOfItemsPerPage.boolean}"/>
     </c:if>
 </c:if>

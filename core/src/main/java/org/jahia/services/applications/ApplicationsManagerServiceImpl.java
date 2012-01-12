@@ -737,7 +737,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         EntryPointInstance epInstance = null;
         try {
             epInstance = appProvider.createEntryPointInstance(entryPointDefinition);
-            // Create the new entry point instance with its acl id binded to the one of its application parent
+            // Create the new entry point instance with its acl id bound to the one of its application parent
         } catch (JahiaException je) {
             logger.error("Error while trying to retrieve entry point definitions for application " + appBean.getID(),
                     je);

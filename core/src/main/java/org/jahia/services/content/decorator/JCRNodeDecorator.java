@@ -797,4 +797,12 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     public String getCanonicalPath() {
         return node.getCanonicalPath();
     }
+    
+    public boolean equals(final Object o) {
+        return node.equals(o);    
+    }
+    
+    public int hashCode() {
+        return node.hashCode();
+    }
 }

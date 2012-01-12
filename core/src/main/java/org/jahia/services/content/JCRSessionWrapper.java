@@ -112,7 +112,7 @@ public class JCRSessionWrapper implements Session {
 
     private Map<String, JCRNodeWrapper> sessionCacheByPath = new HashMap<String, JCRNodeWrapper>();
     private Map<String, JCRNodeWrapper> sessionCacheByIdentifier = new HashMap<String, JCRNodeWrapper>();
-    private Set<JCRNodeWrapper> newNodes = new HashSet<JCRNodeWrapper>();
+    private Map<String, JCRNodeWrapper> newNodes = new HashMap<String, JCRNodeWrapper>();
 
     private Map<String, String> nsToPrefix = new HashMap<String, String>();
     private Map<String, String> prefixToNs = new HashMap<String, String>();
@@ -412,20 +412,22 @@ public class JCRSessionWrapper implements Session {
     }
 
     void registerNewNode(JCRNodeWrapper node) {
-        newNodes.add(node);
+        newNodes.put(node.getPath(), node);
     }
 
     void unregisterNewNode(JCRNodeWrapper node) {
-        newNodes.remove(node);
-        try {
-            if (node.hasNodes()) {
-                NodeIterator it = node.getNodes();
-                while (it.hasNext()) {
-                    unregisterNewNode((JCRNodeWrapper)it.next());
+        if (!newNodes.isEmpty()) {
+            newNodes.remove(node.getPath());
+            try {
+                if (node.hasNodes()) {
+                    NodeIterator it = node.getNodes();
+                    while (it.hasNext()) {
+                        unregisterNewNode((JCRNodeWrapper) it.next());
+                    }
                 }
+            } catch (RepositoryException e) {
+                logger.warn("Error unregistering new nodes", e);
             }
-        } catch (RepositoryException e) {
-            logger.warn("Error unregistering new nodes", e);
         }
     }    
     
@@ -433,7 +435,7 @@ public class JCRSessionWrapper implements Session {
             throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException,
             VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
         if (!isSystem()) {
-            for (JCRNodeWrapper node : newNodes) {
+            for (JCRNodeWrapper node : newNodes.values()) {
                 for (String s : node.getNodeTypes()) {
                     ExtendedPropertyDefinition[] propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitions();
                     for (ExtendedPropertyDefinition propDef : propDefs) {

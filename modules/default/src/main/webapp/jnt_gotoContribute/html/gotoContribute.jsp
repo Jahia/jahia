@@ -19,8 +19,8 @@
 <template:addResources type="css" resources="goto-links.css"/>
 <c:if test="${!renderContext.settings.distantPublicationServerMode
 and renderContext.mainResource.node.properties['j:originWS'].string ne 'live'
-and not jcr:isNodeType(renderContext.mainResource.node.resolveSite, 'jmix:remotelyPublished')
-and !renderContext.contributionMode }">
+and not jcr:isNodeType(renderContext.mainResource.node.resolveSite, 'jmix:remotelyPublished')}">
+    <c:if test="${not renderContext.contributionMode}">
     <img src="${url.context}/icons/contribute.png" width="16" height="16" alt=" " role="presentation"
          style="position:relative; top: 4px; margin-right:2px; ">
     <a href="<c:url value='${url.contribute}'/>">
@@ -31,5 +31,16 @@ and !renderContext.contributionMode }">
         <fmt:message key="label.contribute"/>
     </c:if>
     </a>
+    </c:if>
+    <c:if test="${renderContext.contributionMode}">
+        <img src="${url.context}/icons/contribute.png" width="16" height="16" alt=" " role="presentation"
+             style="position:relative; top: 4px; margin-right:2px; ">
+        <c:if test="${!empty currentNode.properties['jcr:title']}">
+            ${fn:escapeXml(currentNode.properties["jcr:title"].string)}
+        </c:if>
+        <c:if test="${empty currentNode.properties['jcr:title']}">
+            <fmt:message key="label.contribute"/>
+        </c:if>
+    </c:if>
 </c:if>
 

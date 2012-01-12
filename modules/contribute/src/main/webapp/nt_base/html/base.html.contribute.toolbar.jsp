@@ -68,7 +68,7 @@ function doDeleteNodes(uuids, markForDeletion) {
                 modal:true,
                 buttons:{
                     "<fmt:message key="label.delete"/>":function () {
-                        comments = $("#commentsField").attr("value");
+                        var comments = $("#commentsField").attr("value");
                         $.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.deleteNodes.do'/>", {"uuids":uuids, "markForDeletion":markForDeletion, "markForDeletionComment":comment}, function (result) {
                             reload();
                         }, "json");

@@ -220,10 +220,17 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     private boolean isNodeToSkip(JCRNodeWrapper node, SearchCriteria criteria, Set<String> languages) {
         boolean skipNode = false;
         try {
-            if (!languages.isEmpty() && !isFileSearch(criteria)
+            if (!languages.isEmpty() 
                     && (node.isFile() || node.isNodeType(Constants.NT_FOLDER))) {
-                skipNode = true;
+                // if just site-search and no file-search, then skip the node unless it is referred
+                // by a node in the wanted language - unreferenced files are skipped
+                skipNode = isSiteSearch(criteria) && !isFileSearch(criteria) ? true : skipNode;
+                
                 for (PropertyIterator it = node.getWeakReferences(); it.hasNext();) {
+                    // if site-search and file-search, then skip the node unless it is referred
+                    // by a node in the wanted language - unreferenced files are not skipped
+                    skipNode = isSiteSearch(criteria) && isFileSearch(criteria) ? true : skipNode;
+                    
                     try {
                         JCRNodeWrapper refNode = (JCRNodeWrapper) it.nextProperty().getParent();
                         if (languages.contains(refNode.getLanguage())) {
@@ -366,7 +373,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 }
             }
 
-            if (!isFileSearch(params)) {
+            if (isSiteSearch(params)) {
                 query.append("/*[@j:isHomePage='true' or fn:name() = 'files' or fn:name() = 'contents']");
             }
 
@@ -391,17 +398,28 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     private boolean isFileSearch(SearchCriteria params) {
         for (Term term : params.getTerms()) {
             if (term.getFields() != null
-                    && (term.getFields().isSiteContent() || (!term.getFields().isDescription()
-                    && !term.getFields().isFileContent() && !term.getFields().isFilename()
-                    && !term.getFields().isKeywords() && !term.getFields().isTitle()))) {
+                    && (term.getFields().isSiteContent() || (!term.getFields().isDescription() && !term.getFields().isFileContent()
+                            && !term.getFields().isFilename() && !term.getFields().isKeywords() && !term.getFields().isTitle()))
+                    && !(term.getFields().isDescription() && term.getFields().isFileContent() && term.getFields().isFilename()
+                            && term.getFields().isKeywords() && term.getFields().isTitle())) {
                 return false;
             }
         }
         return true;
     }
+    
+    private boolean isSiteSearch(SearchCriteria params) {
+        for (Term term : params.getTerms()) {
+            if (term.getFields() != null
+                    && term.getFields().isSiteContent()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private String getNodeType(SearchCriteria params) {
-        return StringUtils.isEmpty(params.getNodeType()) ? (isFileSearch(params) ? Constants.NT_HIERARCHYNODE
+        return StringUtils.isEmpty(params.getNodeType()) ? (isFileSearch(params) && !isSiteSearch(params) ? Constants.NT_HIERARCHYNODE
                 : Constants.NT_BASE)
                 : params.getNodeType();
     }
@@ -637,8 +655,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 boolean titleConstraintAdded = false;
                 if (searchFields.isSiteContent() || (!searchFields.isTags() && !searchFields.isFileContent() && !searchFields.isDescription() && !searchFields.isTitle() && !searchFields.isKeywords() && !searchFields.isFilename())) {
                     addConstraint(textSearchConstraints, "or", "jcr:contains(., " + searchExpression + ")");
-                    addConstraint(textSearchConstraints, "or", "jcr:contains(@jcr:title, " + searchExpression + ")");
-                    titleConstraintAdded = true;
+                    if (MatchType.WITHOUT_WORDS != textSearch.getMatch()) {
+                        addConstraint(textSearchConstraints, "or", "jcr:contains(@jcr:title, " + searchExpression + ")");
+                        titleConstraintAdded = true;
+                    }
                 }
                 if (searchFields.isFileContent()) {
                     addConstraint(textSearchConstraints, "or", "jcr:contains(jcr:content, " + searchExpression + ")");

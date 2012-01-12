@@ -1150,6 +1150,12 @@ public class JCRPublicationService extends JahiaService {
             NodeIterator ni = node.getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
+                
+                boolean supportsPublication = sourceSession.getProviderSession(n.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED).getBoolean();
+                if (!supportsPublication) {
+                    continue;
+                }
+
                 if (languages != null && n.isNodeType("jnt:translation")) {
                     String translationLanguage = n.getProperty("jcr:language").getString();
                     if (languages.contains(translationLanguage)) {

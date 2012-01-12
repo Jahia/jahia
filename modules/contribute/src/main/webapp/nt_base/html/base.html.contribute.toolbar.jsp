@@ -215,8 +215,13 @@ function showClipboard() {
             var showPaste = true;
             if (contributeConstraintParameters != null) {
                 for (var k = 0; k < nodetypes.length && showPaste; k++) {
-                    if (contributeConstraintParameters.indexOf(nodetypes[k]) < 0) {
-                        showPaste = false;
+                    for (var j =0; j < contributeConstraintParameters.length; j++) {
+                        if (nodetypes[k].indexOf(contributeConstraintParameters[j]) >= 0) {
+                            showPaste = true;
+                            break;
+                        } else {
+                            showPaste = false;
+                        }
                     }
                 }
                 if (showPaste) {

@@ -47,7 +47,8 @@ content in the output, otherwise it ask for rendering only the missing part.
 cache.expiration = 0
 +-------------------------------
 
- Expiration delays are expressed in seconds.
+ Expiration delays are expressed in seconds. Note that if you have an alternative view on your content, you have to specify a properties file.
+ For instance the jnt_user/html/user.welcome.propertie file in default module override the cache for the "welcome" view of the user module.
 
 * Automatic/Manual management of dependency for an element
 

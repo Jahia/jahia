@@ -28,7 +28,7 @@
 <script type="text/javascript">
     swfobject.registerObject("flashcontent${currentNode.UUID}", "${flashPlayer.string}");
 </script>
-<object id="flashcontent${currentNode.UUID}" width="${widthFlash.long}" height="${heightFlash.long}"
+<object id="flashcontent${currentNode.UUID}" width="${widthFlash.string}" height="${heightFlash.string}"
         data="${flashSource.node.url}">
 
     <c:if test="${not empty wmodeFlash.string}">
@@ -71,8 +71,8 @@
         <param name="flashvars" value="${flashvarsFlash.string}"/>
     </c:if>
     <!--[if !IE]>-->
-    <object type="application/x-shockwave-flash" data="${flashSource.node.url}" width="${widthFlash.long}"
-            height="${heightFlash.long}">
+    <object type="application/x-shockwave-flash" data="${flashSource.node.url}" width="${widthFlash.string}"
+            height="${heightFlash.string}">
         <!--<![endif]-->
         <div class="flashcontent">
             <strong><fmt:message key="label.flashplayer.info"/></strong><br/>

@@ -58,8 +58,8 @@
 
 [jnt:flash] > jnt:content, mix:title, jmix:multimediaContent
  - flashSource (weakreference, picker[type='file'])
- - width (string) analyzer='keyword' nofulltext mandatory
- - height (string) analyzer='keyword' nofulltext mandatory
+ - width (string) analyzer='keyword' nofulltext mandatory < '^\\d+[%]?$'
+ - height (string) analyzer='keyword' nofulltext mandatory < '^\\d+[%]?$'
  - flashPlayer (string) = '9.0.0' analyzer='keyword' nofulltext
  - id (string) analyzer='keyword' nofulltext
  - name (string)

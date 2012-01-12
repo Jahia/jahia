@@ -221,7 +221,7 @@ function setFileSelector(id) {
                     $("#renderingOfFile" + id).html(data);
                 });
             }
-            $(".fileSelector"+id).html(result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")]);
+            $(".fileSelector"+id).html(decodeURI(result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")]));
         }, "json");
         return(value);
     }, {

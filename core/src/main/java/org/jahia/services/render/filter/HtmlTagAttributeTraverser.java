@@ -73,12 +73,14 @@ public class HtmlTagAttributeTraverser {
          * Applies the required modifications to the specified attribute if
          * needed.
          * 
+         *
          * @param value the attribute value to be modified
          * @param context current rendering context
-         * @param resource current resource
-         * @returns the modified attribute value
+         * @param tagName
+         * @param attrName
+         * @param resource current resource  @returns the modified attribute value
          */
-        String visit(String value, RenderContext context, Resource resource);
+        String visit(String value, RenderContext context, String tagName, String attrName, Resource resource);
     }
 
     private Map<String, Set<String>> attributesToVisit;
@@ -136,7 +138,7 @@ public class HtmlTagAttributeTraverser {
                         String originalValue = attribute.getValue();
                         String value = originalValue;
                         for (HtmlTagAttributeVisitor visitor : visitors) {
-                            value = visitor.visit(value, context, resource);
+                            value = visitor.visit(value, context, startTag.getName(), attrName, resource);
                         }
                         if (originalValue != value && originalValue != null && !originalValue.equals(value)) {
                             document.replace(attribute.getValueSegment(), value);

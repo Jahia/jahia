@@ -65,7 +65,7 @@ public class URLSystemAttributesAppenderFilter extends AbstractFilter {
         if (!Collections.disjoint(attributesToKeep, renderContext.getRequest().getParameterMap().keySet())) {
             previousOut = traverser.traverse(previousOut, renderContext, resource,
                     new HtmlTagAttributeTraverser.HtmlTagAttributeVisitor() {
-                        public String visit(String value, RenderContext context, Resource resource) {
+                        public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
                             String separateChar;
                             if (value.contains("?")) {
                                 separateChar = "&";

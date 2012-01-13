@@ -49,7 +49,7 @@ import javax.jcr.RepositoryException;
 
 public class SiteParameterAdder implements HtmlTagAttributeVisitor {
 
-    public String visit(String value, RenderContext context, Resource resource) {
+    public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
         URLGenerator urlGenerator = context.getURLGenerator();
         if (value != null && value.startsWith(urlGenerator.getContext() + urlGenerator.getBase())) {
                 if (!value.startsWith(urlGenerator.getContext() + urlGenerator.getBase() + "/sites/") && !value.contains("jsite=")) {

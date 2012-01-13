@@ -84,10 +84,9 @@ public class UrlRewriteVisitor implements HtmlTagAttributeVisitor {
     /**
      * Applies the configured URL rewriting rules to the URL value.
      * 
-     * @see org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor#visit(java.lang.String,
-     *      org.jahia.services.render.RenderContext, org.jahia.services.render.Resource)
+     * @see org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor#visit(String, org.jahia.services.render.RenderContext, String, String, org.jahia.services.render.Resource)
      */
-    public String visit(final String attrValue, RenderContext context, Resource resource) {
+    public String visit(final String attrValue, RenderContext context, String tagName, String attrName, Resource resource) {
         String value = attrValue;
         if (preconditionsMatch(attrValue, context, resource)) {
             long timer = System.currentTimeMillis();

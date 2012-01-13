@@ -68,9 +68,9 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
      * the node is mapped (has the vanityUrlMapped mixin type set) get the mapping for the 
      * current workspace and locale and exchange the URL in the HTML with the mapped vanity URL.
      *  
-     * @see org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor#visit(java.lang.String, org.jahia.services.render.RenderContext, org.jahia.services.render.Resource)
+     * @see org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor#visit(String, org.jahia.services.render.RenderContext, String, String, org.jahia.services.render.Resource)
      */
-    public String visit(final String attrValue, RenderContext context, Resource resource) {
+    public String visit(final String attrValue, RenderContext context, String tagName, String attrName, Resource resource) {
         String value = attrValue;
         if (StringUtils.isNotEmpty(attrValue) && !Url.isLocalhost(context.getRequest().getServerName())) {
             URLResolver urlResolver = urlResolverFactory.createURLResolver(attrValue, context);

@@ -183,7 +183,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
         String result;
         try {
             result = urlTraverser.traverse(content, new HtmlTagAttributeVisitor() {
-                public String visit(String value, RenderContext context, Resource resource) {
+                public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
                     if (StringUtils.isNotEmpty(value)) {
                         try {
                             value = replaceRefsByPlaceholders(value, newRefs, refs, node.getSession().getWorkspace().getName());
@@ -307,10 +307,14 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
         String result;
         try {
             result = urlTraverser.traverse(content, new HtmlTagAttributeVisitor() {
-                public String visit(String value, RenderContext context, Resource resource) {
+                public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
                     if (StringUtils.isNotEmpty(value)) {
                         try {
                             value = replacePlaceholdersByRefs(value, refs, property.getSession().getWorkspace().getName(), property.getSession().getLocale());
+                            if ("#".equals(value) && attrName.toLowerCase().equals("src") && tagName.toLowerCase().equals("img")) {
+                                value = "/missing-image.png";
+                            }
+                            
                         } catch (RepositoryException e) {
                             throw new RuntimeException(e);
                         }

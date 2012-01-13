@@ -220,7 +220,7 @@ public class HtmlExternalizationService {
 
     protected String rewriteUrls(String source, final String serverUrl) {
         return urlTraverser.traverse(source, new HtmlTagAttributeVisitor() {
-            public String visit(String url, RenderContext context, Resource resource) {
+            public String visit(String url, RenderContext context, String tagName, String attrName, Resource resource) {
                 return StringUtils.isNotEmpty(url) && url.startsWith("/") ? serverUrl + url : url;
             }
         });

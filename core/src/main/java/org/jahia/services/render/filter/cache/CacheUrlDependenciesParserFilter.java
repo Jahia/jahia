@@ -56,12 +56,14 @@ public class CacheUrlDependenciesParserFilter implements HtmlTagAttributeTravers
      * Applies the required modifications to the specified attribute if
      * needed.
      *
+     *
      * @param value    the attribute value to be modified
      * @param context  current rendering context
-     * @param resource current resource
-     * @returns the modified attribute value
+     * @param tagName
+     * @param attrName
+     * @param resource current resource  @returns the modified attribute value
      */
-    public String visit(String value, RenderContext context, Resource resource) {
+    public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
         String contextConfiguration = resource.getContextConfiguration();
         if (context.isLiveMode() && StringUtils.isNotEmpty(value) &&
             (contextConfiguration.equals(Resource.CONFIGURATION_MODULE))) {

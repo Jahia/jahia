@@ -34,7 +34,9 @@
         <c:set var="facetValueName" value="${currentActiveFacetValue.key}"/>
     </c:otherwise>
 </c:choose>
-<jcr:node var="refNode" uuid="${facetValueName}"/>
+<c:if test="${functions:matches('[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}', facetValueName)}">
+    <jcr:node var="refNode" uuid="${facetValueName}"/>
+</c:if>
 <c:choose>
     <c:when test="${not empty refNode}">        
         <c:set var="mappedLabel" value="${refNode.displayableName}"/>

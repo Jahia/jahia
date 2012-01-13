@@ -825,6 +825,7 @@ border: 1px solid #eaeaea;
 	border-radius:5px;
 	margin-bottom:1em;
 	border:1px solid #eaeaea;
+    clear:right;
 }
 
 .bodywrapper ul.idTabs {

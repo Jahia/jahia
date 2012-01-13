@@ -42,12 +42,14 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.form.ListModelPropertyEditor;
 import com.extjs.gxt.ui.client.widget.form.PropertyEditor;
 import com.extjs.gxt.ui.client.widget.form.TwinTriggerField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -117,6 +119,22 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
         setTwinTriggerStyle("x-form-clear-trigger");
         setEditable(false);
         setValue(new ArrayList<GWTJahiaNode>());
+        propertyEditor = new PropertyEditor<List<GWTJahiaNode>>() {
+            public String getStringValue(List<GWTJahiaNode> value) {
+                String result = "";
+                for (GWTJahiaNode gwtJahiaNode : value) {
+                    if(!"".equals(result)) {
+                        result = result + ",";
+                    }
+                    result = result + gwtJahiaNode.getDisplayName();
+                }
+                return result;
+            }
+
+            public List<GWTJahiaNode> convertStringValue(String value) {
+                return null;
+            }
+        };
     }
 
     @Override

@@ -132,6 +132,13 @@ public class InfoLayers {
         if (!images.isEmpty()) {
             layoutContainer.setLayout(new HBoxLayout());
             for (LayoutContainer image : images) {
+                image.setHeight("16px");
+                image.setWidth("16px");
+                Component item = image.getItem(0);
+                item.setHeight("12px");
+                item.setWidth("12px");
+                item.setStyleAttribute("left", "2px");
+                item.setStyleAttribute("top", "2px");
                 layoutContainer.add(image);
             }
         }

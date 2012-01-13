@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
@@ -562,7 +563,7 @@ public class MainModule extends Module {
                             if (activeLayers.containsKey("acl") && currentNode.isHasAcl()) {
                                 AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
                                         "viewACLStatus");
-                                LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                LayoutContainer layoutContainer = new LayoutContainer(new CenterLayout());
                                 layoutContainer.add(icon.createImage());
                                 images.add(layoutContainer);
                             }
@@ -572,7 +573,7 @@ public class MainModule extends Module {
                                     if (info.isLocked()) {
                                         AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
                                                 "publication/locked");
-                                        LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                        LayoutContainer layoutContainer = new LayoutContainer(new CenterLayout());
                                         layoutContainer.add(icon.createImage());
                                         images.add(layoutContainer);
                                     }
@@ -583,33 +584,33 @@ public class MainModule extends Module {
                                         if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                                             AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
                                                     "publication/unpublished");
-                                            LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                            LayoutContainer layoutContainer = new LayoutContainer(new CenterLayout());
                                             layoutContainer.add(icon.createImage());
                                             images.add(layoutContainer);
                                         } else {
                                             AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
                                                     "publication/notpublished");
-                                            LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                            LayoutContainer layoutContainer = new LayoutContainer(new CenterLayout());
                                             layoutContainer.add(icon.createImage());
                                             images.add(layoutContainer);
                                         }
                                     } else if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
                                         AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
                                                 "publication/modified");
-                                        LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                        LayoutContainer layoutContainer = new LayoutContainer(new CenterLayout());
                                         layoutContainer.add(icon.createImage());
                                         images.add(layoutContainer);
                                     } else if (info.getStatus() ==
                                                GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
                                         AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
                                                 "publication/mandatorylanguageunpublishable");
-                                        LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                        LayoutContainer layoutContainer = new LayoutContainer(new CenterLayout());
                                         layoutContainer.add(icon.createImage());
                                         images.add(layoutContainer);
                                     } else if (info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID) {
                                         AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
                                                 "publication/mandatorylanguagevalid");
-                                        LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                        LayoutContainer layoutContainer = new LayoutContainer(new CenterLayout());
                                         layoutContainer.add(icon.createImage());
                                         images.add(layoutContainer);
                                     }
@@ -622,7 +623,7 @@ public class MainModule extends Module {
                                         AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
                                                 "visibilityStatusGreen");
                                         Image image = icon.createImage();
-                                        LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                        LayoutContainer layoutContainer = new LayoutContainer(new CenterLayout());
                                         layoutContainer.add(image);
                                         Set<Map.Entry<GWTJahiaNode, ModelData>> entries = visibility.entrySet();
                                         String toolTip = "";
@@ -640,7 +641,7 @@ public class MainModule extends Module {
                                     } else {
                                         AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon(
                                                 "visibilityStatusRed");
-                                        LayoutContainer layoutContainer = new LayoutContainer(new FitLayout());
+                                        LayoutContainer layoutContainer = new LayoutContainer(new CenterLayout());
                                         layoutContainer.add(icon.createImage());
                                         Set<Map.Entry<GWTJahiaNode, ModelData>> entries = visibility.entrySet();
                                         String toolTip = "";

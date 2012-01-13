@@ -4,11 +4,11 @@
     background: #03399c url(img/contribute-toolbar-bg.png) no-repeat top right;
 	line-height:24px;
 	color:#FFF;
-    z-index:9000;
+    z-index:900;
 }
 #contributeToolbar #edit {
 
-    z-index:9010;
+    z-index:910;
 }
 #contributeToolbar span{
 	font-size:11px !important;
@@ -95,7 +95,7 @@
 #contributeToolbar .relative{
     position:relative;
     display:inline;
-    z-index:9020;
+    z-index:920;
 }
 #contributeToolbar .Actions {
     border: 1px solid #ccc;
@@ -106,7 +106,7 @@
     -webkit-box-shadow: 0 1px 3px #ccc;
     -moz-box-shadow: 0 1px 3px #ccc;
     box-shadow: 0 1px 3px #ccc;
-    z-index:9999;
+    z-index:999;
     background-color:#eaeaea;
     display:none;
 }

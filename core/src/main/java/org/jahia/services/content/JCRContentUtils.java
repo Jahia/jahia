@@ -635,9 +635,18 @@ public final class JCRContentUtils {
     }
     
     public static String getIcon(ExtendedNodeType type) throws RepositoryException {
-        String icon = getIconsFolder(type) + replaceColon(type.getName());
+        return getIcon(type, null);
+    }
+    
+    private static String getIcon(ExtendedNodeType type, String subType) throws RepositoryException {
+        String icon = getIconsFolder(type) + replaceColon(type.getName()) + (StringUtils.isEmpty(subType) ? "" : "_" + subType);
         if (check(icon)) {
             return icon;
+        } else if (!StringUtils.isEmpty(subType)) {
+            icon = getIconsFolder(type) + replaceColon(type.getName());
+            if (check(icon)) {
+                return icon;
+            }
         }
         for (ExtendedNodeType nodeType : type.getSupertypes()) {
             icon = getIconsFolder(nodeType) + replaceColon(nodeType.getName());
@@ -657,7 +666,7 @@ public final class JCRContentUtils {
             return folder + "jnt_portlet";
         } else if (f instanceof JCRComponentNode) {
             String type = f.getName();
-            ExtendedNodeType nt = null;
+            ExtendedNodeType nt = primaryNodeType;
             if (!"components".equals(type)) {
                 try {
                     nt = NodeTypeRegistry.getInstance().getNodeType(type);
@@ -665,10 +674,21 @@ public final class JCRContentUtils {
 
                 }
             }
-            return getIcon(nt != null ? nt : primaryNodeType);
+            return getIcon(nt, getSubType(nt, f));
         } else {
-            return getIcon(primaryNodeType);
+            return getIcon(primaryNodeType, getSubType(primaryNodeType, f));
         }
+    }
+    
+    private static String getSubType(ExtendedNodeType nt, JCRNodeWrapper f) {
+        String subType = null;
+        try {
+            if (Constants.JAHIANT_VIRTUALSITE.equals(nt.getName()) && f.hasProperty(Constants.SITETYPE)) {
+                subType = f.getPropertyAsString(Constants.SITETYPE);    
+            }
+        } catch (RepositoryException e) {
+        }
+        return subType;
     }
 
     public static String getIconsFolder(final ExtendedNodeType primaryNodeType) throws RepositoryException {

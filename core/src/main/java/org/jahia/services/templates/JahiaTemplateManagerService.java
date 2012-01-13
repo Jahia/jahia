@@ -717,10 +717,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     deployModule(modulePath, site.getPath(), sessionWrapper);
                 }
             } else {
-                Value[] dependencies = tpl.hasProperty("j:dependencies") ? tpl.getProperty(
+                List<String> installedModules = site.getResolveSite().getInstalledModules();
+                /*Value[] dependencies = tpl.hasProperty("j:dependencies") ? tpl.getProperty(
                         "j:dependencies").getValues() : null;
                 List<String> deps = new ArrayList<String>();
-                List<String> installedModules = site.getResolveSite().getInstalledModules();
                 if (dependencies != null && dependencies.length > 0) {
                     for (Value value : dependencies) {
                         deps.add(value.getString());
@@ -728,7 +728,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     if (!installedModules.containsAll(deps)) {
                         continue;
                     }
-                }
+                }*/
                 if (!updateOnly || installedModules.contains(tpl.getName())) {
                     deployModule(modulePath, site.getPath(), sessionWrapper);
                 }

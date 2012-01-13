@@ -1,4 +1,3 @@
-<%@ page import="org.jahia.modules.docspace.Constants" %>
 <%@ page contentType="text/html; UTF-8" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>

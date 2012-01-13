@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:test_templates="http://www.jahia.org/jahia/test_templates/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
   <templateSets jcr:primaryType="jnt:templateSets">
     <templates-system changefreq="monthly" j:dependencies="default grid skins" j:installedModules="Jahia System Templates" j:originWS="default" j:siteType="templatesSet" j:title="Jahia System Templates" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
-      <portlets j:originWS="default" jcr:primaryType="jnt:portletFolder" />
-      <files j:originWS="default" jcr:primaryType="jnt:folder" />
+      <portlets j:originWS="default" jcr:primaryType="jnt:portletFolder"/>
+      <files j:originWS="default" jcr:primaryType="jnt:folder"/>
       <contents j:originWS="default" jcr:primaryType="jnt:contentFolder">
         <profile-page-items j:originWS="default" jcr:primaryType="jnt:contentFolder">
-          <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Profile Page Items" />
+          <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Profile Page Items"/>
           <home divClass="user-home" j:originWS="default" jcr:primaryType="jnt:componentLink" targetTemplate="user-home">
-            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Home" />
-            <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Accueil" />
+            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Home"/>
+            <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Accueil"/>
           </home>
           <my-settings divClass="user-edit-details" j:originWS="default" jcr:primaryType="jnt:componentLink" targetTemplate="user-edit-details">
-            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Settings" />
-            <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Informations" />
+            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Settings"/>
+            <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Informations"/>
           </my-settings>
           <my-tasks divClass="user-tasks" j:originWS="default" j:requireLoggedUser="false" j:requirePrivilegedUser="true" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:componentLink" targetTemplate="user-tasks">
-            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Tasks" />
-            <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Tâches" />
+            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Tasks"/>
+            <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Tâches"/>
           </my-tasks>
           <my-pages divClass="user-content" j:originWS="default" jcr:primaryType="jnt:componentLink" targetTemplate="user-content">
-            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Pages" />
-            <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Pages" />
+            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Pages"/>
+            <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Pages"/>
           </my-pages>
           <my-content divClass="user-sites" j:originWS="default" jcr:primaryType="jnt:componentLink" targetTemplate="user-content-manager">
-            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Content" />
-            <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Contenus" />
+            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Content"/>
+            <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Contenus"/>
           </my-content>
           <my-web-projects divClass="user-sites" j:originWS="default" jcr:primaryType="jnt:componentLink" targetTemplate="user-sites">
-            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Web Projects" />
-            <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Projets Web" />
+            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Web Projects"/>
+            <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Projets Web"/>
           </my-web-projects>
         </profile-page-items>
       </contents>
@@ -38,144 +38,144 @@
           <themes j:originWS="default" jcr:primaryType="jnt:folder">
             <default j:originWS="default" jcr:primaryType="jnt:folder">
               <logo-jahia.png j:height="30" j:originWS="default" j:width="57" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
               </logo-jahia.png>
             </default>
           </themes>
           <icons j:originWS="default" jcr:primaryType="jnt:folder">
             <my-settings.png j:height="64" j:originWS="default" j:width="64" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
             </my-settings.png>
             <my-pages.png j:height="64" j:originWS="default" j:width="64" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
             </my-pages.png>
             <my-tasks.png j:height="64" j:originWS="default" j:width="64" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
             </my-tasks.png>
             <my-sites.png j:height="64" j:originWS="default" j:width="64" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
             </my-sites.png>
             <myprofile.png j:height="48" j:originWS="default" j:width="48" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
             </myprofile.png>
             <mytasks.png j:height="48" j:originWS="default" j:width="48" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
             </mytasks.png>
             <mybookmarks.png j:height="48" j:originWS="default" j:width="48" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
             </mybookmarks.png>
             <mysites.png j:height="48" j:originWS="default" j:width="48" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
             </mysites.png>
             <mycontent.png j:height="48" j:originWS="default" j:width="48" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
             </mycontent.png>
             <view-content.png j:height="48" j:originWS="default" j:width="48" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
             </view-content.png>
             <folder-content.png j:height="48" j:originWS="default" j:width="48" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
             </folder-content.png>
             <edit-content.png j:height="48" j:originWS="default" j:width="48" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
             </edit-content.png>
             <folder-files.png j:height="48" j:originWS="default" j:width="48" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
             </folder-files.png>
             <folder-content-files.png j:height="64" j:originWS="default" j:width="81" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
             </folder-content-files.png>
             <myspace.png j:height="48" j:originWS="default" j:width="48" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
             </myspace.png>
           </icons>
         </files>
-        <contents j:originWS="default" jcr:primaryType="jnt:contentFolder" />
+        <contents j:originWS="default" jcr:primaryType="jnt:contentFolder"/>
         <base j:originWS="default" j:view="system" jcr:mixinTypes="jmix:theme" jcr:primaryType="jnt:template">
           <editContent j:applyOn="jnt:content" j:hiddenTemplate="true" j:originWS="default" j:priority="10" j:requiredMode="contribute" j:requiredPermissions="_x0023__x002f_permissions_x002f_repository-permissions_x002f_jcr:all_default_x002f_jcr:write_default" jcr:primaryType="jnt:contentTemplate">
             <pagecontent j:originWS="default" jcr:primaryType="jnt:contentList">
-              <custom-rows-960gs customColumn="16" j:originWS="default" jcr:primaryType="jnt:customRow" />
+              <custom-rows-960gs customColumn="16" divID="content" j:originWS="default" jcr:primaryType="jnt:customRow"/>
             </pagecontent>
             <custom-rows-960gs-col1 j:originWS="default" jcr:primaryType="jnt:contentList">
               <edit-content icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_edit-content.png" j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Edit content" />
-                <j:translation_de jcr:language="de" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content editieren" />
-                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Éditer contenu" />
-                <language-switcher j:originWS="default" jcr:primaryType="jnt:languageSwitcher" typeOfDisplay="flag" />
-                <mainResourceDisplay-table j:mainResourceView="contribute.table" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay" />
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Edit content"/>
+                <j:translation_de jcr:language="de" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content editieren"/>
+                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Éditer contenu"/>
+                <language-switcher j:originWS="default" jcr:primaryType="jnt:languageSwitcher" typeOfDisplay="flag"/>
+                <mainResourceDisplay-table j:mainResourceView="contribute.table" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay"/>
                 <tabularList j:originWS="default" jcr:primaryType="jnt:tabularList">
                   <content j:originWS="default" jcr:primaryType="jnt:contentList">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content" />
-                    <j:translation_de jcr:language="de" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content" />
-                    <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content" />
-                    <mainResourceDisplay-edit j:mainResourceView="contribute.edit" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay" />
-                    <add-content j:originWS="default" j:type="" jcr:primaryType="jnt:addContent" />
-                    <mainResourceDisplay-subnodes j:mainResourceView="contribute.subnodes" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay" />
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content"/>
+                    <j:translation_de jcr:language="de" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content"/>
+                    <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content"/>
+                    <mainResourceDisplay-edit j:mainResourceView="contribute.edit" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay"/>
+                    <add-content j:originWS="default" j:type="" jcr:primaryType="jnt:addContent"/>
+                    <mainResourceDisplay-subnodes j:mainResourceView="contribute.subnodes" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay"/>
                   </content>
                   <metadata j:originWS="default" jcr:primaryType="jnt:contentList">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Metadata" />
-                    <j:translation_de jcr:language="de" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Metadaten" />
-                    <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Métadonnées" />
-                    <j:translation_es jcr:language="es" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Metadatos" />
-                    <j:translation_it jcr:language="it" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Metadati" />
-                    <j:translation_pt jcr:language="pt" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Metadados" />
-                    <mainResourceDisplay-metadata j:mainResourceView="contribute.editmetadata" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay" />
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Metadata"/>
+                    <j:translation_de jcr:language="de" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Metadaten"/>
+                    <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Métadonnées"/>
+                    <j:translation_es jcr:language="es" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Metadatos"/>
+                    <j:translation_it jcr:language="it" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Metadati"/>
+                    <j:translation_pt jcr:language="pt" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Metadados"/>
+                    <mainResourceDisplay-metadata j:mainResourceView="contribute.editmetadata" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay"/>
                   </metadata>
                   <tags j:originWS="default" jcr:primaryType="jnt:contentList">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Tags" />
-                    <j:translation_de jcr:language="de" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Tags" />
-                    <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Tags" />
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Tags"/>
+                    <j:translation_de jcr:language="de" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Tags"/>
+                    <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Tags"/>
                     <tag j:originWS="default" jcr:primaryType="jnt:displayTags">
-                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Tag" />
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Tag"/>
                     </tag>
                     <addTag j:originWS="default" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:tagging">
-                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Tag" />
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Tag"/>
                     </addTag>
                   </tags>
                   <categories j:originWS="default" jcr:primaryType="jnt:contentList">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Categories" />
-                    <j:translation_de jcr:language="de" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Kategorien" />
-                    <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Catégories" />
-                    <j:translation_es jcr:language="es" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Categorias" />
-                    <j:translation_it jcr:language="it" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Categorie" />
-                    <j:translation_pt jcr:language="pt" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Categorias" />
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Categories"/>
+                    <j:translation_de jcr:language="de" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Kategorien"/>
+                    <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Catégories"/>
+                    <j:translation_es jcr:language="es" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Categorias"/>
+                    <j:translation_it jcr:language="it" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Categorie"/>
+                    <j:translation_pt jcr:language="pt" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Categorias"/>
                     <category j:bindedComponent="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_base_x002f_editContent_x002f_custom-rows-960gs-col1_x002f_edit-content_x002f_mainResourceDisplay-table" j:originWS="default" j:view="default" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:categorizing">
-                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Category" />
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Category"/>
                     </category>
                     <category-1 j:bindedComponent="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_base_x002f_editContent_x002f_custom-rows-960gs-col1_x002f_edit-content_x002f_mainResourceDisplay-table" j:originWS="default" j:view="addcategory" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:categorizing">
-                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Category" />
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Category"/>
                     </category-1>
                   </categories>
                 </tabularList>
@@ -184,252 +184,252 @@
           </editContent>
           <viewContent j:applyOn="jnt:content" j:hiddenTemplate="true" j:originWS="default" j:priority="10" jcr:primaryType="jnt:contentTemplate">
             <pagecontent j:originWS="default" jcr:primaryType="jnt:contentList">
-              <custom-rows-960gs customColumn="16" j:originWS="default" jcr:primaryType="jnt:customRow" />
+              <custom-rows-960gs customColumn="16" divID="content" j:originWS="default" jcr:primaryType="jnt:customRow"/>
             </pagecontent>
             <custom-rows-960gs-col1 j:originWS="default" jcr:primaryType="jnt:contentList">
               <view-content icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_view-content.png" j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="View content" />
-                <language-switcher j:originWS="default" jcr:primaryType="jnt:languageSwitcher" typeOfDisplay="flag" />
-                <mainResourceDisplay-table j:mainResourceView="contribute.table" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay" />
-                <mainResourceDisplay j:mainResourceView="default" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay" />
-                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Voir le Contenu" />
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="View content"/>
+                <language-switcher j:originWS="default" jcr:primaryType="jnt:languageSwitcher" typeOfDisplay="flag"/>
+                <mainResourceDisplay-table j:mainResourceView="contribute.table" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay"/>
+                <mainResourceDisplay j:mainResourceView="default" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay"/>
+                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Voir le Contenu"/>
               </view-content>
             </custom-rows-960gs-col1>
           </viewContent>
           <fileTemplate j:applyOn="jnt:file" j:defaultTemplate="true" j:originWS="default" j:priority="10" jcr:primaryType="jnt:contentTemplate">
             <pagecontent j:originWS="default" jcr:primaryType="jnt:contentList">
-              <custom-rows-960gs customColumn="16" j:originWS="default" jcr:primaryType="jnt:customRow" />
+              <custom-rows-960gs customColumn="16" divID="content" j:originWS="default" jcr:primaryType="jnt:customRow"/>
             </pagecontent>
             <custom-rows-960gs-col1 j:originWS="default" jcr:primaryType="jnt:contentList">
               <view-document j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="View Document" />
-                <mainResourceDisplay-table j:mainResourceView="contribute.table" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay" />
-                <mainResourceDisplay j:mainResourceView="detail" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay" />
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="View Document"/>
+                <mainResourceDisplay-table j:mainResourceView="contribute.table" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay"/>
+                <mainResourceDisplay j:mainResourceView="detail" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay"/>
               </view-document>
             </custom-rows-960gs-col1>
           </fileTemplate>
           <siteTemplate j:applyOn="jnt:virtualsite" j:defaultTemplate="true" j:hiddenTemplate="false" j:originWS="default" jcr:primaryType="jnt:contentTemplate">
             <pagecontent j:originWS="default" jcr:primaryType="jnt:contentList">
-              <custom-rows-960gs customColumn="16" j:originWS="default" jcr:primaryType="jnt:customRow" />
+              <custom-rows-960gs customColumn="16" divID="content" j:originWS="default" jcr:primaryType="jnt:customRow"/>
             </pagecontent>
             <custom-rows-960gs-col1 j:originWS="default" jcr:primaryType="jnt:contentList">
-              <mainResourceDisplay j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay" />
+              <mainResourceDisplay j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay"/>
             </custom-rows-960gs-col1>
           </siteTemplate>
-          <home j:originWS="default" jcr:primaryType="jnt:pageTemplate" />
+          <home j:originWS="default" jcr:primaryType="jnt:pageTemplate"/>
           <footer-col1 j:originWS="default" jcr:primaryType="jnt:contentList">
             <bigText j:originWS="default" jcr:primaryType="jnt:bigText">
-              <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  &amp;copy; 2002-2011 Jahia Solutions Group SA - All rights reserved.&lt;/p&gt; " />
+              <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  &amp;copy; 2002-2011 Jahia Solutions Group SA - All rights reserved.&lt;/p&gt; "/>
             </bigText>
           </footer-col1>
           <header-col2 j:originWS="default" jcr:primaryType="jnt:contentList">
             <logo-jahia-xcm.png j:originWS="default" jcr:primaryType="jnt:imageReference">
-              <j:translation_fr j:alternateText="logo-jahia-xcm" jcr:language="fr" jcr:primaryType="jnt:translation" />
+              <j:translation_fr j:alternateText="logo-jahia-xcm" jcr:language="fr" jcr:primaryType="jnt:translation"/>
             </logo-jahia-xcm.png>
           </header-col2>
           <pagecontent j:originWS="default" jcr:primaryType="jnt:contentList">
-            <top j:allowedTypes="" j:originWS="default" jcr:primaryType="jnt:area" />
-            <content j:id="content" j:originWS="default" j:skin="skins.custom" jcr:mixinTypes="jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentList">
-              <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content" />
-              <pagecontent j:allowedTypes="" j:originWS="default" jcr:primaryType="jnt:area" />
+            <content j:originWS="default" jcr:primaryType="jnt:contentList">
+              <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content"/>
+              <pagecontent j:allowedTypes="" j:originWS="default" jcr:primaryType="jnt:area"/>
             </content>
-            <footer colNames="footer-colContent" customColumn="16" divID="footer" j:originWS="default" jcr:primaryType="jnt:customRow" />
+            <footer colNames="footer-colContent" customColumn="16" divID="footer" j:originWS="default" jcr:primaryType="jnt:customRow"/>
           </pagecontent>
-          <content-colContent j:originWS="default" jcr:primaryType="jnt:contentList" />
+          <content-colContent j:originWS="default" jcr:primaryType="jnt:contentList"/>
           <footer-colContent j:originWS="default" jcr:primaryType="jnt:contentList">
             <copyright j:originWS="default" jcr:primaryType="jnt:bigText">
-              <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p style=&quot;text-align: center;&quot;&gt;  &amp;copy; 2002-2011 Jahia Solutions Group SA - All rights reserved.&lt;/p&gt; " />
+              <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p style=&quot;text-align: center;&quot;&gt;  &amp;copy; 2002-2011 Jahia Solutions Group SA - All rights reserved.&lt;/p&gt; "/>
             </copyright>
           </footer-colContent>
           <header-col1 j:originWS="default" jcr:primaryType="jnt:contentList">
             <logo-jahia j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_themes_x002f_default_x002f_logo-jahia.png" j:originWS="default" jcr:primaryType="jnt:imageReference">
-              <j:translation_en j:alternateText="logo-jahia" jcr:language="en" jcr:primaryType="jnt:translation" />
+              <j:translation_en j:alternateText="logo-jahia" jcr:language="en" jcr:primaryType="jnt:translation"/>
             </logo-jahia>
           </header-col1>
           <user j:applyOn="jnt:user" j:defaultTemplate="true" j:hiddenTemplate="false" j:originWS="default" j:priority="10" jcr:primaryType="jnt:contentTemplate">
             <pagecontent j:originWS="default" j:style="blue" jcr:mixinTypes="jmix:style" jcr:primaryType="jnt:contentList">
-              <custom-rows-960gs customColumn="16" j:originWS="default" jcr:primaryType="jnt:customRow" />
+              <custom-rows-960gs customColumn="16" divID="content" j:originWS="default" jcr:primaryType="jnt:customRow"/>
             </pagecontent>
             <custom-rows-960gs-col1 j:originWS="default" jcr:primaryType="jnt:contentList">
               <public-profile j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Public profile" />
-                <userDetails j:originWS="default" j:view="full" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:userDetails" />
-                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Profile Public" />
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Public profile"/>
+                <userDetails j:originWS="default" j:view="full" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:userDetails"/>
+                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Profile Public"/>
               </public-profile>
             </custom-rows-960gs-col1>
           </user>
           <header-colContent j:originWS="default" jcr:primaryType="jnt:contentList">
-            <current-user j:originWS="default" j:userView="welcome" jcr:primaryType="jnt:currentUserDisplay" />
+            <current-user j:originWS="default" j:userView="welcome" jcr:primaryType="jnt:currentUserDisplay"/>
           </header-colContent>
           <user-base j:hiddenTemplate="false" j:originWS="default" jcr:primaryType="jnt:template">
             <pagecontent j:originWS="default" jcr:primaryType="jnt:contentList">
-              <user-base-layout colNames="user-base-layout-col1,user-base-layout-colContent,user-base-layout-col3" customColumn="3, 10, 3" j:originWS="default" jcr:primaryType="jnt:customRow" />
+              <header colNames="header-col1,header-colContent" customColumn="4, 12 " divID="header" j:originWS="default" jcr:primaryType="jnt:customRow"/>
+              <user-base-layout colNames="user-base-layout-col1,user-base-layout-colContent,user-base-layout-col3" customColumn="3, 10, 3" divID="content" j:originWS="default" jcr:primaryType="jnt:customRow"/>
             </pagecontent>
-            <row-col2 j:originWS="default" jcr:primaryType="jnt:contentList" />
+            <row-col2 j:originWS="default" jcr:primaryType="jnt:contentList"/>
             <user-edit-details j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" j:originWS="default" j:priority="15" j:requirePrivilegedUser="false" j:requiredPermissions="_x0023__x002f_permissions_x002f_repository-permissions_x002f_jcr:all_default_x002f_jcr:write_default" jcr:primaryType="jnt:contentTemplate">
               <pagecontent j:columns="2" j:id="user-edit-details" j:originWS="default" jcr:mixinTypes="jmix:customSkin jmix:columns" jcr:primaryType="jnt:contentList">
                 <pagecontent icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_myprofile.png" j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Profile " />
-                  <editUserDetails-1 age="true" j:about="true" j:birthDate="true" j:email="true" j:facebookID="true" j:firstName="true" j:function="true" j:gender="true" j:lastName="true" j:linkedinID="true" j:organization="true" j:originWS="default" j:picture="true" j:skypeID="true" j:title="true" j:twitterID="true" jcr:primaryType="jnt:editUserDetails" password="true" preferredLanguage="true" />
-                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mon profil" />
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Profile "/>
+                  <editUserDetails-1 age="true" j:about="true" j:birthDate="true" j:email="true" j:facebookID="true" j:firstName="true" j:function="true" j:gender="true" j:lastName="true" j:linkedinID="true" j:organization="true" j:originWS="default" j:picture="true" j:skypeID="true" j:title="true" j:twitterID="true" jcr:primaryType="jnt:editUserDetails" password="true" preferredLanguage="true"/>
+                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mon profil"/>
                 </pagecontent>
               </pagecontent>
-              <row-col3 j:originWS="default" j:skin="skins.box2style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList" />
+              <row-col3 j:originWS="default" j:skin="skins.box2style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList"/>
               <row-col1 j:originWS="default" j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <editUserDetails-1 age="true" j:about="false" j:birthDate="false" j:email="false" j:facebookID="false" j:firstName="false" j:function="false" j:gender="true" j:lastName="false" j:linkedinID="false" j:organization="false" j:originWS="default" j:picture="true" j:skypeID="false" j:title="false" j:twitterID="false" jcr:primaryType="jnt:editUserDetails" password="true" preferredLanguage="true" />
+                <editUserDetails-1 age="true" j:about="false" j:birthDate="false" j:email="false" j:facebookID="false" j:firstName="false" j:function="false" j:gender="true" j:lastName="false" j:linkedinID="false" j:organization="false" j:originWS="default" j:picture="true" j:skypeID="false" j:title="false" j:twitterID="false" jcr:primaryType="jnt:editUserDetails" password="true" preferredLanguage="true"/>
               </row-col1>
               <row-col2 j:originWS="default" j:skin="skins.box7" j:style="green" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Public fields" />
-                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Champs public" />
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Public fields"/>
+                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Champs public"/>
               </row-col2>
               <user-profile-aside-right j:originWS="default" jcr:primaryType="jnt:contentList">
                 <content-list j:originWS="default" j:skin="skins.box8" j:style="grey" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Making public element" />
-                  <edituserdetails age="true" j:about="true" j:birthDate="true" j:email="true" j:facebookID="true" j:firstName="true" j:function="true" j:gender="true" j:lastName="true" j:linkedinID="true" j:organization="true" j:originWS="default" j:picture="true" j:skypeID="true" j:title="true" j:twitterID="true" j:view="visibility" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:editUserDetails" password="true" preferredLanguage="true" />
-                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Eléments Publics" />
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Making public element"/>
+                  <edituserdetails age="true" j:about="true" j:birthDate="true" j:email="true" j:facebookID="true" j:firstName="true" j:function="true" j:gender="true" j:lastName="true" j:linkedinID="true" j:organization="true" j:originWS="default" j:picture="true" j:skypeID="true" j:title="true" j:twitterID="true" j:view="visibility" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:editUserDetails" password="true" preferredLanguage="true"/>
+                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Eléments Publics"/>
                 </content-list>
               </user-profile-aside-right>
             </user-edit-details>
             <user-tasks j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" j:originWS="default" j:priority="20" j:requireLoggedUser="false" j:requirePrivilegedUser="true" j:requiredPermissions="_x0023__x002f_permissions_x002f_repository-permissions_x002f_jcr:all_default_x002f_jcr:write_default" jcr:primaryType="jnt:contentTemplate">
               <pagecontent j:id="user-tasks" j:originWS="default" jcr:mixinTypes="jmix:customSkin" jcr:primaryType="jnt:contentList">
                 <my-tasks icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_mytasks.png" j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My tasks" />
-                  <currentUserTasks j:originWS="default" jcr:primaryType="jnt:currentUserTasks" viewUserTasks="true" viewWorkflowTasks="true" />
-                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Taches" />
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My tasks"/>
+                  <currentUserTasks j:originWS="default" jcr:primaryType="jnt:currentUserTasks" viewUserTasks="true" viewWorkflowTasks="true"/>
+                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Taches"/>
                 </my-tasks>
               </pagecontent>
             </user-tasks>
             <user-content j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" j:originWS="default" j:priority="25" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="_x0023__x002f_permissions_x002f_repository-permissions_x002f_jcr:all_default_x002f_jcr:write_default" jcr:primaryType="jnt:contentTemplate">
               <pagecontent j:id="user-content" j:originWS="default" jcr:mixinTypes="jmix:customSkin" jcr:primaryType="jnt:contentList">
                 <my-pages-1 icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_mycontent.png" j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My pages" />
-                  <pager displayNbOfItemsPerPage="true" displayPager="true" j:bindedComponent="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_base_x002f_user-base_x002f_user-content_x002f_pagecontent_x002f_my-pages-1_x002f_my-pages" j:originWS="default" jcr:primaryType="jnt:pager" nbOfPages="10" pageSize="10" />
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My pages"/>
+                  <pager displayNbOfItemsPerPage="true" displayPager="true" j:bindedComponent="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_base_x002f_user-base_x002f_user-content_x002f_pagecontent_x002f_my-pages-1_x002f_my-pages" j:originWS="default" jcr:primaryType="jnt:pager" nbOfPages="10" pageSize="10"/>
                   <my-pages j:classname="userMyContentList" j:criteria="jcr:created" j:originWS="default" j:skin="skins.custom" j:sortDirection="asc" j:type="jnt:page" j:view="linkList" jcr:mixinTypes="jmix:renderable jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:userContentRetrieval">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"/>
                   </my-pages>
-                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Pages" />
+                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Pages"/>
                 </my-pages-1>
               </pagecontent>
             </user-content>
-            <row-col1 j:originWS="default" j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList" />
-            <user-content-row-col1 j:originWS="default" j:style="blue" jcr:mixinTypes="jmix:style" jcr:primaryType="jnt:contentList" />
+            <row-col1 j:originWS="default" j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList"/>
+            <user-content-row-col1 j:originWS="default" j:style="blue" jcr:mixinTypes="jmix:style" jcr:primaryType="jnt:contentList"/>
             <user-base-layout-colContent j:originWS="default" jcr:primaryType="jnt:contentList">
-              <pagecontent j:allowedTypes="" j:originWS="default" jcr:primaryType="jnt:area" />
+              <pagecontent j:allowedTypes="" j:originWS="default" jcr:primaryType="jnt:area"/>
             </user-base-layout-colContent>
             <user-base-layout-col1 j:originWS="default" jcr:primaryType="jnt:contentList">
               <content-list j:originWS="default" j:skin="skins.box9" j:style="grey" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <current-user j:originWS="default" j:userView="profile" jcr:primaryType="jnt:currentUserDisplay" />
+                <current-user j:originWS="default" j:userView="profile" jcr:primaryType="jnt:currentUserDisplay"/>
                 <logout j:originWS="default" jcr:primaryType="jnt:logout">
-                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Logout" />
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Logout" />
+                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Logout"/>
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Logout"/>
                 </logout>
               </content-list>
               <my-space icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_myspace.png" j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My space" />
-                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mon espace" />
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My space"/>
+                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mon espace"/>
                 <shortcutslist j:id="Shortcutsadmin" j:originWS="default" j:skin="skins.custom" jcr:mixinTypes="jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="ShortcutsList" />
-                  <profile-page-items j:node="_x002f_templateSets_x002f_templates-system_x002f_contents_x002f_profile-page-items" j:originWS="default" jcr:primaryType="jnt:contentFolderReference" />
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="ShortcutsList"/>
+                  <profile-page-items j:node="_x002f_templateSets_x002f_templates-system_x002f_contents_x002f_profile-page-items" j:originWS="default" jcr:primaryType="jnt:contentFolderReference"/>
                 </shortcutslist>
               </my-space>
-              <user-profile-aside-left j:allowedTypes="" j:originWS="default" jcr:primaryType="jnt:area" />
+              <user-profile-aside-left j:allowedTypes="" j:originWS="default" jcr:primaryType="jnt:area"/>
             </user-base-layout-col1>
             <user-base-layout-col3 j:originWS="default" jcr:primaryType="jnt:contentList">
               <administration-tools j:className="simple" j:originWS="default" j:skin="skins.box8" j:style="grey" j:view="unordered" jcr:mixinTypes="jmix:style jmix:renderable jmix:skinnable jmix:listOrdered" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Administration tools" />
-                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Outils d'administration" />
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Administration tools"/>
+                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Outils d'administration"/>
                 <gotoAdmin j:contextNodePath="/" j:originWS="default" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="_x0023__x002f_permissions_x002f_admin_x002f_administrationAccess" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:gotoAdmin">
-                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Administration du serveur" />
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Server administration" />
+                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Administration du serveur"/>
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Server administration"/>
                 </gotoAdmin>
                 <gotoStudio j:contextNodePath="/templateSets" j:originWS="default" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="_x0023__x002f_permissions_x002f_studioMode_x002f_studioModeAccess" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:gotoStudio">
-                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Jahia Studio" />
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Jahia Studio" />
+                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Jahia Studio"/>
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Jahia Studio"/>
                 </gotoStudio>
                 <gotoManager j:contextNodePath="/" j:originWS="default" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="_x0023__x002f_permissions_x002f_managers_x002f_repositoryExplorer" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:gotoManager" type="unitedContent">
-                  <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation"/>
                 </gotoManager>
               </administration-tools>
               <my-web-projects-shortcuts j:originWS="default" j:skin="skins.box8" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My web projects shortcuts" />
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My web projects shortcuts"/>
                 <websites-list-in-edit-mode contribute="true" edit="true" j:originWS="default" jcr:primaryType="jnt:listSites" live="true" numberMaxOfSitesDisplayed="5" numberOfSitesPerPage="10">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="websites list in edit mode" />
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="websites list in edit mode"/>
                 </websites-list-in-edit-mode>
                 <my-web-projects divClass="user-sites" j:originWS="default" jcr:primaryType="jnt:componentLink" targetTemplate="user-sites">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Web Projects" />
-                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Projets Web" />
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Web Projects"/>
+                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Projets Web"/>
                 </my-web-projects>
-                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Raccourcis vers mes projets web" />
+                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Raccourcis vers mes projets web"/>
               </my-web-projects-shortcuts>
-              <user-profile-aside-right j:allowedTypes="" j:originWS="default" jcr:primaryType="jnt:area" />
+              <user-profile-aside-right j:allowedTypes="" j:originWS="default" jcr:primaryType="jnt:area"/>
             </user-base-layout-col3>
             <user-home j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" j:originWS="default" j:priority="50" j:requiredPermissions="_x0023__x002f_permissions_x002f_repository-permissions_x002f_jcr:all_default_x002f_jcr:write_default" jcr:primaryType="jnt:contentTemplate">
               <pagecontent j:originWS="default" jcr:primaryType="jnt:contentList">
                 <rich-text j:originWS="default" jcr:primaryType="jnt:bigText">
-                  <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h2&gt;  What do you want to do with Jahia today ?&lt;/h2&gt; " />
-                  <j:translation_fr jcr:language="fr" jcr:primaryType="jnt:translation" text="&lt;h2&gt;  Que voulez vous faire ajourd&amp;#39;hui ?&lt;/h2&gt; " />
+                  <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h2&gt;  What do you want to do with Jahia today ?&lt;/h2&gt; "/>
+                  <j:translation_fr jcr:language="fr" jcr:primaryType="jnt:translation" text="&lt;h2&gt;  Que voulez vous faire ajourd&amp;#39;hui ?&lt;/h2&gt; "/>
                 </rich-text>
                 <shortcuts-list j:columns="2" j:originWS="default" j:view="columns" jcr:mixinTypes="jmix:renderable jmix:columns" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Shortcuts List" />
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Shortcuts List"/>
                   <my-settings-2 j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Content" />
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Content"/>
                     <image-reference j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_folder-content-files.png" j:originWS="default" jcr:primaryType="jnt:imageReference">
-                      <j:translation_en j:alternateText="folder content and files icon" jcr:language="en" jcr:primaryType="jnt:translation" />
+                      <j:translation_en j:alternateText="folder content and files icon" jcr:language="en" jcr:primaryType="jnt:translation"/>
                     </image-reference>
                     <rich-text j:originWS="default" jcr:primaryType="jnt:bigText">
-                      <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Access to out of context content and document management for each related websites, according to your rights.&lt;/p&gt; " />
-                      <j:translation_fr jcr:language="fr" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Acc&amp;eacute;dez aux contenus et documents de vos diff&amp;eacute;rents sites cr&amp;eacute;&amp;eacute;s hors du contexte des pages.&lt;/p&gt; " />
+                      <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Access to out of context content and document management for each related websites, according to your rights.&lt;/p&gt; "/>
+                      <j:translation_fr jcr:language="fr" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Acc&amp;eacute;dez aux contenus et documents de vos diff&amp;eacute;rents sites cr&amp;eacute;&amp;eacute;s hors du contexte des pages.&lt;/p&gt; "/>
                     </rich-text>
                     <go-to-my-content divClass="user-edit-details" j:originWS="default" jcr:primaryType="jnt:componentLink" targetTemplate="user-content-manager">
-                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Go to my content" />
-                      <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Accéder à mon contenu" />
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Go to my content"/>
+                      <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Accéder à mon contenu"/>
                     </go-to-my-content>
-                    <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mon contenu " />
+                    <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mon contenu "/>
                   </my-settings-2>
                   <my-settings-1 j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Tasks" />
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Tasks"/>
                     <image-reference j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_my-tasks.png" j:originWS="default" jcr:primaryType="jnt:imageReference">
-                      <j:translation_en j:alternateText="my tasks icon" jcr:language="en" jcr:primaryType="jnt:translation" />
+                      <j:translation_en j:alternateText="my tasks icon" jcr:language="en" jcr:primaryType="jnt:translation"/>
                     </image-reference>
                     <rich-text j:originWS="default" jcr:primaryType="jnt:bigText">
-                      <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Display your tasks, assigned by other users or by the workflow processes.&lt;/p&gt; " />
-                      <j:translation_fr jcr:language="fr" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Affichez les t&amp;acirc;ches qui vous ont &amp;eacute;t&amp;eacute; assign&amp;eacute;es par d&amp;#39;autres utilisateurs ou par les processus de travail.&lt;/p&gt; " />
+                      <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Display your tasks, assigned by other users or by the workflow processes.&lt;/p&gt; "/>
+                      <j:translation_fr jcr:language="fr" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Affichez les t&amp;acirc;ches qui vous ont &amp;eacute;t&amp;eacute; assign&amp;eacute;es par d&amp;#39;autres utilisateurs ou par les processus de travail.&lt;/p&gt; "/>
                     </rich-text>
-                    <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes tâches" />
+                    <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes tâches"/>
                     <go-to-my-tasks divClass="user-edit-details" j:originWS="default" jcr:primaryType="jnt:componentLink" targetTemplate="user-tasks">
-                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Go to my tasks" />
-                      <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Accéder à vos tâches" />
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Go to my tasks"/>
+                      <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Accéder à vos tâches"/>
                     </go-to-my-tasks>
                   </my-settings-1>
                   <my-settings-3 j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Sites" />
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Sites"/>
                     <image-reference j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_my-sites.png" j:originWS="default" jcr:primaryType="jnt:imageReference">
-                      <j:translation_en j:alternateText="my sites icon" jcr:language="en" jcr:primaryType="jnt:translation" />
+                      <j:translation_en j:alternateText="my sites icon" jcr:language="en" jcr:primaryType="jnt:translation"/>
                     </image-reference>
                     <rich-text j:originWS="default" jcr:primaryType="jnt:bigText">
-                      <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  List of sites you can work on according to your rights, with links to the several modes.&lt;/p&gt; " />
-                      <j:translation_fr jcr:language="fr" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Liste des sites sur lesquels vous pouvez travailler, avec des liens vers les diff&amp;eacute;rents modes de visualisation, et fonction de vos droits.&lt;/p&gt; " />
+                      <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  List of sites you can work on according to your rights, with links to the several modes.&lt;/p&gt; "/>
+                      <j:translation_fr jcr:language="fr" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Liste des sites sur lesquels vous pouvez travailler, avec des liens vers les diff&amp;eacute;rents modes de visualisation, et fonction de vos droits.&lt;/p&gt; "/>
                     </rich-text>
                     <go-to-my-sites divClass="user-edit-details" j:originWS="default" jcr:primaryType="jnt:componentLink" targetTemplate="user-sites">
-                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Go to my sites" />
-                      <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Accéder à vos sites" />
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Go to my sites"/>
+                      <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Accéder à vos sites"/>
                     </go-to-my-sites>
-                    <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes sites" />
+                    <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes sites"/>
                   </my-settings-3>
                   <my-settings j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Settings" />
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Settings"/>
                     <image-reference j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_my-settings.png" j:originWS="default" jcr:primaryType="jnt:imageReference">
-                      <j:translation_en j:alternateText="my settings icon" jcr:language="en" jcr:primaryType="jnt:translation" />
+                      <j:translation_en j:alternateText="my settings icon" jcr:language="en" jcr:primaryType="jnt:translation"/>
                     </image-reference>
                     <rich-text j:originWS="default" jcr:primaryType="jnt:bigText">
-                      <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Review your personal details. Choose what information should be public. Choose your preferred language.&lt;/p&gt; " />
-                      <j:translation_fr jcr:language="fr" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Compl&amp;eacute;tez vos informations personnelles. Choisissez lesquelles seront publiques. Choisissez votre langue de travail pr&amp;eacute;f&amp;eacute;r&amp;eacute;e.&lt;/p&gt; " />
+                      <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Review your personal details. Choose what information should be public. Choose your preferred language.&lt;/p&gt; "/>
+                      <j:translation_fr jcr:language="fr" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Compl&amp;eacute;tez vos informations personnelles. Choisissez lesquelles seront publiques. Choisissez votre langue de travail pr&amp;eacute;f&amp;eacute;r&amp;eacute;e.&lt;/p&gt; "/>
                     </rich-text>
                     <change-my-settings divClass="user-edit-details" j:originWS="default" jcr:primaryType="jnt:componentLink" targetTemplate="user-edit-details">
-                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Change my settings" />
-                      <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Changer mes informations" />
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Change my settings"/>
+                      <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Changer mes informations"/>
                     </change-my-settings>
-                    <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Informations " />
+                    <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Informations "/>
                   </my-settings>
                 </shortcuts-list>
               </pagecontent>
@@ -437,123 +437,120 @@
             <user-sites j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" j:originWS="default" j:priority="30" j:requiredPermissions="_x0023__x002f_permissions_x002f_repository-permissions_x002f_jcr:all_default_x002f_jcr:write_default" jcr:primaryType="jnt:contentTemplate">
               <pagecontent j:id="user-sites" j:originWS="default" jcr:mixinTypes="jmix:customSkin" jcr:primaryType="jnt:contentList">
                 <my-sites icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_mysites.png" j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Sites" />
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Sites"/>
                   <websites-list-in-edit-mode contribute="true" edit="true" j:originWS="default" j:view="paginated" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10" preview="true">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="websites list in edit mode" />
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="websites list in edit mode"/>
                   </websites-list-in-edit-mode>
-                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Sites" />
+                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Sites"/>
                 </my-sites>
               </pagecontent>
             </user-sites>
             <user-content-manager j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" j:originWS="default" j:priority="21" jcr:primaryType="jnt:contentTemplate">
               <pagecontent j:originWS="default" jcr:primaryType="jnt:contentList">
                 <manage-content-out-of-context icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_folder-content.png" j:columns="2" j:originWS="default" j:skin="skins.box8" j:style="blue" j:view="columns" jcr:mixinTypes="jmix:style jmix:renderable jmix:skinnable jmix:columns" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Manage content out of context" />
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Manage content out of context"/>
                   <content-list-1 j:originWS="default" jcr:primaryType="jnt:contentList">
                     <rich-text-1 j:originWS="default" jcr:primaryType="jnt:bigText">
-                      <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h3&gt;  Contribute&lt;/h3&gt; " />
+                      <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h3&gt;  Contribute&lt;/h3&gt; "/>
                     </rich-text-1>
-                    <list-of-all-sites contribute="true" edit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="false" numberOfSitesPerPage="10" typeOfContent="contents" />
+                    <list-of-all-sites contribute="true" edit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="false" numberOfSitesPerPage="10" typeOfContent="contents"/>
                   </content-list-1>
                   <content-list-2 j:originWS="default" jcr:primaryType="jnt:contentList">
                     <rich-text-1 j:originWS="default" jcr:primaryType="jnt:bigText">
-                      <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h3&gt;  Content Manager&lt;/h3&gt; " />
+                      <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h3&gt;  Content Manager&lt;/h3&gt; "/>
                     </rich-text-1>
-                    <link-to-content-manager j:originWS="default" jcr:primaryType="jnt:gotoManager" type="content" />
+                    <link-to-content-manager j:originWS="default" jcr:primaryType="jnt:gotoManager" type="content"/>
                   </content-list-2>
-                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Gérer les contenus créés en dehors du contexte d'une page" />
+                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Gérer les contenus créés en dehors du contexte d'une page"/>
                 </manage-content-out-of-context>
                 <manage-content-and-files-out-of-1 icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_folder-files.png" j:columns="2" j:originWS="default" j:skin="skins.box8" j:style="blue" j:view="columns" jcr:mixinTypes="jmix:style jmix:renderable jmix:skinnable jmix:columns" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Manage document out of context" />
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Manage document out of context"/>
                   <content-list-1 j:originWS="default" jcr:primaryType="jnt:contentList">
                     <rich-text-1 j:originWS="default" jcr:primaryType="jnt:bigText">
-                      <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h3&gt;  Browse Files&lt;/h3&gt; " />
+                      <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h3&gt;  Browse Files&lt;/h3&gt; "/>
                     </rich-text-1>
-                    <list-of-all-sites contribute="false" edit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10" typeOfContent="files" />
+                    <list-of-all-sites contribute="false" edit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10" typeOfContent="files"/>
                   </content-list-1>
                   <content-list-2 j:originWS="default" jcr:primaryType="jnt:contentList">
                     <rich-text-1 j:originWS="default" jcr:primaryType="jnt:bigText">
-                      <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h3&gt;  Document Manager&lt;/h3&gt; " />
+                      <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h3&gt;  Document Manager&lt;/h3&gt; "/>
                     </rich-text-1>
-                    <link-to-content-manager j:originWS="default" jcr:primaryType="jnt:gotoManager" type="document" />
+                    <link-to-content-manager j:originWS="default" jcr:primaryType="jnt:gotoManager" type="document"/>
                   </content-list-2>
-                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Gérer les documents créés en dehors du contexte d'une page" />
+                  <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Gérer les documents créés en dehors du contexte d'une page"/>
                 </manage-content-and-files-out-of-1>
               </pagecontent>
             </user-content-manager>
             <header-col1 j:originWS="default" jcr:primaryType="jnt:contentList">
               <logo-jahia j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_themes_x002f_default_x002f_logo-jahia.png" j:originWS="default" jcr:primaryType="jnt:imageReference">
-                <j:translation_en j:alternateText="logo-jahia" jcr:language="en" jcr:primaryType="jnt:translation" />
+                <j:translation_en j:alternateText="logo-jahia" jcr:language="en" jcr:primaryType="jnt:translation"/>
               </logo-jahia>
             </header-col1>
             <header-colContent j:originWS="default" jcr:primaryType="jnt:contentList">
-              <current-user j:originWS="default" j:userView="welcome" jcr:primaryType="jnt:currentUserDisplay" />
+              <current-user j:originWS="default" j:userView="welcome" jcr:primaryType="jnt:currentUserDisplay"/>
             </header-colContent>
-            <top j:originWS="default" jcr:primaryType="jnt:contentList">
-              <header colNames="header-col1,header-colContent" customColumn="4, 12 " divID="header" j:originWS="default" jcr:primaryType="jnt:customRow" />
-            </top>
+            <top j:originWS="default" jcr:primaryType="jnt:contentList"/>
           </user-base>
           <contentFolderTemplate j:applyOn="jnt:contentFolder" j:defaultTemplate="true" j:hiddenTemplate="false" j:originWS="default" j:priority="11" jcr:primaryType="jnt:contentTemplate">
             <pagecontent j:originWS="default" jcr:primaryType="jnt:contentList">
-              <custom-rows-960gs-1 customColumn="3,13" j:originWS="default" jcr:primaryType="jnt:customRow" />
+              <custom-rows-960gs-1 customColumn="3,13" divID="content" j:originWS="default" jcr:primaryType="jnt:customRow"/>
             </pagecontent>
-            <custom-rows-960gs-col1 j:originWS="default" jcr:primaryType="jnt:contentList" />
+            <custom-rows-960gs-col1 j:originWS="default" jcr:primaryType="jnt:contentList"/>
             <custom-rows-960gs-1-col1 j:originWS="default" jcr:primaryType="jnt:contentList">
               <facets j:originWS="default" j:skin="skins.box8" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Facets" />
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Facets"/>
                 <facets j:bindedComponent="_x002f_templateSets_x002f_templates-system_x002f_contents" j:originWS="default" jcr:primaryType="jnt:facets">
                   <fieldFacet facet="tags" field="jmix:tagged;j:tags" j:originWS="default" jcr:primaryType="jnt:fieldFacet" limit="100" mincount="1" missing="false" offset="0">
-                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" label="Tags" />
+                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" label="Tags"/>
                   </fieldFacet>
                 </facets>
-                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Facettes" />
+                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Facettes"/>
               </facets>
             </custom-rows-960gs-1-col1>
             <custom-rows-960gs-1-col2 j:originWS="default" jcr:primaryType="jnt:contentList">
               <content-folder icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_folder-content.png" j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content Folder" />
-                <language-switcher j:originWS="default" jcr:primaryType="jnt:languageSwitcher" typeOfDisplay="flag" />
-                <pager displayNbOfItemsPerPage="true" displayPager="true" j:originWS="default" jcr:primaryType="jnt:pager" nbOfPages="10" pageSize="10" />
-                <mainResourceDisplay j:canDeleteInContribution="true" j:canOrderInContribution="true" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" j:mainResourceView="table" j:originWS="default" jcr:mixinTypes="jmix:contributeMode" jcr:primaryType="jnt:mainResourceDisplay" />
-                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Dossier de Contenus" />
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content Folder"/>
+                <language-switcher j:originWS="default" jcr:primaryType="jnt:languageSwitcher" typeOfDisplay="flag"/>
+                <pager displayNbOfItemsPerPage="true" displayPager="true" j:originWS="default" jcr:primaryType="jnt:pager" nbOfPages="10" pageSize="10"/>
+                <mainResourceDisplay j:canDeleteInContribution="true" j:canOrderInContribution="true" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" j:mainResourceView="table" j:originWS="default" jcr:mixinTypes="jmix:contributeMode" jcr:primaryType="jnt:mainResourceDisplay"/>
+                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Dossier de Contenus"/>
               </content-folder>
             </custom-rows-960gs-1-col2>
           </contentFolderTemplate>
           <documentFolderTemplate j:applyOn="jnt:folder" j:defaultTemplate="true" j:hiddenTemplate="false" j:originWS="default" j:priority="11" jcr:primaryType="jnt:contentTemplate">
             <pagecontent j:originWS="default" jcr:primaryType="jnt:contentList">
-              <custom-rows-960gs-1 customColumn="3,13" j:originWS="default" jcr:primaryType="jnt:customRow" />
+              <custom-rows-960gs-1 customColumn="3,13" divID="content" j:originWS="default" jcr:primaryType="jnt:customRow"/>
             </pagecontent>
-            <custom-rows-960gs-col1 j:originWS="default" jcr:primaryType="jnt:contentList" />
+            <custom-rows-960gs-col1 j:originWS="default" jcr:primaryType="jnt:contentList"/>
             <custom-rows-960gs-1-col1 j:originWS="default" jcr:primaryType="jnt:contentList">
               <facets j:originWS="default" j:skin="skins.box8" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Facets" />
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Facets"/>
                 <facets j:bindedComponent="_x002f_templateSets_x002f_templates-system_x002f_files" j:originWS="default" jcr:primaryType="jnt:facets">
                   <fieldFacet facet="tags" field="jmix:tagged;j:tags" j:originWS="default" jcr:primaryType="jnt:fieldFacet" limit="100" mincount="1" missing="false" offset="0">
-                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" label="Tags" />
+                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" label="Tags"/>
                   </fieldFacet>
                 </facets>
-                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Facettes" />
+                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Facettes"/>
               </facets>
             </custom-rows-960gs-1-col1>
             <custom-rows-960gs-1-col2 j:originWS="default" jcr:primaryType="jnt:contentList">
               <document-folder icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_folder-files.png" j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Document Folder" />
-                <pager displayNbOfItemsPerPage="true" displayPager="true" j:originWS="default" jcr:primaryType="jnt:pager" nbOfPages="10" pageSize="10" />
-                <mainResourceDisplay j:canDeleteInContribution="true" j:canOrderInContribution="true" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" j:mainResourceView="table" j:originWS="default" jcr:mixinTypes="jmix:contributeMode" jcr:primaryType="jnt:mainResourceDisplay" />
-                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Dossier de Fichiers" />
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Document Folder"/>
+                <pager displayNbOfItemsPerPage="true" displayPager="true" j:originWS="default" jcr:primaryType="jnt:pager" nbOfPages="10" pageSize="10"/>
+                <mainResourceDisplay j:canDeleteInContribution="true" j:canOrderInContribution="true" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" j:mainResourceView="table" j:originWS="default" jcr:mixinTypes="jmix:contributeMode" jcr:primaryType="jnt:mainResourceDisplay"/>
+                <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Dossier de Fichiers"/>
               </document-folder>
             </custom-rows-960gs-1-col2>
           </documentFolderTemplate>
         </base>
       </templates>
-      <j:versionInfo j:deployementDate="2012-01-09T18:34:31.429+01:00" j:version="6.6.0.0-SNAPSHOT" jcr:primaryType="jnt:versionInfo" />
-      <categories j:originWS="default" jcr:primaryType="jnt:category" jcr:title="Categories" />
+      <j:versionInfo j:deployementDate="2012-01-09T18:34:31.429+01:00" j:version="6.6.0.0-SNAPSHOT" jcr:primaryType="jnt:versionInfo"/>
+      <categories j:originWS="default" jcr:primaryType="jnt:category" jcr:title="Categories"/>
       <home changefreq="monthly" j:isHomePage="true" j:originWS="default" j:templateNode="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_base_x002f_home" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
-        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Home" />
-        <j:translation_de jcr:language="de" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Start" />
+        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Home"/>
+        <j:translation_de jcr:language="de" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Start"/>
       </home>
-      <components j:originWS="default" jcr:primaryType="jnt:componentFolder" />
+      <components j:originWS="default" jcr:primaryType="jnt:componentFolder"/>
     </templates-system>
   </templateSets>
 </content>
-

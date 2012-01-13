@@ -163,7 +163,10 @@ public class JahiaTemplateManagerServiceTest {
     private boolean compareNodeNamesTreeStopOnError(JCRNodeWrapper node, String oldPrefix, String newPrefix, JCRSessionWrapper session) {
         if (!excludedNodeName.contains(node.getName())) {
             try {
-                session.getNode(node.getPath().replaceAll(oldPrefix, newPrefix).replaceAll("forum\\-base", "base/forum-base"));
+                // StudioOnly node are not deployed on sites
+                if(!node.isNodeType("jmix:studioOnly")) {
+                    session.getNode(node.getPath().replaceAll(oldPrefix, newPrefix).replaceAll("forum\\-base", "base/forum-base"));
+                }
                 NodeIterator nodeIterator = node.getNodes();
                 while (nodeIterator.hasNext()) {
                     if (!compareNodeNamesTreeStopOnError((JCRNodeWrapper) nodeIterator.nextNode(), oldPrefix, newPrefix, session)) {

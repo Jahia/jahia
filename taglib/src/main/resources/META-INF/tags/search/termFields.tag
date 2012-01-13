@@ -21,26 +21,27 @@
 <c:set var="selectionOptions" value="${fn:replace(selectionOptions, ' ', '')}"/>
 <c:set var="selectionOptions" value="${functions:default(selectionOptions, 'siteContent,files')}"/>
 <c:if test="${display}">
+    <c:set var="customKey" value="src_terms[${termIndex}].fields.custom"/>
+    <c:set var="pValues" value="${fn:join(paramValues[customKey], ',')}"/>    
     <c:if test="${appearance == 'select'}">
-        <c:set var="key" value="src_terms[${termIndex}].fields.custom"/>
-        <c:set target="${attributes}" property="name" value="${key}"/>
+        <c:set target="${attributes}" property="name" value="${customKey}"/>
         <select ${functions:attributes(attributes)}>
             <c:forTokens items="${selectionOptions}" delims="," var="field">
-                <c:set var="key" value="src_terms[${termIndex}].fields.custom"/>
-                <c:set var="fieldSelected" value="}"/>
-                <option value="${field}" ${param[key] == field ? 'selected="selected"' : ''}><fmt:message key="searchForm.term.searchIn.${field}"/></option>
+                <c:set var="key" value="src_terms[${termIndex}].fields.${field}"/>
+                <c:set var="fieldSelected" value="${functions:default(fn:contains(pValues, field) or param[key], fn:contains(value, field))}"/>
+                <option value="${field}" ${fieldSelected ? 'selected="selected"' : ''}><fmt:message key="searchForm.term.searchIn.${field}"/></option>
             </c:forTokens>
         </select>
     </c:if>
     <c:if test="${appearance != 'select'}">
-        <div class="searchFields"><fmt:message key="searchForm.term.searchIn"/>
+        <span class="searchFields">
     <c:forTokens items="${selectionOptions}" delims="," var="field">
         <c:set var="key" value="src_terms[${termIndex}].fields.${field}"/>
-        <c:set var="fieldSelected" value="${functions:default(param[key], fn:contains(value, field))}"/>
+        <c:set var="fieldSelected" value="${functions:default(param[key] or fn:contains(pValues, field), fn:contains(value, field))}"/>
         <input type="hidden" id="src_terms[${termIndex}].fields.${field}" name="src_terms[${termIndex}].fields.${field}" value="${fn:escapeXml(fieldSelected)}"/>
-        <span class="searchField"><input type="checkbox" id="src_terms[${termIndex}].fields.${field}_view" name="src_terms[${termIndex}].fields.${field}_view" value="true" ${fieldSelected ? 'checked="checked"' : ''} onchange="document.getElementById('src_terms[${termIndex}].fields.${field}').value = this.checked;"/>&nbsp;<label for="src_terms[${termIndex}].fields.${field}_view"><fmt:message key="searchForm.term.searchIn.${field}"/></label></span>
+        <span class="searchField"><input type="checkbox" id="src_terms[${termIndex}].fields.${field}_view" name="src_terms[${termIndex}].fields.${field}_view" value="true" ${fieldSelected ? 'checked="checked"' : ''} onchange="document.getElementById('src_terms[${termIndex}].fields.${field}').value = this.checked;${attributes.onchange}"/>&nbsp;<label for="src_terms[${termIndex}].fields.${field}_view"><fmt:message key="searchForm.term.searchIn.${field}"/></label></span>
     </c:forTokens>
-        </div>
+        </span>
     </c:if>
 </c:if>
 <c:if test="${not display}">

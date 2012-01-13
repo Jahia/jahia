@@ -131,8 +131,9 @@ public class SearchCriteriaFactory {
                 while (params.hasMoreElements()) {
                     String param = params.nextElement();
                     if (param.startsWith(PARAM_NAME_PREFIX)) {
-                        properties.put(param.substring(
-                                PARAM_NAME_PREFIX.length()), ctx.getRequest().getParameter(param));
+                        String[] pValues = ctx.getRequest().getParameterValues(param);
+                        properties.put(param.substring(PARAM_NAME_PREFIX.length()), pValues != null && pValues.length == 1 ? pValues[0]
+                                : pValues);
                     }
                 }
                 

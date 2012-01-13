@@ -11,8 +11,24 @@
 <template:addResources>
     <script type="text/javascript">
         function toggleSearchMode(field) {
-            document.getElementById('search-pages-criteria').style.display = field == 'siteContent' ? '' : 'none';
-            document.getElementById('search-documents-criteria').style.display = field == 'siteContent' ? 'none' : '';
+        	if (field.type == 'checkbox') {
+        		if (field.name.indexOf('siteContent') != -1) {
+                    document.getElementById('search-pages-criteria').style.display = field.checked ? '' : 'none';
+        		}
+        		if (field.name.indexOf('files') != -1) {
+                    document.getElementById('search-documents-criteria').style.display = field.checked ? '' : 'none';
+        		}
+        	} else {
+             	var o,i=0;
+            	while(o=field.options[i++]){
+            		if (o.value == 'siteContent') {
+            			document.getElementById('search-pages-criteria').style.display = o.selected ? '' : 'none';
+            		}
+            		if (o.value == 'files') {
+            			document.getElementById('search-documents-criteria').style.display = o.selected ? '' : 'none';
+            		}
+                }  
+        	}
         }
         $(document).ready(function() {
             $('#advancedSearch').hide();
@@ -41,7 +57,7 @@
             <fieldset>
                 <legend><fmt:message key="search.advancedSearch.criteria.text.title"/></legend>
                 <p><label class="left" for="searchTerm"><fmt:message key="search"/></label>&nbsp;<s:termMatch selectionOptions="all_words,exact_phrase,any_word,as_is"/>&nbsp;<s:term id="searchTerm"/></p>
-                <p><label class="left" for="searchFields"><fmt:message key="searchForm.term.searchIn"/></label>&nbsp;<s:termFields id="searchFields" appearance="select" onchange="toggleSearchMode(this.options[this.selectedIndex].value)"/></p>
+                <p><label class="left" for="searchFields"><fmt:message key="searchForm.term.searchIn"/></label>&nbsp;<s:termFields id="searchFields" onchange="toggleSearchMode(this)"/></p>
             </fieldset>
             <fieldset>
                 <legend><fmt:message key="search.advancedSearch.criteria.authorAndDate.title"/></legend>
@@ -55,11 +71,15 @@
                 <p><label class="left" for="searchSite"><fmt:message key="search.advancedSearch.criteria.miscellanea.site"/></label><s:site id="searchSite" includeReferencesFrom="systemsite"/></p>
                 <p><label class="left" for="searchLanguage"><fmt:message key="search.advancedSearch.criteria.miscellanea.language"/></label><s:language id="searchLanguage"/></p>
                 <c:set var="searchInFieldkey" value="src_terms[0].fields.custom"/>
+                <c:set var="searchInFilesKey" value="src_terms[0].fields.files"/>
+                <c:set var="searchInSiteContentKey" value="src_terms[0].fields.siteContent"/>
                 <c:set var="pValues" value="${fn:join(paramValues[searchInFieldkey], ',')}"/>
-                <div id="search-pages-criteria" ${empty paramValues[searchInFieldkey] || fn:contains(pValues, 'siteContent') ? '' : 'style="display:none"'}>
+                <c:set var="pFilesValue" value="${param[searchInFilesKey]}"/>
+                <c:set var="pSiteContentValue" value="${param[searchInSiteContentKey]}"/>
+                <div id="search-pages-criteria" ${fn:contains(pValues, 'siteContent') || pSiteContentValue == 'true' ? '' : 'style="display:none"'}>
                     <p><label class="left" for="searchPagePath"><fmt:message key="search.advancedSearch.criteria.miscellanea.pagePath"/></label><s:pagePath id="searchPagePath"/></p>
                 </div>
-                <div id="search-documents-criteria" ${fn:contains(pValues, 'fileContent') ? '' : 'style="display:none"'}>
+                <div id="search-documents-criteria" ${fn:contains(pValues, 'fileContent') or fn:contains(pValues, 'files') or pFilesValue == 'true' ? '' : 'style="display:none"'}>
                     <p><label class="left" for="searchFileType"><fmt:message key="search.advancedSearch.criteria.miscellanea.fileType"/></label><s:fileType id="searchFileType"/></p>
                     <p><label class="left" for="searchFilePath"><fmt:message key="search.advancedSearch.criteria.miscellanea.location"/></label><s:filePath id="searchFilePath"/></p>
                 </div>

@@ -567,35 +567,37 @@ public class SearchCriteria implements Serializable {
                 return title;
             }            
             
-            public void setCustom(String custom) {
-                if (custom != null) {
-                    if (custom.contains("siteContent")) {
-                        setSiteContent(true);
-                    }
-                    if (custom.contains("fileContent")) {
-                        setFileContent(true);
-                    }
-                    if (custom.contains("description")) {
-                        setDescription(true);
-                    }
-                    if (custom.contains("title")) {
-                        setTitle(true);
-                    }
-                    if (custom.contains("filename")) {
-                        setFilename(true);
-                    }
-                    if (custom.contains("keywords")) {
-                        setKeywords(true);
-                    }
-                    if (custom.contains("tags")) {
-                        setTags(true);
-                    }                    
-                    if (custom.contains("files")) {
-                        setDescription(true);
-                        setFileContent(true);
-                        setFilename(true);
-                        setKeywords(true);
-                        setTitle(true);
+            public void setCustom(String[] customFields) {
+                for (String custom : customFields) {
+                    if (custom != null) {
+                        if (custom.contains("siteContent")) {
+                            setSiteContent(true);
+                        }
+                        if (custom.contains("fileContent")) {
+                            setFileContent(true);
+                        }
+                        if (custom.contains("description")) {
+                            setDescription(true);
+                        }
+                        if (custom.contains("title")) {
+                            setTitle(true);
+                        }
+                        if (custom.contains("filename")) {
+                            setFilename(true);
+                        }
+                        if (custom.contains("keywords")) {
+                            setKeywords(true);
+                        }
+                        if (custom.contains("tags")) {
+                            setTags(true);
+                        }
+                        if (custom.contains("files")) {
+                            setDescription(true);
+                            setFileContent(true);
+                            setFilename(true);
+                            setKeywords(true);
+                            setTitle(true);
+                        }
                     }
                 }
             }
@@ -619,6 +621,14 @@ public class SearchCriteria implements Serializable {
             public void setSiteContent(boolean content) {
                 this.siteContent = content;
                 this.tags = content;
+            }
+            
+            public void setFiles(boolean files) {
+                setDescription(files);
+                setFileContent(files);
+                setFilename(files);
+                setKeywords(files);
+                setTitle(files);
             }
 
             public void setTags(boolean tags) {

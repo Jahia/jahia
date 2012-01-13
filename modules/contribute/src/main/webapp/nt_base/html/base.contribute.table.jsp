@@ -38,11 +38,15 @@
 
     <c:set var="suffix" value=".html"/>
     <c:set var="parent" value="${jcr:getParentOfType(currentNode,'jnt:content')}"/>
+    <c:set var="icon" value="folder_up.png"/>
+    <c:set var="alt"><fmt:message key="label.backToParent"/></c:set>
     <c:if test="${empty parent}">
         <c:set var="parent" value="${jcr:getParentOfType(currentNode,'jnt:folder')}"/>
     </c:if>
     <c:if test="${empty parent or jcr:isNodeType(parent, 'jnt:contentList')}">
         <c:set var="parent" value="${jcr:getParentOfType(currentNode,'jnt:page')}"/>
+        <c:set var="icon" value="back.png"/>
+        <c:set var="alt"><fmt:message key="label.backToPage"/></c:set>
     </c:if>
 
 
@@ -52,11 +56,11 @@
             <c:if test="${jcr:isNodeType(parent, 'jnt:content') and not jcr:isNodeType(parent, 'jnt:contentFolder')}">
                 <c:set var="suffix" value=".editContent.html"/>
             </c:if>
-            <a title="parent" href="<c:url value='${url.base}${parent.path}${suffix}'/>"><img height="16" width="16"
+            <a title="${alt}" href="<c:url value='${url.base}${parent.path}${suffix}'/>"><img height="16" width="16"
                                                                                      border="0"
                                                                                      style="cursor: pointer;"
-                                                                                     title="parent" alt="parent"
-                                                                                     src="<c:url value='${url.templatesPath}/default/images/icons/folder_up.png'/>"></a>
+                                                                                     title="${alt}" alt="${alt}"
+                                                                                     src="<c:url value='${url.templatesPath}/default/images/icons/${icon}'/>"></a>
         </c:if>
         <input type="checkbox" class="jahiaCBoxContributeContent" name="${currentNode.identifier}" /> ${fn:escapeXml(currentNode.displayableName)}
     </h3>

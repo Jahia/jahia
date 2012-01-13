@@ -799,7 +799,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     }
     
     public boolean equals(final Object o) {
-        return node.equals(o);    
+        if (o instanceof JCRNodeDecorator) {
+            return node.equals(((JCRNodeDecorator) o).node);
+        }
+        return false;
     }
     
     public int hashCode() {

@@ -5,17 +5,17 @@ Jahia Visibility Module
  visibility framework will add rules/conditions to ensure that a node is visible or not.
 
  Jahia will provide a default condition that can define the visibility of a node based on the current date. The node
- will be visible if the current date is after/between start date and/(or before) end date.
+ will be visible if the current date is after/between start date and after/(or before) end date.
 
- The conditions are checked everytime we try to access the node, if a node is not visible nobody will see it in the live
+ The conditions are checked every time we try to access the node, if a node is not visible nobody will see it in the live
  repository even in administration.
 
  The conditions will not be checked against when in the cache, so you will need to flush the cache when reaching a
  change of condition that will make a node visible or not. This way the conditions will be reevaluated.
 
-* How to write you own conditions
+* How to write your own conditions
 
-  Conditions can be define in any module, they are initialized through Spring. This way they have access to all services.
+  Conditions can be defined in any module, they are initialized through Spring framework. This way they have access to all services.
   To write your own condition simply implement the interface <<org.jahia.services.visiblity.VisibilityConditionRule>>.
 
 ------------------------------------
@@ -49,8 +49,8 @@ public interface VisibilityConditionRule {
 }
 ------------------------------------
 
-  Each condition should be associated with a nodetype that will provide a way for the end user to interact with it, by
-  filling the associated auto generated form.
+  Each condition should be associated with a node type that will provide a way for the end user to interact with it, by
+  filling the associated auto generated form like we do for the workflow.
 
 * Example of a condition
 
@@ -139,6 +139,21 @@ public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
  - start (date, datetimepicker)
  - end   (date, datetimepicker)
 ----------------------------------
+
+  Association in the Spring file of the module.
+
+----------------------------------
+<bean class="org.jahia.modules.visibility.conditions.StartEndDateConditionRuleImpl">
+  <property name="associatedNodeType" value="jnt:startEndDateCondition"/>
+  <property name="requiredFieldNamesForTemplate">
+    <list>
+      <value>start</value>
+      <value>end</value>
+    </list>
+  </property>
+</bean>
+--------------------------------
+
 
 * How do you handle multiple conditions on a node ?
 

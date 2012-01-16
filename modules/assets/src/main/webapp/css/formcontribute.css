@@ -203,3 +203,20 @@ button span.icon-undelete{
 button span.icon-publish{
  	background:url(img/toolbar-contribute.png) no-repeat 0px -160px;
 }
+
+/******************************************************************************
+*  subnodes List
+******************************************************************************/
+.bodywrapper ul.subnodesList,
+.bodywrapper ol.subnodesList {
+	list-style:none;
+	margin:1em 0 1em 3em;
+	padding:0;
+	border-bottom:none;
+}
+.bodywrapper ul.subnodesList li,
+.bodywrapper ol.subnodesList li {
+	list-style-type:none;
+	margin:0.2em 0;
+	padding:0;
+}

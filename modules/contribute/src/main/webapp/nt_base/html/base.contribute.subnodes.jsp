@@ -17,7 +17,9 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<ul>
+<template:addResources type="css" resources="contribute.min.css"/>
+
+<ul class="subnodesList">
 <c:forEach items="${jcr:getChildrenOfType(currentNode, 'jnt:content')}" var="child" varStatus="status">
     <c:set var="markedForDeletion" value="${jcr:isNodeType(child, 'jmix:markedForDeletion')}"/>
     <c:set var="markedForDeletionRoot" value="${jcr:isNodeType(child, 'jmix:markedForDeletionRoot')}"/>

@@ -12,9 +12,12 @@
 <c:set var="types" value="${jcr:getContributeTypes(target, null, currentNode.properties['j:type'])}"/>
 
 <c:forEach items="${types}" var="nodeType" varStatus="status">
+    <h3 class="titleaddnewcontent">
+    <img title="" alt="" src="<c:url value='${url.currentModule}/images/add.png'/>"/>
     <a href="#add${currentNode.identifier}-${status.index}"  id="addButton${currentNode.identifier}-${status.index}">
         <fmt:message key="add"/> ${jcr:label(nodeType, renderContext.mainResourceLocale)}
     </a>
+    </h3>
 
     <div style="display:none;">
         <div id="add${currentNode.identifier}-${status.index}"

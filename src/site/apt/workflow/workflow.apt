@@ -31,6 +31,9 @@ Workflow Integration
 
   When declaring a workflow, a mapping between workflow actions and Jahia permissions is defined. In order to start a
   workflow or being able to assign and execute a task, a user must have the matching permission, via a role.
+  If no specific mapping is specified, a permission is automatically created for every task in <</permissions/workflow-tasks/>>.
+  See {{Workflow declaration}} on how to declare a workflow and a custom permission mapping.
+
   Workflow permissions, like other permissions, are assigned to roles via the roles manager in the administration :
 
 [../images/workflow/roles-manager.png]
@@ -71,7 +74,7 @@ Workflow Integration
    As you can see in the jBPM configuration file, we use a wildcard classpath lookup to search for the jPDL workflow
    process definition files. This means that you can simply put in your module in the proper package (by default
    <<<org.jahia.services.workflow>>>) a file with the extension jpdl.xml and it will be picked-up on Jahia's startup.
-   In order to be fully available in Jahia, the process must be declared in a configuration file - see {workflow declaration}
+   In order to be fully available in Jahia, the process must be declared in a configuration file - see {{Workflow declaration}}
 
 ** jBPM forms
 
@@ -154,8 +157,10 @@ Workflow Integration
   the next one in your process flow.
 
   However, if you need to send more dynamic mails, it can be easier to use mail templates, using a custom mail producer.
-  First you need to create a mail template - mail templates are deployed as workflow, as resource files in
-  org/jahia/services/workflow . The following example, start-publication-template.mail , defines a mail that will be sent
+  First you need to create a mail template - mail templates are found like workflows, in a path specified in the
+  applicationcontext-jBPM.xml file. By default all resources in the package <<<org.jahia.services.workflow>>> with the
+  extension <<<.mail>>> are taken.
+  The following example, <<<start-publication-template.mail>>> , defines a mail that will be sent
   when we start a publication workflow :
 
 +--------------------------------
@@ -247,9 +252,11 @@ A publication workflow with one validation step has been started on ${date.forma
 
    * <<permissions>> : This is an optional map defining the mapping between workflow actions and Jahia permissions. The map contains
    the workflow action as the key, and the permission full path as the value. A user need to be part of a role
-   containing that permission to be able to execute the workflow action (see {{roles}}). If no permission is defined for
-   a task, a specific permission will be automatically created.
-
+   containing that permission to be able to execute the workflow action (see {{roles}}). Note that the permission name to use
+   can be based on a custom variable that has been set previously in the workflow context : in the translationWorkflow,
+   the permission <<<jcr:modifyProperties_default_$translateTo>>> will be replaced by jcr:modifyProperties_default_en if the
+   variable <<<translateTo>>> has been set to <<<en>>>.
+   If no permission is defined for a task, a specific permission will be automatically created.
 
 * Configuring new workflow providers
 

@@ -36,7 +36,7 @@
         </attribute>
     </tag>
     <tag>
-        <description>Exposes the possible workflow for the specified node.</description>
+        <description>Exposes the possible workflow definition for the workflow type specified in workflowAction.</description>
         <name>workflowsForAction</name>
         <tag-class>org.jahia.taglibs.workflow.WorkflowsForActionTag</tag-class>
         <body-content>empty</body-content>
@@ -57,7 +57,7 @@
         </attribute>
     </tag>
     <tag>
-        <description>Exposes the possible workflow for the specified node.</description>
+        <description>Exposes all past tasks for the specified workflow.</description>
         <name>workflowHistory</name>
         <tag-class>org.jahia.taglibs.workflow.WorkflowHistoryTag</tag-class>
         <body-content>empty</body-content>
@@ -83,7 +83,7 @@
         </attribute>
     </tag>
     <tag>
-        <description>Exposes the possible workflow for the specified node.</description>
+        <description>Exposes all workflow history for the specified node path.</description>
         <name>workflowForPath</name>
         <tag-class>org.jahia.taglibs.workflow.WorkflowForPathTag</tag-class>
         <body-content>empty</body-content>
@@ -104,7 +104,7 @@
         </attribute>
     </tag>
     <tag>
-        <description>Exposes the possible workflow for the specified node.</description>
+        <description>Exposes the possible workflow definitions for the specified node, with an an optional workflow type.</description>
         <name>workflowsForNode</name>
         <tag-class>org.jahia.taglibs.workflow.WorkflowsForNodeTag</tag-class>
         <body-content>empty</body-content>

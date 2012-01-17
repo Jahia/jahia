@@ -1,7 +1,18 @@
 MySQL tips for Jahia
 
- First Jahia is using InnoDB for its database engine on MySQL so be sure that you have configure your MySQL for InnoDB.
+* Database configuration
 
+ Jahia uses BLOBs to store its data. Default MySQL installation may allow small packets only - check that the
+ max_allowed_packet value is set to a value large enough :
+
+------------------------------
+[mysqld]
+...
+max_allowed_packet = 100M
+...
+------------------------------
+
+ Jahia is using InnoDB for its database engine on MySQL so be sure that you have configure your MySQL for InnoDB.
  Here some default configuration for your database to be put in your my.cnf or my.ini file.
 
 ------------------------------
@@ -28,3 +39,10 @@ innodb_log_buffer_size=64M
 #
 innodb_flush_log_at_trx_commit=1
 ------------------------------
+
+
+* MySQL on Mac OS X
+
+ Please note that MySQL versions from 5.5.9 to 5.5.12 on MacOSX are not supported, due to a bug on constraints
+ ({{http://bugs.mysql.com/bug.php?id=60309}}).
+

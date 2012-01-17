@@ -305,7 +305,8 @@ public class FormFieldCreator {
         field.setName(definition.getName());
         field.setFieldLabel(definition.getLabel());
         if(!"".equals(definition.getTooltip())) {
-            field.setLabelSeparator(field.getLabelSeparator() + " <img width='16px' height='16px' src='" + JahiaGWTParameters.getContextPath() +
+            String separator = field.getLabelSeparator()!=null? field.getLabelSeparator():"";
+            field.setLabelSeparator(separator + " <img width='16px' height='16px' src='" + JahiaGWTParameters.getContextPath() +
                     "/modules/default/images/icons/information.png' title='" + definition.getTooltip().replace("'", " ") + "'/>");
         }
         if (field.isReadOnly() || definition.isProtected()) {

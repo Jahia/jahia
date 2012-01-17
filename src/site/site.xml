@@ -69,6 +69,7 @@
             <item name="Rendering" href="./render/render.html"/>
             <item name="Import and Export" href="./import/index.html"/>
             <item name="Guest User Group Labels" href="./guest_user_group_labels.html"/>
+            <item name="Image Service" href="./image_service.html"/>
         </menu>
         <menu name="Developing with Jahia">
             <item name="Prerequisites" href="./development/prerequisites.html">

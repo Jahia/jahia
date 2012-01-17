@@ -43,6 +43,6 @@ innodb_flush_log_at_trx_commit=1
 
 * MySQL on Mac OS X
 
- Please note that MySQL versions from 5.5.9 to 5.5.12 on MacOSX are not supported, due to a bug on constraints
- ({{http://bugs.mysql.com/bug.php?id=60309}}).
+ Please note that for MySQL versions from 5.5.9 to 5.5.12 on MacOSX, you must set the value
+ of lower_case_table_names to 1 ({{http://bugs.mysql.com/bug.php?id=60309}}).
 

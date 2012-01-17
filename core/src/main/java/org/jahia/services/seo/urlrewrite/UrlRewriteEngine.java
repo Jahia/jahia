@@ -196,7 +196,7 @@ class UrlRewriteEngine extends UrlRewriter {
                 }
             }
         } catch (Exception e) {
-            logger.error("Cannot parse url for rewriting : "+outboundUrl , e);
+            logger.debug("Cannot parse url for rewriting : "+outboundUrl , e);
         }
 
         return super.processEncodeURL(hsResponse, hsRequest, encodeUrlHasBeenRun, outboundUrl);

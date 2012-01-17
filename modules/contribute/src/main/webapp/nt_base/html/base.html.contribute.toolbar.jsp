@@ -317,21 +317,24 @@ $(function() {
 <div id="contributeToolbar">
 
     <div id="edit">
-        <a href="<c:url value='${url.live}'/>"><img src="<c:url value='/icons/live.png'/>" width="16" height="16"
+<c:if test="${jcr:isDisplayable(currentNode, renderContext)">
+    <c:if test="${currentNode.properties['j:published'].boolean}">
+        <a href="<c:url value='${url.baseLive}${currentNode.path}.html'/>"><img src="<c:url value='/icons/live.png'/>" width="16" height="16"
                                                     alt=" " role="presentation"
                                                     style="position:relative; top: 4px; margin-right:2px; "><fmt:message
                 key="label.live"/></a>
-        <a href="<c:url value='${url.preview}'/>"><img src="<c:url value='/icons/preview.png'/>" width="16" height="16"
+    </c:if>
+        <a href="<c:url value='${url.basePreview}${currentNode.path}.html'/>"><img src="<c:url value='/icons/preview.png'/>" width="16" height="16"
                                                        alt=" " role="presentation"
                                                        style="position:relative; top: 4px; margin-right:2px; "><fmt:message
                 key="label.preview"/></a>
     <c:if test="${jcr:hasPermission(currentNode, 'editModeAccess')}">
-        <a href="<c:url value='${url.edit}'/>"><img src="<c:url value='/icons/editMode.png'/>" width="16" height="16"
+        <a href="<c:url value='${url.baseEdit}${currentNode.path}.html'/>"><img src="<c:url value='/icons/editMode.png'/>" width="16" height="16"
                                                        alt=" " role="presentation"
                                                        style="position:relative; top: 4px; margin-right:2px; "><fmt:message
                 key="label.editMode"/></a>
     </c:if>
-
+</c:if>
         <span></span>
         <div id="dropdown1" class="relative">
         <a class="subnav openEdit" href="#"><img src="<c:url value='/icons/editContent.png'/>" width="16" height="16"

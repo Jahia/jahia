@@ -7,7 +7,7 @@
  *
  * For more information, please visit http://www.jahia.com.
  *
- * Copyright (C) 2002-2011 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2012 Jahia Solutions Group SA. All rights reserved.
  *
  * This Enteprise Jahia software must be used in accordance with the terms contained in the
  * Jahia Solutions Group Terms & Conditions as well as the

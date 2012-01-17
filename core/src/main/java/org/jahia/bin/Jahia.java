@@ -6,7 +6,7 @@
  *
  * For more information, please visit http://www.jahia.com.
  *
- * Copyright (C) 2002-2011 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2012 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -112,7 +112,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     static public final String COPYRIGHT =
             "&copy; Copyright 2002-2012  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
 
-    public final static String COPYRIGHT_TXT = "2011 Jahia Solutions Group SA" ;
+    public final static String COPYRIGHT_TXT = "2012 Jahia Solutions Group SA" ;
 
     static private boolean maintenance = false;
 

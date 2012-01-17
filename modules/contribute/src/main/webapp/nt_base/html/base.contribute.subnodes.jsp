@@ -19,6 +19,7 @@
 
 <template:addResources type="css" resources="contribute.min.css"/>
 
+<div class="listEditToolbar">
 <ul class="subnodesList">
 <c:forEach items="${jcr:getChildrenOfType(currentNode, 'jnt:content')}" var="child" varStatus="status">
     <c:set var="markedForDeletion" value="${jcr:isNodeType(child, 'jmix:markedForDeletion')}"/>
@@ -34,10 +35,9 @@
         <c:if test="${markedForDeletion}">
             </span>
         </c:if>
-
         <c:if test="${not status.first}">
             <button id="moveUp-${currentNode.identifier}-${status.index}"
-                    onclick="var callback = '$(\'.addContentContributeDiv\').each(function(index,value){animatedcollapse.addDiv($(this).attr(\'id\'), \'fade=1,speed=700,group=tasks\');});animatedcollapse.reinit();if (navigator.userAgent.indexOf(\'MSIE\') > 0) {location.reload();}';invert('${child.path}','${previousChild.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',callback)">
+                    onclick="invert('${child.path}','${previousChild.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', null,null)">
                 <span class="icon-contribute icon-moveup"></span><fmt:message key="label.move.up"/></button>
         </c:if>
         <c:if test="${not status.last}">
@@ -46,6 +46,40 @@
                 <span class="icon-contribute icon-movedown"></span><fmt:message key="label.move.down"/></button>
         </c:if>
         <c:set var="previousChild" value="${child}"/>
+        <c:if test="${!child.locked && !markedForDeletion}">
+            <fmt:message key="message.remove.single.confirm" var="i18nDeleteConfirm">
+                <fmt:param value="${child.displayableName}"/>
+            </fmt:message>
+            <fmt:message key="label.comment" var="i18nDeleteComment"/>
+            <button id="delbtn-${child.identifier}" onclick="deleteSingleNode('${child.identifier}',true);">
+                <span class="icon-contribute icon-delete"></span><fmt:message key="label.delete"/></button>
+        </c:if>
+        <c:if test="${markedForDeletion && fn:length(child.properties['j:lockTypes']) <= 1}">
+            <fmt:message key="message.undelete.confirm" var="i18nUndeleteConfirm">
+                <fmt:param value="${child.displayableName}"/>
+            </fmt:message>
+            <button id="undelbtn-${child.identifier}"
+                    onclick="deleteSingleNode('${child.identifier}',false);">
+                <span class="icon-contribute icon-undelete"></span><fmt:message key="label.undelete"/></button>
+            <jcr:nodeProperty node="${child}" name="j:published" var="childPublished"/>
+            <c:if test="${empty childPublished}">
+                <fmt:message key="message.remove.single.confirm" var="i18nDeleteConfirm">
+                    <fmt:param value="${child.displayableName}"/>
+                </fmt:message>
+                <button id="delbtn-${child.identifier}"
+                        onclick="deleteSingleNode('${child.identifier}');">
+                    <span class="icon-contribute icon-delete"></span><fmt:message key="label.deletePermanently"/></button>
+            </c:if>
+            <c:if test="${not empty childPublished}">
+                <fmt:message key="message.requestDeletionApproval.confirm" var="i18nPublishConfirm">
+                    <fmt:param value="${child.displayableName}"/>
+                </fmt:message>
+                <button id="pubbtn-${child.identifier}"
+                        onclick="publishNodes(new Array('${child.identifier}'), '${functions:escapeJavaScript(i18nPublishConfirm)}');">
+                    <span class="icon-contribute icon-publish"></span><fmt:message key="label.requestDeletionApproval"/></button>
+            </c:if>
+        </c:if>
     </li>
 </c:forEach>
 </ul>
+</div>

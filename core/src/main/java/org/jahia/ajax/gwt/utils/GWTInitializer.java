@@ -41,12 +41,12 @@
 package org.jahia.ajax.gwt.utils;
 
 import org.apache.commons.lang.WordUtils;
+import org.drools.util.StringUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -61,7 +61,6 @@ import org.jahia.services.usermanager.JahiaUser;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.PageContext;
 
 import java.util.*;
 
@@ -87,7 +86,13 @@ public class GWTInitializer {
                     UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER), LanguageCodeConverters.resolveLocaleForGuest(request));
         }
         if (locale == null) {
-            locale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE);
+            String language = request.getParameter("lang");
+            if (!StringUtils.isEmpty(language)) {
+                locale = LanguageCodeConverters.getLocaleFromCode(language);
+            }
+            if (locale == null) {
+                locale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE);
+            }
             if (locale == null) {
                 locale = Locale.ENGLISH;
             }

@@ -347,7 +347,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=filemanager&amp;site=$siteuuid"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=filemanager&amp;site=$siteuuid&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -378,7 +378,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=repositoryexplorer"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=repositoryexplorer&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -401,7 +401,7 @@
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
                     <property name="value"
-                              value="$context/engines/manager.jsp?conf=repositoryexplorer&amp;site=$siteuuid&amp;selectedPaths=$nodepath"/>
+                              value="$context/engines/manager.jsp?conf=repositoryexplorer&amp;site=$siteuuid&amp;selectedPaths=$nodepath&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -432,7 +432,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=portletmanager&amp;site=$siteuuid"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=portletmanager&amp;site=$siteuuid&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -463,7 +463,7 @@
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
                     <property name="value"
-                              value="$context/engines/manager.jsp?conf=categorymanager&amp;site=$siteuuid"/>
+                              value="$context/engines/manager.jsp?conf=categorymanager&amp;site=$siteuuid&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -493,7 +493,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=tagmanager&amp;site=$siteuuid"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=tagmanager&amp;site=$siteuuid&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -523,7 +523,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=sitemanager&amp;site=$siteuuid"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=sitemanager&amp;site=$siteuuid&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -553,7 +553,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=sitecomponentmanager&amp;site=$siteuuid"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=sitecomponentmanager&amp;site=$siteuuid&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -1261,7 +1261,7 @@
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
                     <property name="value"
-                              value="$context/engines/manager.jsp?conf=editorialcontentmanager&amp;site=$siteuuid"/>
+                              value="$context/engines/manager.jsp?conf=editorialcontentmanager&amp;site=$siteuuid&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>

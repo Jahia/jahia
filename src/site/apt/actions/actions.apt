@@ -1,13 +1,13 @@
 Actions Framework
 
  Jahia provides several mechanisms to render your contents, it also provides some to allow end-users or other systems
-to interact with your content through action on said content.
+ to interact with your content through action on said content.
 
  Actions are activated on an HTTP POST request, to comply with the REST methodology. Provided actions allows a lot of interactions already,
-like adding a comment on any node, starting workflows, sending form submission by mail, register new user, etc.
+ like adding a comment on any node, starting workflows, sending form submission by mail, register new user, etc.
 
- Actions are simple class extending the <<<<org.jahia.bin.Action>>> abstract class, the super class is responsible of handling
-permissions and other restrictions. You have to override the method doExecute, to provide your own Action.
+ An Action is a simple class extending the <<<org.jahia.bin.Action>>> abstract class, which is responsible of handling
+ permissions and other restrictions. You need to override the method doExecute, to provide your own Action.
 
 ----------------------------
 public abstract ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
@@ -17,131 +17,119 @@ public abstract ActionResult doExecute(HttpServletRequest req, RenderContext ren
 ----------------------------
 
  You can do anything you want in an action, but keep in mind that the shortest time your action take to execute the better end-user
-experience.
+ experience is.
 
- So as said previously Actions are called through HTTP POST methods, but as a result of an action you can let the user stay on
-its current web page, another web page or send back results as a JSON serialized object. This allows to easily interact with
-framework like JQuery
+ As said previously, Actions are called through HTTP POST methods, but as a result of an action you can let the user stay on
+ its current web page or redirect to another web page. The result can be a JSON serialized object. This allows to easily interact with
+ framework like JQuery. To describe this behaviour, the method doExecute returns a <<<org.jahia.bin.ActionResult>>> object.
+ It contains a HTTP response code and the eventual redirect URL and <<<org.json.JSONObject>>> instance.
 
-Example based on the AddComment Action
+Example based on the RateContent Action
 
 --------------------------------------
-package org.jahia.modules.defaultmodule.actions;
+package org.jahia.modules.rating.actions;
 |
 |
-public class AddComment extends Action {
+public class RateContent extends Action {
+    JCRTemplate jcrTemplate;
+
+    public void setJcrTemplate(JCRTemplate jcrTemplate) {
+        this.jcrTemplate = jcrTemplate;
+    }
 
     @Override
-    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-                                  JCRSessionWrapper session, Map<String, List<String>> parameters,
-                                  URLResolver urlResolver)
-                                  throws Exception {
-        JCRSessionWrapper jcrSessionWrapper = resource.getNode().getSession();
-        JCRNodeWrapper node = resource.getNode();
-        if(!node.isNodeType("jmix:comments")) {
-            node.checkout();
-            node.addMixin("jmix:comments");
-            jcrSessionWrapper.save();
-        }
-        String path = node.getPath() + "/comments";
-        JCRNodeWrapper newNode = createNode(req, parameters, jcrSessionWrapper.getNode(path), "jnt:post","");
-        jcrSessionWrapper.save();
-        return new ActionResult(HttpServletResponse.SC_OK, newNode.getPath(), Render.serializeNodeToJSON(newNode));
+    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, final Resource resource, JCRSessionWrapper session, final Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+        return (ActionResult) jcrTemplate.doExecuteWithSystemSession(null,session.getWorkspace().getName(),session.getLocale(),new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRNodeWrapper node = session.getNodeByUUID(resource.getNode().getIdentifier());
+                if (!node.isNodeType("jmix:rating")) {
+                    session.checkout(node);
+                    node.addMixin("jmix:rating");
+                    session.save();
+                }
+                List<String> values = parameters.get("j:lastVote");
+                node.setProperty("j:lastVote", values.get(0));
+                node.setProperty("j:nbOfVotes",node.getProperty("j:nbOfVotes").getLong()+1);
+                node.setProperty("j:sumOfVotes",node.getProperty("j:sumOfVotes").getLong()+values.get(0));
+                session.save();
+                try {
+                    return new ActionResult(HttpServletResponse.SC_OK, node.getPath(), Render.serializeNodeToJSON(node));
+                } catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (JSONException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                return null;
+            }
+        });
     }
 }
 --------------------------------------
 
- This action is defined in the default module.
+ The <<<org.jahia.bin.Render.serializeNodeToJSON>>> method is a utility function that returns a JSONObject representing a node.
+
+ Declaration of an Action is done via Spring. In our example, this action is defined in the rating module like this:
+
+----------------------------
+    <bean class="org.jahia.modules.rating.actions.RateContent" >
+        <property name="name" value="rate"/>
+        <property name="jcrTemplate" ref="jcrTemplate"/>
+    </bean>
+----------------------------
+
 
 Calling an Action from your forms
 
- To call an action this as simple as on node calling node.actionName.do, example for the AddComment Action:
+ Calling an action is simple as calling <node/path>.actionName.do.
+ In our example for the RateContent Action, here is an extract of a jQuery function in <<<rateable.jsp>>>:
 
 -----------------------------------
-<template:addResources type="javascript" resources="jquery.js,jquery.validate.js"/>
-<template:addResources type="inlinejavascript">
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $("#newCommentForm").validate({
-                rules: {
-                    'jcr:title': "required",
-                    <c:if test="${not renderContext.loggedIn}">
-                    pseudo: "required",
-                    captcha: "required"
-                    </c:if>
-                }
-            });
+$.post("<c:url value='${url.base}${bindedComponent.path}'/>.rate.do", {'j:lastVote': value,'jcrMethodToCall':"post",
+    'jcrCookieName':"rated${bindedComponent.identifier}",
+    'jcrCookieValue':"${currentNode.identifier}"}, function(
+        result) {
+    <%-- Select stars from "Average rating" control to match the returned average rating value --%>
+    $("#avg${id}").stars("select", Math.round(result.j_sumOfVotes / result.j_nbOfVotes));
+    <%-- Update other text controls... --%>
+    $("#all_votes${id}").text(result.j_nbOfVotes);
+    $("#all_avg${id}").text(('' + result.j_sumOfVotes / result.j_nbOfVotes).substring(0, 3));
+    <%-- Display confirmation message to the user --%>
+    $("#messages${id}").html("<br/><fmt:message key="label.ratingSaved"/> (" + value + "). <fmt:message key="label.thanks"/>!").stop().css("opacity", 1).fadeIn(30);
+    <%-- Hide confirmation message and enable stars for "Rate this" control, after 2 sec... --%>
+    setTimeout(function() {
+        $("#messages${id}").fadeOut(1000, function() {
+//            ui.enable();
         });
-    </script>
-</template:addResources>
-
-<template:tokenizedForm>
-    <form action="<c:url value='${url.base}${boundComponent.path}.addComment.do'/>" method="post" id="newCommentForm">
-
-        <input type="hidden" name="jcrNodeType" value="jnt:post"/>
-        <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
-        <input type="hidden" name="jcrNewNodeOutputFormat" value="html"/>
-        <input type="hidden" name="jcrResourceID" value="${currentNode.identifier}"/>
-
-        <div id="formGenericComment">
-
-            <fieldset>
-                <c:if test="${not renderContext.loggedIn}">
-                    <p class="field">
-                        <label for="comment_pseudo"><fmt:message key="comment.pseudo"/></label>
-                        <input value="${sessionScope.formDatas['pseudo'][0]}"
-                               type="text" size="35" name="pseudo" id="comment_pseudo"
-                               tabindex="1"/>
-                    </p>
-                </c:if>
-                    <p class="field">
-                        <label class="left" for="comment-title"><fmt:message key="comment.title"/></label>
-                        <input class="" value="${sessionScope.formDatas['jcr:title'][0]}"
-                               type="text" size="35" id="comment-title" name="jcr:title"
-                               tabindex="1"/>
-                    </p>
-
-                    <p class="field">
-                        <label class="left" for="jahia-comment-${boundComponent.identifier}"><fmt:message
-                                key="comment.body"/></label>
-                        <textarea rows="7" cols="35" id="jahia-comment-${boundComponent.identifier}"
-                                  name="content"
-                                  tabindex="2"><c:if
-                                test="${not empty sessionScope.formDatas['content']}">${fn:escapeXml(sessionScope.formDatas['content'][0])}</c:if></textarea>
-                    </p>
-
-                <c:if test="${not renderContext.loggedIn}">
-                    <p class="field">
-                        <label class="left" for="captcha"><template:captcha/></label>
-                            <input type="text" id="captcha" name="captcha"/>
-                    </p>
-                </c:if>
-
-                <p>
-                    <input type="reset" value="<fmt:message key='label.reset'/>" class="button"
-                           tabindex="3"  ${disabled}/>
-
-                    <input type="submit" value="<fmt:message key='label.submit'/>" class="button"
-                           tabindex="4"  ${disabled}/>
-                </p>
-            </fieldset>
-        </div>
-    </form>
-</template:tokenizedForm>
+    }, 2000);
+}, "json");
 -----------------------------------
 
- Look at the {{{./validation.html} form validation}} page to see how to manage errors and captcha.
+ Here we see that by posting on the "\<c:url value='${url.base}${bindedComponent.path}'/\>.rate.do URL, we are calling the
+ RateContent Action on the bound component.
 
- Here we see that for calling the Action we use simply the Action name in the url of the form action.
+ In <<<rating.hidden.plusone_minorone_form.jsp>>>, we can see another example of calling our Action, this time from a form:
 
 -------------------------------------
-<form action="<c:url value='${url.base}${boundComponent.path}.addComment.do'/>" method="post" id="newCommentForm">
+<c:set var="cookieName" value="rated${currentNode.identifier}"/>
+<c:if test="${renderContext.loggedIn and (empty cookie[cookieName])}">
+    <form action="<c:url value='${url.base}${currentNode.path}'/>.rate.do" method="post"
+          id="jahia-forum-post-vote-${currentNode.identifier}">
+        <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
+            <%-- Define the output format for the newly created node by default html or by redirectTo--%>
+        <input type="hidden" name="jcrNewNodeOutputFormat" value="html"/>
+        <input type="hidden" name="jcrMethodToCall" value="post"/>
+        <input type="hidden" name="j:lastVote" value="1"/>
+        <input type="hidden" name="jcrCookieValue" value="${currentNode.identifier}"/>
+        <input type="hidden" name="jcrCookieName" value="${cookieName}"/>
+        <input type="hidden" name="jcrReturnContentType" value="html"/>
+    </form>
+</c:if>
 -------------------------------------
 
 Form parameters and file uploading
 
  In an Action you will received your form parameters inside the parameters map. Your form submission, will pass through several
- components before reaching your Action, those components are responsible for managing the security (captcha validation,
+ components before reaching your Action. Those components are responsible for managing the security (captcha validation,
  permissions check) and the uploading of files. If your action needs to manage files, the file will be uploaded in temporary folder,
  so you will only have to choose where to save it in the JCR or elsewhere.
 
@@ -168,16 +156,16 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
  ~~~~~~~~~~~~~~~~~~~~~~~~~~
     public void executeBackgroundAction(JCRNodeWrapper node) {
         // do local post on node.getPath/sendAsNewsletter.do
-    	try {
+        try {
             Map<String,String> headers = new HashMap<String,String>();
             headers.put("jahiatoken",TokenAuthValveImpl.addToken(node.getSession().getUser()));
-			String out = httpClientService.executePost("http://localhost:8080"+
-			        Jahia.getContextPath() + Render.getRenderServletPath() + "/live/"
-			                + node.getResolveSite().getDefaultLanguage() + node.getPath()
-			                + ".sendAsNewsletter.do", null, headers);
-			logger.info(out);
+            String out = httpClientService.executePost("http://localhost:8080"+
+                    Jahia.getContextPath() + Render.getRenderServletPath() + "/live/"
+                            + node.getResolveSite().getDefaultLanguage() + node.getPath()
+                            + ".sendAsNewsletter.do", null, headers);
+            logger.info(out);
         } catch (Exception e) {
-        	logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
     }
  ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -189,8 +177,8 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
 -------------------------
 rule "Schedule as a newsletter"
     when
-		A property j:scheduled has been set on a node
-			- the node has the type jnt:newsletterIssue
+        A property j:scheduled has been set on a node
+            - the node has the type jnt:newsletterIssue
     then
         Log "Scheduling newsletter " + node.getPath() + " at " + propertyValueAsString
         Execute the action "sendAsNewsletter" at j:scheduled on the node

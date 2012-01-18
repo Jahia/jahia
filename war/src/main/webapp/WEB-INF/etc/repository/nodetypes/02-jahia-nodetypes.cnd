@@ -676,7 +676,7 @@ extends = jnt:content
  + * (jnt:contentFolder)
  + * (jnt:folder)
 
-[jmix:autoSplitFolders] mixin extends = jnt:contentList
+[jmix:autoSplitFolders] mixin
  - j:splitConfig (string) mandatory nofulltext
  - j:splitNodeType (string) mandatory nofulltext
 

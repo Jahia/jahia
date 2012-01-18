@@ -27,8 +27,18 @@ Modules
 
 * Module deployment
 
-  Modules can be deployed with the studio, by using the "deploy" menu, or with the "Templates and JahiApps management"
-  panel in the Jahia Administration.
+  Modules have to be first deployed on the server to be available. See {{{./deployment.html}deployment}} for more information
+  about deployment on the server.
+
+  Modules can then be deployed to web projects with the studio, by using the "deploy" menu,
+  or with the "Templates and JahiApps management" panel in the Jahia Administration.
+
+  When deploying a module to a site, the content of the module is copied to the site node. <<<templates>>> and
+  <<<components>>> folder are synchronized : the content of the template nodes and the components which have been
+  removed in a module will be deleted from the site <<<templates>>> and <<<components>>> nodes. Every template node
+  has a property <<<j:sourceTemplate>>> which holds a reference to the original template in <<</templateSets>>> : this
+  is used to identify from which module a deployed template comes from, and avoids overriding or removing templates
+  which come from other modules. Other nodes (default pages, content, files, ...) are simply copied to the site.
 
   If a new version of the module is uploaded on the server, it will be automatically deployed on all sites that is
   currently using it. All updates will be immediately available in the site.

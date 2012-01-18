@@ -129,10 +129,8 @@
         <menu name="Modules Documentation" inherit="top">
             <item name="Default Modules" href="jahia-modules/default/defaultmodules.html" collapse="true">
                 <item name="Hide Templates" href="jahia-modules/default/hideTemplates.html"/>
-                <item name="Navigation Menu" href="jahia-modules/default/navMenu.html">
-                    <item name="Built-in Components" href="jahia-modules/default/navMenuComponents.html"/>
+                <item name="Navigation Menu" href="jahia-modules/default/navMenuOverview.html">
                     <item name="Common Use Cases" href="jahia-modules/default/navMenuUsage.html"/>
-                    <item name="CSS Style Reference" href="jahia-modules/default/navMenuStyles.html"/>
                     <item name="Customization" href="jahia-modules/default/navMenuCustomizing.html"/>
                 </item>
                 <item name="Tagging" href="jahia-modules/default/tagging.html"/>

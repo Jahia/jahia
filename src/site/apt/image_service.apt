@@ -1,10 +1,10 @@
 Jahia - Image Service
 
-  The Jahia Image Service is here to manipulate images from Jahia itself, for licensing the service is by default using the
-  image API from the JVM, this is not a really powerful API nor really efficient.
+  The Jahia Image Service is here to manipulate images from Jahia itself. For licensing reasons the service is by default using a
+  java native API named imageJ, but this is not a really powerful API nor really efficient.
 
   So if you want to boost the quality of your thumbnails or the result of your other image manipulation operations, Jahia allows
-  you to define the path to your imageMagick installation so that we can use it instead of the JVM API.
+  you to define the path to your ImageMagick installation so that we can use it instead of the imageJ API.
 
 * How-to Install ImageMagick ?
 
@@ -12,7 +12,7 @@ Jahia - Image Service
 
 * Once ImageMagick is installed ?
 
-  Modify your jahia.properties file to activate ImageMagick instead of the JVM API.
+  Modify your jahia.properties file to activate ImageMagick instead of the imageJ API.
 
 -------------------------------------
 ######################################################################
@@ -30,12 +30,43 @@ imageMagickPath = /usr/bin:/usr/local/bin:/opt/local/bin
 
 * How do I use the ImageService in my module ?
 
-  Once you have configure Jahia to use ImageMagick, you can use the ImageService to manipulate your images with all the power
-  of ImageMagick scripting.
+  You can use the <<org.jahia.services.image.JahiaImageService>> API to manipulate your images.
 
+---------------------------
+try {
+  jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
+    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+      try {
+        JCRNodeWrapper node = session.getNode(path_first_image)
+        Image src = imageService.getImage(node1);
+        File resultFile = File.createTempFile("result", null);
+        imageService.resizeImage(src,resultFile,100,100);
+        InputStream fis = new BufferedInputStream(new FileInputStream(resultFile));
+        try {
+          node.getParent().uploadFile(result_image_node_name, fis,node.getFileContent().getContentType());
+          session.save();
+        } finally {
+          IOUtils.closeQuietly(fis);
+        }
+      } catch (IOException e) {
+        logger.error(e.getMessage(), e);
+      } catch (InterruptedException e) {
+        logger.error(e.getMessage(), e);
+      }
+      return null;
+    }
+  });
+} catch (RepositoryException e) {
+  logger.warn("Issue while blending two images : " + e.getMessage(), e);
+}
+--------------------------------------
+
+* Can I use the ImageMagick API directly ?
+
+  You can use all the power of ImageMagick scripting by using ImageMagick directly.
   Jahia use {{{http://im4java.sourceforge.net/}im4java}} API to interact with ImageMagick.
 
-  here an example to blend two images together.
+  Here's an example to blend two images together.
 
 ---------------------------
 final IMOperation operation = new IMOperation();

@@ -53,17 +53,17 @@ import java.util.*;
  * @author toto
  */
 public class LazyPropertyIterator implements PropertyIterator, Map {
-    private JCRNodeWrapper node;
-    private Locale locale;
-    private String pattern;
-    private PropertyIterator propertyIterator;
-    private PropertyIterator i18nPropertyIterator;
-    private Property tempNext = null;
-    private String fallbackLocale;
-    private Set<String> externalSharedPropertyNames = new HashSet<String>();
-    private Set<String> externalI18NPropertyNames = new HashSet<String>();;
-    private PropertyIterator externalSharedPropertyNameIterator;
-    private PropertyIterator externalI18NPropertyNameIterator;
+    protected JCRNodeWrapper node;
+    protected Locale locale;
+    protected String pattern;
+    protected PropertyIterator propertyIterator;
+    protected PropertyIterator i18nPropertyIterator;
+    protected Property tempNext = null;
+    protected String fallbackLocale;
+    protected Set<String> externalSharedPropertyNames = new HashSet<String>();
+    protected Set<String> externalI18NPropertyNames = new HashSet<String>();;
+    protected PropertyIterator externalSharedPropertyNameIterator;
+    protected PropertyIterator externalI18NPropertyNameIterator;
 
     public LazyPropertyIterator(JCRNodeWrapper node) {
         this.node = node;
@@ -96,7 +96,7 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
         return (int) (getPropertiesIterator().getSize() + getI18NPropertyIterator().getSize() + externalI18NPropertyNames.size() + externalSharedPropertyNames.size());
     }
 
-    private PropertyIterator getPropertiesIterator() {
+    protected PropertyIterator getPropertiesIterator() {
         if (propertyIterator == null) {
             try {
                 if (pattern == null) {
@@ -111,7 +111,7 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
         return propertyIterator;
     }
 
-    private PropertyIterator getI18NPropertyIterator() {
+    protected PropertyIterator getI18NPropertyIterator() {
         if (i18nPropertyIterator == null) {
             try {
                 if (locale != null) {
@@ -134,14 +134,14 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
         return i18nPropertyIterator;
     }
 
-    private PropertyIterator getExternalSharedPropertyNameIterator() {
+    protected PropertyIterator getExternalSharedPropertyNameIterator() {
         if (externalSharedPropertyNameIterator == null) {
             externalSharedPropertyNameIterator = new LazyExternalRefPropertyIterator(node, externalSharedPropertyNames, pattern);
         }
         return externalSharedPropertyNameIterator;
     }
 
-    private PropertyIterator getExternalI18NPropertyNameIterator() {
+    protected PropertyIterator getExternalI18NPropertyNameIterator() {
         if (externalI18NPropertyNameIterator == null) {
             externalI18NPropertyNameIterator = new LazyExternalRefPropertyIterator(node, externalI18NPropertyNames, pattern);
         }

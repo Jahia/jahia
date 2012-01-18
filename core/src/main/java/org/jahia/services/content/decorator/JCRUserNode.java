@@ -40,6 +40,7 @@
 
 package org.jahia.services.content.decorator;
 
+import org.jahia.services.content.LazyPropertyIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -95,14 +96,37 @@ public class JCRUserNode extends JCRNodeDecorator {
 
     @Override
     public PropertyIterator getProperties() throws RepositoryException {
-        if (user == null) {
-            user = lookupUser();
-        }
-        if (user == null || user instanceof JCRUser) {
-            return new FilteredPropertyIterator(super.getProperties());
-        } else {
-            return new UserPropertyIterator(node, new FilteredPropertyIterator(super.getProperties()));
-        }
+        final Locale locale = getSession().getLocale();
+        return new LazyPropertyIterator(node, locale, null,null) {
+            @Override
+            protected PropertyIterator getPropertiesIterator() {
+                if (propertyIterator == null) {
+                    if (user == null) {
+                        user = lookupUser();
+                    }
+                    if (user == null || user instanceof JCRUser) {
+                        propertyIterator = new FilteredPropertyIterator(super.getPropertiesIterator());
+                    } else {
+                        try {
+                            propertyIterator = new UserPropertyIterator(node, new FilteredPropertyIterator(super.getPropertiesIterator()));
+                        } catch (RepositoryException e) {
+                            logger.error("Cannot get user properties");
+                            propertyIterator = new FilteredPropertyIterator(super.getPropertiesIterator());
+                        }
+                    }
+                    propertyIterator = new FilteredPropertyIterator(super.getPropertiesIterator());
+                }
+                return propertyIterator;
+            }
+
+            @Override
+            protected PropertyIterator getI18NPropertyIterator() {
+                if (i18nPropertyIterator == null) {
+                return new FilteredPropertyIterator(super.getI18NPropertyIterator());
+                }
+                return i18nPropertyIterator;
+            }
+        };
     }
 
     @Override

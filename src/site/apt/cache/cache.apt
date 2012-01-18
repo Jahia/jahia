@@ -52,26 +52,26 @@ cache.expiration = 0
 
 * Automatic/Manual management of dependency for an element
 
- Dependencies of an html element defined for which nodes updates this element should be flushed. The system try to handle
- most of the dependencies by itself. Automatically the system detect implicit dependencies like parent/childs.
- If an existing child is updated only is html fragment will be flushed from the cache. If we create or delete a new child
- the system will flushed the parent html fragment also. So automatically the sytem handle all standard parent/child relations.
+ Dependencies of an html element define for which nodes updates this element should be flushed. The system tries to handle
+ most of the dependencies by itself. Automatically the system detects implicit dependencies like parent/childs.
+ If an existing child is updated, only his html fragment will be flushed from the cache. If we create or delete a new child,
+ the system will also flush the parent html fragment. So the system handles automatically all standard parent/child relations.
 
- Now if you have some bound components in your page, the system handle it automatically by making those elements
- dependent of the main resource for the key computing.
+ Now if you have some bound components in your page, the system handles it automatically by making those elements
+ dependent of the bound component for the key computing.
 
  The system will also parse your html to find all the links you have in your module html to other nodes
- (useful for rich text where your editors will have entered links to pages or contents you can not now) and define
+ (useful for rich text where your editors will have entered links to pages or contents you couldn't know in advance) and define
  the corresponding dependencies. This parsing is executed by the CacheUrlDependenciesParserFilter.
 
- So if in your templates you have defined a template for a news object that add a rateable module bound to this news then
- the cache will reflect that by caching the rendering of you rateable module per main resource and adding a dependency to this same main resource.
+ So if in your templates you have defined a template for a news object that add a rateable module bound to this news, then
+ the cache will reflect that by caching the rendering of you rateable module per main resource and adding a dependency to the news.
  This way we avoid to display the same rateable module for all news, but we have one per news.
 
- You can hardcoded some of those dependencies using the template properties file.
+ You can have some of those dependencies hardcoded using the template properties file.
 
- You can also define directly in your script file (jsps, etc.) the dependency you want to add to your fragment. As an example,
- we can look at the comments that you can bind to any object in CJ. This comments components works in two parts.
+ You can also define directly in your script file (jsps, etc.) the dependencies you want to add to your fragment. As an example,
+ we can look at the comments component that you can bind to any object in Jahia. This comments components works in two parts.
 
  First part is the display of the form to add a comment, second part is the display of the comments list. This form on
  first submission will create a subfolder under the main resource called comments. So on the creation of the first comment

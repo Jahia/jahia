@@ -144,7 +144,18 @@ DiskFileItem inputFile = fu.getFileItems().get("fileField");
 
 Chaining Actions in one request
 
- Jahia provides a ChainAction class that allows to chain actions called.
+ Jahia provides a ChainAction class that allows to chain actions called. You'll have to pass a <<<chainOfAction>>> parameter
+ containing the list of action to execute - all actions will be executed sequentially with the same parameters, and the
+ the result will be the one of the last action.
+
+ For example, the following form will call <<<mail>>> and <<<redirect>>> actions :
+
++-----------------------------
+ <form action="mynode.chain.do" method="post">
+     <input type="hidden" name="chainOfAction" value="mail,redirect"/>
+   ...
+ </form>
++-----------------------------
 
 Interacting with other Jahia subsystems
 

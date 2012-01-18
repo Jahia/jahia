@@ -159,6 +159,34 @@
                 <item name="Usage" href="jahia-modules/grid/usage.html"/>
                 <item name="Theme" href="jahia-modules/grid/theme.html"/>
             </item>
+            <item name="Macros" href="jahia-modules/macros/macros.html"/>
+            <item name="Search" collapse="true" href="jahia-modules/search/search.html">
+                <item name="Search components" href="jahia-modules/search/components.html">
+                    <item name="Simple search form" href="jahia-modules/search/components.html#Simple"/>
+                    <item name="Advanced search form" href="jahia-modules/search/components.html#Advanced"/>
+                    <item name="Search results" href="jahia-modules/search/components.html#results"/>
+                    <item name="JCR query" href="jahia-modules/search/components.html#query"/>
+                </item>
+                <item name="Using search in templates" href="jahia-modules/search/forms.html">
+                    <item name="Simple search form" href="jahia-modules/search/forms.html#Simple"/>
+                    <item name="Advanced site search with metadata" href="jahia-modules/search/forms.html#site"/>
+                    <item name="Advanced document search with metadata" href="jahia-modules/search/forms.html#document"/>
+                    <item name="Displaying search results" href="jahia-modules/search/forms.html#results"/>
+                    <item name="Using search functionality without creating a form" href="jahia-modules/search/forms.html#without"/>
+                </item>
+                <item name="Did you mean" href="jahia-modules/search/didYouMean.html">
+                    <item name="Activation" href="jahia-modules/search/didYouMean.html#Activation"/>
+                    <item name="Suggestions in the search results" href="jahia-modules/search/didYouMean.html#Suggestions"/>
+                    <item name="Index updates" href="jahia-modules/search/didYouMean.html#Index"/>
+                </item>
+                <item name="Exposing content via OpenSearch API" href="jahia-modules/search/openSearch.html"/>
+                <item name="Indexing options in CND files" href="jahia-modules/search/cnd.html"/>
+                <item name="Searched locations" href="jahia-modules/search/locations.html"/>
+                <item name="Search index configuration and maintenance" href="jahia-modules/search/searchIndex.html"/>
+            </item>
+            <item name="Skins" href="jahia-modules/skins/skins.html"/>
+            <item name="Tasks" href="jahia-modules/tasks/tasks.html"/>
+            <item name="Visibility" href="jahia-modules/visibility/visibility.html"/>
             <item name="Optional Modules" collapse="true"
                   href="jahia-modules/jahia-default-modules/optional-modules.html">
                 <item name="Document Converter"

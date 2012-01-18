@@ -7,34 +7,4 @@
         <src>images/logo-top.png</src>
         <href>../../index.html</href>
     </bannerLeft>
-    <body>
-        <menu ref="parent" />
-        <menu name="Overview">
-            <item name="Introduction" href="./index.html"/>
-            <item name="Search components" href="./components.html">
-                <item name="Simple search form" href="./components.html#Simple"/>
-                <item name="Advanced search form" href="./components.html#Advanced"/>
-                <item name="Search results" href="./components.html#results"/>
-                <item name="JCR query" href="./components.html#query"/>
-            </item>
-            <item name="Using search in templates" href="./forms.html">
-                <item name="Simple search form" href="./forms.html#Simple"/>
-                <item name="Advanced site search with metadata" href="./forms.html#site"/>
-                <item name="Advanced document search with metadata" href="./forms.html#document"/>
-                <item name="Displaying search results" href="./forms.html#results"/>
-                <item name="Using search functionality without creating a form" href="./forms.html#without"/>
-            </item>
-            <item name="Did you mean" href="./didYouMean.html">
-                <item name="Activation" href="./didYouMean.html#Activation"/>
-                <item name="Suggestions in the search results" href="./didYouMean.html#Suggestions"/>
-                <item name="Index updates" href="./didYouMean.html#Index"/>
-            </item>
-            <item name="Exposing content via OpenSearch API" href="./openSearch.html"/>
-            <item name="Indexing options in CND files" href="./cnd.html"/>
-            <item name="Searched locations" href="./locations.html"/>
-            <item name="Search index configuration and maintenance" href="./searchIndex.html"/>
-        </menu>
-        <menu ref="modules" />
-        <menu ref="reports"/>
-    </body>
 </project>

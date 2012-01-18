@@ -102,6 +102,7 @@
             </item>
             <item name="Users batch creation" href="users_batch_creation.html"/>
             <item name="MySQL" href="databases/mysql.html"/>
+            <item name="Apache HTTP Server" href="jahia-war/apachehttpserver.html"/>
         </menu>
         <menu name="Development Tips" inherit="top">
             <item name="Prerequisites" href="development/prerequisites.html" collapse="true">
@@ -120,6 +121,7 @@
             </item>
             <item name="From development to production" href="development/fromdevtoprod.html"/>
             <item name="Development tips" href="development/devtips.html"/>
+            <item name="GWT Development Mode" href="jahia-gwt/developmentmode.html"/>
             <item name="Production tips" href="development/prodtips.html"/>
             <item name="How-to create your custom permissions" href="development/how-to_permissions.html"/>
             <item name="How-to use the JCR API to create/update/remove content"

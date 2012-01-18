@@ -2,15 +2,15 @@ Navigation menu
 
 * {Overview}
 
-  Module is aimed to provide the framework as well as a set of out-of-the-box components for building navigation menus of different complexity level.
-  
+  In Jahia 6.5, menus are created in two steps.
+  First in the studio drop and configure a menu component in your template.
+  Then in edit mode add a menu item (like pages or links) and, if needed, select the menu where it should appear.
+
   This documentation includes:
 
-  * An overview of the {{{./navMenuComponents.html} built-in components}} for creating menus.
+  * An {{{./navMenuOverview.html} overview }} of how menus in Jahia work.
 
-  * Several {{{./navMenuUsage.html} common use cases}} for navigation menus.
-
-  * A reference of {{{./navMenuStyles.html} CSS style}}, used by the menu.
+  * How to {{{./navMenuUsage.html}set a menu}} for your site, based on out-of-the-box menus.
     
-  * A "How To" for {{{./navMenuCustomizing.html} creating custom components}}.
+  * A "How To" for {{{./navMenuCustomizing.html} creating custom menu components}} and rendering.
 

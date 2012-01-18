@@ -1,42 +1,51 @@
-Navigation menu use cases
+How to use built in components to set a menu in a templateSet, then add entries in it.
 
-  Several examples of navigation menu usage:
+  Here are the two step to follow:
 
-  * {{{manually} Building simple menu manually}} - shows an example of how to build a single-level menu manually.
+  * {{{studio} In the templateSet}} - From the studio set a menu in a template.
 
-  * {{{multilevel} Building multilevel menus}} - describes how to build menus, consisting of multiple levels.
-
-  * {{{categories} Using categories and tags}} - overview of the filtering capabilities of the multilevel menu, based on the tagged or categorized content.
-
-  * {{{Hiding} Hiding items in navigation menu}} - explanation of the option for hiding pages from the automatically generated menus.
+  * {{{edit} Add entries in the menu from the side panel}} - From edit mode, fill the menu.
 
   []
 
+* set a menu in a template from the {studio}
 
-* Building simple menu {manually}
+  In any area, simply drag and drop the navigation menu component in your template
 
-  This is the case when the whole menu will be built manually by dragging and dropping corresponding {{{./navMenuComponents.html} components}}
-  into the placeholder area of the <<<jnt:navMenu>>> node:
+[./images/navMenu/selectNavMenuComponent.png]
 
-[./images/navMenu/designMode.png] Creating multilevel menus
+  Edit the component properties
 
-* Building {multilevel} menus
+[./images/navMenu/editNavMenuProperties.png]
 
-  Similar approach is used for building multilevel menus manually. As the sub-menu the same <<<jnt:navMenu>>> component
-  should be dropped into the placeholder area of the existing navigation menu as shown in {{{manually} previous section}}.
+  Baseline node : allows you to set if the menu is absolute (home) or relative (current page)
 
-* Using {categories} and tags
+  max depth : Sets how deep the menu will display items
 
-  More advanced way of building menus automatically is using categorization and {{{./tagging.html} tagging}} features.
-  
-  It is possible to specify categories and tags filter to be able to including automatically
-  nodes, which are categorized correspondingly. In such a way an editor is able to influence
-  the automatically generated menus. 
-  
-[./images/navMenu/categoryAndTagFilter.png] Using categories and tags
+  Start level : Sets the level the menu have to start display items
 
-* {Hiding} items in navigation menu
+  view of the menu items : Defines the view used to display menu items (menuElement is the default)
 
-  An option can be activated on any content object to tell the automatically generated menus to not including this item:
+  style that surround the menu. This style must be declared in your css file : Defines the class around the menu
 
-[./images/navMenu/hideInNavMenu.png] Hiding items in navigation menu
+  unique <div> ID define in the page to reference this menu : Defines the id around the menu
+
+
+  That's it. your menu will be displayed in the pages that will use this template.
+
+* Add entries in {edit}
+
+  In edit mode, on the first tab of the side panel there is the page/links structure of the web site.
+  With a right click on any item, you can create contents that automatically generates an entry in the menus.
+  you can create one of these :
+    - Pages
+    - External link
+    - Internal links
+    - Menu labels
+
+[./images/navMenu/addMenuItem.png]
+
+  When created, the entry will appear in all menus of the page that matches the menu levels set in the studio.
+  If you want that the item is only displayed in certain menus, you need to check the “Select this option if you want to specify the menu where this item should appear”, then select the menu you want.
+
+[./images/navMenu/chooseMenuLocation.png]

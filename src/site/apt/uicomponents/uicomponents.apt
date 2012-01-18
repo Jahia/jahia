@@ -14,7 +14,7 @@ Core module - UiComponents framework
 
     - bottom panel: panel that is composed by several tab. Each tab displays useful informations about the selected node in the left panel
 
-[../images/uicomponents/contentmanager.jpg]
+[../images/uicomponents/contentmanager.png]
 
   Within this spring configuration file, /WEB-INF/ect/spring/uicomponents/applicationcontext-contentmanager.xml,Jahia allows you to customize different aspects of the content manager as:
 

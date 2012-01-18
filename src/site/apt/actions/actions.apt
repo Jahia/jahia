@@ -9,12 +9,12 @@ Actions Framework
  An Action is a simple class extending the <<<org.jahia.bin.Action>>> abstract class, which is responsible of handling
  permissions and other restrictions. You need to override the method doExecute, to provide your own Action.
 
-----------------------------
++---------------------------
 public abstract ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                        JCRSessionWrapper session, Map<String, List<String>> parameters,
                                        URLResolver urlResolver)
                                        throws Exception;
-----------------------------
++---------------------------
 
  You can do anything you want in an action, but keep in mind that the shortest time your action take to execute the better end-user
  experience is.
@@ -26,7 +26,7 @@ public abstract ActionResult doExecute(HttpServletRequest req, RenderContext ren
 
 Example based on the RateContent Action
 
---------------------------------------
++-------------------------------------
 package org.jahia.modules.rating.actions;
 |
 |
@@ -64,18 +64,18 @@ public class RateContent extends Action {
         });
     }
 }
---------------------------------------
++-------------------------------------
 
  The <<<org.jahia.bin.Render.serializeNodeToJSON>>> method is a utility function that returns a JSONObject representing a node.
 
  Declaration of an Action is done via Spring. In our example, this action is defined in the rating module like this:
 
-----------------------------
++---------------------------
     <bean class="org.jahia.modules.rating.actions.RateContent" >
         <property name="name" value="rate"/>
         <property name="jcrTemplate" ref="jcrTemplate"/>
     </bean>
-----------------------------
++---------------------------
 
 
 Calling an Action from your forms
@@ -83,7 +83,7 @@ Calling an Action from your forms
  Calling an action is simple as calling <node/path>.actionName.do.
  In our example for the RateContent Action, here is an extract of a jQuery function in <<<rateable.jsp>>>:
 
------------------------------------
++----------------------------------
 $.post("<c:url value='${url.base}${bindedComponent.path}'/>.rate.do", {'j:lastVote': value,'jcrMethodToCall':"post",
     'jcrCookieName':"rated${bindedComponent.identifier}",
     'jcrCookieValue':"${currentNode.identifier}"}, function(
@@ -102,14 +102,14 @@ $.post("<c:url value='${url.base}${bindedComponent.path}'/>.rate.do", {'j:lastVo
         });
     }, 2000);
 }, "json");
------------------------------------
++----------------------------------
 
  Here we see that by posting on the "\<c:url value='${url.base}${bindedComponent.path}'/\>.rate.do URL, we are calling the
  RateContent Action on the bound component.
 
  In <<<rating.hidden.plusone_minorone_form.jsp>>>, we can see another example of calling our Action, this time from a form:
 
--------------------------------------
++------------------------------------
 <c:set var="cookieName" value="rated${currentNode.identifier}"/>
 <c:if test="${renderContext.loggedIn and (empty cookie[cookieName])}">
     <form action="<c:url value='${url.base}${currentNode.path}'/>.rate.do" method="post"
@@ -124,7 +124,7 @@ $.post("<c:url value='${url.base}${bindedComponent.path}'/>.rate.do", {'j:lastVo
         <input type="hidden" name="jcrReturnContentType" value="html"/>
     </form>
 </c:if>
--------------------------------------
++------------------------------------
 
 Form parameters and file uploading
 
@@ -135,10 +135,10 @@ Form parameters and file uploading
 
  Example of getting an uploaded file in your action and handling it in there :
 
---------------------------------
++-------------------------------
 final FileUpload fu = (FileUpload) req.getAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE);
 DiskFileItem inputFile = fu.getFileItems().get("fileField");
---------------------------------
++-------------------------------
 
  This example is from the DocumentConverterAction class.
 
@@ -151,7 +151,7 @@ Interacting with other Jahia subsystems
  Your action can also interact or be called by other Jahia subsystems like rules or GWT UI, for this your action must
  also implements the <<<<BackgroundAction>>>> interface:
 
-----------------------
++---------------------
 public class SendAsNewsletterAction extends Action implements BackgroundAction {
  ~~~~~~~~~~~~~~~~~~~~~~~~~~
     public void executeBackgroundAction(JCRNodeWrapper node) {
@@ -170,11 +170,11 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
     }
  ~~~~~~~~~~~~~~~~~~~~~~~~~~
 }
-----------------------
++---------------------
 
  Example of usage in rules:
 
--------------------------
++------------------------
 rule "Schedule as a newsletter"
     when
         A property j:scheduled has been set on a node
@@ -183,4 +183,4 @@ rule "Schedule as a newsletter"
         Log "Scheduling newsletter " + node.getPath() + " at " + propertyValueAsString
         Execute the action "sendAsNewsletter" at j:scheduled on the node
 end
---------------------------
++-------------------------

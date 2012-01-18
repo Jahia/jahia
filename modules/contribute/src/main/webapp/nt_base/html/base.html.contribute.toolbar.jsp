@@ -317,7 +317,7 @@ $(function() {
 <div id="contributeToolbar">
 
     <div id="edit">
-<c:if test="${jcr:isDisplayable(currentNode, renderContext)">
+<c:if test="${jcr:isDisplayable(currentNode, renderContext)}">
     <c:if test="${currentNode.properties['j:published'].boolean}">
         <a href="<c:url value='${url.baseLive}${currentNode.path}.html'/>"><img src="<c:url value='/icons/live.png'/>" width="16" height="16"
                                                     alt=" " role="presentation"

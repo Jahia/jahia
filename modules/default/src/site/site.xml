@@ -8,33 +8,4 @@
         <src>images/logo-top.png</src>
         <href>../../index.html</href>
     </bannerLeft>
-    <body>
-        <menu ref="parent" />
-        <menu name="Overview">
-            <item name="Introduction" href="index.html"/>
-            <item name="Hide Templates" href="hideTemplates.html"/>
-            <item name="Navigation Menu" href="navMenu.html">
-                <item name="Built-in Components" href="navMenuComponents.html"/>
-                <item name="Common Use Cases" href="navMenuUsage.html"/>
-                <item name="CSS Style Reference" href="navMenuStyles.html"/>
-                <item name="Customization" href="navMenuCustomizing.html"/>
-            </item>
-            <item name="Tagging" href="tagging.html"/>
-            <item name="Lists" href="lists.html"/>
-            <item name="User Profile" href="profile.html">
-                <item name="Edit Simple Text" href="profile.html#Simple"/>
-                <item name="Edit Rich Text" href="profile.html#Rich"/>
-                <item name="Edit Date" href="profile.html#Date"/>
-                <item name="Edit DropDown" href="profile.html#DropDown"/>
-                <item name="Ajax Upload" href="profile.html#Upload"/>
-                <item name="Access Properties" href="profile.html#Properties"/>
-                <item name="Dashboard" href="userDashboard.html"/>
-            </item>
-            <item name="User Agent" href="userAgent.html"/>
-            <item name="Auto-splitting nodes" href="./autoSplitting.html"/>
-            <item name="Actions" href="./defaultActions.html"/>
-        </menu>
-        <menu ref="modules" />
-        <menu ref="reports"/>
-    </body>
 </project>

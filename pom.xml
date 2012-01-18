@@ -63,7 +63,7 @@
         <license.plugin.version>1.8.0</license.plugin.version>
         <javadoc.plugin.version>2.8</javadoc.plugin.version>
         <assembly.plugin.version>2.2</assembly.plugin.version>
-        <maven3.site.plugin.version>3.0-beta-3</maven3.site.plugin.version>
+        <maven3.site.plugin.version>3.0</maven3.site.plugin.version>
         <site.plugin.version>2.2</site.plugin.version>
         <war.plugin.version>2.1.1.jahia1</war.plugin.version>
         <enforcer.plugin.version>1.0</enforcer.plugin.version>
@@ -479,6 +479,9 @@
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-site-plugin</artifactId>
                             <version>${maven3.site.plugin.version}</version>
+                            <configuration>
+                                <relativizeDecorationLinks>true</relativizeDecorationLinks>
+                            </configuration>
                         </plugin>
                     </plugins>
                 </pluginManagement>

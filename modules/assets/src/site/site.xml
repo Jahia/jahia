@@ -8,18 +8,4 @@
         <src>images/logo-top.png</src>
         <href>../../index.html</href>
     </bannerLeft>
-    <body>
-        <menu ref="parent" />
-        <menu name="Overview">
-            <item name="Introduction" href="index.html"/>
-            <item name="Usage" href="usage.html"/>
-            <item name="Asset Mapping" href="mapping.html">
-                <item name="Enabling CDN" href="mapping.html#Delivery"/>
-                <item name="Development Support" href="mapping.html#Development"/>
-                <item name="Aggregation" href="mapping.html#Aggregating"/>
-            </item>
-        </menu>
-        <menu ref="modules" />
-        <menu ref="reports"/>
-    </body>
 </project>

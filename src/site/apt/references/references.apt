@@ -1,0 +1,55 @@
+References
+
+ A node can be reused in different places by using reference nodes. Reference nodes are simple nodes containing a
+ reference property to another node.
+
+* Reference nodes
+
+ There are multiple reference node types depending on the type of node that have to be referenced. All node types
+ inherits from <<<jmix:nodeReference>>> . The rendering can be different depending on the reference node type :
+
+  * Content reference (jnt:contentReference) : References any other content that can be used in a page.
+
+  * File reference (jnt:fileReference) : A simple link to a file
+
+  * Image reference (jnt:imageReference) : Includes an image into a page
+
+  * Content folder reference (jnt:contentFolderReference) : Displays all content in a content folder
+
+  []
+
+ All these nodes must have a <<<j:node>>> property which contains the referenced node. Some reference node types may
+ define a <<<j:node>>> as internationalized, if the referenced node needs to be different for each language.
+ This can be useful for documents or images which contain text.
+ The types <<<jnt:imageI18nReference>>>, <<<jnt:fileI18nReference>>>, for example, are internationalized.
+
+* Creating a reference
+
+ References can be created in the edit mode by using copy/paste as reference or by dropping an existing content to
+ an area. Jahia will propose the list of reference node types that are available for the content being dropped and
+ that can be created in that area.
+
+* Referenced node path
+
+ It is possible to dereference a reference node in a path by using the separator <<@/>>. If the node :
+ <<</sites/ACME/home/maincontent/article-ref>>>
+ is a content reference to the node : <<<sites/ACME/home/publications/maincontent/article>>> ,
+ it is possible to use the path :
+ <<</sites/ACME/home/maincontent/article-ref@/article>>>.
+ All subnodes can also be accessed with this path, like :
+ <<</sites/ACME/home/maincontent/article-ref@/article/paragraph1>>>
+
+ When getting a node through <<<reference.getProperty("j:node").getNode()>>>, the path will contain a dereference of the
+ <<<j:node>>> property.
+
+ The same node can then be retrieved with different paths. It's possible to get the unique path without dereferences
+ by using the method <<<getCanonicalPath()>>>.
+
+ The main advantage of using a path containing the reference node is to be able to keep the context of the reference :
+ the parent of the node <<<article>>> will be the <<<article-ref>>>. All breadcrumb or modules dislpaying the path will
+ show the content as if it was really created here.
+
+ Also, the associated site node is the site node of the reference node, not the one of the node being referenced.
+ All code based on the site of the node, like template resolution, will use the site of the reference node.
+
+

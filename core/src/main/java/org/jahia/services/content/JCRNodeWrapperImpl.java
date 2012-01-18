@@ -44,6 +44,8 @@ import static org.jahia.api.Constants.*;
 
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
+
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.commons.iterator.PropertyIteratorAdapter;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
@@ -559,7 +561,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRNodeWrapper uploadFile(String name, final InputStream is, final String contentType) throws RepositoryException {
         checkLock();
 
-        name = JCRContentUtils.escapeLocalNodeName(name);
+        name = JCRContentUtils.escapeLocalNodeName(FilenameUtils.getName(name));
 
         JCRNodeWrapper file = null;
         try {

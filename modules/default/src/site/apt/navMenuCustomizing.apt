@@ -7,7 +7,7 @@ Creating custom menu items
   You can add a view for your menu (jnt:navMenu) to change its structure or add javascript.
   The view will be automatically available in the Layout tab’s view selector of the menu.
 
-  You just have to create a new file under the jnt_navMenu/html folder or create this folders tree in your module directory, named navMenu.<yourView>.jsp where <yourView> is your view name.
+  You just have to create a new file under the jnt_navMenu/html folder or create this folder tree in your module directory, named navMenu.\<yourView\>.jsp where \<yourView\> is your view name.
 
   In a file named navMenu.yourView.properties you have to set two properties for this view, as they are needed to manage cache dependency:
 
@@ -18,7 +18,7 @@ Creating custom menu items
 
   The best practice is to copy one of the predefined menus, which is close to your needs and customize it.
 
-  The beginning of the file sets the properties to display the menus. The display part is between the <ul> tags.
+  The beginning of the file sets the properties to display the menus. The display part is between the \<ul\> tags.
 
 
 * {Rendering} items
@@ -51,8 +51,8 @@ Creating custom menu items
 
   You can also define your own view for items. You must define a default view for it. This view will be available to be set in the jnt:navMenu from the studio.
 
-  to define an available view, you have to define it in the property file of the view :
-  the view property of jnt:navMenu is define as
+  To define an available view, you have to define it in the property file of the view :
+  The view property of jnt:navMenu is define as
 
 +----
  - j:menuItemView (string,choicelist[templates='jmix:navMenuItem,menuItem',resourceBundle,image]) = menuElement
@@ -70,13 +70,13 @@ Creating custom menu items
 
   You can add you own action item in edit mode, on the contextual menu for the first tab of the side panel (like page, external node link, etc ...).
 
-  The action is <<<org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem>>>
+  The action is <<<org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem>>>.
 
-  The definition must have the mixin jmix:navMenuItem
+  The definition must have the mixin jmix:navMenuItem.
 
   In order to make it appear in the context menu, you have to define a new bean that describes your action.
 
-  this is the structure of the bean you have to set :
+  This is the structure of the bean you have to set :
 
 +----
   <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
@@ -98,7 +98,7 @@ Creating custom menu items
   </bean>
 +----
 
-  where
+ where
 
  nodeTypes : is your nodetype with the mixin jmix:navMenuItem
 

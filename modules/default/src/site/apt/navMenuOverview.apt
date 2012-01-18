@@ -2,15 +2,15 @@ Overview of Menu in Jahia
 
   Basicaly a menu is a list of nodes typed as jmix:navMenuItem.
 
-  Add a menu item, an entry, is creating a node with the type jmix:navMenuItem.
+  Adding a menu item, an entry, is creating a node with the type jmix:navMenuItem.
 
-  Display a menu is rendering all the wanted jmix:navMenuItem, depending of specified criterias.
+  Displaying a menu is rendering all the wanted jmix:navMenuItem, depending of specified criterias.
 
-  As any other content, it is possible and easy to customise the way the node are filtered, added, and displayed.
+  As any other content, it is possible and easy to customize the way the node are filtered, added, and displayed.
 
   The node type for menu is jnt:navMenu.
 
-  its definition (in modules/default/META-INF/definitions-nav-menu.cnd is :
+  Its definition (in modules/default/META-INF/definitions-nav-menu.cnd) is :
 
 +---------
   [jnt:navMenu] > jnt:content, mix:title, jmix:siteComponent
@@ -23,7 +23,6 @@ Overview of Menu in Jahia
    - j:layoutID (string) nofulltext
 +--------
 
-
   The default associated JSP file is : jnt_navMenu/html/navMenu.jsp in the default module.
 
   An entry is a mixin jmix:navMenuItem set on any type.
@@ -34,15 +33,14 @@ Overview of Menu in Jahia
 
   The default associated JSP file is : jmix_navMenuItem/html/navMenuItem.menuElement.jsp in the default module.
 
-  We must specify a view (default is menuElement) as we want to display the mixin, not the default rendering of the node.
+  We must specify a view as we want to display the mixin, not the default rendering of the node. If not specified, the <menuElement> view is used.
 
   It will search for jmix:navMenuItem under the baseNode, and display items that match the set restrictions (like level or specified menu).
 
-  All these menus use the  <ul><li>  structure
+  All these menus use the \<ul\>\<li\> structure
 
   We provide several examples of views for menus :
 
   oneLevel : one level menu without any style other than those set by the webmaster
   simple : recursive menu without any styles (inpath, selected, etc)
   default : complete menu with styles
-

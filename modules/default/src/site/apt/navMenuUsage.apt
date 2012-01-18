@@ -1,6 +1,6 @@
 How to use built in components to set a menu in a templateSet, then add entries in it.
 
-  Here are the two step to follow:
+  Here are the two steps to follow:
 
   * {{{studio} In the templateSet}} - From the studio set a menu in a template.
 
@@ -18,17 +18,17 @@ How to use built in components to set a menu in a templateSet, then add entries 
 
 [./images/navMenu/editNavMenuProperties.png]
 
-  Baseline node : allows you to set if the menu is absolute (home) or relative (current page)
+  Baseline node: allows you to set if the menu is absolute (home) or relative (current page)
 
-  max depth : Sets how deep the menu will display items
+  Max depth: sets how deep the menu will display items
 
-  Start level : Sets the level the menu have to start display items
+  Start level: sets the level the menu have to start display items
 
-  view of the menu items : Defines the view used to display menu items (menuElement is the default)
+  view of the menu items: defines the view used to display menu items (menuElement is the default)
 
-  style that surround the menu. This style must be declared in your css file : Defines the class around the menu
+  style that surround the menu. This style must be declared in your css file: defines the class around the menu
 
-  unique <div> ID define in the page to reference this menu : Defines the id around the menu
+  unique \<div\> ID define in the page to reference this menu : defines the id around the menu
 
 
   That's it. your menu will be displayed in the pages that will use this template.
@@ -36,16 +36,16 @@ How to use built in components to set a menu in a templateSet, then add entries 
 * Add entries in {edit}
 
   In edit mode, on the first tab of the side panel there is the page/links structure of the web site.
-  With a right click on any item, you can create contents that automatically generates an entry in the menus.
+  With a right click on any item, you can create contents that automatically generate an entry in the menus.
   you can create one of these :
     - Pages
-    - External link
+    - External links
     - Internal links
     - Menu labels
 
 [./images/navMenu/addMenuItem.png]
 
   When created, the entry will appear in all menus of the page that matches the menu levels set in the studio.
-  If you want that the item is only displayed in certain menus, you need to check the “Select this option if you want to specify the menu where this item should appear”, then select the menu you want.
+  If you want the item to be displayed only in specific menus, you need to check “Select this option if you want to specify the menu where this item should appear”, then select the menu you want.
 
 [./images/navMenu/chooseMenuLocation.png]

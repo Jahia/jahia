@@ -129,13 +129,13 @@
         <menu name="Modules Documentation" inherit="top">
             <item name="Default Modules" href="jahia-modules/default/defaultmodules.html" collapse="true">
                 <item name="Hide Templates" href="jahia-modules/default/hideTemplates.html"/>
-                <item name="Navigation Menu" href="jahia-modules/default/navMenuOverview.html">
+                <item name="Navigation Menu" href="jahia-modules/default/navMenuOverview.html" collapse="true">
                     <item name="Common Use Cases" href="jahia-modules/default/navMenuUsage.html"/>
                     <item name="Customization" href="jahia-modules/default/navMenuCustomizing.html"/>
                 </item>
                 <item name="Tagging" href="jahia-modules/default/tagging.html"/>
                 <item name="Lists" href="jahia-modules/default/lists.html"/>
-                <item name="User Profile" href="jahia-modules/default/profile.html">
+                <item name="User Profile" href="jahia-modules/default/profile.html" collapse="true">
                     <item name="Edit Simple Text" href="jahia-modules/default/profile.html#Simple"/>
                     <item name="Edit Rich Text" href="jahia-modules/default/profile.html#Rich"/>
                     <item name="Edit Date" href="jahia-modules/default/profile.html#Date"/>

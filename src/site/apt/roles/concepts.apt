@@ -45,7 +45,12 @@ Authorization system concepts
     Roles are stored as a flat list of <<<jnt:role>>> nodes under <<</roles>>>
 
     Roles can be assigned a role group, which will be edited in different places. Roles, provided by Jahia, are split between
-    two groups: edit roles and live roles.
+    two groups: edit roles and live roles. It's possible to create as many role groups as needed - the list of possible
+    groups is directly set in the definition :
+
++-------
+ - j:roleGroup (string,choicelist[resourceBundle]) < 'live-role','edit-role'
++-------
 
 * {Access Control Lists}
 

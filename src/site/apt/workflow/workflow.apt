@@ -164,8 +164,8 @@ Workflow Integration
   when we start a publication workflow :
 
 +--------------------------------
-to: ${user.getProperty('j:email')}
-cc-users: nextTaskAssignable
+to: #if( $user.properties.get('j:email') ) ${user.properties.get('j:email')} #end
+to-users: nextTaskAssignable
 subject: Publication workflow by ${user.getUsername()}
 text: Hi,
 

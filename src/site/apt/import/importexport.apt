@@ -2,10 +2,10 @@ Content Import and Export
 
 * Import formats
 
-  Jahia supports differents formats for importing content, based on XML.
+  Jahia supports different formats for importing content, based on XML.
 
   XML Import files can be packaged inside a zip file if multiple import files need to be imported,
-  if binary files are present in the import, or if multiple workspaces (default and live) need to be imported.
+  if binary files are present in the import, or if multiple workspace (default and live) needs to be imported.
 
   When exporting a node, multiple options are available :
 
@@ -21,7 +21,7 @@ Content Import and Export
 
     A simple news from the ACME demo site will be exported like that :
 
---------------------
++--------------------
 <news_36 image="/sites/ACME22/files/images/generic-pictures/illustration8.jpg" j:defaultCategory="/sites/systemsite/categories/project"
          j:lastPublished="2011-10-17T11:15:42.161+02:00" j:lastPublishedBy="root" j:originWS="default" j:published="true"
          jcr:created="2011-02-01T16:40:07.725+01:00" jcr:createdBy="root" jcr:lastModified="2011-10-17T13:24:53.353+02:00"
@@ -34,7 +34,7 @@ Content Import and Export
       jcr:language="fr" jcr:lastModified="2011-02-01T16:40:14.671+01:00" jcr:lastModifiedBy="root" jcr:mixinTypes="mix:title"
       jcr:primaryType="jnt:translation" jcr:title="Nouvel hôtel 5 étoiles à Hong Kong, construit par ACME International"/>
 </news_36>
---------------------
++--------------------
 
 ** Export ZIP : Export with binaries
 
@@ -61,7 +61,7 @@ Content Import and Export
 ** Legacy formats
 
     Content export files from Jahia prior to version 6.6 uses a different format, based on the page / container lists /
-    container structure. This format is still supported for compatibilty, and can eventually be used along with a mapping
+    container structure. This format is still supported for compatibility, and can eventually be used along with a mapping
     file for migration purpose.
 
     Other legacy formats are supported for specific content import :
@@ -81,7 +81,7 @@ Content Import and Export
 
 [../images/import/context-menu.png]
 
-    Branch exports can be reimported with the import option in the context menu - a new node will be created with all
+    Branch exports can be imported with the import option in the context menu - a new node will be created with all
     the content of the export file.
 
 ** Site export
@@ -95,7 +95,7 @@ Content Import and Export
     The export file is packaged into a ZIP containing an <<<export.properties>>> file, one zip for the users, and one zip
     for each exported site.
 
-    A site export can be reimported in the administration only, with the <<<Import archive>>> option.
+    A site export can be imported in the administration only, with the <<<Import archive>>> option.
 
 * Common use cases
 
@@ -104,7 +104,7 @@ Content Import and Export
     Export can be used to backup a site or a full Jahia server. A full export with live content can be used for this
     purpose : the site will be restored in the same state as it was exported.
 
-    Note that content versions are not exported - only the current state of the web project is backuped.
+    Note that content versions are not exported - only the current state of the web project is backed up.
 
 ** Migration
 

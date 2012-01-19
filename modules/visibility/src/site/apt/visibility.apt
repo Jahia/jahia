@@ -18,7 +18,7 @@ Jahia Visibility Module
   Conditions can be defined in any module, they are initialized through Spring framework. This way they have access to all services.
   To write your own condition simply implement the interface <<org.jahia.services.visiblity.VisibilityConditionRule>>.
 
-------------------------------------
++------------------------------------
 /**
  * Defines a visibility condition for a piece of content in Jahia.
  */
@@ -47,7 +47,7 @@ public interface VisibilityConditionRule {
      */
     String getGWTDisplayTemplate(Locale locale);
 }
-------------------------------------
++------------------------------------
 
   Each condition should be associated with a node type that will provide a way for the end user to interact with it, by
   filling the associated auto generated form like we do for the workflow.
@@ -56,7 +56,7 @@ public interface VisibilityConditionRule {
 
   Let us review the start/end date condition code.
 
------------------------------------
++-----------------------------------
 /**
  * This class handle the execution of a start/end date condition for checking a node visibility.
  * If the current date is after the start date or if start date is not defined then the node is visible unless
@@ -130,19 +130,19 @@ public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
         return displayTemplateKey;
     }
 }
------------------------------------
++-----------------------------------
 
   This condition is associated through Spring to this definition.
 
------------------------------------
++-----------------------------------
 [jnt:startEndDateCondition] > jnt:condition
  - start (date, datetimepicker)
  - end   (date, datetimepicker)
-----------------------------------
++----------------------------------
 
   Association in the Spring file of the module.
 
-----------------------------------
++----------------------------------
 <bean class="org.jahia.modules.visibility.conditions.StartEndDateConditionRuleImpl">
   <property name="associatedNodeType" value="jnt:startEndDateCondition"/>
   <property name="requiredFieldNamesForTemplate">
@@ -152,7 +152,7 @@ public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
     </list>
   </property>
 </bean>
---------------------------------
++--------------------------------
 
 
 * How do you handle multiple conditions on a node ?
@@ -166,7 +166,7 @@ public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
   the node having the condition and its parent also. The jobs are implemented using
   <<org.jahia.services.content.rules.BackgroundAction>>.
 
-----------------------------------
++----------------------------------
 rule "Flush caches for start date visibility condition"
     salience 25
     when
@@ -175,11 +175,11 @@ rule "Flush caches for start date visibility condition"
     then
         Execute the action "startDateVisibilityAction" at start on the node
 end
-----------------------------------
++----------------------------------
 
  The code of the action itself
 
-----------------------------------
++----------------------------------
 public abstract class DateVisibilityConditionBackgroundAction implements BackgroundAction {
     private transient static Logger logger = Logger.getLogger(DateVisibilityConditionBackgroundAction.class);
     private ModuleCacheProvider cacheProvider;
@@ -214,7 +214,7 @@ public class EndDateVisibilityConditionBackgroundActionImpl extends DateVisibili
         return "endDateVisibilityAction";
     }
 }
-----------------------------------
++----------------------------------
 
   <<A node can only have one job of the same name at he same time>>. The job name is determined by the action name,
   that is why we have one action for start and one for end to allow to have both jobs defined on the same condition.

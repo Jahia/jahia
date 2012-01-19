@@ -6,7 +6,7 @@ Web Module - Use an Apache HTTP Server as a frontal
   First you will have to modify the WEB-INF/urlrewrite.xml file inside JAHIA. Uncomment the following lines to activate
   rewriting of URLs.
 
----------------------------------
++---------------------------------
 <!--
     <outbound-rule>
         <from>/jahia/cms/render/live/en/sites/mySite/([a-zA-Z_0-9/\.]+html)$</from>
@@ -17,13 +17,13 @@ Web Module - Use an Apache HTTP Server as a frontal
         <to last="true">/users/$1</to>
     </outbound-rule>
     -->
----------------------------------
++---------------------------------
 
   Replace /jahia by your context name (nothing if context is ROOT). This rules will only rewrite URLs in live mode.
 
   In Apache HTTP server you need to declare a virtual host for your web site like the example below :
 
----------------------------------
++---------------------------------
 <VirtualHost *:80>
 	Options +FollowSymlinks
 	RewriteEngine on
@@ -45,11 +45,11 @@ Web Module - Use an Apache HTTP Server as a frontal
         Allow from all
     </Proxy>
 </VirtualHost>
----------------------------------
++---------------------------------
 
   This virtual host will only handle live mode and you can define another one for edit/preview mode
 
----------------------------------
++---------------------------------
 <VirtualHost *:80>
 	Options +FollowSymlinks
 	RewriteEngine on
@@ -71,4 +71,4 @@ Web Module - Use an Apache HTTP Server as a frontal
             Allow from all
         </Proxy>
 </VirtualHost>
----------------------------------
++---------------------------------

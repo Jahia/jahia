@@ -8,17 +8,17 @@ Node types definitions
 
         you can specify on which nodetype contents applies.
 
------------------------
++-----------------------
  extends = jnt:contentList, jnt:folder
------------------------
++-----------------------
 
     ** itemtype :
 
         define on which panel in the edit engine, the mixin will be display
 
------------------------
++-----------------------
 itemtype = template
------------------------
++-----------------------
 
 * Mixins
 
@@ -58,26 +58,26 @@ itemtype = template
 
         They are used to store all jahia internal items
 
---------------------
++--------------------
 [jnt:templatesSets] > nt:base, jmix:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:list
 [jnt:usersFolder] > nt:base, jmix:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list
---------------------
++--------------------
 
     **ContentList
 
         store all droppable contents.
 
---------------------
++--------------------
 [jnt:contentList] > jnt:content, jmix:listContent, mix:title, jmix:list
  orderable
  + * (jmix:droppableContent) = jmix:droppableContent version
---------------------
++--------------------
 
 
     **Folders
     
         store all files and folders.
 
---------------------
++--------------------
 [jnt:folder] > nt:folder, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable
---------------------
++--------------------

@@ -14,7 +14,7 @@ Jahia - Image Service
 
   Modify your jahia.properties file to activate ImageMagick instead of the imageJ API.
 
--------------------------------------
++-------------------------------------
 ######################################################################
 ### Image conversion Service #########################################
 ######################################################################
@@ -26,13 +26,13 @@ imageService = ImageJImageService
 # The path to image magick and exiftools
 # For windows : C:\\Programs\\ImageMagick;C:\\Programs\\exiftool
 imageMagickPath = /usr/bin:/usr/local/bin:/opt/local/bin
--------------------------------------
++-------------------------------------
 
 * How do I use the ImageService in my module ?
 
   You can use the <<org.jahia.services.image.JahiaImageService>> API to manipulate your images.
 
----------------------------
++---------------------------
 try {
   jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -59,7 +59,7 @@ try {
 } catch (RepositoryException e) {
   logger.warn("Issue while blending two images : " + e.getMessage(), e);
 }
---------------------------------------
++--------------------------------------
 
 * Can I use the ImageMagick API directly ?
 
@@ -68,7 +68,7 @@ try {
 
   Here's an example to blend two images together.
 
----------------------------
++---------------------------
 final IMOperation operation = new IMOperation();
 operation.blend(50);
 operation.gravity("Center");
@@ -107,4 +107,4 @@ try {
 } catch (RepositoryException e) {
   logger.warn("Issue while blending two images : " + e.getMessage(), e);
 }
---------------------------------------
++--------------------------------------

@@ -10,7 +10,7 @@ Notifications
 
  The CamelNotificationService allows you to call any route and send a message to this route.
 
-----------------------------------
++----------------------------------
 Map<String, Object> map = new HashMap<String, Object>();
 map.put("To", SettingsBean.getInstance().getMail_administrator());
 map.put("From", SettingsBean.getInstance().getMail_from());
@@ -19,23 +19,23 @@ map.put("Subject", "Camel rocks");
 String body = "Hello.\nYes it does.\n\nRegards.";
 
 camelNotificationService.sendMessagesWithBodyAndHeaders("seda:users?multipleConsumers=true",body,map);
-----------------------------------
++----------------------------------
 
  There is also a shortcut to send a mail directly :
 
-----------------------------------
++----------------------------------
 camelNotificationService.sendMail("seda:users?multipleConsumers=true","Camel Rocks",
   "<html><body><h1>Camel Rocks</h1><p>Camel Complex Mail Test</p></body></html>",
   "Camel Complex Mail Test", SettingsBean.getInstance().getMail_from(),
   SettingsBean.getInstance().getMail_administrator(),null,null);
-----------------------------------
++----------------------------------
 
   This way the notification system is more like a message system, now in your modules you can use this service to register
   your own routes and call them in your action or just use the default ones to send mails to users when an action is performed.
 
   We provide consequences for the rules system that allows to send mails.
 
-----------------------------------
++----------------------------------
 rule "notify user (create)"
     when
        A new node is created
@@ -45,7 +45,7 @@ rule "notify user (create)"
     then
         Notify new user with mail template "/notifications/templates/mail/newUser.vm"
 end
-----------------------------------
++----------------------------------
 
 * Sending Mail with templates
 
@@ -58,7 +58,7 @@ end
 
   Here how to send the mail from you action (extract from MailAction):
 
----------------------------------------------
++---------------------------------------------
 //Define where to send the mail
 String toMail = UserPreferencesHelper.getEmailAddress(to);
 
@@ -75,5 +75,5 @@ bindings.put("locale", resource.getLocale());
 // Send the mail to the specified address from the account defined in the Jahia Settings
 camelNotificationService.sendMailWithTemplate(mailTemplatePath,bindings,toMail, SettingsBean.getInstance().getMail_from(),
                                               null,null,resource.getLocale(), "Jahia Form Builder");
----------------------------------------------
++---------------------------------------------
 

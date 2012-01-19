@@ -6,10 +6,10 @@ Input validation
 
   For example, the following field is mandatory and must only contain letters :
 
---------------------
++--------------------
 [jnt:example] > jnt:content
 - j:mandatoryStringWithConstraint (string) mandatory < '[a-zA-Z]*'
--------------------- 
++--------------------
 
   ** mandatory constraint 
   
@@ -24,9 +24,9 @@ Input validation
   
   The key of the message in the resource bundle must be <\<nodeTypeName\>.\<propertyName\>.constraint.error.message> where colons need to be replaced with underscores. For the above example the resource bundle entry would be:
 
---------------------
++--------------------
 jnt_example.j_mandatoryStringWithConstraint.constraint.error.message=The input value must only contain letters. 
---------------------   
++--------------------
   
   ** range constraint  
   
@@ -58,9 +58,9 @@ jnt_example.j_mandatoryStringWithConstraint.constraint.error.message=The input v
 
    As already mentioned JCR allows to set multiple constraints, but for regular expression and ranges, Jahia only allows one setting. Multiple constraints are still supported for choicelists, where the value constraints specify the possible values, from which the author can choose from. For that please always specify the choicelist selector, so that Jahia will draw a combobox or list in the property editor, from which the author will be able to chose the value(s) from.  
   
---------------------
++--------------------
 [jnt:example] > jnt:content
  - j:exampleWithSelection (string, choicelist) mandatory < 'one', 'two', 'three'
--------------------- 
++--------------------
 
   The value must then match one of the three possible values.

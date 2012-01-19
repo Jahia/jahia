@@ -29,14 +29,14 @@ Jahia Facets Module
   Therefore you should add the attribute <<<facetable>>> in the property definition, like it is done in the definition of the properties <<<startDate>>>, 
   <<<endDate>>>, <<<location>>> and <<<eventsType>>> in our <<<jnt:event>>> nodetype: 
 
-----------------------------------------    
++----------------------------------------
  [jnt:event] > jnt:content, jmix:editorialContent, mix:title, jmix:structuredContent
  - startDate (date) facetable
  - endDate (date) facetable
  - location (string) i18n facetable
  - eventsType (string, choicelist[resourceBundle]) facetable  < meeting,consumerShow,roadShow,conference,show,pressConference
  - body (string, richtext) i18n  
-----------------------------------------
++----------------------------------------
 
   If you decide to add the <<<facetable>>> attribute at a time, where content is already existing, you will need to rebuild the index 
   (see: {{http://wiki.apache.org/jackrabbit/Search#Rebuilding_the_Index}}).

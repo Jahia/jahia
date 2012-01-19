@@ -108,6 +108,10 @@ public class RenderContext {
         return response;
     }
 
+    public void setResponse(HttpServletResponse response) {
+        this.response = response;
+    }
+
     public JahiaUser getUser() {
         return user;
     }

@@ -47,6 +47,7 @@ import javax.jcr.RepositoryException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
@@ -55,6 +56,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.CookieAuthConfig;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.*;
@@ -64,6 +66,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -87,6 +90,38 @@ public class Logout implements Controller {
     protected URLResolverFactory urlResolverFactory;
 
     protected UrlRewriteService urlRewriteService;
+
+    private boolean fireLogoutEvent = false;
+
+    private String preserveSessionAttributes = null;
+
+    public void setFireLogoutEvent(boolean fireLogoutEvent) {
+        this.fireLogoutEvent = fireLogoutEvent;
+    }
+
+    public class LogoutEvent extends ApplicationEvent {
+
+        private HttpServletRequest request;
+        private HttpServletResponse response;
+
+        public LogoutEvent(Object source, HttpServletRequest request, HttpServletResponse response) {
+            super(source);
+            this.request = request;
+            this.response = response;
+        }
+
+        public HttpServletRequest getRequest() {
+            return request;
+        }
+
+        public HttpServletResponse getResponse() {
+            return response;
+        }
+    }
+
+    public void setPreserveSessionAttributes(String preserveSessionAttributes) {
+        this.preserveSessionAttributes = preserveSessionAttributes;
+    }
 
     private void addLocale(final JCRSiteNode site, final List<Locale> newLocaleList, final Locale curLocale) {
         try {
@@ -192,7 +227,15 @@ public class Logout implements Controller {
         Locale uiLocale = (Locale) request.getSession().getAttribute(ProcessingContext.SESSION_UI_LOCALE);
         Locale locale = (Locale) request.getSession().getAttribute(ProcessingContext.SESSION_LOCALE);
 
+        if (fireLogoutEvent) {
+            SpringContextSingleton.getInstance().getModuleContext().publishEvent(new LogoutEvent(this, request, response));
+        }
+
+        Map<String,Object> savedSessionAttributes = preserveSessionAttributes(request);
+
         request.getSession().invalidate();
+
+        restoreSessionAttributes(request, savedSessionAttributes);
 
         JCRSessionFactory.getInstance().closeAllSessions();
         JCRSessionFactory.getInstance()
@@ -271,4 +314,31 @@ public class Logout implements Controller {
     public void setUrlRewriteService(UrlRewriteService urlRewriteService) {
         this.urlRewriteService = urlRewriteService;
     }
+
+    private Map<String, Object> preserveSessionAttributes(HttpServletRequest httpServletRequest) {
+        Map<String,Object> savedSessionAttributes = new HashMap<String,Object>();
+        if ((preserveSessionAttributes != null) &&
+            (httpServletRequest.getSession(false) != null) &&
+                (preserveSessionAttributes.length() > 0)) {
+            String[] sessionAttributeNames = preserveSessionAttributes.split("###");
+            HttpSession session = httpServletRequest.getSession(false);
+            for (String sessionAttributeName : sessionAttributeNames) {
+                Object attributeValue = session.getAttribute(sessionAttributeName);
+                if (attributeValue != null) {
+                    savedSessionAttributes.put(sessionAttributeName, attributeValue);
+                }
+            }
+        }
+        return savedSessionAttributes;
+    }
+
+    private void restoreSessionAttributes(HttpServletRequest httpServletRequest, Map<String, Object> savedSessionAttributes) {
+        if (savedSessionAttributes.size() > 0) {
+            HttpSession session = httpServletRequest.getSession();
+            for (Map.Entry<String,Object> savedSessionAttribute : savedSessionAttributes.entrySet()) {
+                session.setAttribute(savedSessionAttribute.getKey(), savedSessionAttribute.getValue());
+            }
+        }
+    }
+
 }

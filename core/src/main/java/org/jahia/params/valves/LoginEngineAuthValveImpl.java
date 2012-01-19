@@ -41,6 +41,7 @@
 package org.jahia.params.valves;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.jahia.bin.Login;
@@ -53,14 +54,13 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
+import org.springframework.context.ApplicationEvent;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.security.Principal;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Thomas Draier
@@ -76,6 +76,37 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
     public static final String VALVE_RESULT = "login_valve_result";
 
     private CookieAuthConfig cookieAuthConfig;
+
+    private boolean fireLoginEvent = false;
+    private String preserveSessionAttributes = null;
+
+    public void setFireLoginEvent(boolean fireLoginEvent) {
+        this.fireLoginEvent = fireLoginEvent;
+    }
+
+    public class LoginEvent extends ApplicationEvent {
+
+        private JahiaUser jahiaUser;
+        private AuthValveContext authValveContext;
+
+        public LoginEvent(Object source, JahiaUser jahiaUser, AuthValveContext authValveContext) {
+            super(source);
+            this.jahiaUser = jahiaUser;
+            this.authValveContext = authValveContext;
+        }
+
+        public JahiaUser getJahiaUser() {
+            return jahiaUser;
+        }
+
+        public AuthValveContext getAuthValveContext() {
+            return authValveContext;
+        }
+    }
+
+    public void setPreserveSessionAttributes(String preserveSessionAttributes) {
+        this.preserveSessionAttributes = preserveSessionAttributes;
+    }
 
     private void enforcePasswordPolicy(JahiaUser theUser) {
 //        PolicyEnforcementResult evalResult = ServicesRegistry.getInstance().getJahiaPasswordPolicyService().
@@ -139,9 +170,17 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             if (logger.isDebugEnabled()) {
                 logger.debug("User " + theUser + " logged in.");
             }
+
+            // if there are any attributes to conserve between session, let's copy them into a map first
+            Map<String, Object> savedSessionAttributes = preserveSessionAttributes(httpServletRequest);
+
             if (httpServletRequest.getSession(false) != null) {
                 httpServletRequest.getSession().invalidate();
             }
+
+            // if there were saved session attributes, we restore them here.
+            restoreSessionAttributes(httpServletRequest, savedSessionAttributes);
+
             httpServletRequest.setAttribute(VALVE_RESULT, OK);
             authContext.getSessionFactory().setCurrentUser(theUser);
 
@@ -189,8 +228,39 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             // or some other asynchronous way.
             //theUser.setProperty(Constants.JCR_LASTLOGINDATE,
             //        String.valueOf(System.currentTimeMillis()));
+
+            if (fireLoginEvent) {
+                SpringContextSingleton.getInstance().getModuleContext().publishEvent(new LoginEvent(this, theUser, authContext));
+            }
+
         } else {
             valveContext.invokeNext(context);
+        }
+    }
+
+    private Map<String, Object> preserveSessionAttributes(HttpServletRequest httpServletRequest) {
+        Map<String,Object> savedSessionAttributes = new HashMap<String,Object>();
+        if ((preserveSessionAttributes != null) &&
+            (httpServletRequest.getSession(false) != null) &&
+                (preserveSessionAttributes.length() > 0)) {
+            String[] sessionAttributeNames = preserveSessionAttributes.split("###");
+            HttpSession session = httpServletRequest.getSession(false);
+            for (String sessionAttributeName : sessionAttributeNames) {
+                Object attributeValue = session.getAttribute(sessionAttributeName);
+                if (attributeValue != null) {
+                    savedSessionAttributes.put(sessionAttributeName, attributeValue);
+                }
+            }
+        }
+        return savedSessionAttributes;
+    }
+
+    private void restoreSessionAttributes(HttpServletRequest httpServletRequest, Map<String, Object> savedSessionAttributes) {
+        if (savedSessionAttributes.size() > 0) {
+            HttpSession session = httpServletRequest.getSession();
+            for (Map.Entry<String,Object> savedSessionAttribute : savedSessionAttributes.entrySet()) {
+                session.setAttribute(savedSessionAttribute.getKey(), savedSessionAttribute.getValue());
+            }
         }
     }
 

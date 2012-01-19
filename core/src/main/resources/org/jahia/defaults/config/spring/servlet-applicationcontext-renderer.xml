@@ -4,6 +4,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+    <bean id="rendererPlaceholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties">
+            <ref bean="jahiaProperties"/>
+        </property>
+    </bean>
+
     <bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">
         <property name="config">
             <bean class="com.google.code.kaptcha.util.Config">
@@ -82,6 +88,8 @@
                         <property name="cookieAuthConfig" ref="cookieAuthConfig"/>
                         <property name="urlResolverFactory" ref="urlResolverFactory" />
                         <property name="urlRewriteService" ref="UrlRewriteService" />
+                        <property name="fireLogoutEvent" value="${fireLogoutEvent:false}" />
+                        <property name="preserveSessionAttributes" value="${preserveSessionAttributesOnLogout:}" />
                     </bean>
                 </entry>
                 <entry key="/captcha">

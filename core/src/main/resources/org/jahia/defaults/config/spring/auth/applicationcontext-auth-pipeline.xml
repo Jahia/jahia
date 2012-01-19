@@ -12,6 +12,8 @@
                 <bean id="TokenAuthValve" class="org.jahia.params.valves.TokenAuthValveImpl" />
                 <bean id="LoginEngineAuthValve" class="org.jahia.params.valves.LoginEngineAuthValveImpl">
                 	<property name="cookieAuthConfig" ref="cookieAuthConfig"/>
+                    <property name="fireLoginEvent" value="${fireLoginEvent:false}"/>
+                    <property name="preserveSessionAttributes" value="${preserveSessionAttributesOnLogin:}" />
                 </bean>
                 <bean id="SessionAuthValve" class="org.jahia.params.valves.SessionAuthValveImpl" />
                 <bean id="CookieAuthValve" class="org.jahia.params.valves.CookieAuthValveImpl">

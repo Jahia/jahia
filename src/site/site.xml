@@ -37,7 +37,9 @@
             <item name="Contribution Mode" href="jahia-modules/contribute.html"/>
         </menu>
         <menu name="Modules Development" inherit="top">
-            <item name="Modules" href="modules/modules.html"/>
+            <item name="Modules" href="modules/modules.html">
+                <item name="My space module" href="modules/myspacemodule.html"/>
+            </item>
             <item name="Components" href="modules/components.html"/>
             <item name="Module directory structure" href="jahia-modules/directory_structure.html"/>
             <item name="Module deployment" href="modules/deployment.html"/>

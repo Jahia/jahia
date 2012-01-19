@@ -1,0 +1,82 @@
+My Space modules
+
+  These modules extends the <My space> pages by adding new information and features.
+
+* My space structure
+
+  The <My space> page is a set of templates deployed in the system site, that can be applied on any user node.
+  They are organized under <<</base/user-base>>> template :
+
++---------------
+ templates
+  +-base
+     +-user-base
+       +-user-home
+       +-user-content
+       +-user-content-manager
+       +-user-edit-details
+       +-user-sites
+       +-user-tasks
++---------------
+
+  The user-home template is available with the <<<http://server/start>>> shortcut, which redirects to
+  <<<http://server/cms/en/users/username.user-home.html>>>
+
+  The user-base template provides the skeleton of the user pages :
+
+[../images/modules/user-base.png]
+
+  Templates under user-base have 3 areas available :
+
+  * pagecontent : the main area, in the center of the page
+
+  * user-profile-aside-left : area under the "My space" links
+
+  * user-profile-aside-right : area under the "My web projects shortcuts"
+
+  []
+
+  The navigation menu on the left is not hardcoded in the user-base template - it's actually a reference to a content
+  folder located in the system site, in /contents/profile-page-items . This allows to add dynamically new items in the
+  menu.
+
+* Creating a My space module
+
+  A <My space> module can be created by using the maven archetype (see {{{../development/module.apt}module development}}
+  or by using the studio.
+
+  A <My space> module will add new templates to the system site to add new features. In order to stay in
+  the <My space> skeleton, the module needs to deploy its templates under <<</base/user-base>>>. This is done by setting
+  the value of j:rootTemplatePath to <<</base/user-base>>>.
+
+  The module can only be deployed on the system site : the value of j:dependencies is set to templates-system.
+
+  It's also useful to add a link to the new templates in the navigation bar on the left - this is done by creating a new
+  node jnt:componentLink into the list /contents/profile-page-items .
+
+  So a basic myspace module will look like :
+
++---------------
+  <templateSets jcr:primaryType="jnt:templateSets">
+
+    <contents jcr:primaryType="jnt:contentFolder">
+      <profile-page-items jcr:primaryType="jnt:contentFolder">
+          <mymodule jcr:primaryType="jnt:componentLink"
+                               targetTemplate="user-mytemplate"/>
+      </profile-page-items>
+    </contents>
+
+    <mymodule j:dependencies="templates-system" j:installedModules="bookmarks" j:siteType="profileModule" jcr:primaryType="jnt:virtualsite">
+      <templates j:rootTemplatePath="/base/user-base" jcr:primaryType="jnt:templatesFolder">
+        <user-mytemplate j:applyOn="jnt:user" j:defaultTemplate="false" jcr:primaryType="jnt:contentTemplate">
+          <pagecontent jcr:primaryType="jnt:contentList">
+            ... my components ...
+          </pagecontent>
+        </user-mytemplate>
+      </templates>
+    </mymodule>
+
+  </templateSets>
++----------------
+
+

@@ -46,10 +46,9 @@ Modules deployment
   * The tomcat provided with the installer comes with a listener which deploys automatically classes and libraries at
   startup. So, if you use the standard tomcat, you'll just have to copy the war file to <<</WEB-INF/var/shared-modules>>> .
 
-  * Jahia also comes with a script <<<deployModule.sh>>> will can be used to deploy the modules.
+  * Jahia also comes with a script <<<deployModule.sh>>> which can be used to deploy the modules.
   It will copy the file to <<</WEB-INF/var/shared-modules>>> and the included libraries
   and classes to <<</WEB-INF/lib>>> and <<</WEB-INF/classes>>> .
-
 
 
 * Cluster deployment

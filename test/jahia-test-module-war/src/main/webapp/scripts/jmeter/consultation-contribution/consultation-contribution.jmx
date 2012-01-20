@@ -6,7 +6,9 @@
 
 If you need to test only the contribution part, you can just disable the browsing thread groups.
 
-For contribution, you need to create a top page (${contributionHomePage}), users will create their pages under this one.</stringProp>
+For contribution, you need to create a top page (${contributionHomePage}), users will create their pages under this one.
+
+generatedSiteSection,generatedSitePagesPerSection and generatedSiteSectionNumberToContribute needs to be set depending on the site you generated as well as the section where you wish to contribute</stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
@@ -18,7 +20,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
           </elementProp>
           <elementProp name="offTime" elementType="Argument">
             <stringProp name="Argument.name">offTime</stringProp>
-            <stringProp name="Argument.value">${__P(jahia.test.jmeter.timerFixedTime,30000)}</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.timerFixedTime,45000)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="varTime" elementType="Argument">
@@ -48,12 +50,12 @@ For contribution, you need to create a top page (${contributionHomePage}), users
           </elementProp>
           <elementProp name="pathPrefixView" elementType="Argument">
             <stringProp name="Argument.name">pathPrefixView</stringProp>
-            <stringProp name="Argument.value">${__P(jahia.test.jmeter.pathSite,cms/render/live/en/sites/testSite)}</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.pathSite,cms/render/live/en/sites/ACME/home/)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="nbUsersEdit" elementType="Argument">
             <stringProp name="Argument.name">nbUsersEdit</stringProp>
-            <stringProp name="Argument.value">${__P(jahia.test.jmeter.nbUsersEdit,10)}</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.nbUsersEdit,100)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="homePageKey" elementType="Argument">
@@ -63,17 +65,17 @@ For contribution, you need to create a top page (${contributionHomePage}), users
           </elementProp>
           <elementProp name="offTimeEditMode" elementType="Argument">
             <stringProp name="Argument.name">offTimeEditMode</stringProp>
-            <stringProp name="Argument.value">${__P(jahia.test.jmeter.timerEditFixedTime,300000)}</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.timerEditFixedTime,60000)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="varTimeEditMode" elementType="Argument">
             <stringProp name="Argument.name">varTimeEditMode</stringProp>
-            <stringProp name="Argument.value">5000</stringProp>
+            <stringProp name="Argument.value">10000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="siteKey" elementType="Argument">
             <stringProp name="Argument.name">siteKey</stringProp>
-            <stringProp name="Argument.value">testSite</stringProp>
+            <stringProp name="Argument.value">ACME</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="pathPrefixEdit" elementType="Argument">
@@ -108,17 +110,17 @@ For contribution, you need to create a top page (${contributionHomePage}), users
           </elementProp>
           <elementProp name="contributionHomePage" elementType="Argument">
             <stringProp name="Argument.name">contributionHomePage</stringProp>
-            <stringProp name="Argument.value">/cms/edit/default/en/sites/testSite/home/page-edit-test</stringProp>
+            <stringProp name="Argument.value">/cms/edit/default/en/sites/ACME/home/</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="serverIP1" elementType="Argument">
             <stringProp name="Argument.name">serverIP1</stringProp>
-            <stringProp name="Argument.value">${__P(jahia.test.jmeter.serverIP1,10.8.31.21)}</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.serverIP1,10.8.37.241)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="serverIP2" elementType="Argument">
             <stringProp name="Argument.name">serverIP2</stringProp>
-            <stringProp name="Argument.value">${__P(jahia.test.jmeter.serverIP2,10.8.31.21)}</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.serverIP2,10.8.37.241)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="serverIP3" elementType="Argument">
@@ -158,7 +160,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
           </elementProp>
           <elementProp name="usersFile" elementType="Argument">
             <stringProp name="Argument.name">usersFile</stringProp>
-            <stringProp name="Argument.value">${__P(jahia.test.jmeter.users,./ldap-users.csv)}</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.users,./ldap-users-editing.csv)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="siteMapFileEdit" elementType="Argument">
@@ -168,7 +170,42 @@ For contribution, you need to create a top page (${contributionHomePage}), users
           </elementProp>
           <elementProp name="nbPagesCreate" elementType="Argument">
             <stringProp name="Argument.name">nbPagesCreate</stringProp>
-            <stringProp name="Argument.value">5</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="SUBPAGES" elementType="Argument">
+            <stringProp name="Argument.name">SUBPAGES</stringProp>
+            <stringProp name="Argument.value">test</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="home" elementType="Argument">
+            <stringProp name="Argument.name">home</stringProp>
+            <stringProp name="Argument.value">cms/render/live/en/sites/ACME/home</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="pathbase" elementType="Argument">
+            <stringProp name="Argument.name">pathbase</stringProp>
+            <stringProp name="Argument.value">cms/render/live/en/sites/ACME</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="usersFileBrowse" elementType="Argument">
+            <stringProp name="Argument.name">usersFileBrowse</stringProp>
+            <stringProp name="Argument.value">${__P(jahia.test.jmeter.users,./ldap-users-browsing.csv)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="generatedSiteSection" elementType="Argument">
+            <stringProp name="Argument.name">generatedSiteSection</stringProp>
+            <stringProp name="Argument.value">10</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="generatedSitePagesPerSection" elementType="Argument">
+            <stringProp name="Argument.name">generatedSitePagesPerSection</stringProp>
+            <stringProp name="Argument.value">100</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="generatedSiteSectionNumberToContribute" elementType="Argument">
+            <stringProp name="Argument.name">generatedSiteSectionNumberToContribute</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -198,7 +235,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Guest users browsing" enabled="true">
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Contrôleur Boucle" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">${LOOPS}</stringProp>
+          <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
         <stringProp name="ThreadGroup.num_threads">${nbUsersGuest}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">${rampUp}</stringProp>
@@ -208,8 +245,20 @@ For contribution, you need to create a top page (${contributionHomePage}), users
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
+        <stringProp name="TestPlan.comments">this script allow you to run concurrent access of guest </stringProp>
       </ThreadGroup>
       <hashTree>
+        <BSFSampler guiclass="BSFSamplerGui" testclass="BSFSampler" testname="Random browsed page path" enabled="true">
+          <stringProp name="TestPlan.comments">this script generate a random path for a 2 level site generated with the content generator</stringProp>
+          <stringProp name="BSFSampler.filename"></stringProp>
+          <stringProp name="BSFSampler.language">javascript</stringProp>
+          <stringProp name="BSFSampler.parameters">${generatedSiteSection} ${generatedSitePagesPerSection}</stringProp>
+          <stringProp name="BSFSampler.query">var section = Math.floor((parseInt(args[1])+parseInt(1))*(parseInt(Math.random()*(parseInt(args[0])))+parseInt(1)));
+var sectionpath = &apos;/page&apos;+ section +&apos;/&apos;;
+var subpage  = Math.floor(parseInt(section)-(Math.random()*(args[1])));
+vars.put(&apos;subpage_guest_path&apos;,&apos;page&apos;+ section +&apos;/page&apos;+ subpage);</stringProp>
+        </BSFSampler>
+        <hashTree/>
         <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random Server ID" enabled="true">
           <stringProp name="TestPlan.comments">You need to keep ${totalServers &gt; 1 because a random variable generation between 1 and 1 doesn&apos;t work.</stringProp>
           <stringProp name="variableName">randomServerID</stringProp>
@@ -246,7 +295,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${pathPrefix}${pagePath}.html</stringProp>
+            <stringProp name="HTTPSampler.path">${pathPrefixView}${subpage_guest_path}.html</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
@@ -269,7 +318,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">${LOOPS}</stringProp>
+          <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
         <stringProp name="ThreadGroup.num_threads">${nbUsersAuth}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">${rampUp}</stringProp>
@@ -278,8 +327,20 @@ For contribution, you need to create a top page (${contributionHomePage}), users
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
+        <stringProp name="TestPlan.comments">this script allow you to run concurrent access of guest and LDAP users (user names have to be listed in ldap-users-browsing.csv, in the same directory than the script itself)</stringProp>
       </ThreadGroup>
       <hashTree>
+        <BSFSampler guiclass="BSFSamplerGui" testclass="BSFSampler" testname="Random browsed page path" enabled="true">
+          <stringProp name="TestPlan.comments">this script generate a random path for a 2 level site generated with the content generator</stringProp>
+          <stringProp name="BSFSampler.filename"></stringProp>
+          <stringProp name="BSFSampler.language">javascript</stringProp>
+          <stringProp name="BSFSampler.parameters">${generatedSiteSection} ${generatedSitePagesPerSection}</stringProp>
+          <stringProp name="BSFSampler.query">var section = Math.floor((parseInt(args[1])+parseInt(1))*(parseInt(Math.random()*(parseInt(args[0])))+parseInt(1)));
+var sectionpath = &apos;/page&apos;+ section +&apos;/&apos;;
+var subpage  = Math.floor(parseInt(section)-(Math.random()*(args[1])));
+vars.put(&apos;subpage_auth_path&apos;,&apos;page&apos;+ section +&apos;/page&apos;+ subpage);</stringProp>
+        </BSFSampler>
+        <hashTree/>
         <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random Server ID" enabled="true">
           <stringProp name="TestPlan.comments">You need to keep ${totalServers &gt; 1 because a random variable generation between 1 and 1 doesn&apos;t work.</stringProp>
           <stringProp name="variableName">randomServerID</stringProp>
@@ -304,7 +365,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="LDAP Users" enabled="true">
           <stringProp name="delimiter">\n</stringProp>
           <stringProp name="fileEncoding"></stringProp>
-          <stringProp name="filename">${usersFile}</stringProp>
+          <stringProp name="filename">${usersFileBrowse}</stringProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
           <stringProp name="shareMode">All threads</stringProp>
@@ -383,7 +444,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${pathPrefix}${pagePath}.html</stringProp>
+            <stringProp name="HTTPSampler.path">${pathPrefixView}${subpage_auth_path}.html</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
@@ -442,15 +503,16 @@ For contribution, you need to create a top page (${contributionHomePage}), users
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">${LOOPS}</stringProp>
+          <intProp name="LoopController.loops">-1</intProp>
         </elementProp>
         <stringProp name="ThreadGroup.num_threads">${nbUsersEdit}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">180</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <longProp name="ThreadGroup.start_time">1302126532000</longProp>
         <longProp name="ThreadGroup.end_time">1302126532000</longProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
+        <stringProp name="TestPlan.comments">this script allow you to run concurrent access of guest and LDAP users (user names have to be listed in ldap-users-editing.csv, in the same directory than the script itself)</stringProp>
       </ThreadGroup>
       <hashTree>
         <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random Server ID" enabled="true">
@@ -489,17 +551,6 @@ For contribution, you need to create a top page (${contributionHomePage}), users
           </collectionProp>
         </AuthManager>
         <hashTree/>
-        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-          <stringProp name="filename">${siteMapFile}</stringProp>
-          <stringProp name="fileEncoding"></stringProp>
-          <stringProp name="variableNames">pagePathEdit</stringProp>
-          <stringProp name="delimiter">;</stringProp>
-          <boolProp name="quotedData">false</boolProp>
-          <boolProp name="recycle">true</boolProp>
-          <boolProp name="stopThread">false</boolProp>
-          <stringProp name="shareMode">All threads</stringProp>
-        </CSVDataSet>
-        <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="View home page - ${__V(serverIP${randomServerID})}" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
             <collectionProp name="Arguments.arguments"/>
@@ -510,7 +561,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">${pathPrefixView}/${homePageKey}.html</stringProp>
+          <stringProp name="HTTPSampler.path">${home}.html</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -550,7 +601,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
               </elementProp>
               <elementProp name="password" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${username}</stringProp>
+                <stringProp name="Argument.value">cGFzc3dvcmQ=</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">password</stringProp>
@@ -596,9 +647,20 @@ For contribution, you need to create a top page (${contributionHomePage}), users
         </hashTree>
         <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Create pages" enabled="true">
           <boolProp name="LoopController.continue_forever">true</boolProp>
-          <stringProp name="LoopController.loops">${nbPagesCreate}</stringProp>
+          <stringProp name="LoopController.loops">1</stringProp>
         </LoopController>
         <hashTree>
+          <BSFSampler guiclass="BSFSamplerGui" testclass="BSFSampler" testname="Random contributed page path" enabled="true">
+            <stringProp name="TestPlan.comments">generate a random path among the pages to be contributed</stringProp>
+            <stringProp name="BSFSampler.filename"></stringProp>
+            <stringProp name="BSFSampler.language">javascript</stringProp>
+            <stringProp name="BSFSampler.parameters">${generatedSiteSection} ${generatedSitePagesPerSection} ${generatedSiteSectionNumberToContribute}</stringProp>
+            <stringProp name="BSFSampler.query">var section = Math.floor((parseInt(args[1])+parseInt(1))*parseInt(args[2]));
+var sectionpath = &apos;/page&apos;+ section +&apos;/&apos;;
+var subpage  = Math.floor(parseInt(section)-(Math.random()*(args[1])));
+vars.put(&apos;SUBPAGES&apos;,&apos;page&apos;+ section +&apos;/page&apos;+ subpage);</stringProp>
+          </BSFSampler>
+          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="View page test edit - ${__V(serverIP${randomServerID})}" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
               <collectionProp name="Arguments.arguments">
@@ -634,7 +696,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${pathPrefixEdit}${pagePathEdit}.html</stringProp>
+            <stringProp name="HTTPSampler.path">${contributionHomePage}${SUBPAGES}.html</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -670,7 +732,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${pathPrefixView}/templates/base/simple.raw</stringProp>
+            <stringProp name="HTTPSampler.path">${pathbase}/templates/base/simple.raw</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -730,7 +792,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${pathPrefixEdit}${pagePathEdit}/*</stringProp>
+            <stringProp name="HTTPSampler.path">${contributionHomePage}${SUBPAGES}/*</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -772,7 +834,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${pathPrefixEdit}${pagePathEdit}/jmeter-page-${username}-${idNewPage}/*</stringProp>
+            <stringProp name="HTTPSampler.path">${contributionHomePage}${SUBPAGES}/*</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -821,7 +883,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${pathPrefixEdit}${pagePathEdit}/jmeter-page-${username}-${idNewPage}/maincontent/*</stringProp>
+            <stringProp name="HTTPSampler.path">${contributionHomePage}${SUBPAGES}/maincontent/*</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -863,7 +925,7 @@ For contribution, you need to create a top page (${contributionHomePage}), users
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${pathPrefixEdit}${pagePathEdit}/jmeter-page-${username}-${idNewPage}.publish.do</stringProp>
+            <stringProp name="HTTPSampler.path">${contributionHomePage}${SUBPAGES}.publish.do</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -952,39 +1014,6 @@ For contribution, you need to create a top page (${contributionHomePage}), users
         <stringProp name="filename">results/consultation-contribution_${__time(yyyyMMdd_HHmmss)}.jtl</stringProp>
       </ResultCollector>
       <hashTree/>
-      <ResultCollector guiclass="GraphVisualizer" testclass="ResultCollector" testname="Graphique de résultats" enabled="true">
-        <boolProp name="ResultCollector.error_logging">false</boolProp>
-        <objProp>
-          <name>saveConfig</name>
-          <value class="SampleSaveConfiguration">
-            <time>true</time>
-            <latency>true</latency>
-            <timestamp>true</timestamp>
-            <success>true</success>
-            <label>true</label>
-            <code>true</code>
-            <message>true</message>
-            <threadName>true</threadName>
-            <dataType>true</dataType>
-            <encoding>false</encoding>
-            <assertions>true</assertions>
-            <subresults>true</subresults>
-            <responseData>false</responseData>
-            <samplerData>false</samplerData>
-            <xml>true</xml>
-            <fieldNames>false</fieldNames>
-            <responseHeaders>false</responseHeaders>
-            <requestHeaders>false</requestHeaders>
-            <responseDataOnError>false</responseDataOnError>
-            <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
-            <assertionsResultsToSave>0</assertionsResultsToSave>
-            <bytes>true</bytes>
-            <idleTime>true</idleTime>
-          </value>
-        </objProp>
-        <stringProp name="filename"></stringProp>
-      </ResultCollector>
-      <hashTree/>
       <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
@@ -1012,7 +1041,6 @@ For contribution, you need to create a top page (${contributionHomePage}), users
             <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
             <assertionsResultsToSave>0</assertionsResultsToSave>
             <bytes>true</bytes>
-            <idleTime>true</idleTime>
           </value>
         </objProp>
         <stringProp name="filename"></stringProp>

@@ -212,9 +212,12 @@ public class ModuleCacheProvider implements InitializingBean {
     }
 
     public void invalidateRegexp(String key, boolean propageToOtherClusterNodes) {
-        @SuppressWarnings("unchecked")
-        Set<String> deps = (Set<String>) regexpDependenciesCache.get(key).getValue();
-        invalidateDependencies(deps, propageToOtherClusterNodes);
+        Element element = regexpDependenciesCache.get(key);
+        if (element!=null) {
+            @SuppressWarnings("unchecked")
+            Set<String> deps = (Set<String>) element.getValue();
+            invalidateDependencies(deps, propageToOtherClusterNodes);
+        }
     }
 
 

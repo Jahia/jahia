@@ -49,6 +49,7 @@
             <item name="Actions" href="actions/actions.html" collapse="true">
                 <item name="Validation" href="actions/validation.html"/>
             </item>
+            <item name="Events" href="events/events.html"/>
             <item name="Internationalized Web Site" href="i18n/i18n.html"/>
             <item name="Search and Query" href="query/query.html"/>
             <item name="User Generated Content" href="ugc/ugc.html"/>

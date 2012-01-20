@@ -60,9 +60,7 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Token;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSitesBaseService;
@@ -334,8 +332,13 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
             } catch (IOException e) {
                 // ignore
             }
-            // urgh, the lucene spell checker cannot be closed explicitly.
-            // finalize will close the reader...
+            
+            try {
+                spellChecker.close();
+            } catch (IOException e) {
+                // ignore
+            }
+            
             spellChecker = null;
         }
 

@@ -53,9 +53,13 @@ import org.springframework.web.context.ServletContextAware;
 
 import javax.jcr.*;
 import javax.servlet.ServletContext;
+
+import java.io.File;
 import java.io.IOException;
 
 /**
+ * Spring-configured Jackrabbit repository.
+ * 
  * User: toto
  * Date: Feb 9, 2009
  * Time: 11:21:20 AM
@@ -79,6 +83,8 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
     private String dataStoreGarbageCollectorBeanId;
     
     private SettingsBean settings;
+    
+    private boolean performMigrationToDataStoreIfNeeded = true;
 
     public Resource getConfigFile() {
         return configFile;
@@ -126,6 +132,15 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
 
 
     public void start() throws RepositoryException, IOException {
+        String targetRepositoryConfig = System
+                .getProperty("jahia.jackrabbit.targetRepositoryConfig");
+        if ((performMigrationToDataStoreIfNeeded || targetRepositoryConfig != null)
+                && !Boolean.valueOf(settings.getPropertiesFile().getProperty("cluster.activated",
+                        "false"))) {
+            new RepositoryMigrator(configFile.getFile(), homeDir.getFile(),
+                    targetRepositoryConfig != null ? new File(targetRepositoryConfig) : null,
+                    performMigrationToDataStoreIfNeeded).migrate();
+        }
 
         repository = createRepository();
 
@@ -216,6 +231,10 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
 
     public void setSettings(SettingsBean settings) {
         this.settings = settings;
+    }
+
+    public void setPerformMigrationToDataStoreIfNeeded(boolean performMigrationToDataStoreIfNeeded) {
+        this.performMigrationToDataStoreIfNeeded = performMigrationToDataStoreIfNeeded;
     }
 
 }

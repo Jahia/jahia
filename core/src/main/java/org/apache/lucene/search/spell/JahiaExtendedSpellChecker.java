@@ -409,4 +409,10 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
             }
         }
     }
+    
+    public void close() throws IOException {
+        if (searcher != null) {
+            searcher.close();
+        }
+    }
 }

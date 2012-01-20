@@ -286,7 +286,7 @@
     </bean>
 
     <bean id="jackrabbit" class="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository"
-          init-method="start" destroy-method="stop" depends-on="JahiaTemplateManagerService">
+          init-method="start" destroy-method="stop" depends-on="JahiaTemplateManagerService,dataSource">
         <property name="configFile" value="WEB-INF/etc/repository/jackrabbit/repository.xml"/>
         <property name="homeDir" value="${jahia.jackrabbit.home}"/>
         <property name="servletContextAttributeName"
@@ -294,6 +294,7 @@
         <!-- the ID of the Spring bean with the definition of a background job for DataStore garbage collection -->
         <property name="dataStoreGarbageCollectorBeanId" value="DataStoreGarbageCollectorJob"/>
         <property name="settings" ref="settingsBean"/>
+        <property name="performMigrationToDataStoreIfNeeded" value="${jahia.jackrabbit.performMigrationToDataStoreIfNeeded:true}"/>
     </bean>
 
     <bean id="rbInitializer"

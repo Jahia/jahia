@@ -27,7 +27,8 @@
                 <item name="Other Initializers" href="initializers_renderers/other_initializers.html"/>
                 <item name="Custom Property Rendering" href="initializers_renderers/renderers.html"/>
             </item>
-            <item name="References" href="references/references.html" collapse="true"/>
+            <item name="References" href="references/references.html"/>
+            <item name="Interceptors" href="interceptors.html"/>
         </menu>
         <menu name="Rendering" inherit="top">
             <item name="Rendering" href="render/render.html"/>

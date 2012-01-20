@@ -1,0 +1,28 @@
+Events
+
+  Events on content can be observed through the JCR API. System events, not directly related to content operation,
+  are sent and received via spring.
+
+* Content events
+
+  You can extend the <<<org.jahia.services.content.DefaultEventListener>>> class to create a listener on JCR events.
+  The event listener needs to be declared in the module spring file.
+
+  See JCR documentation for details on the different event types.
+
+* System events
+
+  In order to listen events sent via spring, you need to implement to <<<ApplicationListener\<ApplicationEvent\>>>> interface, replacing
+  <<<ApplicationEvent>>> by the event class you want to listen to.
+  See {{{http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/context/ApplicationListener.html}ApplicationListener}}
+
+  * Module deployment events
+
+  TemplatePackageRedeployedEvent event is sent when a module is deployed on the server.
+  ModuleDeployedOnSiteEvent is sent when a module is deployed to a site.
+
+  * Login / logout events
+
+  Login and logout event can be activated, if your application need to listen to these events. You'll have to add fireLoginEvent
+  and/or fireLogoutEvent properties in your jahia.properties file. An event will then be sent everytime a user logs in or out.
+

@@ -40,6 +40,7 @@
 
 package org.jahia.services.workflow.jbpm;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.registries.ServicesRegistry;
@@ -257,11 +258,13 @@ public class JBPMMailProducer extends MailProducerImpl {
     /** construct recipient addresses from user entities */
     private Address[] resolveAddresses(List<User> users, AddressResolver addressResolver) {
         int userCount = users.size();
-        Address[] addresses = new Address[userCount];
+        List<Address> addresses = new ArrayList<Address>();
         for (int i = 0; i < userCount; i++) {
-            addresses[i] = addressResolver.resolveAddress(users.get(i));
+            if (!StringUtils.isEmpty(users.get(i).getBusinessEmail())) {
+                addresses.add(addressResolver.resolveAddress(users.get(i)));
+            }
         }
-        return addresses;
+        return addresses.toArray(new Address[addresses.size()]);
     }
 
     protected void fillSubject(Message email, Execution execution, JCRSessionWrapper session) throws MessagingException {

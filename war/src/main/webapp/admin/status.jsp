@@ -19,6 +19,7 @@
 <%@page import="org.jahia.services.cache.CacheHelper"%>
 <%@page import="org.jahia.services.cache.ehcache.EhCacheProvider"%>
 <%@page import="net.sf.ehcache.CacheManager"%>
+<%@ page import="org.jahia.bin.errors.ErrorFileDumper" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
 
 <%
@@ -538,6 +539,40 @@
                 <label for="threadDumpCount"><fmt:message key="column.count.label"/>:&nbsp;</label><input type="text" id="threadDumpCount" name="threadDumpCount" size="2" value="${not empty param.threadDumpCount ? param.threadDumpCount : '10'}"/>
                 &nbsp;&nbsp;
                 <label for="threadDumpInterval"><fmt:message key="label.interval"/>:&nbsp;</label><input type="text" id="threadDumpInterval" name="threadDumpInterval" size="2" value="${not empty param.threadDumpInterval ? param.threadDumpInterval : '10'}"/>&nbsp;<fmt:message key="label.seconds"/>
+            </td>
+        </tr>
+        <tr class="oddLine">
+            <td align="left"><img src="<c:url value='/icons/tab-workflow.png'/>" height="16" width="16" alt=" " align="top"/>
+                <%
+                    String enableThreadMonitor = request.getParameter("enableThreadMonitor");
+                    if ("true".equals(enableThreadMonitor)) {
+                        ThreadMonitor.getInstance().setActivated(true);
+                    } else if ("false".equals(enableThreadMonitor)) {
+                        ThreadMonitor.getInstance().setActivated(false);
+                    }
+
+                %>
+                <fmt:message key="label.thread.monitor.is"/>&nbsp;<%if (ThreadMonitor.getInstance().isActivated()) {%> <fmt:message key="label.started"/>
+                <% } else { %><fmt:message key="label.stopped"/> <% } %> -
+                <%if (ThreadMonitor.getInstance().isActivated()) {%><a href="?do=status&amp;sub=display&amp;enableThreadMonitor=false#threads"><fmt:message key="label.stop.thread.monitor"/></a>
+                <% } else { %><a href="?do=status&amp;sub=display&amp;enableThreadMonitor=true#threads"><fmt:message key="label.start.thread.monitor"/></a><% } %>
+            </td>
+        </tr>
+        <tr class="evenLine">
+            <td align="left"><img src="<c:url value='/icons/tab-workflow.png'/>" height="16" width="16" alt=" " align="top"/>
+                <%
+                    String enableErrorFileDumper = request.getParameter("enableErrorFileDumper");
+                    if ("true".equals(enableErrorFileDumper)) {
+                        ErrorFileDumper.setFileDumpActivated(true);
+                    } else if ("false".equals(enableErrorFileDumper)) {
+                        ErrorFileDumper.setFileDumpActivated(false);
+                    }
+
+                %>
+                <fmt:message key="label.error.file.dumper.is"/>&nbsp;<%if (!ErrorFileDumper.isShutdown()) {%> <fmt:message key="label.started"/>
+                <% } else { %><fmt:message key="label.stopped"/> <% } %> -
+                <%if (ErrorFileDumper.isShutdown()) {%><a href="?do=status&amp;sub=display&amp;enableErrorFileDumper=true#threads"><fmt:message key="label.start.error.dumper"/></a>
+                <% } else { %><a href="?do=status&amp;sub=display&amp;enableErrorFileDumper=false#threads"><fmt:message key="label.stop.error.dumper"/></a><% } %>
             </td>
         </tr>
         <tr class="oddLine">

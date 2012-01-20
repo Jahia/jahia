@@ -53,7 +53,7 @@ pageContext.setAttribute("service", service);
         <input id="cbActions" type="checkbox" ${showActions ? 'checked="checked"' : ''}
                 onchange="go('showActions', '${!showActions}')"/>&nbsp;<label for="cbActions">Show actions</label><br/>
         <input id="cbCompleted" type="checkbox" ${showCompleted ? 'checked="checked"' : ''}
-                onchange="go('showCompleted', '${!showCompleted}')"/>&nbsp;<label for="cbCompleted">Show completed jobs</label><br/>
+                onchange="go('showCompleted', '${!showCompleted}')"/>&nbsp;<label for="cbCompleted">Show completed/inactive jobs</label><br/>
     </p>
     <form id="navigateForm" action="?" method="get">
         <input type="hidden" id="showActions" name="showActions" value="${showActions}"/>
@@ -227,7 +227,7 @@ pageContext.setAttribute("aliveCount", aliveCount);
 
 <c:if test="${showActions && (allCount - aliveCount > 0)}">
 <p>
-    <img src="<c:url value='/icons/showTrashboard.png'/>" alt=" " height="16" width="16"/>&nbsp;<a href="#removeCompleted" onclick="if (confirm('You are about to permanently remove the data of completed jobs. Continue?')) { go('action', 'removeCompleted'); } return false;">remove all completed jobs (${allCount - aliveCount})</a>
+    <img src="<c:url value='/icons/showTrashboard.png'/>" alt=" " height="16" width="16"/>&nbsp;<a href="#removeCompleted" onclick="if (confirm('You are about to permanently remove the data of completed/inactive jobs. Continue?')) { go('action', 'removeCompleted'); } return false;">remove all completed/inactive jobs (${allCount - aliveCount})</a>
 </p>
 </c:if>
 <p>

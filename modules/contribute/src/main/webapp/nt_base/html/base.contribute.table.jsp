@@ -56,7 +56,7 @@
             <c:if test="${jcr:isNodeType(parent, 'jnt:content') and not jcr:isNodeType(parent, 'jnt:contentFolder')}">
                 <c:set var="suffix" value=".editContent.html"/>
             </c:if>
-            <a title="${alt}" href="<c:url value='${url.base}${parent.path}${suffix}'/>"><img height="16" width="16"
+            <a title="${alt}" href="<c:url value='${url.base}${parent.path}${suffix}'/>"><img height="32" width="32"
                                                                                      border="0"
                                                                                      style="cursor: pointer;"
                                                                                      title="${alt}" alt="${alt}"

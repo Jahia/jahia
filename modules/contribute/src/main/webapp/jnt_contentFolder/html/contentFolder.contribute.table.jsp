@@ -50,7 +50,7 @@
             <th width="1%">&nbsp;</th>
             <th width="5%">
                 <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentFolder,jnt:folder')}">
-                    <a title="parent" href="<c:url value='${url.base}${currentNode.parent.path}.html'/>"><img height="16" width="16"
+                    <a title="parent" href="<c:url value='${url.base}${currentNode.parent.path}.html'/>"><img height="32" width="32"
                                                                                              border="0"
                                                                                              style="cursor: pointer;"
                                                                                              title="parent" alt="parent"

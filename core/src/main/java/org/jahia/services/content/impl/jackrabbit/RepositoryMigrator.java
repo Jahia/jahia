@@ -308,7 +308,8 @@ class RepositoryMigrator {
                     stmt.execute(query);
                 } catch (SQLException e) {
                     String lcLine = query.toLowerCase();
-                    if (!lcLine.contains("drop table")) {
+                    if (!lcLine.contains("drop table") && !lcLine.contains("drop trigger")
+                            && !lcLine.contains("drop sequence")) {
                         logger.error(
                                 "Unable to execute query: " + query + ". Cause: " + e.getMessage(),
                                 e);

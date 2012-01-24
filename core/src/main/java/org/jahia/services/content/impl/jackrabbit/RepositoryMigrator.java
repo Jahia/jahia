@@ -57,6 +57,7 @@ import javax.sql.DataSource;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.JahiaRepositoryCopier;
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.RepositoryCopier;
 import org.apache.jackrabbit.core.RepositoryImpl;
@@ -80,7 +81,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Sergiy Shyrkov
  */
-class RepositoryMigrator {
+public class RepositoryMigrator {
 
     private static final Logger logger = LoggerFactory.getLogger(RepositoryMigrator.class);
 
@@ -352,6 +353,7 @@ class RepositoryMigrator {
             if (targetConfigFile != null || performMigrationToDataStoreIfNeeded
                     && sourceCfg.getDataStore() == null) {
 
+                long timer = System.currentTimeMillis();
                 if (targetConfigFile != null) {
                     logger.info(
                             "Will perform repository migration using target configuration file {}",
@@ -359,7 +361,7 @@ class RepositoryMigrator {
                 } else {
                     logger.info("Will perform repository migration from BLOB store to DataStore");
                 }
-                keepBackup = Boolean.getBoolean("jahia.jackrabbit.backRepositoryByMigration");
+                keepBackup = Boolean.getBoolean("jahia.jackrabbit.backupRepositoryByMigration");
 
                 try {
                     dbInitSettings();
@@ -417,6 +419,8 @@ class RepositoryMigrator {
 
                     dbExecute("jackrabbit-migration-3-rename-temp-tables.sql",
                             "Temporary DB tables renamed");
+
+                    logger.info("Complete repository migration took {} ms", (System.currentTimeMillis() - timer));
                 } catch (Exception e) {
                     logger.warn("Unable to perform migration from BLOB store to DataStore. Cause: "
                             + e.getMessage(), e);
@@ -436,14 +440,19 @@ class RepositoryMigrator {
         RepositoryImpl source = JahiaRepositoryImpl.create(sourceCfg);
         RepositoryImpl target = JahiaRepositoryImpl.create(targetCfg);
 
+        int batchSize = Integer.getInteger("jahia.jackrabbit.persistenceCopierBatchSize", 500);
         try {
-            new RepositoryCopier(source, target).copy();
+            if (batchSize <= 1) {
+                new RepositoryCopier(source, target).copy();
+            } else {
+                new JahiaRepositoryCopier(source, target, batchSize).copy();
+            }
         } finally {
             target.shutdown();
             source.shutdown();
         }
 
-        logger.info("Repository migrated in {} ms", (System.currentTimeMillis() - globalTimer));
+        logger.info("Repository data migrated in {} ms", (System.currentTimeMillis() - globalTimer));
     }
 
     private void swapRepositoryHome(File repoHomeCopy) throws IOException {

@@ -134,9 +134,8 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
     public void start() throws RepositoryException, IOException {
         String targetRepositoryConfig = System
                 .getProperty("jahia.jackrabbit.targetRepositoryConfig");
-        if ((performMigrationToDataStoreIfNeeded || targetRepositoryConfig != null)
-                && !Boolean.valueOf(settings.getPropertiesFile().getProperty("cluster.activated",
-                        "false"))) {
+        if (settings.isProcessingServer()
+                && (performMigrationToDataStoreIfNeeded || targetRepositoryConfig != null)) {
             new RepositoryMigrator(configFile.getFile(), homeDir.getFile(),
                     targetRepositoryConfig != null ? new File(targetRepositoryConfig) : null,
                     performMigrationToDataStoreIfNeeded).migrate();

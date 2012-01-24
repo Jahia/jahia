@@ -87,14 +87,14 @@
                                         <c:if test="${not isUserConnectionRequest}">
                                             <c:set var="taskTitle" value="${not empty task.formResourceName and not empty task.variables['jcr:title'] ? task.variables['jcr:title'][0].value : (not empty task.displayName ? task.displayName : task.name)}"/>
                                         </c:if>
-                                        <c:if test="${jcr:isNodeType(node,'jnt:page')}">
-                                            <c:set var="path" value="${node.path}"/>
+                                        <c:set var="path" value="${jcr:findDisplayableNode(node, renderContext).path}"/>
+                                        <c:if test="${not empty path}">
+                                            <c:url var="preview" value="${renderContext.servletPath}/${task.variables.workspace}/${task.variables.locale}${path}.html"/>
+                                            <a target="_blank" href="${preview}">${fn:escapeXml(taskTitle)}</a>
                                         </c:if>
-                                        <c:if test="${!jcr:isNodeType(node,'jnt:page')}">
-                                            <c:set var="path" value="${jcr:getParentOfType(node,'jnt:page').path}"/>
+                                        <c:if test="${empty path}">
+                                            ${fn:escapeXml(taskTitle)}
                                         </c:if>
-                                        <c:url var="preview" value="${renderContext.servletPath}/${task.variables.workspace}/${task.variables.locale}${path}.html"/>
-                                        <a target="_blank" href="${preview}">${fn:escapeXml(taskTitle)}</a>
                                     </td>
                                     <td>
                                         <div class="listEditToolbar">

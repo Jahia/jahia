@@ -1164,7 +1164,7 @@ public class ContentManagerHelper {
                     }
                 }
                 session.save();
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().duplicateModule(key, siteType, baseSet);
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().duplicateModule(shortName, siteType, baseSet);
 
                 JCRNodeWrapper templateSet = session.getNodeByUUID(result.get(0).getUUID());
                 return navigation.getGWTJahiaNode(templateSet, GWTJahiaNode.DEFAULT_SITE_FIELDS);

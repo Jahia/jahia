@@ -42,6 +42,7 @@ package org.jahia.bin;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
@@ -544,6 +545,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                     name = (fileUpload.getParameterValues(TARGETNAME))[0];
                                 }
 
+                                name = JCRContentUtils.escapeLocalNodeName(FilenameUtils.getName(name));
+                                
                                 JCRNodeWrapper fileNode = targetDirectory.hasNode(name) ?
                                         targetDirectory.getNode(name) : null;
                                 if (fileNode != null && isVersionActivated) {

@@ -192,7 +192,7 @@ public class AclEditor {
                                      ListStore<ModelData> modelDataListStore, Grid<ModelData> modelDataGrid) {
                     final GWTJahiaNodeACE ace = (GWTJahiaNodeACE) model.get("ace");
                     LayoutContainer widget = new LayoutContainer();
-                    if (!readOnly) {
+                    if (!readOnly && !ace.isHidden()) {
                         if (!ace.getInheritedPermissions().isEmpty() && !acl.isBreakAllInheritance()) {
                             if (!ace.getPermissions().isEmpty()) {
                                 widget.add(buildLocalRestoreInheritanceButton(model, ace));
@@ -467,7 +467,7 @@ public class AclEditor {
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.delete());
         button.setBorders(false);
         button.setToolTip(getResource("label.remove"));
-        button.setEnabled(!readOnly);
+        button.setEnabled(!readOnly && !ace.isHidden());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 setDirty();
@@ -522,7 +522,7 @@ public class AclEditor {
         Button button = new Button();
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.restore());
         button.setToolTip(getResource("org.jahia.engines.rights.ManageRights.restoreInheritance.label"));
-        button.setEnabled(!readOnly);
+        button.setEnabled(!readOnly && !ace.isHidden());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 setDirty();

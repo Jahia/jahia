@@ -12,6 +12,14 @@ Using search in templates
   * {{{results} Displaying search results}}
   
   * {{{without} Using search functionality without creating a form}}
+  
+  []
+  
+  Note, please, most of the tags in the search tag library accept so dynamic attributes and pass
+  them through to the generated HTML elements (like <<<\<form/\>>>>, <<<\<input/\>>>> etc.).
+  
+  Such tags have explicit indication "<dynamic attributes are accepted by this tag>" in the
+  tag description page of the taglib documentation.  
 
 * {Simple} search form
 

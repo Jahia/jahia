@@ -14,7 +14,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
-<c:set var="defaultSet" value="acme-space.zip"/>
+<c:set var="defaultSet" value="acmespace.zip"/>
 <%
     Iterator sitesList = (Iterator) request.getAttribute("sitesList");
     String warningMsg = (String) request.getAttribute("warningMsg");

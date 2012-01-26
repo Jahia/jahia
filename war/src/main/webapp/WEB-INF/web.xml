@@ -30,18 +30,6 @@
         <param-value>60000</param-value>
     </context-param>
 
-    <!--
-    <filter>
-    	<description>
-	      The following filter to use NTLM Domain authentication is
-	      configured in applicationcontext-ntlm-legacy.xml.
-	      It can be enabled in the jahia.advanced.properties.
-    	</description>
-        <filter-name>NtlmHttpFilter</filter-name>
-        <filter-class>org.jahia.bin.filters.FallbackDelegatingFilterProxy</filter-class>
-    </filter>
-    -->
-
     <filter>
     	<description>
 	      The following filter to use SPNEGO authentication is
@@ -166,6 +154,11 @@
     </filter-mapping>
 
     <filter-mapping>
+        <filter-name>SpnegoHttpFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
         <filter-name>JcrSessionFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
@@ -176,18 +169,6 @@
        <dispatcher>REQUEST</dispatcher>
        <dispatcher>FORWARD</dispatcher>
        <dispatcher>ERROR</dispatcher>
-    </filter-mapping>
-
-    <!--
-    <filter-mapping>
-        <filter-name>NtlmHttpFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    -->
-
-    <filter-mapping>
-        <filter-name>SpnegoHttpFilter</filter-name>
-        <url-pattern>/*</url-pattern>
     </filter-mapping>
 
     <filter-mapping>

@@ -1379,7 +1379,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     ZipEntry zipentry = zis.getNextEntry();
                     if (zipentry == null) break;
                     String name = zipentry.getName();
-                    if (name.equals(LIVE_REPOSITORY_XML)) {
+                    if (name.equals(LIVE_REPOSITORY_XML) && jcrStoreService.getSessionFactory().getCurrentUser()!=null) {
                         JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live",null,null);
 
                         DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(liveSession, parentNodePath, file, fileList);

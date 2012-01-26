@@ -361,6 +361,14 @@ public class RepositoryMigrator {
                 } else {
                     logger.info("Will perform repository migration from BLOB store to DataStore");
                 }
+                
+                boolean clusterActivated = Boolean.getBoolean("cluster.activated");
+                if (clusterActivated) {
+                    // deactivate the cluster for the time of migration
+                    System.setProperty("cluster.activated", "false");
+                    sourceCfg = null; // reload the configuration
+                }
+                
                 keepBackup = Boolean.getBoolean("jahia.jackrabbit.backupRepositoryByMigration");
 
                 try {
@@ -424,6 +432,11 @@ public class RepositoryMigrator {
                 } catch (Exception e) {
                     logger.warn("Unable to perform migration from BLOB store to DataStore. Cause: "
                             + e.getMessage(), e);
+                } finally {
+                    if (clusterActivated) {
+                        // activate the cluster back
+                        System.setProperty("cluster.activated", "true");
+                    }
                 }
             }
         } catch (Exception e) {

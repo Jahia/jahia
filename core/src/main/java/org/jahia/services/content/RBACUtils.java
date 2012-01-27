@@ -229,7 +229,7 @@ public final class RBACUtils {
         JCRNodeWrapper role = session.getNode(rolePath.contains("/") ? rolePath : "/roles/"
                 + rolePath);
 
-        if (role.hasProperty("j:permissions")) {
+        if (!role.hasProperty("j:permissions")) {
             return false;
         }
         Value[] values = role.getProperty("j:permissions").getValues();

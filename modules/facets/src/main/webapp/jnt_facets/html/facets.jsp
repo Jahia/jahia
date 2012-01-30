@@ -35,12 +35,42 @@
     <jsp:useBean id="facetValueRenderers" class="java.util.HashMap" scope="request"/>
     <jsp:useBean id="facetValueNodeTypes" class="java.util.HashMap" scope="request"/>
 
-    <query:definition var="listQuery" scope="request">
-        <query:selector nodeTypeName="nt:base"/>
-        <c:set var="descendantNode" value="${fn:substringAfter(boundComponent.path,'/sites/')}"/>
-        <c:set var="descendantNode" value="${fn:substringAfter(descendantNode,'/')}"/>
-        <query:descendantNode path="/sites/${renderContext.site.name}/${descendantNode}"/>
-
+    <c:choose>
+        <c:when test="${jcr:isNodeType(boundComponent, 'jnt:contentRetrieval')}">
+            <jcr:nodeProperty node="${boundComponent}" name='j:startNode' var="startNode"/>
+            <jcr:nodeProperty node="${boundComponent}" name='j:criteria' var="criteria"/>
+            <jcr:nodeProperty node="${currentNode}" name='j:sortDirection' var="sortDirection"/>
+            <jcr:nodeProperty node="${boundComponent}" name='j:type' var="type"/>
+            <jcr:nodeProperty node="${boundComponent}" name="j:filter" var="filters"/>
+            <query:definition var="mainQuery" scope="page">
+                <query:selector nodeTypeName="${type.string}"/>
+                <query:descendantNode path="${not empty startNode and not empty startNode.node ? startNode.node.path : renderContext.site.path}"/>
+                <query:or>
+                    <c:forEach var="filter" items="${filters}">
+                        <c:if test="${not empty filter.string}">
+                            <query:equalTo propertyName="j:defaultCategory" value="${filter.string}"/>
+                        </c:if>
+                    </c:forEach>
+                </query:or>
+            </query:definition>             
+        </c:when>
+        <c:when test="${jcr:isNodeType(boundComponent, 'jnt:query')}">
+            <jcr:nodeProperty node="${boundComponent}" name="jcr:statement" var="query"/>
+            <jcr:nodeProperty node="${boundComponent}" name="jcr:language" var="lang"/>
+            <c:if test="${lang.string == 'JCR-SQL2'}">
+                <query:definition var="mainQuery" statement="${query.string}" scope="page"/>
+            </c:if>     
+        </c:when>
+        <c:otherwise>            
+            <query:definition var="mainQuery" scope="page">
+                <query:selector nodeTypeName="nt:base"/>
+                <c:set var="descendantNode" value="${fn:substringAfter(boundComponent.path,'/sites/')}"/>
+                <c:set var="descendantNode" value="${fn:substringAfter(descendantNode,'/')}"/>
+                <query:descendantNode path="/sites/${renderContext.site.name}/${descendantNode}"/>
+            </query:definition>    
+        </c:otherwise>            
+    </c:choose> 
+    <query:definition var="listQuery" qom="${mainQuery}" scope="request">
         <c:forEach items="${jcr:getNodes(currentNode, 'jnt:facet')}" var="facet">
             <jcr:nodeProperty node="${facet}" name="facet" var="currentFacetGroup"/>
             <jcr:nodeProperty node="${facet}" name="field" var="currentField"/>

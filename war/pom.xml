@@ -284,7 +284,7 @@
 		                    <dependency>
 		                        <groupId>org.jahia.server</groupId>
 		                        <artifactId>jahia-impl</artifactId>
-		                        <version>6.6.0.0-SNAPSHOT</version>
+		                        <version>6.7.0.0-SNAPSHOT</version>
 		                    </dependency>
 		                </dependencies>
 		                <executions>
@@ -358,7 +358,7 @@
 		                    <dependency>
 		                        <groupId>org.jahia.server</groupId>
 		                        <artifactId>jahia-impl</artifactId>
-		                        <version>6.6.0.0-SNAPSHOT</version>
+		                        <version>6.7.0.0-SNAPSHOT</version>
 		                    </dependency>
 		                </dependencies>
 		                <executions>
@@ -926,7 +926,7 @@
                     <dependency>
                         <groupId>org.jahia.server</groupId>
                         <artifactId>jahia-impl</artifactId>
-                        <version>6.6.0.0-SNAPSHOT</version>
+                        <version>6.7.0.0-SNAPSHOT</version>
                     </dependency>
                 </dependencies>
                 <executions>

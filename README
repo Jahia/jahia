@@ -408,3 +408,4 @@ mvn -DconnectionUrl=scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_5_
 
 - If you're running of these an the Bamboo server, make sure you use the alternate local repository with the following
 command line option : -Dmaven.repo.local=/home/bamboo/.m2/repository-for-package
+

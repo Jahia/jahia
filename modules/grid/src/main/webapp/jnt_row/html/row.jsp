@@ -78,7 +78,7 @@
 <c:forEach items="${colMap}" var="col" varStatus="count">
     <!--start grid_${col.value}-->
     <div class='grid_${col.value}'>
-        <template:area path="${currentNode.name}-${col.key}"/>
+        <template:area path="${currentNode.name}-${col.key}" areaAsSubNode="true"/>
         <div class='clear'></div>
     </div>
     <!--stop grid_${col.value}-->

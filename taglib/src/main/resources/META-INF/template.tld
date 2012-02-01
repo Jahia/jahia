@@ -419,6 +419,12 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Allows area to be stored as a subnode</description>
+            <name>areaAsSubNode</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>Content type .</description>
             <name>areaType</name>
             <required>false</required>

@@ -78,6 +78,8 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
     private Template templateNode;
 
+    private boolean areaAsSubNode;
+    
     public void setAreaType(String areaType) {
         this.areaType = areaType;
     }
@@ -94,12 +96,16 @@ public class AreaTag extends ModuleTag implements ParamParent {
         this.level = level;
     }
 
+    public void setAreaAsSubNode(boolean areaAsSubNode) {
+        this.areaAsSubNode = areaAsSubNode;
+    }
+
     @Override
     protected String getModuleType(RenderContext renderContext) throws RepositoryException {
         return moduleType;
     }
 
-    protected void missingResource(RenderContext renderContext, Resource mainResource, Resource resource)
+    protected void missingResource(RenderContext renderContext, Resource resource)
             throws RepositoryException, IOException {
         if (renderContext.isEditMode()) {
             try {
@@ -111,7 +117,11 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
             String areaPath = path;
             if (!path.startsWith("/")) {
-                areaPath = renderContext.getMainResource().getNode().getPath() + "/" + path;
+                if (areaAsSubNode && resource.getNode().getPath().startsWith(renderContext.getMainResource().getNode().getPath())) {
+                    areaPath = resource.getNode().getPath() + "/" + path;
+                } else {
+                    areaPath = renderContext.getMainResource().getNode().getPath() + "/" + path;
+                }
             }
 
             String additionalParameters = "missingList=\"true\"";
@@ -181,7 +191,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                         path = node.getPath() + "/" + path;
                     }
                     node = null;
-                    missingResource(renderContext, currentResource, mainResource);
+                    missingResource(renderContext, currentResource);
                 } finally {
                     if (node == null && logger.isDebugEnabled()) {
                         if (level == null) {
@@ -214,12 +224,16 @@ public class AreaTag extends ModuleTag implements ParamParent {
                         }
                     }
                     nodes.add(mainResource.getNode());
-
+                    boolean isCurrentResource = false;
+                    if (areaAsSubNode) {
+                        nodes.add(0,currentResource.getNode());
+                        isCurrentResource = true;
+                    }
                     boolean found = false;
                     boolean notMainResource = false;
                     for (JCRNodeWrapper node : nodes) {
                         if (!path.equals("*") && node.hasNode(path)) {
-                            notMainResource = mainResource.getNode() != node;
+                            notMainResource = mainResource.getNode() != node && !node.getPath().startsWith(renderContext.getMainResource().getNode().getPath());
                             this.node = node.getNode(path);
                             if (currentResource.getNode().getParent().getPath().equals(this.node.getPath())) {
                                 this.node = null;
@@ -228,9 +242,10 @@ public class AreaTag extends ModuleTag implements ParamParent {
                                 break;
                             }
                         }
-                        if (t != null) {
+                        if (t != null && !isCurrentResource) {
                             t = t.getNext();
                         }
+                        isCurrentResource = false;
                     }
                     renderContext.getRequest().setAttribute("previousTemplate", t);
                     if(logger.isDebugEnabled()) {
@@ -244,7 +259,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                         renderContext.getRequest().setAttribute("inArea", Boolean.TRUE);
                     }
                     if (!found) {
-                        missingResource(renderContext, currentResource, mainResource);
+                        missingResource(renderContext, currentResource);
                     }
                 } else if (path.startsWith("/")) {
                     JCRSessionWrapper session = mainResource.getNode().getSession();
@@ -258,7 +273,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     try {
                         node = (JCRNodeWrapper) session.getItem(path);
                     } catch (PathNotFoundException e) {
-                        missingResource(renderContext, currentResource, mainResource);
+                        missingResource(renderContext, currentResource);
                     }
                 }
                 renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
@@ -288,6 +303,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     }
             templateNode = null;
             level = null;
+            areaAsSubNode = false;
             pageContext.getRequest().setAttribute("inArea", o);
 
         }

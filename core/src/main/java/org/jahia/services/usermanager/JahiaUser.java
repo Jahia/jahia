@@ -194,4 +194,11 @@ public interface JahiaUser extends JahiaPrincipal {
      * @return String representation of the name of the provider of this user
      */
     public String getLocalPath();
+
+    /**
+     * Checks if the account is locked
+     *
+     * @return true if the account is locked
+     */
+    boolean isAccountLocked();
 }

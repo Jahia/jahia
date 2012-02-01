@@ -269,6 +269,8 @@ $(document).ready(function () {
             animatedcollapse.init();
         }
     });
+
+    CKEDITOR.config.wsc_lang = scayt_custom_params['sLang'];
 });
 
 

@@ -79,7 +79,7 @@ public class ContainerAuthValveImpl extends BaseAuthValve {
                 JahiaUser jahiaUser =
                         ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(principal.getName());
                 if (jahiaUser != null) {
-                    if (isAccountLocked(jahiaUser)) {
+                    if (jahiaUser.isAccountLocked()) {
                         logger.debug("Login failed. Account is locked for user " + principal.getName());
                         return;
                     }

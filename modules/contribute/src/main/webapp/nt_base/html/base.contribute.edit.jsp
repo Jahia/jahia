@@ -263,7 +263,7 @@
                     </c:when>
                     <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
                         <div jcr:id="${propertyDefinition.name}" class="ckeditorEdit${currentNode.identifier}"
-                             id="ckeditorEdit${currentNode.identifier}${scriptPropName}"
+                             id="ckeditorEdit${currentNode.identifier}${scriptPropName}${renderContext.mainResource.locale}"
                              jcr:url="<c:url value='${url.base}${currentNode.path}'/>" jcr:ckeditorToolbar="contributeCKEditorToolbar">${prop.string}</div>
                     </c:when>
                     <c:otherwise>

@@ -271,6 +271,7 @@ public class PublicationHelper {
             } else {
                 gwtInfo.setTitle(jcrNode.getName());
             }
+            gwtInfo.setPath(jcrNode.getPath());
             gwtInfo.setNodetype(jcrNode.getPrimaryNodeType().getLabel(currentUserSession.getLocale()));
         } catch (RepositoryException e1) {
             gwtInfo.setTitle(node.getPath());

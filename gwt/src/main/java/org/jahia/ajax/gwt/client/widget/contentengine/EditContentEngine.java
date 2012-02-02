@@ -96,6 +96,13 @@ public class EditContentEngine extends AbstractContentEngine {
         //setTopComponent(toolBar);
     }
 
+    public EditContentEngine(String path, Linker linker, EngineContainer engineContainer) {
+        super(linker.getConfig().getEngineTabs(), linker, path.substring(0, path.lastIndexOf('/')));
+        contentPath = path;
+        init(engineContainer);
+        loadEngine();
+    }
+
     public void close() {
         contentService.closeEditEngine(contentPath,new BaseAsyncCallback<Object>() {
             public void onSuccess(Object result) {

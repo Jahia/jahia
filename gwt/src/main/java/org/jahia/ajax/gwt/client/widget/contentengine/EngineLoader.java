@@ -49,7 +49,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Hover;
-import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem.SidePanelLinker;
 
 import java.util.Map;
@@ -65,27 +64,36 @@ public class EngineLoader {
     public static final int EDIT = 2;
 
     public static void showEditEngine(final Linker linker, final GWTJahiaNode node) {
-        showEngine(EDIT, linker, node, null,null,null,false);
+        showEngine(EDIT, linker, node, null, null, null, false, false);
     }
 
-    public static void showCreateEngine(final Linker linker, final GWTJahiaNode node, final GWTJahiaNodeType type, final Map<String, GWTJahiaNodeProperty> props,
-                                        final String targetName, final boolean createInParentAndMoveBefore) {
-        showEngine(CREATE, linker, node, type, props, targetName, createInParentAndMoveBefore);
+    public static void showEditEngine(final Linker linker, final GWTJahiaNode node, boolean forceEngineWindow) {
+        showEngine(EDIT, linker, node, null, null, null, false, forceEngineWindow);
     }
 
-    private static void showEngine(final int t, final Linker linker, final GWTJahiaNode node, final GWTJahiaNodeType type, final Map<String, GWTJahiaNodeProperty> props, final String targetName, final boolean createInParentAndMoveBefore) {
+    public static void showCreateEngine(final Linker linker, final GWTJahiaNode node, final GWTJahiaNodeType type,
+                                        final Map<String, GWTJahiaNodeProperty> props, final String targetName,
+                                        final boolean createInParentAndMoveBefore) {
+        showEngine(CREATE, linker, node, type, props, targetName, createInParentAndMoveBefore, false);
+    }
+
+    private static void showEngine(final int t, final Linker linker, final GWTJahiaNode node,
+                                   final GWTJahiaNodeType type, final Map<String, GWTJahiaNodeProperty> props,
+                                   final String targetName, final boolean createInParentAndMoveBefore,
+                                   final boolean forceEngineWindow) {
         GWT.runAsync(new RunAsyncCallback() {
             public void onFailure(Throwable reason) {
 
             }
 
             public void onSuccess() {
-                EngineContainer container = createContainer(linker);
+                EngineContainer container = createContainer(linker, forceEngineWindow);
 
                 if (t == CREATE) {
-                    new CreateContentEngine(linker, node, type, props, targetName, createInParentAndMoveBefore, container);
+                    new CreateContentEngine(linker, node, type, props, targetName, createInParentAndMoveBefore,
+                            container);
                 } else if (t == EDIT) {
-                    new EditContentEngine(node, linker, container);
+                    final AbstractContentEngine contentEngine = new EditContentEngine(node, linker, container);
                 }
                 container.showEngine();
                 Hover.getInstance().removeAll();
@@ -95,13 +103,17 @@ public class EngineLoader {
 
     }
 
-    public static EngineContainer createContainer(Linker linker) {
+    private static EngineContainer createContainer(Linker linker, boolean forceEngineWindow) {
         EngineContainer container;
-        if (!(GXT.isIE7 || GXT.isIE6)  && (linker instanceof EditLinker || linker instanceof SidePanelLinker)) {
+        if (!forceEngineWindow && (!(GXT.isIE7 || GXT.isIE6) && (linker instanceof EditLinker || linker instanceof SidePanelLinker))) {
             container = new EnginePanel();
         } else {
             container = new EngineWindow();
         }
         return container;
+    }
+
+    public static EngineContainer createContainer(Linker linker) {
+        return createContainer(linker, false);
     }
 }

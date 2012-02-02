@@ -1029,18 +1029,18 @@ public class NavigationHelper {
         } catch (Exception e) {
             logger.error("Cannot get repository infos",e);
         }
-        if (fields.contains(GWTJahiaNode.PUBLICATION_INFO) && supportsPublication) {
-            try {
+        try {
+            if (fields.contains(GWTJahiaNode.PUBLICATION_INFO) && supportsPublication && node.getSession().getLocale() != null) {
                 n.setAggregatedPublicationInfos(publication.getAggregatedPublicationInfosByLanguage(node.getIdentifier(),
                         Collections.singleton(node.getSession().getLocale().toString()), node.getSession()));
-            } catch (UnsupportedRepositoryOperationException e) {
-                // do nothing
-                logger.debug(e.getMessage());
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            } catch (GWTJahiaServiceException e) {
-                logger.error(e.getMessage(), e);
             }
+        } catch (UnsupportedRepositoryOperationException e) {
+            // do nothing
+            logger.debug(e.getMessage());
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        } catch (GWTJahiaServiceException e) {
+            logger.error(e.getMessage(), e);
         }
 
         if (fields.contains(GWTJahiaNode.PUBLICATION_INFOS) && supportsPublication) {

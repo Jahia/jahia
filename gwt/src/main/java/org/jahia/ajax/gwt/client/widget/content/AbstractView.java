@@ -171,17 +171,19 @@ public abstract class AbstractView extends TopRightComponent {
     private void updateTypeStore(List<GWTJahiaNode> nodes) {
         if (typeStore != null) {
             for (GWTJahiaNode o : nodes) {
-                BaseModelData data = new BaseModelData() {
-                    @Override
-                    public boolean equals(Object obj) {
-                        Object o1 = get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
-                        Object o2 = ((ModelData) obj).get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
-                        return o1.equals(o2);
+                if (o != null && o.get(GWTJahiaNode.PRIMARY_TYPE_LABEL) != null) {
+                    BaseModelData data = new BaseModelData() {
+                        @Override
+                        public boolean equals(Object obj) {
+                            Object o1 = get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
+                            Object o2 = ((ModelData) obj).get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
+                            return o1.equals(o2);
+                        }
+                    };
+                    data.set(GWTJahiaNode.PRIMARY_TYPE_LABEL, o.get(GWTJahiaNode.PRIMARY_TYPE_LABEL));
+                    if (!typeStore.contains(data)) {
+                        typeStore.add(data);
                     }
-                };
-                data.set(GWTJahiaNode.PRIMARY_TYPE_LABEL, o.get(GWTJahiaNode.PRIMARY_TYPE_LABEL));
-                if (!typeStore.contains(data)) {
-                    typeStore.add(data);
                 }
             }
             typeStore.sort(GWTJahiaNode.PRIMARY_TYPE_LABEL, Style.SortDir.ASC);

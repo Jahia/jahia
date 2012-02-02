@@ -100,8 +100,8 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         return get("title");
     }
 
-    public void setTitle(String path) {
-        set("title", path);
+    public void setTitle(String title) {
+        set("title", title);
     }
 
     public String getNodetype() {
@@ -226,5 +226,13 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
 
     public String getMainUUID() {
         return get("mainUUID");
+    }
+
+    public void setPath(String path) {
+        set("path",path);
+    }
+    
+    public String getPath() {
+        return get("path");
     }
 }

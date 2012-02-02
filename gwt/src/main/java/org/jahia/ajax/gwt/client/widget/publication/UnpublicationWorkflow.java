@@ -101,7 +101,7 @@ public class UnpublicationWorkflow implements CustomWorkflow {
         TabItem tab = new TabItem("Unpublication infos");
         tab.setLayout(new FitLayout());
 
-        PublicationStatusGrid g = new PublicationStatusGrid(publicationInfos, true);
+        PublicationStatusGrid g = new PublicationStatusGrid(publicationInfos, true, dialog.getLinker(), dialog.getContainer());
         tab.add(g);
 
         dialog.getTabPanel().add(tab);

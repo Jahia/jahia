@@ -84,7 +84,7 @@ public class PublicationStatusWindow extends LayoutContainer {
         TableData d = new TableData(Style.HorizontalAlignment.CENTER, Style.VerticalAlignment.MIDDLE);
         d.setMargin(5);
 
-        final Grid<GWTJahiaPublicationInfo> grid = new PublicationStatusGrid(infos, true);
+        final Grid<GWTJahiaPublicationInfo> grid = new PublicationStatusGrid(infos, true, linker, container);
         add(grid);
 
         cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {

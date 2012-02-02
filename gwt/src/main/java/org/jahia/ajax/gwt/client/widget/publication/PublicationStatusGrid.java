@@ -47,20 +47,26 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 
  * User: toto
  * Date: Aug 4, 2010
  * Time: 6:30:03 PM
@@ -68,9 +74,14 @@ import java.util.List;
 public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
 
     private static JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
+    private final Linker linker;
+    private final EngineContainer container;
 
-    public PublicationStatusGrid(final List<GWTJahiaPublicationInfo> infos, boolean checkbox) {
+    public PublicationStatusGrid(final List<GWTJahiaPublicationInfo> infos, boolean checkbox, final Linker linker,
+                                 final EngineContainer container) {
         super();
+        this.linker = linker;
+        this.container = container;
         GroupingStore<GWTJahiaPublicationInfo> store = new GroupingStore<GWTJahiaPublicationInfo>();
         store.add(infos);
 
@@ -113,11 +124,12 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
         final List<String> paths = new LinkedList<String>();
         column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
             @Override
-            public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex,
+            public Object render(final GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex,
                                  int colIndex, ListStore listStore, Grid grid) {
                 final String uuid = model.getMainUUID();
                 final String language = model.getLanguage();
                 final String path = model.getMainPath();
+                ButtonBar buttonBar = new ButtonBar();
                 if (!paths.contains(path)) {
                     paths.add(path);
                     Button compare = new Button(Messages.get("label.compare", "Compare"));
@@ -127,9 +139,22 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
                             new CompareEngine(uuid, language, false, path).show();
                         }
                     });
-                    return compare;
+                    buttonBar.add(compare);
                 }
-                return null;
+                Button review = new Button(Messages.get("label.review.content", "Review Content"));
+                review.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList(model.getPath()), null,
+                                new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                                    public void onSuccess(List<GWTJahiaNode> result) {
+                                        EngineLoader.showEditEngine(linker, result.get(0), true);
+                                    }
+                                });
+                    }
+                });
+                buttonBar.add(review);
+                return buttonBar;
             }
         });
         configs.add(column);

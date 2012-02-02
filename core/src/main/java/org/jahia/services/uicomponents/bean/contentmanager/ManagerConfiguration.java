@@ -94,6 +94,7 @@ public class ManagerConfiguration implements Serializable {
     private boolean displaySearchInTag = true;
     private boolean displaySearchInFile = true;
     private boolean displaySearchInContent = true;
+    private boolean displaySearchInDateMeta = true;
     private boolean searchInFile = true;
     private boolean searchInContent = true;    
     private boolean searchInCurrentSiteOnly = false;
@@ -363,5 +364,13 @@ public class ManagerConfiguration implements Serializable {
 
     public void setAllowRootNodeEditing(boolean allowRootNodeEditing) {
         this.allowRootNodeEditing = allowRootNodeEditing;
+    }
+
+    public boolean isDisplaySearchInDateMeta() {
+        return displaySearchInDateMeta;
+    }
+
+    public void setDisplaySearchInDateMeta(boolean displaySearchInDateMeta) {
+        this.displaySearchInDateMeta = displaySearchInDateMeta;
     }
 }

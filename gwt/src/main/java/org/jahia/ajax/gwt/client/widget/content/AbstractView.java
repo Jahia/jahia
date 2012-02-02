@@ -132,6 +132,9 @@ public abstract class AbstractView extends TopRightComponent {
                     }
                 }
                 updateTypeStore(gwtJahiaNodeListLoadResult.getData());
+                getLinker().getTopRightObject().getToolBar().clear();
+                getLinker().getTopRightObject().getToolBar().disable();
+
             }
 
         };

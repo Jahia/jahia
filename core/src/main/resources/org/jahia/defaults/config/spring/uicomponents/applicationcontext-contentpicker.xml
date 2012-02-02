@@ -88,6 +88,7 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="false"/>
@@ -200,6 +201,7 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="false"/>
@@ -296,6 +298,7 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="false"/>
@@ -359,6 +362,7 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="true"/>
@@ -438,6 +442,7 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="false"/>
@@ -500,6 +505,7 @@
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
         <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="true"/>
         <property name="searchInFile" value="false"/>   
@@ -576,6 +582,7 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="true"/>
@@ -656,6 +663,7 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="true"/>
@@ -723,6 +731,7 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="false"/>
@@ -783,6 +792,7 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="true"/>

@@ -45,6 +45,8 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
@@ -52,7 +54,9 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -66,8 +70,10 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.widget.form.CalendarField;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.NodeTypeTableViewFiltering;
 
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Form for searching repository content.
@@ -79,6 +85,10 @@ public class ContentSearchForm extends ContentPanel implements AbstractView.Cont
     private TextField<String> searchField;
     private ContentPickerField pagePickerField;
     private ComboBox<GWTJahiaLanguage> langPickerField;
+    private CalendarField startDateField;
+    private CalendarField endDateField;
+    private ComboBox<ModelData> timesField;
+    private RadioGroup dateTypeField;
     private CheckBox inNameField;
     private CheckBox inTagField;
     private CheckBox inContentField;
@@ -99,7 +109,13 @@ public class ContentSearchForm extends ContentPanel implements AbstractView.Cont
         searchForm.setBodyBorder(false);
         searchField = new TextField<String>();
         searchField.setFieldLabel(Messages.get("search.label"));
-
+        searchField.addKeyListener(new KeyListener() {
+            public void componentKeyPress(ComponentEvent event) {
+                if (event.getKeyCode() == 13) {
+                    doSearch();
+                }
+            }
+        });
         final Button ok = new Button("", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
                 doSearch();
@@ -176,6 +192,71 @@ public class ContentSearchForm extends ContentPanel implements AbstractView.Cont
 
         fieldSet.add(scopeCheckGroup,new FormData("-20"));
 
+        if (config.isDisplaySearchInDateMeta()) {
+            Radio radio = new Radio();
+            radio.setBoxLabel(Messages.get("label.modification","modification"));
+            radio.setValueAttribute("1");
+            radio.setValue(true);
+            Radio radio2 = new Radio();
+            radio2.setBoxLabel(Messages.get("label.creation","creation"));
+            radio2.setValueAttribute("2");
+            Radio radio3 = new Radio();
+            radio3.setBoxLabel(Messages.get("label.publication","publication"));
+            radio3.setValueAttribute("3");
+
+            dateTypeField = new RadioGroup();
+            dateTypeField.setOrientation(Style.Orientation.VERTICAL);
+            dateTypeField.setFieldLabel(Messages.get("label.dateType","According date of"));
+            dateTypeField.add(radio);
+            dateTypeField.add(radio2);
+            dateTypeField.add(radio3);
+            fieldSet.add(dateTypeField);
+
+            startDateField = new CalendarField("dd.MM.yyyy", false, false, null, false, null) {
+                @Override
+                protected void onClick(ComponentEvent ce) {
+                    timesField.clearSelections();
+                    super.onClick(ce);
+                }
+            };
+            startDateField.setFieldLabel(Messages.get("label.startDate","Start Date"));
+
+            endDateField = new CalendarField("dd.MM.yyyy", false, false, null, false, null) {
+                @Override
+                protected void onClick(ComponentEvent ce) {
+                    timesField.clearSelections();
+                    super.onClick(ce);
+                }
+            };
+            endDateField.setFieldLabel(Messages.get("label.endDate","End Date"));
+            fieldSet.add(startDateField);
+            fieldSet.add(endDateField);
+            String[] timesValues = {"1day,1","1week,7","2weeks,14","1month,30","3months,90","6months,180","1year,365"};
+            ListStore<ModelData> times = new ListStore<ModelData>();
+            for (String timesValue : timesValues) {
+                String[] value = timesValue.split(",");
+                ModelData d = new BaseModelData();
+                d.set("key",value[1]);
+                d.set("title",Messages.get("label." + value[0], value[0]));
+                times.add(d);
+            }
+
+            timesField = new ComboBox<ModelData>(){
+
+                @Override
+                protected void onClick(ComponentEvent ce) {
+                    startDateField.clear();
+                    endDateField.clear();
+                    this.clear();
+                    super.onClick(ce);
+                }
+            };
+            timesField.setDisplayField("title");
+            timesField.setValueField("key");
+            timesField.setStore(times);
+            timesField.setFieldLabel(Messages.get("label.timeRange","Time range"));
+            fieldSet.add(timesField);
+        }
         setWidth("100%");
         setFrame(true);
         setCollapsible(false);
@@ -276,7 +357,7 @@ public class ContentSearchForm extends ContentPanel implements AbstractView.Cont
     private CheckBox createFileField() {
         CheckBox field = new CheckBox();
         field.setFieldLabel(Messages.get("fileMenu.label", "File"));
-        field.setBoxLabel(field.getFieldLabel());        
+        field.setBoxLabel(field.getFieldLabel());
         field.setName("file");
         field.setValue(config.isSearchInFile() ? true : false);
         if (!config.isDisplaySearchInFile()) {
@@ -312,24 +393,58 @@ public class ContentSearchForm extends ContentPanel implements AbstractView.Cont
      * Method used by seach form
      */
     public void doSearch() {
-        GWTJahiaSearchQuery gwtJahiaSearchQuery = getCurrentQuery();
+        linker.getTopRightObject().getComponent().mask(Messages.get("label.searching","Searching ..."),"x-mask-loading");
+        final GWTJahiaSearchQuery gwtJahiaSearchQuery = getCurrentQuery();
+        if (gwtJahiaSearchQuery.getQuery() != null ||
+                (endDateField != null && endDateField.getValue() != null) ||
+                (startDateField != null && startDateField.getValue() != null) ||
+                (timesField != null && timesField.getValue() != null)) {
+            Log.debug(searchField.getValue() + "," +
+                    pagePickerField.getValue() + "," +
+                    langPickerField.getValue() + "," +
+                    inNameField.getValue() + "," +
+                    inTagField.getValue());
+            RpcProxy<PagingLoadResult<GWTJahiaNode>> privateProxy = new RpcProxy<PagingLoadResult<GWTJahiaNode>>() {
+                @Override
+                protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaNode>> pagingLoadResultAsyncCallback) {
+                    int limit = -1;
+                    int offset = -1;
+                    if (loadConfig instanceof BasePagingLoadConfig) {
+                        BasePagingLoadConfig pConf = (BasePagingLoadConfig) loadConfig;
+                        limit = pConf.getLimit();
+                        offset = pConf.getOffset();
+                    }
+                    JahiaContentManagementService.App.getInstance().search(gwtJahiaSearchQuery, limit, offset, config.isShowOnlyNodesWithTemplates(), pagingLoadResultAsyncCallback);
+                }
+            };
+            BasePagingLoader<PagingLoadResult<GWTJahiaNode>> loader = new BasePagingLoader<PagingLoadResult<GWTJahiaNode>>(privateProxy) {
+                @Override
+                protected void onLoadSuccess(Object loadConfig, PagingLoadResult<GWTJahiaNode> result) {
+                    if (result.getData().size() == 0) {
+                        com.google.gwt.user.client.Window.alert(Messages.get("label.noResult","No result"));
+                    }
+                    linker.getTopRightObject().setProcessedContent(result.getData(), ContentSearchForm.this);
+                    linker.loaded();
+                    linker.getTopRightObject().getComponent().unmask();
+                    super.onLoadSuccess(loadConfig, result);
+                }
 
-        int limit = 500;
-        int offset = 0;
-        Log.debug(searchField.getValue() + "," + pagePickerField.getValue() + "," + langPickerField.getValue() + "," + inNameField.getValue() + "," + inTagField.getValue());
-        JahiaContentManagementService.App.getInstance().search(gwtJahiaSearchQuery, limit, offset, config.isShowOnlyNodesWithTemplates(), new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
-            public void onSuccess(PagingLoadResult<GWTJahiaNode> gwtJahiaNodePagingLoadResult) {
-                linker.getTopRightObject().setProcessedContent(gwtJahiaNodePagingLoadResult.getData(), ContentSearchForm.this);
-                linker.loaded();
-            }
-
-            public void onApplicationFailure(Throwable throwable) {
-                Log.debug("error while searching nodes due to:", throwable);
-                linker.getTopRightObject().setProcessedContent(null, ContentSearchForm.this);
-                linker.loaded();
-            }
-        });
-
+                @Override
+                protected void onLoadFailure(Object loadConfig, Throwable t) {
+                    Log.debug("error while searching nodes due to:", t);
+                    linker.getTopRightObject().setProcessedContent(null, ContentSearchForm.this);
+                    linker.loaded();
+                    linker.getTopRightObject().getComponent().unmask();
+                    super.onLoadFailure(loadConfig, t);
+                }
+            };
+            
+            linker.getTopRightObject().getToolBar().bind(loader);
+            linker.getTopRightObject().getToolBar().enable();
+            loader.load();
+        } else {
+            com.google.gwt.user.client.Window.alert(Messages.get("label.queryEmpty","Query empty"));
+        }
     }
 
     public void refreshTable() {
@@ -355,6 +470,36 @@ public class ContentSearchForm extends ContentPanel implements AbstractView.Cont
         gwtJahiaSearchQuery.setNodeTypes(config.getNodeTypes());
         gwtJahiaSearchQuery.setFolderTypes(config.getFolderTypes());
         gwtJahiaSearchQuery.setOriginSiteUuid(JahiaGWTParameters.getSiteUUID());
+        if ((endDateField != null && endDateField.getValue() != null) ||
+                (startDateField != null && startDateField.getValue() != null) ||
+                (timesField != null && timesField.getValue() !=  null)) {
+            Date startDate  = startDateField.getValue();
+            Date endDate = null;
+
+            if (timesField.getValue() !=  null) {
+                gwtJahiaSearchQuery.setTimeInDays((String) timesField.getValue().get("key"));
+                endDate = new Date();
+            }
+
+            if (endDate == null) {
+                endDate = endDateField.getValue();
+            }
+            switch (Integer.parseInt(dateTypeField.getValue().getValueAttribute())) {
+                case 1 :
+                    gwtJahiaSearchQuery.setStartEditionDate(startDate);
+                    gwtJahiaSearchQuery.setEndEditionDate(endDate);
+                    break;
+                case 2 :
+                    gwtJahiaSearchQuery.setStartCreationDate(startDate);
+                    gwtJahiaSearchQuery.setEndCreationDate(endDate);
+                    break;
+                case 3 :
+                    gwtJahiaSearchQuery.setStartPublicationDate(startDate);
+                    gwtJahiaSearchQuery.setEndPublicationDate(endDate);
+                    break;
+            }
+        }
+
         if (config.isSearchInCurrentSiteOnly()) {
             gwtJahiaSearchQuery.setSites(Arrays.asList(JahiaGWTParameters.getSiteKey()));
         }
@@ -400,10 +545,10 @@ public class ContentSearchForm extends ContentPanel implements AbstractView.Cont
      * @return
      */
     private static native String getLangSwitchingTemplate()  /*-{
-    return  [
-    '<tpl for=".">',
-    '<div class="x-combo-list-item"><img src="{image}"/> {displayName}</div>',
-    '</tpl>'
-    ].join("");
-  }-*/;
+        return  [
+            '<tpl for=".">',
+            '<div class="x-combo-list-item"><img src="{image}"/> {displayName}</div>',
+            '</tpl>'
+        ].join("");
+    }-*/;
 }

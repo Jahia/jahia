@@ -148,11 +148,15 @@ public class TableView extends AbstractView {
                 protected void onDragStart(DNDEvent e) {
                     super.onDragStart(e);
                     List<GWTJahiaNode> l = e.getData();
-                    for (GWTJahiaNode node : l) {
-                        if (!isNodeTypeAllowed(node) || !PermissionsUtils.isPermitted("jcr:removeNode", node.getPermissions())) {
-                            e.setCancelled(true);
-                            break;
+                    if (l != null) {
+                        for (GWTJahiaNode node : l) {
+                            if (!isNodeTypeAllowed(node) || !PermissionsUtils.isPermitted("jcr:removeNode", node.getPermissions())) {
+                                e.setCancelled(true);
+                                break;
+                            }
                         }
+                    } else {
+                        e.setCancelled(true);
                     }
                 }
             };

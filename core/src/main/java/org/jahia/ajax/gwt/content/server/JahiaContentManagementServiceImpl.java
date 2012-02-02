@@ -735,18 +735,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
         }
 
-        GWTJahiaNode res;
-
+        GWTJahiaNode res = contentManager.createNode(parentPath, name, nodeType, mixin, props, retrieveCurrentSession(null), getUILocale());
+        GWTJahiaNode node;
         final JCRSessionWrapper jcrSessionWrapper = retrieveCurrentSession();
-        res = contentManager.createNode(parentPath, name, nodeType, mixin, props, jcrSessionWrapper, getUILocale());
-
-        GWTJahiaNode node = res;
-
-        if (acl != null) {
-            contentManager.setACL(res.getPath(), acl, jcrSessionWrapper);
-        }
-
         try {
+            node = navigation.getGWTJahiaNode(jcrSessionWrapper.getNodeByUUID(res.getUUID()));
+
+            if (acl != null) {
+                contentManager.setACL(res.getPath(), acl, jcrSessionWrapper);
+            }
+
             jcrSessionWrapper.save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

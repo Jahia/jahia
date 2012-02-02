@@ -434,7 +434,7 @@ public class JCRSessionWrapper implements Session {
     public void save(final int operationType)
             throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException,
             VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
-        if (!isSystem()) {
+        if (!isSystem() && getLocale() != null) {
             for (JCRNodeWrapper node : newNodes.values()) {
                 for (String s : node.getNodeTypes()) {
                     ExtendedPropertyDefinition[] propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitions();

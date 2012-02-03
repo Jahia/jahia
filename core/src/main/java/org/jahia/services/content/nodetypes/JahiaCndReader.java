@@ -630,6 +630,8 @@ public class JahiaCndReader {
                 pdi.setQueryOrderable(true);
             } else if (currentTokenEquals(Lexer.FACETABLE)) {
                 pdi.setFacetable(true);
+            } else if (currentTokenEquals(Lexer.HIERARCHICAL)) {
+                pdi.setHierarchical(true);
             } else if (currentTokenEquals(Lexer.FULLTEXTSEARCHABLE)) {
                 // deprecated , use NOFULLTEXT
                 nextToken();

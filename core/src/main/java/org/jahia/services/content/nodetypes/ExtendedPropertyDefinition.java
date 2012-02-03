@@ -90,6 +90,7 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     private boolean queryOrderable = true;
     private boolean fulltextSearchable = true;
     private boolean facetable = false;
+    private boolean hierarchical = false;
     private String[] availableQueryOperators = Lexer.ALL_OPERATORS;
     
     private Map<Locale, Map<String, String>> messageMaps = new ConcurrentHashMap<Locale, Map<String, String>>(1);
@@ -249,6 +250,14 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
 
     public void setFacetable(boolean facetable) {
         this.facetable = facetable;
+    }
+
+    public boolean isHierarchical() {
+        return hierarchical;
+    }
+
+    public void setHierarchical(boolean hierarchical) {
+        this.hierarchical = hierarchical;
     }
 
     public boolean isFullTextSearchable() {

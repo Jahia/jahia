@@ -6,4 +6,8 @@
     <bean id="choiceListFacetsInitializer" class="org.jahia.modules.facets.initializers.FacetsChoiceListInitializers">
         <property name="key" value="choicelistfacets"/>
     </bean>
+
+    <bean id="choiceListHierarchicalFacetsInitializer" class="org.jahia.modules.facets.initializers.HierarchicalFacetsChoiceListInitializer">
+        <property name="key" value="choicelisthierarchicalfacets"/>
+    </bean>
 </beans>

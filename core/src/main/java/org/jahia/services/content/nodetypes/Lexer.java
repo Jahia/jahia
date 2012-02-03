@@ -91,6 +91,7 @@ public class Lexer {
     public static final String[] UNTOKENIZED = new String[]{"untokenized","untok","u"};
     public static final String[] ANALYZER = new String[]{"analyzer"};
     public static final String[] FACETABLE = new String[]{"facetable"};
+    public static final String[] HIERARCHICAL = new String[]{"hierarchical"};
 
     public static final String[] SORTABLE = new String[]{"sortable"};
     public static final String[] FULLTEXTSEARCHABLE = new String[]{"fulltextsearchable", "fts"};
@@ -144,6 +145,7 @@ public class Lexer {
         attr.addAll(Arrays.asList(ANALYZER));
         attr.addAll(Arrays.asList(SORTABLE));
         attr.addAll(Arrays.asList(FACETABLE));
+        attr.addAll(Arrays.asList(HIERARCHICAL));
         attr.addAll(Arrays.asList(FULLTEXTSEARCHABLE));
         attr.addAll(Arrays.asList(MULTIPLE));
         attr.addAll(Arrays.asList(QUERYOPS));

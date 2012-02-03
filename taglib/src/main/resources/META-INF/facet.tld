@@ -50,8 +50,8 @@
         <example>
             ${not facet:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}
         </example>
-    </function>    
-    
+    </function>
+
     <function>
         <description>Create the drill down URL for a facet value</description>
         <name>getFacetDrillDownUrl</name>
@@ -72,8 +72,8 @@
         <example>
             ${facet:getDeleteFacetUrl(facet, facetValue, activeFacetsVars[facetParamVarName])}
         </example>
-    </function>    
-    
+    </function>
+
     <function>
         <description>Return true if there will be an unapplied facet. Useful to decide whether a title should be displayed.</description>
         <name>isUnappliedFacetExisting</name>
@@ -94,5 +94,39 @@
         <example>
             ${facet:isUnappliedFacetValueExisting(currentFacet, activeFacetsVars[activeFacetMapVarName]))}
         </example>
-    </function>    
- </taglib>    
+    </function>
+
+    <function>
+        <description>Get the drill down prefix for a hierarchical facet value</description>
+        <name>getDrillDownPrefix</name>
+        <function-class>org.jahia.taglibs.facet.Functions</function-class>
+        <function-signature>java.lang.String getDrillDownPrefix(java.lang.String)
+        </function-signature>
+        <example>
+            ${facet:getDrillDownPrefix(facetValue.key)}
+        </example>
+    </function>
+
+    <function>
+        <description>Get the facet property definitions necessary to build the filter query</description>
+        <name>getPropertyDefinitions</name>
+        <function-class>org.jahia.taglibs.facet.Functions</function-class>
+        <function-signature>java.util.List getPropertyDefinitions(org.jahia.services.content.JCRNodeWrapper)
+        </function-signature>
+        <example>
+            ${facet:getPropertyDefinitions(facet)}
+        </example>
+    </function>
+
+    <function>
+        <description>Get the index prefixed path of a hierarchical facet root. For example, 1/sites/systemsite/categories.</description>
+        <name>getIndexPrefixedPath</name>
+        <function-class>org.jahia.taglibs.facet.Functions</function-class>
+        <function-signature>java.lang.String getIndexPrefixedPath(java.lang.String)
+        </function-signature>
+        <example>
+            ${facet:getIndexPrefixedPath(facetPropValue.string)}
+        </example>
+    </function>
+
+</taglib>

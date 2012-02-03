@@ -41,10 +41,7 @@
 package org.apache.jackrabbit.core.query.lucene;
 
 import java.io.ByteArrayInputStream;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executor;
 
 import javax.jcr.NamespaceRegistry;
@@ -73,6 +70,10 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.Parser;
 import org.jahia.api.Constants;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -506,6 +507,54 @@ public class JahiaNodeIndexer extends NodeIndexer {
     }
 
     /**
+     * Adds the value to the document both as faceted field which will be indexed with a keyword analyzer which does not modify the term.
+     *
+     * @param doc
+     *            The document to which to add the field
+     * @param fieldName
+     *            The name of the field to add
+     * @param internalValue
+     *            The value for the field to add to the document.
+     */
+    protected void addHierarchicalFacetValue(Document doc, String fieldName, Object internalValue) {
+        final String stringValue = (String) internalValue;
+        if (stringValue.length() == 0) {
+            return;
+        }
+
+        final List<String> paths = new ArrayList<String>();
+        Integer prefixSize = 0;
+        try {
+            prefixSize = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Integer>() {
+                public Integer doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    JCRNodeWrapper node = session.getNodeByIdentifier(stringValue);
+                    String typeName = node.getPrimaryNodeTypeName();
+                    while (typeName.equals(node.getPrimaryNodeTypeName())) {
+                        paths.add(node.getPath());
+                        node = node.getParent();
+                    }
+                    return node.getPath().length();
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        int hierarchyIndex = paths.size() - 1;
+
+        int idx = fieldName.indexOf(':');
+        fieldName = fieldName.substring(0, idx + 1) + FACET_PREFIX + fieldName.substring(idx + 1);
+
+        for (String path : paths) {
+            path = hierarchyIndex + path;
+            hierarchyIndex--;
+            Field f = new Field(fieldName, path, Field.Store.NO, Field.Index.ANALYZED,
+                    Field.TermVector.NO);
+            doc.add(f);
+        }
+
+    }
+
+    /**
      * Creates a fulltext field for the string <code>value</code>.
      * 
      * @param value
@@ -581,7 +630,11 @@ public class JahiaNodeIndexer extends NodeIndexer {
         super.addReferenceValue(doc, fieldName, internalValue, weak);
         ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
         if (definition != null && definition.isFacetable()) {
-            addFacetValue(doc, fieldName, internalValue.toString());
+            if (definition.isHierarchical()) {
+                addHierarchicalFacetValue(doc, fieldName, internalValue.toString());
+            } else {
+                addFacetValue(doc, fieldName, internalValue.toString());
+            }
         }                                
     }
 

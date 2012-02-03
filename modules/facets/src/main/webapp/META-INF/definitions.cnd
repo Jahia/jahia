@@ -20,6 +20,10 @@ orderable
 - offset (long) = 0 indexed=no
 - missing (boolean) indexed=no
 
+[jnt:fieldHierarchicalFacet] > jnt:fieldFacet
+- prefix (string) mandatory indexed=no
+- field (string, choicelist[choicelisthierarchicalfacets]) indexed=no
+
 [jnt:dateFacet] > jnt:facet
 - start (string) mandatory indexed=no
 - end (string) mandatory indexed=no

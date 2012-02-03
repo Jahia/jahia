@@ -40,18 +40,23 @@
 
 package org.jahia.taglibs.facet;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.PropertyDefinition;
 
 import org.apache.commons.collections.KeyValue;
 import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.query.QueryResultWrapper;
 import org.apache.solr.client.solrj.response.FacetField;
+import org.slf4j.Logger;
 
 /**
  * Custom facet functions, which are exposed into the template scope.
@@ -60,9 +65,12 @@ import org.apache.solr.client.solrj.response.FacetField;
  */
 public class Functions {
 
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(Functions.class);
+
     private static final String FACET_PARAM_DELIM = "###";
     private static final String FACET_DELIM = "|||";
-    
+    private static final String FACET_NODE_TYPE = "jnt:facet";
+
     /**
      * Get a list of applied facets
      * @param filterString the already decoded filter String from the query parameter
@@ -268,4 +276,81 @@ public class Functions {
         }         
         return false;
     }
+
+    /**
+     * Get the drill down prefix for a hierarchical facet value
+     * @param hierarchicalFacet the hierarchical facet value
+     * @return the prefix
+     */
+    public static String getDrillDownPrefix(String hierarchicalFacet) {
+        int pathStart = hierarchicalFacet.indexOf("/");
+        if (pathStart > 0) {
+            try {
+                int i = Integer.parseInt(hierarchicalFacet.substring(0, pathStart));
+                return (i + 1) + hierarchicalFacet.substring(pathStart);
+            } catch (NumberFormatException e) {}
+        }
+        return hierarchicalFacet;
+    }
+
+    /**
+     * Get the facet property definitions necessary to build the filter query
+     * @param facet the facet node
+     * @return the list of property definitions
+     */
+    public static List<ExtendedPropertyDefinition> getPropertyDefinitions(JCRNodeWrapper facet) {
+        Map<String, ExtendedPropertyDefinition> propDefMap = new LinkedHashMap<String, ExtendedPropertyDefinition>();
+        try {
+            ExtendedNodeType primaryNodeType = facet.getPrimaryNodeType();
+            if (!primaryNodeType.isNodeType(FACET_NODE_TYPE)) {
+                throw new IllegalArgumentException("The specified node is not a facet");
+            }
+            propDefMap.putAll(primaryNodeType.getDeclaredPropertyDefinitionsAsMap());
+
+            for (ExtendedNodeType primarySuperType : primaryNodeType.getPrimarySupertypes()) {
+                Map<String, ExtendedPropertyDefinition> superPropDefMap = primarySuperType.getDeclaredPropertyDefinitionsAsMap();
+                if (FACET_NODE_TYPE.equals(primarySuperType.getName())) {
+                    for (String propName : superPropDefMap.keySet()) {
+                        propDefMap.remove(propName);
+                    }
+                    break;
+                } else {
+                    for (String propName : superPropDefMap.keySet()) {
+                        if (!propDefMap.containsKey(propName)) {
+                            propDefMap.put(propName, superPropDefMap.get(propName));
+                        }
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return new ArrayList<ExtendedPropertyDefinition>(propDefMap.values());
+    }
+
+    /**
+     * Get the index prefixed path of a hierarchical facet root. For example, 1/sites/systemsite/categories.
+     * @param facetPath the hierarchical facet path
+     * @return the index prefixed path
+     */
+    public static String getIndexPrefixedPath(final String facetPath) {
+        try {
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
+                public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    int prefix = 1;
+                    JCRNodeWrapper node = session.getNode(facetPath);
+                    String typeName = node.getPrimaryNodeTypeName();
+                    while (typeName.equals(node.getParent().getPrimaryNodeTypeName())) {
+                        prefix++;
+                        node = node.getParent();
+                    }
+                    return prefix + facetPath;
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return facetPath;
+    }
+
 }

@@ -36,7 +36,7 @@
 [jmix:categorized] mixin
  extends = nt:hierarchyNode, jnt:content, jnt:page
  itemtype = classification
- - j:defaultCategory (weakreference, category[autoSelectParent=false]) facetable multiple
+ - j:defaultCategory (weakreference, category[autoSelectParent=false]) facetable hierarchical multiple
 
 [jmix:description] mixin
  itemtype = metadata

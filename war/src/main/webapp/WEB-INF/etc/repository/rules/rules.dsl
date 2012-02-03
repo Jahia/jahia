@@ -30,6 +30,7 @@
 [condition][]- the mimetype is not {mimetype}=mimeType != "{mimetype}"
 [condition][]- the mimetype is {mimetype}=mimeType == "{mimetype}"
 [condition][]- the mimetype matches {mimetype}=mimeType matches "{mimetype}"
+[condition][]- the mimetype group is "{typeGroups}" = eval(org.jahia.services.content.JCRContentUtils.isMimeTypeGroup(mimeType, "{typeGroups}"))
 [condition][]- the node has the type {type}=node.types contains "{type}"
 [condition][]- the parent has the type {type}=parent.types contains "{type}"
 [condition][]- the value is not "{value}"=stringValue != "{value}"

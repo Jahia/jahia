@@ -1094,6 +1094,59 @@ public final class JCRContentUtils {
     }
 
     /**
+     * Checks if the specified mime type belongs to one of the specified groups (like pdf,word,openoffice, etc.).
+     * 
+     * @param mimeType
+     *            the mime type to be checked
+     * @param mimeTypeGroup
+     *            the group (or multiple groups, separated by comma) the specified mime type should belong to
+     * @return if the specified mime type belongs to one of the specified groups (like pdf,word,openoffice, etc.)
+     */
+    public static boolean isMimeTypeGroup(String mimeType, String mimeTypeGroup) {
+        return isMimeTypeGroup(mimeType, StringUtils.split(mimeTypeGroup, ", ;|"));
+    }
+
+    /**
+     * Checks if the specified mime type belongs to one of the specified groups (like pdf,word,openoffice, etc.).
+     * 
+     * @param mimeType
+     *            the mime type to be checked
+     * @param mimeTypeGroups
+     *            the groups the specified mime type should belong to
+     * @return if the specified mime type belongs to one of the specified groups (like pdf,word,openoffice, etc.)
+     */
+    public static boolean isMimeTypeGroup(String mimeType, String... mimeTypeGroups) {
+        if (mimeType == null) {
+            return false;
+        }
+
+        boolean found = false;
+        for (String grp : mimeTypeGroups) {
+            List<String> mimeTypes = getInstance().getMimeTypes().get(grp);
+            if (mimeTypes == null) {
+                continue;
+            }
+            for (String mime : mimeTypes) {
+                if (mime.contains("*")) {
+                    found = Pattern.matches(
+                            StringUtils.replace(StringUtils.replace(mime, ".", "\\."), "*", ".*"),
+                            mimeType);
+                } else {
+                    found = mime.equals(mimeType);
+                }
+                if (found) {
+                    break;
+                }
+            }
+            if (found) {
+                break;
+            }
+        }
+
+        return found;
+    }
+    
+    /**
      * Returns <code>true</code> if the node is locked and cannot be edited by current user.
      * 
      * @param node

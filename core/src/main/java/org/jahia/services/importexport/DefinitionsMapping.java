@@ -56,7 +56,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *  User: toto Date: Oct 29, 2009 Time: 7:09:03 PM 
+ *  User: toto Date: Oct 29, 2009 Time: 7:09:03 PM
  */
 public class DefinitionsMapping {
     private static Logger logger = LoggerFactory.getLogger(LegacyImportHandler.class);
@@ -68,6 +68,7 @@ public class DefinitionsMapping {
     }
 
     String WORD = "([\\w:#-]+)";
+    String WORD_WITH_DOTS = "([\\w:#-.]+)";
     String WORD_WITH_DOTS_AND_SLASHES = "([\\w:#-.//]+)";
     String WORD_WITH_DOTS_SPACES_AND_BRACKETS = "([\\w:#-.\\(\\)\\s//]+)";
     String WS = "\\s*";
@@ -79,7 +80,7 @@ public class DefinitionsMapping {
     String NODE_MAPPING = WS + "\\+" + WS + WORD + EQ + NODE;
     String PROPERTY_MAPPING = WS + "-" + WS + WORD + EQ + "(" + WORD + "\\|" + ")?" + WORD_WITH_DOTS_AND_SLASHES;
     String VALUE_MAPPING = WS + WORD_WITH_DOTS_SPACES_AND_BRACKETS + EQ + WORD_WITH_DOTS_SPACES_AND_BRACKETS;
-    String PROPS = "(?:\\[((?:" + WS_OR_COMMA + "(" + WORD + "\\|" + ")?" + WORD_WITH_DOTS_AND_SLASHES + EQ + WORD + WS + ")*)\\])";
+    String PROPS = "(?:\\[((?:" + WS_OR_COMMA + "(" + WORD + "\\|" + ")?" + WORD_WITH_DOTS_AND_SLASHES + EQ + WORD_WITH_DOTS + WS + ")*)\\])";
     String ADD_NODE = "\\{" + WS + "addNode" + WS + NODE + WS + PROPS + "?" + WS + "\\}";
     String ADD_MIXIN = "\\{" + WS + "addMixin" + WS + WORD + WS + "\\}";
     String SET_PROPERTY = "\\{" + WS + "setProperty" + WS + PROPS + "?" + WS + "\\}";
@@ -132,7 +133,7 @@ public class DefinitionsMapping {
                     String nodeName = matcher.group(1);
                     String nodeType = matcher.group(2);
                     Map<String, String> properties = createPropertyValueMap(matcher.group(3));
-                    currentMapping.addAction(new AddNode(nodeName, nodeType, 
+                    currentMapping.addAction(new AddNode(nodeName, nodeType,
                             properties));
                 } else if ((matcher = ADD_MIXIN_PATTERN.matcher(line)).matches()) {
                     currentMapping.addAction(new AddMixin(matcher.group(1)));
@@ -170,7 +171,7 @@ public class DefinitionsMapping {
         }
         return s.getNewName();
     }
-    
+
     public List<String> getMappedNodesForType(ExtendedNodeType type, boolean oldName) {
         TypeMapping s = types.get(type.getName());
         if (s == null) {
@@ -178,7 +179,7 @@ public class DefinitionsMapping {
         }
         return oldName ? new ArrayList<String>(s.nodes.keySet()) : s.getNodeNames();
     }
-    
+
     public String getMappedItem(ExtendedNodeType type, String name) {
         Mapping n = getItemMapping(type, name);
         if (n == null) {
@@ -201,14 +202,14 @@ public class DefinitionsMapping {
         if (s != null) {
             n = s.nodes.get(name);
             if (n == null) {
-                n = s.properties.get(name);                
+                n = s.properties.get(name);
             }
         }
 
         return n;
     }
-    
-    
+
+
     public String getMappedNode(ExtendedNodeType type, String name) {
         NodeMapping n = getNodeMapping(type, name);
         if (n == null) {
@@ -283,10 +284,10 @@ public class DefinitionsMapping {
         if (v == null) {
             ResourceBundleMarker rbm = ResourceBundleMarker.parseMarkerValue(value);
             if (rbm != null) {
-                v = n.values.get("resourceKey(" + rbm.getResourceKey() + ")");                    
+                v = n.values.get("resourceKey(" + rbm.getResourceKey() + ")");
             }
         }
-        if (v == null) {            
+        if (v == null) {
             return value;
         }
         return v.getNewName();
@@ -387,7 +388,7 @@ public class DefinitionsMapping {
         List<Action> actions = new ArrayList<Action>();
         String originalName;
         String newName;
-        
+
         public boolean addAction(Action action) {
             boolean result = actions.add(action);
             return result;
@@ -403,26 +404,26 @@ public class DefinitionsMapping {
 
         public String getNewName() {
             return newName;
-        }        
+        }
     }
 
     class TypeMapping extends Mapping {
         Map<String, NodeMapping> nodes = new LinkedHashMap<String, NodeMapping>();
-        List<String> nodeNames = new ArrayList<String>();        
+        List<String> nodeNames = new ArrayList<String>();
         Map<String, PropertyMapping> properties = new HashMap<String, PropertyMapping>();
 
         TypeMapping(String originalType, String newType) {
             this.originalName = originalType;
             this.newName = newType;
         }
-        
+
         public NodeMapping addNodeMapping (String originalName, NodeMapping mapping) {
             NodeMapping result = nodes.put(originalName, mapping);
             nodeNames.add(StringUtils.contains(mapping.getNewName(), "/") ? StringUtils
-                    .substringAfterLast(mapping.getNewName(), "/") : mapping.getNewName());            
+                    .substringAfterLast(mapping.getNewName(), "/") : mapping.getNewName());
             return result;
         }
-        
+
         public PropertyMapping addPropertyMapping (String originalName, PropertyMapping mapping) {
             PropertyMapping result = properties.put(originalName, mapping);
             return result;
@@ -441,14 +442,14 @@ public class DefinitionsMapping {
             this.newName = newName;
             this.newType = newType;
         }
-        
+
         public String getNewType() {
             return newType;
-        } 
-        
+        }
+
         public String getNewName() {
             return (newType != null ? newType + "|" : "") + newName ;
-        }      
+        }
     }
 
     public static class PropertyMapping extends Mapping {
@@ -458,11 +459,11 @@ public class DefinitionsMapping {
             this.originalName = originalName;
             this.newName = newName;
         }
-        
+
         public ValueMapping addValueMapping (String originalName, ValueMapping mapping) {
             ValueMapping result = values.put(originalName, mapping);
             return result;
-        }        
+        }
     }
 
     class ValueMapping extends Mapping {

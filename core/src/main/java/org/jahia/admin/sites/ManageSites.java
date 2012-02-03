@@ -72,6 +72,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRStoreService;
@@ -1806,15 +1807,43 @@ public class ManageSites extends AbstractAdministrationModule {
                     if (value != null) {
                         Object legacyImport = value.get("legacyImport");
                         if (legacyImport!=null && (Boolean) legacyImport && jParams instanceof ParamBean) {
-                            try {
-                                value.put("legacyMappings", FileUtils.listFiles(new File(((ParamBean)jParams).getContext().getRealPath("/WEB-INF/var/legacymappings")), new String[]{"map"}, false));
-                            } catch (Exception e) {
-                                logger.debug("Legacy mappings not found", e);
+                            final File defaultMappingsFolder = new File(((ParamBean)jParams).getContext().getRealPath("/WEB-INF/var/legacymappings"));
+                            Collection<File> legacyMappings = null;
+                            Collection<File> legacyDefinitions = null;
+                            if (defaultMappingsFolder != null && defaultMappingsFolder.exists()) {
+                                try {
+                                    legacyMappings = FileUtils.listFiles(defaultMappingsFolder, new String[]{"map"}, false);
+                                } catch (Exception e) {
+                                    logger.debug("Legacy mappings not found", e);
+                                }
+                                try {
+                                    legacyDefinitions = FileUtils.listFiles(defaultMappingsFolder, new String[]{"cnd"}, false);
+                                } catch (Exception e) {
+                                    logger.debug("Legacy definitions not found", e);
+                                }
                             }
-                            try {
-                                value.put("legacyDefinitions", FileUtils.listFiles(new File(((ParamBean)jParams).getContext().getRealPath("/WEB-INF/var/legacymappings")), new String[]{"cnd"}, false));
-                            } catch (Exception e) {
-                                logger.debug("Legacy definitions not found", e);
+
+                            org.springframework.core.io.Resource[] modulesLegacyMappings = SpringContextSingleton.getInstance().getResources("/modules/**/WEB-INF/legacyMappings/*.map");
+                            if (legacyMappings == null && modulesLegacyMappings.length > 0) {
+                                legacyMappings = new ArrayList<File>();
+                            }
+                            for (int j=0; j<modulesLegacyMappings.length; j++) {
+                                legacyMappings.add(modulesLegacyMappings[j].getFile());
+                            }
+
+                            org.springframework.core.io.Resource[] modulesLegacyDefinitions = SpringContextSingleton.getInstance().getResources("/modules/**/WEB-INF/legacyMappings/*.cnd");
+                            if (legacyDefinitions == null && modulesLegacyDefinitions.length > 0) {
+                                legacyDefinitions = new ArrayList<File>();
+                            }
+                            for (int j=0; j<modulesLegacyDefinitions.length; j++) {
+                                legacyDefinitions.add(modulesLegacyDefinitions[j].getFile());
+                            }
+
+                            if (legacyMappings != null && !legacyMappings.isEmpty()) {
+                                value.put("legacyMappings", legacyMappings);
+                            }
+                            if (legacyDefinitions != null && !legacyDefinitions.isEmpty()) {
+                                value.put("legacyDefinitions", legacyDefinitions);
                             }
                         }
                         importsInfos.add(value);

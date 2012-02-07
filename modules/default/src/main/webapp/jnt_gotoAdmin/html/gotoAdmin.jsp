@@ -4,7 +4,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="css" resources="goto-links.css"/>
-<img src="${url.context}/icons/admin.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="${url.context}/administration">
+<img src="${url.context}/icons/admin.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; " /><a href="${url.context}/administration">
     <c:if test="${!empty currentNode.properties['jcr:title']}">
         ${fn:escapeXml(currentNode.properties["jcr:title"].string)}
     </c:if>

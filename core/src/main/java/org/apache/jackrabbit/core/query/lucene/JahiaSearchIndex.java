@@ -114,6 +114,36 @@ public class JahiaSearchIndex extends SearchIndex {
             removeList.add(nodeId);
         }
 
+        final IndexReader reader = getIndexReader();
+        final Searcher searcher = new IndexSearcher(reader);
+        BooleanQuery query = new BooleanQuery();
+        for (final NodeId nodeId : new ArrayList<NodeId>(removeList)) {
+            TermQuery termQuery = new TermQuery(new Term(JahiaNodeIndexer.FACET_HIERARCHY, nodeId.toString()));
+            query.add(new BooleanClause(termQuery, BooleanClause.Occur.SHOULD));
+        }
+        try {
+            searcher.search(query, new HitCollector() {
+                public void collect(int doc, float score) {
+                    try {
+                        String uuid = reader.document(doc).get("_:UUID");
+                        final NodeId id = new NodeId(uuid);
+                        if (!removedIds.contains(id) && !addedIds.contains(id)) {
+                            removeList.add(id);
+                            removedIds.add(id);
+                        }
+                        if (!addedIds.contains(id)) {
+                            addList.add((NodeState) getContext().getItemStateManager().getItemState(id));
+                            addedIds.add(id);
+                        }
+                    } catch (Exception e) {
+                        log.error("Cannot search moved nodes",e);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            log.error("Cannot search moved nodes",e);
+        }
+
         for (final NodeState node : new ArrayList<NodeState>(addList)) {
             for (ChildNodeEntry childNodeEntry : node.getChildNodeEntries()) {
                 if (childNodeEntry.getName().getLocalName().startsWith(TRANSLATION_LOCALNODENAME_PREFIX)) {

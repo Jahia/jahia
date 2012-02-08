@@ -144,9 +144,20 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
             } catch (ItemNotFoundException e) {
                 return null;
             }
+        } else if (definition.getRequiredType() == PropertyType.STRING) {
+            try {
+                return session.getNodeByUUID(value.getString());
+            } catch (ItemNotFoundException e) {
+                String path = value.getString();
+                try {
+                    return (session.getNode(path));
+                } catch (PathNotFoundException e1) {
+                    return null;
+                }
+            } 
         } else {
             // TODO: The specification suggests using value conversion
-            throw new ValueFormatException("property must be of type REFERENCE");
+            throw new ValueFormatException("property must be of type REFERENCE or STRING");
         }
     }
 

@@ -22,7 +22,7 @@ orderable
 
 [jnt:fieldHierarchicalFacet] > jnt:fieldFacet
 - prefix (string, picker[type='hierarchyNode']) = '/sites/systemsite/categories' mandatory indexed=no
-- field (string, choicelist[choicelisthierarchicalfacets]) mandatory indexed=no
+- field (string, choicelist[choicelisthierarchicalfacets]) = 'jmix:categorized;j:defaultCategory' mandatory indexed=no
 
 [jnt:dateFacet] > jnt:facet
 - start (string) mandatory indexed=no

@@ -224,9 +224,9 @@ public class URLResolver {
                  if(getSiteKey() != null) {
                      boolean localeInSite = false;
                      JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(getSiteKey());
-                     Enumeration<Locale> browserLocales = request.getLocales();
+                     Enumeration<?> browserLocales = request.getLocales();
                      while(!localeInSite && browserLocales.hasMoreElements()) {
-                         locale = browserLocales.nextElement();
+                         locale = (Locale)browserLocales.nextElement();
                          List<Locale> sitelocales = site.getLanguagesAsLocales();
                          for(Locale sl : sitelocales) {
                              if(!localeInSite && sl.getDisplayName().equals(locale.getDisplayName())) {
@@ -497,9 +497,9 @@ public class URLResolver {
     }
 
     private String getCacheKey(final String workspace, final Locale locale, final String path) {
-        StringBuilder builder = new StringBuilder(workspace);
+        StringBuilder builder = new StringBuilder(workspace != null ? workspace : "null");
         builder.append(CACHE_KEY_SEPARATOR);
-        builder.append(locale.toString());
+        builder.append(locale != null ? locale.toString() : "null");
         builder.append(CACHE_KEY_SEPARATOR);
         builder.append(path);
         return builder.toString();

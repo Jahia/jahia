@@ -279,12 +279,14 @@ public class FacetedQueryTest {
         assertEquals("Query did not return correct number of facets", 3, field.getValues().size());
         Iterator<FacetField.Count> counts = field.getValues().iterator();
 
-        checkFacet(counts.next(), session.getNode("/sites/systemsite/categories/cat3").getIdentifier(), 16);
-        checkFacet(counts.next(), session.getNode("/sites/systemsite/categories/cat2").getIdentifier(), 6);
-        checkFacet(counts.next(), session.getNode("/sites/systemsite/categories/cat1").getIdentifier(), 5);
+        checkFacet(counts.next(), "1/sites/systemsite/categories/cat3", 16);
+        checkFacet(counts.next(), "1/sites/systemsite/categories/cat2", 6);
+        checkFacet(counts.next(), "1/sites/systemsite/categories/cat1", 5);
 
         for (FacetField.Count count : field.getValues()) {
-            QueryResultWrapper resCheck = doFilteredQuery(session, "j:defaultCategory", count.getName());
+            String countName = count.getName();
+            QueryResultWrapper resCheck = doFilteredQuery(session, "j:defaultCategory",
+                    session.getNode(countName.substring(countName.indexOf("/"))).getIdentifier());
             checkResultSize(resCheck, (int) count.getCount());
         }
         for (FacetField.Count count : field.getValues()) {

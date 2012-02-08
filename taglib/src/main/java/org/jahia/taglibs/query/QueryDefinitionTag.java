@@ -54,6 +54,7 @@ import javax.servlet.jsp.PageContext;
 import org.apache.jackrabbit.commons.query.QueryObjectModelBuilder;
 import org.apache.jackrabbit.commons.query.QueryObjectModelBuilderRegistry;
 import org.apache.taglibs.standard.tag.common.core.Util;
+import org.drools.util.StringUtils;
 import org.jahia.services.query.QOMBuilder;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
 
@@ -135,7 +136,7 @@ public class QueryDefinitionTag extends AbstractJCRTag {
             return (QueryObjectModel) pageContext.getAttribute(qomBeanName, scope);
         } else if (qom != null) {
             return (QueryObjectModel) qom;
-        } else if (statement != null) {
+        } else if (!StringUtils.isEmpty(statement)) {
             QueryObjectModelFactory qf = getJCRSession().getWorkspace().getQueryManager().getQOMFactory();
             ValueFactory vf = getJCRSession().getValueFactory();
             QueryObjectModelBuilder builder = QueryObjectModelBuilderRegistry.getQueryObjectModelBuilder(Query.JCR_SQL2);

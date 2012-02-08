@@ -10,4 +10,84 @@
     <bean id="choiceListHierarchicalFacetsInitializer" class="org.jahia.modules.facets.initializers.HierarchicalFacetsChoiceListInitializer">
         <property name="key" value="choicelisthierarchicalfacets"/>
     </bean>
+    
+    <bean id="repository.systemsite" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="systemSite"/>
+        <property name="paths" value="$systemsite"/>
+        <property name="titleKey"
+                  value="repository.categoryRepository.label"/>
+    </bean>    
+    
+    <!-- hierarchyNodepicker -->
+    <bean id="hierarchyNodepicker" parent="abstractmanager">
+        <property name="nodeTypes" value="jnt:category"/>
+        <property name="folderTypes" value="jnt:category"/>
+        <property name="enableFileDoubleClick" value="false"/>
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewCategory"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewCategory"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="true"/>
+        <property name="searchInContent" value="false"/>
+        <property name="searchInFile" value="false"/>   
+        <property name="hideLeftPanel" value="true"/>
+        <property name="defaultView" value="detailed"/>
+
+        <!-- accordion -->
+        <property name="repositories">
+            <list>
+                <ref bean="repository.systemsite"/>
+            </list>
+        </property>
+
+        <!-- tabs -->
+        <property name="engineTabs">
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <ref bean="Engine.Tab.Info" />
+                <ref bean="Engine.Tab.Content" />
+                <ref bean="Engine.Tab.LiveRoles"/>
+                <ref bean="Engine.Tab.EditRoles"/>
+                <ref bean="Engine.Tab.Usages" />
+            </list>
+        </property>
+
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name,*,label.name</value>
+            </list>
+        </property>
+    </bean>            
 </beans>

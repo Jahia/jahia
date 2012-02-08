@@ -21,8 +21,8 @@ orderable
 - missing (boolean) indexed=no
 
 [jnt:fieldHierarchicalFacet] > jnt:fieldFacet
-- prefix (string) mandatory indexed=no
-- field (string, choicelist[choicelisthierarchicalfacets]) indexed=no
+- prefix (string, picker[type='hierarchyNode']) = '/sites/systemsite/categories' mandatory indexed=no
+- field (string, choicelist[choicelisthierarchicalfacets]) mandatory indexed=no
 
 [jnt:dateFacet] > jnt:facet
 - start (string) mandatory indexed=no

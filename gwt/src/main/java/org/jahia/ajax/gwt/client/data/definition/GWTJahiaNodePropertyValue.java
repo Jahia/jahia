@@ -75,6 +75,13 @@ public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializ
         this.type = type;
         this.value = value;
     }
+    
+    public GWTJahiaNodePropertyValue(String value, GWTJahiaNode node, int type) {
+        this();
+        this.type = type;
+        this.value = value;
+        this.reference = node;
+    }
 
     public GWTJahiaNodePropertyValue(GWTJahiaNode node, int type) {
         this.type = type;
@@ -84,6 +91,9 @@ public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializ
         } else if (type == GWTJahiaNodePropertyType.PAGE_LINK) {
             this.linkNode = node;
             this.value = node.get("jnt:url"); 
+        } else {
+            this.reference = node;
+            this.value = node.getPath();
         }
     }
 

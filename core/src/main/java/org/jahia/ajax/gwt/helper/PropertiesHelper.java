@@ -126,7 +126,7 @@ public class PropertiesHelper {
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>(values.length);
 
                     for (Value val : values) {
-                        GWTJahiaNodePropertyValue convertedValue = contentDefinition.convertValue(val, def.getRequiredType());
+                        GWTJahiaNodePropertyValue convertedValue = contentDefinition.convertValue(val, (ExtendedPropertyDefinition)def);
                         if (convertedValue != null) {
                             gwtValues.add(convertedValue);
                         }

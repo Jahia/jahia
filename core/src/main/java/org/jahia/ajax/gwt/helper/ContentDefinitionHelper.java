@@ -178,7 +178,7 @@ public class ContentDefinitionHelper {
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>();
                     for (Value value : epd.getDefaultValues()) {
                         try {
-                            GWTJahiaNodePropertyValue convertedValue = convertValue(value, epd.getRequiredType());
+                            GWTJahiaNodePropertyValue convertedValue = convertValue(value, epd);
                             if (convertedValue != null) {
                                 gwtValues.add(convertedValue);
                             }
@@ -539,11 +539,11 @@ public class ContentDefinitionHelper {
         return res;
     }
 
-    public GWTJahiaNodePropertyValue convertValue(Value val, int requiredType) throws RepositoryException {
+    public GWTJahiaNodePropertyValue convertValue(Value val, ExtendedPropertyDefinition def) throws RepositoryException {
         String theValue;
         int type;
 
-        switch (requiredType) {
+        switch (def.getRequiredType()) {
             case PropertyType.BINARY:
                 type = GWTJahiaNodePropertyType.BINARY;
                 theValue = val.getString();
@@ -588,6 +588,11 @@ public class ContentDefinitionHelper {
             case PropertyType.STRING:
                 type = GWTJahiaNodePropertyType.STRING;
                 theValue = val.getString();
+                if (def.getSelector() == GWTJahiaNodeSelectorType.PICKER) {
+                    JCRValueWrapper value = val instanceof JCRValueWrapper ? (JCRValueWrapper) val : new JCRValueWrapperImpl(val, def,
+                            JCRSessionFactory.getInstance().getCurrentUserSession());
+                    return new GWTJahiaNodePropertyValue(theValue, navigation.getGWTJahiaNode((JCRNodeWrapper) value.getNode()), type);
+                } 
                 break;
             case PropertyType.UNDEFINED:
                 type = GWTJahiaNodePropertyType.UNDEFINED;

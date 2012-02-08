@@ -45,6 +45,7 @@ import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
+import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
@@ -402,6 +403,14 @@ public class JCRSessionWrapper implements Session {
             throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException,
             LockException, RepositoryException {
         getWorkspace().move(source, dest, true);
+        if (sessionCacheByPath.containsKey(source)) {
+            JCRNodeWrapper n = sessionCacheByPath.get(source);
+            if (n instanceof JCRNodeDecorator) {
+                n = ((JCRNodeDecorator)n).getNode();
+            }
+            ((JCRNodeWrapperImpl)n).localPath = dest;
+            ((JCRNodeWrapperImpl)n).localPathInProvider = dest;
+        }
         flushCaches();
     }
 

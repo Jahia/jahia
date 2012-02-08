@@ -808,4 +808,8 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     public int hashCode() {
         return node.hashCode();
     }
+
+    public JCRNodeWrapper getNode() {
+        return node;
+    }
 }

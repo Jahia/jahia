@@ -527,30 +527,36 @@ public class JahiaNodeIndexer extends NodeIndexer {
         int idx = fieldName.indexOf(':');
         fieldName = fieldName.substring(0, idx + 1) + FACET_PREFIX + fieldName.substring(idx + 1);
 
+        final List<String> hierarchyPaths = new ArrayList<String>();
+        final List<String> parentIds = new ArrayList<String>(); 
         try {
-            List<JCRNodeWrapper> hierarchy = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<JCRNodeWrapper>>() {
-                public List<JCRNodeWrapper> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>();
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<Object>>() {
+                public List<Object> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper node = session.getNodeByIdentifier(stringValue);
                     String typeName = node.getPrimaryNodeTypeName();
-                    while (typeName.equals(node.getPrimaryNodeTypeName())) {
-                        nodes.add(node);
+                    while (typeName.equals(node.getParent().getPrimaryNodeTypeName())) {
+                        hierarchyPaths.add(node.getPath());
+                        parentIds.add(node.getIdentifier());
                         node = node.getParent();
                     }
-                    return nodes;
+                    while (!"/".equals(node.getPath())) {
+                        parentIds.add(node.getIdentifier());
+                        node = node.getParent();
+                    }
+                    return null;
                 }
             });
-
-            int hierarchyIndex = hierarchy.size() - 1;
-            for (JCRNodeWrapper node : hierarchy) {
-                String path = hierarchyIndex + node.getPath();
-                hierarchyIndex--;
-                doc.add(new Field(fieldName, path, Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO));
-                doc.add(new Field(FACET_HIERARCHY, node.getIdentifier(), Field.Store.YES,
-                        Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
-            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
+        }
+
+        int hierarchyIndex = hierarchyPaths.size();
+        for (String path : hierarchyPaths) {
+            doc.add(new Field(fieldName, hierarchyIndex + path, Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO));
+            hierarchyIndex--;
+        }
+        for (String id : parentIds) {
+            doc.add(new Field(FACET_HIERARCHY, id, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
         }
     }
 

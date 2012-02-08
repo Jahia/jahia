@@ -43,6 +43,17 @@ Jahia Facets Module
   
   The <<<facetable>>> fields can be recognized in the index, as they will have the term <<<FACET:>>> in the prefix of its name.
 
+  If you want to index a node and its parents paths like it's done for the categories, you need to add the attribute <<<hierarchical>>> to your property definition.
+  For example, when you filter on a specific category, you will not only get nodes categorized with this category but also nodes categorized with one of this category children.
+  Here is the definition of the <<<jmix:categorized>>> mixin containing the hierarchical facetable field <<<j:defaultCategory>>> :
+
++----------------------------------------
+[jmix:categorized] mixin
+ extends = nt:hierarchyNode, jnt:content, jnt:page
+ itemtype = classification
+ - j:defaultCategory (weakreference, category[autoSelectParent=false]) facetable hierarchical multiple
++----------------------------------------
+
 * Facet types
   
   Jahia supports all the facet types (field, date, range, queries) available in Apache Solr. Read {{{./facetTypes.html} Facet types and their parameters}} to get 

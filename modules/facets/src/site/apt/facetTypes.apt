@@ -69,9 +69,11 @@ Facet types and their parameters
   API or setting up facet queries yourself, you need to use <<true>> or <<false>> until we upgrade to a newer Solr version,
   where this has been changed.
 
-** prefix
+** prefix / Root path
 
-  Limits the terms on which to facet to those starting with the given string prefix. 
+  Limits the terms on which to facet to those starting with the given string prefix.
+
+  On field hierarchical facets, this parameter is used to drill down on the levels of a hierarchy.
 
 ** limit
   

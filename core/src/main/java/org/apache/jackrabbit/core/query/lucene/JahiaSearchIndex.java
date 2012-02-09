@@ -106,7 +106,7 @@ public class JahiaSearchIndex extends SearchIndex {
             final NodeState state = add.next();
             if (state != null) {
                 addedIds.add(state.getNodeId());
-                addList.add(state);                
+                addList.add(state);
             }
         }
         while (remove.hasNext()) {
@@ -115,16 +115,18 @@ public class JahiaSearchIndex extends SearchIndex {
             removeList.add(nodeId);
         }
 
+        final ItemStateManager itemStateManager = getContext().getItemStateManager();
         if (!removeList.isEmpty()) {
             final IndexReader reader = getIndexReader();
             final Searcher searcher = new IndexSearcher(reader);
-            final ItemStateManager itemStateManager = getContext().getItemStateManager();
-            BooleanQuery query = new BooleanQuery();
-            for (final NodeId nodeId : new ArrayList<NodeId>(removeList)) {
-                TermQuery termQuery = new TermQuery(new Term(JahiaNodeIndexer.FACET_HIERARCHY, nodeId.toString()));
-                query.add(new BooleanClause(termQuery, BooleanClause.Occur.SHOULD));
-            }
-            try {
+            int removeSubListStart = 0;
+            int removeSubListEnd = Math.min(removeList.size(), BooleanQuery.getMaxClauseCount());
+            while (removeSubListStart < removeList.size()) {
+                BooleanQuery query = new BooleanQuery();
+                for (final NodeId nodeId : new ArrayList<NodeId>(removeList.subList(removeSubListStart, removeSubListEnd))) {
+                    TermQuery termQuery = new TermQuery(new Term(JahiaNodeIndexer.FACET_HIERARCHY, nodeId.toString()));
+                    query.add(new BooleanClause(termQuery, BooleanClause.Occur.SHOULD));
+                }
                 searcher.search(query, new HitCollector() {
                     public void collect(int doc, float score) {
                         try {
@@ -134,19 +136,18 @@ public class JahiaSearchIndex extends SearchIndex {
                                 removeList.add(id);
                                 removedIds.add(id);
                             }
-                            if (!addedIds.contains(id)) {
-                                if (itemStateManager.hasItemState(id)) {
-                                    addList.add((NodeState) itemStateManager.getItemState(id));
-                                    addedIds.add(id);
-                                }
+                            if (!addedIds.contains(id) && itemStateManager.hasItemState(id)) {
+                                addList.add((NodeState) itemStateManager.getItemState(id));
+                                addedIds.add(id);
                             }
                         } catch (Exception e) {
-                            log.error("Cannot search moved nodes",e);
+                            log.warn("Documents referencing moved/renamed hierarchy facet nodes may not be updated", e);
                         }
                     }
                 });
-            } catch (Exception e) {
-                log.error("Cannot search moved nodes", e);
+                removeSubListStart += BooleanQuery.getMaxClauseCount();
+                removeSubListEnd =  Math.min(removeList.size(), removeSubListEnd + BooleanQuery.getMaxClauseCount());
+
             }
         }
 
@@ -159,9 +160,9 @@ public class JahiaSearchIndex extends SearchIndex {
                             removeList.add(childNodeEntry.getId());
                             removedIds.add(childNodeEntry.getId());
                         }
-                        if (!addedIds.contains(childNodeEntry.getId())) {
-                            addList.add((NodeState) getContext().getItemStateManager()
-                                    .getItemState(childNodeEntry.getId()));
+                        if (!addedIds.contains(childNodeEntry.getId())
+                                && itemStateManager.hasItemState(childNodeEntry.getId())) {
+                            addList.add((NodeState) itemStateManager.getItemState(childNodeEntry.getId()));
                             addedIds.add(childNodeEntry.getId());
                         }
                     } catch (Exception e) {

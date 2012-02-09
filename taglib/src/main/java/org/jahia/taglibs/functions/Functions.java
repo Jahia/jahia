@@ -47,6 +47,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -54,6 +55,8 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
+import org.jahia.services.seo.VanityUrl;
+import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.Url;
 
@@ -290,5 +293,22 @@ public class Functions {
            //Do nothing
         }
         return false;
+    }
+    
+    public static VanityUrl getDefaultVanityUrl(JCRNodeWrapper node) {
+        try {
+            VanityUrlService vanityUrlService = (VanityUrlService) SpringContextSingleton.getBean(VanityUrlService.class.getName());
+            List<VanityUrl> l = vanityUrlService.getVanityUrls(node, node.getSession().getLocale().toString(), node.getSession());
+            VanityUrl vanityUrl = null;
+            for (VanityUrl v : l) {
+                if (v.isDefaultMapping()) {
+                    vanityUrl =  v;
+                }
+            }
+            return vanityUrl;
+        } catch (RepositoryException e) {
+
+        }
+        return null;
     }
 }

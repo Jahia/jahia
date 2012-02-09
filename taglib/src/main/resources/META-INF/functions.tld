@@ -430,4 +430,12 @@
             hasScriptView(org.jahia.services.content.JCRNodeWrapper,java.lang.String,org.jahia.services.render.RenderContext)</function-signature>
         <example>${functions:hasScriptView(node,"basic",renderContext)}</example>
     </function>
+
+    <function>
+        <description>Return the default vanity url for a node</description>
+        <name>getDefaultVanityUrl</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>org.jahia.services.seo.VanityUrl getDefaultVanityUrl(org.jahia.services.content.JCRNodeWrapper)</function-signature>
+        <example>${functions:getDefaultVanityUrl(node)}</example>
+    </function>
 </taglib>

@@ -809,7 +809,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.hashCode();
     }
 
-    public JCRNodeWrapper getNode() {
+    public JCRNodeWrapper getDecoratedNode() {
         return node;
     }
 }

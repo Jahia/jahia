@@ -95,8 +95,11 @@ public final class JCRAutoSplitUtils {
      * @throws RepositoryException in case of an error when relocating node
      */
     public static JCRNodeWrapper applyAutoSplitRules(JCRNodeWrapper node) throws RepositoryException {
+        return applyAutoSplitRules(node, node.getParent());
+    }
+
+    public static JCRNodeWrapper applyAutoSplitRules(JCRNodeWrapper node, JCRNodeWrapper parent) throws RepositoryException {
         try {
-            Node parent = node.getParent();
             String splitConfig = parent.getProperty(Constants.SPLIT_CONFIG).getString();
             String splitType = parent.getProperty(Constants.SPLIT_NODETYPE).getString();
             if (node.isNodeType(splitType)) {

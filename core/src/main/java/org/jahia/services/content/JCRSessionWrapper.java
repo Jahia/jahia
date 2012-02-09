@@ -406,7 +406,7 @@ public class JCRSessionWrapper implements Session {
         if (sessionCacheByPath.containsKey(source)) {
             JCRNodeWrapper n = sessionCacheByPath.get(source);
             if (n instanceof JCRNodeDecorator) {
-                n = ((JCRNodeDecorator)n).getNode();
+                n = ((JCRNodeDecorator)n).getDecoratedNode();
             }
             ((JCRNodeWrapperImpl)n).localPath = dest;
             ((JCRNodeWrapperImpl)n).localPathInProvider = dest;

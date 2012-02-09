@@ -834,7 +834,6 @@
             <plugin>
                 <groupId>org.jahia.server</groupId>
                 <artifactId>maven-jahia-plugin</artifactId>
-                <version>${jahia.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>copy-templates</id>
@@ -883,6 +882,19 @@
                     </dependency>
                 </dependencies>
                 <executions>
+                    <execution>
+                        <id>copy-templates</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <copy file="${project.build.directory}/native2ascii/JahiaInternalResources_en.properties" tofile="${project.build.directory}/native2ascii/JahiaInternalResources.properties"/>
+                                <copy file="${project.build.directory}/native2ascii/JahiaTypesResources_en.properties" tofile="${project.build.directory}/native2ascii/JahiaTypesResources.properties"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>gwt-i18n-resources</id>
                         <phase>process-classes</phase>

@@ -50,6 +50,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.helper.VersioningHelper;
 import org.jahia.ajax.gwt.helper.ZipHelper;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
@@ -65,7 +66,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.*;
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -294,8 +294,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                 node = node.getSession().getNodeByIdentifier(node.getIdentifier());
                 if (node.getProvider().isVersioningAvailable()) {
                     node.checkpoint();
-                    String label = "uploaded_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(node.getProperty("jcr:created").getDate().getTime());
-                    JCRVersionService.getInstance().addVersionLabel(node,label);
+                    JCRVersionService.getInstance().addVersionLabel(node, VersioningHelper.getVersionLabel(node.getProperty("jcr:created").getDate().getTime().getTime()));
                 }
             } finally {
                 IOUtils.closeQuietly(is);

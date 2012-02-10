@@ -77,7 +77,14 @@ public class GWTDictionaryBuilder {
             throws IOException {
         InputStream is = GWTDictionaryBuilder.class.getClassLoader().getResourceAsStream(bundleName.replace('.', '/') + ".properties");
         if (is == null) {
-            throw new FileNotFoundException("ERROR : Couldn't find bundle with name " + bundleName.replace('.', '/') + ".properties in class loader, skipping...");
+            is = GWTDictionaryBuilder.class.getClassLoader().getResourceAsStream(
+                    bundleName.replace('.', '/') + "_en.properties");
+            if (is == null) {
+                throw new FileNotFoundException("ERROR : Couldn't find bundle with name "
+                        + bundleName.replace('.', '/') + ".properties nor "
+                        + bundleName.replace('.', '/')
+                        + "_en.properties in class loader, skipping...");
+            }
         }
         ResourceBundle defBundle = new PropertyResourceBundle(is);
         is.close();

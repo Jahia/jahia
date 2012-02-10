@@ -44,6 +44,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.tika.io.IOUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
@@ -80,6 +81,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.http.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLDecoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -554,10 +556,15 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                 }
                                 // checkout parent directory
                                 session.getWorkspace().getVersionManager().checkout(targetDirectory.getPath());
-                                JCRNodeWrapper wrapper = targetDirectory
-                                        .uploadFile(name,
-                                                itemEntry.getValue().getInputStream(),
-                                                itemEntry.getValue().getContentType());
+                                InputStream is = null;
+                                JCRNodeWrapper wrapper = null;
+                                try {
+                                    is = itemEntry.getValue().getInputStream();
+                                    wrapper = targetDirectory.uploadFile(name, is, itemEntry
+                                            .getValue().getContentType());
+                                } finally {
+                                    IOUtils.closeQuietly(is);
+                                }
                                 uuids.add(wrapper.getIdentifier());
                                 urls.add(wrapper.getAbsoluteUrl(req));
                                 files.add(itemEntry.getValue().getName());
@@ -571,6 +578,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                     wrapper.checkpoint();
                                 }
                             }
+                            fileUpload.disposeItems();
                             fileUpload.markFilesAsConsumed();
                             session.save();
                         }
@@ -628,7 +636,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
      */
     public boolean isPortletRequest(final HttpServletRequest req) {
         String pathInfo = req.getPathInfo();
-        if (pathInfo != null) {
+        if (pathInfo != null && pathInfo.contains(ProcessingContext.PLUTO_PREFIX)) {
             StringTokenizer st = new StringTokenizer(pathInfo, "/", false);
             while (st.hasMoreTokens()) {
                 String token = st.nextToken();
@@ -1084,7 +1092,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     public void setCookieExpirationInDays(Integer cookieExpirationInDays) {
-        this.cookieExpirationInDays = cookieExpirationInDays;
+        Render.cookieExpirationInDays = cookieExpirationInDays;
     }
 
     public void setUrlResolverFactory(URLResolverFactory urlResolverFactory) {

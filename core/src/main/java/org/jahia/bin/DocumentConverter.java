@@ -181,9 +181,7 @@ public class DocumentConverter extends JahiaController {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Exception occurred: " + e.getMessage());
         } finally {
             IOUtils.closeQuietly(stream);
-            for (DiskFileItem file : fu.getFileItems().values()) {
-                file.delete();
-            }
+            fu.disposeItems();
         }
 
         return null;

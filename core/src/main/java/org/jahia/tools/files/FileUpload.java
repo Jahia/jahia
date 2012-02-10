@@ -46,14 +46,23 @@
  *
  */
 
+import org.apache.commons.fileupload.FileItemHeaders;
+import org.apache.commons.fileupload.FileItemHeadersSupport;
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.FileUploadBase.FileUploadIOException;
+import org.apache.commons.fileupload.FileUploadBase.IOFileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.util.Streams;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -139,35 +148,49 @@ public class FileUpload {
 
         if (checkSavePath(savePath)) {
             try {
-                final DiskFileItemFactory factory = new DiskFileItemFactory();
-                factory.setSizeThreshold(1);
-                factory.setRepository(new File(savePath));
-
-                final ServletFileUpload upload = new ServletFileUpload(factory);
-
-                final List<?> items = upload.parseRequest(req);
-
-                final Iterator<?> iter = items.iterator();
+                final ServletFileUpload upload = new ServletFileUpload();
+                FileItemIterator iter = upload.getItemIterator(req);
+                DiskFileItemFactory factory = null;
                 while (iter.hasNext()) {
-                    final DiskFileItem item = (DiskFileItem) iter.next();
-
+                    FileItemStream item = iter.next();
+                    InputStream stream = item.openStream();
                     if (item.isFormField()) {
                         final String name = item.getFieldName();
-                        final List<String> v ;
+                        final List<String> v;
                         if (params.containsKey(name)) {
                             v = params.get(name);
                         } else {
                             v = new ArrayList<String>();
-                            params.put(name,v);
+                            params.put(name, v);
                         }
-                        v.add(item.getString(encoding));
+                        v.add(Streams.asString(stream, encoding));
                     } else {
-                        if (item.getSize() > 0) {
-                            files.put(item.getStoreLocation().getName(), item);
-                            filesByFieldName.put(item.getFieldName(), item);
+                        if (factory == null) {
+                            factory = new DiskFileItemFactory();
+                            factory.setSizeThreshold(1);
+                            factory.setRepository(new File(savePath));
+                        }
+                        DiskFileItem fileItem = (DiskFileItem) factory.createItem(
+                                item.getFieldName(), item.getContentType(), item.isFormField(),
+                                item.getName());
+                        try {
+                            Streams.copy(item.openStream(), fileItem.getOutputStream(), true);
+                        } catch (FileUploadIOException e) {
+                            throw (FileUploadException) e.getCause();
+                        } catch (IOException e) {
+                            throw new IOFileUploadException("Processing of "
+                                    + FileUploadBase.MULTIPART_FORM_DATA + " request failed. "
+                                    + e.getMessage(), e);
+                        }
+                        if (fileItem instanceof FileItemHeadersSupport) {
+                            final FileItemHeaders fih = item.getHeaders();
+                            ((FileItemHeadersSupport) fileItem).setHeaders(fih);
+                        }
+                        if (fileItem.getSize() > 0) {
+                            files.put(fileItem.getStoreLocation().getName(), fileItem);
+                            filesByFieldName.put(fileItem.getFieldName(), fileItem);
                         }
                     }
-
                 }
             } catch (FileUploadException ioe) {
                 logger.error("Error while initializing FileUpload class:", ioe);
@@ -264,7 +287,9 @@ public class FileUpload {
 
         if (path != null && (path.length() > 0)) {
 
-            logger.debug("path is " + path);
+            if (logger.isDebugEnabled()) {
+                logger.debug("path is " + path);
+            }
             File tmpFile = new File(path);
             if (tmpFile.isDirectory() && tmpFile.canWrite()) {
                 savePath = path;
@@ -276,6 +301,26 @@ public class FileUpload {
             return false;
         }
     }
+    
+    public void disposeItems() {
+        if (getFileItems() != null) {
+            for (DiskFileItem item : getFileItems().values()) {
+                if (item != null) {
+                    try {
+                        item.delete();
+                    } catch (Exception e) {
+                        if (logger.isDebugEnabled()) {
+                            logger.warn(
+                                    "Unable to delete the uploaded file item " + item.getName(), e);
+                        } else {
+                            logger.warn("Unable to delete the uploaded file item {}",
+                                    item.getName());
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Parse a query String and create an Map of parameter/value
@@ -283,7 +328,9 @@ public class FileUpload {
      */
     protected void parseQueryString () {
 
-        logger.debug(req.getQueryString());
+        if (logger.isDebugEnabled()) {
+            logger.debug(req.getQueryString());
+        }
 
         if (req.getQueryString() == null) {
             return;

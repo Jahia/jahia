@@ -45,13 +45,13 @@ import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 
+import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Calendar;
 
 /**
  * Represents the content node.
@@ -91,10 +91,16 @@ public class JCRFileContent {
             if (content.hasProperty(Constants.JCR_DATA)) {
                 content.getProperty(Constants.JCR_DATA).remove();
             }
+            Binary bin = null;
             try {
-                content.setProperty(Constants.JCR_DATA, new BinaryImpl(is));
+                bin = new BinaryImpl(is);
+                content.setProperty(Constants.JCR_DATA, bin);
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
+            } finally {
+                if (bin != null) {
+                    bin.dispose();
+                }
             }
             if (contentType == null) {
                 contentType = "application/binary";

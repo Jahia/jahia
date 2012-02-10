@@ -54,6 +54,9 @@ Facet types and their parameters
   indexed for that field. Notice that in most cases you will need to add the attribute <<<facetable>>> in the property definition, so that the values
   will be indexed in a way, which is required for faceting.
   
+  Since Jahia 6.6.1 we also support hierarchical field value faceting. With categories for instance it is thus possible to drill
+  down a category tree.
+  
   In addition to the common parameters, field value faceting also supports the following parameters:
 
 ** sort

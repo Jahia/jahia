@@ -43,8 +43,10 @@ Jahia Facets Module
   
   The <<<facetable>>> fields can be recognized in the index, as they will have the term <<<FACET:>>> in the prefix of its name.
 
-  If you want to index a node and its parents paths like it's done for the categories, you need to add the attribute <<<hierarchical>>> to your property definition.
-  For example, when you filter on a specific category, you will not only get nodes categorized with this category but also nodes categorized with one of this category children.
+  With Jahia 6.6.1 we added support for hierarchical field value faceting. If you want to index a node and its parents paths like it's done 
+  for the categories, you need to add the attribute <<<hierarchical>>> to your property definition. For example, when you filter on a specific 
+  category, you will not only get nodes categorized with exactly this category but also nodes categorized with one of its children.
+
   Here is the definition of the <<<jmix:categorized>>> mixin containing the hierarchical facetable field <<<j:defaultCategory>>> :
 
 +----------------------------------------
@@ -53,6 +55,11 @@ Jahia Facets Module
  itemtype = classification
  - j:defaultCategory (weakreference, category[autoSelectParent=false]) facetable hierarchical multiple
 +----------------------------------------
+
+  Notice that this has been changed in 6.6.1 for our default category field, as we assumed that it is the more appropriate usage for the 
+  j:defaultCategory field. This also changes the behaviour of using Field facet on the j:defaultCategory as up to now we displayed just 
+  counts for real assignments, whereas now the parents of the assigned category are also counted. If you would like the previous behaviour
+  back, you could remove the hierarchical or distinguish between hierarchical and non-hierarchical categories with a second category property.
 
 * Facet types
   

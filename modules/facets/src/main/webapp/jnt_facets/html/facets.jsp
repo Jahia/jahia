@@ -34,7 +34,6 @@
     <jsp:useBean id="facetValueFormats" class="java.util.HashMap" scope="request"/>
     <jsp:useBean id="facetValueRenderers" class="java.util.HashMap" scope="request"/>
     <jsp:useBean id="facetValueNodeTypes" class="java.util.HashMap" scope="request"/>
-    <jsp:useBean id="currentFacetPrefixes" class="java.util.HashMap" scope="request"/>
 
     <c:choose>
         <c:when test="${jcr:isNodeType(boundComponent, 'jnt:contentRetrieval')}">

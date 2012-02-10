@@ -290,6 +290,8 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                 }
                 JCRNodeWrapper node = locationFolder.uploadFile(filename, is, item.getContentType());
                 node.save();
+                // Handle potential move of the node after save
+                node = node.getSession().getNodeByIdentifier(node.getIdentifier());
                 if (node.getProvider().isVersioningAvailable()) {
                     node.checkpoint();
                     String label = "uploaded_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(node.getProperty("jcr:created").getDate().getTime());

@@ -554,7 +554,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                 }
                                 // checkout parent directory
                                 session.getWorkspace().getVersionManager().checkout(targetDirectory.getPath());
-                                final JCRNodeWrapper wrapper = targetDirectory
+                                JCRNodeWrapper wrapper = targetDirectory
                                         .uploadFile(name,
                                                 itemEntry.getValue().getInputStream(),
                                                 itemEntry.getValue().getContentType());
@@ -566,6 +566,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                         wrapper.versionFile();
                                     }
                                     session.save();
+                                    // Handle potential move of the node after save
+                                    wrapper = session.getNodeByIdentifier(wrapper.getIdentifier());
                                     wrapper.checkpoint();
                                 }
                             }

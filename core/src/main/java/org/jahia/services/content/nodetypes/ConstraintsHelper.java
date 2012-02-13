@@ -67,18 +67,19 @@ public class ConstraintsHelper {
         String constraints = "";
         Set<String> nodeTypeNames = new HashSet<String>();
 
-        // first let's retrieve the child node types for unstructured node definitions
-        for (ExtendedNodeType type : nodeType) {
-            Set<String> cons = type.getUnstructuredChildNodeDefinitions().keySet();
-            for (String s : cons) {
-                if (!s.equals(Constants.JAHIANT_TRANSLATION) &&
-                    !s.equals(Constants.JAHIANT_REFERENCEINFIELD) &&
-                    !nodeTypeNames.contains(s)) {
-                    constraints = (StringUtils.isEmpty(constraints)) ? s : constraints + " " + s;
-                    nodeTypeNames.add(s);
+        if (targetChildName == null) {
+            // first let's retrieve the child node types for unstructured node definitions
+            for (ExtendedNodeType type : nodeType) {
+                Set<String> cons = type.getUnstructuredChildNodeDefinitions().keySet();
+                for (String s : cons) {
+                    if (!s.equals(Constants.JAHIANT_TRANSLATION) &&
+                            !s.equals(Constants.JAHIANT_REFERENCEINFIELD) &&
+                            !nodeTypeNames.contains(s)) {
+                        constraints = (StringUtils.isEmpty(constraints)) ? s : constraints + " " + s;
+                        nodeTypeNames.add(s);
+                    }
                 }
             }
-
         }
 
         // now let's retrieve the structured child node definitions

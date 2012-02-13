@@ -67,6 +67,7 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
@@ -90,7 +91,7 @@ import java.util.regex.Pattern;
  * @since JAHIA 6.5
  * Created : 8 janv. 2010
  */
-public class AggregateCacheFilter extends AbstractFilter implements ApplicationListener<ApplicationEvent> {
+public class AggregateCacheFilter extends AbstractFilter implements ApplicationListener<ApplicationEvent>, InitializingBean {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AggregateCacheFilter.class);
     private ModuleCacheProvider cacheProvider;
     private ModuleGeneratorQueue generatorQueue;
@@ -133,7 +134,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.TRUE);
             } else {
                 chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
-                    scriptProperties.getProperty("cache.mainResource")!=null?scriptProperties.getProperty("cache.mainResource"):defaultScriptProperties.getProperty("cache.mainResource", "false")));
+                        scriptProperties.getProperty("cache.mainResource")!=null?scriptProperties.getProperty("cache.mainResource"):defaultScriptProperties.getProperty("cache.mainResource", "false")));
             }
 
             String requestParameters = scriptProperties.getProperty("cache.requestParameters");
@@ -146,7 +147,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", null);
             }
             if (Boolean.valueOf(scriptProperties.getProperty("cache.additional.key.useMainResourcePath")!=null?
-                scriptProperties.getProperty("cache.additional.key.useMainResourcePath"):defaultScriptProperties.getProperty("cache.additional.key.useMainResourcePath", "false"))) {
+                                scriptProperties.getProperty("cache.additional.key.useMainResourcePath"):defaultScriptProperties.getProperty("cache.additional.key.useMainResourcePath", "false"))) {
 
                 ArrayList l = (ArrayList) resource.getModuleParams().get("module.cache.additional.key");
                 if (l == null) {
@@ -468,14 +469,15 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             key = key.replace(qsString,  qs.toString());
         }
 
-        return key.replaceAll(DefaultCacheKeyGenerator.PER_USER, renderContext.getUser().getUsername()).replaceAll("_mr_",
+        return DefaultCacheKeyGenerator.mainResourcePattern.matcher(DefaultCacheKeyGenerator.perUserPattern.matcher(key).replaceAll(
+                renderContext.getUser().getUsername())).replaceAll(
                 renderContext.getMainResource().getNode().getCanonicalPath() +
                 renderContext.getMainResource().getResolvedTemplate());
     }
 
     /**
      * Checks if the node properties has references to other content items (links in rich text fields) and adds those as dependencies.
-     * 
+     *
      * @param resource
      *            the resource to update dependencies on
      * @throws RepositoryException
@@ -542,7 +544,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 }
 
                 String mrCacheKey = replacePlaceholdersInCacheKey(renderContext, cacheKey);
-                cacheKey = cacheKey.replaceAll(DefaultCacheKeyGenerator.PER_USER, renderContext.getUser().getUsername());
+                cacheKey = DefaultCacheKeyGenerator.perUserPattern.matcher(cacheKey).replaceAll(renderContext.getUser().getUsername());
 
                 if (logger.isDebugEnabled()) {
                     logger.debug("Check if {} is in cache", mrCacheKey);
@@ -635,7 +637,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 logger.debug("Calling render service for generating content for key " + cacheKey + " with attributes : " +
                              new ToStringBuilder(keyAttrbs,ToStringStyle.MULTI_LINE_STYLE)+ "\nmodule params : " +
                              ToStringBuilder.reflectionToString(moduleParams,ToStringStyle.MULTI_LINE_STYLE)+
-                " areaIdentifier "+ areaIdentifier);
+                             " areaIdentifier "+ areaIdentifier);
             }
             renderContext.getRequest().removeAttribute(
                     "areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
@@ -670,10 +672,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             }
             String content = RenderService.getInstance().render(resource, renderContext);
             if(content==null || "".equals(content.trim())) {
-                 logger.error("Empty generated content for key " + cacheKey + " with attributes : " +
+                logger.error("Empty generated content for key " + cacheKey + " with attributes : " +
                              new ToStringBuilder(keyAttrbs,ToStringStyle.MULTI_LINE_STYLE)+ "\nmodule params : " +
                              ToStringBuilder.reflectionToString(moduleParams,ToStringStyle.MULTI_LINE_STYLE)+
-                " areaIdentifier "+ areaIdentifier);
+                             " areaIdentifier "+ areaIdentifier);
             }
             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);
             if(oldInArea!=null) {
@@ -877,5 +879,20 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
     public void setModuleParamsProperties(Map<String,String> moduleParamsProperties) {
         this.moduleParamsProperties = moduleParamsProperties;
+    }
+
+
+    /**
+     * Invoked by a BeanFactory after it has set all bean properties supplied
+     * (and satisfied BeanFactoryAware and ApplicationContextAware).
+     * <p>This method allows the bean instance to perform initialization only
+     * possible when all bean properties have been set and to throw an
+     * exception in the event of misconfiguration.
+     *
+     * @throws Exception in the event of misconfiguration (such
+     *                   as failure to set an essential property) or if initialization fails.
+     */
+    public void afterPropertiesSet() throws Exception {
+        Config.LoggerProvider = LoggerProvider.DISABLED;
     }
 }

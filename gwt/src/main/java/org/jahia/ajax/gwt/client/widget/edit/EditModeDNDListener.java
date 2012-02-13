@@ -164,7 +164,11 @@ public class EditModeDNDListener extends DNDListener {
                 props.put("j:node", new GWTJahiaNodeProperty("j:node",
                         new GWTJahiaNodePropertyValue(selectedNode,
                                 GWTJahiaNodePropertyType.WEAKREFERENCE)));
-                ContentTypeWindow.createContent(editLinker, selectedNode.getName(), referenceType, props, targetNode, true, false);
+                String nodeName = selectedNode.getName();
+                if (name != null && !"*".equals(name)) {
+                    nodeName = name;
+                }
+                ContentTypeWindow.createContent(editLinker, nodeName, referenceType, props, targetNode, true, false);
             } else if (SIMPLEMODULE_TYPE.equals(sourceType)) {
                 // Item move
                 GWTJahiaNode selectedNode = sourceNodes.get(0);
@@ -173,7 +177,12 @@ public class EditModeDNDListener extends DNDListener {
                 if ("*".equals(name)) {
                     service.moveAtEnd(selectedNode.getPath(), parentPath, callback);
                 } else {
-                    service.move(selectedNode.getPath(), targetPath, callback);
+                    if (!targetPath.startsWith("/")) {
+                        // path is not absolute, let's build it.
+                        service.move(selectedNode.getPath(), parentPath + "/" + targetPath, callback);
+                    } else {
+                        service.move(selectedNode.getPath(), targetPath, callback);
+                    }
                 }
             } else if (CREATE_CONTENT_SOURCE_TYPE.equals(sourceType)) {
                 // Item creation

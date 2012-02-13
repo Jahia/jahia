@@ -121,8 +121,11 @@ public class PlaceholderModule extends Module {
                     public void onClick(ClickEvent event) {
                         final GWTJahiaNode parentNode = getParentModule().getNode();
                         if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
-                            ContentActions.showContentWizard(mainModule.getEditLinker(), s, parentNode,
-                                    true);
+                            String nodeName = null;
+                            if ((path != null) && !"*".equals(path) && !path.startsWith("/")) {
+                                nodeName = path;
+                            }
+                            ContentActions.showContentWizard(mainModule.getEditLinker(), s, parentNode, nodeName, true);
                         }
                     }
                 });

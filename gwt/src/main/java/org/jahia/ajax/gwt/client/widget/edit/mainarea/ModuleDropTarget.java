@@ -104,7 +104,12 @@ public class ModuleDropTarget extends DropTarget {
         }
     }
 
-
+    /**
+     * Checks if the event source node (or source node type) is of certain nodetypes
+     * @param e
+     * @param nodetypes
+     * @return
+     */
     private boolean checkNodeType(DNDEvent e, String nodetypes) {
         boolean allowed = true;
 
@@ -144,8 +149,10 @@ public class ModuleDropTarget extends DropTarget {
         Module parentModule = module.getParentModule();
         final GWTJahiaNode jahiaNode = parentModule.getNode();
         if (PermissionsUtils.isPermitted("jcr:addChildNodes", jahiaNode) && !jahiaNode.isLocked()) {
-
             String nodetypes = parentModule.getNodeTypes();
+            if ((module.getNodeTypes() != null) && (module.getNodeTypes().length() > 0)) {
+                nodetypes = module.getNodeTypes();
+            }
             int listLimit = parentModule.getListLimit();
             int childCount = parentModule.getChildCount();
             if (EditModeDNDListener.EMPTYAREA_TYPE.equals(targetType)) {
@@ -162,6 +169,7 @@ public class ModuleDropTarget extends DropTarget {
                 return;
             }
 
+            // first let's check if we can directly instantiate such a node type, in the case of droppping a definition of the same type
             boolean allowed = !EditModeDNDListener.CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(EditModeDNDListener.SOURCE_TYPE)) &&  checkNodeType(e, nodetypes);
 
             if (allowed) {                
@@ -173,6 +181,10 @@ public class ModuleDropTarget extends DropTarget {
                 String refTypes = parentModule.getReferenceTypes();
                 if (targetType.equals(EditModeDNDListener.EMPTYAREA_TYPE)) {
                     refTypes = module.getReferenceTypes();
+                } else if (targetType.equals(EditModeDNDListener.PLACEHOLDER_TYPE)) {
+                    if (module.getReferenceTypes() != null) {
+                        refTypes = module.getReferenceTypes();
+                    }
                 }
                 if (refTypes.length() > 0 && e.getStatus().getData(EditModeDNDListener.SOURCE_NODES) != null) {
                     String[] refs = refTypes.split(" ");

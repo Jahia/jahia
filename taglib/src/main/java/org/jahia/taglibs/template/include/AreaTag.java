@@ -110,7 +110,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
         if (renderContext.isEditMode()) {
             try {
                 constraints = ConstraintsHelper
-                        .getConstraints(Arrays.asList(NodeTypeRegistry.getInstance().getNodeType(areaType)));
+                        .getConstraints(Arrays.asList(NodeTypeRegistry.getInstance().getNodeType(areaType)), null);
             } catch (RepositoryException e) {
                 logger.error("Error when getting list constraints", e);
             }

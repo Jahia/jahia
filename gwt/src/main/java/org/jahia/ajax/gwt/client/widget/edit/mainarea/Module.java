@@ -83,11 +83,26 @@ public abstract class Module extends LayoutContainer {
         this.id = id;
         this.path = path;
 
-        template = DOM.getElementAttribute(divElement, "template");
-        nodeTypes = DOM.getElementAttribute(divElement, "nodetypes");
+        // we test for presence of attributes since the getAttribute method will never return null if the
+        // attribute doesn't exist. See http://code.google.com/p/google-web-toolkit/issues/detail?id=1770
+        if (divElement.hasAttribute("template")) {
+            template = divElement.getAttribute("template");
+        }
+        if (divElement.hasAttribute("nodetypes")) {
+            nodeTypes = divElement.getAttribute("nodetypes");
+        }
         listLimit = !"".equals(DOM.getElementAttribute(divElement, "listlimit")) ? Integer.parseInt(DOM.getElementAttribute(divElement, "listlimit")): -1;
-        referenceTypes = DOM.getElementAttribute(divElement, "referenceTypes");
-        scriptInfo = DOM.getElementAttribute(divElement, "scriptInfo");
+        if (divElement.hasAttribute("referenceTypes")) {
+            referenceTypes = divElement.getAttribute("referenceTypes");
+            if ("none".equals(referenceTypes)) {
+                referenceTypes = "";
+            }
+        } else {
+            referenceTypes = null;
+        }
+        if (divElement.hasAttribute("scriptInfo")) {
+            scriptInfo = divElement.getAttribute("scriptInfo");
+        }
 
         this.mainModule = mainModule;
     }
@@ -97,11 +112,26 @@ public abstract class Module extends LayoutContainer {
         this.id = id;
         this.path = path;
 
-        template = DOM.getElementAttribute(divElement, "template");
-        nodeTypes = DOM.getElementAttribute(divElement, "nodetypes");
+        // we test for presence of attributes since the getAttribute method will never return null if the
+        // attribute doesn't exist. See http://code.google.com/p/google-web-toolkit/issues/detail?id=1770
+        if (divElement.hasAttribute("template")) {
+            template = divElement.getAttribute("template");
+        }
+        if (divElement.hasAttribute("nodetypes")) {
+            nodeTypes = divElement.getAttribute("nodetypes");
+        }
         listLimit = !"".equals(DOM.getElementAttribute(divElement, "listlimit")) ? Integer.parseInt(DOM.getElementAttribute(divElement, "listlimit")): -1;
-        referenceTypes = DOM.getElementAttribute(divElement, "referenceTypes");
-        scriptInfo = DOM.getElementAttribute(divElement, "scriptInfo");
+        if (divElement.hasAttribute("referenceTypes")) {
+            referenceTypes = divElement.getAttribute("referenceTypes");
+            if ("none".equals(referenceTypes)) {
+                referenceTypes = "";
+            }
+        } else {
+            referenceTypes = null;
+        }
+        if (divElement.hasAttribute("scriptInfo")) {
+            scriptInfo = divElement.getAttribute("scriptInfo");
+        }
 
         this.mainModule = mainModule;
     }

@@ -268,8 +268,12 @@ public class ContentActions {
     }
 
     public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, boolean includeSubTypes) {
+        showContentWizard(linker, nodeTypes, parent, null, includeSubTypes);
+    }
+
+    public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, String name, boolean includeSubTypes) {
         if (parent != null && !parent.isFile()) {
-            ContentTypeWindow.createContent(linker, null, nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, new HashMap<String, GWTJahiaNodeProperty>(), parent, includeSubTypes, false);
+            ContentTypeWindow.createContent(linker, name, nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, new HashMap<String, GWTJahiaNodeProperty>(), parent, includeSubTypes, false);
         }
     }
 

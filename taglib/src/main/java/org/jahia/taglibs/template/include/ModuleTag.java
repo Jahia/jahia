@@ -370,9 +370,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             buffer.append(" listlimit=\"" + listLimit + "\"");
         }
 
-        if (constraints != null) {
+        if (!StringUtils.isEmpty(constraints)) {
             String referenceTypes = ConstraintsHelper.getReferenceTypes(constraints, nodeTypes);
-            buffer.append((referenceTypes != null) ? " referenceTypes=\"" + referenceTypes + "\"" : "");
+            buffer.append((!StringUtils.isEmpty(referenceTypes)) ? " referenceTypes=\"" + referenceTypes + "\"" : " referenceTypes=\"none\"");
         }
 
         if (additionalParameters != null) {
@@ -497,6 +497,12 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         } else if (!path.startsWith("/")) {
             currentResource.getMissingResources().add(path);
         }
+
+        if (!"*".equals(path) && (path.indexOf("/") == -1)) {
+            // we have a named path that is missing, let's see if we can figure out it's node type.
+            constraints = ConstraintsHelper.getConstraints(currentResource.getNode(), path);
+        }
+
 
         if (canEdit(renderContext)) {
             if (currentResource.getNode().hasPermission("jcr:addChildNodes")) {

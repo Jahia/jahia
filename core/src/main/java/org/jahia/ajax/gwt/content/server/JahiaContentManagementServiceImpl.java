@@ -652,13 +652,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         // save shared properties
         saveProperties(Arrays.asList(node), sharedProperties, removedTypes);
-        try {
-            for (ExtendedNodeType mixin : retrieveCurrentSession().getNodeByUUID(node.getUUID()).getMixinNodeTypes()) {
-                removedTypes.remove(mixin.getName());
+        if (!removedTypes.isEmpty()) {
+            try {
+                for (ExtendedNodeType mixin : retrieveCurrentSession().getNodeByUUID(node.getUUID()).getMixinNodeTypes()) {
+                    removedTypes.remove(mixin.getName());
+                }
+            } catch (RepositoryException e) {
+                logger.error(e.toString(), e);
+                throw new GWTJahiaServiceException(new StringBuilder(node.getDisplayName()).append(JahiaResourceBundle.getJahiaInternalResource("could.not.be.accessed", getUILocale())).append(e.toString()).toString());
             }
-        } catch (RepositoryException e) {
-            logger.error(e.toString(), e);
-            throw new GWTJahiaServiceException(new StringBuilder(node.getDisplayName()).append(JahiaResourceBundle.getJahiaInternalResource("could.not.be.accessed", getUILocale())).append(e.toString()).toString());
         }
 
         // save properties per lang

@@ -150,7 +150,8 @@ public class ModuleDropTarget extends DropTarget {
         final GWTJahiaNode jahiaNode = parentModule.getNode();
         if (PermissionsUtils.isPermitted("jcr:addChildNodes", jahiaNode) && !jahiaNode.isLocked()) {
             String nodetypes = parentModule.getNodeTypes();
-            if ((module.getNodeTypes() != null) && (module.getNodeTypes().length() > 0)) {
+            if (targetType.equals(EditModeDNDListener.PLACEHOLDER_TYPE) &&
+                    (module.getNodeTypes() != null) && (module.getNodeTypes().length() > 0)) {
                 nodetypes = module.getNodeTypes();
             }
             int listLimit = parentModule.getListLimit();

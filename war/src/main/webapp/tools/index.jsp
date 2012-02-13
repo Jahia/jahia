@@ -58,6 +58,7 @@
     <legend>Cache</legend>
     <ul>
         <li><a href="cache.jsp">Cache management</a></li>
+        <li><a href="ehcache/ehcache_stats.jsp">Statistics only</a></li>
         <li><a href="ehcache/ehcache_cj.jsp">Modules</a></li>
         <li><a href="ehcache/ehcache_cj_dep.jsp">Dependencies</a></li>
     </ul>

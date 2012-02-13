@@ -90,7 +90,7 @@ public class JSR223Script implements Script {
         }
         if (scriptEngine != null) {
             ScriptContext scriptContext = scriptEngine.getContext();
-            final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+            final Bindings bindings = new SimpleBindings();
             Enumeration attrNamesEnum = context.getRequest().getAttributeNames();
             while (attrNamesEnum.hasMoreElements()) {
                 String currentAttributeName = (String) attrNamesEnum.nextElement();
@@ -104,11 +104,12 @@ public class JSR223Script implements Script {
                 try {
                     scriptContent = new InputStreamReader(scriptInputStream);
                     scriptContext.setWriter(new StringWriter());
+                    scriptContext.setErrorWriter(new StringWriter());
                     // The following binding is necessary for Javascript, which doesn't offer a console by default.
                     bindings.put("out", new PrintWriter(scriptContext.getWriter()));
-                    Object result = scriptEngine.eval(scriptContent, bindings);
+                    scriptEngine.eval(scriptContent, bindings);
                     StringWriter writer = (StringWriter) scriptContext.getWriter();
-                    return writer.toString();
+                    return writer.toString().trim();
                 } catch (ScriptException e) {
                     throw new RenderException("Error while executing script " + view.getPath(), e);
                 } finally {

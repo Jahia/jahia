@@ -196,7 +196,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 } catch (RepositoryException e) {
                     logger.error("Error when getting list constraints", e);
                 }
-                if (checkConstraints) {
+                if (checkConstraints && (path == null || path.equals("*"))) {
                     String constrainedNodeTypes = null;
                     if (currentLevel != null) {
                         constrainedNodeTypes = (String) pageContext.getAttribute(

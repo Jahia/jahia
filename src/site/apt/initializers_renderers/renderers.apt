@@ -5,10 +5,10 @@ Core Module - Custom Property Renderer
   Keeping with the Country example, if you remember the code of my initializer, in the value I store only the ISO code of the selected country.
   But what I want to display to my end user its the country name in his language and maybe the flag also.
 
-* How I declare some custom renderers ?
+* How are declared the built in renderers?
 
   Renderers are initialized in the same manner as the initializers, in the same Spring file (<<<applicationcontext-jcr.xml>>>).
-  Each renderer must extend <<<ChoiceListRenderer>>> interface.
+  Each renderer must extend the <<<ChoiceListRenderer>>> interface.
 
 +-------------------------------
 <bean id="countryInitializerRenderer" class="org.jahia.services.content.nodetypes.initializers.CountryChoiceListInitializerAndRendererImpl"/>
@@ -22,6 +22,41 @@ Core Module - Custom Property Renderer
   </property>
 </bean>
 +-------------------------------
+
+* How to declare some custom renderers?
+
+    A custom renderer has to implement the <<<ModuleChoiceListRenderer>>> interface. Most of the time, it is also
+    more convenient to extend the <<<AbstractChoiceListRenderer>>> abstract class. And you can even use the same
+    java class to be both the initializer and the renderer implementations.
+
++----------------
+public class MyCustomInitializer extends AbstractChoiceListRenderer implements ModuleChoiceListInitializer, ModuleChoiceListRenderer {
++-------------
+
+    In case you need to provide several renderers for the same initializer, the java class for the initializer would
+    embed only the default renderer, and then you would need some additional java classes for the additional renderers.
+
++----------------
+public class MyCustomRenderer extends AbstractChoiceListRenderer implements ModuleChoiceListRenderer {
++-------------
+
+    To declare a custom renderer, you need to set up a bean in your module's spring configuration file.\
+    In case you have used the same java class for both the initializer and the renderer, it is no need to declare a second bean for the renderer,
+     as the bean you have already defined for the initializer will be detected twice, one time as a custom initializer, and the other time as a custom
+     renderer. It will be registered in the <<<ChoiceListInitializerService>>> and in the <<<ChoiceListRendererService>>>, each time with the same key,
+     so that you will use the same keyword in the <<<definitions.cnd>>> file and in your jsp scripts.
+
++-------------------------------------
+    <bean id="dogChoiceList" class="com.mycompany.initializers.MyCustomRenderer" >
+        <property name="key" value="customRenderer"/>
+    </bean>
++-------------------------------------
+
+    As a <<<ModuleChoiceListRenderer>>>, this renderer will be automatically detected by the system, and registered in the <<<ChoiceListRendererService>>>,
+    with the key specified in the spring file. You can then use this new renderer in your jsp scripts.
+
+
+* How to use a renderer to display a property value in a jsp?
 
   Renderers are used through a tag in the templates, the tag can directly render the content of the property
   in its own manner, or can simply return a map of objects.
@@ -74,24 +109,24 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
 +----------------------------------
 <jcr:nodePropertyRenderer node="${currentNode}" name="country" renderer="flagcountry" var="country"/>
 
-<span class="jobtxt">${fn:escapeXml(values.town)},&nbsp;<img src="${country.flag}"/>&nbsp;${country.displayName}</span>    
+<span class="jobtxt">${fn:escapeXml(values.town)},&nbsp;<img src="${country.flag}"/>&nbsp;${country.displayName}</span>
 +----------------------------------
 
   In order to be able to use the renderers to render single values out of the list and also to use the renderer in the
   backend, where the RenderContext - which is not available in backend code - is replaced by the Locale, you also need
   to implement methods passing a propertyValue, at minimum one like this example from the CountryChoiceListInitializerAndRendererImpl:
-  
-+----------------------------------  
+
++----------------------------------
 public String getStringRendering(Locale locale, ExtendedPropertyDefinition propDef, Object propertyValue) throws RepositoryException {
     return new Locale("en", propertyValue.toString()).getDisplayCountry(
             locale);
-}  
-+----------------------------------  
+}
++----------------------------------
 
   If a property renderer requires more attributes from the RenderContext - not just the Locale - then you have to throw an
   UnsupportedOperationException, like in this example from the CountryFlagChoiceListInitializerAndRendererImpl:
-  
-+----------------------------------    
+
++----------------------------------
 public Map<String, Object> getObjectRendering(Locale locale,
         ExtendedPropertyDefinition propDef, Object propertyValue)
         throws RepositoryException {
@@ -102,5 +137,5 @@ public String getStringRendering(Locale locale,
         ExtendedPropertyDefinition propDef, Object propertyValue)
         throws RepositoryException {
     throw new UnsupportedOperationException("This renderer does not work without RenderContext");
-}  
-+----------------------------------  	
+}
++----------------------------------

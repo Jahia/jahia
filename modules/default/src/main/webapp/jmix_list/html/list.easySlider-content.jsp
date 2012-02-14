@@ -29,7 +29,7 @@
     <ul>
         <c:forEach items="${moduleMap.currentList}" var="child" varStatus="status">
             <li>
-                <template:module path="${child.path}"/>
+                <template:module node="${child}"/>
             </li>
         </c:forEach>
         <template:module path="*"/>

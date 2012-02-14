@@ -82,26 +82,28 @@ public class ConstraintsHelper {
             }
         }
 
-        // now let's retrieve the structured child node definitions
-        for (ExtendedNodeType type : nodeType) {
-            Map<String,ExtendedNodeDefinition> nodeDefinitions = type.getChildNodeDefinitionsAsMap();
-            for (Map.Entry<String,ExtendedNodeDefinition> nodeDefinitionEntry : nodeDefinitions.entrySet()) {
-                String childName = nodeDefinitionEntry.getKey();
-                boolean useCurrentChild = true;
-                if (targetChildName != null && !targetChildName.equals("*")) {
-                    if (!childName.equals(targetChildName)) {
-                        useCurrentChild = false;
+        if (targetChildName != null) {
+            // now let's retrieve the structured child node definitions
+            for (ExtendedNodeType type : nodeType) {
+                Map<String, ExtendedNodeDefinition> nodeDefinitions = type.getChildNodeDefinitionsAsMap();
+                for (Map.Entry<String, ExtendedNodeDefinition> nodeDefinitionEntry : nodeDefinitions.entrySet()) {
+                    String childName = nodeDefinitionEntry.getKey();
+                    boolean useCurrentChild = true;
+                    if (targetChildName != null && !targetChildName.equals("*")) {
+                        if (!childName.equals(targetChildName)) {
+                            useCurrentChild = false;
+                        }
                     }
-                }
-                if (useCurrentChild) {
-                    String[] typeNames = nodeDefinitionEntry.getValue().getRequiredPrimaryTypeNames();
-                    for (String typeName : typeNames) {
-                        if (!typeName.equals("jnt:conditionalVisibility") &&
-                            !typeName.equals("jnt:vanityUrls") &&
-                            !typeName.equals("jnt:acl") &&
-                            !nodeTypeNames.contains(typeName)) {
-                            constraints = (StringUtils.isEmpty(constraints)) ? typeName : constraints + " " + typeName;
-                            nodeTypeNames.add(typeName);
+                    if (useCurrentChild) {
+                        String[] typeNames = nodeDefinitionEntry.getValue().getRequiredPrimaryTypeNames();
+                        for (String typeName : typeNames) {
+                            if (!typeName.equals("jnt:conditionalVisibility") &&
+                                    !typeName.equals("jnt:vanityUrls") &&
+                                    !typeName.equals("jnt:acl") &&
+                                    !nodeTypeNames.contains(typeName)) {
+                                constraints = (StringUtils.isEmpty(constraints)) ? typeName : constraints + " " + typeName;
+                                nodeTypeNames.add(typeName);
+                            }
                         }
                     }
                 }
@@ -113,9 +115,10 @@ public class ConstraintsHelper {
     /**
      * Builds a list of usable reference types for the specified node types and constraints. If the no node types
      * were specified it will default to the nt:base node type.
-     *
+     * <p/>
      * This method will also inspect all the value constraints that are set on all reference nodes and if there
      * are none it will use the default jmix:droppableContent type.
+     *
      * @param constraints
      * @param nodeTypes
      * @return
@@ -150,7 +153,7 @@ public class ConstraintsHelper {
                                 // if a node type is descending from a reference constraint, then use the node type
                                 if (NodeTypeRegistry.getInstance().getNodeType(nt).isNodeType(refConstraint)) {
                                     finalConstraints.add(nt);
-                                // otherwise if the reference constraint is descending from a node type, use the constraint
+                                    // otherwise if the reference constraint is descending from a node type, use the constraint
                                 } else if (NodeTypeRegistry.getInstance().getNodeType(refConstraint).isNodeType(nt)) {
                                     finalConstraints.add(refConstraint);
                                 }

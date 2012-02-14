@@ -106,6 +106,10 @@ public class PlaceholderModule extends Module {
 
         if (getParentModule() != null && getParentModule().getNodeTypes() != null) {
             String[] nodeTypesArray = getParentModule().getNodeTypes().split(" ");
+            if ((getNodeTypes() != null) && (getNodeTypes().length() > 0)) {
+                nodeTypesArray = getNodeTypes().split(" ");
+            }
+
             List filter = null;
             if (nodeTypes != null && nodeTypes.length()>0) {
                 filter = Arrays.asList(nodeTypes);

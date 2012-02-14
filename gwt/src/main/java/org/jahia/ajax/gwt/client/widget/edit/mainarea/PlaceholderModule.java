@@ -104,12 +104,14 @@ public class PlaceholderModule extends Module {
             return;
         }
 
+        String[] nodeTypesArray = null;
         if (getParentModule() != null && getParentModule().getNodeTypes() != null) {
-            String[] nodeTypesArray = getParentModule().getNodeTypes().split(" ");
-            if ((getNodeTypes() != null) && (getNodeTypes().length() > 0)) {
-                nodeTypesArray = getNodeTypes().split(" ");
-            }
-
+            nodeTypesArray = getParentModule().getNodeTypes().split(" ");
+        }
+        if ((getNodeTypes() != null) && (getNodeTypes().length() > 0)) {
+            nodeTypesArray = getNodeTypes().split(" ");
+        }
+        if (nodeTypesArray != null) {
             List filter = null;
             if (nodeTypes != null && nodeTypes.length()>0) {
                 filter = Arrays.asList(nodeTypes);

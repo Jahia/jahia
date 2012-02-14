@@ -28,6 +28,7 @@
         <xsl:choose>
             <xsl:when test="@jcr:primaryType='jnt:permission'"/>
             <xsl:when test="@jcr:primaryType='jnt:roles'"/>
+            <xsl:when test="@jcr:primaryType='jnt:versionInfo'"/>
             <xsl:otherwise>
                 <xsl:copy>
                     <xsl:apply-templates select="child::node()|@*"/>

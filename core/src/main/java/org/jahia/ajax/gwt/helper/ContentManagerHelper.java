@@ -485,7 +485,7 @@ public class ContentManagerHelper {
 
     private JCRNodeWrapper doPaste(JCRNodeWrapper targetNode, JCRNodeWrapper node, String name, boolean cut,
                                    boolean reference) throws RepositoryException, JahiaException {
-        targetNode.getSession().getWorkspace().getVersionManager().checkout(targetNode.getPath());
+        targetNode.checkout();
         if (cut) {
             node.getSession().getWorkspace().getVersionManager().checkout(node.getPath());
             node.getParent().getSession().getWorkspace().getVersionManager().checkout(node.getParent().getPath());
@@ -1137,7 +1137,8 @@ public class ContentManagerHelper {
 //                }
                 session.save();
                 ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName, siteType, JahiaTemplateManagerService.MODULE_TYPE_TEMPLATES_SET.equals(siteType));
-
+                session.getNode("/templateSets/"+shortName).addNode("j:versionInfo","jnt:versionInfo").setProperty("j:version","1.0");
+                session.save();
                 return navigation.getGWTJahiaNode(templateSet, GWTJahiaNode.DEFAULT_SITE_FIELDS);
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
@@ -1165,6 +1166,11 @@ public class ContentManagerHelper {
                 }
                 session.save();
                 ServicesRegistry.getInstance().getJahiaTemplateManagerService().duplicateModule(shortName, siteType, baseSet);
+                if (!session.getNode("/templateSets/"+shortName).hasNode("j:versionInfo")) {
+                    session.getNode("/templateSets/"+shortName).addNode("j:versionInfo","jnt:versionInfo");
+                }
+                session.getNode("/templateSets/"+shortName).getNode("j:versionInfo").setProperty("j:version","1.0");
+                session.save();
 
                 JCRNodeWrapper templateSet = session.getNodeByUUID(result.get(0).getUUID());
                 return navigation.getGWTJahiaNode(templateSet, GWTJahiaNode.DEFAULT_SITE_FIELDS);

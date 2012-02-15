@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" 
+<%@ page contentType="text/html;charset=UTF-8" language="java"
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -39,7 +39,7 @@
     </ul>
 </fieldset>
         </td>
-        
+
         <td width="50%" valign="top">
 <fieldset>
     <legend>JCR Data and Rendering</legend>
@@ -52,6 +52,8 @@
         <li><a href="modulesBrowser.jsp">Installed modules browser</a></li>
         <li><a href="definitionsBrowser.jsp">Installed definitions browser</a></li>
         <li><a href="renderFilters.jsp">Render filters</a></li>
+        <li><a href="actions.jsp">Actions</a></li>
+        <li><a href="choicelistInitializersRenderers.jsp">Choicelist initializers &amp; renderers</a></li>
     </ul>
 </fieldset>
 <fieldset>

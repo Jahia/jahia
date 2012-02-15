@@ -1807,7 +1807,8 @@ public class ManageSites extends AbstractAdministrationModule {
                     if (value != null) {
                         Object legacyImport = value.get("legacyImport");
                         if (legacyImport!=null && (Boolean) legacyImport && jParams instanceof ParamBean) {
-                            final File defaultMappingsFolder = new File(((ParamBean)jParams).getContext().getRealPath("/WEB-INF/var/legacymappings"));
+                            final String defaultMappingsFolderPath = ((ParamBean)jParams).getContext().getRealPath("/WEB-INF/var/legacyMappings");
+                            final File defaultMappingsFolder = defaultMappingsFolderPath != null ? new File(defaultMappingsFolderPath) : null;
                             Collection<File> legacyMappings = null;
                             Collection<File> legacyDefinitions = null;
                             if (defaultMappingsFolder != null && defaultMappingsFolder.exists()) {
@@ -1823,7 +1824,7 @@ public class ManageSites extends AbstractAdministrationModule {
                                 }
                             }
 
-                            org.springframework.core.io.Resource[] modulesLegacyMappings = SpringContextSingleton.getInstance().getResources("/modules/**/WEB-INF/legacyMappings/*.map");
+                            org.springframework.core.io.Resource[] modulesLegacyMappings = SpringContextSingleton.getInstance().getResources("/modules/**/META-INF/legacyMappings/*.map");
                             if (legacyMappings == null && modulesLegacyMappings.length > 0) {
                                 legacyMappings = new ArrayList<File>();
                             }
@@ -1831,7 +1832,7 @@ public class ManageSites extends AbstractAdministrationModule {
                                 legacyMappings.add(modulesLegacyMappings[j].getFile());
                             }
 
-                            org.springframework.core.io.Resource[] modulesLegacyDefinitions = SpringContextSingleton.getInstance().getResources("/modules/**/WEB-INF/legacyMappings/*.cnd");
+                            org.springframework.core.io.Resource[] modulesLegacyDefinitions = SpringContextSingleton.getInstance().getResources("/modules/**/META-INF/legacyMappings/*.cnd");
                             if (legacyDefinitions == null && modulesLegacyDefinitions.length > 0) {
                                 legacyDefinitions = new ArrayList<File>();
                             }

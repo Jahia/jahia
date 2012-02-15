@@ -577,7 +577,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         dependencies.add(dep.getString());
                     }
                 }
-                String version = node.getNode("j:versionInfo").getProperty("j:version").getString();
+                String version = "1.0";
+                if (node.hasNode("j:versionInfo")) {
+                    version = node.getNode("j:versionInfo").getProperty("j:version").getString();
+                }
 
                 createManifest(moduleName, tmplRootFolder, node.getProperty("j:siteType").getString(),
                         version,

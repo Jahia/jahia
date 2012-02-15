@@ -258,7 +258,6 @@
         <editor jcr:primaryType="jnt:role" j:roleGroup="edit-role"
                 j:permissions="/permissions/repository-permissions/jcr:all_default
                 /permissions/editMode/editModeAccess /permissions/editMode/editSelector
-                /permissions/editMode/engineTabs/viewCategoriesTab
                 /permissions/editMode/engineTabs/viewContentTab
                 /permissions/editMode/engineTabs/viewLayoutTab
                 /permissions/editMode/engineTabs/viewMetadataTab
@@ -282,6 +281,11 @@
                    j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default
                    /permissions/repository-permissions/publish
                    /permissions/editMode/editModeAccess
+                   /permissions/editMode/engineTabs/viewContentTab
+                   /permissions/editMode/engineTabs/viewMetadataTab
+                   /permissions/editMode/engineTabs/viewCategoriesTab
+                   /permissions/editMode/engineTabs/viewTagsTab
+                   /permissions/editMode/engineTabs/viewSeoTab
                    /permissions/editMode/editSelector/sitemapSelector
                    /permissions/contributeMode/contributeModeAccess
                    /permissions/workflow-tasks/1-step-publication-review

@@ -46,7 +46,6 @@
         <apache.tika.version>0.9</apache.tika.version>
         <camel.version>2.4.0</camel.version>
         <gwt.version>2.2.0</gwt.version>
-        <clover.version>2.6.3</clover.version>
         <ant.version>1.8.2</ant.version>
 
         <driver.derby.version>10.8.2.2</driver.derby.version>
@@ -285,55 +284,6 @@
                 <module>war</module>
                 <module>test</module>
             </modules>
-        </profile>
-
-        <profile>
-            <id>code-coverage</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.atlassian.maven.plugins</groupId>
-                        <artifactId>maven-clover2-plugin</artifactId>
-                        <version>${clover.version}</version>
-                        <configuration>
-                            <generateHistorical>false</generateHistorical>
-                            <targetPercentage>7%</targetPercentage>
-                            <!--<generateXml>true</generateXml>-->
-                            <generatePdf>true</generatePdf>
-                            <!--
-                            <cloverDatabase>/foo/bar</cloverDatabase>
-                            <cloverMergeDatabase>/foo/bar</cloverMergeDatabase>
-                            -->
-                            <excludes>
-                                <exclude>**/org/jahia/ajax/gwt/client/**/*.java</exclude>
-                                <exclude>**/org/jahia/ajax/gwt/module/**/*.java</exclude>
-                                <exclude>**/org/jahia/ajax/gwt/template/**/*.java</exclude>
-                                <exclude>org/jahia/ajax/gwt/client/**/*.java</exclude>
-                                <exclude>org/jahia/ajax/gwt/module/**/*.java</exclude>
-                                <exclude>org/jahia/ajax/gwt/template/**/*.java</exclude>
-                            </excludes>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>clover-prepare</id>
-                                <phase>generate-sources</phase>
-                                <goals>
-                                    <goal>setup</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>clover-report</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>aggregate</goal>
-                                    <!--goal>save-history</goal-->
-                                    <goal>clover</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
 
         <profile>

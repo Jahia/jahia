@@ -2,11 +2,11 @@ Jahia Test Package
 
 * Requirements
 
-- JMeter 2.4 or more recent
-- JDK 5 minimum
-- A default Jahia 6.6 installation, as delivered by either compiling it from source (including configuration), or
-installed with the package installer.
-- If you are on windows, this will run only under CYGWIN
+ - JMeter 2.4 or more recent
+ - JDK 5 minimum
+ - A default Jahia 6.6 installation, as delivered by either compiling it from source (including configuration), or
+  installed with the package installer.
+ - If you are on windows, this will run only under CYGWIN
 
 * JUnit test
 
@@ -78,24 +78,29 @@ installed with the package installer.
 +---------------------------
 
  Add the sitemap and users files, and the site key you want to use :
+ 
 +---------------------------
 <jahia.test.jmeter.sitemap>sitemap.txt</jahia.test.jmeter.sitemap>
 <jahia.test.jmeter.users>users.txt</jahia.test.jmeter.users>
 <jahia.test.jmeter.sitekey>testSite</jahia.test.jmeter.sitekey>
 +---------------------------
+
  The sitemap contains one line per page that can be used by the scripts. The users file contains one line per user.
  The password should be identical to the username. If no users file is provided, all tests will be executed as guest.
 
  You can specify an optional import file that will be copied before the test. You'll need to specify the time
  maven will wait for the import to finish before starting the tests :
+ 
 +---------------------------
 <jahia.test.jmeter.importfile>import.zip</jahia.test.jmeter.importfile>
 <jahia.test.jmeter.importwait>90</jahia.test.jmeter.importwait>
 +---------------------------
+ 
  But you can also execute the import separately, if you want to run multiple tests on the same site. Just copy the
  import.zip file in the WEB-INF/var/imports folder of your jahia server and wait to the site to be imported.
 
  Some test will require additional parameters - the readPages.jmx require the workspace and mode to use :
+ 
 +---------------------------
 <jahia.test.jmeter.workspace>default</jahia.test.jmeter.workspace>
 <jahia.test.jmeter.mode>render</jahia.test.jmeter.mode>
@@ -154,13 +159,13 @@ Modify you settings.xml to add the content generator configuration :
 <jahia.cg.numberOfSites>1</jahia.cg.numberOfSites>
 +-------------------------
 
-You can add this to a profile, and create as many content generator configuration as you need.
+ You can add this to a profile, and create as many content generator configuration as you need.
 
-Then call the site generation :
+ Then call the site generation :
 
-mvn jahia:generate-site
+ mvn jahia:generate-site
 
-This will generate an import.zip, a sitemap.txt and users.txt in specified folder.
+ This will generate an import.zip, a sitemap.txt and users.txt in specified folder.
 
 * Execute tests in automated environment
 

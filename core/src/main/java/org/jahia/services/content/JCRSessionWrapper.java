@@ -445,16 +445,20 @@ public class JCRSessionWrapper implements Session {
             VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
         if (!isSystem() && getLocale() != null) {
             for (JCRNodeWrapper node : newNodes.values()) {
-                for (String s : node.getNodeTypes()) {
-                    ExtendedPropertyDefinition[] propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitions();
-                    for (ExtendedPropertyDefinition propDef : propDefs) {
-                        if (propDef.isMandatory() &&
-                                propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
-                                propDef.getRequiredType() != PropertyType.REFERENCE &&
-                                !propDef.isProtected() && !node.hasProperty(propDef.getName())) {
-                            throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
+                try {
+                    for (String s : node.getNodeTypes()) {
+                        ExtendedPropertyDefinition[] propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitions();
+                        for (ExtendedPropertyDefinition propDef : propDefs) {
+                            if (propDef.isMandatory() &&
+                                    propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
+                                    propDef.getRequiredType() != PropertyType.REFERENCE &&
+                                    !propDef.isProtected() && !node.hasProperty(propDef.getName())) {
+                                throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
+                            }
                         }
                     }
+                } catch (InvalidItemStateException e) {
+                    logger.warn("A new node can no longer be accessed to run validation checks", e);
                 }
             }
         }
@@ -473,6 +477,10 @@ public class JCRSessionWrapper implements Session {
     public void refresh(boolean b) throws RepositoryException {
         for (Session session : sessions.values()) {
             session.refresh(b);
+        }
+        if (!b) {
+            newNodes.clear();
+            flushCaches();
         }
     }
 

@@ -459,12 +459,6 @@
             </build>
         </profile>
         <profile>
-            <id>patches</id>
-            <modules>
-                <module>patches</module>
-            </modules>
-        </profile>
-        <profile>
             <id>maven-3</id>
             <activation>
                 <file>

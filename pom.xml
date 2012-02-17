@@ -46,7 +46,6 @@
         <apache.tika.version>0.9</apache.tika.version>
         <camel.version>2.4.0</camel.version>
         <gwt.version>2.2.0</gwt.version>
-        <clover.version>2.6.3</clover.version>
         <ant.version>1.8.2</ant.version>
 
         <driver.derby.version>10.8.2.2</driver.derby.version>

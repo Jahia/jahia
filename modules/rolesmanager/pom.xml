@@ -35,10 +35,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>${war.plugin.version}</version>
                 <configuration>
                     <archiveClasses>true</archiveClasses>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
                     <attachClasses>true</attachClasses>
                     <webResources>
                         <resource>

@@ -64,7 +64,7 @@
         <assembly.plugin.version>2.2</assembly.plugin.version>
         <maven3.site.plugin.version>3.0</maven3.site.plugin.version>
         <site.plugin.version>2.2</site.plugin.version>
-        <war.plugin.version>2.1.1.jahia1</war.plugin.version>
+        <war.plugin.version>2.2</war.plugin.version>
         <enforcer.plugin.version>1.0</enforcer.plugin.version>
         <compiler.plugin.version>2.3.2</compiler.plugin.version>
         <buildnumber.plugin.version>1.0</buildnumber.plugin.version>

@@ -624,6 +624,7 @@ public class UIConfigHelper {
 
     private GWTEngineTab createGWTEngineTab(EngineTab engineTab, JCRSiteNode site, Locale locale, Locale uiLocale) {
         GWTEngineTab gwtTab = new GWTEngineTab();
+        gwtTab.setId(engineTab.getId());
 
         if (engineTab.getTitleKey() != null) {
             gwtTab.setTitle(getResources(engineTab.getTitleKey(), uiLocale != null ? uiLocale : locale, site, null));

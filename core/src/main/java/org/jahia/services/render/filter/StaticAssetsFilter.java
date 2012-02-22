@@ -94,6 +94,14 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     };
 
     private static final FastHashMap RANK;
+    
+    private static final Pattern URL_PATTERN_1 = Pattern.compile("url( ", Pattern.LITERAL);
+
+    private static final Pattern URL_PATTERN_2 = Pattern.compile("url(\"", Pattern.LITERAL);
+
+    private static final Pattern URL_PATTERN_3 = Pattern.compile("url('", Pattern.LITERAL);
+
+    private static final Pattern URL_PATTERN_4 = Pattern.compile("url\\(([^'\"])");
 
     static {
         RANK = new FastHashMap();
@@ -172,7 +180,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             String condition = esiResourceTag.getAttributeValue("condition");
             path = URLDecoder.decode(path, "UTF-8");
             Boolean insert = Boolean.parseBoolean(esiResourceTag.getAttributeValue("insert"));
-            String resourceS = esiResourceTag.getAttributeValue("resource");
             String title = esiResourceTag.getAttributeValue("title");
             String key = esiResourceTag.getAttributeValue("key");
             Map<String, String> optionsMap = new HashMap<String, String>();
@@ -389,6 +396,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                     compressor = new JavaScriptCompressor(reader, new ErrorReporter() {
                                         public void warning(String message, String sourceName,
                                                             int line, String lineSource, int lineOffset) {
+                                            if (!logger.isDebugEnabled()) {
+                                                return;
+                                            }
                                             if (line < 0) {
                                                 logger.debug(message);
                                             } else {
@@ -439,10 +449,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                 IOUtils.closeQuietly(is);
                                 String s = stream.toString("UTF-8");
 
-                                s = s.replace("url( ", "url(");
-                                s = s.replace("url(\"", "url(\".." + StringUtils.substringBeforeLast(pathsToAggregate.get(minifiedPaths.indexOf(minifiedFile)), "/") + "/");
-                                s = s.replace("url('", "url('.." + StringUtils.substringBeforeLast(pathsToAggregate.get(minifiedPaths.indexOf(minifiedFile)), "/") + "/");
-                                s = s.replaceAll("url\\(([^'\"])", "url(.." + StringUtils.substringBeforeLast(pathsToAggregate.get(minifiedPaths.indexOf(minifiedFile)), "/") + "/$1");
+                                String url = StringUtils.substringBeforeLast(pathsToAggregate.get(minifiedPaths.indexOf(minifiedFile)), "/");
+                                s = URL_PATTERN_1.matcher(s).replaceAll("url(");
+                                s = URL_PATTERN_2.matcher(s).replaceAll("url(\".." + url + "/");
+                                s = URL_PATTERN_3.matcher(s).replaceAll("url('.." + url + "/");
+                                s = URL_PATTERN_4.matcher(s).replaceAll("url(.." + url + "/$1");
                                 is = new ByteArrayInputStream(s.getBytes("UTF-8"));
                             }
                             IOUtils.copy(is, outMerged);

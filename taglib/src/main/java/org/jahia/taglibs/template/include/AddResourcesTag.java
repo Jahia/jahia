@@ -45,6 +45,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.utils.Patterns;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -107,7 +108,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
 
         final Map<String, String> mapping = getStaticAssetMapping();
 
-        String[] strings = resources.split(",");
+        String[] strings = Patterns.COMMA.split(resources);
 
         List<String> lookupPaths = new LinkedList<String>();
         lookupPaths.add(aPackage.getRootFolderPath() + "/" + type + "/");

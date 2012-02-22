@@ -53,6 +53,7 @@ import org.jahia.services.applications.ApplicationsManagerServiceImpl;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.Patterns;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationEvent;
@@ -165,7 +166,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
     private void writePID(ServletContext servletContext) {
         try {
-            pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+            pid = Patterns.AT.split(ManagementFactory.getRuntimeMXBean().getName())[0];
         } catch (Exception e) {
             logger.warn("Unable to determine process id", e);
         }

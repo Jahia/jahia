@@ -51,6 +51,7 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
@@ -551,7 +552,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
         int siteID = 0;
         final String name;
         if (groupKey.contains(":")) {
-            String[] splittedGroupKey = groupKey.split(":");
+            String[] splittedGroupKey = Patterns.COLON.split(groupKey);
             siteID = Integer.valueOf(splittedGroupKey[1]);
             name = splittedGroupKey[0];
             if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(name) || JahiaGroupManagerService.USERS_GROUPNAME.equals(name)) {
@@ -748,18 +749,18 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                                                 propertyValue = "%";
                                             } else {
                                                 if (propertyValue.contains("*")) {
-                                                    propertyValue = propertyValue.replaceAll("\\*", "%");
+                                                    propertyValue = Patterns.STAR.matcher(propertyValue).replaceAll("%");
                                                 } else {
                                                     propertyValue = propertyValue + "%";
                                                 }
                                             }
                                             if ("*".equals(propertyKey)) {
                                                 query.append(
-                                                        "(CONTAINS(g.*,'" + propertyValue.replaceAll("%", "")
+                                                        "(CONTAINS(g.*,'" + Patterns.PERCENT.matcher(propertyValue).replaceAll("")
                                                                 + "') OR LOWER(g.[j:nodename]) LIKE '")
                                                     .append(propertyValue.toLowerCase()).append("') ");
                                             } else {
-                                                query.append("LOWER(g.[" + propertyKey.replaceAll("\\.", "\\\\.") + "])")
+                                                query.append("LOWER(g.[" + Patterns.DOT.matcher(propertyKey).replaceAll("\\\\.") + "])")
                                                         .append(" LIKE '").append(propertyValue.toLowerCase()).append("'");
                                             }
                                             if (objectIterator.hasNext()) {

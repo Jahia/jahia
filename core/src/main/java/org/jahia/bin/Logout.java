@@ -64,6 +64,7 @@ import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
@@ -320,7 +321,7 @@ public class Logout implements Controller {
         if ((preserveSessionAttributes != null) &&
             (httpServletRequest.getSession(false) != null) &&
                 (preserveSessionAttributes.length() > 0)) {
-            String[] sessionAttributeNames = preserveSessionAttributes.split("###");
+            String[] sessionAttributeNames = Patterns.TRIPLE_HASH.split(preserveSessionAttributes);
             HttpSession session = httpServletRequest.getSession(false);
             for (String sessionAttributeName : sessionAttributeNames) {
                 Object attributeValue = session.getAttribute(sessionAttributeName);

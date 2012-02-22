@@ -47,6 +47,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.scripting.Script;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.RepositoryException;
 import java.util.LinkedList;
@@ -606,7 +607,7 @@ public abstract class AbstractFilter implements RenderFilter {
     public void setApplyOnConfigurations(String configurations) {
         if (configurations.contains(",")) {
             AnyOfCondition condition = new AnyOfCondition();
-            for (String conf : configurations.split(",")) {
+            for (String conf : Patterns.COMMA.split(configurations)) {
                 condition.add(new ConfigurationCondition(conf.trim()));
             }
             addCondition(0, condition);
@@ -638,7 +639,7 @@ public abstract class AbstractFilter implements RenderFilter {
     public void setApplyOnModes(String modes) {
         if (modes.contains(",")) {
             AnyOfCondition condition = new AnyOfCondition();
-            for (String mode : modes.split(",")) {
+            for (String mode : Patterns.COMMA.split(modes)) {
                 condition.add(new ModeCondition(mode.trim()));
             }
             addCondition(0, condition);
@@ -657,7 +658,7 @@ public abstract class AbstractFilter implements RenderFilter {
     public void setApplyOnModules(String modules) {
         if (modules.contains(",")) {
             AnyOfCondition condition = new AnyOfCondition();
-            for (String module : modules.split(",")) {
+            for (String module : Patterns.COMMA.split(modules)) {
                 condition.add(new ModuleCondition(module.trim()));
             }
             addCondition(condition);
@@ -676,7 +677,7 @@ public abstract class AbstractFilter implements RenderFilter {
     public void setApplyOnNodeTypes(String nodeTypes) {
         if (nodeTypes.contains(",")) {
             AnyOfCondition condition = new AnyOfCondition();
-            for (String nodeType : nodeTypes.split(",")) {
+            for (String nodeType : Patterns.COMMA.split(nodeTypes)) {
                 condition.add(new NodeTypeCondition(nodeType.trim()));
             }
             addCondition(condition);
@@ -695,7 +696,7 @@ public abstract class AbstractFilter implements RenderFilter {
     public void setApplyOnTemplates(String templates) {
         if (templates.contains(",")) {
             AnyOfCondition condition = new AnyOfCondition();
-            for (String template : templates.split(",")) {
+            for (String template : Patterns.COMMA.split(templates)) {
                 condition.add(new TemplateCondition(template.trim()));
             }
             addCondition(condition);
@@ -714,7 +715,7 @@ public abstract class AbstractFilter implements RenderFilter {
     public void setApplyOnTemplateTypes(String templateTypes) {
         if (templateTypes.contains(",")) {
             AnyOfCondition condition = new AnyOfCondition();
-            for (String templateType : templateTypes.split(",")) {
+            for (String templateType : Patterns.COMMA.split(templateTypes)) {
                 condition.add(new TemplateTypeCondition(templateType.trim()));
             }
             addCondition(condition);
@@ -773,7 +774,7 @@ public abstract class AbstractFilter implements RenderFilter {
         ExecutionCondition condition = null;
         if (configurations.contains(",")) {
             AnyOfCondition anyOf = new AnyOfCondition();
-            for (String configuration : configurations.split(",")) {
+            for (String configuration : Patterns.COMMA.split(configurations)) {
                 anyOf.add(new ConfigurationCondition(configuration.trim()));
             }
             condition = anyOf;
@@ -805,7 +806,7 @@ public abstract class AbstractFilter implements RenderFilter {
         ExecutionCondition condition = null;
         if (modes.contains(",")) {
             AnyOfCondition anyOf = new AnyOfCondition();
-            for (String mode : modes.split(",")) {
+            for (String mode : Patterns.COMMA.split(modes)) {
                 anyOf.add(new ModeCondition(mode.trim()));
             }
             condition = anyOf;
@@ -825,7 +826,7 @@ public abstract class AbstractFilter implements RenderFilter {
         ExecutionCondition condition = null;
         if (modules.contains(",")) {
             AnyOfCondition anyOf = new AnyOfCondition();
-            for (String module : modules.split(",")) {
+            for (String module : Patterns.COMMA.split(modules)) {
                 anyOf.add(new ModuleCondition(module.trim()));
             }
             condition = anyOf;
@@ -846,7 +847,7 @@ public abstract class AbstractFilter implements RenderFilter {
         ExecutionCondition condition = null;
         if (nodeTypes.contains(",")) {
             AnyOfCondition anyOf = new AnyOfCondition();
-            for (String nodeType : nodeTypes.split(",")) {
+            for (String nodeType : Patterns.COMMA.split(nodeTypes)) {
                 anyOf.add(new NodeTypeCondition(nodeType.trim()));
             }
             condition = anyOf;
@@ -866,7 +867,7 @@ public abstract class AbstractFilter implements RenderFilter {
         ExecutionCondition condition = null;
         if (templates.contains(",")) {
             AnyOfCondition anyOf = new AnyOfCondition();
-            for (String template : templates.split(",")) {
+            for (String template : Patterns.COMMA.split(templates)) {
                 anyOf.add(new TemplateCondition(template.trim()));
             }
             condition = anyOf;
@@ -887,7 +888,7 @@ public abstract class AbstractFilter implements RenderFilter {
         ExecutionCondition condition = null;
         if (templateTypes.contains(",")) {
             AnyOfCondition anyOf = new AnyOfCondition();
-            for (String templateType : templateTypes.split(",")) {
+            for (String templateType : Patterns.COMMA.split(templateTypes)) {
                 anyOf.add(new TemplateTypeCondition(templateType.trim()));
             }
             condition = anyOf;

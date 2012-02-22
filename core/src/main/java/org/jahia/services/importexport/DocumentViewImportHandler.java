@@ -53,6 +53,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.zip.ZipEntry;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -495,7 +496,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 if (propDef.getRequiredType() == PropertyType.REFERENCE || propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
                     if (attrValue.length() > 0) {
                         String decodedValue = ISO9075.decode(attrValue);
-                        String[] values = propDef.isMultiple() ? ISO9075.decode(decodedValue).split(" ") : new String[]{decodedValue};
+                        String[] values = propDef.isMultiple() ? Patterns.SPACE.split(ISO9075.decode(decodedValue)) : new String[]{decodedValue};
                         for (String value : values) {
                             if (!StringUtils.isEmpty(value)) {
                                 if (value.startsWith("$currentSite")) {
@@ -526,7 +527,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     }
                 } else {
                     if (propDef.isMultiple()) {
-                        String[] s = "".equals(attrValue) ? new String[0] : attrValue.split(" ");
+                        String[] s = "".equals(attrValue) ? new String[0] : Patterns.SPACE.split(attrValue);
                         Value[] v = new Value[s.length];
                         for (int j = 0; j < s.length; j++) {
                             v[j] = child.getRealNode().getSession().getValueFactory().createValue(s[j]);
@@ -550,7 +551,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         }
         String path = pathes.peek();
         if (path.endsWith("/jcr:content")) {
-            String[] p = path.split("/");
+            String[] p = Patterns.SLASH.split(path);
             path = path.replace("/jcr:content", "/" + p[p.length - 2]);
         } else {
             path =JCRContentUtils.replaceColon(path);

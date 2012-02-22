@@ -58,6 +58,7 @@ import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 /**
  * 
@@ -94,6 +95,7 @@ public class JahiaPortalURLParserImpl implements PortalURLParser {
     private static final String WINDOW_STATE = "ws";
     private static final String PORTLET_MODE = "pm";
     private static final String VALUE_DELIM = "0x0";
+    private static final Pattern VALUE_DELIM_PATTERN = Pattern.compile(VALUE_DELIM);
 
     //This is a list of characters that need to be encoded  to be protected
     //The ? is necessary to protect URI's with a query portion that is being passed as a parameter
@@ -540,7 +542,7 @@ public class JahiaPortalURLParserImpl implements PortalURLParser {
         }
 
         // Split multiple values into a value array.
-        String[] paramValues = value.split(VALUE_DELIM);
+        String[] paramValues = VALUE_DELIM_PATTERN.split(value);
         for (int i = 0; i < paramValues.length; i++) {
             try {
                 paramValues[i] = URLDecoder.decode(paramValues[i], "UTF-8");
@@ -570,7 +572,7 @@ public class JahiaPortalURLParserImpl implements PortalURLParser {
         }
 
         // Split multiple values into a value array.
-        String[] paramValues = value.split(VALUE_DELIM);
+        String[] paramValues = VALUE_DELIM_PATTERN.split(value);
 
         // Construct portal URL parameter and return.
         return new PortalURLParameter(null, paramName, paramValues);

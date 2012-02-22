@@ -51,6 +51,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.usermanager.*;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
@@ -142,7 +143,7 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
                         Set<String> tasks = definition.getTasks();
                         for (String task : tasks) {
                             if (!map.containsKey(task)) {
-                                String permissionName = definition.getKey().replace(" ","-") + "-" + task.replace(" ","-");
+                                String permissionName = Patterns.SPACE.matcher(definition.getKey()).replaceAll("-") + "-" + Patterns.SPACE.matcher(task).replaceAll("-");
                                 if (!session.itemExists("/permissions/workflow-tasks/"+permissionName)) {
                                     logger.info("Create workflow permission : "+permissionName);
                                     JCRNodeWrapper perms = session.getNode("/permissions/workflow-tasks");

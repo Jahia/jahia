@@ -60,6 +60,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.regex.Pattern;
 
 /**
  * User: toto
@@ -69,6 +70,8 @@ import java.io.OutputStream;
 public class ImageMagickImageService implements JahiaImageService {
     
     private static final Logger logger = LoggerFactory.getLogger(ImageMagickImageService.class);
+    
+    private static final Pattern GEOMETRY_PATTERN = Pattern.compile("[x+]");
 
     private static ImageMagickImageService instance;
 
@@ -141,7 +144,7 @@ public class ImageMagickImageService implements JahiaImageService {
     public int getHeight(Image i) throws IOException {
         try {
             Info imageInfo = new Info(getFile(i).getPath());
-            return Integer.parseInt(imageInfo.getProperty("Geometry").split("[x+]")[1]);
+            return Integer.parseInt(GEOMETRY_PATTERN.split(imageInfo.getProperty("Geometry"))[1]);
         } catch (InfoException e) {
             throw new IOException(e.getMessage());
         }
@@ -150,7 +153,7 @@ public class ImageMagickImageService implements JahiaImageService {
     public int getWidth(Image i) throws IOException {
         try {
             Info imageInfo = new Info(getFile(i).getPath());
-            return Integer.parseInt(imageInfo.getProperty("Geometry").split("[x+]")[0]);
+            return Integer.parseInt(GEOMETRY_PATTERN.split(imageInfo.getProperty("Geometry"))[0]);
         } catch (InfoException e) {
             throw new IOException(e.getMessage());
         }

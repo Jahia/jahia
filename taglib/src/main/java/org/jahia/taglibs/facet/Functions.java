@@ -41,6 +41,7 @@
 package org.jahia.taglibs.facet;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.PropertyDefinition;
@@ -68,8 +69,10 @@ public class Functions {
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(Functions.class);
 
     private static final String FACET_PARAM_DELIM = "###";
+    private static final Pattern FACET_PARAM_DELIM_PATTERN = Pattern.compile(FACET_PARAM_DELIM);
     private static final String FACET_DELIM = "|||";
     private static final String FACET_NODE_TYPE = "jnt:facet";
+    private static final Pattern FILTER_STRING_PATTERN = Pattern.compile("\\|\\|\\|");
 
     /**
      * Get a list of applied facets
@@ -80,8 +83,8 @@ public class Functions {
     public static Map<String, List<KeyValue>> getAppliedFacetFilters(String filterString) {
         Map<String, List<KeyValue>> appliedFacetFilters = new LinkedHashMap<String, List<KeyValue>>();        
         if (!StringUtils.isEmpty(filterString)) {
-            for (String filterInstance : filterString.split("\\|\\|\\|")) {
-                String[] filterTokens = filterInstance.split(FACET_PARAM_DELIM);
+            for (String filterInstance : FILTER_STRING_PATTERN.split(filterString)) {
+                String[] filterTokens = FACET_PARAM_DELIM_PATTERN.split(filterInstance);
                 if (filterTokens.length == 3) {
                     List<KeyValue> filterList = appliedFacetFilters.get(filterTokens[0]);
                     if (filterList == null) {

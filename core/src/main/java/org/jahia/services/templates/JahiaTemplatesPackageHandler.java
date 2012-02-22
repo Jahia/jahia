@@ -53,6 +53,7 @@ import org.apache.commons.io.IOCase;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,7 +165,7 @@ final class JahiaTemplatesPackageHandler {
             if (new File(file, "resources/" + rbName + ".properties").exists()) {
                 templatePackage.setResourceBundleName("resources." + rbName);
             } else {
-                rbName = templatePackage.getName().replace(" ", "");
+                rbName = Patterns.SPACE.matcher(templatePackage.getName()).replaceAll("");
                 if (new File(file, "resources/" + rbName + ".properties")
                         .exists()) {
                     templatePackage
@@ -226,7 +227,7 @@ final class JahiaTemplatesPackageHandler {
 
                 String depends = (String) manifest.getMainAttributes().get(new Attributes.Name("depends"));
                 if (depends != null) {
-                    String[] dependencies = depends.split(",");
+                    String[] dependencies = Patterns.COMMA.split(depends);
                     for (String dependency : dependencies) {
                         templatePackage.setDepends(dependency.trim());
                     }
@@ -234,7 +235,7 @@ final class JahiaTemplatesPackageHandler {
 
                 String definitions = (String) manifest.getMainAttributes().get(new Attributes.Name("definitions"));
                 if (definitions != null) {
-                    String[] defs = definitions.split(",");
+                    String[] defs = Patterns.COMMA.split(definitions);
                     for (String defFile : defs) {
                         templatePackage.getDefinitionsFiles().add(defFile.trim());
                     }
@@ -242,7 +243,7 @@ final class JahiaTemplatesPackageHandler {
 
                 String imports = (String) manifest.getMainAttributes().get(new Attributes.Name("initial-imports"));
                 if (imports != null) {
-                    String[] importFiles = imports.split(",");
+                    String[] importFiles = Patterns.COMMA.split(imports);
                     for (String imp : importFiles) {
                         templatePackage.addInitialImport(imp.trim());
                     }

@@ -54,7 +54,7 @@ import org.jahia.services.templates.TemplatePackageApplicationContextLoader.Cont
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerProvider;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.springframework.context.ApplicationEvent;
+import org.jahia.utils.Patterns;
 import org.springframework.context.ApplicationListener;
 import org.springframework.web.context.ServletContextAware;
 
@@ -128,9 +128,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
                 public JCRUser doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
-                    String jcrUsernamePath[] = StringUtils.substringAfter(
+                    String jcrUsernamePath[] = Patterns.SLASH.split(StringUtils.substringAfter(
                             ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(
-                                    name), "/").split("/");
+                                    name), "/"));
                     JCRNodeWrapper startNode = jcrSessionWrapper.getNode("/" + jcrUsernamePath[0]);
                     Node usersFolderNode = startNode;
                     int length = jcrUsernamePath.length;
@@ -497,17 +497,17 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                                             propertyValue = "%";
                                         } else {
                                             if (propertyValue.contains("*")) {
-                                                propertyValue = propertyValue.replaceAll("\\*", "%");
+                                                propertyValue = Patterns.STAR.matcher(propertyValue).replaceAll("%");
                                             } else {
                                                 propertyValue = propertyValue + "%";
                                             }
                                         }
                                         if ("*".equals(propertyKey)) {
-                                            query.append("(CONTAINS(u.*,'" + propertyValue.replaceAll("%", "")
+                                            query.append("(CONTAINS(u.*,'" + Patterns.PERCENT.matcher(propertyValue).replaceAll("")
                                                     + "') OR LOWER(u.[j:nodename]) LIKE '")
                                                     .append(propertyValue.toLowerCase()).append("') ");
                                         } else {
-                                            query.append("LOWER(u.[" + propertyKey.replaceAll("\\.", "\\\\.") + "])").append(
+                                            query.append("LOWER(u.[" + Patterns.DOT.matcher(propertyKey).replaceAll("\\\\.") + "])").append(
                                                     " LIKE '").append(propertyValue.toLowerCase()).append("'");
                                         }
                                         if (objectIterator.hasNext()) {

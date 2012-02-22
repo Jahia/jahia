@@ -45,6 +45,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
 
@@ -77,7 +78,7 @@ public class ScriptChoiceListInitializerImpl implements ChoiceListInitializer {
                                                      List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
         if (param != null) {
-            final String extension = param.split("\\.")[1];
+            final String extension = Patterns.DOT.split(param)[1];
             ScriptEngine byName;
             try {
                 byName = scriptEngineUtils.scriptEngine(extension);

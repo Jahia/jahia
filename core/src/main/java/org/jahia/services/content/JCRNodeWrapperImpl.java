@@ -87,6 +87,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Wrappers around <code>javax.jcr.Node</code> to be able to inject
@@ -110,6 +111,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     private static final String SHARED_REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME = "j:sharedRefNodeIdentifiers";
     private static final String SHARED_REFERENCE_PROPERTY_NAMES_PROPERTYNAME = "j:sharedRefPropertyNames";
     public static final String EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR = "___";
+    public static final Pattern EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR_PATTERN = Pattern.compile(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
     
     private Map<String, ExtendedPropertyDefinition> applicablePropertyDefinition = new HashMap<String, ExtendedPropertyDefinition>();
     private Map<String, Boolean> hasPropertyCache = new HashMap<String, Boolean>();
@@ -1356,8 +1358,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             Value[] propertyReferences = referenceProperty.getValues();
             for (Value propertyReference : propertyReferences) {
                 String curPropertyReference = propertyReference.getString();
-                String[] refParts = curPropertyReference
-                        .split(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
+                String[] refParts = EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR_PATTERN.split(curPropertyReference);
                 String curPropertyName = refParts[1];
                 result.add(curPropertyName);
             }
@@ -1377,8 +1378,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             Value[] propertyReferences = referenceProperty.getValues();
             for (Value propertyReference : propertyReferences) {
                 String curPropertyReference = propertyReference.getString();
-                String[] refParts = curPropertyReference
-                        .split(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
+                String[] refParts = EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR_PATTERN.split(curPropertyReference);
                 String curPropertyName = refParts[1];
                 result.add(curPropertyName);
             }
@@ -1408,8 +1408,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         List<String> foundNodeIdentifiers = new ArrayList<String>();
         for (Value propertyReference : propertyReferences) {
             String curPropertyReference = propertyReference.getString();
-            String[] refParts = curPropertyReference
-                    .split(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
+            String[] refParts = EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR_PATTERN.split(curPropertyReference);
             String curNodeIdentifier = refParts[0];
             String curPropertyName = refParts[1];
             if (curPropertyName.equals(name)) {
@@ -2007,7 +2006,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         Value[] referencePropNames = referenceProperty.getValues();
         for (Value referencePropName : referencePropNames) {
-            String[] referencePropNameParts = referencePropName.getString().split(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
+            String[] referencePropNameParts = EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR_PATTERN.split(referencePropName.getString());
             if (referencePropNameParts[1].equals(name)) {
                 return referencePropNameParts[0];
             }
@@ -3529,7 +3528,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             String foundPropertyName = null;
             for (Value propertyReference : propertyReferences) {
                 String curPropertyReference = propertyReference.getString();
-                String[] refParts = curPropertyReference.split(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
+                String[] refParts = EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR_PATTERN.split(curPropertyReference);
                 String curNodeIdentifier = refParts[0];
                 String curPropertyName = refParts[1];
                 if (curNodeIdentifier.equals(getIdentifier())) {
@@ -3566,7 +3565,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             String foundPropertyName = null;
             for (Value propertyReference : propertyReferences) {
                 String curPropertyReference = propertyReference.getString();
-                String[] refParts = curPropertyReference.split(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
+                String[] refParts = EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR_PATTERN.split(curPropertyReference);
                 String curNodeIdentifier = refParts[0];
                 String curPropertyName = refParts[1];
                 if (curNodeIdentifier.equals(getIdentifier())) {

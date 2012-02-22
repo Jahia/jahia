@@ -41,6 +41,7 @@
 package org.jahia.services.render;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.Patterns;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class Template implements Serializable {
     }
 
     public Template(String serialized) {
-        String[] s = StringUtils.substringBefore(serialized, "|").split("/");
+        String[] s = Patterns.SLASH.split(StringUtils.substringBefore(serialized, "|"));
         this.view = s[0].equals("null") ? null : s[0];
         this.node = s[1];
         String n = StringUtils.substringAfter(serialized, "|");

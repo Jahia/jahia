@@ -44,6 +44,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.utils.Patterns;
 
 /**
  * 
@@ -85,7 +86,7 @@ public class Name {
             }
         }
         if (localName == null) {
-            String s[] = JCRContentUtils.COLON_PATTERN.split(qualifiedName);
+            String s[] = Patterns.COLON.split(qualifiedName);
             if (s.length == 2) {
                 prefix = s[0];
                 localName = s[1];

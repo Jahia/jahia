@@ -51,6 +51,7 @@ import org.jahia.services.render.RenderException;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
+import org.jahia.utils.Patterns;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -165,7 +166,7 @@ public class FindPrincipal extends BaseFindController {
         Set<String> criteriasToInclude = new HashSet<String>();
         if (includeCriteriaNames != null) {
             if (includeCriteriaNames.indexOf(",") >= 0) {
-                String[] criteriaNamesArray = includeCriteriaNames.split(",");
+                String[] criteriaNamesArray = Patterns.COMMA.split(includeCriteriaNames);
                 List<String> criteriaNamesList = Arrays.asList(criteriaNamesArray);
                 criteriasToInclude.addAll(criteriaNamesList);
             } else {

@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import net.htmlparser.jericho.Attribute;
 import net.htmlparser.jericho.Element;
@@ -74,6 +75,8 @@ import org.w3c.dom.DOMException;
 public class WAIValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(WAIValidator.class);
+    
+    private static final Pattern PATTERN = Pattern.compile("\\s+");
 
     private boolean isDataTable = true;
     private int formLevel;
@@ -652,7 +655,7 @@ public class WAIValidator {
 
             } else {
                 final String value = header.getValue();
-                for (String token : value.split("\\s+")) {
+                for (String token : PATTERN.split(value)) {
                     headers.add(token);
                 }
             }

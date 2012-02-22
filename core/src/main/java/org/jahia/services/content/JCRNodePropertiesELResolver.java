@@ -41,6 +41,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 
 import javax.el.ELContext;
@@ -72,8 +73,7 @@ public class JCRNodePropertiesELResolver extends ELResolver {
                 try {
                     nodeWrapper.getClass().getMethod("get" + StringUtils.capitalize(property.toString()));
                 } catch (NoSuchMethodException e) {
-                    final JCRPropertyWrapper jcrPropertyWrapper = nodeWrapper.getProperty(property.toString().replace(
-                            "_", ":"));
+                    final JCRPropertyWrapper jcrPropertyWrapper = nodeWrapper.getProperty(Patterns.UNDERSCORE.matcher(property.toString()).replaceAll(":"));
                     if (jcrPropertyWrapper != null) {
                         elContext.setPropertyResolved(true);
                         return jcrPropertyWrapper;
@@ -96,7 +96,7 @@ public class JCRNodePropertiesELResolver extends ELResolver {
                 try {
                     nodeWrapper.getClass().getMethod("get" + StringUtils.capitalize(property.toString()));
                 } catch (NoSuchMethodException e) {
-                    if (nodeWrapper.getProperty(property.toString().replace("_", ":")) != null) {
+                    if (nodeWrapper.getProperty(Patterns.UNDERSCORE.matcher(property.toString()).replaceAll(":")) != null) {
                         elContext.setPropertyResolved(true);
                         return JCRPropertyWrapper.class;
                     }

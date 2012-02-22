@@ -43,6 +43,7 @@ package org.jahia.services.content.nodetypes;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -133,9 +134,9 @@ public class ConstraintsHelper {
         if (StringUtils.isEmpty(nodeTypes)) {
             nodeTypesArray = new String[]{"nt:base"};
         } else {
-            nodeTypesArray = nodeTypes.split(" ");
+            nodeTypesArray = Patterns.SPACE.split(nodeTypes);
         }
-        final String[] constraintsArray = constraints.split(" ");
+        final String[] constraintsArray = Patterns.SPACE.split(constraints);
         for (ExtendedNodeType ref : refs) {
             if (ref.getPropertyDefinitionsAsMap().get("j:node") != null) {
                 for (String s : constraintsArray) {

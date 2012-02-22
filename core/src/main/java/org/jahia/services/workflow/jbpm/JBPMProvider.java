@@ -40,7 +40,6 @@
 
 package org.jahia.services.workflow.jbpm;
 
-import com.ctc.wstx.evt.WDTD;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
@@ -51,6 +50,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
 import org.jahia.utils.FileUtils;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jbpm.api.*;
 import org.jbpm.api.activity.ActivityBehaviour;
@@ -75,7 +75,6 @@ import org.jbpm.pvm.internal.model.EventImpl;
 import org.jbpm.pvm.internal.model.EventListenerReference;
 import org.jbpm.pvm.internal.svc.HistoryServiceImpl;
 import org.jbpm.pvm.internal.task.TaskDefinitionImpl;
-import org.jbpm.pvm.internal.task.TaskImpl;
 import org.jbpm.pvm.internal.wire.usercode.UserCodeActivityBehaviour;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
@@ -907,15 +906,15 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 resourceBundle = getResourceBundle(locale, def.getKey());
                 try {
                     task.setDisplayName(
-                            resourceBundle.getString(task.getName().replaceAll(" ", ".").trim().toLowerCase()));
+                            resourceBundle.getString(Patterns.SPACE.matcher(task.getName()).replaceAll(".").trim().toLowerCase()));
                 } catch (Exception e) {
                     task.setDisplayName(task.getName());
                 }
             }
             String outcome = task.getOutcome();
             if (outcome != null) {
-                String key = task.getName().replaceAll(" ", ".").trim().toLowerCase() + "." +
-                        outcome.replaceAll(" ", ".").trim().toLowerCase();
+                String key = Patterns.SPACE.matcher(task.getName()).replaceAll(".").trim().toLowerCase() + "." +
+                        Patterns.SPACE.matcher(outcome).replaceAll(".").trim().toLowerCase();
                 if (locale != null) {
                     String displayOutcome;
                     try {
@@ -940,7 +939,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     private ResourceBundle getResourceBundle(Locale locale, final String definitionKey) {
         try {
             return JahiaResourceBundle
-                    .lookupBundle(WorkflowService.class.getPackage().getName() + "." + definitionKey.replaceAll(" ", ""),
+                    .lookupBundle(WorkflowService.class.getPackage().getName() + "." + Patterns.SPACE.matcher(definitionKey).replaceAll(""),
                             locale);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -955,8 +954,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             resourceBundle = getResourceBundle(displayLocale, definitionKey);
         }
         if (resourceBundle != null) {
-            String key = workflowAction.getName().replaceAll(" ",
-                    ".").trim().toLowerCase();
+            String key = Patterns.SPACE.matcher(workflowAction.getName()).replaceAll(".").trim().toLowerCase();
             try {
                 rbActionName = resourceBundle.getString(key);
             } catch (MissingResourceException e) {
@@ -970,8 +968,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             List<String> displayOutcomes = new LinkedList<String>();
             List<String> outcomeIcons = new LinkedList<String>();
             for (String outcome : outcomes) {
-                String key = workflowAction.getName().replaceAll(" ", ".").trim().toLowerCase() + "." +
-                        outcome.replaceAll(" ", ".").trim().toLowerCase();
+                String key = Patterns.SPACE.matcher(workflowAction.getName()).replaceAll(".").trim().toLowerCase() + "." +
+                        Patterns.SPACE.matcher(outcome).replaceAll(".").trim().toLowerCase();
                 String s = outcome;
                 if (resourceBundle != null) {
                     try {

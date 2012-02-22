@@ -78,6 +78,7 @@ import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.utils.zip.ZipEntry;
 import org.jahia.utils.zip.ZipOutputStream;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
@@ -435,7 +436,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         OutputStream tmpOut = outputStream;
         if (xsl != null) {
-            String filename = rootNode.getName().replace(" ", "_");
+            String filename = Patterns.SPACE.matcher(rootNode.getName()).replaceAll("_");
             File tempFile = File.createTempFile("exportTemplates-" + filename, "xml");
             tmpOut = new DeferredFileOutputStream(1024 * 1024 * 10, tempFile);
         }

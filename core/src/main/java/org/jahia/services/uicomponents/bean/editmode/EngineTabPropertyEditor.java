@@ -43,6 +43,7 @@ package org.jahia.services.uicomponents.bean.editmode;
 import java.beans.PropertyEditorSupport;
 
 import org.jahia.services.uicomponents.bean.Visibility;
+import org.jahia.utils.Patterns;
 
 /**
  * Engine tab specific property editor.
@@ -54,7 +55,7 @@ public class EngineTabPropertyEditor  extends PropertyEditorSupport {
 
     public void setAsText(String text) throws IllegalArgumentException {
         EngineTab c = new EngineTab();
-        String[] values = text.split(",");
+        String[] values = Patterns.COMMA.split(text);
         c.setId(values[0]);
         if (values.length > 1) {
             Visibility v = new Visibility();

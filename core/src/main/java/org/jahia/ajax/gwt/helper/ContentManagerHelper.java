@@ -77,6 +77,7 @@ import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -1228,7 +1229,7 @@ public class ContentManagerHelper {
         File[] files = dir.listFiles();
         for (File file : files) {
             if (file.isFile()) {
-                ZipEntry ze = new ZipEntry(file.getPath().substring(rootDir.getPath().length() + 1).replace("\\", "/"));
+                ZipEntry ze = new ZipEntry(Patterns.BACKSLASH.matcher(file.getPath().substring(rootDir.getPath().length() + 1)).replaceAll("/"));
                 zos.putNextEntry(ze);
                 final InputStream input = new BufferedInputStream(new FileInputStream(file));
                 try {
@@ -1239,7 +1240,7 @@ public class ContentManagerHelper {
             }
 
             if (file.isDirectory()) {
-                ZipEntry ze = new ZipEntry(file.getPath().substring(rootDir.getPath().length() + 1).replace("\\", "/") + "/");
+                ZipEntry ze = new ZipEntry(Patterns.BACKSLASH.matcher(file.getPath().substring(rootDir.getPath().length() + 1)).replaceAll("/") + "/");
                 zos.putNextEntry(ze);
                 zip(file, rootDir, zos);
             }

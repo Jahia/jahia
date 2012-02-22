@@ -69,6 +69,7 @@ import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -171,7 +172,7 @@ public class ComponentRegistry {
             }
         }
 
-        String[] constraints = ConstraintsHelper.getConstraints(node).split(" ");
+        String[] constraints = Patterns.SPACE.split(ConstraintsHelper.getConstraints(node));
         Set<ExtendedNodeType> finaltypes = new HashSet<ExtendedNodeType>();
         for (ExtendedNodeType type : typeComponentMap.keySet()) {
             for (String s : constraints) {

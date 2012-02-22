@@ -85,8 +85,9 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
     private String dmsContext;
     private String cmsContext;
 
-    private static String DOC_CONTEXT_PLACEHOLDER = "##doc-context##/";
-    private static String CMS_CONTEXT_PLACEHOLDER = "##cms-context##/";
+    private static final String DOC_CONTEXT_PLACEHOLDER = "##doc-context##/";
+    private static final String CMS_CONTEXT_PLACEHOLDER = "##cms-context##/";
+    private static final Pattern CMS_CONTEXT_PLACEHOLDER_PATTERN = Pattern.compile(CMS_CONTEXT_PLACEHOLDER, Pattern.LITERAL);
 
     private Pattern cmsPattern;
     private Pattern cmsPatternWithContextPlaceholder;
@@ -505,7 +506,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                     }
                     value = originalValue.replace(path, nodePath + ext);
                     if (isCmsContext) {
-                        value = value.replace(CMS_CONTEXT_PLACEHOLDER, cmsContext);
+                        value = CMS_CONTEXT_PLACEHOLDER_PATTERN.matcher(value).replaceAll(cmsContext);
                         value = value.replace("/"+session.getWorkspace().getName(),"/"+workspaceName);
                     } else {
                         StringBuilder builder = new StringBuilder(dmsContext);

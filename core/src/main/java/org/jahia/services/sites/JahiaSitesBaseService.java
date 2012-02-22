@@ -70,6 +70,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Jahia Multi Sites Management Service
@@ -79,6 +80,8 @@ import java.util.*;
 public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAfterInitializationService {
     private static Logger logger = LoggerFactory.getLogger(JahiaSitesBaseService.class);
 
+    private static final Pattern JCR_KEY_PATTERN = Pattern.compile("{jcr}", Pattern.LITERAL);
+    
     protected static JahiaSitesBaseService instance = null;
 
     public static final String SITE_CACHE_BYID = "JahiaSiteByIDCache";
@@ -680,7 +683,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     public synchronized void removeSite(final JahiaSite site) throws JahiaException {
         List<String> groups = groupService.getGroupList(site.getID());
         for (String group : groups) {
-            groupService.deleteGroup(groupService.lookupGroup(group.replace("{jcr}", "")));
+            groupService.deleteGroup(groupService.lookupGroup(JCR_KEY_PATTERN.matcher(group).replaceAll("")));
         }
         try {
             JCRCallback<Boolean> deleteCallback = new JCRCallback<Boolean>() {

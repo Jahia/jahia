@@ -40,6 +40,8 @@
 
 package org.jahia.bin;
 
+import java.util.regex.Pattern;
+
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -51,6 +53,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +65,7 @@ import org.slf4j.LoggerFactory;
 public final class JahiaControllerUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(JahiaControllerUtils.class);
-
+    
     public static void checkUserAuthorized(JahiaUser user, String permissions)
             throws JahiaForbiddenAccessException {
         checkUserAuthorized(null, user, permissions);
@@ -153,7 +156,7 @@ public final class JahiaControllerUtils {
                         + "'");
             }
             boolean andOperator = permissions.contains("+");
-            String[] parsedPermissions = permissions.split(andOperator ? "\\+" : "\\|");
+            String[] parsedPermissions = andOperator ? Patterns.PLUS.split(permissions) : Patterns.PIPE.split(permissions);
             hasPermission = andOperator;
             for (String perm : parsedPermissions) {
                 hasPermission = node.hasPermission(perm.trim());

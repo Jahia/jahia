@@ -58,6 +58,7 @@ import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.utils.Patterns;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -100,7 +101,7 @@ public class FindUser extends BaseFindController {
         checkUserAuthorized();
 
         String queryTerm = getParameter(request, "q");
-        if (queryTerm.length() < 1 || queryTerm.replace("*", "").trim().length() < 1) {
+        if (queryTerm.length() < 1 || Patterns.STAR.matcher(queryTerm).replaceAll("").trim().length() < 1) {
             throw new JahiaBadRequestException("Please specify more exact term for user search");
         }
         Properties searchCriterias = buildSearchCriteria(queryTerm);

@@ -47,6 +47,7 @@ import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -112,7 +113,7 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
                             map = definition.getSelectorOptions();
                         } else {
                             map = new LinkedHashMap<String, String>();
-                            String[] strings = initializers.split(",");
+                            String[] strings = Patterns.COMMA.split(initializers);
                             for (String string : strings) {
                                 map.put(string, "");
                             }

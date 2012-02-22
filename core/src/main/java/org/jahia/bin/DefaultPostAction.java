@@ -49,6 +49,7 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.tools.files.FileUpload;
+import org.jahia.utils.Patterns;
 import org.json.JSONObject;
 
 import javax.jcr.PathNotFoundException;
@@ -88,7 +89,7 @@ public class DefaultPostAction extends Action {
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   final JCRSessionWrapper session, final Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRNodeWrapper newNode = null;
-        String[] subPaths = urlResolver.getPath().split("/");
+        String[] subPaths = Patterns.SLASH.split(urlResolver.getPath());
         String lastPath = subPaths[subPaths.length - 1];
         JCRNodeWrapper node = null;
         StringBuilder realPath = new StringBuilder();

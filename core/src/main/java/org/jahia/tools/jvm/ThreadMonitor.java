@@ -57,6 +57,7 @@ import org.apache.commons.lang.time.FastDateFormat;
 import org.jahia.bin.errors.ErrorFileDumper;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.Patterns;
 
 import java.io.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -505,18 +506,18 @@ public class ThreadMonitor {
             sb.append(" (running in native)");
         }
         sb.append(" []\n"
-                + ti.getThreadState().getClass().getName().replace("$", ".")
+                + Patterns.DOLLAR.matcher(ti.getThreadState().getClass().getName()).replaceAll(".")
                 + ": " + ti.getThreadState());
         if (ti.getLockName() != null
                 && ti.getThreadState() != Thread.State.BLOCKED) {
-            String[] lockInfo = ti.getLockName().split("@");
+            String[] lockInfo = Patterns.AT.split(ti.getLockName());
             sb.append("\n" + INDENT + "- waiting on <0x" + lockInfo[1]
                     + "> (a " + lockInfo[0] + ")");
             sb.append("\n" + INDENT + "- locked <0x" + lockInfo[1] + "> (a "
                     + lockInfo[0] + ")");
         } else if (ti.getLockName() != null
                 && ti.getThreadState() == Thread.State.BLOCKED) {
-            String[] lockInfo = ti.getLockName().split("@");
+            String[] lockInfo = Patterns.AT.split(ti.getLockName());
             sb.append("\n" + INDENT + "- waiting to lock <0x" + lockInfo[1]
                     + "> (a " + lockInfo[0] + ")");
         }

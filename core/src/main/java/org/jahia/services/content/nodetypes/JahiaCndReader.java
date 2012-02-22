@@ -43,6 +43,7 @@ package org.jahia.services.content.nodetypes;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.PropertyType;
 import javax.jcr.Value;
@@ -697,7 +698,7 @@ public class JahiaCndReader {
         }
         nextToken();
 
-        String[] ops = currentToken.split(",");
+        String[] ops = Patterns.COMMA.split(currentToken);
         List<String> queryOps = new LinkedList<String>();
         for (String op : ops) {
             String s = op.trim();
@@ -928,7 +929,7 @@ public class JahiaCndReader {
                 nextToken();
             }
             if (key.equals("addListMixin") || key.equals("addMixin") || key.equals("availableTypes")) {
-                for (String s : value.split(",")) {
+                for (String s : Patterns.COMMA.split(value)) {
                     try {
                         registry.getNodeType(s);
                     } catch (NoSuchNodeTypeException e) {

@@ -58,6 +58,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.utils.ArrayUtils;
+import org.jahia.utils.Patterns;
 
 /**
  * JCR content tagging service.
@@ -251,7 +252,7 @@ public class TaggingService {
 
         boolean applied = false;
         boolean doSessionCommit = false;
-        String[] tags = tag.split(",");
+        String[] tags = Patterns.COMMA.split(tag);
         JCRNodeWrapper node = session.getNode(nodePath);
         for (String t : tags) {
             t = t.trim();

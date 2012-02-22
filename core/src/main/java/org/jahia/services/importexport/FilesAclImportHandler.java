@@ -40,8 +40,8 @@
 
 package org.jahia.services.importexport;
 
-import org.jahia.api.Constants;
 import org.jahia.services.content.JCRObservationManager;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.zip.ZipEntry;
 import org.slf4j.Logger;
 import org.apache.commons.lang.StringUtils;
@@ -54,15 +54,12 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.SelectorType;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.jcr.*;
-import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.query.Query;
 
 import java.io.BufferedInputStream;
@@ -83,7 +80,7 @@ import java.util.regex.Pattern;
  */
 public class FilesAclImportHandler extends DefaultHandler {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(FilesAclImportHandler.class);
-
+    
     private File archive;
     private NoCloseZipInputStream zis;
     private ZipEntry nextEntry;
@@ -132,7 +129,7 @@ public class FilesAclImportHandler extends DefaultHandler {
                 }
                 JCRNodeWrapper f;
                 path = JCRContentUtils.escapeNodePath(path);
-                path = path.replace(":","_");
+                path = Patterns.COLON.matcher(path).replaceAll("_");
 
                 String parentPath = StringUtils.substringBeforeLast(path, "/");
                 try {
@@ -283,7 +280,7 @@ public class FilesAclImportHandler extends DefaultHandler {
                 default:
                     switch (propertyDefinition.getSelector()) {
                         case SelectorType.CATEGORY: {
-                            String[] cats = value.split(",");
+                            String[] cats = Patterns.COMMA.split(value);
                             List<Value> values = new ArrayList<Value>();
                             for (int i = 0; i < cats.length; i++) {
                                 String cat = cats[i];
@@ -322,7 +319,7 @@ public class FilesAclImportHandler extends DefaultHandler {
                                     }
                                 }
                             } else {
-                                String[] strings = value.split("\\$\\$\\$");
+                                String[] strings = Patterns.TRIPPLE_DOLLAR.split(value);
                                 List<Value> values = new ArrayList<Value>();
                                 for (int i = 0; i < strings.length; i++) {
                                     String string = strings[i];

@@ -42,6 +42,7 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
 import org.drools.spi.KnowledgeHelper;
@@ -208,10 +209,10 @@ public class RulesNotificationService {
         bindings.put("currentUser", user);
         InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(template);
         if (scriptInputStream != null) {
-            String resourceBundleName = StringUtils.substringBeforeLast(StringUtils.substringAfter(template.replaceAll("/WEB-INF",""),
-                                                                                                   "/").replaceAll("/",
-                                                                                                                   "."),
-                                                                        ".");
+            String resourceBundleName = StringUtils.substringBeforeLast(
+                    Patterns.SLASH.matcher(
+                            StringUtils.substringAfter(Patterns.WEB_INF.matcher(template)
+                                    .replaceAll(""), "/")).replaceAll("."), ".");
             String subject = "";
             try {
                 ResourceBundle resourceBundle = JahiaResourceBundle.lookupBundle(resourceBundleName, locale);

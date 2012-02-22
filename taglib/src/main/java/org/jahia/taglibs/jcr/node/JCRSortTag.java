@@ -43,6 +43,7 @@ package org.jahia.taglibs.jcr.node;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.Property;
 import javax.jcr.PropertyType;
@@ -95,7 +96,7 @@ public class JCRSortTag extends AbstractJCRTag {
     public int doEndTag() throws JspException {
         List<JCRNodeWrapper> res = new ArrayList<JCRNodeWrapper>(list);
 
-        String[] props = properties.split(",");
+        String[] props = Patterns.COMMA.split(properties);
         Collections.sort(res,new NodeComparator(props));
 
         pageContext.setAttribute(var, res, scope);
@@ -121,7 +122,7 @@ public class JCRSortTag extends AbstractJCRTag {
                     prop = prop.trim();
                     if (prop.length()>0) {
                         if(prop.contains(";")) {
-                            String[] split = prop.split(";");
+                            String[] split = Patterns.SEMICOLON.split(prop);
                             prop = split[0];
                             referenceProp = split[1];
                         }

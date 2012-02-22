@@ -56,6 +56,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -336,7 +337,7 @@ public class JahiaResourceBundle extends ResourceBundle {
     public String getFormatted(String key, String defaultValue, Object... arguments) {
     	String text = get(key, defaultValue);
     	if (text != null) {
-    		text = text.replace("'", "''");
+    		text = Patterns.SINGLE_QUOTE.matcher(text).replaceAll("''");
     	}
         String value = MessageFormat.format(text, arguments);
 

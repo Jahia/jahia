@@ -70,6 +70,7 @@ import javax.mail.internet.MimeMultipart;
 import javax.script.*;
 import java.io.StringWriter;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * @author : rincevent
@@ -79,6 +80,7 @@ import java.util.*;
 public class JBPMMailProducer extends MailProducerImpl {
     private static final long serialVersionUID = -5084848266010688683L;
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMMailProducer.class);
+    private static final Pattern ACTORS_PATTERN = Pattern.compile("[,;\\s]+");
     ScriptEngine scriptEngine;
     private Bindings bindings;
 
@@ -250,7 +252,7 @@ public class JBPMMailProducer extends MailProducerImpl {
     }
 
     private String[] tokenizeActors(String recipients, Execution execution, JCRSessionWrapper session) throws RepositoryException, ScriptException{
-        String[] actors = evaluateExpression(execution, recipients, session).split("[,;\\s]+");
+        String[] actors = ACTORS_PATTERN.split(evaluateExpression(execution, recipients, session));
         if (actors.length == 0) throw new JbpmException("recipient list is empty: " + recipients);
         return actors;
     }

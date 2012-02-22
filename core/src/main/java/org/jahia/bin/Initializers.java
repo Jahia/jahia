@@ -59,6 +59,7 @@ import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -148,7 +149,7 @@ public class Initializers extends JahiaController {
         Map<String, String> map = new LinkedHashMap<String, String>();
         String initializersString = request.getParameter("initializers");
         if (initializersString != null) {
-            String[] strings = initializersString.split(",");
+            String[] strings = Patterns.COMMA.split(initializersString);
             for (String string : strings) {
                 map.put(string, "");
             }

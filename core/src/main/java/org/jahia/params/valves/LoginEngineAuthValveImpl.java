@@ -43,6 +43,7 @@ package org.jahia.params.valves;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.jahia.bin.Login;
 import org.jahia.params.ProcessingContext;
@@ -243,7 +244,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
         if ((preserveSessionAttributes != null) &&
             (httpServletRequest.getSession(false) != null) &&
                 (preserveSessionAttributes.length() > 0)) {
-            String[] sessionAttributeNames = preserveSessionAttributes.split("###");
+            String[] sessionAttributeNames = Patterns.TRIPLE_HASH.split(preserveSessionAttributes);
             HttpSession session = httpServletRequest.getSession(false);
             for (String sessionAttributeName : sessionAttributeNames) {
                 Object attributeValue = session.getAttribute(sessionAttributeName);

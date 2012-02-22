@@ -59,6 +59,7 @@ import org.jahia.services.importexport.DefinitionsMapping.AddMixin;
 import org.jahia.services.importexport.DefinitionsMapping.AddNode;
 import org.jahia.services.importexport.DefinitionsMapping.SetProperties;
 import org.jahia.services.textextraction.TextExtractionService;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -976,7 +977,7 @@ public class LegacyImportHandler extends DefaultHandler {
                 case PropertyType.REFERENCE:
                 case PropertyType.WEAKREFERENCE:
                     if (propertyDefinition.isMultiple()) {
-                        String[] strings = value.split("\\$\\$\\$");
+                        String[] strings = Patterns.TRIPPLE_DOLLAR.split(value);
                         List<Value> values = new ArrayList<Value>();
                         for (String s : strings) {
                             createReferenceValue(s, propertyDefinition.getSelector(), n, propertyName);
@@ -1073,7 +1074,7 @@ public class LegacyImportHandler extends DefaultHandler {
                                     logger.error("Impossible to set property " + propertyName + " due to some constraint error");
                                 }
                             } else {
-                                String[] strings = value.split("\\$\\$\\$");
+                                String[] strings = Patterns.TRIPPLE_DOLLAR.split(value);
                                 List<Value> values = new ArrayList<Value>();
                                 for (int i = 0; i < strings.length; i++) {
                                     String string = strings[i];

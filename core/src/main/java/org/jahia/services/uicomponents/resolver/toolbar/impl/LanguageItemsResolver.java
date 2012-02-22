@@ -46,6 +46,7 @@ import org.jahia.services.uicomponents.bean.toolbar.Item;
 import org.jahia.services.uicomponents.bean.toolbar.Selected;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
 
 import java.util.*;
 
@@ -112,7 +113,7 @@ public class LanguageItemsResolver extends DefaultItemsResolver {
         if(langCode == null){
             return "";
         }
-        langCode = langCode.replace("-","_"); 
+        langCode = Patterns.DASH.matcher(langCode).replaceAll("_"); 
         Locale currentLocale = LanguageCodeConverters.getLocaleFromCode(langCode);
         return currentLocale.getDisplayName(currentLocale);
 

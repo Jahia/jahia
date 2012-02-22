@@ -42,6 +42,7 @@ package org.jahia.services.content.nodetypes;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.IOUtils;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 
 import javax.jcr.nodetype.*;
@@ -95,7 +96,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
                 File f = new File(cnddir);
                 SortedSet<File> cndfiles = new TreeSet<File>(Arrays.asList(f.listFiles()));
                 for (File file : cndfiles) {
-                    addDefinitionsFile(file, SYSTEM + "-" + file.getName().split("-")[1]);
+                    addDefinitionsFile(file, SYSTEM + "-" + Patterns.DASH.split(file.getName())[1]);
                 }
             } catch (ParseException e) {
                 logger.error(e.getMessage(), e);

@@ -58,6 +58,7 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -345,7 +346,7 @@ public class JCRTagUtils {
 
     public static String getConstraints(JCRNodeWrapper node) {
         try {
-            return ConstraintsHelper.getConstraints(node).replace(" ", ",");
+            return Patterns.SPACE.matcher(ConstraintsHelper.getConstraints(node)).replaceAll(",");
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             return "";
@@ -417,7 +418,7 @@ public class JCRTagUtils {
             }
         }
         
-        String[] constraints = ConstraintsHelper.getConstraints(node).split(" ");
+        String[] constraints = Patterns.SPACE.split(ConstraintsHelper.getConstraints(node));
         List<ExtendedNodeType> finaltypes = new ArrayList<ExtendedNodeType>();
         for (ExtendedNodeType type : types) {
             for (String s : constraints) {
@@ -442,7 +443,7 @@ public class JCRTagUtils {
 
     private static List<String> getContributeTypesAsString(JCRNodeWrapper node, JCRNodeWrapper areaNode, Value[] typelistValues) throws RepositoryException {
         if ((typelistValues == null || typelistValues.length == 0) && !node.isNodeType("jnt:contentList") && !node.isNodeType("jnt:contentFolder")) {
-            return Arrays.asList(ConstraintsHelper.getConstraints(node).split(" "));
+            return Arrays.asList(Patterns.SPACE.split(ConstraintsHelper.getConstraints(node)));
         }
         if (typelistValues == null && node.hasProperty("j:contributeTypes")) {
             typelistValues = node.getProperty("j:contributeTypes").getValues();

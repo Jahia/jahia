@@ -49,6 +49,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.ReferencesHelper;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -446,7 +447,7 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
         if (property != null) {
             StringBuilder builder = new StringBuilder("/");
             int counter = 0;
-            for (String pathElement : property.getString().split("/")) {
+            for (String pathElement : Patterns.SLASH.split(property.getString())) {
                 builder.append(pathElement);
                 if (counter++ == i) {
                     break;
@@ -474,7 +475,7 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
         Property property = objectNode.getProperty("j:fullpath");
         if (property != null) {
             StringBuilder builder = new StringBuilder("/");
-            for (String pathElement : property.getString().split("/")) {
+            for (String pathElement : Patterns.SLASH.split(property.getString())) {
                 builder.append(pathElement);
                 try {
                     ancestors.add(getSession().getNode(builder.toString()));

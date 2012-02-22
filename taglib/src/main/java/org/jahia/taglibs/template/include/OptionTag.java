@@ -47,6 +47,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.scripting.Script;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -87,7 +88,7 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
                                                                                    PageContext.REQUEST_SCOPE);
             Resource currentResource = (Resource) pageContext.getAttribute("currentResource",
                                                                            PageContext.REQUEST_SCOPE);
-            String[] nodetypes = nodetype.split(",");
+            String[] nodetypes = Patterns.COMMA.split(nodetype);
             if (node.isNodeType(nodetypes[0])) {
                 ExtendedNodeType mixinNodeType = NodeTypeRegistry.getInstance().getNodeType(nodetypes[0]);
                 if (pageContext.getAttribute("optionsAutoRendering", PageContext.REQUEST_SCOPE) == null) {

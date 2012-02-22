@@ -115,6 +115,7 @@ import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Template;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.utils.FileUtils;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -129,7 +130,7 @@ import com.ibm.icu.text.Normalizer;
  */
 public final class JCRContentUtils {
     
-    public static final Pattern COLON_PATTERN = Pattern.compile(":", Pattern.LITERAL);
+    public static final Pattern COLON_PATTERN = Patterns.COLON;
     
     private  static final Map<String, Boolean> iconsPresence = new ConcurrentHashMap<String, Boolean>(512,0.8f,32);
     private static JCRContentUtils instance;
@@ -430,7 +431,7 @@ public final class JCRContentUtils {
                 newChars[j++] = aChar;
             }
         }
-        nodeName = new String(newChars, 0, j).trim().replaceAll(" ", "-").toLowerCase();
+        nodeName = Patterns.SPACE.matcher(new String(newChars, 0, j).trim()).replaceAll("-").toLowerCase();
         if (nodeName.length() > maxLength) {
             nodeName = nodeName.substring(0, maxLength);
             if (nodeName.endsWith("-") && nodeName.length() > 2) {
@@ -484,7 +485,7 @@ public final class JCRContentUtils {
             return null;
         }
         if (type.contains(",")) {
-            String[] typesToCheck = type.split(",");
+            String[] typesToCheck = Patterns.COMMA.split(type);
             List<JCRNodeWrapper> matchingChildren = new LinkedList<JCRNodeWrapper>();
             try {
                 for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {
@@ -1226,7 +1227,7 @@ public final class JCRContentUtils {
         }
         boolean matches = false;
         if (type.contains(",")) {
-            String[] types = type.split(",");
+            String[] types = Patterns.COMMA.split(type);
             for (String matchType : types) {
                 if (node.isNodeType(matchType)) {
                     matches = true;
@@ -1302,7 +1303,7 @@ public final class JCRContentUtils {
     }
 
     public static String replaceColon(String name) {
-        return name != null ? COLON_PATTERN.matcher(name).replaceAll("_") : name;
+        return name != null ? Patterns.COLON.matcher(name).replaceAll("_") : name;
     }
 
 
@@ -1400,7 +1401,7 @@ public final class JCRContentUtils {
      */
     public static String stringToQueryLiteral(String str) {
         // Single quotes needed for jcr:contains()
-        return "'" + str.replaceAll("'", "''") + "'";
+        return "'" + Patterns.SINGLE_QUOTE.matcher(str).replaceAll("''") + "'";
     }
 
     /**

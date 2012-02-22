@@ -66,6 +66,7 @@ import org.jahia.services.usermanager.jcr.JCRGroup;
 import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -183,7 +184,7 @@ public class JCRStoreProvider {
         if (defaultProvider) {
             return 0;
         }
-        return mountPoint.split("/").length - 1;
+        return Patterns.SLASH.split(mountPoint).length - 1;
     }
 
     public void setWebdavPath(String webdavPath) {
@@ -779,7 +780,7 @@ public class JCRStoreProvider {
         String username = jahiaUser.getUsername();
         JCRSessionWrapper session = sessionFactory.getSystemSession(username, null);
         try {
-            String jcrUsernamePath[] = StringUtils.substringAfter(jahiaUser.getLocalPath(), "/").split("/");
+            String jcrUsernamePath[] = Patterns.SLASH.split(StringUtils.substringAfter(jahiaUser.getLocalPath(), "/"));
             try {
                 Node startNode = session.getNode("/" + jcrUsernamePath[0]);
                 Node usersFolderNode = startNode;

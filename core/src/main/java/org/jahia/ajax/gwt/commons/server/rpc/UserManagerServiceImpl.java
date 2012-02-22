@@ -57,6 +57,7 @@ import org.jahia.exceptions.JahiaException;
 
 import java.security.Principal;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * GWT user management service.
@@ -67,6 +68,8 @@ import java.util.*;
 public class UserManagerServiceImpl extends JahiaRemoteService implements UserManagerService {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(UserManagerServiceImpl.class);
+    
+    private static final Pattern NBSP_PATTERN = Pattern.compile("&nbsp;");
     
     private JahiaUserManagerService userManagerService;
     private JahiaGroupManagerService groupManagerService;
@@ -189,7 +192,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
         }
 
         String principalTextOption = pvh.getPrincipalTextOption(p);
-        principalTextOption = principalTextOption.replace("&nbsp;", " ");
+        principalTextOption = NBSP_PATTERN.matcher(principalTextOption).replaceAll(" ");
         return new String[]{principalTextOption, pvh.getPrincipalValueOption(p)};
     }
 

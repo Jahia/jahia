@@ -65,6 +65,7 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.InsertionSortedMap;
+import org.jahia.utils.Patterns;
 import org.xml.sax.SAXException;
 
 import javax.jcr.*;
@@ -380,9 +381,9 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
 
     private static String getCompactName(final String name) {
         String appName = name;
-        appName = appName.replace("-", "");
-        appName = appName.replace("_", "");
-        appName = appName.replace(".", "");
+        appName = Patterns.DASH.matcher(appName).replaceAll("");
+        appName = Patterns.UNDERSCORE.matcher(appName).replaceAll("");
+        appName = Patterns.DOT.matcher(appName).replaceAll("");
         return appName;
     }
 
@@ -429,7 +430,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
             ret = jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     final JCRNodeWrapper parentNode = session.getNode("/portletdefinitions");
-                    final String name = app.getName().replaceAll("/", "___");
+                    final String name = Patterns.SLASH.matcher(app.getName()).replaceAll("___");
                     session.checkout(parentNode);
                     final JCRNodeWrapper wrapper = parentNode.addNode(name, "jnt:portletDefinition");
                     wrapper.setProperty("j:context", app.getContext());
@@ -748,8 +749,8 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                 JCRSessionWrapper session = jcrTemplate.getSessionFactory().getCurrentUserSession();
                 final JCRNodeWrapper parentNode = session.getNode(path);
                 session.checkout(parentNode);
-                final String name = epInstance1.getResKeyName() != null ? epInstance1.getResKeyName() : appBean.getName().replaceAll(
-                        "/", "___") + Math.round(Math.random() * 1000000l);
+                final String name = epInstance1.getResKeyName() != null ? epInstance1.getResKeyName() : Patterns.SLASH.matcher(appBean.getName()).replaceAll(
+                        "___") + Math.round(Math.random() * 1000000l);
                 final JCRPortletNode wrapper = (JCRPortletNode) parentNode.addNode(name, "jnt:portlet");
                 final String scope = epInstance1.getCacheScope();
                 if (scope != null) {

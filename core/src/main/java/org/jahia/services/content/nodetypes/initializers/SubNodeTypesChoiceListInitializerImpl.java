@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeTypeIterator;
@@ -74,14 +75,14 @@ public class SubNodeTypesChoiceListInitializerImpl implements ChoiceListInitiali
             Set<String> excludedTypes = new HashSet<String>();
             String exclusion = StringUtils.substringAfter(param, ";");
             if (StringUtils.isNotBlank(exclusion)) {
-                excludedTypes.addAll(CollectionUtils.collect(Arrays.asList(StringUtils.substringAfter(param, ";").split(",")), new Transformer() {
+                excludedTypes.addAll(CollectionUtils.collect(Arrays.asList(Patterns.COMMA.split(StringUtils.substringAfter(param, ";"))), new Transformer() {
                     public Object transform(Object input) {
                         return ((String) input).trim();
                     }
                 }));
             }
             
-            for (String nodeTypeName : includedTypes.split(",")) {
+            for (String nodeTypeName : Patterns.COMMA.split(includedTypes)) {
                 nodeTypeName = nodeTypeName.trim();
                 ExtendedNodeType nodeType = NodeTypeRegistry.getInstance()
                         .getNodeType(nodeTypeName);

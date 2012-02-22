@@ -109,6 +109,7 @@ import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * GWT server code implementation for the DMS repository services.
@@ -119,6 +120,8 @@ import java.util.*;
 public class JahiaContentManagementServiceImpl extends JahiaRemoteService implements JahiaContentManagementService {
 
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaContentManagementServiceImpl.class);
+    
+    private static final Pattern VERSION_AT_PATTERN = Pattern.compile("_at_");
 
     private NavigationHelper navigation;
     private ContentManagerHelper contentManager;
@@ -950,8 +953,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
         Collections.sort(versions, new Comparator<GWTJahiaNodeVersion>() {
             public int compare(GWTJahiaNodeVersion o1, GWTJahiaNodeVersion o2) {
-                String[] strings1 = o1.getLabel().split("_at_");
-                String[] strings2 = o2.getLabel().split("_at_");
+                String[] strings1 = VERSION_AT_PATTERN.split(o1.getLabel());
+                String[] strings2 = VERSION_AT_PATTERN.split(o2.getLabel());
                 if (strings1.length == 2 && strings2.length == 2) {
                     try {
 

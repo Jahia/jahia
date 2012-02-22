@@ -49,6 +49,7 @@ import org.jahia.services.render.scripting.Script;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
@@ -76,7 +77,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
             }
             if (requirePermissions != null) {
                 chain.pushAttribute(renderContext.getRequest(),"cache.dynamicRolesAcls",Boolean.TRUE);
-                String[] perms = requirePermissions.split(" ");
+                String[] perms = Patterns.SPACE.split(requirePermissions);
                 for (String perm : perms) {
                     if (!node.hasPermission(perm)) {
                         return "";

@@ -108,6 +108,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.regex.Pattern;
 
 
 /**
@@ -128,6 +129,8 @@ import java.util.*;
  * @version 1.0
  */
 public class JahiaAdministration extends HttpServlet {
+    
+    private static final Pattern DOUBLE_SLASH_PATTERN = Pattern.compile("//");
 
     private static final long serialVersionUID = 332486402871252316L;
 
@@ -485,10 +488,10 @@ public class JahiaAdministration extends HttpServlet {
             throws IOException, ServletException {
         if (!response.isCommitted()) {
             request.getRequestDispatcher(Login.getServletPath() + "?redirect="
-                            + URLEncoder.encode((request.getContextPath()+servletPath).replaceAll("//","/"), "UTF-8")).forward(request, response);
+                            + URLEncoder.encode(DOUBLE_SLASH_PATTERN.matcher((request.getContextPath()+servletPath)).replaceAll("/"), "UTF-8")).forward(request, response);
         } else {
             response.sendRedirect(response.encodeRedirectURL(Login.getServletPath() + "?redirect="
-                    + URLEncoder.encode((request.getContextPath()+servletPath).replaceAll("//","/"), "UTF-8")));
+                    + URLEncoder.encode(DOUBLE_SLASH_PATTERN.matcher((request.getContextPath()+servletPath)).replaceAll("/"), "UTF-8")));
         }
     }
 

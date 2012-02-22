@@ -44,6 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.PropertyType;
 import javax.jcr.Value;
@@ -942,7 +943,7 @@ public class JahiaCndReaderLegacy {
                 nextToken();
             }
             if (key.equals("addListMixin") || key.equals("addMixin") || key.equals("availableTypes")) {
-                for (String s : value.split(",")) {
+                for (String s : Patterns.COMMA.split(value)) {
                     try {
                         registry.getNodeType(s);
                     } catch (NoSuchNodeTypeException e) {

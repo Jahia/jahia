@@ -47,6 +47,7 @@ import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer;
 import org.jahia.services.render.RenderContext;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.RepositoryException;
 import java.io.File;
@@ -67,9 +68,9 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
         if (values != null) {
             for (ChoiceListValue value : values) {
                 try {
-                    String flagPath = "/css/images/flags/shadow/flag_" + new Locale("en",
+                    String flagPath = "/css/images/flags/shadow/flag_" + Patterns.SPACE.matcher(new Locale("en",
                                                                                     value.getValue().getString()).getDisplayCountry(
-                            Locale.ENGLISH).toLowerCase().replaceAll(" ", "_") + ".png";
+                            Locale.ENGLISH).toLowerCase()).replaceAll("_") + ".png";
                     File f = new File(JahiaContextLoaderListener.getServletContext().getRealPath(flagPath));
                     if (!f.exists()) {
                         flagPath = "/css/blank.gif";
@@ -97,7 +98,7 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
         final String enDisplayName = new Locale("en", propertyValue.toString())
                 .getDisplayCountry(Locale.ENGLISH);
         String flagPath = "/css/images/flags/shadow/flag_"
-                + enDisplayName.toLowerCase().replaceAll(" ", "_") + ".png";
+                + Patterns.SPACE.matcher(enDisplayName.toLowerCase()).replaceAll("_") + ".png";
         File f = new File(JahiaContextLoaderListener.getServletContext().getRealPath(flagPath));
         if (!f.exists()) {
             flagPath = "/css/blank.gif";
@@ -125,7 +126,7 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
                 .getMainResource().getLocale());
         final String enDisplayName = new Locale("en", value).getDisplayCountry(Locale.ENGLISH);
         String flagPath = "/css/images/flags/shadow/flag_"
-                + enDisplayName.toLowerCase().replaceAll(" ", "_") + ".png";
+                + Patterns.SPACE.matcher(enDisplayName.toLowerCase()).replaceAll("_") + ".png";
         File f = new File(JahiaContextLoaderListener.getServletContext().getRealPath(flagPath));
         if (!f.exists()) {
             flagPath = "/css/blank.gif";

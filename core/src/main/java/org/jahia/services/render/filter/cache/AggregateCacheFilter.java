@@ -66,6 +66,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageR
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEvent;
@@ -102,6 +103,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     private static final Pattern CLEANUP_REGEXP = Pattern.compile(
             "<!-- cache:include src=\\\"(.*)\\\" -->\n|\n<!-- /cache:include -->");
     private static final Pattern QUERYSTRING_REGEXP = Pattern.compile("(.*)(_qs\\[([^\\]]+)\\]_)(.*)");
+    
+    private static final Pattern P_REGEXP = Pattern.compile("_p_");
 
     public static final Set<String> notCacheableFragment = new HashSet<String>(512);
 
@@ -142,7 +145,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 requestParameters = defaultScriptProperties.getProperty("cache.requestParameters");
             }
             if (requestParameters != null && !"".equals(requestParameters.trim())) {
-                chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", requestParameters.split(","));
+                chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", Patterns.COMMA.split(requestParameters));
             } else {
                 chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", null);
             }
@@ -265,7 +268,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 requestParameters = defaultScriptProperties.getProperty("cache.requestParameters");
             }
             if (requestParameters != null && !"".equals(requestParameters.trim())) {
-                chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", requestParameters.split(","));
+                chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", Patterns.COMMA.split(requestParameters));
             } else {
                 chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", null);
             }
@@ -449,7 +452,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         if (m.matches()) {
             Map parameterMap = renderContext.getRequest().getParameterMap();
             String qsString = m.group(2);
-            String[] params = m.group(3).split(",");
+            String[] params = Patterns.COMMA.split(m.group(3));
 
             SortedMap<String,String> qs = new TreeMap<String, String>();
             for (String param : params) {
@@ -518,7 +521,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
                     try {
                         Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
-                        String[] split = keyAttrbs.get("acls").split("_p_");
+                        String[] split = P_REGEXP.split(keyAttrbs.get("acls"));
                         String nodePath = "/"+StringUtils.substringAfter(split[1],"/");
                         String acls = defaultCacheKeyGenerator.getAclsKeyPart(renderContext, Boolean.parseBoolean(StringUtils.substringBefore(split[1],"/")), nodePath, true);
                         cacheKey = keyGenerator.replaceField(cacheKey, "acls", acls);

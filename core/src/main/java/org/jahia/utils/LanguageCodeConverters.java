@@ -112,7 +112,7 @@ public class LanguageCodeConverters {
             return Locale.ENGLISH ;
         }
         Locale loc ;
-        String[] codes = code.split("_") ;
+        String[] codes = Patterns.UNDERSCORE.split(code) ;
         if (codes.length == 0) {
             return Locale.ENGLISH ;
         } else if (codes.length == 1) {

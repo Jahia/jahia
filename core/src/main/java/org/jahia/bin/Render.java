@@ -511,7 +511,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                 JCRSiteNode siteNode = sessionNode.getResolveSite();
                                 if (siteNode != null) {
                                     String s = sessionNode.getResolveSite().getPath() + "/files/contributed/";
-                                    String name = sessionNode.getPrimaryNodeTypeName().replaceAll(":", "_") + "_" + sessionNode.getName();
+                                    String name = JCRContentUtils.replaceColon(sessionNode.getPrimaryNodeTypeName()) + "_" + sessionNode.getName();
                                     target = s + name;
                                     try {
                                         session.getNode(target);

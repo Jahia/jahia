@@ -41,7 +41,6 @@
 package org.jahia.ajax.gwt.helper;
 
 import net.htmlparser.jericho.Source;
-import net.htmlparser.jericho.SourceCompactor;
 import net.htmlparser.jericho.SourceFormatter;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
@@ -63,6 +62,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * HTML compare utility.
@@ -72,6 +72,8 @@ import java.util.Locale;
  */
 public class DiffHelper {
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(DiffHelper.class);
+    
+    private static final Pattern LIVE_WS_PATTERN = Pattern.compile("/"+ Constants.LIVE_WORKSPACE+"/"); 
 
     public String getHighlighted(String original, String amendment) {
         final StringWriter sw = new StringWriter();
@@ -86,8 +88,8 @@ public class DiffHelper {
 
             // replace /live/ by /default/ in href and src attributes as it represents same image
             if(original.contains("/files/"+Constants.EDIT_WORKSPACE+"/")||amendment.contains("/files/"+Constants.EDIT_WORKSPACE+"/")) {
-                original = original.replaceAll("/"+ Constants.LIVE_WORKSPACE+"/","/"+Constants.EDIT_WORKSPACE+"/");
-                amendment = amendment.replaceAll("/"+ Constants.LIVE_WORKSPACE+"/","/"+Constants.EDIT_WORKSPACE+"/");
+                original = LIVE_WS_PATTERN.matcher(original).replaceAll("/"+Constants.EDIT_WORKSPACE+"/");
+                amendment = LIVE_WS_PATTERN.matcher(amendment).replaceAll("/"+Constants.EDIT_WORKSPACE+"/");
             }
             original = new SourceFormatter(new Source(original)).toString();
             amendment = new SourceFormatter(new Source(amendment)).toString();

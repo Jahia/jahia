@@ -59,6 +59,7 @@ import javax.script.ScriptException;
 import org.apache.camel.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
@@ -309,8 +310,10 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
         if (scriptInputStream != null) {
             ResourceBundle resourceBundle;
             if (templatePackageName == null) {
-                String resourceBundleName = StringUtils.substringBeforeLast(StringUtils.substringAfter(template.replaceAll("/WEB-INF",""), "/")
-                        .replaceAll("/", "."), ".");
+                String resourceBundleName = StringUtils.substringBeforeLast(
+                        Patterns.SLASH.matcher(
+                                StringUtils.substringAfter(Patterns.WEB_INF.matcher(template)
+                                        .replaceAll(""), "/")).replaceAll("."), ".");
                 resourceBundle = JahiaResourceBundle.lookupBundle(resourceBundleName, locale);
             } else {
                 resourceBundle = new JahiaResourceBundle(locale, templatePackageName);

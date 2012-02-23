@@ -40,8 +40,11 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import java.util.*;
-
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
@@ -54,18 +57,10 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
+
+import java.util.*;
 
 /**
  * Content editing widget.
@@ -141,6 +136,7 @@ public class EditContentEngine extends AbstractContentEngine {
 			}
 		});
         ok.setEnabled(false);
+        buttonBar.setId("JahiaEditEngineButtonBar");
         buttonBar.add(ok);
 
         /* ToDo: activate restore button in the engine

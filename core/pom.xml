@@ -1036,26 +1036,8 @@
         <dependency>
         	<groupId>org.artofsolving.jodconverter</groupId>
         	<artifactId>jodconverter-core</artifactId>
-        	<version>3.0-beta-3</version>
-            <classifier>jahia</classifier>
+        	<version>3.0-beta-4-jahia1</version>
         </dependency>
-        <!-- JODConverter dependencies -->
-	    <dependency>
-	      <groupId>org.openoffice</groupId>
-	      <artifactId>juh</artifactId>
-	      <version>3.1.0</version>
-	    </dependency>
-	    <dependency>
-	      <groupId>org.openoffice</groupId>
-	      <artifactId>ridl</artifactId>
-	      <version>3.1.0</version>
-	    </dependency>
-	    <dependency>
-	      <groupId>org.openoffice</groupId>
-	      <artifactId>unoil</artifactId>
-	      <version>3.1.0</version>
-	    </dependency>
-        <!-- end of JODConverter dependencies -->
         
         <dependency>
             <groupId>com.google.guava</groupId>

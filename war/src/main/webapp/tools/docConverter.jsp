@@ -33,6 +33,7 @@ pageContext.setAttribute("serviceEnabled", service != null && service.isEnabled(
     <option value="application/vnd.oasis.opendocument.spreadsheet">OpenDocument Spreadsheet</option>
     <option value="application/vnd.oasis.opendocument.presentation">OpenDocument Presentation</option>
     <option value="application/x-shockwave-flash">Flash</option>
+    <option value="text/plain">Text</option>
 </select>
 </p>
 <p><input type="submit" value="Convert file" /></p>

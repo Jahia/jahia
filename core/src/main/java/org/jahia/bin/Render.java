@@ -916,7 +916,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         req.getSession().setAttribute("formError", errorMessage);
                         performRedirect(urlResolver.getRedirectUrl(), urlResolver.getPath(), req, resp, parameters, true);
                     } else {
-                        resp.setContentType("application/json");
+                        resp.setContentType("application/json; charset=UTF-8");
                         Map<String,String> res = new HashMap<String,String>();
                         res.put("status", errorMessage);
                         new JSONObject(res).write(resp.getWriter());
@@ -955,7 +955,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                 performRedirect(renderContext.getMainResource().getNode().getPath(), urlResolver.getPath(), req, resp, parameters,
                                         true);
                             } else {
-                                resp.setContentType("application/json");
+                                resp.setContentType("application/json; charset=UTF-8");
                                 Map<String,String> res = new HashMap<String,String>();
                                 res.put("status", errorMessage);
                                 new JSONObject(res).write(resp.getWriter());
@@ -1005,7 +1005,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         ("json".equals(parameters.get(RETURN_CONTENTTYPE) != null ? parameters.get(RETURN_CONTENTTYPE).get(0) : "") 
                                 || req.getHeader("accept") != null && req.getHeader("accept").contains("application/json"))) {
                     try {
-                        resp.setContentType(parameters.get(RETURN_CONTENTTYPE_OVERRIDE) != null ? parameters.get(RETURN_CONTENTTYPE_OVERRIDE).get(0) : "application/json");
+                        resp.setContentType(parameters.get(RETURN_CONTENTTYPE_OVERRIDE) != null ? parameters.get(RETURN_CONTENTTYPE_OVERRIDE).get(0) : "application/json; charset=UTF-8");
                         result.getJson().write(resp.getWriter());
                     } catch (JSONException e) {
                         logger.error(e.getMessage(), e);

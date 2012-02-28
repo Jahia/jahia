@@ -26,7 +26,7 @@ Core Module - Other Initializer
 
 * Usage of the {script} initializer
 
-  This is the most versatile initializer provided by Jahia as it allows you to use ant script language JSR-223 compatible
+  This is the most versatile initializer provided by Jahia as it allows you to use any script language JSR-223 compatible
   to write your initializer.
 
   * How to declare a scripted initializer ?
@@ -90,4 +90,4 @@ reader.parse(new InputSource(new FileInputStream(file)))
 return newValues
 +--------------------------------------
 
-    Each script can also access to the list of values from its predecessors as it is bound to the <<<values>>> variable.  
+    Each script can also access to the list of values from its predecessors as it is bound to the <<<values>>> variable.

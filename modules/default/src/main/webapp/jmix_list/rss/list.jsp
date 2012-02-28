@@ -37,12 +37,14 @@
         <description>${fn:escapeXml(description)}</description>
         <generator>Jahia <%= Jahia.VERSION + " r" + Jahia.getBuildNumber() %>, http://www.jahia.org</generator>
         <c:forEach items="${moduleMap.currentList}" var="subchild">
-            <c:if test="${!empty subchild.properties['j:view'] && !functions:hasScriptView(subchild,subchild.properties['j:view'].string , renderContext)}">
-                <template:module node="${subchild}" editable="false" view="default"/>
-            </c:if>
-            <c:if test="${!(!empty subchild.properties['j:view'] && !functions:hasScriptView(subchild,subchild.properties['j:view'].string , renderContext))}">
-                <template:module node="${subchild}" editable="false"/>
-            </c:if>
+            <c:choose>
+                <c:when test="${!empty subchild.properties['j:view'] && !functions:hasScriptView(subchild,subchild.properties['j:view'].string , renderContext)}">
+                    <template:module node="${subchild}" editable="false" view="default"/>
+                </c:when>
+                <c:otherwise>
+                    <template:module node="${subchild}" editable="false"/>
+                </c:otherwise>
+            </c:choose>
         </c:forEach>
     </channel>
 </rss>

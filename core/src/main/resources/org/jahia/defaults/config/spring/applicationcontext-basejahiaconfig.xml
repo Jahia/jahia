@@ -109,6 +109,11 @@
                         <value>application/java-archive</value>
                     </list>
                 </entry>
+                <entry key="video">
+                    <list>
+                        <value>video/*</value>
+                    </list>
+                </entry>
             </map>
         </constructor-arg>
         <constructor-arg index="1" ref="fileExtensionIcons"/>

@@ -40,7 +40,6 @@
 
 package org.jahia.modules.contribute.toolbar.actions;
 
-import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -66,7 +65,7 @@ import java.util.Map;
  *        Created : 24 nov. 2010
  */
 public class CheckClipboardAction extends Action {
-    private transient static Logger logger = Logger.getLogger(CheckClipboardAction.class);
+    public static final String UUIDS = "uuids[]";
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
@@ -79,7 +78,7 @@ public class CheckClipboardAction extends Action {
         }
         if (uuids != null && uuids.size() > 0) {
             JSONObject json = new JSONObject();
-            json.put(URLEncoder.encode(MultipleCopyAction.UUIDS,"UTF-8"), uuids);
+            json.put(URLEncoder.encode(UUIDS,"UTF-8"), uuids);
             List<String> paths = new LinkedList<String>();
             List<String> nodetypes = new LinkedList<String>();
             for (String uuid : uuids) {

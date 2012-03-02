@@ -64,7 +64,7 @@ public class MultipleCopyAction extends Action {
     private transient static Logger logger = Logger.getLogger(MultipleCopyAction.class);
 
     public static final String UUIDS_TO_COPY="org.jahia.uuids.to.copy";
-    public static final String UUIDS = "uuids[]";
+    public static final String UUIDS = "uuids";
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         List<String> uuids = parameters.get(UUIDS);

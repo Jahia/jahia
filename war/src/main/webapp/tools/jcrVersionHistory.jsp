@@ -48,7 +48,7 @@ private static final int checkOrhpaned(NodeIterator it, JCRSessionWrapper sessio
 <%
 long timer = System.currentTimeMillis();
 final Set<String> ids = new HashSet<String>();
-final int maxLimit = Integer.parseInt((String) pageContext.getAttribute("maxLimit")); 
+final int maxLimit = Integer.parseInt((String) pageContext.getAttribute("maxLimit"));
 
 try {
     int total = JCRTemplate.getInstance().doExecuteWithSystemSession(
@@ -58,7 +58,7 @@ try {
                     int checkedCount = 0;
                     Query q = session.getWorkspace().getQueryManager().createQuery("/jcr:root/jcr:system/jcr:versionStorage//element(*,nt:versionHistory)", Query.XPATH);
                     q.setLimit(step);
-                    
+
                     int offset = 0;
                     boolean stop = false;
                     while (!stop) {
@@ -74,14 +74,14 @@ try {
                             stop = true;
                         }
                     }
-                    
+
                     return checkedCount;
                 }
             });
     pageContext.setAttribute("total", String.valueOf(total));
     pageContext.setAttribute("orphaned", String.valueOf(ids.size()));
     pageContext.setAttribute("maxLimitReached", Boolean.valueOf(ids.size() >= maxLimit));
-    
+
     if ("orphanedDelete".equals(request.getParameter("action"))) {
         pageContext.setAttribute("deleted", String.valueOf(NodeVersionHistoryHelper.purgeVersionHistoryForNodes(ids)));
     }
@@ -99,8 +99,8 @@ try {
 </c:if>
 </p>
 <c:if test="${maxLimitReached}">
-<p>Please, note, that the check was stopped when more than <strong>${maxLimit}</strong> orphaned histories were found (maximum limit).</p> 
-</c:if> 
+<p>Please, note, that the check was stopped when more than <strong>${maxLimit}</strong> orphaned histories were found (maximum limit).</p>
+</c:if>
 
 </fieldset>
 </c:if>
@@ -109,9 +109,6 @@ try {
     <li><a href="?action=orphanedReport" onclick="return confirm('Start checking for the orhpaned version history?');">Check for orphaned version history</a> - searches for version history of already deleted nodes and prints a report</li>
     <li><a href="?action=orphanedDelete" onclick="return confirm('The orhpaned version history for no longer existing nodes will be permanently deleted. Do you want to continue?');">Delete orphaned version history</a> - searches for version history of already deleted nodes and deleted version items</li>
 </ul>
-<p>
-    <img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
-    <a href="<c:url value='/tools/index.jsp'/>">to Jahia Tools overview</a>
-</p>
+<%@ include file="gotoIndex.jspf" %>
 </body>
 </html>

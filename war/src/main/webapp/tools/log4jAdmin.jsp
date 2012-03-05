@@ -53,7 +53,7 @@
             text-decoration: none;
             text-transform: uppercase;
         }
-*/        
+*/
 
         table {
             width: 100%;
@@ -110,7 +110,7 @@
             border: 1px solid #ccc;
             white-space: nowrap;
         }
-        
+
         .filterButton {
             font-size: 0.75em;
 
@@ -126,7 +126,7 @@
             width: 100px;
             white-space: nowrap;
         }
-        
+
         span.active-level {
         	color: green;
         }
@@ -134,8 +134,7 @@
     </style>
 </head>
 <body onLoad="javascript:document.logFilterForm.logNameFilter.focus();">
-<img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
-<a href="<c:url value='/tools/index.jsp'/>" style="color:#36393D; font-family: Arial,Helvetica,sans-serif; font-size: 80%; line-height:100%;">to Jahia Tools overview</a>
+<%@ include file="gotoIndex.jspf" %>
 
 <%
     String containsFilter = "Contains";
@@ -157,7 +156,7 @@
 
     <form action="" name="logFilterForm">Filter Loggers:&nbsp;&nbsp;
         <input name="logNameFilter" type="text" size="50" value="<%=(logNameFilter == null ? "":logNameFilter)%>" class="filterText"/>
-        
+
         <input name="logNameFilterType" type="submit" value="<%=beginsWithFilter%>" class="filterButton"/>&nbsp;
 
         <input name="logNameFilterType" type="submit" value="<%=containsFilter%>" class="filterButton"/>&nbsp;
@@ -166,7 +165,7 @@
         <input name="logNameReset" type="reset" value="Reset" class="filterButton"/>
 
         <param name="operation" value="changeLogLevel"/>
-        
+
         <br/>
         Add logger:&nbsp;&nbsp;
         <input name="logger" type="text" size="50" value="" class="filterText"/>
@@ -260,7 +259,7 @@
         <td align="left"><%=loggerName%></td>
 
         <td align="left"><%=loggerParent%></td>
-        
+
         <td>
         	<% if (loggerName.equals(targetLogger)) {%>
         	<span class="active-level"><%=loggerEffectiveLevel%></span>
@@ -298,4 +297,4 @@
 </h2>
 </div>
 </body>
-</html> 
+</html>

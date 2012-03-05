@@ -42,9 +42,6 @@ pageContext.setAttribute("serviceEnabled", service != null && service.isEnabled(
 <c:if test="${!serviceEnabled}">
 <p>Conversion service is not enabled.</p>
 </c:if>
-<p>
-    <img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
-    <a href="<c:url value='/tools/index.jsp'/>">to Jahia Tools overview</a>
-</p>
+<%@ include file="gotoIndex.jspf" %>
 </body>
 </html>

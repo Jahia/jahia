@@ -16,10 +16,7 @@
     pageContext.setAttribute("actions", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getActions().values());
 %>
 <body>
-<p>
-    <img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
-    <a href="<c:url value='/tools/index.jsp'/>">to Jahia Tools overview</a>
-</p>
+<%@ include file="gotoIndex.jspf" %>
 
 <h1>Actions (${functions:length(actions)} found)</h1>
 <table border="1" cellspacing="0" cellpadding="5">

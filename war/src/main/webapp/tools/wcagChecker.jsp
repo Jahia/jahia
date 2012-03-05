@@ -16,9 +16,6 @@
 <p><textarea rows="5" cols="80" id="text" name="text"></textarea></p>
 <p><input type="submit" value="Validate" /></p>
 </form>
-<p>
-    <img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
-    <a href="<c:url value='/tools/index.jsp'/>">to Jahia Tools overview</a>
-</p>
+<%@ include file="gotoIndex.jspf" %>
 </body>
 </html>

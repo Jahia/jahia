@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" 
+<%@ page contentType="text/html;charset=UTF-8" language="java"
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
@@ -61,14 +61,14 @@ pageContext.setAttribute("service", service);
         <input type="hidden" id="action" name="action" value=""/>
         <input type="hidden" id="name" name="name" value=""/>
         <input type="hidden" id="group" name="group" value=""/>
-    </form> 
+    </form>
 </fieldset>
 <c:if test="${'removeCompleted' == param.action}">
     <% pageContext.setAttribute("jobsflushed", service.deleteAllCompletedJobs()); %>
      <p style="color: blue">Removed <strong>${jobsflushed}</strong> completed jobs</p>
-</c:if>         
+</c:if>
 <c:if test="${'cancel' == param.action && not empty param.name && not empty param.group}">
-    <% 
+    <%
     Trigger toDelete = service.getScheduler().getTrigger(request.getParameter("name"), request.getParameter("group"));
     if (toDelete != null) {
         JobDetail jobDetail = service.getScheduler().getJobDetail(toDelete.getJobName(), toDelete.getJobGroup());
@@ -82,16 +82,16 @@ pageContext.setAttribute("service", service);
     <% } else { %>
     <p style="color: red">Unable to find trigger <strong>${param.group}.${param.name}</strong></p>
     <% } %>
-</c:if>         
+</c:if>
 <c:if test="${'remove' == param.action && not empty param.name && not empty param.group}">
-    <% 
+    <%
     if (service.getScheduler().deleteJob(request.getParameter("name"), request.getParameter("group"))) {
     %>
     <p style="color: blue">Successfully deleted job <strong>${param.group}.${param.name}</strong></p>
     <% } else { %>
     <p style="color: red">Unable to delete job <strong>${param.group}.${param.name}</strong></p>
     <% } %>
-</c:if>         
+</c:if>
 <%
 List<JobDetail> allJobs = service.getAllJobs();
 pageContext.setAttribute("allJobs", allJobs);
@@ -114,7 +114,7 @@ if (Boolean.valueOf((String) pageContext.getAttribute("showCompleted"))) {
     }
 } else {
     for (String triggerGroup : service.getScheduler().getTriggerGroupNames()) {
-        for (String triggerName : service.getScheduler().getTriggerNames(triggerGroup)) { 
+        for (String triggerName : service.getScheduler().getTriggerNames(triggerGroup)) {
             Trigger trigger = service.getScheduler().getTrigger(triggerName, triggerGroup);
             JobDetail job = service.getScheduler().getJobDetail(trigger.getJobName(), trigger.getJobGroup());
             jobs.add(new Object[] {job, trigger});
@@ -230,9 +230,6 @@ pageContext.setAttribute("aliveCount", aliveCount);
     <img src="<c:url value='/icons/showTrashboard.png'/>" alt=" " height="16" width="16"/>&nbsp;<a href="#removeCompleted" onclick="if (confirm('You are about to permanently remove the data of completed jobs. Continue?')) { go('action', 'removeCompleted'); } return false;">remove all completed jobs (${allCount - aliveCount})</a>
 </p>
 </c:if>
-<p>
-    <img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
-    <a href="<c:url value='/tools/index.jsp'/>">to Jahia Tools overview</a>
-</p>
+<%@ include file="gotoIndex.jspf" %>
 </body>
 </html>

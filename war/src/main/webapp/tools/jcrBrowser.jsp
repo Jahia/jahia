@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" 
+<%@ page contentType="text/html;charset=UTF-8" language="java"
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@page import="javax.jcr.Value"%>
@@ -73,7 +73,7 @@ function go(id1, value1, id2, value2, id3, value3) {
         <input type="hidden" id="value" name="value" value=""/>
         <input type="hidden" id="action" name="action" value=""/>
         <input type="hidden" id="target" name="target" value=""/>
-    </form> 
+    </form>
     <input type="text" id="goToPath" name="goToPath" value="${fn:escapeXml(node.path)}"
         onkeypress="if ((event || window.event).keyCode == 13) go('path', this.value);" />
     &nbsp;<a href="#go"
@@ -84,7 +84,7 @@ function go(id1, value1, id2, value2, id3, value3) {
         onkeypress="if ((event || window.event).keyCode == 13) go('uuid', this.value);" />
     &nbsp;<a href="#go" onclick='var uuid=document.getElementById("goToUuid").value; if (uuid.length > 0) { go("uuid", uuid); } return false;' title="Go to the node with UUID"><img src="<c:url value='/icons/search.png'/>" height="16" width="16" title="Go to the node with UUID" border="0" style="vertical-align: middle;"/></a>
 </fieldset>
- 
+
 <fieldset>
     <c:url value="/icons/${workspace == 'default' ? 'editMode' : 'live'}.png" var="iconWorkspace"/>
     <c:url value="/icons/${workspace == 'default' ? 'live' : 'editMode'}.png" var="iconSwitchWorkspace"/>
@@ -108,13 +108,13 @@ function go(id1, value1, id2, value2, id3, value3) {
                 onchange="go('showReferences', '${!showReferences}')"/>&nbsp;<label for="cbReferences">Show references</label>
         </p>
     </fieldset>
-    
+
     <c:if test="${not empty param.action}">
         <c:choose>
             <c:when test="${param.action == 'delete' && not empty param.target}">
                 <% JCRNodeWrapper target = jcrSession.getNodeByIdentifier(request.getParameter("target"));
                 pageContext.setAttribute("target", target);
-                jcrSession.checkout(target.getParent());    
+                jcrSession.checkout(target.getParent());
                 target.remove();
                 jcrSession.save();
                 %>
@@ -206,7 +206,7 @@ function go(id1, value1, id2, value2, id3, value3) {
             </c:when>
         </c:choose>
     </c:if>
-    
+
     <c:if test="${node.path != '/'}">
         <a href="#parent" onclick="go('uuid', '${node.parent.identifier}'); return false;">[..]</a>
         <c:set var="breadcrumbs" value=""/>
@@ -274,7 +274,7 @@ function go(id1, value1, id2, value2, id3, value3) {
         </c:if>
         </ul>
     </c:if>
-    
+
     <p><strong>References:&nbsp;</strong><a href="#references" onclick="go('showReferences', ${showReferences ? 'false' : 'true'}); return false;">${showReferences ? 'hide' : 'show'}</a></p>
     <c:if test="${showReferences}">
         <ul>
@@ -376,9 +376,6 @@ function go(id1, value1, id2, value2, id3, value3) {
 <%} finally {
     JCRSessionFactory.getInstance().setCurrentUser(null);
 }%>
-<p>
-    <img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
-    <a href="<c:url value='/tools/index.jsp'/>">to Jahia Tools overview</a>
-</p>
+<%@ include file="gotoIndex.jspf" %>
 </body>
 </html>

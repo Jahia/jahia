@@ -1,5 +1,5 @@
-<%@page import="java.io.PrintWriter,java.util.Date,java.text.SimpleDateFormat,org.jahia.bin.errors.ErrorFileDumper"%> 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c" 
+<%@page import="java.io.PrintWriter,java.util.Date,java.text.SimpleDateFormat,org.jahia.bin.errors.ErrorFileDumper"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"
 %><c:if test="${param.file}"><%
 response.setContentType("text/plain; charset=ISO-8859-1");
 response.setHeader("Content-Disposition", "attachment; filename=\"system-info-"
@@ -20,8 +20,7 @@ response.setHeader("Content-Disposition", "attachment; filename=\"system-info-"
 <h1>System Status Information at <%= new Date() %></h1>
 <a href="?file=true" target="_blank">download as a file</a>
 <br/>
-<img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
-<a href="<c:url value='/tools/index.jsp'/>">to Jahia Tools overview</a>
+<%@ include file="gotoIndex.jspf" %>
 <pre>
     <% ErrorFileDumper.outputSystemInfo(new PrintWriter(pageContext.getOut())); %>
 </pre>

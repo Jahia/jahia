@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" 
+<%@ page contentType="text/html;charset=UTF-8" language="java"
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@page import="java.io.PrintWriter"%>
@@ -106,18 +106,18 @@ pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(L
         <input type="text" size="2" name="offset" id="offset" value="${offset}"/>
         <input type="submit" value="Execute query ([Ctrl+Enter])" />
         </span>
-    </form> 
+    </form>
 </fieldset>
 <%
 JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
 JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"), currentLocale, Locale.ENGLISH);
 %>
 <c:if test="${param.action == 'delete' && not empty param.target}">
-	<% 
+	<%
        try {
            JCRNodeWrapper target = jcrSession.getNodeByIdentifier(request.getParameter("target"));
            pageContext.setAttribute("target", target);
-           jcrSession.checkout(target.getParent());    
+           jcrSession.checkout(target.getParent());
            target.remove();
            jcrSession.save();
        } catch (ItemNotFoundException e) {
@@ -132,7 +132,7 @@ JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSes
     </c:if>
 </c:if>
 <c:if test="${param.action == 'deleteAll' && not empty param.query}">
-    <% 
+    <%
        try {
            Query q = jcrSession.getWorkspace().getQueryManager().createQuery(request.getParameter("query"), (String) pageContext.getAttribute("lang"));
            QueryResult result = q.execute();
@@ -140,7 +140,7 @@ JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSes
            for (NodeIterator it = result.getNodes(); it.hasNext();) {
                Node target = it.nextNode();
                try {
-                   jcrSession.checkout(target.getParent());    
+                   jcrSession.checkout(target.getParent());
                    target.remove();
                    count++;
                } catch (Exception e) {
@@ -218,10 +218,7 @@ try {
 <%} finally {
     JCRSessionFactory.getInstance().setCurrentUser(null);
 }%>
-<p>
-    <img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
-    <a href="<c:url value='/tools/index.jsp'/>">to Jahia Tools overview</a>
-</p>
+<%@ include file="gotoIndex.jspf" %>
 <div style="display: none;">
     <div id="helpArea">
         <h3>Query examples</h3>

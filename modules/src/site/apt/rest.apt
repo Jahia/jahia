@@ -4,13 +4,13 @@ Basic Jahia REST API
 
  Jahia provides a REST API, mostly for rendering, but some other services are available as well such: login,
  logout, content creation & updating and searching.
-
-* Examples
-
- You can find an example of some REST API calls in the file modules/test/rest/jqueryfind.html. To test this
- file, make sure you start & configure your Jahia, and then point your browser to the following URL :
-
- http://localhost:8080/modules/test/rest/jqueryfind.html
+ 
+ Note please, when using the REST API from your client-side code (browser side) in your external Web applicazion,
+ e.g. using jQuery library, you can run into a cross-domain restriction for Ajax requests as they are not allowed by default
+ due to security concerns. In contrary, using REST API from a server side code in your external
+ application does not have this restriction.
+ 
+  
 
 * Login
 
@@ -31,9 +31,6 @@ Basic Jahia REST API
 |                |             |will redirect to the home page after successful |
 |                |             |authentication. If you are using AJAX calls     |
 |                |             |you should set this to "false".                 |
-*----------------+-------------+------------------------------------------------+
-|doLogin         |yes          |Should always be set to "true" otherwise login  |
-|                |             | will not work                                  |
 *----------------+-------------+------------------------------------------------+
 |redirect        |no           |Allows you to specify another URL to redirect   |
 |                |             |after successful login                          |

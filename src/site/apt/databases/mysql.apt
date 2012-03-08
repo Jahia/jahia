@@ -29,9 +29,9 @@ max_allowed_packet = 100M
 # Make sure that you have enough free disk space.
 innodb_data_file_path = ibdata1:100M:autoextend
 #
-# Set buffer pool size to 50-80% of your computer's memory
+# Can be set to 70-80% of memory for dedicated InnoDB-Only MySQL
 innodb_buffer_pool_size=1024M
-innodb_additional_mem_pool_size=256M
+innodb_additional_mem_pool_size=24M
 #
 # Set the log file size to about 25% of the buffer pool size
 innodb_log_file_size=256M

@@ -92,6 +92,15 @@ public class VersioningHelper implements InitializingBean {
     }
     
     /**
+     * Returns the label for the new version of the file with the current timestamp.
+     * @param timestamp the time stamp for the label
+     * @return the label for the new version of the file with the current timestamp
+     */
+    public static String getVersionLabelCurrent() {
+        return getVersionLabel(System.currentTimeMillis());
+    }
+    
+    /**
      * Returns the label for the restored version of the file with the timestamp.
      * @param timestamp the time stamp for the label
      * @return the label for the restored version of the file with the timestamp

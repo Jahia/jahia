@@ -1044,8 +1044,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             String nodeURL = this.navigation.getNodeURL(servlet, node, versionDate, versionLabel, session.getWorkspace().getName(),
                     session.getLocale());
-
-            nodeURL = Url.appendServerNameIfNeeded(node, nodeURL, getRequest());
+            if ("live".equals(workspace)) {
+                nodeURL = Url.appendServerNameIfNeeded(node, nodeURL, getRequest());
+            }
 
             return getResponse().encodeURL(nodeURL);
         } catch (MalformedURLException e) {

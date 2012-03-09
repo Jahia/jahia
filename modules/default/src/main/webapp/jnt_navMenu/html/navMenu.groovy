@@ -25,7 +25,9 @@ startLevelValue = startLevel ? startLevel.long : 0
 def printMenu;
 printMenu = { node, navMenuLevel, omitFormatting ->
     if (navMenuLevel == 1) {
-        print ("<div class=\"${styleName.string}\">")
+        if(styleName) {
+            print ("<div class=\"${styleName.string}\">")
+        }
         if (title) {
             print ("<span>${Functions.escapeXml(title.string)}</span>")
         }
@@ -40,7 +42,7 @@ printMenu = { node, navMenuLevel, omitFormatting ->
         print (navMenuLevel == 1 ? "<div class=\"navbar\">" : "<div class=\"box-inner\">")
 
         print("<ul class=\"navmenu level_${navMenuLevel - startLevelValue}\">")
-        children.eachWithIndex() { menuItem, index -> 
+        children.eachWithIndex() { menuItem, index ->
             itemPath = menuItem.path
             inpath = renderContext.mainResource.node.path == itemPath || renderContext.mainResource.node.path.startsWith(itemPath)
             selected = menuItem.isNodeType("jmix:link") ?
@@ -107,7 +109,12 @@ printMenu = { node, navMenuLevel, omitFormatting ->
     }
 
     if (navMenuLevel == 1) {
-        print ("</div>")
+        if (layoutID) {
+            print("</div>")
+        }
+        if(styleName) {
+            print ("</div>")
+        }
     }
 
 }

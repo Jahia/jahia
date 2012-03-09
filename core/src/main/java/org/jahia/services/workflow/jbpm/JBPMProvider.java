@@ -620,6 +620,9 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             }
             taskService.takeTask(task.getId(), user.getUserKey());
         }
+        Map<String, Object> vars = taskService.getVariables(taskId,taskService.getVariableNames(taskId));
+        vars.put("currentUser",user);
+        taskService.setVariables(taskId,vars);
     }
 
     public void completeTask(String taskId, String outcome, Map<String, Object> args) {

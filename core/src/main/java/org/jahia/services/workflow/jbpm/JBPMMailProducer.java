@@ -356,8 +356,14 @@ public class JBPMMailProducer extends MailProducerImpl {
         ResourceBundle resourceBundle = JahiaResourceBundle.lookupBundle(
                 "org.jahia.services.workflow." + ((ExecutionImpl) execution).getProcessDefinition().getKey(), locale);
         bindings.put("bundle", resourceBundle);
-        JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(
-                (String) vars.get("user"));
+        // user is the one that initiate the Execution  (WorkflowService.startProcess)
+        // currentUser is the one that "moves" the Execution  (JBPMProvider.assignTask)
+        JahiaUser jahiaUser;
+        if (vars.containsKey("currentUser")) {
+            jahiaUser = (JahiaUser) vars.get("currentUser");
+        } else {
+            jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) vars.get("user"));
+        }
         bindings.put("user", jahiaUser);
         bindings.put("date", new DateTool());
         bindings.put("submissionDate", Calendar.getInstance());

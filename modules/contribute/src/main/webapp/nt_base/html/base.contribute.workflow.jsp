@@ -42,7 +42,7 @@
             <c:set var="formAction" value="${url.base}${currentNode.path}.executeTask.do"/>
         </c:when>
     </c:choose>
-    <c:set var="jsNodeName" value="${fn:replace(fn:replace(currentNode.name,'-','_'),'.','_')}"/>
+    <c:set var="jsNodeName" value="${fn:replace(fn:replace(currentNode.identifier,'-','_'),'.','_')}"/>
     <form action="<c:url value='${formAction}'/>" method="post"
     <c:if test="${!(resourceNodeType eq 'jnt:file' || resourceNodeType eq 'jnt:folder')}">
           id="${jsNodeName}${scriptTypeName}"

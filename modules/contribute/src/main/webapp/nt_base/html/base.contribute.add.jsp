@@ -35,7 +35,7 @@
 <c:set var="scriptTypeName" value="${fn:replace(type.name,':','_')}"/>
 <div class="FormContribute">
     <c:url var="formAction" value="${url.base}${currentNode.path}/*"/>
-    <c:set var="jsNodeName" value="${fn:replace(fn:replace(currentNode.name,'-','_'),'.','_')}"/>
+    <c:set var="jsNodeName" value="${fn:replace(fn:replace(currentNode.identifier,'-','_'),'.','_')}"/>
     <c:if test="${!(resourceNodeType eq 'jnt:file' || resourceNodeType eq 'jnt:folder')}">
         <c:set var="formID">
             id="${jsNodeName}${scriptTypeName}"

@@ -65,7 +65,7 @@ public class JCRComponentNode extends JCRNodeDecorator {
         } catch (RepositoryException e) {
             // lookup the corresponding node type
             String name = getName();
-            if (!"components".equals(name)) {
+            if (!"components".equals(name) && !"nonDroppableComponents".equals(name)) {
                 try {
                     title = JCRContentUtils.getDisplayLabel(
                             NodeTypeRegistry.getInstance().getNodeType(name), getSession()

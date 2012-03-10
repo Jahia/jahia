@@ -309,7 +309,6 @@ public class WindowStatesTag extends TagSupport {
                     PageContext.SESSION_SCOPE);
         }
 
-        return locale != null ? locale : LanguageCodeConverters.languageCodeToLocale(SettingsBean
-                .getInstance().getDefaultLanguageCode());
+        return locale != null ? locale : SettingsBean.getInstance().getDefaultLocale();
     }
 }

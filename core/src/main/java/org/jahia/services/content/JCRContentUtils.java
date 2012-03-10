@@ -1423,6 +1423,8 @@ public final class JCRContentUtils {
 
     private Set<String> unsupportedMarkForDeletionNodeTypes = Collections.emptySet();
     
+    private Pattern handleFallbackLocaleFoPath;
+    
     /**
      * Initializes an instance of this class.
      * 
@@ -1490,5 +1492,14 @@ public final class JCRContentUtils {
     
     public void setUnsupportedMarkForDeletionNodeTypes(Set<String> unsupportedMarkForDeletionNodeTypes) {
         this.unsupportedMarkForDeletionNodeTypes = unsupportedMarkForDeletionNodeTypes;
+    }
+
+    public Pattern getHandleFallbackLocaleFoPathPattern() {
+        return handleFallbackLocaleFoPath;
+    }
+
+    public void setHandleFallbackLocaleFoPath(String handleFallbackLocaleFoPath) {
+        this.handleFallbackLocaleFoPath = StringUtils.isNotEmpty(handleFallbackLocaleFoPath) ? Pattern
+                .compile(handleFallbackLocaleFoPath) : null;
     }
 }

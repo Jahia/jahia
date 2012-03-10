@@ -68,6 +68,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.*;
@@ -1337,17 +1338,61 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         if (locale != null) {
             if (epd.isInternationalized()) {
-                try {
-                    final Node localizedNode = getI18N(locale);
-                    return new JCRPropertyWrapperImpl(this, localizedNode.getProperty(name),
-                            session, provider, epd,
-                            name);
-                } catch (ItemNotFoundException e) {
-                    return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider, epd);
+                Pattern pathPattern = JCRContentUtils.getInstance().getHandleFallbackLocaleFoPathPattern();
+                if (pathPattern == null || locale.equals(SettingsBean.getInstance().getDefaultLocale())) {
+                    try {
+                        final Node localizedNode = getI18N(locale);
+                        return new JCRPropertyWrapperImpl(this, localizedNode.getProperty(name),
+                                session, provider, epd,
+                                name);
+                    } catch (ItemNotFoundException e) {
+                        return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider, epd);
+                    }
+                } else {
+                    return internalGetPropertyI18nWithDefFallback(name, epd, locale, pathPattern);
                 }
             }
         }
         return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider, epd);
+    }
+
+    private JCRPropertyWrapper internalGetPropertyI18nWithDefFallback(String name,
+            ExtendedPropertyDefinition epd, Locale locale, Pattern pathPattern) throws RepositoryException {
+        Node localizedNode = null;
+        try {
+            localizedNode = getI18N(locale);
+            return new JCRPropertyWrapperImpl(this, localizedNode.getProperty(name),
+                    session, provider, epd,
+                    name);
+        } catch (ItemNotFoundException e) {
+            try {
+                return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider, epd);
+            } catch (PathNotFoundException pnte) {
+                if (pathPattern.matcher(getPath()).matches()) {
+                    try {
+                        localizedNode = getI18N(SettingsBean.getInstance().getDefaultLocale());
+                        return new JCRPropertyWrapperImpl(this, localizedNode.getProperty(name),
+                                session, provider, epd,
+                                name);
+                    } catch (ItemNotFoundException e2) {
+                        throw pnte;
+                    }
+                }
+                throw pnte;
+            }
+        } catch (PathNotFoundException e) {
+            if (pathPattern.matcher(getPath()).matches()) {
+                try {
+                    localizedNode = getI18N(SettingsBean.getInstance().getDefaultLocale());
+                    return new JCRPropertyWrapperImpl(this, localizedNode.getProperty(name),
+                            session, provider, epd,
+                            name);
+                } catch (ItemNotFoundException e2) {
+                    throw e;
+                }
+            }
+            throw e;
+        }
     }
 
     public Set<String> getSharedExternalPropertyNames() throws RepositoryException {

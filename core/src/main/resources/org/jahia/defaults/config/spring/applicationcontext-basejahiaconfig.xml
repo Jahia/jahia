@@ -136,6 +136,8 @@
                 <value>jnt:remotePublication</value>
             </set>
         </property>
+        
+        <property name="handleFallbackLocaleFoPath" value="${jahia.jcr.handleFallbackLocaleFoPath:/sites/.+/templates/.+}"/>
     </bean>
 
     <bean id="fileExtensionIcons" class="org.springframework.beans.factory.config.MapFactoryBean">

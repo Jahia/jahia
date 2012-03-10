@@ -62,6 +62,7 @@ import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.PathResolver;
 import org.jahia.bin.Jahia;
 import org.jahia.configuration.deployers.ServerDeploymentFactory;
@@ -191,6 +192,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     
     private String[] localhostsArray = {"localhost"};
 
+    private Locale defaultLocale;
+
     /**
      * Default constructor.
      *
@@ -308,6 +311,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             // multi language default language code property.
             defaultLanguageCode = getString ("org.jahia.multilang.default_language_code", "en");
+            defaultLocale = LanguageCodeConverters.languageCodeToLocale(defaultLanguageCode);
 
             considerDefaultJVMLocale = getBoolean("considerDefaultJVMLocale", false);
                 
@@ -409,6 +413,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         }
     } // end load
 
+
+    public Locale getDefaultLocale() {
+        return defaultLocale;
+    }
 
     private boolean getBoolean (String propertyName)
         throws NoSuchElementException {

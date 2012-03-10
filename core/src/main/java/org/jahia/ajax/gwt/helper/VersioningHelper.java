@@ -181,7 +181,7 @@ public class VersioningHelper implements InitializingBean {
                 
                 session.save();
                 versionManager.checkpoint(node.getPath());
-                versionService.addVersionLabel(node, getVersionLabel(System.currentTimeMillis()));
+                versionService.addVersionLabel(node, getVersionLabelCurrent());
                 cacheManager.invalidate(session.getWorkspace().getName(), node.getPath());
                 if (logger.isDebugEnabled()) {
                     logger.debug("Number of version: " + node.getVersions().size());

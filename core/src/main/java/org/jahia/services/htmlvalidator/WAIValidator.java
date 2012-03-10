@@ -80,7 +80,7 @@ public class WAIValidator {
 
     private boolean isDataTable = true;
     private int formLevel;
-    private Locale uiLocale = new Locale(SettingsBean.getInstance().getDefaultLanguageCode());
+    private Locale uiLocale = SettingsBean.getInstance().getDefaultLocale();
     private JahiaResourceBundle bundle = null;
 
     protected final Map<String, String> linkToDest = new HashMap<String, String>();

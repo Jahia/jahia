@@ -575,10 +575,7 @@ public class ProcessingContext {
             if (settings != null) {
                 logger.debug("Using jahia.properties default language code : "
                         + settings.getDefaultLanguageCode());
-                locales
-                        .add(LanguageCodeConverters
-                                .languageCodeToLocale(settings
-                                .getDefaultLanguageCode()));
+                locales.add(settings.getDefaultLocale());
             } else {
                 logger
                         .debug("Warning : Couldn't find default language settings in jahia.properties, using english as default locale");

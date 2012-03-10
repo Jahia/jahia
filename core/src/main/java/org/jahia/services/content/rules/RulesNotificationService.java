@@ -114,8 +114,7 @@ public class RulesNotificationService {
                 locale = LanguageCodeConverters.languageCodeToLocale(userNode.getProperty(
                         "preferredLanguage").getString());
             } catch (RepositoryException e) {
-                locale = LanguageCodeConverters.languageCodeToLocale(
-                        SettingsBean.getInstance().getDefaultLanguageCode());
+                locale = SettingsBean.getInstance().getDefaultLocale();
             }
             sendMail(template, userNode, toMail, fromMail, ccList, bcclist, locale);
 
@@ -156,8 +155,7 @@ public class RulesNotificationService {
         if (property != null) {
             locale = LanguageCodeConverters.languageCodeToLocale(property);
         } else {
-            locale = LanguageCodeConverters.languageCodeToLocale(
-                    SettingsBean.getInstance().getDefaultLanguageCode());
+            locale = SettingsBean.getInstance().getDefaultLocale();
         }
         return locale;
     }

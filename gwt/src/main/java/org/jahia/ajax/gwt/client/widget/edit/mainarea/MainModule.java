@@ -48,7 +48,6 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.dom.client.NodeList;
@@ -209,7 +208,7 @@ public class MainModule extends Module {
                         config.getName(), new BaseAsyncCallback<GWTRenderResult>() {
                             public void onSuccess(GWTRenderResult result) {
                                 int i = scrollContainer.getVScrollPosition();
-                                head.setText("Page : " + path);
+                                head.setText(Messages.get("label.page", "Page") + ": " + path);
                                 nodeTypes = result.getNodeTypes();
                                 Selection.getInstance().hide();
                                 Hover.getInstance().removeAll();

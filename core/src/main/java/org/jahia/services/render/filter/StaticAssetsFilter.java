@@ -323,7 +323,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                         int idx = title.getBegin() + title.toString().indexOf(">");
                         String str = renderContext.isContributionMode() ? JahiaResourceBundle.getJahiaInternalResource("label.contribute", renderContext.getUILocale()) :
                                 JahiaResourceBundle.getJahiaInternalResource("label.preview", renderContext.getUILocale());
-                        str = "> " + str + " - ";
+                        str = ">" + str + " - ";
                         outputDocument.replace(idx, idx + 1, str);
                     }
                 }

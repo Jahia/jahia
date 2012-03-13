@@ -44,6 +44,7 @@ import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.spi.commons.nodetype.compact.CompactNodeTypeDefWriter;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -57,7 +58,9 @@ import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
+import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.Url;
 
 import javax.jcr.AccessDeniedException;
@@ -310,5 +313,45 @@ public class Functions {
 
         }
         return null;
+    }
+    
+    public static List<Map> getRolesForNode(JCRNodeWrapper node, boolean includeInherited, String roles) {
+        List<Map> results = new ArrayList<Map>();
+        Map<String,List<String[]>> entries = node.getAclEntries();
+        for (Map.Entry<String, List<String[]>> entry : entries.entrySet()) {
+            Map m = new HashMap();
+            String entryKey = entry.getKey();
+            if (entryKey.startsWith("u:")) {
+                JahiaUser u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(StringUtils.substringAfter(entryKey, "u:"));
+                m.put("principalType","user");
+                m.put("principal",u);
+            } else if (entryKey.startsWith("g:")) {
+                JahiaGroup g = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(StringUtils.substringAfter(entryKey, "g:"));
+                m.put("principalType","group");
+                m.put("principal",g);
+            }
+
+            for (String[] details : entry.getValue()) {
+                if (details[1].equals("GRANT")) {
+                    if (roles != null) {
+                        if (!roles.contains(details[2])) {
+                            continue;
+                        }
+                    }
+                
+                    if (!includeInherited) {
+                        if (!details[0].equals(node.getPath())) {
+                            continue;
+                        }
+                    }
+                    if (!m.containsKey("roles")) {
+                        m.put("roles", new ArrayList());
+                        results.add(m);
+                    }
+                    ((List)m.get("roles")).add(details[2]);
+                }
+            }
+        }
+        return results;
     }
 }

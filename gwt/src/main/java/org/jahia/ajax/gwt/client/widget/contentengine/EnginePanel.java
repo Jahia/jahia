@@ -89,23 +89,21 @@ public class EnginePanel extends ContentPanel implements EngineContainer {
     }
 
     public void closeEngine() {
-		ModalPanel.push(modalPanel);
-		modalPanel = null;
+        ModalPanel.push(modalPanel);
+        modalPanel = null;
 
-		linker.restoreMainArea();
-		if (GXT.isIE) {
-			linker.refresh(Linker.REFRESH_MAIN);
-		}
+        linker.restoreMainArea();
+
         fireEvent(Events.Close);
     }
 
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
-        
-		el().updateZIndex(0);
-		modalPanel = ModalPanel.pop();
-		modalPanel.setBlink(false);
-		modalPanel.show(this);
+
+        el().updateZIndex(0);
+        modalPanel = ModalPanel.pop();
+        modalPanel.setBlink(false);
+        modalPanel.show(this);
     }
 
 }

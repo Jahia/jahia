@@ -48,6 +48,7 @@
         <property name="uiConfigHelper" ref="UiConfigHelper"/>
         <property name="image" ref="ImageHelper"/>
         <property name="JCRContentUtils" ref="JCRContentUtils"/>
+        <property name="channelHelper" ref="ChannelHelper"/>
     </bean>
 
     <bean name="toolbarServiceController" parent="abstractServiceController">

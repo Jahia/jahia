@@ -407,6 +407,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void importContent(String parentPath, String fileKey, Boolean asynchronously, Boolean replaceContent) throws GWTJahiaServiceException;
 
+    List<GWTJahiaChannel> getChannels() throws GWTJahiaServiceException;
+
     // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

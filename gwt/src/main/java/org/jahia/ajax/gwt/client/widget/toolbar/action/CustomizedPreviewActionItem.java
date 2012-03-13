@@ -43,6 +43,8 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
@@ -51,23 +53,28 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaBasicDataBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.UserManagerService;
 import org.jahia.ajax.gwt.client.service.UserManagerServiceAsync;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.SearchField;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -83,7 +90,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
     @Override
     public void onComponentSelection() {
         final Window window = new Window();
-        window.setSize(500, 400);
+        window.setSize(500, 430);
         window.setPlain(true);
         window.setModal(true);
         window.setBlinkModal(true);
@@ -158,11 +165,78 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
         panel.setTableHeight("30px");
         panel.setVerticalAlign(Style.VerticalAlignment.BOTTOM);
         Label label = new Label("&nbsp;&nbsp;&nbsp;&nbsp;"+Messages.get("label.preview.window.date", "Pick a date for the preview")+"&nbsp;&nbsp;&nbsp;");
+        label.setWidth(200);
         label.setLabelFor("previewDate");
         final Date date = new Date();
         final CalendarField calendarField = new CalendarField("yyyy-MM-dd HH:mm", true, false, "previewDate", false, date);
         panel.add(label);
         panel.add(calendarField);
+        verticalPanel.add(panel);
+        window.add(verticalPanel);
+
+        // Channel selector
+        panel = new HorizontalPanel();
+        panel.setTableHeight("30px");
+        panel.setVerticalAlign(Style.VerticalAlignment.BOTTOM);
+        label = new Label("&nbsp;&nbsp;&nbsp;&nbsp;"+Messages.get("label.preview.window.channel", "Channel")+"&nbsp;&nbsp;&nbsp;");
+        label.setLabelFor("previewChannel");
+
+        // we will setup the right elements now because we will need to reference them in the event listener
+        final Label orientationLabel = new Label("&nbsp;&nbsp;&nbsp;&nbsp;"+Messages.get("label.preview.window.channelOrientation", "Orientation")+"&nbsp;&nbsp;&nbsp;");
+        orientationLabel.setLabelFor("previewChannelOrientation");
+        orientationLabel.hide();
+        final ListStore<GWTJahiaBasicDataBean> orientations = new ListStore<GWTJahiaBasicDataBean>();
+        orientations.add(new GWTJahiaBasicDataBean("portrait", "Portrait"));
+        orientations.add(new GWTJahiaBasicDataBean("landscape", "Landscape"));
+        final ComboBox<GWTJahiaBasicDataBean> orientationCombo = new ComboBox<GWTJahiaBasicDataBean>();
+        orientationCombo.setEmptyText("Orientation...");
+        orientationCombo.setDisplayField("displayName");
+        orientationCombo.setName("previewChannelOrientation");
+        orientationCombo.setStore(orientations);
+        orientationCombo.setTypeAhead(true);
+        orientationCombo.setTriggerAction(TriggerAction.ALL);
+        orientationCombo.hide();
+
+        // now we can setup the channel selection combo box
+        final ListStore<GWTJahiaChannel> states = new ListStore<GWTJahiaChannel>();
+        final ComboBox<GWTJahiaChannel> combo = new ComboBox<GWTJahiaChannel>();
+        JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
+        contentService.getChannels(new BaseAsyncCallback<List<GWTJahiaChannel>>() {
+
+            public void onSuccess(List<GWTJahiaChannel> result) {
+                states.add(result);
+                combo.setStore(states);
+            }
+        });
+        combo.setEmptyText("Channel...");
+        combo.setDisplayField("display");
+        combo.setName("previewChannel");
+        combo.setStore(states);
+        combo.setTypeAhead(true);
+        combo.setTriggerAction(TriggerAction.ALL);
+        combo.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaChannel>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaChannel> event) {
+                GWTJahiaChannel selectedChannel = event.getSelectedItem();
+                if (selectedChannel.getCapabilities().get("dual_orientation") != null) {
+                    Boolean supportsDualOrientations = new Boolean(selectedChannel.getCapabilities().get("dual_orientation"));
+                    if (supportsDualOrientations.booleanValue()) {
+                        orientationLabel.show();
+                        orientationCombo.show();
+                    } else {
+                        orientationLabel.hide();
+                        orientationCombo.hide();
+                    }
+                } else {
+                    orientationLabel.hide();
+                    orientationCombo.hide();
+                }
+            }
+        });
+        panel.add(label);
+        panel.add(combo);
+        panel.add(orientationLabel);
+        panel.add(orientationCombo);
         verticalPanel.add(panel);
         window.add(verticalPanel);
 
@@ -179,23 +253,55 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
                         public void onSuccess(String url) {
                             GWTJahiaUser selectedItem = userGrid.getSelectionModel().getSelectedItem();
                             String alias = null;
+                            List<String> urlParameters = new ArrayList<String>();
                             if(selectedItem!=null) {
                                 alias = "alias="+selectedItem.getUsername();
+                                urlParameters.add(alias);
                             }
                             String previewDate= null;
                             if(calendarField.getValue().after(date)) {
                                 previewDate = "prevdate="+calendarField.getValue().getTime();
+                                urlParameters.add(previewDate);
+                            }
+                            String channelIdentifier = null;
+                            GWTJahiaChannel channel = combo.getValue();
+                            String windowFeatures = null;
+                            if ((channel != null) && (!"default".equals(channel.getValue()))) {
+                                channelIdentifier = "channel=" + channel.getValue();
+                                Map<String,String> capabilities = channel.getCapabilities();
+                                if ((capabilities != null) &&
+                                        (capabilities.get("resolution_height") != null) &&
+                                        (capabilities.get("resolution_width") != null)) {
+                                    String windowWidth = capabilities.get("resolution_width");
+                                    String windowHeight = capabilities.get("resolution_height");
+                                    if (capabilities.get("dual_orientation") != null) {
+                                        Boolean supportsDualOrientations = new Boolean(capabilities.get("dual_orientation"));
+                                        if (supportsDualOrientations.booleanValue()) {
+                                            if ("landscape".equals(orientationCombo.getValue().getValue())) {
+                                                // only in this case we will switch the two values
+                                                windowWidth = capabilities.get("resolution_height");
+                                                windowHeight = capabilities.get("resolution_width");
+                                            }
+                                        }
+                                    }
+                                    windowFeatures = "resizable=no,status=no,menubar=no,toolbar=no,width=" + windowWidth +
+                                            ",height=" + windowHeight;
+                                }
+                                urlParameters.add(channelIdentifier);
                             }
                             String urlParams="";
-                            if(alias!=null && previewDate!=null) {
-                                urlParams = "?"+alias+"&"+previewDate;
-                            } else if(alias!=null) {
-                                urlParams = "?"+alias;
-                            } else if (previewDate!=null) {
-                                urlParams = "?"+previewDate;
+                            for (int i=0; i < urlParameters.size(); i++) {
+                                if (i==0) {
+                                    urlParams += "?";
+                                }
+                                urlParams += urlParameters.get(i);
+                                if (i < urlParameters.size()-1) {
+                                    urlParams += "&";
+                                }
                             }
                             String url1 = url + urlParams;
-                            com.google.gwt.user.client.Window.open(url1, "customizedpreview", "");
+
+                            com.google.gwt.user.client.Window.open(url1, "customizedpreview", windowFeatures);
                         }
 
                     });

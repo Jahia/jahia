@@ -41,7 +41,7 @@
         <property name="description" value="HTML output formatting filter"/>
 		<property name="applyOnModes" value="live,preview" />
 		<property name="applyOnConfigurations" value="page" />
-		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
+		<property name="applyOnTemplateTypes" value="html,edit,html-iphone,html-ipad" />
 	</bean>
 	-->
 	<bean class="org.jahia.services.render.filter.ExternalizeHtmlFilter">
@@ -55,7 +55,7 @@
 		<property name="priority" value="0" />
         <property name="description" value="Render filter that 'injects' the static assets into the HEAD section of the rendered HTML document."/>
 		<property name="applyOnConfigurations" value="page,gwt" />
-		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
+		<property name="applyOnTemplateTypes" value="html,edit,html-iphone,html-ipad" />
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
         <property name="ajaxTemplate" value="/modules/assets/WEB-INF/scripts/ajaxResources.groovy"/>
         <property name="template" value="/modules/assets/WEB-INF/scripts/resources.groovy"/>
@@ -80,19 +80,12 @@
         <property name="priority" value="4" />
     </bean>
 
-	<bean class="org.jahia.services.render.filter.UserAgentFilter">
+	<bean class="org.jahia.services.render.filter.ChannelFilter">
 		<property name="priority" value="6" />
-        <property name="description" value="Set templateType depending of the user agent"/>
+        <property name="description" value="Set channel depending of the user agent"/>
 		<property name="applyOnModes" value="live,preview" />
-		<property name="applyOnConfigurations" value="page" />
-		<property name="userAgentMatchingRules">
-			<map>
-				<entry key=".*iPhone.*" value="iphone" />
-				<entry key=".*iPod.*" value="iphone" />
-                <entry key=".*iPad.*" value="iphone" />
-                <entry key=".*Android.*" value="iphone" />
-			</map>
-		</property>
+		<property name="applyOnConfigurations" value="page,wrappedcontent" />
+        <property name="channelService" ref="ChannelService" />
 	</bean>
 
     <bean class="org.jahia.services.render.filter.MarkedForDeletionFilter">
@@ -125,13 +118,14 @@
 		<property name="priority" value="20" />
         <property name="description" value="Defines attributes to keep in the links of a rendering when met in the urls"/>
 		<property name="applyOnConfigurations" value="page" />
-		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
+		<property name="applyOnTemplateTypes" value="html,edit,html-iphone,html-ipad" />
 		<property name="skipOnAjaxRequest" value="true" />
 		<property name="attributesToKeep">
 			<list>
 				<value type="java.lang.String">v</value>
 				<value type="java.lang.String">l</value>
 				<value type="java.lang.String">alias</value>
+                <value type="java.lang.String">channel</value>
 			</list>
 		</property>
 		<property name="traverser"
@@ -163,7 +157,7 @@
 		<property name="priority" value="22" />
         <property name="description" value=" Looks for all registered wrappers in the resource and calls the associated scripts around the output. Output is made available to the wrapper script through the 'wrappedContent' request attribute."/>
 		<property name="applyOnConfigurations" value="wrappedcontent,page,gwt" />
-		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
+		<property name="applyOnTemplateTypes" value="html,edit,html-iphone,html-ipad" />
 	</bean>
 
 	<bean class="org.jahia.services.render.filter.TemplatePermissionCheckFilter">

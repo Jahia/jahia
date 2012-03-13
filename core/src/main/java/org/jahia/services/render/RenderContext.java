@@ -52,6 +52,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.services.channels.Channel;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
@@ -93,6 +94,9 @@ public class RenderContext {
     private boolean previewMode = false;
     private boolean ajaxRequest = false;
     private Resource ajaxResource = null;
+
+    // the current rendering channel, for example "iphone", "ipad", "android", etc...
+    private Channel channel = Channel.DEFAULT_CHANNEL;
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
@@ -275,5 +279,24 @@ public class RenderContext {
 
     public SettingsBean getSettings() {
         return SettingsBean.getInstance();
+    }
+
+    /**
+     * Returns the currently active channel
+     * @return
+     */
+    public Channel getChannel() {
+        return channel;
+    }
+
+    /**
+     * Sets the currently active channel. If null is passed internally the value will be set to DEFAULT_CHANNEL
+     * @param channel a Channel containing the value for the currently active channel
+     */
+    public void setChannel(Channel channel) {
+        if (channel == null) {
+            this.channel = Channel.DEFAULT_CHANNEL;
+        }
+        this.channel = channel;
     }
 }

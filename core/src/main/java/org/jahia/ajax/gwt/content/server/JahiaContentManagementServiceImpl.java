@@ -79,6 +79,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.channels.Channel;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -146,6 +147,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private SchedulerHelper schedulerHelper;
     private UIConfigHelper uiConfigHelper;
     private JCRContentUtils jcrContentUtils;
+    private ChannelHelper channelHelper;
 
     public void setAcl(ACLHelper acl) {
         this.acl = acl;
@@ -238,6 +240,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.jcrContentUtils = jcrContentUtils;
     }
 
+    public void setChannelHelper(ChannelHelper channelHelper) {
+        this.channelHelper = channelHelper;
+    }
 // ------------------------ INTERFACE METHODS ------------------------
 
 
@@ -1064,6 +1069,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void importContent(String parentPath, String fileKey, Boolean asynchronously, Boolean replaceContent)
             throws GWTJahiaServiceException {
         contentManager.importContent(parentPath, fileKey, asynchronously, replaceContent, retrieveCurrentSession(), getUILocale());
+    }
+
+    public List<GWTJahiaChannel> getChannels() throws GWTJahiaServiceException {
+        return channelHelper.getChannels();
     }
 
     public Map<String,GWTJahiaWorkflowDefinition> getWorkflowDefinitions(List<String> workflowDefinitionIds) throws GWTJahiaServiceException {

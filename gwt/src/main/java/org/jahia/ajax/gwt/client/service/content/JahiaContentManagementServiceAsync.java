@@ -339,4 +339,6 @@ public interface JahiaContentManagementServiceAsync {
 
     void getVisibilityInformation(String path, AsyncCallback<ModelData> asyncCallback);
 
+    void getChannels(AsyncCallback<List<GWTJahiaChannel>> asyncCallback);
+
 }

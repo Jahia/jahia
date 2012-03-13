@@ -269,7 +269,7 @@ public class RenderService {
                     JCRNodeWrapper parent = current.getParent();
                     while (!(parent.isNodeType("jnt:templatesFolder"))) {
                         template = new org.jahia.services.render.Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
-                                templateName, parent.getIdentifier(), template);
+                                templateName, parent.getIdentifier(), template, parent.getName());
                         parent = parent.getParent();
                     }
                     template = addContextualTemplates(node, templateName, template, parent);
@@ -289,7 +289,7 @@ public class RenderService {
                         throw new AccessDeniedException(resource.getTemplate());
                     }
                     template = new org.jahia.services.render.Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                            templateName, templateNode.getIdentifier(), template);
+                            templateName, templateNode.getIdentifier(), template, templateNode.getName());
                 } else if (templatesNode != null) {
                     template = addTemplates(resource, renderContext, templatesNode);
                 }
@@ -304,7 +304,7 @@ public class RenderService {
                     JCRNodeWrapper templateNode = resource.getNode().getSession().getNodeByIdentifier(template.getNode()).getParent();
                     while (!(templateNode.isNodeType("jnt:templatesFolder"))) {
                         template = new org.jahia.services.render.Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                                null, templateNode.getIdentifier(), template);
+                                null, templateNode.getIdentifier(), template, templateNode.getName());
                         templateNode = templateNode.getParent();
                     }
                 } else {
@@ -326,7 +326,7 @@ public class RenderService {
                     template = addContextualTemplates(node, templateName, template, parent);
                 }
             } else {
-                template = new Template(null,null,null);
+                template = new Template(null,null,null, null);
             }
 
         } catch (AccessDeniedException e) {
@@ -344,7 +344,7 @@ public class RenderService {
             parent = systemSite.getNode("templates"+ rootTemplatePath);
             while (!(parent.isNodeType("jnt:templatesFolder"))) {
                 template = new Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
-                        templateName, parent.getIdentifier(), template);
+                        templateName, parent.getIdentifier(), template, parent.getName());
                 parent = parent.getParent();
             }
         }
@@ -389,7 +389,7 @@ public class RenderService {
                 addTemplate(resource, renderContext, contentTemplateNode, templates);
             }
             if (templates.isEmpty()) {
-                templatesCache.put(key, null, new EmptyTemplate(null,null,null));
+                templatesCache.put(key, null, new EmptyTemplate(null,null,null,null));
                 return null;
             } else {
                 templatesCache.put(key,null, templates.get(0));
@@ -421,7 +421,7 @@ public class RenderService {
         if (ok) {
             templates.add(new Template(
                     templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                            null, templateNode.getIdentifier(), null));
+                            null, templateNode.getIdentifier(), null, templateNode.getName()));
         }
     }
 

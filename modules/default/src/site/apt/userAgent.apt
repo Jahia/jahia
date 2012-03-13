@@ -10,7 +10,7 @@ User agent specifc templates
    UserAgentFilter bean configuration :
 
 +-------------------------
-    <bean class="org.jahia.services.render.filter.UserAgentFilter" >
+    <bean class="org.jahia.services.render.filter.ChannelFilter" >
         <property name="priority" value="4" />
         <property name="applyOnModes" value="live,preview" />
         <property name="userAgentMatchingRules">

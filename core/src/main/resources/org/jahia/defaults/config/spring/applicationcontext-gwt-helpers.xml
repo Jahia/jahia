@@ -117,4 +117,8 @@
         <property name="contentManager" ref="ContentManagerHelper"/>
     </bean>
 
+    <bean name="ChannelHelper" class="org.jahia.ajax.gwt.helper.ChannelHelper">
+        <property name="channelService" ref="ChannelService" />
+    </bean>
+
 </beans>

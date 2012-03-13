@@ -50,7 +50,7 @@ class EmptyTemplate extends Template {
         super(serialized);
     }
 
-    public EmptyTemplate(String view, String node, Template next) {
-        super(view, node, next);
+    public EmptyTemplate(String view, String node, Template next, String name) {
+        super(view, node, next, name);
     }
 }

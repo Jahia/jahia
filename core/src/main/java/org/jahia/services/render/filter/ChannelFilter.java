@@ -106,7 +106,11 @@ public class ChannelFilter extends AbstractFilter {
             Template originalTemplate = service.resolveTemplate(resource, context);
             // now let's try to see if a template exists for the current channel and resource
             if (originalTemplate != null) {
-                resource.setTemplate(originalTemplate.getName() + "-" + newChannel.getIdentifier());
+                Template lastTemplate = originalTemplate;
+                while (lastTemplate.getNext() != null) {
+                    lastTemplate = lastTemplate.getNext();
+                }
+                resource.setTemplate(lastTemplate.getName() + "-" + newChannel.getIdentifier());
                 Template newChannelTemplate = service.resolveTemplate(resource, context);
                 if (newChannelTemplate==null) {
                     if ("default".equals(resourceTemplate)) {

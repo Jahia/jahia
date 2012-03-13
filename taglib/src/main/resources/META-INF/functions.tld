@@ -438,4 +438,12 @@
         <function-signature>org.jahia.services.seo.VanityUrl getDefaultVanityUrl(org.jahia.services.content.JCRNodeWrapper)</function-signature>
         <example>${functions:getDefaultVanityUrl(node)}</example>
     </function>
+
+    <function>
+        <description>Return all acl entries associated to a node</description>
+        <name>getRolesForNode</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.util.List getRolesForNode(org.jahia.services.content.JCRNodeWrapper,boolean,java.lang.String)</function-signature>
+        <example>${functions:getRolesForNode(node,true,null)}</example>
+    </function>
 </taglib>

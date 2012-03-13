@@ -137,7 +137,7 @@
             </set>
         </property>
         
-        <property name="handleFallbackLocaleFoPath" value="${jahia.jcr.handleFallbackLocaleFoPath:/sites/.+/templates/.+}"/>
+        <property name="handleFallbackLocaleForPath" value="${jahia.jcr.handleFallbackLocaleForPath:/sites/.+/templates/.+}"/>
     </bean>
 
     <bean id="fileExtensionIcons" class="org.springframework.beans.factory.config.MapFactoryBean">

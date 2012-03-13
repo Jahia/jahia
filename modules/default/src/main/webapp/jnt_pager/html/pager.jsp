@@ -32,6 +32,7 @@
     </c:choose>
     <template:initPager totalSize="${moduleMap.listTotalSize}" pageSize="${pageSize}" id="${boundComponent.identifier}"/>
     <c:if test="${currentNode.properties.displayPager.boolean}">
-        <template:displayPagination id="${boundComponent.identifier}" nbOfPages="${currentNode.properties.nbOfPages.string}" displayNumberOfItemsPerPage="${currentNode.properties.displayNbOfItemsPerPage.boolean}"/>
+        <template:displayPagination id="${boundComponent.identifier}" nbOfPages="${currentNode.properties.nbOfPages.string}" 
+              displayNumberOfItemsPerPage="${currentNode.properties.displayNbOfItemsPerPage.boolean}" nbItemsList="${currentNode.properties.displayNbOfItemsPerPageValues.string}"/>
     </c:if>
 </c:if>

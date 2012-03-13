@@ -1338,7 +1338,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         if (locale != null) {
             if (epd.isInternationalized()) {
-                Pattern pathPattern = JCRContentUtils.getInstance().getHandleFallbackLocaleFoPathPattern();
+                Pattern pathPattern = JCRContentUtils.getInstance().getHandleFallbackLocaleForPathPattern();
                 if (pathPattern == null || locale.equals(SettingsBean.getInstance().getDefaultLocale())) {
                     try {
                         final Node localizedNode = getI18N(locale);

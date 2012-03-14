@@ -179,9 +179,18 @@ public class WelcomeServlet extends HttpServlet {
                         return;
                     }
                     if (defSite.getHome() != null) {
-                        base = request.getContextPath() + Edit.getEditServletPath() + "/"
-                                + Constants.EDIT_WORKSPACE + "/" + language
-                                + defSite.getHome().getPath();
+                        if (defSite.getHome().hasPermission("editModeAccess")) {
+                            base = request.getContextPath() + Edit.getEditServletPath() + "/"
+                                    + Constants.EDIT_WORKSPACE + "/" + language
+                                    + defSite.getHome().getPath();
+                        } else if (defSite.getHome().hasPermission("contributeModeAccess")) {
+                            base = request.getContextPath() + Contribute.getContributeServletPath() + "/"
+                                    + Constants.EDIT_WORKSPACE + "/" + language
+                                    + defSite.getHome().getPath();
+                        } else {
+                            redirect(request.getContextPath()+"/start", response);
+                            return;
+                        }
                     } else {
                         redirect(request.getContextPath()+"/start", response);
                         return;

@@ -654,7 +654,7 @@ extends = jnt:content
 [jmix:orderedList] mixin
  itemtype = listOrdering
  extends = jnt:contentList, jnt:area
- - ignoreCase (boolean) = true
+ - ignoreCase (boolean) = true autocreated
  - firstField (string, choicelist[sortableFieldnames]) indexed=no
  - firstDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
  - secondField (string, choicelist[sortableFieldnames]) indexed=no

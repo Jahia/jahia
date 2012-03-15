@@ -32,6 +32,7 @@
 </p>
 
 <c:set value="${currentNode.properties['state'].string eq 'finished'}" var="finished"/>
-<p class="taskaction" >Resolved : <input class="completeTaskAction" taskPath="<c:url value="${url.base}${currentNode.path}"/>" type="checkbox" ${finished ? 'checked="true" disabled="true"':''} onchange="completeTask($(this))"></p>
+<c:set value="${jcr:hasPermission(currentNode,'jcr:modifyProperties')}" var="canchange"/>
+<p class="taskaction" >Resolved : <input class="completeTaskAction" taskPath="<c:url value="${url.base}${currentNode.path}"/>" type="checkbox" ${finished ? ' checked="true"':''} ${finished or not canchange?' disabled="true"':''} onchange="completeTask($(this))"></p>
 
 </div>

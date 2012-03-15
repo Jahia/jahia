@@ -60,24 +60,29 @@
                     <fmt:message key="jnt_task.state"/>
                     :</label>
                 <span class="right value">${currentNode.properties.state.string}</span>
+                <c:set value="${jcr:hasPermission(currentNode,'jcr:modifyProperties')}" var="canchange"/>
                 <c:choose>
                     <c:when test="${currentNode.properties.state.string == 'active'}">
                         <span><img alt="" src="<c:url value='${url.currentModule}/images/right_16.png'/>"/></span>
+                        <c:if test="${canchange}">
             <span>
                 <a href="javascript:send('${currentNode.path}','suspended')"><fmt:message key="jnt_task.suspended"/></a>&nbsp;
                 <a href="javascript:send('${currentNode.path}','cancelled')"><fmt:message key="jnt_task.cancel"/></a>&nbsp;
                 <a href="javascript:send('${currentNode.path}','finished')"><fmt:message key="jnt_task.complete"/></a>
             </span>
+                        </c:if>
                     </c:when>
                     <c:when test="${currentNode.properties.state.string == 'finished'}">
                         <img alt="" src="<c:url value='${url.currentModule}/images/tick_16.png'/>"/>
                     </c:when>
                     <c:when test="${currentNode.properties.state.string == 'suspended'}">
                         <span><img alt="" src="<c:url value='${url.currentModule}/images/bubble_16.png'/>"/></span>
+                        <c:if test="${canchange}">
             <span>
                 <a href="javascript:send('${currentNode.path}','cancelled')"><fmt:message key="jnt_task.cancel"/></a>&nbsp;
                 <a href="javascript:send('${currentNode.path}','active')"><fmt:message key="jnt_task.continue"/></a>
             </span>
+                        </c:if>
                     </c:when>
                     <c:when test="${currentNode.properties.state.string == 'canceled'}">
                         <img alt="" src="<c:url value='${url.currentModule}/images/warning_16.png'/>"/>

@@ -76,6 +76,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
     protected transient ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
     protected transient ListStore<GWTJahiaNode> contentStore;
     protected transient DisplayGridDragSource displayGridSource;
+    protected transient Grid<GWTJahiaNode> grid;
 
     public TabItem create(final GWTSidePanelTab config) {
         super.create(config);
@@ -127,7 +128,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
             }
         }));
         NodeColumnConfigList displayColumns = new NodeColumnConfigList(config.getTableColumns(), true);
-        final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
+        grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
         grid.setAutoExpandColumn(displayColumns.getAutoExpand());
         contentContainer.add(grid);
 
@@ -135,7 +136,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
                 listLoader.load(event.getSelectedItem());
-                contentContainer.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+                contentContainer.mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
             }
         });
 
@@ -146,14 +147,16 @@ class ContentBrowseTabItem extends BrowseTabItem {
         contentVBoxData.setFlex(2);
         tab.add(contentContainer, contentVBoxData);
 
-        displayGridSource = new DisplayGridDragSource(grid);
         return tab;
     }
 
     @Override
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
-        displayGridSource.addDNDListener(editLinker.getDndListener());
+        if (linker.getConfig().isEnableDragAndDrop()) {
+            displayGridSource = new DisplayGridDragSource(grid);
+            displayGridSource.addDNDListener(editLinker.getDndListener());
+        }
     }
 
     @Override

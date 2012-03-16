@@ -478,7 +478,9 @@ public class MainModule extends Module {
         if (node.getSiteUUID() != null && !JahiaGWTParameters.getSiteUUID().equals(node.getSiteUUID())) {
             JahiaGWTParameters.setSite(node, editLinker);
             SiteSwitcherActionItem.refreshAllSitesList(editLinker);
-            editLinker.getSidePanel().refresh(EditLinker.REFRESH_ALL);
+            if (editLinker.getSidePanel() != null) {
+                editLinker.getSidePanel().refresh(EditLinker.REFRESH_ALL);
+            }
         }
 
         setDocumentTitle(Messages.get("label."+config.getName().substring(0,config.getName().length()-4), config.getName()) + " - " + node.getDisplayName());

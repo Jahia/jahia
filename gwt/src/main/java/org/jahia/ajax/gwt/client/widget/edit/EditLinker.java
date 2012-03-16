@@ -49,7 +49,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
@@ -89,7 +88,9 @@ public class EditLinker implements Linker {
 
     public EditLinker(MainModule mainModule, SidePanel sidePanel, ActionToolbarLayoutContainer toolbar,
                       GWTEditConfiguration config) {
-        this.dndListener = new EditModeDNDListener(this);
+        if (config.isEnableDragAndDrop()) {
+            this.dndListener = new EditModeDNDListener(this);
+        }
         this.mainModule = mainModule;
         this.sidePanel = sidePanel;
         this.toolbar = toolbar;
@@ -101,11 +102,22 @@ public class EditLinker implements Linker {
         return sidePanel;
     }
 
+    public void setSidePanel(SidePanel sidePanel) {
+        this.sidePanel = sidePanel;
+        if (sidePanel != null) {
+            try {
+                sidePanel.initWithLinker(this);
+            } catch (Exception e) {
+                Log.error("Error on init linker",e);
+            }
+        }
+    }
+
     public MainModule getMainModule() {
         return mainModule;
     }
 
-    public GWTConfiguration getConfig() {
+    public GWTEditConfiguration getConfig() {
         return config;
     }
 
@@ -157,7 +169,9 @@ public class EditLinker implements Linker {
 
     public void refresh(int flag) {
         mainModule.refresh(flag);
-        sidePanel.refresh(flag);
+        if (sidePanel != null) {
+            sidePanel.refresh(flag);
+        }
 //        syncSelectionContext();
 //        toolbar.handleNewLinkerSelection();
     }
@@ -166,19 +180,25 @@ public class EditLinker implements Linker {
         syncSelectionContext(LinkerSelectionContext.BOTH);
         toolbar.handleNewLinkerSelection();
         mainModule.handleNewModuleSelection(selectedModule);
-        sidePanel.handleNewModuleSelection(selectedModule);
+        if (sidePanel != null) {
+            sidePanel.handleNewModuleSelection(selectedModule);
+        }
     }
 
     public void handleNewMainSelection() {
         syncSelectionContext(LinkerSelectionContext.BOTH);
         mainModule.handleNewMainSelection(mainPath,template, param);
-        sidePanel.handleNewMainSelection(mainPath);
+        if (sidePanel != null) {
+            sidePanel.handleNewMainSelection(mainPath);
+        }
     }
 
     public void handleNewMainNodeLoaded() {
         syncSelectionContext(LinkerSelectionContext.BOTH);
         toolbar.handleNewMainNodeLoaded(mainModule.getNode());
-        sidePanel.handleNewMainNodeLoaded(mainModule.getNode());
+        if (sidePanel != null) {
+            sidePanel.handleNewMainNodeLoaded(mainModule.getNode());
+        }
     }
 
     /**

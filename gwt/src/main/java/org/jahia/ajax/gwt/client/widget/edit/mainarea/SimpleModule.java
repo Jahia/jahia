@@ -93,20 +93,22 @@ public class SimpleModule extends Module {
     public void onParsed() {
         Log.debug("Add drag source for simple module " + path);
 
-        if (hasDragDrop) {
-            DragSource source = new SimpleModuleDragSource(this);
-            source.addDNDListener(mainModule.getEditLinker().getDndListener());
-            DropTarget target = new ModuleDropTarget(this, EditModeDNDListener.SIMPLEMODULE_TYPE);
-            target.setAllowSelfAsSource(true);
-            target.addDNDListener(mainModule.getEditLinker().getDndListener());
-        } else {
-            new DropTarget(this) {
-                @Override
-                protected void onDragEnter(DNDEvent event) {
-                    event.getStatus().setStatus(false);
-                }
-            };
+        if (mainModule.getConfig().isEnableDragAndDrop()) {
+            if (hasDragDrop) {
+                DragSource source = new SimpleModuleDragSource(this);
+                source.addDNDListener(mainModule.getEditLinker().getDndListener());
+                DropTarget target = new ModuleDropTarget(this, EditModeDNDListener.SIMPLEMODULE_TYPE);
+                target.setAllowSelfAsSource(true);
+                target.addDNDListener(mainModule.getEditLinker().getDndListener());
+            } else {
+                new DropTarget(this) {
+                    @Override
+                    protected void onDragEnter(DNDEvent event) {
+                        event.getStatus().setStatus(false);
+                    }
+                };
 
+            }
         }
 
         sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT + Event.ONCONTEXTMENU);

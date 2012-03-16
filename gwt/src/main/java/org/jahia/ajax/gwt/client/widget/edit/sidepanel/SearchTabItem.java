@@ -99,6 +99,7 @@ class SearchTabItem extends SidePanelTabItem {
     private transient ComboBox<GWTJahiaLanguage> langPickerField;
     private transient ComboBox<GWTJahiaNodeType> defPicker;
     protected transient PagingLoader<PagingLoadResult<GWTJahiaNode>> loader;
+    protected transient Grid<GWTJahiaNode> grid;
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
@@ -187,7 +188,7 @@ class SearchTabItem extends SidePanelTabItem {
         final NodeColumnConfigList columnConfigList = new NodeColumnConfigList(columnNames);
         columnConfigList.init();
 
-        final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(columnConfigList));
+        grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(columnConfigList));
 
         ContentPanel gridPanel = new ContentPanel();
         gridPanel.setLayout(new FitLayout());
@@ -200,10 +201,9 @@ class SearchTabItem extends SidePanelTabItem {
 
         panel.add(gridPanel, new RowData(1, 1, new Margins(0, 0, 20, 0)));
         tab.add(panel);
-        displayGridSource = new DisplayGridDragSource(grid);
         grid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
-                EngineLoader.showEditEngine(editLinker, (GWTJahiaNode) ((GridEvent)be).getModel());
+                EngineLoader.showEditEngine(editLinker, (GWTJahiaNode) ((GridEvent) be).getModel());
             }
         });
         grid.setContextMenu(createContextMenu(config.getTableContextMenu(), grid.getSelectionModel()));
@@ -213,7 +213,10 @@ class SearchTabItem extends SidePanelTabItem {
     @Override
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
-        displayGridSource.addDNDListener(editLinker.getDndListener());
+        if (linker.getConfig().isEnableDragAndDrop()) {
+            displayGridSource = new DisplayGridDragSource(grid);
+            displayGridSource.addDNDListener(editLinker.getDndListener());
+        }
     }
 
     /**

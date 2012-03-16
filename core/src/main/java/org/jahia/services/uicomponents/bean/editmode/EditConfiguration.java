@@ -72,6 +72,8 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     private String sitesLocation;
 
+    private boolean enableDragAndDrop = true;
+
     public void addTab(SidePanelTab tab) {
         tabs.add(tab);
     }
@@ -146,6 +148,14 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setSitesLocation(String sitesLocation) {
         this.sitesLocation = sitesLocation;
+    }
+
+    public boolean isEnableDragAndDrop() {
+        return enableDragAndDrop;
+    }
+
+    public void setEnableDragAndDrop(boolean enableDragAndDrop) {
+        this.enableDragAndDrop = enableDragAndDrop;
     }
 
     public void removeTab(String tabKey) {

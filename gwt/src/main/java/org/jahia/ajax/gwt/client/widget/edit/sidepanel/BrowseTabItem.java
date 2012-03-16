@@ -51,7 +51,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -113,18 +112,20 @@ abstract class BrowseTabItem extends SidePanelTabItem {
 
         tab.add(treeContainer, treeVBoxData);
 
-        treeDropTarget = new BrowseTreeGridDropTarget();
         return tab;
     }
 
     @Override
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
-        treeDropTarget.addDNDListener(linker.getDndListener());
-        treeDropTarget.setAllowDropOnLeaf(true);
-        treeDropTarget.setAllowSelfAsSource(false);
-        treeDropTarget.setAutoExpand(true);
-        treeDropTarget.setFeedback(DND.Feedback.APPEND);
+        if (linker.getConfig().isEnableDragAndDrop()) {
+            treeDropTarget = new BrowseTreeGridDropTarget();
+            treeDropTarget.addDNDListener(linker.getDndListener());
+            treeDropTarget.setAllowDropOnLeaf(true);
+            treeDropTarget.setAllowSelfAsSource(false);
+            treeDropTarget.setAutoExpand(true);
+            treeDropTarget.setFeedback(DND.Feedback.APPEND);
+        }
     }
 
     class BrowseTreeGridDropTarget extends TreeGridDropTarget {

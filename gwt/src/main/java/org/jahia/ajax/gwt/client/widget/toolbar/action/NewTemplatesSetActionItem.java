@@ -69,7 +69,9 @@ public class NewTemplatesSetActionItem extends BaseActionItem {
                     Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Templates set successfully created"));
                     JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
                     JahiaGWTParameters.setSite(result, linker);
-                    ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
+                    if (((EditLinker) linker).getSidePanel() != null) {
+                        ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
+                    }
                     ((EditLinker) linker).onMainSelection(result.getPath(), null, null);
                     SiteSwitcherActionItem.refreshAllSitesList(linker);
                 }

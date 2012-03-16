@@ -1,9 +1,9 @@
 to: #if( $user.properties.get('j:email') ) ${user.properties.get('j:email')} #end
 to-users: nextTaskAssignable
-subject: Publication acceptée par ${user.getUsername()}
+subject: Publication acceptée par ${currentUser.getUsername()}
 text: Bonjour,
 
-La publication des éléments suivants a été acceptée le ${date.format("short","short",$submissionDate,$locale)} par ${user.getUsername()}  
+La publication des éléments suivants a été acceptée le ${date.format("short","short",$submissionDate,$locale)} par ${currentUser.getUsername()}
 #foreach( $node in $nodes )
 #if( $velocityCount <= 10)
     - ${node.getDisplayableName()}
@@ -14,7 +14,7 @@ html: Bonjour,
 <br>
 <br>
 <div>
-La publication des éléments suivants a été acceptée le ${date.format("short","short",$submissionDate,$locale)} par ${user.getUsername()}  
+La publication des éléments suivants a été acceptée le ${date.format("short","short",$submissionDate,$locale)} par ${currentUser.getUsername()}
 </div>
 <div>
     <ul>

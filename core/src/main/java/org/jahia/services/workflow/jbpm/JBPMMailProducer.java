@@ -358,11 +358,11 @@ public class JBPMMailProducer extends MailProducerImpl {
         bindings.put("bundle", resourceBundle);
         // user is the one that initiate the Execution  (WorkflowService.startProcess)
         // currentUser is the one that "moves" the Execution  (JBPMProvider.assignTask)
-        JahiaUser jahiaUser;
+        JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) vars.get("user"));
         if (vars.containsKey("currentUser")) {
-            jahiaUser = (JahiaUser) vars.get("currentUser");
+            bindings.put("currentUser", vars.get("currentUser"));
         } else {
-            jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) vars.get("user"));
+            bindings.put("currentUser", jahiaUser);
         }
         bindings.put("user", jahiaUser);
         bindings.put("date", new DateTool());

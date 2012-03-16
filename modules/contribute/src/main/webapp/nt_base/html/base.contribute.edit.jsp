@@ -52,6 +52,9 @@
 <c:if test="${not empty currentResource.moduleParams.contentType}">
     <c:set var="contentType" value="${currentResource.moduleParams.contentType}"/>
 </c:if>
+
+<jsp:useBean id="displayedFields" class="java.util.HashMap"/>
+
 <c:forEach items="${currentNode.nodeTypes}" var="typeName">
 <jcr:nodeType name="${typeName}" var="type"/>
 <c:if test="${!nodeLocked and !renderContext.ajaxRequest and jcr:hasPermission(currentNode, 'jcr:modifyProperties_default')}">
@@ -98,11 +101,12 @@
 </style>
 <div class="FormContribute">
     <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
-        <c:if test="${propertyDefinition.name eq 'jcr:title' and propertyDefinition.itemType eq contentType}">
+        <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>
+        <c:if test="${propertyDefinition.name eq 'jcr:title' and propertyDefinition.itemType eq contentType and not fn:contains(displayedFields,scriptPropName)}">
             <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
-            <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>
             <p>
                 <label>${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}:</label>
+                <c:set target="${displayedFields}" value="${scriptPropName}" property="${scriptPropName}" />
             <span jcr:id="${propertyDefinition.name}" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}${scriptPropName}"
                   jcr:url="<c:url value='${url.base}${currentNode.path}'/>">${prop.string}</span>
@@ -111,11 +115,12 @@
     </c:forEach>
     <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
         <c:set var="readonly" value="${nodeLocked or propertyDefinition.protected or not jcr:hasPermission(currentNode, 'jcr:modifyProperties_default')}"/>
-        <c:if test="${!propertyDefinition.multiple and propertyDefinition.itemType eq contentType and not propertyDefinition.hidden and !(propertyDefinition.name eq 'jcr:title') and !(propertyDefinition.name eq '*')}">
+        <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>
+        <c:if test="${!propertyDefinition.multiple and propertyDefinition.itemType eq contentType and not propertyDefinition.hidden and !(propertyDefinition.name eq 'jcr:title') and !(propertyDefinition.name eq '*') and not fn:contains(displayedFields,scriptPropName)}">
             <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
-            <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>
             <p>
             <label>${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}:</label>
+            <c:set target="${displayedFields}" value="${scriptPropName}" property="${scriptPropName}" />
             <c:if test="${readonly}">
                 <c:choose>
                     <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">

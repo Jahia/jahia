@@ -60,6 +60,7 @@ import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.utils.FileUtils;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,7 +146,7 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
         String group = matcher.group(3);
         if(group!=null) {
             int i = 1;
-            for (String s : StringUtils.split(group, ",")) {
+            for (String s : Patterns.COMMA.split(group)) {
                 bindings.put("param"+(i++), s);
             }
         }

@@ -102,7 +102,7 @@
             <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
             <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>
             <p>
-                <label>${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}&nbsp;:</label>
+                <label>${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}:</label>
             <span jcr:id="${propertyDefinition.name}" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}${scriptPropName}"
                   jcr:url="<c:url value='${url.base}${currentNode.path}'/>">${prop.string}</span>
@@ -115,7 +115,7 @@
             <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
             <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>
             <p>
-            <label>${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}&nbsp;:</label>
+            <label>${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}:</label>
             <c:if test="${readonly}">
                 <c:choose>
                     <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">

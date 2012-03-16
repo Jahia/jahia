@@ -189,8 +189,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String guestGroupResourceKey;
     
     private boolean fileServletStatisticsEnabled;
-    
-    private String[] localhostsArray = {"localhost"};
 
     private Locale defaultLocale;
 
@@ -267,8 +265,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             jahiaImportsDiskPath = convertContexted (getString("jahiaImportsDiskPath"), pathResolver);
             jahiaSharedTemplatesDiskPath = convertContexted (getString("jahiaSharedTemplatesDiskPath"), pathResolver);
             jahiaDatabaseScriptsPath = jahiaVarDiskPath + File.separator + "db";
-            
-            localhostsArray = StringUtils.split(getString("localhostsList", "localhost"), ',');
             
             // jahia real path...
             File jahiaContextFolder = new File (pathResolver.resolvePath("." + File.separator));
@@ -975,10 +971,5 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public boolean isFileServletStatisticsEnabled() {
         return fileServletStatisticsEnabled;
     }
-    public List<String> getLocalhostsList() {
-      return Arrays.asList(localhostsArray);
-    }
-    public Set<String> getLocalhostsSet() {
-        return new HashSet<String>(getLocalhostsList());
-      }
+
 }

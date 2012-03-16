@@ -51,6 +51,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Set;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
@@ -64,7 +65,7 @@ import java.util.zip.Inflater;
 public class Url {
 
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(Url.class);
-    public static final Set<String> LOCALHOSTS = SettingsBean.getInstance().getLocalhostsSet();
+    public static final Set<String> LOCALHOSTS = Collections.singleton("localhost");
 
     /**
      * Encode facet filter URL parameter

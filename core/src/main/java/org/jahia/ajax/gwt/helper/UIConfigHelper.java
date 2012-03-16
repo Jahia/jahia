@@ -541,6 +541,7 @@ public class UIConfigHelper {
                 gwtConfig.setTabs(createGWTSidePanelTabList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getTabs()));
                 gwtConfig.setEngineTabs(createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineTabs()));
                 gwtConfig.setSitesLocation(config.getSitesLocation());
+                gwtConfig.setEnableDragAndDrop(config.isEnableDragAndDrop());
                 return gwtConfig;
             } else {
                 throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.bean.editconfig.not.found.in.spring.config.file",uiLocale));

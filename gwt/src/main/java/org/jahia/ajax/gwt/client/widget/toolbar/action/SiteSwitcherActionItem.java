@@ -208,7 +208,9 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                     ((EditLinker) linker).setLocale((GWTJahiaLanguage) jahiaNode.get(GWTJahiaNode.DEFAULT_LANGUAGE));
                 }
                 JahiaGWTParameters.setSite(jahiaNode, linker);
-                ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
+                if (((EditLinker) linker).getSidePanel() != null) {
+                    ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
+                }
                 if (root.get(0).startsWith("/templateSets")) {
                     ((EditLinker) linker).onMainSelection(jahiaNode.getPath(), null, null);
                 } else {

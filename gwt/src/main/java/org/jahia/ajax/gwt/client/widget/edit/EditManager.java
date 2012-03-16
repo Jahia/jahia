@@ -45,6 +45,8 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.Style;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
@@ -66,7 +68,7 @@ public class EditManager extends ContentPanel {
     private EditLinker editLinker;
     private BorderLayout borderLayout ;
 
-    public EditManager(String html, String path, String template, String nodeTypes, String locale, GWTEditConfiguration config) {
+    public EditManager(String html, String path, String template, String nodeTypes, String locale, final GWTEditConfiguration config) {
         long start = System.currentTimeMillis();
 
         JahiaGWTParameters.setSiteNode(config.getSiteNode());
@@ -76,14 +78,26 @@ public class EditManager extends ContentPanel {
         borderLayout =  new BorderLayout();
         setLayout(borderLayout);
         setHeaderVisible(false);
-        BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.WEST, 300);
-        data.setCollapsible(true);
-        data.setSplit(true);
-        data.setFloatable(true);
-        sidePanel = new SidePanel(config);
-        sidePanel.setStyleAttribute("z-index", "999");
-        sidePanel.addStyleName("gwt-only-panel");
-        add(sidePanel, data);
+
+        if (!config.getTabs().isEmpty()) {
+//        GWT.runAsync(new RunAsyncCallback() {
+//            public void onFailure(Throwable reason) {
+//                //To change body of implemented methods use File | Settings | File Templates.
+//            }
+//
+//            public void onSuccess() {
+                BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.WEST, 300);
+                data.setCollapsible(true);
+                data.setSplit(true);
+                data.setFloatable(true);
+
+                sidePanel = new SidePanel(config);
+                sidePanel.setStyleAttribute("z-index", "999");
+                sidePanel.addStyleName("gwt-only-panel");
+                add(sidePanel, data);
+//            }
+//        });
+        }
 
         toolbar =  new ActionToolbarLayoutContainer(config.getTopToolbar());
         toolbar.setStyleAttribute("z-index", "999");

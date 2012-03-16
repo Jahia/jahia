@@ -95,9 +95,11 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String DEFAULT_LANGUAGE = "j:defaultLanguage";
     public static final String VISIBILITY_INFO = "visibilityInfo";
     public static final String IS_VISIBLE = "isVisible";
+    public static final String LOCKS_INFO = "locksInfo";
+    public static final String SUBNODES_CONSTRAINTS_INFO = "locksInfo";
 
     public static final List<String> DEFAULT_FIELDS =
-            Arrays.asList(ICON, TAGS, CHILDREN_INFO, "j:view", "j:width", "j:height", PUBLICATION_INFO);
+            Arrays.asList(ICON, TAGS, CHILDREN_INFO, "j:view", "j:width", "j:height", PERMISSIONS, LOCKS_INFO, PUBLICATION_INFO, SUBNODES_CONSTRAINTS_INFO);
 
     public static final List<String> DEFAULT_REFERENCE_FIELDS =
             Arrays.asList(ICON, COUNT, CHILDREN_INFO,NAME,DISPLAY_NAME);
@@ -105,7 +107,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String HOMEPAGE_PATH = "homepage-path";
 
     public static final List<String> DEFAULT_SITE_FIELDS =
-            Arrays.asList("j:siteType", "j:installedModules", "j:templatesSet", "j:dependencies","j:languages", "j:defaultLanguage", HOMEPAGE_PATH, SITE_LANGUAGES, "j:versionInfo");
+            Arrays.asList("j:siteType", "j:installedModules", "j:templatesSet", "j:dependencies","j:languages", "j:defaultLanguage", HOMEPAGE_PATH, SITE_LANGUAGES, "j:versionInfo", PERMISSIONS, LOCKS_INFO);
 
     public static final List<String> RESERVED_FIELDS =
             Arrays.asList(TAGS, NAME, PATH, ICON, LOCKED, LOCKABLE, PERMISSIONS, DELETEABLE, UUID, DISPLAY_NAME, FILE,

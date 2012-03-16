@@ -848,50 +848,55 @@ public class NavigationHelper {
         n.setInheritedNodeTypes(inheritedTypes);
         n.setProviderKey(node.getProvider().getKey());
 
-        BitSet bs = node.getPermissionsAsBitSet();
-        GWTBitSet gwtBs = new GWTBitSet(bs.size());
+        if (fields.contains(GWTJahiaNode.PERMISSIONS)) {
+            BitSet bs = node.getPermissionsAsBitSet();
+            GWTBitSet gwtBs = new GWTBitSet(bs.size());
 
-        for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i+1)) {
-            gwtBs.set(i);
+            for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i+1)) {
+                gwtBs.set(i);
+            }
+
+            n.setPermissions(gwtBs);
+
+            try {
+                boolean hasAcl = node.hasNode("j:acl") && node.getNode("j:acl").hasNodes();
+                n.setHasAcl(hasAcl);
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
 
-        n.setPermissions(gwtBs);
-
-        n.setLockable(node.isLockable());
-        try {
-            boolean hasAcl = node.hasNode("j:acl") && node.getNode("j:acl").hasNodes();
-            n.setHasAcl(hasAcl);
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        try {
-            String username = node.getSession().getUser().getUsername();
-            n.setLocked(JCRContentUtils.isLockedAndCannotBeEdited(node));
-            Map<String, List<String>> infos = node.getLockInfos();
-            Map<String, List<String>> results = new HashMap<String, List<String>>(infos.size());
-            if (!infos.isEmpty()) {
-                for (Map.Entry<String, List<String>> entry : infos.entrySet()) {
-                    for (String s : entry.getValue()) {
-                        JCRNodeLockType type = JCRContentUtils.getLockType(s);
+        if (fields.contains(GWTJahiaNode.LOCKS_INFO)) {
+            n.setLockable(node.isLockable());
+            try {
+                String username = node.getSession().getUser().getUsername();
+                n.setLocked(JCRContentUtils.isLockedAndCannotBeEdited(node));
+                Map<String, List<String>> infos = node.getLockInfos();
+                Map<String, List<String>> results = new HashMap<String, List<String>>(infos.size());
+                if (!infos.isEmpty()) {
+                    for (Map.Entry<String, List<String>> entry : infos.entrySet()) {
+                        for (String s : entry.getValue()) {
+                            JCRNodeLockType type = JCRContentUtils.getLockType(s);
                             if (!results.containsKey(entry.getKey())) {
                                 results.put(entry.getKey(), new LinkedList<String>());
                             }
                             results.get(entry.getKey()).add("label.locked.by." + type.toString().toLowerCase());
 
+                        }
                     }
                 }
+                n.setLockInfos(results);
+                if (node.getSession().getLocale() != null) {
+                    String l = node.getSession().getLocale().toString();
+                    n.setCanLock(infos.isEmpty() || !infos.containsKey(l));
+                    n.setCanUnlock(infos.containsKey(null) && infos.get(null).contains(username+":user") && (infos.size() == 1 || infos.containsKey(l) && infos.get(l).contains(username+":user")));
+                } else {
+                    n.setCanLock(infos.isEmpty());
+                    n.setCanUnlock(infos.containsKey(null) && infos.get(null).contains(username+":user"));
+                }
+            } catch (RepositoryException e) {
+                logger.error("Error when getting lock", e);
             }
-            n.setLockInfos(results);
-            if (node.getSession().getLocale() != null) {
-                String l = node.getSession().getLocale().toString();
-                n.setCanLock(infos.isEmpty() || !infos.containsKey(l));
-                n.setCanUnlock(infos.containsKey(null) && infos.get(null).contains(username+":user") && (infos.size() == 1 || infos.containsKey(l) && infos.get(l).contains(username+":user")));
-            } else {
-                n.setCanLock(infos.isEmpty());
-                n.setCanUnlock(infos.containsKey(null) && infos.get(null).contains(username+":user"));
-            }
-        } catch (RepositoryException e) {
-            logger.error("Error when getting lock", e);
         }
 
         if (fields.contains(GWTJahiaNode.VISIBILITY_INFO)) {
@@ -1154,14 +1159,16 @@ public class NavigationHelper {
             }
         }
 
-        // reference types
-        try {
-            String cons = ConstraintsHelper.getConstraints(node);
-            if (cons != null) {
-                n.set("referenceTypes", ConstraintsHelper.getReferenceTypes(cons, null));
+        if (fields.contains(GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO)) {
+            // reference types
+            try {
+                String cons = ConstraintsHelper.getConstraints(node);
+                if (cons != null) {
+                    n.set("referenceTypes", ConstraintsHelper.getReferenceTypes(cons, null));
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
             }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
         }
 
         if (fields.contains(GWTJahiaNode.DEFAULT_LANGUAGE)) {

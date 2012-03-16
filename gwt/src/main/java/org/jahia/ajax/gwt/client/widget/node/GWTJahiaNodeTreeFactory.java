@@ -160,6 +160,8 @@ public class GWTJahiaNodeTreeFactory {
 
     public void setFields(List<String> fields) {
         this.fields = new ArrayList<String>(fields);
+        this.fields.add(GWTJahiaNode.LOCKS_INFO);
+        this.fields.add(GWTJahiaNode.PERMISSIONS);
         this.fields.add(GWTJahiaNode.CHILDREN_INFO);
         this.fields.add(GWTJahiaNode.ICON);
     }

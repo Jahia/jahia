@@ -94,11 +94,13 @@ public class PlaceholderModule extends Module {
     }
 
     public void onNodeTypesLoaded() {
-        DropTarget target = new ModuleDropTarget(this, EditModeDNDListener.PLACEHOLDER_TYPE);
-        target.setOperation(DND.Operation.COPY);
-        target.setFeedback(DND.Feedback.INSERT);
+        if (mainModule.getConfig().isEnableDragAndDrop()) {
+            DropTarget target = new ModuleDropTarget(this, EditModeDNDListener.PLACEHOLDER_TYPE);
+            target.setOperation(DND.Operation.COPY);
+            target.setFeedback(DND.Feedback.INSERT);
 
-        target.addDNDListener(mainModule.getEditLinker().getDndListener());
+            target.addDNDListener(mainModule.getEditLinker().getDndListener());
+        }
 
         if (getParentModule().getChildCount() >= getParentModule().getListLimit() && getParentModule().getListLimit() != -1) {
             return;

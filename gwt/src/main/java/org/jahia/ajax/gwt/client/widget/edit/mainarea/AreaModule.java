@@ -182,11 +182,12 @@ public class AreaModule extends SimpleModule {
 
     @Override public void onNodeTypesLoaded() {
         if (childCount == 0 && !missingList) {
-            DropTarget target = new ModuleDropTarget(this, node == null ? EditModeDNDListener.EMPTYAREA_TYPE : EditModeDNDListener.PLACEHOLDER_TYPE);
-            target.setOperation(DND.Operation.COPY);
-            target.setFeedback(DND.Feedback.INSERT);
-            target.addDNDListener(mainModule.getEditLinker().getDndListener());
-
+            if (mainModule.getConfig().isEnableDragAndDrop()) {
+                DropTarget target = new ModuleDropTarget(this, node == null ? EditModeDNDListener.EMPTYAREA_TYPE : EditModeDNDListener.PLACEHOLDER_TYPE);
+                target.setOperation(DND.Operation.COPY);
+                target.setFeedback(DND.Feedback.INSERT);
+                target.addDNDListener(mainModule.getEditLinker().getDndListener());
+            }
             if (getNodeTypes() != null) {
                 String[] nodeTypesArray = getNodeTypes().split(" ");
                 for (final String s : nodeTypesArray) {

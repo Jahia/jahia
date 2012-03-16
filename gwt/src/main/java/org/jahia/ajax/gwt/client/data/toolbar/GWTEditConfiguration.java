@@ -56,6 +56,7 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
     private GWTJahiaToolbar contextMenu;
     private GWTJahiaToolbar sidePanelToolbar;
     private GWTJahiaToolbar mainModuleToolbar;
+    private boolean enableDragAndDrop;
 
     private List<GWTSidePanelTab> tabs;
 
@@ -102,4 +103,11 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
         this.tabs = tabs;
     }
 
+    public boolean isEnableDragAndDrop() {
+        return enableDragAndDrop;
+    }
+
+    public void setEnableDragAndDrop(boolean enableDragAndDrop) {
+        this.enableDragAndDrop = enableDragAndDrop;
+    }
 }

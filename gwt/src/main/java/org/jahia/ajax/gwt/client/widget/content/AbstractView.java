@@ -106,6 +106,8 @@ public abstract class AbstractView extends TopRightComponent {
                     }
                     List<String> keys = new ArrayList<String>(configuration.getTableColumnKeys());
                     keys.add(GWTJahiaNode.PUBLICATION_INFO);
+                    keys.add(GWTJahiaNode.PERMISSIONS);
+                    keys.add(GWTJahiaNode.LOCKS_INFO);
                     JahiaContentManagementService.App.getInstance().lsLoad(root,
                             configuration.getNodeTypes(),
                             configuration.getMimeTypes(), configuration.getFilters(), keys,

@@ -73,7 +73,6 @@ class CreateContentTabItem extends SidePanelTabItem {
         refresh(Linker.REFRESH_DEFINITIONS);
 
         tab.add(contentTypeTree);
-        gridDragSource = new CreateGridDragSource(contentTypeTree.getTreeGrid());
         return tab;
     }
 
@@ -81,7 +80,10 @@ class CreateContentTabItem extends SidePanelTabItem {
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
 //        contentTypeTree.setLinker(linker);
-        gridDragSource.addDNDListener(linker.getDndListener());
+        if (linker.getConfig().isEnableDragAndDrop()) {
+            gridDragSource = new CreateGridDragSource(contentTypeTree.getTreeGrid());
+            gridDragSource.addDNDListener(linker.getDndListener());
+        }
     }
 
     public void setBaseType(String baseType) {

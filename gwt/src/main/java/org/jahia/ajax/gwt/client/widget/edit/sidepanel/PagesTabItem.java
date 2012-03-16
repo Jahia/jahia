@@ -53,7 +53,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -170,7 +169,9 @@ public class PagesTabItem extends SidePanelTabItem {
         super.initWithLinker(linker);
         path = linker.getMainModule().getPath();
         initPageTree();
+        if (linker.getConfig().isEnableDragAndDrop()) {
         initDND();
+        }
     }
 
     @Override

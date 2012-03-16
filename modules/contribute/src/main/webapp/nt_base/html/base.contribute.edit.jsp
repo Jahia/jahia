@@ -54,7 +54,7 @@
 </c:if>
 <c:forEach items="${currentNode.nodeTypes}" var="typeName">
 <jcr:nodeType name="${typeName}" var="type"/>
-<c:if test="${!nodeLocked && !renderContext.ajaxRequest}">
+<c:if test="${!nodeLocked and !renderContext.ajaxRequest and jcr:hasPermission(currentNode, 'jcr:modifyProperties_default')}">
     <c:set var="initEditFields" value="initEditFields('${currentNode.identifier}');"/>
     <c:forEach items="${currentNode.primaryNodeType.propertyDefinitions}" var="propertyDefinition">
         <c:if test="${!propertyDefinition.multiple and propertyDefinition.itemType eq contentType and not propertyDefinition.hidden and !(propertyDefinition.name eq 'jcr:title') and !(propertyDefinition.name eq '*')}">
@@ -110,7 +110,7 @@
         </c:if>
     </c:forEach>
     <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
-        <c:set var="readonly" value="${nodeLocked || propertyDefinition.protected}"/>
+        <c:set var="readonly" value="${nodeLocked or propertyDefinition.protected or not jcr:hasPermission(currentNode, 'jcr:modifyProperties_default')}"/>
         <c:if test="${!propertyDefinition.multiple and propertyDefinition.itemType eq contentType and not propertyDefinition.hidden and !(propertyDefinition.name eq 'jcr:title') and !(propertyDefinition.name eq '*')}">
             <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
             <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>

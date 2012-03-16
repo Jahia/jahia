@@ -70,9 +70,14 @@ public class MultiplePasteAction extends Action {
         List<String> uuids = (List<String>) req.getSession().getAttribute(MultipleCopyAction.UUIDS_TO_COPY);
         if (uuids != null && uuids.size() > 0) {
             JCRNodeWrapper targetNode = resource.getNode();
+            String targetPath = targetNode.getPath();
             try {
                 for (String uuid : uuids) {
                     JCRNodeWrapper node = session.getNodeByUUID(uuid);
+                    if (targetPath.startsWith(node.getPath())) {
+                        // do not copy recursively
+                        continue;
+                    }
                     session.checkout(node);
                     node.copy(targetNode, JCRContentUtils.findAvailableNodeName(targetNode, node.getName()), true);
                 }
@@ -86,9 +91,14 @@ public class MultiplePasteAction extends Action {
         uuids = (List<String>) req.getSession().getAttribute(MultipleCutAction.UUIDS_TO_CUT);
         if (uuids != null && uuids.size() > 0) {
             JCRNodeWrapper targetNode = resource.getNode();
+            String targetPath = targetNode.getPath();
             try {
                 for (String uuid : uuids) {
                     JCRNodeWrapper node = session.getNodeByUUID(uuid);
+                    if (targetPath.startsWith(node.getPath())) {
+                        // do not move recursively
+                        continue;
+                    }
                     session.checkout(node);
                     session.move(node.getPath(),targetNode.getPath()+"/"+JCRContentUtils.findAvailableNodeName(targetNode, node.getName()));
                 }

@@ -7,7 +7,7 @@ Jahia Tasks Module
 
   A task list is available for the user to check what he needs to do.
 
-  Every task is assigned a default workflow - a task goes from "active" to "cancelled" or "finished", and can be
+  Every task is assigned a default workflow - a task goes from "active" to "started" and "finished", and can be
   "suspended"
 
 * View the user task list

@@ -79,8 +79,8 @@
         </script>
     </template:addResources>
 </c:if>
+<template:addResources>
 <style>
-
     img {
         border: none;
     }
@@ -99,6 +99,7 @@
 
         /*  */
 </style>
+</template:addResources>
 <div class="FormContribute">
     <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
         <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>

@@ -1,4 +1,4 @@
-package org.jahia.services.channels.providers.basic;
+package org.jahia.services.channels.providers;
 
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelProvider;
@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 /**
  * A basic channel provider configured through Spring files
  */
-public class BasicChannelProvider implements ChannelProvider, InitializingBean {
+public class UserAgentChannelProvider implements ChannelProvider, InitializingBean {
 
     public static final String USER_AGENT_HEADER_NAME = "user-agent";
 

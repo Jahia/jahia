@@ -10,7 +10,7 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="javascript" resources="tasks.js"/>
 
-<c:set var="user" value="${currentNode.properties['assignee'].node.name}"/>
+<c:set var="user" value="${currentNode.properties['assigneeUserKey'].string}"/>
 <c:if test="${empty user}">
     <c:set var="user" value="${currentNode.properties['jcr:createdBy'].string}"/>
 </c:if>

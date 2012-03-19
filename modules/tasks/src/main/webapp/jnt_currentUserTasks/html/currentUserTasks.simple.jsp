@@ -57,7 +57,7 @@
         <ul>
 
             <jcr:sql var="tasks"
-                     sql="select * from [jnt:task] as task where task.assignee='${user.identifier}'"/>
+                     sql="select * from [jnt:task] as task where task.assigneeUserKey='${user.name}'"/>
             <c:set var="nodes" value="${tasks.nodes}"/>
             <%--<c:set value="${jcr:getNodes(currentNode,'jnt:task')}" var="tasks"/>--%>
 

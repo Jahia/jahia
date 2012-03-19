@@ -9,5 +9,5 @@
     <c:url var="url" value="${node.url}" context="/"/>
 </c:if>
 <img src="${url}" alt="${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}"
-     <c:if test="${not empty node.properties['j:height']}">height="${node.properties['j:height'].string}"</c:if>
-     <c:if test="${not empty node.properties['j:width']}">width="${node.properties['j:width'].string}"</c:if> />
+     <c:if test="${not empty node.properties['j:height']}"> height="${node.properties['j:height'].string}"</c:if>
+     <c:if test="${not empty node.properties['j:width']}"> width="${node.properties['j:width'].string}"</c:if> />

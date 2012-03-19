@@ -135,3 +135,90 @@ padding:0;
 .bodywrapper .planningtasks li.unfinishedTask {
     border-left:4px solid #cc3333
 }
+
+/******************************************************************************
+*  task actions list
+******************************************************************************/
+
+.bodywrapper ul.taskactionslist  {
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	margin:0;
+	padding:0;
+	border-bottom:none;
+	overflow:hidden;
+}
+.bodywrapper .taskactionslist li {
+	list-style-type:none;
+	margin:0;
+	background-color:#0099ff ;
+	color:#fff;
+	border:none;
+	text-align:center;
+	padding:4px 4px;
+	margin-right:10px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	float:left;
+}
+.bodywrapper .taskactionslist li.taskactions-right {
+	float:right;
+	margin-right:0;
+	margin-left:10px;
+}
+
+.bodywrapper a.taskactionslist,
+.bodywrapper a.taskactionslist:link,
+.bodywrapper a.taskactionslist:visited
+{
+	color:#fff;
+	padding:6px 6px 6px 29px;
+}
+
+.bodywrapper a.taskactionslist-refuse,
+{
+	background:url(img/refuse.png) no-repeat 2% 50%;
+}
+.bodywrapper a.taskactionslist:hover,
+.bodywrapper a.taskactionslist:active {
+	text-decoration:none;
+	color:#fff;
+	background-color:#008ae5;
+}
+
+.bodywrapper a.taskactionslist-start,
+{
+	background:url(img/start.png) no-repeat 2% 50%;
+}
+
+.task-status {
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    color: #FFFFFF;
+    font-size: 9.75px;
+    font-weight: bold;
+    padding-bottom: 1px;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top: 1px;
+    text-transform: uppercase;
+    margin-right:0.5em;
+}
+
+
+.task-status-active {
+    background-color: #0099ff;
+}
+.task-status-started {
+    background-color: #ff6600;
+}
+.task-status-suspended {
+    background-color: #ff6600;
+}
+.task-status-finished {
+    background-color: #000;
+}

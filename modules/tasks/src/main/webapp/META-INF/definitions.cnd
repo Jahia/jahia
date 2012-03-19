@@ -6,8 +6,9 @@
  - description (string)
  - priority (string, choicelist[resourceBundle]) = 'medium' nofulltext analyzer='keyword' < 'very_low', 'low', 'medium', 'high', 'very_high'
  - dueDate (date, datetimepicker) = now('1000*60*60*24')
- - state (string, choicelist[resourceBundle]) = 'active' nofulltext analyzer='keyword' < 'active', 'started', 'finished', 'suspended', 'cancelled'
+ - state (string, choicelist[resourceBundle]) = 'active' nofulltext analyzer='keyword' < 'active', 'started', 'finished', 'suspended'
  - type (string)
+ - outcomes (string) multiple
 
 [jnt:tasks] > jnt:content, mix:title
  orderable
@@ -16,6 +17,10 @@
 
 [jnt:currentUserTasks] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly
  - viewUserTasks (boolean)
+ - filterOnTypes (string) nofulltext
+ - filterOnStates (string, choicelist[resourceBundle]) multiple < 'active', 'started', 'finished', 'suspended'
+ - filterOnAssignee (string, choicelist[resourceBundle]) < 'assignedToMe','unassigned'
+ - filterOnCreator (string, choicelist[resourceBundle]) < 'createdByMe'
  - viewWorkflowTasks (boolean)
  - workflowTypes (string, choicelist[workflow]) multiple nofulltext
 

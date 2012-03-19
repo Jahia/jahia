@@ -56,14 +56,20 @@
 
         <ul>
 
-            <jcr:sql var="tasks"
-                     sql="select * from [jnt:task] as task where task.assigneeUserKey='${user.name}'"/>
-            <c:set var="nodes" value="${tasks.nodes}"/>
-            <%--<c:set value="${jcr:getNodes(currentNode,'jnt:task')}" var="tasks"/>--%>
-
             <c:if test="${currentNode.properties['viewUserTasks'].boolean}">
+                <template:include view="hidden.load"/>
+                <c:set var="listQuery" value="${moduleMap.listQuery}"/>
+                <jcr:jqom var="tasks" qomBeanName="listQuery"/>
+
+                <c:set var="nodes" value="${tasks.nodes}"/>
+                <%--<c:set value="${jcr:getNodes(currentNode,'jnt:task')}" var="tasks"/>--%>
+
                 <c:forEach items="${nodes}" var="task"
                            begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
+
+                    <c:set var="found" value="${fn:contains(currentNode.properties['filterOnTypes'].string, task.properties['type'])}"/>
+                    <c:if test="${empty currentNode.properties['taskTypes'].string or found}">
+
                     <li>
                         <a href="<c:url value='${url.base}${task.path}.html'/>>">${fn:escapeXml(task.propertiesAsString['jcr:title'])}</a>
 
@@ -97,6 +103,7 @@
                             </c:when>
                         </c:choose>
                     </li>
+                    </c:if>
                 </c:forEach>
             </c:if>
             <c:if test="${currentNode.properties['viewWorkflowTasks'].boolean}">

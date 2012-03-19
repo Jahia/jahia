@@ -89,7 +89,7 @@
                 <tbody>
 
                 <jcr:sql var="tasks"
-                         sql="select * from [jnt:task] as task where task.assignee='${user.identifier}' order by task.[jcr:created]"/>
+                         sql="select * from [jnt:task] as task where task.assigneeUserKey='${user.name}' order by task.[jcr:created]"/>
                 <c:set var="nodes" value="${tasks.nodes}"/>
                     <%--<c:set value="${jcr:getNodes(currentNode,'jnt:task')}" var="tasks"/>--%>
                 <c:if test="${currentNode.properties['viewUserTasks'].boolean}">

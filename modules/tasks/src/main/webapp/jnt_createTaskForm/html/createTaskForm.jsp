@@ -8,6 +8,8 @@
 <template:addResources type="javascript"
                        resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="javascript" resources="jquery.fancybox.js"/>
+<template:addResources type="javascript" resources="jquery.autocomplete.js"/>
+<template:addResources type="css" resources="jquery.autocomplete.css"/>
 
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 <c:set var="taskType" value="${currentNode.properties['taskType'].string}"/>
@@ -19,6 +21,35 @@
     $(document).ready(function() {
 
         $("a#createTasks").fancybox();
+
+
+        $("#task_assignee").autocomplete("<c:url value='${url.findUser}'/>", {
+                        dataType: "json",
+                        cacheLength: 1,
+                        parse: function (data) {
+                            return $.map(data, function(row) {
+                                return {
+                                    data: row,
+                                    value: row['username'],
+                                    result: getText(row)
+                                }
+                            });
+                        },
+                        formatItem: function(item) {
+                            return getText(item);
+                        }
+                    }).result(function(event, item, formatted) {
+                        if (!item) {
+                            return;
+                        }
+                    $('#assignee_hidden').val(item['username'])
+                    });
+
+        $("#createTaskForm").submit(function() {
+            var datePicked = $("#${currentNode.name}-dueDate").val().replace(/^\s+|\s+$/g, '').replace(" ", "T");
+            $("#dueDate_hidden").val(datePicked);
+            return true;
+        })
 
     });
 </script>
@@ -34,10 +65,9 @@
         <div class="Form taskForm"><!--start Form -->
 
             <jcr:propertyInitializers nodeType="jnt:task" name="priority" var="priorities"/>
-            <jcr:propertyInitializers nodeType="jnt:task" name="assignee" var="users"/>
 
             <template:tokenizedForm>
-            <form method="post" action="<c:url value='${url.basePreview}${bindedComponent.path}/tasks/*'/>">
+            <form id="createTaskForm" method="post" action="<c:url value='${url.basePreview}${bindedComponent.path}/tasks/*'/>">
                 <input type="hidden" name="jcrNodeType" value="jnt:task">
                 <input type="hidden" name="jcrParentType" value="jnt:tasks">
                 <input type="hidden" name="type" value="${taskType}"/>
@@ -78,20 +108,34 @@
                             <fmt:message key="jnt_task.assignee"/>
                             :</label>
 
-                        <select name="assignee" id="task_assignee" class="combo" tabindex="21">
-                            <c:forEach items="${users}" var="user">
-                                <option value="${user.value.string}"> ${user.displayName} </option>
-                            </c:forEach>
-                        </select>
+                        <%--<select name="assignee" id="task_assignee" class="combo" tabindex="21">--%>
+
+                            <%--<option value=""><fmt:message key="label.noassignee"/></option>--%>
+                            <%--<option value="${renderContext.user}"><fmt:message key="Me (${renderContext.user})"/></option>--%>
+                            <%--<c:forEach items="${users}" var="user">--%>
+                                <%--<option value="${user.value.string}"> ${user.displayName} </option>--%>
+                            <%--</c:forEach>--%>
+                        <%--</select>--%>
+
+                        <input id="task_assignee" name="assigneeName" type="text" value="${startSearching}" tabindex="22"
+                               onfocus="if(this.value==this.defaultValue)this.value='';"
+                               onblur="if(this.value=='')this.value=this.defaultValue;" class="text-input"/>
+                        <input  type="text" id="assignee_hidden" name="assigneeUserKey" style="display:none"/>
+
                     </p>
                 </c:if>
                 <c:if test="${currentNode.properties['useDueDate'].boolean}">
                     <p>
                         <label for="task_dueDate">Due date:</label>
 
-                        <input ${disabled} id="${currentNode.name}-dueDate" type="text" name="dueDate" id="task_dueDate"
-                                           class="" value="" tabindex="17" readonly="readonly"/>
-                        <ui:dateSelector fieldId="${currentNode.name}-dueDate"/>
+                        <input  type="text" id="dueDate_hidden" name="dueDate" style="display:none"/>
+
+                        <input ${disabled} id="${currentNode.name}-dueDate" type="text" name="dueDate-picker" id="task_dueDate"
+                                           class="" value="" tabindex="24" readonly="readonly"/>
+                        <ui:dateSelector fieldId="${currentNode.name}-dueDate" time="true" >
+                            {dateFormat: $.datepicker.ISO_8601, showButtonPanel: true, showOn:'focus'}
+                        </ui:dateSelector>
+
                     </p>
                 </c:if>
                 <input type="hidden" name="state" value="active"/>

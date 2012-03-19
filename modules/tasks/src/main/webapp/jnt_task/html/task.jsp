@@ -52,7 +52,7 @@
                 <label class="left">
                     <fmt:message key="jnt_task.assignee"/>
                     :</label>
-                <span class="right value">${currentNode.properties.assignee.node.name}</span>
+                <span class="right value">${currentNode.properties.assigneeUserKey.string}</span>
 
             </p>
 

@@ -6,7 +6,7 @@
 
     <bean id="ChannelService" class="org.jahia.services.channels.ChannelService" factory-method="getInstance" />
 
-    <bean id="BasicChannelProvider" class="org.jahia.services.channels.providers.basic.BasicChannelProvider">
+    <bean id="UserAgentChannelProvider" class="org.jahia.services.channels.providers.UserAgentChannelProvider">
         <property name="channelService" ref="ChannelService" />
         <property name="channelList">
             <list>

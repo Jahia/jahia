@@ -355,7 +355,9 @@
     <bean id="nodeReferenceRenderer"
           class="org.jahia.services.content.nodetypes.renderer.NodeReferenceChoiceListRenderer"/>
     <bean id="componentTypesInitializer" class="org.jahia.services.content.nodetypes.initializers.ComponentTypesChoiceListInitializerImpl"/>
-
+    <bean id="channelInitializer" class="org.jahia.services.channels.ChannelChoiceListInitializer">
+        <property name="channelService" ref="ChannelService" />
+    </bean>
     <bean id="choiceListInitializers"
           class="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService"
           factory-method="getInstance">
@@ -380,6 +382,7 @@
                 <entry key="workflowTypes" value-ref="workflowTypesInitializer"/>
                 <entry key="sort" value-ref="sortInitializer"/>
                 <entry key="componenttypes" value-ref="componentTypesInitializer"/>
+                <entry key="channels" value-ref="channelInitializer"/>
             </map>
         </property>
     </bean>

@@ -38,12 +38,14 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.render.filter;
+package org.jahia.services.channels.filters;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
 import org.jahia.services.render.*;
+import org.jahia.services.render.filter.AbstractFilter;
+import org.jahia.services.render.filter.RenderChain;
 import org.slf4j.Logger;
 
 import javax.jcr.AccessDeniedException;
@@ -52,8 +54,8 @@ import javax.servlet.http.Cookie;
 /**
  * A filter that will match a user agent and set it to the associated channel
  */
-public class ChannelFilter extends AbstractFilter {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ChannelFilter.class);
+public class ChannelResolutionFilter extends AbstractFilter {
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ChannelResolutionFilter.class);
     public static final String ACTIVE_CHANNEL_COOKIE_NAME = "org.jahia.channels.activeChannel";
     public static final String ACTIVE_CHANNEL_QUERY_PARAMETER = "channel";
 

@@ -121,32 +121,32 @@
                     <c:forEach items="${nodes}" var="task" varStatus="status">
                         <tr class="${status.count % 2 == 0 ? 'odd' : 'even'}">
                             <td headers="Title">
-                                <span class="icon-task-high"></span>&nbsp;<a href="javascript:void(0)">${fn:escapeXml(task.properties['jcr:title'].string)}</a><span class="opentask" onclick="switchDisplay('${task.identifier}')">Show task</span>
+                                <span class="icon-task-high"></span>&nbsp;<a href="javascript:void(0)">${fn:escapeXml(task.properties['jcr:title'].string)}</a><span class="opentask" onclick="switchDisplay('${task.identifier}')"><fmt:message key="label.showTask"/></span>
 
                                 <div style="display:none;" class="taskdetail" id="taskdetail_${task.identifier}">
-                                    <p class="task-info-p">Created by: ${task.properties['jcr:createdBy'].string}, on <fmt:formatDate value="${task.properties['jcr:created'].date.time}" dateStyle="long" type="date"/></p>
-                                    <p class="task-priority-p">Importance: <span class="task-priority task-${task.properties['priority'].string}">${task.properties['priority'].string}</span></p>
+                                    <p class="task-info-p"><fmt:message key="label.createdBy"/>: ${task.properties['jcr:createdBy'].string}, <fmt:message key="label.createdOn"/> <fmt:formatDate value="${task.properties['jcr:created'].date.time}" dateStyle="long" type="date"/></p>
+                                    <c:if test="${not empty task.properties['priority']}"><p class="task-priority-p"><fmt:message key="jnt_task.priority"/>: <span class="task-priority task-${task.properties['priority'].string}">${task.properties['priority'].string}</span></p></c:if>
                                     <p class="task-text">${task.properties['description'].string}</p>
                                     <ul class="taskactionslist">
                                         <c:choose>
                                             <c:when test="${task.properties.state.string == 'active' and task.properties['assigneeUserKey'].string ne user.name}">
-                                                <li><a class="taskactionslist taskactionslist-assign" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','${user.name}')" title="assign to me">Assign to me</a></li>
+                                                <li><a class="taskactionslist taskactionslist-assign" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','${user.name}')" title="assign to me"><fmt:message key="label.actions.assigneToMe"/></a></li>
                                             </c:when>
                                             <c:when test="${task.properties.state.string == 'active' and task.properties['assigneeUserKey'].string eq user.name}">
-                                                <li><a class="taskactionslist taskactionslist-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse">Refuse</a></li>
-                                                <li><a class="taskactionslist taskactionslist-start" href="javascript:sendNewStatus('${task.identifier}','${task.path}','started')" title="start">Start</a></li>
+                                                <li><a class="taskactionslist taskactionslist-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse"><fmt:message key="label.actions.refuse"/></a></li>
+                                                <li><a class="taskactionslist taskactionslist-start" href="javascript:sendNewStatus('${task.identifier}','${task.path}','started')" title="start"><fmt:message key="label.actions.start"/></a></li>
                                             </c:when>
                                             <c:when test="${task.properties.state.string == 'started' and task.properties['assigneeUserKey'].string eq user.name}">
-                                                <li><a class="taskactionslist taskactionslist-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse">Refuse</a></li>
-                                                <li><a class="taskactionslist taskactionslist-suspend" href="javascript:sendNewStatus('${task.identifier}','${task.path}','suspended')" title="suspend">Suspend</a></li>
-                                                <li class="taskactions-right"><input class="completeTaskAction" taskPath="<c:url value="${url.base}${currentNode.path}"/>" type="checkbox" onchange="sendNewStatus('${task.identifier}','${task.path}','finished')"/>&nbsp;Completed</li>
+                                                <li><a class="taskactionslist taskactionslist-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse"><fmt:message key="label.actions.refuse"/></a></li>
+                                                <li><a class="taskactionslist taskactionslist-suspend" href="javascript:sendNewStatus('${task.identifier}','${task.path}','suspended')" title="suspend"><fmt:message key="label.actions.suspend"/></a></li>
+                                                <li class="taskactions-right"><input class="completeTaskAction" taskPath="<c:url value="${url.base}${currentNode.path}"/>" type="checkbox" onchange="sendNewStatus('${task.identifier}','${task.path}','finished')"/>&nbsp;<fmt:message key="label.actions.completed"/></li>
                                             </c:when>
                                             <c:when test="${task.properties.state.string == 'finished'}">
-                                                <li class="taskactions-right"><input name="Completed" type="checkbox" disabled="disabled" checked="checked" value="Completed" />&nbsp;Completed</li>
+                                                <li class="taskactions-right"><input name="Completed" type="checkbox" disabled="disabled" checked="checked" value="Completed" />&nbsp;<fmt:message key="label.actions.completed"/></li>
                                             </c:when>
                                             <c:when test="${task.properties.state.string == 'suspended' and task.properties['assigneeUserKey'].string eq user.name}">
-                                                <li><a class="taskactionslist taskactionslist-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse">Refuse</a></li>
-                                                <li><a class="taskactionslist taskactionslist-continue" href="javascript:sendNewStatus('${task.identifier}','${task.path}','started')" title="start">Resume</a></li>
+                                                <li><a class="taskactionslist taskactionslist-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse"><fmt:message key="label.actions.refuse"/></a></li>
+                                                <li><a class="taskactionslist taskactionslist-continue" href="javascript:sendNewStatus('${task.identifier}','${task.path}','started')" title="start"><fmt:message key="label.actions.resume"/></a></li>
                                             </c:when>
                                             <c:when test="${task.properties.state.string == 'canceled'}">
                                             </c:when>
@@ -155,7 +155,7 @@
                                 </div>
                             </td>
                             <td class="center" headers="State">
-                                <span class="task-status task-status-${task.properties.state.string}">${task.properties.state.string}</span>
+                                <span class="task-status task-status-${task.properties.state.string}"><fmt:message key="jnt_task.state.${task.properties.state.string}"/></span>
 
                             </td>
                             <td headers="DueDate"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
@@ -186,7 +186,7 @@
                             <tr class="${((status.count + 1)) % 2 == 0 ? 'odd' : 'even'}">
                                 <td headers="Title">
                                     <a href="javascript:void(0)">${fn:escapeXml(not empty task.displayName ? task.displayName : task.name)}</a>
-                                    <span class="opentask" onclick="switchDisplay('${task.id}')">Show task</span>
+                                    <span class="opentask" onclick="switchDisplay('${task.id}')"><fmt:message key="label.showTask"/></span>
 
                                     <div style="display:none;" class="taskdetail" id="taskdetail_${task.id}">
                                         <c:set var="path" value="${jcr:findDisplayableNode(node, renderContext).path}"/>
@@ -216,7 +216,7 @@
                                     </div>
                                 </td>
                                 <td class="center" headers="State">
-                                    <span class="task-status task-status-started">started</span>
+                                    <span class="task-status task-status-started"><fmt:message key="jnt_task.state.started"/></span>
                                 </td>
                                 <td headers="DueDate">
                                     <%--<fmt:formatDate value="${task.properties['dueDate'].date.time}"--%>

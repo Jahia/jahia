@@ -185,6 +185,14 @@ padding:0;
 	margin-right:5px;
 	vertical-align:text-bottom;
 }
+.bodywrapper span.icon-task-very_low {
+	display:inline-block;
+	width:18px;
+	height:18px;
+	background: url(img/task-very_low.png) no-repeat top left;
+	margin-right:5px;
+	vertical-align:text-bottom;
+}
 .bodywrapper span.icon-task-low {
 	display:inline-block;
 	width:18px;
@@ -193,11 +201,11 @@ padding:0;
 	margin-right:5px;
 	vertical-align:text-bottom;
 }
-.bodywrapper span.icon-task-normal {
+.bodywrapper span.icon-task-medium {
 	display:inline-block;
 	width:18px;
 	height:18px;
-	background: url(img/task-normal.png) no-repeat top left;
+	background: url(img/task-medium.png) no-repeat top left;
 	margin-right:5px;
 	vertical-align:text-bottom;
 }
@@ -209,6 +217,15 @@ padding:0;
 	margin-right:5px;
 	vertical-align:text-bottom;
 }
+.bodywrapper span.icon-task-very_high {
+	display:inline-block;
+	width:18px;
+	height:18px;
+	background: url(img/task-very_high.png) no-repeat top left;
+	margin-right:5px;
+	vertical-align:text-bottom;
+}
+
 .task-priority {
     background-color: #000;
     border-bottom-left-radius: 3px;
@@ -226,15 +243,20 @@ padding:0;
     margin-right:0.5em;
 }
 
-
+.task-very_low {
+    background-color: #99cc00;
+}
 .task-low {
     background-color: #669900;
 }
-.task-normal {
+.task-medium {
     background-color: #333333;
 }
 .task-high {
     background-color: #CC0033;
+}
+.task-very_high {
+    background-color: #ff0033;
 }
 
 /******************************************************************************
@@ -264,6 +286,9 @@ padding:0;
 	border-radius: 3px;
 	float:left;
 }
+.bodywrapper .taskactionslist li:hover {
+	background-color:#008ae5 ;
+}
 .bodywrapper .taskactionslist li.taskactions-right {
 	float:right;
 	margin-right:0;
@@ -285,6 +310,21 @@ padding:0;
 	background-color:#008ae5;
 }
 
+.bodywrapper a.taskactionslist-suspend,
+.bodywrapper a.taskactionslist-suspend:link,
+.bodywrapper a.taskactionslist-suspend:visited
+{
+	color:#fff;
+	padding:6px 6px 6px 29px;
+	background:url(img/suspend.png) no-repeat 2% 50%;
+}
+.bodywrapper a.taskactionslist-suspend:hover,
+.bodywrapper a.taskactionslist-suspend:active {
+	text-decoration:none;
+	color:#fff;
+	background-color:#008ae5;
+}
+
 .bodywrapper a.taskactionslist-start,
 .bodywrapper a.taskactionslist-start:link,
 .bodywrapper a.taskactionslist-start:visited
@@ -295,6 +335,34 @@ padding:0;
 }
 .bodywrapper a.taskactionslist-start:hover,
 .bodywrapper a.taskactionslist-start:active {
+	text-decoration:none;
+	color:#fff;
+	background-color:#008ae5;
+}
+.bodywrapper a.taskactionslist-continue,
+.bodywrapper a.taskactionslist-continue:link,
+.bodywrapper a.taskactionslist-continue:visited
+{
+	color:#fff;
+	padding:6px 6px 6px 29px;
+	background:url(img/continue.png) no-repeat 2% 50%;
+}
+.bodywrapper a.taskactionslist-continue:hover,
+.bodywrapper a.taskactionslist-continue:active {
+	text-decoration:none;
+	color:#fff;
+	background-color:#008ae5;
+}
+.bodywrapper a.taskactionslist-assign,
+.bodywrapper a.taskactionslist-assign:link,
+.bodywrapper a.taskactionslist-assign:visited
+{
+	color:#fff;
+	padding:6px 6px 6px 29px;
+	background:url(img/assign.png) no-repeat 2% 50%;
+}
+.bodywrapper a.taskactionslist-assign:hover,
+.bodywrapper a.taskactionslist-assign:active {
 	text-decoration:none;
 	color:#fff;
 	background-color:#008ae5;
@@ -319,15 +387,15 @@ padding:0;
     margin-right:0.5em;
 }
 
-.bodywrapper .task-status-open {
+.bodywrapper .task-status-active {
     background-color: #0099ff;
 }
 .bodywrapper .task-status-started {
     background-color: #ff6600;
 }
-.bodywrapper .task-status-refused {
+.bodywrapper .task-status-suspended {
     background-color: #6600ff;
 }
-.bodywrapper .task-status-closed {
-    background-color: #000;
+.bodywrapper .task-status-finished {
+    background-color: #666;
 }

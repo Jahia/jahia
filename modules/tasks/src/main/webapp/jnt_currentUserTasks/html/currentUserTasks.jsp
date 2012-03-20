@@ -125,7 +125,7 @@
                     <c:forEach items="${nodes}" var="task" varStatus="status">
                         <tr class="${status.count % 2 == 0 ? 'odd' : 'even'}">
                             <td headers="Title">
-                                <span class="icon-task-high"></span>&nbsp;<a href="javascript:void(0)">${fn:escapeXml(task.properties['jcr:title'].string)}</a><span class="opentask" onclick="switchDisplay('${task.identifier}')"><fmt:message key="label.showTask"/></span>
+                                <span class="icon-task icon-task-${task.properties['priority'].string}"></span>&nbsp;<a href="javascript:void(0)">${fn:escapeXml(task.properties['jcr:title'].string)}</a><span class="opentask" onclick="switchDisplay('${task.identifier}')"><fmt:message key="label.showTask"/></span>
 
                                 <div style="display:none;" class="taskdetail" id="taskdetail_${task.identifier}">
                                     <p class="task-info-p"><fmt:message key="label.createdBy"/>: ${task.properties['jcr:createdBy'].string}, <fmt:message key="label.createdOn"/> <fmt:formatDate value="${task.properties['jcr:created'].date.time}" dateStyle="long" type="both"/></p>

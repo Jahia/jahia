@@ -1,13 +1,13 @@
 /*
- * jQuery Autocomplete plugin 1.2.1
+ * jQuery Autocomplete plugin 1.2.2
  *
- * Copyright (c) 2009 Jörn Zaefferer
+ * Copyright (c) 2009 JÃ¶rn Zaefferer
  *
  * Dual licensed under the MIT and GPL licenses:
  *   http://www.opensource.org/licenses/mit-license.php
  *   http://www.gnu.org/licenses/gpl.html
  *
- * With small modifications by Alfonso Gómez-Arzola.
+ * With small modifications by Alfonso GÃ³mez-Arzola.
  * See changelog for details.
  *
  */
@@ -65,6 +65,11 @@ $.Autocompleter = function(input, options) {
 		PAGEDOWN: 34,
 		BACKSPACE: 8
 	};
+	
+	var globalFailure = null;
+	if(options.failure != null && typeof options.failure == "function") {
+	  globalFailure = options.failure;
+	}
 
 	// Create $ object for input element
 	var $input = $(input).attr("autocomplete", "off").addClass(options.inputClass);
@@ -388,7 +393,12 @@ $.Autocompleter = function(input, options) {
 		} else {
 			// if we have a failure, we need to empty the list -- this prevents the the [TAB] key from selecting the last successful match
 			select.emptyList();
-			failure(term);
+			if(globalFailure != null) {
+        globalFailure();
+      }
+      else {
+        failure(term);
+			}
 		}
 	};
 	
@@ -441,7 +451,8 @@ $.Autocompleter.defaults = {
 		return value.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + term.replace(/([\^\$\(\)\[\]\{\}\*\.\+\?\|\\])/gi, "\\$1") + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong>$1</strong>");
 	},
     scroll: true,
-    scrollHeight: 180
+    scrollHeight: 180,
+    scrollJumpPosition: true
 };
 
 $.Autocompleter.Cache = function(options) {
@@ -611,7 +622,6 @@ $.Autocompleter.Select = function (options, input, select, config) {
 		    input.focus();
 		  }
 		  config.mouseDownOnSelect = false;
-			console.debug(config.mouseDownOnSelect);
 		});
 	
 		list = $("<ul/>").appendTo(element).mouseover( function(event) {
@@ -665,13 +675,16 @@ $.Autocompleter.Select = function (options, input, select, config) {
 	};
 	
 	function movePosition(step) {
-		active += step;
-		if (active < 0) {
-			active = listItems.size() - 1;
-		} else if (active >= listItems.size()) {
-			active = 0;
-		}
+		if (options.scrollJumpPosition || (!options.scrollJumpPosition && !((step < 0 && active == 0) || (step > 0 && active == listItems.size() - 1)) )) {
+			active += step;
+			if (active < 0) {
+				active = listItems.size() - 1;
+			} else if (active >= listItems.size()) {
+				active = 0;
+			}
+		} 
 	}
+
 	
 	function limitNumberOfItems(available) {
 		return options.max && options.max < available

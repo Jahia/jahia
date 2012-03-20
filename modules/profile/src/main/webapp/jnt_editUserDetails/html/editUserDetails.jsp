@@ -74,6 +74,7 @@
                 $.post($(original).attr('jcr:url'), datas, function(result) {
                     $(".userProfileImage").attr("src", result.j_picture+"?t=avatar_120");
                 }, "json");
+                $(".userPicture${currentNode.identifier}").html(original.revert); // original.reset() doesn't work
             }
         });
 

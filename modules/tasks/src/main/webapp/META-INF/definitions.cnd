@@ -23,6 +23,11 @@
  - filterOnCreator (string, choicelist[resourceBundle]) < 'createdByMe'
  - viewWorkflowTasks (boolean)
  - workflowTypes (string, choicelist[workflow]) multiple nofulltext
+ - displayState (boolean)
+ - displayDueDate (boolean)
+ - displayAssignee (boolean)
+ - displayCreator (boolean)
+ - sortBy (string,choicelist) < 'jcr:created','dueDate'
 
 [jnt:createTaskForm] > jnt:content, mix:title, jmix:formContent, jmix:bindedComponent, jmix:studioOnly
  - useDescription (boolean)

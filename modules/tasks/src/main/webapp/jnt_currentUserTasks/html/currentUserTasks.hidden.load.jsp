@@ -52,7 +52,10 @@
         <c:set value="${sql})" var="sql"/>
     </c:if>
 </c:forEach>
-<c:set value="select * from [jnt:task] as task where ${fn:substringAfter(sql, 'and')} order by task.['jcr:created'] desc" var="sql"/>
+<c:set value="select * from [jnt:task] as task where ${fn:substringAfter(sql, 'and')}" var="sql"/>
+<c:if test="${not empty currentNode.properties['sortBy']}">
+    <c:set value="${sql} order by task.['${currentNode.properties['sortBy'].string}'] desc" var="sql"/>
+</c:if>
 
 <query:definition var="listQuery" statement="${sql}" scope="request"/>
 <c:set target="${moduleMap}" property="listQuery" value="${listQuery}" />

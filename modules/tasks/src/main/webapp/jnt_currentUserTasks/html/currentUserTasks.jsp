@@ -88,22 +88,26 @@
     <div id="tasklist">
         <div id="${user.UUID}">
 
+            <c:set value="${currentNode.properties['displayState'].boolean}" var="dispState"/>
+            <c:set value="${currentNode.properties['displayDueDate'].boolean}" var="dispDueDate"/>
+            <c:set value="${currentNode.properties['displayAssignee'].boolean}" var="dispAssignee"/>
+            <c:set value="${currentNode.properties['displayCreator'].boolean}" var="dispCreator"/>
 
             <table width="100%" class="table tableTasks" summary="Tasks">
                 <colgroup>
-                    <col span="1" width="60%" class="col1"/>
-                    <col span="1" width="10%" class="col2"/>
-                    <col span="1" width="10%" class="col3"/>
-                    <col span="1" width="10%" class="col4"/>
-                    <col span="1" width="10%" class="col5"/>
+                    <col span="1" width="${100 - (dispAssignee?15:0)- (dispCreator?15:0)- (dispState?10:0)- (dispDueDate?10:0) }%" class="col1"/>
+                    <c:if test="${dispAssignee}"><col span="1" width="15%" class="col2"/></c:if>
+                    <c:if test="${dispCreator}"><col span="1" width="15%" class="col3"/></c:if>
+                    <c:if test="${dispState}"><col span="1" width="10%" class="col4"/></c:if>
+                    <c:if test="${dispDueDate}"><col span="1" width="10%" class="col5"/></c:if>
                 </colgroup>
                 <thead>
                 <tr>
                     <th id="Title" scope="col"><fmt:message key="mix_title.jcr_title"/></th>
-                    <th id="State" class="center" scope="col"><fmt:message key="jnt_task.state"/></th>
-                    <th id="DueDate" scope="col"><fmt:message key="jnt_task.dueDate"/></th>
-                    <th id="Assigned" scope="col"><fmt:message key="jnt_task.assignee"/></th>
-                    <th id="CreatedBy" scope="col"><fmt:message key="mix_createdBy.jcr_createdBy"/></th>
+                    <c:if test="${dispAssignee}"><th id="Assigned" scope="col"><fmt:message key="jnt_task.assignee"/></th></c:if>
+                    <c:if test="${dispCreator}"><th id="CreatedBy" scope="col"><fmt:message key="mix_createdBy.jcr_createdBy"/></th></c:if>
+                    <c:if test="${dispState}"><th id="State" class="center" scope="col"><fmt:message key="jnt_task.state"/></th></c:if>
+                    <c:if test="${dispDueDate}"><th id="DueDate" scope="col"><fmt:message key="jnt_task.dueDate"/></th></c:if>
                 </tr>
                 </thead>
 
@@ -124,7 +128,7 @@
                                 <span class="icon-task-high"></span>&nbsp;<a href="javascript:void(0)">${fn:escapeXml(task.properties['jcr:title'].string)}</a><span class="opentask" onclick="switchDisplay('${task.identifier}')"><fmt:message key="label.showTask"/></span>
 
                                 <div style="display:none;" class="taskdetail" id="taskdetail_${task.identifier}">
-                                    <p class="task-info-p"><fmt:message key="label.createdBy"/>: ${task.properties['jcr:createdBy'].string}, <fmt:message key="label.createdOn"/> <fmt:formatDate value="${task.properties['jcr:created'].date.time}" dateStyle="long" type="date"/></p>
+                                    <p class="task-info-p"><fmt:message key="label.createdBy"/>: ${task.properties['jcr:createdBy'].string}, <fmt:message key="label.createdOn"/> <fmt:formatDate value="${task.properties['jcr:created'].date.time}" dateStyle="long" type="both"/></p>
                                     <c:if test="${not empty task.properties['priority']}"><p class="task-priority-p"><fmt:message key="jnt_task.priority"/>: <span class="task-priority task-${task.properties['priority'].string}">${task.properties['priority'].string}</span></p></c:if>
                                     <p class="task-text">${task.properties['description'].string}</p>
                                     <ul class="taskactionslist">
@@ -154,14 +158,14 @@
                                     </ul>
                                 </div>
                             </td>
-                            <td class="center" headers="State">
+                            <c:if test="${dispAssignee}"><td headers="Assigned">${task.properties['assigneeUserKey'].string}</td></c:if>
+                            <c:if test="${dispCreator}"><td headers="CreatedBy">${task.properties['jcr:createdBy'].string}</td></c:if>
+                            <c:if test="${dispState}"><td class="center" headers="State">
                                 <span class="task-status task-status-${task.properties.state.string}"><fmt:message key="jnt_task.state.${task.properties.state.string}"/></span>
 
-                            </td>
-                            <td headers="DueDate"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
-                                                               dateStyle="short" type="date"/></td>
-                            <td headers="Assigned">${task.properties['assigneeUserKey'].string}</td>
-                            <td headers="CreatedBy">${task.properties['jcr:createdBy'].string}</td>
+                            </td></c:if>
+                            <c:if test="${dispDueDate}"><td headers="DueDate"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
+                                                               dateStyle="short" type="date"/></td></c:if>
                         </tr>
                     </c:forEach>
                 </c:if>
@@ -215,19 +219,27 @@
                                         </ul>
                                     </div>
                                 </td>
+                                <c:if test="${dispAssignee}">
+                                    <td headers="Assigned">
+                                    <%--${task.properties['assigneeUserKey'].string}--%>
+                                    </td>
+                                </c:if>
+                                <c:if test="${dispCreator}">
+                                <td headers="CreatedBy">
+                                <%--${task.properties['jcr:createdBy'].string}--%>
+                                </td>
+                                </c:if>
+                                <c:if test="${dispState}">
                                 <td class="center" headers="State">
                                     <span class="task-status task-status-started"><fmt:message key="jnt_task.state.started"/></span>
                                 </td>
+                                </c:if>
+                                <c:if test="${dispDueDate}">
                                 <td headers="DueDate">
                                     <%--<fmt:formatDate value="${task.properties['dueDate'].date.time}"--%>
                                                                    <%--dateStyle="short" type="date"/>--%>
                                 </td>
-                                <td headers="Assigned">
-                                <%--${task.properties['assigneeUserKey'].string}--%>
-                                </td>
-                                <td headers="CreatedBy">
-                                <%--${task.properties['jcr:createdBy'].string}--%>
-                                </td>
+                                </c:if>
                             </tr>
                             <c:if test="${not empty task.formResourceName}">
                                 <tr class="${((status.count + 1)) % 2 == 0 ? 'odd' : 'even'} " id="taskrow${node.identifier}-${task.id}"  style="display:none;">

@@ -77,6 +77,15 @@
                         <property name="hardLimit" value="20"/>
                     </bean>
                 </entry>
+                <entry key="/findUsersAndGroups">
+                    <bean class="org.jahia.bin.FindUsersAndGroups">
+                        <property name="jahiaUserManagerService" ref="JahiaUserManagerService" />
+                        <property name="jahiaGroupManagerService" ref="JahiaGroupManagerService" />
+                        <property name="jahiaSitesService" ref="JahiaSitesService" />
+                        <property name="requireAuthenticatedUser" value="true"/>
+                        <property name="hardLimit" value="20"/>
+                    </bean>
+                </entry>
                 <entry key="/login">
                     <bean name="org.jahia.bin.Login" class="org.jahia.bin.Login"/>
                 </entry>

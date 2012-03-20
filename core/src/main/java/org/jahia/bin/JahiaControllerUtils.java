@@ -40,8 +40,6 @@
 
 package org.jahia.bin;
 
-import java.util.regex.Pattern;
-
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -94,6 +92,61 @@ public final class JahiaControllerUtils {
             throw new JahiaUnauthorizedException(
                     "You need to authenticate yourself to use this service");
         }
+    }
+
+    /**
+     * Simple utility method to retrieve an integer parameter from a request and throws an {@link JahiaBadRequestException} (results in a 400 error)
+     * in case the parameter is not found.
+     * 
+     * @param request
+     *            The current HttpServletRequest
+     * @param name
+     *            The parameter name
+     * @return an integer value of the given parameter
+     * @throws JahiaBadRequestException
+     *             in case the parameter is not found in the request or a parsing exception occurs
+     */
+    public final static int getIntParameter(final HttpServletRequest request, final String name)
+            throws JahiaBadRequestException {
+        final String value = request.getParameter(name);
+        if (value == null) {
+            throw new JahiaBadRequestException("Missing required '" + name
+                    + "' parameter in request.");
+        }
+        int param = 0;
+        if (value != null) {
+            try {
+                param = Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                throw new JahiaBadRequestException(e);
+            }
+        }
+        return param;
+    }
+
+    /**
+     * Retrieves the integer value of the specified request parameter. If it does not exist, returns the provided default value.
+     * 
+     * @param request
+     *            The current HttpServletRequest
+     * @param name
+     *            The parameter name
+     * @param defaultValue
+     *            the default parameter value
+     * @return the value of the specified request parameter. If it does not exist, returns the provided default value
+     */
+    public final static int getIntParameter(final HttpServletRequest request, final String name,
+            int defaultValue) {
+        final String value = request.getParameter(name);
+        int param = defaultValue;
+        if (value != null) {
+            try {
+                param = Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                // ignore
+            }
+        }
+        return param;
     }
 
     /**

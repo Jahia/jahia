@@ -16,25 +16,9 @@
 
     <!-- studiomode -->
 
-
-    <bean id="studiomode.managers.menu" class="org.jahia.services.uicomponents.bean.toolbar.Menu">
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-            </bean>
-        </property>
-        <property name="titleKey" value="label.managers"/>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.FileManager"/>
-                <ref bean="Toolbar.Item.PortletManager"/>
-                <ref bean="Toolbar.Item.RepositoryExplorer"/>
-            </list>
-        </property>
-    </bean>
-
-
     <bean id="editmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
+        <property name="requiredPermission" value="editModeAccess"/>
+        <property name="defaultUrlMapping" value="/cms/edit"/>
         <property name="sitesLocation" value="/sites/*"/>
         <property name="topToolbar">
             <bean id="editModeToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">

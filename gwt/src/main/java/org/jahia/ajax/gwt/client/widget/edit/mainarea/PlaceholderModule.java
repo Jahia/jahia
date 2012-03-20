@@ -42,16 +42,21 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
@@ -77,8 +82,8 @@ public class PlaceholderModule extends Module {
         } else {
             setBorders(true);
         }
-        panel = new LayoutContainer();
-        //panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
+        panel = new HorizontalPanel();
+//        panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
         panel.addStyleName("x-small-editor");
         panel.addStyleName("x-panel-header");
         panel.addStyleName("x-panel-placeholder");
@@ -122,11 +127,13 @@ public class PlaceholderModule extends Module {
                 if (filter != null && !filter.contains(s)) {
                     continue;
                 }
+                AbstractImagePrototype icon = ContentModelIconProvider.getInstance().getIcon(ModuleHelper.getNodeType(s));
                 Button button = new Button(ModuleHelper.getNodeType(s) != null ? ModuleHelper.getNodeType(
                         s).getLabel() : s);
                 button.setStyleName("button-placeholder");
-                button.addClickHandler(new ClickHandler() {
-                    public void onClick(ClickEvent event) {
+                button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
                         final GWTJahiaNode parentNode = getParentModule().getNode();
                         if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
                             String nodeName = null;
@@ -137,6 +144,7 @@ public class PlaceholderModule extends Module {
                         }
                     }
                 });
+                button.setIcon(icon);
                 panel.add(button);
                 panel.layout();
             }

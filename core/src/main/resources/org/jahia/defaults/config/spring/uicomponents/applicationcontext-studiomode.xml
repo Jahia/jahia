@@ -4,7 +4,26 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="studiomode.managers.menu" class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.managers"/>
+        <property name="items">
+            <list>
+                <ref bean="Toolbar.Item.FileManager"/>
+                <ref bean="Toolbar.Item.PortletManager"/>
+                <ref bean="Toolbar.Item.RepositoryExplorer"/>
+            </list>
+        </property>
+    </bean>
+
     <bean id="studiomode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
+        <property name="requiredPermission" value="studioModeAccess"/>
+        <property name="defaultUrlMapping" value="/cms/studio"/>
         <property name="sitesLocation" value="/templateSets/*"/>
         <property name="topToolbar">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">

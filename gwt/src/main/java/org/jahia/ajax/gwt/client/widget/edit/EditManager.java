@@ -107,7 +107,9 @@ public class EditManager extends ContentPanel {
 
         setScrollMode(Style.Scroll.NONE);
         mainModule = new MainModule(html, path, template, nodeTypes, config);
-        mainModule.getHeader().addStyleName("gwt-only-panel");        
+        if (mainModule.getHeader() != null) {
+            mainModule.getHeader().addStyleName("gwt-only-panel");
+        }
         add(mainModule, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
         editLinker = new EditLinker(mainModule, sidePanel, toolbar, config);

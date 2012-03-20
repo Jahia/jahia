@@ -109,14 +109,16 @@ public class MainModule extends Module {
         this.config = config;
         this.depth = 0;
 
-        head = new ToolbarHeader();
-        head.setText(Messages.get("label.page", "Page") + ": " + path);
-        head.addStyleName("x-panel-header");
-        head.setStyleAttribute("z-index", "999");
-        head.setStyleAttribute("position", "relative");
-
+        if (config.getMainModuleToolbar() != null && !config.getMainModuleToolbar().getGwtToolbarItems().isEmpty()) {
+            head = new ToolbarHeader();
+            head.setText(Messages.get("label.page", "Page") + ": " + path);
+            head.addStyleName("x-panel-header");
+            head.setStyleAttribute("z-index", "999");
+            head.setStyleAttribute("position", "relative");
+            add(head);
+        }
+        
         scrollContainer = new LayoutContainer(new FlowLayout());
-        add(head);
         add(scrollContainer);
         scrollContainer.addStyleName("gwt-body-edit");
         Hover.getInstance().setMainModule(this);
@@ -129,17 +131,18 @@ public class MainModule extends Module {
     public void initWithLinker(EditLinker linker) {
         this.editLinker = linker;
 
-        for (GWTJahiaToolbarItem item : config.getMainModuleToolbar().getGwtToolbarItems()) {
-            ((ToolbarHeader)head).addItem(linker, item);
-        }
-
-        head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
-            public void componentSelected(IconButtonEvent event) {
-                mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
-                refresh(EditLinker.REFRESH_MAIN);
+        if (head != null) {
+            for (GWTJahiaToolbarItem item : config.getMainModuleToolbar().getGwtToolbarItems()) {
+                ((ToolbarHeader)head).addItem(linker, item);
             }
-        }));
 
+            head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
+                public void componentSelected(IconButtonEvent event) {
+                    mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+                    refresh(EditLinker.REFRESH_MAIN);
+                }
+            }));
+        }
 
         if ("".equals(Window.Location.getHash())) {
             display(originalHtml);
@@ -208,7 +211,9 @@ public class MainModule extends Module {
                         config.getName(), new BaseAsyncCallback<GWTRenderResult>() {
                             public void onSuccess(GWTRenderResult result) {
                                 int i = scrollContainer.getVScrollPosition();
-                                head.setText(Messages.get("label.page", "Page") + ": " + path);
+                                if (head != null) {
+                                    head.setText(Messages.get("label.page", "Page") + ": " + path);
+                                }
                                 nodeTypes = result.getNodeTypes();
                                 Selection.getInstance().hide();
                                 Hover.getInstance().removeAll();
@@ -412,13 +417,13 @@ public class MainModule extends Module {
         if (m != null) {
             ModuleHelper.move(m);
         }
-        scrollContainer.setHeight(getHeight() - head.getOffsetHeight());
+        scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
         scrollContainer.setWidth(getWidth());
     }
 
     protected void onResize(int width, int height) {
         super.onResize(width, height);
-        scrollContainer.setHeight(getHeight() - head.getOffsetHeight());
+        scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
         scrollContainer.setWidth(getWidth());
         if (editLinker.getSelectedModule() != null) {
             Selection.getInstance().hide();
@@ -499,7 +504,9 @@ public class MainModule extends Module {
             l.select(selectedModule);
             l.show();
         }
-        ((ToolbarHeader)head).handleNewModuleSelection(selectedModule);
+        if (head != null) {
+            ((ToolbarHeader)head).handleNewModuleSelection(selectedModule);
+        }
 
         l.layout();
     }

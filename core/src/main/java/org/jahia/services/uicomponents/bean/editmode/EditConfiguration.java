@@ -74,6 +74,9 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     private boolean enableDragAndDrop = true;
 
+    private String requiredPermission;
+    private String defaultUrlMapping;
+
     public void addTab(SidePanelTab tab) {
         tabs.add(tab);
     }
@@ -156,6 +159,22 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setEnableDragAndDrop(boolean enableDragAndDrop) {
         this.enableDragAndDrop = enableDragAndDrop;
+    }
+
+    public String getRequiredPermission() {
+        return requiredPermission;
+    }
+
+    public void setRequiredPermission(String requiredPermission) {
+        this.requiredPermission = requiredPermission;
+    }
+
+    public String getDefaultUrlMapping() {
+        return defaultUrlMapping;
+    }
+
+    public void setDefaultUrlMapping(String defaultUrlMapping) {
+        this.defaultUrlMapping = defaultUrlMapping;
     }
 
     public void removeTab(String tabKey) {

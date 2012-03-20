@@ -1446,12 +1446,10 @@ public class NavigationHelper {
     public String getNodeURL(String servlet, JCRNodeWrapper node, Date versionDate, String versionLabel, final String workspace,
                              final Locale locale) throws RepositoryException {
         String url = Jahia.getContextPath();
-        if ("contribute".equals(servlet)) {
-            url += Contribute.getContributeServletPath();
-        } else {
-            url += Render.getRenderServletPath();
+        if (servlet == null) {
+            servlet = "render";
         }
-        url +=  "/" + workspace + "/" + locale;
+        url += "/cms/"+servlet + "/" + workspace + "/" + locale;
 
 
         Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);

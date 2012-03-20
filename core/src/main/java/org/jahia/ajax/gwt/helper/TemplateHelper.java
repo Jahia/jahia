@@ -45,12 +45,14 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.bin.Edit;
 import org.jahia.bin.Render;
 import org.jahia.bin.Studio;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.*;
+import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.AccessDeniedException;
@@ -145,13 +147,12 @@ public class TemplateHelper {
             }
             renderContext.setEditModeConfigName(configName);
             renderContext.setMainResource(r);
+
+            EditConfiguration editConfiguration = (EditConfiguration) SpringContextSingleton.getBean(configName);
             String permission = null;
-            if (Edit.EDIT_MODE.equals(configName)) {
-                renderContext.setServletPath(Edit.getEditServletPath());
-                permission = "editModeAccess";
-            } else if (Studio.STUDIO_MODE.equals(configName)) {
-                renderContext.setServletPath(Studio.getStudioServletPath());
-                permission = "studioModeAccess";
+            if (editConfiguration != null) {
+                permission = editConfiguration.getRequiredPermission();
+                renderContext.setServletPath(editConfiguration.getDefaultUrlMapping());
             } else {
                 renderContext.setServletPath(Render.getRenderServletPath());
             }

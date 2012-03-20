@@ -235,7 +235,7 @@ public class JCRObservationManager implements ObservationManager {
                                 (consumer.useExternalEvents || operationType != EXTERNAL_SYNC) &&
                                 (consumer.absPath == null || (consumer.isDeep && event.getPath().startsWith(consumer.absPath)) || consumer.isDeep && event.getPath().equals(consumer.absPath)) &&
                                 (consumer.nodeTypeName == null || checkNodeTypeNames(
-                                        ((event.getType() & Event.PROPERTY_REMOVED) != 0 ? 
+                                        (event.getType() == Event.PROPERTY_REMOVED ? 
                                                 StringUtils.substringBeforeLast(event.getPath(), "/")
                                                 : event.getPath()), session,
                                         consumer.nodeTypeName)) &&

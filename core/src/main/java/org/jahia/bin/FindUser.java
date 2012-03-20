@@ -40,22 +40,20 @@
 
 package org.jahia.bin;
 
-import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
-
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.Patterns;
@@ -64,7 +62,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Controller for performing user search.
@@ -95,6 +92,7 @@ public class FindUser extends BaseFindController {
         return props;
     }
 
+    @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response)
             throws JahiaForbiddenAccessException, IOException, JSONException {
         checkUserLoggedIn();
@@ -104,6 +102,17 @@ public class FindUser extends BaseFindController {
         if (queryTerm.length() < 1 || Patterns.STAR.matcher(queryTerm).replaceAll("").trim().length() < 1) {
             throw new JahiaBadRequestException("Please specify more exact term for user search");
         }
+        
+        Set<Principal> result = search(queryTerm, request);
+
+        writeResults(result, request, response);
+    }
+
+    protected Set<Principal> search(String queryTerm, HttpServletRequest request) {
+        return searchUsers(queryTerm);
+    }
+
+    protected Set<Principal> searchUsers(String queryTerm) {
         Properties searchCriterias = buildSearchCriteria(queryTerm);
 
         if (logger.isDebugEnabled()) {
@@ -115,43 +124,8 @@ public class FindUser extends BaseFindController {
         if (logger.isDebugEnabled()) {
             logger.debug("Found {} matching users", result.size());
         }
-
-        writeResults(result, request, response);
-    }
-
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-        long startTime = System.currentTimeMillis();
-        String sessionId = null;
-        try {
-            if (logger.isInfoEnabled()) {
-                sessionId = request.getSession().getId();
-            }
-            if (request.getMethod().equals("GET") || request.getMethod().equals("POST")) {
-                handle(request, response);
-            } else if (request.getMethod().equals("OPTIONS")) {
-                response.setHeader("Allow", "GET, OPTIONS, POST");
-            } else {
-                response.sendError(SC_METHOD_NOT_ALLOWED);
-            }
-        } catch (Exception e) {
-            DefaultErrorHandler.getInstance().handle(e, request, response);
-        } finally {
-            if (logger.isInfoEnabled()) {
-                StringBuilder sb = new StringBuilder(100);
-                sb.append("Rendered [").append(request.getRequestURI());
-                JahiaUser user = JCRTemplate.getInstance().getSessionFactory().getCurrentUser();
-                if (user != null) {
-                    sb.append("] user=[").append(user.getUsername());
-                }
-                sb.append("] ip=[").append(request.getRemoteAddr()).append("] sessionID=[")
-                        .append(sessionId).append("] in [")
-                        .append(System.currentTimeMillis() - startTime).append("ms]");
-                logger.info(sb.toString());
-            }
-        }
-
-        return null;
+        
+        return result;
     }
 
     public void setDisplayProperties(Set<String> displayProperties) {
@@ -164,6 +138,10 @@ public class FindUser extends BaseFindController {
 
     public void setSearchProperties(Set<String> searchFields) {
         this.searchProperties = searchFields;
+    }
+
+    protected void sortResults(List<JSONObject> jsonResults) {
+        // no sorting here
     }
 
     protected JSONObject toJSON(JahiaUser user) throws JSONException {
@@ -181,22 +159,29 @@ public class FindUser extends BaseFindController {
         return json;
     }
 
+    protected JSONObject toJSON(Principal principal) throws JSONException {
+        return toJSON((JahiaUser) principal);
+    }
+
     protected void writeResults(Set<Principal> users, HttpServletRequest request,
             HttpServletResponse response) throws IOException, JSONException {
 
         response.setContentType("application/json; charset=UTF-8");
-        JSONArray results = new JSONArray();
 
+        List<JSONObject> jsonResults = new LinkedList<JSONObject>();
         int count = 0;
         for (Principal user : users) {
-            JSONObject jsonUser = toJSON((JahiaUser) user);
-            results.put(jsonUser);
+            jsonResults.add(toJSON(user));
             count++;
             if (count >= hardLimit) {
-                logger.info("{} users were found, limiting results to {}", users.size(), hardLimit);
+                logger.info("{} principals were found, limiting results to {}", users.size(), hardLimit);
                 break;
             }
         }
+        
+        sortResults(jsonResults);
+        
+        JSONArray results = new JSONArray(jsonResults);
 
         results.write(response.getWriter());
     }

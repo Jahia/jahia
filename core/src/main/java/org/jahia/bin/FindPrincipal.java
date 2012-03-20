@@ -295,6 +295,7 @@ public class FindPrincipal extends BaseFindController {
     }
 
 
+    @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response) throws RenderException,
             IOException, RepositoryException, JahiaForbiddenAccessException {
         
@@ -356,39 +357,6 @@ public class FindPrincipal extends BaseFindController {
             logger.error("Invalid argument", e);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
-    }
-
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        long startTime = System.currentTimeMillis();
-        String sessionId = null;
-        try {
-            if (logger.isInfoEnabled()) {
-                sessionId = request.getSession().getId();
-            }
-            if (request.getMethod().equals("GET") || request.getMethod().equals("POST")) {
-                handle(request, response);
-            } else if (request.getMethod().equals("OPTIONS")) {
-                response.setHeader("Allow", "GET, OPTIONS, POST");
-            } else {
-                response.sendError(SC_METHOD_NOT_ALLOWED);
-            }
-        } catch (Exception e) {
-            DefaultErrorHandler.getInstance().handle(e, request, response);
-        } finally {
-            if (logger.isInfoEnabled()) {
-                StringBuilder sb = new StringBuilder(100);
-                sb.append("Rendered [").append(request.getRequestURI());
-                JahiaUser user = JCRTemplate.getInstance().getSessionFactory().getCurrentUser();
-                if (user != null) {
-                    sb.append("] user=[").append(user.getUsername());
-                }
-                sb.append("] ip=[").append(request.getRemoteAddr()).append("] sessionID=[").append(
-                        sessionId).append("] in [").append(
-                        System.currentTimeMillis() - startTime).append("ms]");
-                logger.info(sb.toString());
-            }
-        }
-        return null;
     }
 
     public static String getFindPrincipalServletPath() {

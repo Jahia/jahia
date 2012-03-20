@@ -60,6 +60,7 @@ import org.jahia.bin.Edit;
 import org.jahia.bin.Find;
 import org.jahia.bin.FindPrincipal;
 import org.jahia.bin.FindUser;
+import org.jahia.bin.FindUsersAndGroups;
 import org.jahia.bin.Initializers;
 import org.jahia.bin.Login;
 import org.jahia.bin.Logout;
@@ -446,6 +447,10 @@ public class URLGenerator {
 
     public String getFindUser() {
         return FindUser.getFindUserServletPath();
+    }
+
+    public String getFindUsersAndGroups() {
+        return FindUsersAndGroups.getFindUsersAndGroupsServletPath();
     }
 
     @Override

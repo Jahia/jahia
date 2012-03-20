@@ -50,6 +50,13 @@
                 <entry key="/edit/**">
                     <bean name="org.jahia.bin.Edit" parent="abstractRender" class="org.jahia.bin.Edit">
                         <property name="sessionExpiryTime" value="60" />
+                        <property name="editConfiguration" ref="editmode"/>
+                    </bean>
+                </entry>
+                <entry key="/lightedit/**">
+                    <bean name="org.jahia.bin.LightEdit" parent="abstractRender" class="org.jahia.bin.Edit">
+                        <property name="sessionExpiryTime" value="60" />
+                        <property name="editConfiguration" ref="lighteditmode"/>
                     </bean>
                 </entry>
                 <entry key="/studio/**">

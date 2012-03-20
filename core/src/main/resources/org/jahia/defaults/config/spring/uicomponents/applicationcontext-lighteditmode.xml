@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <bean id="lighteditmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
+        <property name="requiredPermission" value="contributeModeAccess"/>
+        <property name="defaultUrlMapping" value="/cms/lightedit"/>
+        <property name="sitesLocation" value="/sites/*"/>
+        <property name="topToolbar">
+            <bean id="lighteditModeToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="layout" value="button-label"/>
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.Live"/>
+                        <ref bean="Toolbar.Item.Preview"/>
+                        <ref bean="Toolbar.Item.Edit"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.view"/>
+                            <!-- <property name="icon" value="preview"/> -->
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.PreviewAsGuest"/>
+                                    <ref bean="Toolbar.Item.ShowCompareEngine"/>
+                                    <ref bean="Toolbar.Item.ShowVersionEngine"/>
+                                    <ref bean="Toolbar.Item.ShowConsultPreviousVersionEngine"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.publication"/>
+                            <!-- <property name="icon" value="publicationAction"/> -->
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.Unpublish"/>
+                                </list>
+                            </property>
+                        </bean>
+
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.workflow"/>
+                            <property name="items">
+                                <list>
+                                    <!--<ref bean="Toolbar.Item.WorkflowStatusAction"/>-->
+                                    <ref bean="Toolbar.Item.WorkflowDashboard"/>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CustomWorkflowMenuActionItem"/>
+                                        </property>
+                                        <property name="titleKey" value="label.customWorkflowsMenu"/>
+                                        <property name="icon" value="workflowDashboard"/>
+                                    </bean>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NumberOfTasksWorkflowMenuActionItem"/>
+                            </property>
+                            <property name="titleKey" value="label.numberoftasksforuser"/>
+                            <property name="properties">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ResourceBundleProperty">
+                                        <property name="name" value="noTasks"/>
+                                        <property name="key" value="label.numberoftasksforuser.notasks"/>
+                                    </bean>
+                                </list>
+                            </property>
+                        </bean>
+                        <ref bean="editmode.managers.menu"/>
+
+                        <ref bean="Toolbar.Item.ShowTrashboard"/>
+                        <ref bean="Toolbar.Item.Admin"/>
+                        <ref bean="Toolbar.Item.Studio"/>
+                        <ref bean="Toolbar.Item.ClipBoard"/>
+
+                        <ref bean="Toolbar.Item.Separator"/>
+                        
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="icon" value="start"/>
+                            <property name="titleKey" value="label.user.loggedAs"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Start"/>
+                                    <ref bean="Toolbar.Item.Logout"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <ref bean="Toolbar.ItemsGroup.SiteLanguageSwitcher"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="sidePanelToolbar">
+            <bean id="lighteditModeSidePanelToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem">
+                                    <property name="root" value="/sites/*"/>
+                                </bean>
+                            </property>
+                            <property name="titleKey" value="label.templateSets"/>
+                        </bean>
+                        <ref bean="Toolbar.Item.Fill"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="mainModuleToolbar">
+            <bean id="lighteditModeMainModuleToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                    </list>
+                </property>
+            </bean>
+        </property>
+
+        <property name="contextMenu">
+            <bean id="lighteditModeContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.EditContent"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.EditSourceContent"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.TranslateMenu"/>
+                        <ref bean="Toolbar.Item.Export"/>
+                        <ref bean="Toolbar.Item.Import"/>
+                        <ref bean="Toolbar.Item.Lock"/>
+                        <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.ClearLock"/>
+                        <ref bean="Toolbar.Item.ClearAllLocks"/>
+                        <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
+                        <ref bean="Toolbar.Item.OpenInContentManager"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+
+        <!-- edit engine -->
+        <property name="engineTabs">
+            <list>
+                <!--<ref bean="Engine.Tab.ContentAndLayout"/>-->
+                <ref bean="Engine.Tab.Content"/>
+                <ref bean="Engine.Tab.ListOrdering"/>
+                <ref bean="Engine.Tab.Metadata"/>
+                <ref bean="Engine.Tab.Tags"/>
+                <ref bean="Engine.Tab.Categories"/>
+            </list>
+        </property>
+
+        <!-- tabs -->
+        <property name="tabs">
+            <list>
+            </list>
+        </property>
+
+    </bean>
+
+
+</beans>

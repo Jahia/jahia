@@ -79,6 +79,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -90,6 +91,7 @@ import org.jahia.services.htmlvalidator.Result;
 import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
@@ -284,7 +286,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             config.setSiteNode(navigation.getGWTJahiaNode(getSite(), GWTJahiaNode.DEFAULT_SITE_FIELDS));
 
             List<GWTJahiaNode> sites = getRoot(Arrays.asList(config.getSitesLocation()), Arrays.asList("jnt:virtualsite"), null, null, GWTJahiaNode.DEFAULT_SITE_FIELDS, null, null, false, false, null, null);
-            String permission = name.equals("editmode") ? "editModeAccess" : "studioModeAccess";
+            String permission = ((EditConfiguration)SpringContextSingleton.getBean(name)).getRequiredPermission();
             Map<String, GWTJahiaNode> sitesMap = new HashMap<String, GWTJahiaNode>();
             for (GWTJahiaNode site : sites) {
                 if (session.getNodeByUUID(site.getUUID()).hasPermission(permission)) {

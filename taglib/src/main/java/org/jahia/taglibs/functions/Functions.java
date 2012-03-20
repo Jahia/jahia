@@ -44,7 +44,6 @@ import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.spi.commons.nodetype.compact.CompactNodeTypeDefWriter;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -52,6 +51,7 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.TemplateNotFoundException;
@@ -60,10 +60,10 @@ import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.Url;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.jcr.AccessDeniedException;
 import javax.jcr.RangeIterator;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspTagException;
@@ -76,6 +76,8 @@ import java.util.regex.Pattern;
  * @author Sergiy Shyrkov
  */
 public class Functions {
+    
+    private static final Logger logger = LoggerFactory.getLogger(Functions.class);
 
     public static String attributes(Map<String, Object> attributes) {
         StringBuilder out = new StringBuilder();
@@ -315,18 +317,35 @@ public class Functions {
         return null;
     }
     
-    public static List<Map> getRolesForNode(JCRNodeWrapper node, boolean includeInherited, String roles) {
-        List<Map> results = new ArrayList<Map>();
+    public static List<Map<String, Object>> getRolesForNode(JCRNodeWrapper node, boolean includeInherited, String roles, int limit) {
+        List<Map<String, Object>> results = new LinkedList<Map<String, Object>>();
         Map<String,List<String[]>> entries = node.getAclEntries();
+        int siteId = -1;
         for (Map.Entry<String, List<String[]>> entry : entries.entrySet()) {
-            Map m = new HashMap();
+            Map<String, Object> m = new HashMap<String, Object>();
             String entryKey = entry.getKey();
             if (entryKey.startsWith("u:")) {
                 JahiaUser u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(StringUtils.substringAfter(entryKey, "u:"));
+                if (u == null) {
+                    logger.warn("User {} cannot be found. Skipping.", StringUtils.substringAfter(entryKey, "u:"));
+                    continue;
+                }
                 m.put("principalType","user");
                 m.put("principal",u);
             } else if (entryKey.startsWith("g:")) {
-                JahiaGroup g = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(StringUtils.substringAfter(entryKey, "g:"));
+                if (siteId == -1) {
+                    try {
+                        JCRSiteNode resolveSite = node.getResolveSite();
+                        siteId = resolveSite != null ? resolveSite.getID() : 0;
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+                JahiaGroup g = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(siteId, StringUtils.substringAfter(entryKey, "g:"));
+                if (g == null) {
+                    logger.warn("Group {} cannot be found for site with ID={}. Skipping.", StringUtils.substringAfter(entryKey, "g:"), siteId);
+                    continue;
+                }
                 m.put("principalType","group");
                 m.put("principal",g);
             }
@@ -345,11 +364,15 @@ public class Functions {
                         }
                     }
                     if (!m.containsKey("roles")) {
-                        m.put("roles", new ArrayList());
+                        m.put("roles", new LinkedList<String>());
                         results.add(m);
                     }
                     ((List)m.get("roles")).add(details[2]);
                 }
+            }
+            
+            if (limit > 0 && results.size() >= limit) {
+                break;
             }
         }
         return results;

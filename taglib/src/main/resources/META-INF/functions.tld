@@ -432,7 +432,7 @@
     </function>
 
     <function>
-        <description>Return the default vanity url for a node</description>
+        <description>Return the default vanity URL for a node</description>
         <name>getDefaultVanityUrl</name>
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
         <function-signature>org.jahia.services.seo.VanityUrl getDefaultVanityUrl(org.jahia.services.content.JCRNodeWrapper)</function-signature>
@@ -440,10 +440,10 @@
     </function>
 
     <function>
-        <description>Return all acl entries associated to a node</description>
+        <description>Return all or limited number of ACL entries associated to a node</description>
         <name>getRolesForNode</name>
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
-        <function-signature>java.util.List getRolesForNode(org.jahia.services.content.JCRNodeWrapper,boolean,java.lang.String)</function-signature>
-        <example>${functions:getRolesForNode(node,true,null)}</example>
+        <function-signature>java.util.List getRolesForNode(org.jahia.services.content.JCRNodeWrapper,boolean,java.lang.String,int)</function-signature>
+        <example>${functions:getRolesForNode(node,true,null,-1)}</example>
     </function>
 </taglib>

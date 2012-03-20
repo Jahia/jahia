@@ -46,6 +46,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.observation.*;
 import javax.jcr.observation.EventListener;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -233,7 +234,11 @@ public class JCRObservationManager implements ObservationManager {
                         if ((consumer.eventTypes & event.getType()) != 0 &&
                                 (consumer.useExternalEvents || operationType != EXTERNAL_SYNC) &&
                                 (consumer.absPath == null || (consumer.isDeep && event.getPath().startsWith(consumer.absPath)) || consumer.isDeep && event.getPath().equals(consumer.absPath)) &&
-                                (consumer.nodeTypeName == null || checkNodeTypeNames(event.getPath(), session, consumer.nodeTypeName)) &&
+                                (consumer.nodeTypeName == null || checkNodeTypeNames(
+                                        ((event.getType() & Event.PROPERTY_REMOVED) != 0 ? 
+                                                StringUtils.substringBeforeLast(event.getPath(), "/")
+                                                : event.getPath()), session,
+                                        consumer.nodeTypeName)) &&
                                 (consumer.uuid == null || checkUuids(event.getPath(), session, consumer.nodeTypeName))) {
                             filteredEvents.add(event);
                         }

@@ -121,7 +121,7 @@ public class PlaceholderModule extends Module {
             headerText =   parentModule.path;
         }
         if (getWidth() > 300) {
-            html.setHTML("<div class=\"label-placeholder\">"+Messages.get("label.addTo") + headerText + " : &nbsp;"+"</div>");
+            html.setHTML("<div class=\"label-placeholder\">"+Messages.get("label.addTo") + "&nbsp;" + headerText + " : &nbsp;"+"</div>");
         }
 
         String[] nodeTypesArray = null;

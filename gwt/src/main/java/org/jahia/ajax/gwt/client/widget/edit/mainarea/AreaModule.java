@@ -42,12 +42,19 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Header;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -55,6 +62,8 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
@@ -125,10 +134,14 @@ public class AreaModule extends SimpleModule {
 //            ctn.addStyleName(moduleType+"Template");
             ctn.addText(headerText);
 
-            Button button = new Button(Messages.get("label.areaEnable", "Enable area"));
-            button.setStyleName("button-placeholder");
-            button.addClickHandler(new ClickHandler() {
-                public void onClick(ClickEvent event) {
+            AbstractImagePrototype icon =  ToolbarIconProvider.getInstance().getIcon("enableArea");
+            LayoutContainer p = new HorizontalPanel();
+            p.add(icon.createImage());
+            p.add(new Text(Messages.get("label.areaEnable", "Enable area")));
+            p.sinkEvents(Event.ONCLICK);
+            p.addStyleName("button-placeholder");
+            p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+                public void handleEvent(ComponentEvent be) {
                     createNode(new BaseAsyncCallback<GWTJahiaNode>() {
                         public void onSuccess(GWTJahiaNode result) {
                             mainModule.getEditLinker().refresh(EditLinker.REFRESH_MAIN);
@@ -136,7 +149,8 @@ public class AreaModule extends SimpleModule {
                     });
                 }
             });
-            ctn.add(button);
+
+            ctn.add(p);
 
 //            dash.add(ctn);
 //            dash.add(html);
@@ -161,10 +175,14 @@ public class AreaModule extends SimpleModule {
             ctn.addStyleName(moduleType+"Template");
             ctn.addText(headerText);
 
-            Button button = new Button(Messages.get("label.areaDisable", "Disable area"));
-            button.setStyleName("button-placeholder");
-            button.addClickHandler(new ClickHandler() {
-                public void onClick(ClickEvent event) {
+            AbstractImagePrototype icon =  ToolbarIconProvider.getInstance().getIcon("disableArea");
+            LayoutContainer p = new HorizontalPanel();
+            p.add(icon.createImage());
+            p.add(new Text(Messages.get("label.areaDisable", "Disable area")));
+            p.sinkEvents(Event.ONCLICK);
+            p.addStyleName("button-placeholder");
+            p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+                public void handleEvent(ComponentEvent be) {
                     JahiaContentManagementService.App.getInstance().deletePaths(Arrays.asList(path), new BaseAsyncCallback<GWTJahiaNode>() {
                         public void onSuccess(GWTJahiaNode result) {
                             mainModule.getEditLinker().refresh(EditLinker.REFRESH_MAIN);
@@ -172,7 +190,8 @@ public class AreaModule extends SimpleModule {
                     });
                 }
             });
-            ctn.add(button);
+
+            ctn.add(p);
 
             dash.add(ctn);
             dash.add(html);
@@ -194,11 +213,17 @@ public class AreaModule extends SimpleModule {
             if (getNodeTypes() != null) {
                 String[] nodeTypesArray = getNodeTypes().split(" ");
                 for (final String s : nodeTypesArray) {
-                    Button button = new Button(ModuleHelper.getNodeType(s) != null ? ModuleHelper.getNodeType(
-                            s).getLabel() : s);
-                    button.setStyleName("button-placeholder");
-                    button.addClickHandler(new ClickHandler() {
-                        public void onClick(ClickEvent event) {
+
+                    AbstractImagePrototype icon = ContentModelIconProvider.getInstance().getIcon(ModuleHelper.getNodeType(s));
+                    LayoutContainer p = new HorizontalPanel();
+                    p.add(icon.createImage());
+                    if (getWidth() > 150) {
+                        p.add(new Text(ModuleHelper.getNodeType(s) != null ? ModuleHelper.getNodeType(s).getLabel() : s));
+                    }
+                    p.sinkEvents(Event.ONCLICK);
+                    p.addStyleName("button-placeholder");
+                    p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+                        public void handleEvent(ComponentEvent be) {
                             createNode(new BaseAsyncCallback<GWTJahiaNode>() {
                                 public void onSuccess(GWTJahiaNode result) {
                                     if (node != null && PermissionsUtils.isPermitted("jcr:addChildNodes", node) && !node.isLocked()) {
@@ -208,7 +233,8 @@ public class AreaModule extends SimpleModule {
                             });
                         }
                     });
-                    ctn.add(button);
+
+                    ctn.add(p);
                     ctn.layout();
                 }
             }

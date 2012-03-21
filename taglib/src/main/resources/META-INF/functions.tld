@@ -440,10 +440,16 @@
     </function>
 
     <function>
-        <description>Return all or limited number of ACL entries associated to a node</description>
+        <description>
+            Return all or limited number of ACL entries associated to a node.
+            Optionally the entries list can be limited in size and also sorted.
+            Following values are supported for the sorting type:
+             - latestFirst: sorts the entries by latest added descending
+             - displayName: a ascending case-insensitive alphabetical ordering by display name   
+        </description>
         <name>getRolesForNode</name>
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
-        <function-signature>java.util.List getRolesForNode(org.jahia.services.content.JCRNodeWrapper,boolean,java.lang.String,int)</function-signature>
-        <example>${functions:getRolesForNode(node,true,null,-1)}</example>
+        <function-signature>java.util.List getRolesForNode(org.jahia.services.content.JCRNodeWrapper,boolean,java.lang.String,int,java.lang.String)</function-signature>
+        <example>${functions:getRolesForNode(node,true,null,5,"latestFirst")}</example>
     </function>
 </taglib>

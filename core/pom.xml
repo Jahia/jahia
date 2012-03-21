@@ -98,10 +98,6 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <repository>
-            <id>cedarsoft-thirdparty</id>
-            <url>http://maven.cedarsoft.com/content/repositories/thirdparty/</url>
-        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>

@@ -42,15 +42,16 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -111,6 +112,16 @@ public class PlaceholderModule extends Module {
             return;
         }
 
+        String headerText;
+        if (parentModule.path.contains("/")) {
+            headerText =  parentModule.path.substring(parentModule.path.lastIndexOf('/') + 1);
+        } else {
+            headerText =   parentModule.path;
+        }
+        if (getWidth() > 300) {
+            html.setHTML(Messages.get("label.addTo") + headerText + " : &nbsp;");
+        }
+
         String[] nodeTypesArray = null;
         if (getParentModule() != null && getParentModule().getNodeTypes() != null) {
             nodeTypesArray = getParentModule().getNodeTypes().split(" ");
@@ -128,12 +139,15 @@ public class PlaceholderModule extends Module {
                     continue;
                 }
                 AbstractImagePrototype icon = ContentModelIconProvider.getInstance().getIcon(ModuleHelper.getNodeType(s));
-                Button button = new Button(ModuleHelper.getNodeType(s) != null ? ModuleHelper.getNodeType(
-                        s).getLabel() : s);
-                button.setStyleName("button-placeholder");
-                button.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
+                HorizontalPanel p = new HorizontalPanel();
+                p.add(icon.createImage());
+                if (getWidth() > 150) {
+                    p.add(new Text(ModuleHelper.getNodeType(s) != null ? ModuleHelper.getNodeType(s).getLabel() : s));
+                }
+                p.sinkEvents(Event.ONCLICK);
+                p.addStyleName("button-placeholder");
+                p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+                    public void handleEvent(ComponentEvent be) {
                         final GWTJahiaNode parentNode = getParentModule().getNode();
                         if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
                             String nodeName = null;
@@ -144,12 +158,10 @@ public class PlaceholderModule extends Module {
                         }
                     }
                 });
-                button.setIcon(icon);
-                panel.add(button);
+                panel.add(p);
                 panel.layout();
             }
         }
-
     }
 
     public boolean isDraggable() {
@@ -158,13 +170,6 @@ public class PlaceholderModule extends Module {
 
     public void setParentModule(Module parentModule) {
         this.parentModule = parentModule;
-        String headerText;
-        if (parentModule.path.contains("/")) {
-            headerText =  parentModule.path.substring(parentModule.path.lastIndexOf('/') + 1);
-        } else {
-            headerText =   parentModule.path;
-        }
 
-        html.setHTML(Messages.get("label.addTo") + headerText + " : &nbsp;");
     }
 }

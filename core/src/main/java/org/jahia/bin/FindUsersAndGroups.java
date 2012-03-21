@@ -67,6 +67,7 @@ import org.slf4j.LoggerFactory;
  * Controller for performing user and group mixed search.
  * 
  * @author Sergiy Shyrkov
+ * @since 6.6.1.0
  */
 public class FindUsersAndGroups extends FindUser {
 

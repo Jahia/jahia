@@ -42,9 +42,12 @@ package org.jahia.services.render.filter;
 
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
+import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 
 /**
  * Replaces contextual placeholders in internal links like ##mode## and ##lang## with their actual value.
@@ -67,7 +70,7 @@ public class ContextPlaceholdersReplacer implements HtmlTagAttributeVisitor {
         if (value != null) {
             String contextPath = null;
             if(context.isEditMode()){
-               contextPath = "edit";
+                contextPath = StringUtils.substringAfterLast(((EditConfiguration)SpringContextSingleton.getBean(context.getEditModeConfigName())).getDefaultUrlMapping(), "/");
             } else if(context.isContributionMode()){
                contextPath = "contribute";
             } else{

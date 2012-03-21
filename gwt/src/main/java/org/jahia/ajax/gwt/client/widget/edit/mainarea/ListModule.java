@@ -57,7 +57,10 @@ public class ListModule extends SimpleModule {
     public ListModule(String id, String path, Element divElement, MainModule mainModule) {
         super(id, path, divElement, mainModule);
         head = new Header();
-        add(head);
+
+        if (editable) {
+            add(head);
+        }
 
         if (path.contains("/")) {
             head.setText(Messages.get("label.list") + " : " + path.substring(path.lastIndexOf('/') + 1));

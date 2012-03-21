@@ -126,7 +126,7 @@
                 </c:if>
                 <c:if test="${currentNode.properties['useDueDate'].boolean}">
                     <p>
-                        <label for="task_dueDate">Due date:</label>
+                        <label for="task_dueDate"><fmt:message key="jnt_task.dueDate"/>:</label>
 
                         <input  type="text" id="dueDate_hidden" name="dueDate" style="display:none"/>
 

@@ -20,10 +20,7 @@
                             <!-- <property name="icon" value="preview"/> -->
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.PreviewAsGuest"/>
                                     <ref bean="Toolbar.Item.ShowCompareEngine"/>
-                                    <ref bean="Toolbar.Item.ShowVersionEngine"/>
-                                    <ref bean="Toolbar.Item.ShowConsultPreviousVersionEngine"/>
                                 </list>
                             </property>
                         </bean>
@@ -35,6 +32,7 @@
                                 <list>
                                     <ref bean="Toolbar.Item.Publish"/>
                                     <ref bean="Toolbar.Item.Unpublish"/>
+                                    <ref bean="Toolbar.Item.ViewPublishStatus"/>
                                 </list>
                             </property>
                         </bean>
@@ -133,8 +131,6 @@
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
                         <ref bean="Toolbar.Item.TranslateMenu"/>
-                        <ref bean="Toolbar.Item.Export"/>
-                        <ref bean="Toolbar.Item.Import"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
                         <ref bean="Toolbar.Item.ClearLock"/>

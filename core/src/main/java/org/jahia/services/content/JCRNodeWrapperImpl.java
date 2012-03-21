@@ -189,7 +189,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public Map<String, List<String[]>> getAclEntries() {
         try {
-            Map<String, List<String[]>> results = new HashMap<String, List<String[]>>();
+            Map<String, List<String[]>> results = new LinkedHashMap<String, List<String[]>>();
 
             Node n = objectNode;
             try {

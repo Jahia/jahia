@@ -131,11 +131,11 @@
 
 }
 
-.bodywrapper .label-placeholder {
-    display:inline;
+.bodywrapper .label-placeholder,.bodywrapper div.button-placeholder  {
+    display:inline-block;
 }
 
-.bodywrapper button.button-placeholder {
+.bodywrapper button.button-placeholder,.bodywrapper div.button-placeholder {
 	font-family:tahoma,arial,verdana,sans-serif;
 	font-size:9px;
 	font-weight:bold;
@@ -153,8 +153,9 @@
 	-webkit-box-shadow: 0px 1px 2px #cccccc;
 	-moz-box-shadow: 0px 1px 2px #cccccc;
 	box-shadow: 0px 1px 2px #cccccc;
+    cursor:pointer;
 }
-.bodywrapper button.button-placeholder:hover {
+.bodywrapper button.button-placeholder:hover, .bodywrapper div.button-placeholder:hover {
 	background: #009800 url(../images/xtheme-jahia-andromeda/panel/bg-button-placeholder-on.png) repeat-x scroll left top;
 	color: #fff;
 }

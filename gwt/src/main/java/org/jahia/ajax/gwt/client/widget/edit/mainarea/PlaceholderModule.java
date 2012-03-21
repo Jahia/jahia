@@ -141,7 +141,7 @@ public class PlaceholderModule extends Module {
                     continue;
                 }
                 AbstractImagePrototype icon = ContentModelIconProvider.getInstance().getIcon(ModuleHelper.getNodeType(s));
-                LayoutContainer p = new LayoutContainer(new HBoxLayout());
+                LayoutContainer p = new HorizontalPanel();
                 p.add(icon.createImage());
                 if (getWidth() > 150) {
                     p.add(new Text(ModuleHelper.getNodeType(s) != null ? ModuleHelper.getNodeType(s).getLabel() : s));

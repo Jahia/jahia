@@ -42,7 +42,7 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
         break;
       default:
         type.value.each { inline ->  
-          condition = inline.value.get("condition");
+          condition = inline.value != null ? inline.value.get("condition") : null;
           if (condition != null) println("<!--["+condition+"]>");
           println "${inline.key}";
           if (condition != null) println("<![endif]-->");

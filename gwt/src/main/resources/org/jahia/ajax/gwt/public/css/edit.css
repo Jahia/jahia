@@ -154,6 +154,7 @@
 	-moz-box-shadow: 0px 1px 2px #cccccc;
 	box-shadow: 0px 1px 2px #cccccc;
     cursor:pointer;
+    line-height:15px !important;
 }
 .bodywrapper button.button-placeholder:hover, .bodywrapper div.button-placeholder:hover {
 	background: #009800 url(../images/xtheme-jahia-andromeda/panel/bg-button-placeholder-on.png) repeat-x scroll left top;

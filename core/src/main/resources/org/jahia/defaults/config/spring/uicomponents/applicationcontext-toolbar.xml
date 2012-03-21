@@ -197,7 +197,7 @@
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="servlet"/>
-                    <property name="value" value="lightedit"/>
+                    <property name="value" value="contribute"/>
                 </bean>
             </list>
         </property>
@@ -207,6 +207,31 @@
             </bean>
         </property>
     </bean>   
+
+    <bean id="Toolbar.Item.LightEdit" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchModeActionItem"/>
+        </property>
+        <property name="titleKey" value="label.lightedit"/>
+        <property name="icon" value="lightedit"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="workspace"/>
+                    <property name="value" value="default"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="servlet"/>
+                    <property name="value" value="lightedit"/>
+                </bean>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="permission" value="contributeModeAccess"/>
+            </bean>
+        </property>
+    </bean>
 
     <bean id="Toolbar.Item.Edit" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">

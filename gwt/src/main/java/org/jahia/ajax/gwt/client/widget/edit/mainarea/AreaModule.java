@@ -134,26 +134,6 @@ public class AreaModule extends SimpleModule {
 //            ctn.addStyleName(moduleType+"Template");
             ctn.addText(headerText);
 
-            AbstractImagePrototype icon =  ToolbarIconProvider.getInstance().getIcon("enableArea");
-            LayoutContainer p = new HorizontalPanel();
-            p.add(icon.createImage());
-            p.add(new Text(Messages.get("label.areaEnable", "Enable area")));
-            p.sinkEvents(Event.ONCLICK);
-            p.addStyleName("button-placeholder");
-            p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
-                public void handleEvent(ComponentEvent be) {
-                    createNode(new BaseAsyncCallback<GWTJahiaNode>() {
-                        public void onSuccess(GWTJahiaNode result) {
-                            mainModule.getEditLinker().refresh(EditLinker.REFRESH_MAIN);
-                        }
-                    });
-                }
-            });
-
-            ctn.add(p);
-
-//            dash.add(ctn);
-//            dash.add(html);
             removeAll();
             add(ctn);
 //            add(dash);
@@ -175,10 +155,42 @@ public class AreaModule extends SimpleModule {
             ctn.addStyleName(moduleType+"Template");
             ctn.addText(headerText);
 
+            dash.add(ctn);
+            dash.add(html);
+
+            add(dash);
+        } else {
+            setBorders(false);
+        }
+    }
+
+    @Override public void onNodeTypesLoaded() {
+        if (missingList && editable) {
+            AbstractImagePrototype icon =  ToolbarIconProvider.getInstance().getIcon("enableArea");
+            LayoutContainer p = new HorizontalPanel();
+            p.add(icon.createImage());
+            if (getWidth() > 150) {
+                p.add(new Text(Messages.get("label.areaEnable", "Enable area")));
+            }
+            p.sinkEvents(Event.ONCLICK);
+            p.addStyleName("button-placeholder");
+            p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+                public void handleEvent(ComponentEvent be) {
+                    createNode(new BaseAsyncCallback<GWTJahiaNode>() {
+                        public void onSuccess(GWTJahiaNode result) {
+                            mainModule.getEditLinker().refresh(EditLinker.REFRESH_MAIN);
+                        }
+                    });
+                }
+            });
+            ctn.add(p);
+        } else if (childCount == 0 && editable) {
             AbstractImagePrototype icon =  ToolbarIconProvider.getInstance().getIcon("disableArea");
             LayoutContainer p = new HorizontalPanel();
             p.add(icon.createImage());
-            p.add(new Text(Messages.get("label.areaDisable", "Disable area")));
+            if (getWidth() > 150) {
+                p.add(new Text(Messages.get("label.areaDisable", "Disable area")));
+            }
             p.sinkEvents(Event.ONCLICK);
             p.addStyleName("button-placeholder");
             p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
@@ -193,17 +205,6 @@ public class AreaModule extends SimpleModule {
 
             ctn.add(p);
 
-            dash.add(ctn);
-            dash.add(html);
-
-            add(dash);
-        } else {
-            setBorders(false);
-        }
-    }
-
-    @Override public void onNodeTypesLoaded() {
-        if (childCount == 0 && !missingList && editable) {
             if (mainModule.getConfig().isEnableDragAndDrop()) {
                 DropTarget target = new ModuleDropTarget(this, node == null ? EditModeDNDListener.EMPTYAREA_TYPE : EditModeDNDListener.PLACEHOLDER_TYPE);
                 target.setOperation(DND.Operation.COPY);
@@ -214,8 +215,8 @@ public class AreaModule extends SimpleModule {
                 String[] nodeTypesArray = getNodeTypes().split(" ");
                 for (final String s : nodeTypesArray) {
 
-                    AbstractImagePrototype icon = ContentModelIconProvider.getInstance().getIcon(ModuleHelper.getNodeType(s));
-                    LayoutContainer p = new HorizontalPanel();
+                    icon = ContentModelIconProvider.getInstance().getIcon(ModuleHelper.getNodeType(s));
+                    p = new HorizontalPanel();
                     p.add(icon.createImage());
                     if (getWidth() > 150) {
                         p.add(new Text(ModuleHelper.getNodeType(s) != null ? ModuleHelper.getNodeType(s).getLabel() : s));

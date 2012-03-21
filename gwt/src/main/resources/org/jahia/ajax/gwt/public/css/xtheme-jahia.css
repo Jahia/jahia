@@ -60,8 +60,8 @@ background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 /*Edit Mode*/
 .x-viewport-editmode .x-toolbar-first{
 	background:none !important;
-	background : #f0f4f5 url(../images/xtheme-jahia-andromeda/header/toolbar/editMode-bg.png) no-repeat top right !important;
-	border-color:#b7cbd8!important;
+	background : #063996 url(../images/xtheme-jahia-andromeda/header/toolbar/editMode-bg.png) no-repeat top right !important;
+	border-color:#b7cbd8 !important;
 }
 .x-viewport-editmode .x-toolbar-first button {
 	color:#fff !important;
@@ -75,7 +75,24 @@ background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 .x-viewport-editmode .x-toolbar-first .x-btn-over button {
     color:#000 !important;
 }
-
+/*Light Edit Mode*/
+.x-viewport-lighteditmode .x-toolbar-first{
+	background:none !important;
+	background : #063996 url(../images/xtheme-jahia-andromeda/header/toolbar/lightEditMode-bg.png) no-repeat top right !important;
+	border-color:#063996 !important;
+}
+.x-viewport-lighteditmode .x-toolbar-first button {
+	color:#fff !important;
+}
+.x-viewport-lighteditmode .x-toolbar-first .x-btn-mc em.x-btn-arrow {
+	background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
+}
+.x-viewport-lighteditmode .x-toolbar-first .xtb-sep {
+	background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split2.gif) !important;
+}
+.x-viewport-lighteditmode .x-toolbar-first .x-btn-over button {
+    color:#000 !important;
+}
 /*United Content Manager*/
 .x-viewport-contentmanager .x-toolbar-first {
 	background:none !important;

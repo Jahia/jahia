@@ -34,7 +34,7 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
         break;
       case "javascript" :
         type.value.eachWithIndex { javascript, i ->
-          condition = javascript.value.get("condition");
+          condition = javascript.value != null ? javascript.value.get("condition") : null;
           if (condition != null) println("<!--["+condition+"]>");
           println "<script id=\"staticAssetJavascript${i}\" type=\"text/javascript\" src=\"${javascript.key}\"></script>";
           if (condition != null) println("<![endif]-->");

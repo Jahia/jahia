@@ -155,6 +155,7 @@
                                             <c:when test="${task.properties.state.string == 'canceled'}">
                                             </c:when>
                                         </c:choose>
+                                        <c:if test="${not empty task.properties['dueDate']}"><li class="taskactions-right"><a class="iCalendarAction" href="<c:url value='${url.base}${task.path}.ics'/>" title="iCalendar"><fmt:message key="label.actions.icalendar"/></a></li></c:if>
                                     </ul>
                                 </div>
                             </td>

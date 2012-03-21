@@ -10,5 +10,8 @@ renderContext.request.getAttribute("staticAssets").css.eachWithIndex { resource,
     if (condition != null) println("<![endif]-->");
 }
 renderContext.request.getAttribute("staticAssets").inline.eachWithIndex { resource, i ->
+    condition = resource.value.get("condition");
+    if (condition != null) println("<!--["+condition+"]>");
     println "${resource.key}";
+    if (condition != null) println("<![endif]-->");
 }

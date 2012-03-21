@@ -18,6 +18,16 @@
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 
 <script type="text/javascript">
+    function getUserDisplayName(node) {
+        var value = node['j:firstName'] || '';
+        if (value.length != 0) {
+            value += ' ';
+        }
+        value += node['j:lastName'] || '';
+        var title = value.length > 0 ? value : node['username'];
+        var username = node['username'];
+        return username != title ? title + " (" + username + ")" : username;
+    }
     $(document).ready(function() {
 
         $("a#createTasks").fancybox();
@@ -31,12 +41,12 @@
                                 return {
                                     data: row,
                                     value: row['username'],
-                                    result: getText(row)
+                                    result: getUserDisplayName(row)
                                 }
                             });
                         },
                         formatItem: function(item) {
-                            return getText(item);
+                            return getUserDisplayName(item);
                         }
                     }).result(function(event, item, formatted) {
                         if (!item) {

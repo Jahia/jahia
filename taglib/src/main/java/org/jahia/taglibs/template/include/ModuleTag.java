@@ -258,18 +258,19 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         String type = getModuleType(renderContext);
                         List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
                         String oldNodeTypes = nodeTypes;
+                        String add = null;
                         if (contributeTypes != null) {
                             nodeTypes = StringUtils.join(contributeTypes, " ");
-                            // type = "area"; create a read only area
+                            add = "editable=\"false\"";
                         }
                         Script script = null;
                         try {
                             script = RenderService.getInstance().resolveScript(resource, renderContext);
                             printModuleStart(type, node.getPath(), resource.getResolvedTemplate(),
-                                    script.getView().getInfo(), null);
+                                    script.getView().getInfo(), add);
                         } catch (TemplateNotFoundException e) {
                             printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), "Script not found",
-                                    null);
+                                    add);
                         }
                         nodeTypes = oldNodeTypes;
                         currentResource.getDependencies().add(node.getCanonicalPath());

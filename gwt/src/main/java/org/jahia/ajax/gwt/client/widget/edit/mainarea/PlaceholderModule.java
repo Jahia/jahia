@@ -48,6 +48,8 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Element;
@@ -83,7 +85,7 @@ public class PlaceholderModule extends Module {
         } else {
             setBorders(true);
         }
-        panel = new HorizontalPanel();
+        panel = new LayoutContainer();
 //        panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
         panel.addStyleName("x-small-editor");
         panel.addStyleName("x-panel-header");
@@ -119,7 +121,7 @@ public class PlaceholderModule extends Module {
             headerText =   parentModule.path;
         }
         if (getWidth() > 300) {
-            html.setHTML(Messages.get("label.addTo") + headerText + " : &nbsp;");
+            html.setHTML("<div class=\"label-placeholder\">"+Messages.get("label.addTo") + headerText + " : &nbsp;"+"</div>");
         }
 
         String[] nodeTypesArray = null;
@@ -139,7 +141,7 @@ public class PlaceholderModule extends Module {
                     continue;
                 }
                 AbstractImagePrototype icon = ContentModelIconProvider.getInstance().getIcon(ModuleHelper.getNodeType(s));
-                HorizontalPanel p = new HorizontalPanel();
+                LayoutContainer p = new LayoutContainer(new HBoxLayout());
                 p.add(icon.createImage());
                 if (getWidth() > 150) {
                     p.add(new Text(ModuleHelper.getNodeType(s) != null ? ModuleHelper.getNodeType(s).getLabel() : s));

@@ -67,15 +67,18 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupList
  */
 public class SimpleModule extends Module {
     protected boolean hasDragDrop = true;
+    protected boolean editable = true;
 
     public SimpleModule(String id, String path, Element divElement, MainModule mainModule) {
         super(id, path, divElement, mainModule);
+        editable = !"false".equals(DOM.getElementAttribute(divElement, "editable"));
     }
 
     public SimpleModule(String id, final String path, Element divElement, final MainModule mainModule, boolean header) {
         super(id, path, divElement, mainModule);
 
         hasDragDrop = !"false".equals(DOM.getElementAttribute(divElement, "dragdrop"));
+        editable = !"false".equals(DOM.getElementAttribute(divElement, "editable"));
 
         if (header) {
             head = new Header();
@@ -110,34 +113,35 @@ public class SimpleModule extends Module {
 
             }
         }
+        if (editable) {
+            sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT + Event.ONCONTEXTMENU);
 
-        sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT + Event.ONCONTEXTMENU);
-
-        Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                if (selectable) {
-                    Log.info("click" + path + " : " + scriptInfo);
-                    mainModule.getEditLinker().onModuleSelection(SimpleModule.this);
+            Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
+                public void handleEvent(ComponentEvent ce) {
+                    if (selectable) {
+                        Log.info("click" + path + " : " + scriptInfo);
+                        mainModule.getEditLinker().onModuleSelection(SimpleModule.this);
+                    }
                 }
-            }
-        };
-        addListener(Events.OnClick, listener);
-        addListener(Events.OnContextMenu, listener);
-        addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this, mainModule.getEditLinker()));
+            };
+            addListener(Events.OnClick, listener);
+            addListener(Events.OnContextMenu, listener);
+            addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this, mainModule.getEditLinker()));
 
-        Listener<ComponentEvent> hoverListener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                Hover.getInstance().addHover(SimpleModule.this);
-            }
-        };
-        Listener<ComponentEvent> outListener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                Hover.getInstance().removeHover(SimpleModule.this);
-            }
-        };
+            Listener<ComponentEvent> hoverListener = new Listener<ComponentEvent>() {
+                public void handleEvent(ComponentEvent ce) {
+                    Hover.getInstance().addHover(SimpleModule.this);
+                }
+            };
+            Listener<ComponentEvent> outListener = new Listener<ComponentEvent>() {
+                public void handleEvent(ComponentEvent ce) {
+                    Hover.getInstance().removeHover(SimpleModule.this);
+                }
+            };
 
-        addListener(Events.OnMouseOver, hoverListener);
-        addListener(Events.OnMouseOut, outListener);
+            addListener(Events.OnMouseOver, hoverListener);
+            addListener(Events.OnMouseOut, outListener);
+        }
     }
 
     public void setNode(GWTJahiaNode node) {

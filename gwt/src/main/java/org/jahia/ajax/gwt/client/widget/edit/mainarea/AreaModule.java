@@ -81,10 +81,13 @@ public class AreaModule extends SimpleModule {
         hasDragDrop = false;
         head = new Header();
 
+        if (editable) {
+            add(head);
+        }
+
         this.mockupStyle = DOM.getElementAttribute(divElement, "mockupStyle");
         this.missingList = "true".equals(DOM.getElementAttribute(divElement, "missingList"));
 
-        add(head);
         this.moduleType = moduleType;
         String headerText;
         if (path.contains("/")) {

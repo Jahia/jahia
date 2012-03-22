@@ -1,3 +1,4 @@
+$.ajaxSetup({traditional: true, cache:false});
 var richTextEditors = {};
 var contributionI18n = {
     'ok': 'OK',
@@ -42,7 +43,15 @@ function errorOnSave(thisField) {
 
 function initEditFields(id, escapeTextValue) {
     $(".edit" + id).editable(function (value, settings) {
-        var data = {'jcrMethodToCall':'put'};
+        var data;
+        var initData = $(this).attr('init:data');
+        if (initData != null) {
+            data = $.parseJSON(initData);
+        }
+        if (data == null) {
+            data = {};
+        }
+        data['jcrMethodToCall'] = 'put';
         var submitId = $(this).attr('jcr:id');
         data[submitId] = value;
         var thisField = this;
@@ -64,8 +73,16 @@ function initEditFields(id, escapeTextValue) {
     });
 
     $(".ckeditorEdit" + id).editable(function (value, settings) {
+        var data;
+        var initData = $(this).attr('init:data');
+        if (initData != null) {
+            data = $.parseJSON(initData);
+        }
+        if (data == null) {
+            data = {};
+        }
+        data['jcrMethodToCall'] = 'put';
         var submitId = $(this).attr('jcr:id');
-        var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
         var thisField = this;
         $.ajax({
@@ -94,8 +111,16 @@ function initEditFields(id, escapeTextValue) {
     });
 
     $(".dateEdit" + id).editable(function (value, settings) {
+        var data;
+        var initData = $(this).attr('init:data');
+        if (initData != null) {
+            data = $.parseJSON(initData);
+        }
+        if (data == null) {
+            data = {};
+        }
+        data['jcrMethodToCall'] = 'put';
         var submitId = $(this).attr('jcr:id');
-        var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
         var thisField = this;
         $.ajax({
@@ -117,8 +142,16 @@ function initEditFields(id, escapeTextValue) {
     });
 
     $(".dateTimeEdit" + id).editable(function (value, settings) {
+        var data;
+        var initData = $(this).attr('init:data');
+        if (initData != null) {
+            data = $.parseJSON(initData);
+        }
+        if (data == null) {
+            data = {};
+        }
+        data['jcrMethodToCall'] = 'put';
         var submitId = $(this).attr('jcr:id');
-        var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
         var thisField = this;
         $.ajax({
@@ -144,8 +177,16 @@ function initEditFields(id, escapeTextValue) {
 
 function setChoiceListEdit(id) {
     $(".choicelistEdit" + id).editable(function (value, settings) {
+        var data;
+        var initData = $(this).attr('init:data');
+        if (initData != null) {
+            data = $.parseJSON(initData);
+        }
+        if (data == null) {
+            data = {};
+        }
+        data['jcrMethodToCall'] = 'put';
         var submitId = $(this).attr('jcr:id').replace("_", ":");
-        var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
         var thisField = this;
         $.ajax({
@@ -179,7 +220,15 @@ function setFileEdit(id) {
         tooltip : contributionI18n['edit'],
         target:$(".file" + id).attr('jcr:url')+"?jcrContributePost=true",
         callback : function (data, status,original) {
-            var datas = {'jcrMethodToCall':'put'};
+            var datas;
+            var initData = $(original).attr('init:data');
+            if (initData != null) {
+                datas = $.parseJSON(initData);
+            }
+            if (datas == null) {
+                datas = {};
+            }
+            datas['jcrMethodToCall'] = 'put';
             var callableUrl = $(original).attr('jcr:url');
             datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];
             $.post($(original).attr('jcr:url'), datas, function(result) {
@@ -204,7 +253,15 @@ function setFileEdit(id) {
 
 function setFileSelector(id) {
     $(".fileSelector" + id).editable(function (value, settings) {
-        var data = {'jcrMethodToCall':'put'};
+        var data;
+        var initData = $(this).attr('init:data');
+        if (initData != null) {
+            data = $.parseJSON(initData);
+        }
+        if (data == null) {
+            data = {};
+        }
+        data['jcrMethodToCall'] = 'put';
         var submitId = $(this).attr('jcr:id');
         data[submitId] = value;
         var callableUrl = $(this).attr('jcr:url');

@@ -685,8 +685,12 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 modified = true;
             }
         } else {
-            v.setProperty("j:version", pack.getVersion().toString());
-            modified = true;
+            if (pack.getVersion() != null) {
+                v.setProperty("j:version", pack.getVersion().toString());
+                modified = true;
+            } else {
+                logger.warn("no version set for Package : " + pack.getFileName());
+            }
         }
         if (updateDeploymentDate) {
             v.setProperty("j:deployementDate", new GregorianCalendar());

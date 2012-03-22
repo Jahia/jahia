@@ -184,6 +184,7 @@ public class AreaModule extends SimpleModule {
                 }
             });
             ctn.add(p);
+            ctn.layout();
         } else if (childCount == 0 && editable) {
             AbstractImagePrototype icon =  ToolbarIconProvider.getInstance().getIcon("disableArea");
             LayoutContainer p = new HorizontalPanel();
@@ -236,9 +237,9 @@ public class AreaModule extends SimpleModule {
                     });
 
                     ctn.add(p);
-                    ctn.layout();
                 }
             }
+            ctn.layout();
         }
     }
 

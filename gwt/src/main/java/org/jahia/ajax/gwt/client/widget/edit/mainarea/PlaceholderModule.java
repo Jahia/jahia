@@ -46,20 +46,17 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
@@ -76,6 +73,7 @@ import java.util.List;
  */
 public class PlaceholderModule extends Module {
     private LayoutContainer panel;
+    private LayoutContainer pasteButton;
 
     public PlaceholderModule(String id, String path, Element divElement, MainModule mainModule) {
         super(id, path, divElement, mainModule, new FlowLayout());
@@ -161,8 +159,31 @@ public class PlaceholderModule extends Module {
                     }
                 });
                 panel.add(p);
-                panel.layout();
             }
+
+            AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon("paste");
+            pasteButton = new HorizontalPanel();
+            pasteButton.add(icon.createImage());
+            if (getWidth() > 150) {
+                pasteButton.add(new Text("Paste"));
+            }
+            pasteButton.sinkEvents(Event.ONCLICK);
+            pasteButton.addStyleName("button-placeholder");
+
+            pasteButton.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+                public void handleEvent(ComponentEvent be) {
+                    GWTJahiaNode parentNode = getParentModule().getNode();
+                    if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
+                        CopyPasteEngine.getInstance().paste(parentNode, mainModule.getEditLinker());
+                    }
+                }
+            });
+            CopyPasteEngine.getInstance().addPlaceholder(this);
+            updatePasteButton();
+
+            panel.add(pasteButton);
+
+            panel.layout();
         }
     }
 
@@ -172,6 +193,14 @@ public class PlaceholderModule extends Module {
 
     public void setParentModule(Module parentModule) {
         this.parentModule = parentModule;
-
     }
+
+    public void updatePasteButton() {
+        if (CopyPasteEngine.getInstance().getCopiedPaths() != null && /*CopyPasteEngine.getInstance().canCopyTo(parentModule.getNode()) &&*/ CopyPasteEngine.getInstance().checkNodeType(parentModule.getNodeTypes())) {
+            pasteButton.setVisible(true);
+        } else {
+            pasteButton.setVisible(false);
+        }
+    }
+
 }

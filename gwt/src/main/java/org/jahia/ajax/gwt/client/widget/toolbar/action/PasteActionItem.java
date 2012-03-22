@@ -40,20 +40,13 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.google.gwt.user.client.Window;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
-import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -81,35 +74,7 @@ public class PasteActionItem extends BaseActionItem {
         if (m != null) {
             linker.loading(Messages.get("statusbar.pasting.label"));
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
-            final List<String> copiedPaths = new ArrayList<String>();
-            for (GWTJahiaNode node : copyPasteEngine.getCopiedPaths()) {
-                copiedPaths.add(m.getPath() + "/" + node.getName());
-            }
-            JahiaContentManagementService
-                    .App.getInstance().paste(JCRClientUtils.getPathesList(copyPasteEngine.getCopiedPaths()), m.getPath(), null, copyPasteEngine.isCut(), new BaseAsyncCallback() {
-                public void onApplicationFailure(Throwable throwable) {
-                    Window.alert(Messages.get("failure.paste.label") + "\n" + throwable.getLocalizedMessage());
-                    linker.loaded();
-                }
-
-                public void onSuccess(Object o) {
-                    boolean refresh = false;
-                    for (GWTJahiaNode n : copyPasteEngine.getCopiedPaths()) {
-                        if (!n.isFile()) {
-                            refresh = true;
-                            break;
-                        }
-                    }
-                    copyPasteEngine.onPastedPath();
-                    linker.setSelectPathAfterDataUpdate(copiedPaths);
-                    linker.loaded();
-                    if (refresh) {
-                        linker.refresh(EditLinker.REFRESH_ALL);
-                    } else {
-                        linker.refresh(Linker.REFRESH_MAIN);
-                    }
-                }
-            });
+            copyPasteEngine.paste(m, linker);
         }
     }
 
@@ -124,33 +89,10 @@ public class PasteActionItem extends BaseActionItem {
         }
 
         if (linker instanceof EditLinker) {
-            b = b && checkNodeType(CopyPasteEngine.getInstance().getCopiedPaths(), ((EditLinker)linker).getSelectedModule().getNodeTypes());
+            b = b && CopyPasteEngine.getInstance().checkNodeType(((EditLinker)linker).getSelectedModule().getNodeTypes());
         }
 
         setEnabled(b);
-    }
-
-    private boolean checkNodeType(List<GWTJahiaNode> sources, String nodetypes) {
-        boolean allowed = true;
-
-        if (nodetypes != null && nodetypes.length() > 0) {
-            if (sources != null) {
-                String[] allowedTypes = nodetypes.split(" |,");
-                for (GWTJahiaNode source : sources) {
-                    boolean nodeAllowed = false;
-                    for (String type : allowedTypes) {
-                        if (source.getNodeTypes().contains(type) || source.getInheritedNodeTypes().contains(type)) {
-                            nodeAllowed = true;
-                            break;
-                        }
-                    }
-                    allowed &= nodeAllowed;
-                }
-            }
-        } else {
-            allowed = false;
-        }
-        return allowed;
     }
 
 }

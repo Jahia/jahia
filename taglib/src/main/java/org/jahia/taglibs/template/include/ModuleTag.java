@@ -42,6 +42,7 @@ package org.jahia.taglibs.template.include;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.bin.Studio;
@@ -338,12 +339,24 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 contributeNode = node; 
             }
             if (contributeNode != null && contributeNode.hasProperty("j:contributeTypes")) {
-                List<String> l = new ArrayList<String>();
+                LinkedHashSet<String> l = new LinkedHashSet<String>();
                 Value[] v = contributeNode.getProperty("j:contributeTypes").getValues();
                 for (Value value : v) {
                     l.add(value.getString());
                 }
-                return l;
+                LinkedHashSet<String> subtypes = new LinkedHashSet<String>();
+                for (String s : l) {
+                    ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(s);
+                    if (nt != null) {
+                        for (ExtendedNodeType subtype : nt.getSubtypesAsList()) {
+                            subtypes.add(subtype.getName());
+                        }
+                    }
+                }
+                if (subtypes.size() < 10) {
+                    return new ArrayList<String>(subtypes);
+                }
+                return new ArrayList<String>(l);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -363,7 +376,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         }
 
         try {
-            if ((node.hasProperty("j:editableInContribution") && node.getProperty("j:editableInContribution").getBoolean()) ||
+            if ((node.getParent().hasProperty("j:editableInContribution") && node.getParent().getProperty("j:editableInContribution").getBoolean()) ||
+                    (node.hasProperty("j:editableInContribution") && node.getProperty("j:editableInContribution").getBoolean()) ||
                     (contributeNode != null && contributeNode.hasProperty("j:editableInContribution") && contributeNode.getProperty("j:editableInContribution").getBoolean())) {
                 return true;
             }

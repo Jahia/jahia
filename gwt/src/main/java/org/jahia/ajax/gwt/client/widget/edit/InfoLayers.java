@@ -110,6 +110,9 @@ public class InfoLayers {
         El el = container.el();
         final boolean header = headerOnly && module instanceof MainModule;
         int totalWidth = 0;
+        if (header && module.getHeader() == null) {
+            return;
+        }
         if (header) {
             for (Component component : module.getHeader().getTools()) {
                 totalWidth += component.el().getSize().width;

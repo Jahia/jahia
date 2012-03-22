@@ -26,8 +26,6 @@
 </c:if>
 
 <c:forEach items="${currentNode.properties['filterOnStates']}" var="stateValue" varStatus="status">
-</c:forEach>
-<c:forEach items="${currentNode.properties['filterOnStates']}" var="stateValue" varStatus="status">
     <c:if test="${status.first}">
         <c:set value="${sql} and (" var="sql"/>
     </c:if>
@@ -40,19 +38,24 @@
     </c:if>
 </c:forEach>
 
-<c:forEach items="${fn:split(currentNode.properties['filterOnTypes'].string,',')}" var="typeValue" varStatus="status">
-    <c:if test="${status.first}">
-        <c:set value="${sql} and (" var="sql"/>
-    </c:if>
-    <c:if test="${not status.first}">
-        <c:set value="${sql} or " var="sql"/>
-    </c:if>
-    <c:set value="${sql}type='${typeValue}'" var="sql"/>
-    <c:if test="${status.last}">
-        <c:set value="${sql})" var="sql"/>
-    </c:if>
-</c:forEach>
-<c:set value="select * from [jnt:task] as task where ${fn:substringAfter(sql, 'and')}" var="sql"/>
+<c:if test="${not empty currentNode.properties['filterOnTypes'].string}">
+    <c:forEach items="${fn:split(currentNode.properties['filterOnTypes'].string,',')}" var="typeValue" varStatus="status">
+        <c:if test="${status.first}">
+            <c:set value="${sql} and (" var="sql"/>
+        </c:if>
+        <c:if test="${not status.first}">
+            <c:set value="${sql} or " var="sql"/>
+        </c:if>
+        <c:set value="${sql}type='${typeValue}'" var="sql"/>
+        <c:if test="${status.last}">
+            <c:set value="${sql})" var="sql"/>
+        </c:if>
+    </c:forEach>
+</c:if>
+<c:if test="${not empty sql}">
+    <c:set value=" where ${fn:substringAfter(sql, 'and')}" var="sql"/>
+</c:if>
+<c:set value="select * from [jnt:task] as task${sql}" var="sql"/>
 <c:if test="${not empty currentNode.properties['sortBy']}">
     <c:set value="${sql} order by task.['${currentNode.properties['sortBy'].string}'] desc" var="sql"/>
 </c:if>

@@ -348,8 +348,13 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 for (String s : l) {
                     ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(s);
                     if (nt != null) {
+                        if (!nt.isAbstract()) {
+                            subtypes.add(nt.getName());
+                        }
                         for (ExtendedNodeType subtype : nt.getSubtypesAsList()) {
-                            subtypes.add(subtype.getName());
+                            if (!subtype.isAbstract()) {
+                                subtypes.add(subtype.getName());
+                            }
                         }
                     }
                 }

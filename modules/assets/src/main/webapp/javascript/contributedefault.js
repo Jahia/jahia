@@ -42,6 +42,9 @@ function errorOnSave(thisField) {
 }
 
 function initEditFields(id, escapeTextValue) {
+    initEditFields(id, escapeTextValue, null)
+}
+function initEditFields(id, escapeTextValue, callback) {
     $(".edit" + id).editable(function (value, settings) {
         var data;
         var initData = $(this).attr('init:data');
@@ -61,6 +64,10 @@ function initEditFields(id, escapeTextValue) {
             data: data,
             dataType: "json",
             error:errorOnSave(thisField)
+        }).done(function() {
+            if (callback != null) {
+                callback();
+            }
         });
 
         return escapeTextValue ? $('<div/>').text(value).html() : value;
@@ -91,6 +98,10 @@ function initEditFields(id, escapeTextValue) {
           data: data,
           dataType: "json",
           error:errorOnSave(thisField)
+        }).done(function() {
+            if (callback != null) {
+                callback();
+            }
         });
 
         return(value);
@@ -129,6 +140,10 @@ function initEditFields(id, escapeTextValue) {
           data: data,
           dataType: "json",
           error:errorOnSave(thisField)
+        }).done(function() {
+            if (callback != null) {
+                callback();
+            }
         });
 
         return(value.replace("T", " "));
@@ -160,6 +175,10 @@ function initEditFields(id, escapeTextValue) {
           data: data,
           dataType: "json",
           error:errorOnSave(thisField)
+        }).done(function() {
+            if (callback != null) {
+                callback();
+            }
         });
 
         return(value.replace("T", " "));
@@ -171,11 +190,14 @@ function initEditFields(id, escapeTextValue) {
         tooltip : contributionI18n['edit'],
         loaddata : {defaultValue:($(".dateTimeEdit" + id).attr('jcr:valuems') != null ? $(".dateTimeEdit" + id).attr('jcr:valuems') : $(".dateTimeEdit" + id).attr('jcr:value'))}
     });
-    setChoiceListEdit(id);
-    setFileEdit(id);
+    setChoiceListEdit(id, callback);
+    setFileEdit(id, callback);
 }
 
 function setChoiceListEdit(id) {
+    setChoiceListEdit(id, null)
+}
+function setChoiceListEdit(id, callback) {
     $(".choicelistEdit" + id).editable(function (value, settings) {
         var data;
         var initData = $(this).attr('init:data');
@@ -195,6 +217,10 @@ function setChoiceListEdit(id) {
           data: data,
           dataType: "json",
             error:errorOnSave(thisField)
+        }).done(function() {
+            if (callback != null) {
+                callback();
+            }
         });
 
         return eval("values=" + $(this).attr('jcr:options'))[value];
@@ -211,6 +237,9 @@ function setChoiceListEdit(id) {
 }
 
 function setFileEdit(id) {
+    setFileEdit(id, null)
+}
+function setFileEdit(id, callback) {
     $(".file" + id).editable('', {
         type : 'ajaxupload',
         onblur : 'ignore',
@@ -245,6 +274,9 @@ function setFileEdit(id) {
                     });
                 }
                 $(".file"+id).html(decodeURI(result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")]));
+                if (callback != null) {
+                    callback();
+                }
             }, "json");
         }
     });
@@ -252,6 +284,9 @@ function setFileEdit(id) {
 }
 
 function setFileSelector(id) {
+    setFileSelector(id, null)
+}
+function setFileSelector(id, callback) {
     $(".fileSelector" + id).editable(function (value, settings) {
         var data;
         var initData = $(this).attr('init:data');
@@ -279,6 +314,9 @@ function setFileSelector(id) {
                 });
             }
             $(".fileSelector"+id).html(decodeURI(result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")]));
+            if (callback != null) {
+                callback();
+            }
         }, "json");
         return(value);
     }, {

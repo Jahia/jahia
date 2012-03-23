@@ -16,11 +16,11 @@
     final String PUBLICPROPERTIES_PROPERTY = "j:publicProperties";
 
     String getPublicPropertiesData(JCRNodeWrapper user, String propertyName) throws RepositoryException {
-        if (!user.hasProperty(PUBLICPROPERTIES_PROPERTY)) {
-            return "";
-        }
         HashSet<String> publicProperties = new HashSet<String>();
-        Value[] values = user.getProperty(PUBLICPROPERTIES_PROPERTY).getValues();
+        Value[] values = null;
+        if (user.hasProperty(PUBLICPROPERTIES_PROPERTY)) {
+            values = user.getProperty(PUBLICPROPERTIES_PROPERTY).getValues();
+        }
         if (values != null) {
             for (Value value : values) {
                 publicProperties.add("&quot;" + value.getString() + "&quot;");
@@ -81,8 +81,12 @@
 
 <template:addResources>
 <script type="text/javascript">
-    $(document).ready(function() {
-        initEditFields("${currentNode.identifier}", true);
+    function ajaxReloadCallback() {
+        $('.user-profile-list').parent().load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax"/>');
+    }
+
+    function initEditUserDetails() {
+        initEditFields("${currentNode.identifier}", true, ajaxReloadCallback);
         $(".userPicture${currentNode.identifier}").editable('', {
             type : 'ajaxupload',
             onblur : 'ignore',
@@ -103,13 +107,15 @@
                 var callableUrl = $(original).attr('jcr:url');
                 datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];
                 $.post($(original).attr('jcr:url'), datas, function(result) {
-                    $(".userProfileImage").attr("src", result.j_picture+"?t=avatar_120");
+                    //$(".userProfileImage").attr("src", result.j_picture+"?t=avatar_120");
+                    ajaxReloadCallback();
                 }, "json");
                 $(".userPicture${currentNode.identifier}").html(original.revert); // original.reset() doesn't work
             }
         });
+    }
 
-    });
+    $(document).ready(initEditUserDetails);
 </script>
 </template:addResources>
 
@@ -297,7 +303,7 @@
     </c:if>
 
     <c:if test="${currentNode.properties['password'].boolean}">
-        <div id="passwordFormContainer" style="display:none;"/>
+        <div id="passwordFormContainer" style="display:none;">
         <div id="passwordForm">
             <form id="changePassword" method="post" action="">
                 <c:forEach items="${param}" var="p">

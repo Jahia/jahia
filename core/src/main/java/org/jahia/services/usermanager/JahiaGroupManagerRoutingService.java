@@ -54,6 +54,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.sites.JahiaSite;
@@ -76,6 +77,8 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
     private Map<String, JahiaGroupManagerProvider> providersTable = null;
     private SortedSet<JahiaGroupManagerProvider> sortedProviders = null;
     private JahiaGroupManagerProvider defaultProviderInstance = null;
+    private List<String> jahiaJcrEnforcedGroups;
+    private String jahiaJcrEnforcedGroupsProviderKey;
 
 
 // -------------------------- STATIC METHODS --------------------------
@@ -337,6 +340,9 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
     }
 
     public boolean groupExists (final int siteID, final String name) {
+        if(getJahiaJcrEnforcedGroups().contains(name)) {
+            return getProvider(jahiaJcrEnforcedGroupsProviderKey).groupExists(siteID, name)?Boolean.TRUE:Boolean.FALSE;
+        }
         Boolean resultBool = (Boolean) routeCallAllUntilSuccess(new Command() {
             public Object execute(JahiaGroupManagerProvider p) {
                 if (p.groupExists(siteID, name)) {
@@ -351,6 +357,9 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
     }
 
     public JahiaGroup lookupGroup (final String groupKey) {
+        if(getJahiaJcrEnforcedGroups().contains(StringUtils.substringBefore(groupKey,":"))) {
+            return getProvider(jahiaJcrEnforcedGroupsProviderKey).lookupGroup(groupKey);
+        }
         return (JahiaGroup) routeCallAllUntilSuccess(new Command() {
             public Object execute(JahiaGroupManagerProvider p) {
                 return p.lookupGroup(groupKey);
@@ -359,6 +368,9 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
     }
 
     public JahiaGroup lookupGroup (final int siteID, final String name) {
+        if(getJahiaJcrEnforcedGroups().contains(name)) {
+            return getProvider(jahiaJcrEnforcedGroupsProviderKey).lookupGroup(siteID,name);
+        }
         return (JahiaGroup) routeCallAllUntilSuccess(new Command() {
             public Object execute(JahiaGroupManagerProvider p) {
                 return p.lookupGroup(siteID, name);
@@ -522,6 +534,22 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
 		}, null, null);
 		return result.booleanValue();
 	}
+
+    public void setJahiaJcrEnforcedGroups(List jahiaJcrEnforcedGroups) {
+        this.jahiaJcrEnforcedGroups = jahiaJcrEnforcedGroups;
+    }
+
+    public List getJahiaJcrEnforcedGroups() {
+        return jahiaJcrEnforcedGroups;
+    }
+
+    public void setJahiaJcrEnforcedGroupsProviderKey(String jahiaJcrEnforcedGroupsProviderKey) {
+        this.jahiaJcrEnforcedGroupsProviderKey = jahiaJcrEnforcedGroupsProviderKey;
+    }
+
+    public String getJahiaJcrEnforcedGroupsProviderKey() {
+        return jahiaJcrEnforcedGroupsProviderKey;
+    }
 
 // -------------------------- INNER CLASSES --------------------------
 

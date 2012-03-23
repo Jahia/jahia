@@ -358,6 +358,7 @@
     <bean id="channelInitializer" class="org.jahia.services.channels.ChannelChoiceListInitializer">
         <property name="channelService" ref="ChannelService" />
     </bean>
+    <bean id="propertyValuesChoiceListInitializer" class="org.jahia.services.content.nodetypes.initializers.PropertyValuesChoiceListInitializer"/>
     <bean id="choiceListInitializers"
           class="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService"
           factory-method="getInstance">
@@ -383,6 +384,7 @@
                 <entry key="sort" value-ref="sortInitializer"/>
                 <entry key="componenttypes" value-ref="componentTypesInitializer"/>
                 <entry key="channels" value-ref="channelInitializer"/>
+                <entry key="propertyValues" value-ref="propertyValuesChoiceListInitializer"/>
             </map>
         </property>
     </bean>

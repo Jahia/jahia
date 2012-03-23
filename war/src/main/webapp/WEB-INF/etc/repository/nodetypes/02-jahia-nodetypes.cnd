@@ -145,7 +145,7 @@
 
 [jmix:publication] mixin
 
-[jnt:simpleWorkflow] > mix:title, nt:base
+[jnt:simpleWorkflow] > mix:title, nt:base, jmix:i18n
 
 //---------------------------------------------------------
 // Locks

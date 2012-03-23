@@ -9,21 +9,28 @@
  - dueDate (date, datetimepicker) = now('1000*60*60*24')
  - state (string, choicelist[resourceBundle]) = 'active' nofulltext analyzer='keyword' < 'active', 'started', 'finished', 'suspended'
  - type (string)
- - outcomes (string) multiple
+ - possibleOutcomes (string) multiple
+ - finalOutcome (string)
+ + taskData (nt:base)
+
+[jnt:workflowTask] > jnt:task
+ - taskName (string)
+ - taskBundle (string)
+ - taskId (string)
+ - provider (string)
+ - targetNode (weakreference)
 
 [jnt:tasks] > jnt:content, mix:title
  orderable
+ + * (jnt:tasks)
  + * (jnt:task)
 
 
 [jnt:currentUserTasks] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly
- - viewUserTasks (boolean)
  - filterOnTypes (string) nofulltext
  - filterOnStates (string, choicelist[resourceBundle]) multiple < 'active', 'started', 'finished', 'suspended'
- - filterOnAssignee (string, choicelist[resourceBundle]) < 'assignedToMe','unassigned'
+ - filterOnAssignee (string, choicelist[resourceBundle]) < 'assignedToMe','unassigned','assignedToMeOrUnassigned'
  - filterOnCreator (string, choicelist[resourceBundle]) < 'createdByMe'
- - viewWorkflowTasks (boolean)
- - workflowTypes (string, choicelist[workflow]) multiple nofulltext
  - displayState (boolean)
  - displayDueDate (boolean)
  - displayAssignee (boolean)

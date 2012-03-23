@@ -360,7 +360,8 @@ public class JBPMMailProducer extends MailProducerImpl {
         // currentUser is the one that "moves" the Execution  (JBPMProvider.assignTask)
         JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) vars.get("user"));
         if (vars.containsKey("currentUser")) {
-            bindings.put("currentUser", vars.get("currentUser"));
+            JahiaUser currentUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) vars.get("currentUser"));
+            bindings.put("currentUser", currentUser);
         } else {
             bindings.put("currentUser", jahiaUser);
         }

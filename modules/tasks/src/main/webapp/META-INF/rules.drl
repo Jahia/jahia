@@ -46,3 +46,19 @@ global Tasks tasks
 #        Set the property state of the node with the value "active"
 #        Assign permissions "rw-" on the node to the user property.getNode().getName()
 #end
+
+rule "A workflow task has been assigned"
+    when
+>		property : ChangedPropertyFact ( name == "assigneeUserKey" , assignee : stringValue , node : node, node.types contains "jnt:workflowTask")
+    then
+>       tasks.assignTask(node,assignee);
+end
+
+
+rule "A workflow task has been completed"
+    when
+>		property : ChangedPropertyFact ( name == "state" , stringValue == "finished" , node : node, node.types contains "jnt:workflowTask" )
+    then
+>       tasks.completeTask(node);
+end
+

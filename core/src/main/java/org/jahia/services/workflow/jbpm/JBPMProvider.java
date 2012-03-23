@@ -44,6 +44,10 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -80,6 +84,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
+import javax.jcr.RepositoryException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -610,23 +615,87 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         return action;
     }
 
-    public void assignTask(String taskId, JahiaUser user) {
-        Task task = taskService.getTask(taskId);
-        if (user == null) {
-            taskService.assignTask(task.getId(), null);
-        } else {
-            if (user.getUserKey().equals(task.getAssignee())) {
-                return;
-            }
-            taskService.takeTask(task.getId(), user.getUserKey());
+    private ThreadLocal loop = new ThreadLocal();
+
+    public void assignTask(String taskId, final JahiaUser user) {
+        if (loop.get() != null) {
+            return;
         }
-        Map<String, Object> vars = taskService.getVariables(taskId,taskService.getVariableNames(taskId));
-        vars.put("currentUser",user);
-        taskService.setVariables(taskId,vars);
+        try {
+            loop.set(Boolean.TRUE);
+            Map<String, Object> vars = taskService.getVariables(taskId,taskService.getVariableNames(taskId));
+            Task task = taskService.getTask(taskId);
+            if (user == null) {
+                taskService.assignTask(task.getId(), null);
+            } else {
+                if (user.getUserKey().equals(task.getAssignee())) {
+                    return;
+                }
+                taskService.takeTask(task.getId(), user.getUserKey());
+            }
+            if (user != null) {
+                vars.put("currentUser",user.getUserKey());
+                taskService.setVariables(taskId,vars);
+            }
+
+            final String uuid = (String) vars.get("task-"+taskId);
+            if (uuid != null) {
+                try {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            JCRNodeWrapper nodeByUUID = session.getNodeByUUID(uuid);
+                            if (user != null) {
+                                if (!nodeByUUID.hasProperty("assigneeUserKey") ||
+                                        !nodeByUUID.getProperty("assigneeUserKey").getString().equals(user.getName())) {
+                                    nodeByUUID.setProperty("assigneeUserKey", user.getName());
+                                    session.save();
+                                }
+                            } else {
+                                if (nodeByUUID.hasProperty("assigneeUserKey")) {
+                                    nodeByUUID.getProperty("assigneeUserKey").remove();
+                                    session.save();
+                                }
+                            }
+                            return null;
+                        }
+                    });
+                } catch (RepositoryException e) {
+                    e.printStackTrace();
+                }
+            }
+        } finally {
+            loop.set(null);
+        }
     }
 
-    public void completeTask(String taskId, String outcome, Map<String, Object> args) {
-        taskService.completeTask(taskId, outcome, args);
+    public void completeTask(String taskId, final String outcome, Map<String, Object> args) {
+        if (loop.get() != null) {
+            return;
+        }
+        try {
+            loop.set(Boolean.TRUE);
+            final String uuid = (String) taskService.getVariable(taskId, "task-" + taskId);
+            if (uuid != null) {
+                try {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            if (!session.getNodeByUUID(uuid).hasProperty("state") ||
+                                    !session.getNodeByUUID(uuid).getProperty("state").getString().equals("finished")) {
+                                session.getNodeByUUID(uuid).setProperty("finalOutcome",outcome);
+                                session.getNodeByUUID(uuid).setProperty("state","finished");
+                                session.save();
+                            }
+                            return null;
+                        }
+                    });
+                } catch (RepositoryException e) {
+                    e.printStackTrace();
+                }
+            }
+            taskService.completeTask(taskId, outcome, args);
+        } finally {
+            loop.set(null);
+        }
     }
 
     public void addParticipatingGroup(String taskId, JahiaGroup group, String role) {

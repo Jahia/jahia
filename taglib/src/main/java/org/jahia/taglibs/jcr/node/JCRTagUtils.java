@@ -297,7 +297,7 @@ public class JCRTagUtils {
     }
 
     public static boolean hasPermission(JCRNodeWrapper node,String permission) {
-        return node.hasPermission(permission);
+        return node != null && node.hasPermission(permission);
     }
 
     public static String humanReadableFileLength(JCRNodeWrapper node) {

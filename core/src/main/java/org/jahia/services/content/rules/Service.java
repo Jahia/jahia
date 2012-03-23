@@ -48,6 +48,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.workflow.WorkflowVariable;
 import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

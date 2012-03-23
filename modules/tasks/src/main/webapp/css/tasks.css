@@ -272,6 +272,11 @@ padding:0;
 	border-bottom:none;
 	overflow:hidden;
 }
+
+.bodywrapper ul.taskaction-disabled li {
+    background-color:#aaaaaa !important;
+}
+
 .bodywrapper .taskactionslist li {
 	list-style-type:none;
 	margin:0;

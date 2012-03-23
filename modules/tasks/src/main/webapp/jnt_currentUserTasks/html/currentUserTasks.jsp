@@ -16,6 +16,23 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="task" type="org.jahia.services.workflow.WorkflowTask"--%>
+<template:addResources type="css" resources="contribute.min.css"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
+<template:addResources type="javascript" resources="ckeditor/ckeditor.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
+<template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
+<template:addResources type="javascript" resources="timepicker.js,jquery.jeditable.datepicker.js"/>
+<template:addResources type="javascript" resources="jquery-ui.min.js"/>
+<template:addResources type="javascript"
+                       resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
+<template:addResources type="javascript" resources="contributedefault.js"/>
+<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.UILocale}.js"/>
+<template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
+
+
+
 <template:addResources type="css" resources="tasks.css"/>
 <template:addResources type="css" resources="contentlist.css"/>
 
@@ -60,19 +77,28 @@
     </c:if>
 
     <script type="text/javascript">
-        function sendNewStatus(uuid, task, state) {
-            $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":state,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
-                $('#currentUserTasks${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>',null,function(){
-                    $("#taskdetail_"+uuid).css("display","block");
-                });
-            }, "json");
+        var ready = true;
+        function sendNewStatus(uuid, task, state, finalOutcome) {
+            if (ready) {
+                ready = false;
+                $(".taskactionslist").addClass("taskaction-disabled");
+                $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":state,"finalOutcome":finalOutcome,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
+                    $('#currentUserTasks${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>',null,function(){
+                        $("#taskdetail_"+uuid).css("display","block");
+                    });
+                }, "json");
+            }
         };
         function sendNewAssignee(uuid, task, key) {
-            $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":"active","assigneeUserKey":key,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
-                $('#currentUserTasks${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>',null,function(){
-                    $("#taskdetail_"+uuid).css("display","block");
-                });
-            }, "json");
+            if (ready) {
+                ready = false;
+                $(".taskactionslist").addClass("taskaction-disabled");
+                $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":"active","assigneeUserKey":key,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
+                    $('#currentUserTasks${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>',null,function(){
+                        $("#taskdetail_"+uuid).css("display","block");
+                    });
+                }, "json");
+            }
         };
 
         function switchDisplay(identifier) {
@@ -112,9 +138,6 @@
                 </thead>
 
                 <tbody>
-
-
-                <c:if test="${currentNode.properties['viewUserTasks'].boolean}">
                     <template:include view="hidden.load"/>
                     <c:set var="listQuery" value="${moduleMap.listQuery}"/>
                     <jcr:jqom var="tasks" qomBeanName="listQuery"/>
@@ -147,7 +170,25 @@
                                             <c:when test="${task.properties.state.string == 'started' and task.properties['assigneeUserKey'].string eq user.name}">
                                                 <li><a class="taskactionslist taskactionslist-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse"><fmt:message key="label.actions.refuse"/></a></li>
                                                 <li><a class="taskactionslist taskactionslist-suspend" href="javascript:sendNewStatus('${task.identifier}','${task.path}','suspended')" title="suspend"><fmt:message key="label.actions.suspend"/></a></li>
-                                                <li class="taskactions-right"><input class="completeTaskAction" taskPath="<c:url value="${url.base}${currentNode.path}"/>" type="checkbox" onchange="sendNewStatus('${task.identifier}','${task.path}','finished')"/>&nbsp;<fmt:message key="label.actions.completed"/></li>
+                                                <fmt:setBundle basename="${task.properties['taskBundle'].string}" var="taskBundle"/>
+                                                <c:if test="${not empty task.properties['targetNode'].node}">
+                                                    <li><a class="taskactionslist taskactionslist-start" target="_blank" href="<c:url value="${url.basePreview}${task.properties['targetNode'].node.path}.html"/>"><fmt:message key="label.preview"/></a></li>
+                                                </c:if>
+                                                <c:if test="${not empty task.properties['possibleOutcomes']}">
+                                                <c:forEach items="${task.properties['possibleOutcomes']}" var="outcome" varStatus="status">
+                                                    <li><a class="taskactionslist taskactionslist-start" href="javascript:sendNewStatus('${task.identifier}','${task.path}','finished','${outcome.string}')" title="${outcome.string}"><fmt:message bundle="${taskBundle}" key="${task.properties['taskName'].string}.${outcome.string}"/></a></li>
+                                                </c:forEach>
+                                                </c:if>
+                                                <c:if test="${empty task.properties['possibleOutcomes']}">
+                                                    <li class="taskactions-right"><input class="completeTaskAction" taskPath="<c:url value="${url.base}${currentNode.path}"/>" type="checkbox" onchange="sendNewStatus('${task.identifier}','${task.path}','finished')"/>&nbsp;<fmt:message key="label.actions.completed"/></li>
+                                                </c:if>
+                                                <jcr:node var="taskData" path="${task.path}/taskData"/>
+                                                <c:if test="${not empty taskData}">
+                                                    <script>
+                                                        initEditFields('${taskData.identifier}');
+                                                    </script>
+                                                    <template:module path="${task.path}/taskData" view="contribute.edit" />
+                                                 </c:if>
                                             </c:when>
                                             <c:when test="${task.properties.state.string == 'finished'}">
                                                 <li class="taskactions-right"><input name="Completed" type="checkbox" disabled="disabled" checked="checked" value="Completed" />&nbsp;<fmt:message key="label.actions.completed"/></li>
@@ -173,104 +214,6 @@
                                                                dateStyle="short" type="date"/></td></c:if>
                         </tr>
                     </c:forEach>
-                </c:if>
-                <c:if test="${currentNode.properties['viewWorkflowTasks'].boolean}">
-                    <jcr:nodeProperty node="${currentNode}" name="workflowTypes" var="workflowTypes"/>
-                    <workflow:tasksForNode var="wfTasks" user="${renderContext.user}"/>
-                    <c:forEach items="${wfTasks}" var="task" varStatus="status">
-                        <workflow:workflow id="${task.processId}" provider="${task.provider}" var="wf"/>
-                        <c:set var="found" value="false"/>
-
-                        <c:forEach items="${workflowTypes}" var="type">
-                            <c:set var="currentType">${wf.workflowDefinition.provider}:${wf.workflowDefinition.key}</c:set>
-                            <c:if test="${type.string eq currentType}">
-                                <c:set var="found" value="true"/>
-                            </c:if>
-
-                        </c:forEach>
-
-                        <c:if test="${empty workflowTypes or found}">
-                            <jcr:node var="node" uuid="${task.variables.nodeId}"/>
-                            <c:if test="${node != null}">
-                            <tr class="${((status.count + 1)) % 2 == 0 ? 'odd' : 'even'}">
-                                <td headers="Title">
-                                    <a href="javascript:void(0)">${fn:escapeXml(not empty task.displayName ? task.displayName : task.name)}</a>
-                                    <span class="opentask" onclick="switchDisplay('${task.id}')"><fmt:message key="label.showTask"/></span>
-
-                                    <div style="display:none;" class="taskdetail" id="taskdetail_${task.id}">
-                                        <c:set var="path" value="${jcr:findDisplayableNode(node, renderContext).path}"/>
-                                        <c:if test="${not empty path}">
-                                            <c:url var="preview" value="${renderContext.servletPath}/${task.variables.workspace}/${task.variables.locale}${path}.html"/>
-                                            <a target="_blank" href="${preview}">${fn:escapeXml(task.variables['jcr:title'][0].value)}</a>
-                                        </c:if>
-                                        <c:if test="${empty path}">
-                                            ${fn:escapeXml(task.variables['jcr:title'][0].value)}
-                                        </c:if>
-                                        <%--<p class="task-info-p">Created by: ${task.properties['jcr:createdBy'].string}, on <fmt:formatDate value="${task.properties['jcr:created'].date.time}" dateStyle="long" type="date"/></p>--%>
-                                        <%--<p class="task-priority-p">Importance: <span class="task-priority task-${task.properties['priority'].string}">${task.properties['priority'].string}</span></p>--%>
-                                        <%--<p class="task-text">${task.properties['description'].string}</p>--%>
-                                        <ul class="taskactionslist">
-                                            <c:choose>
-                                                <c:when test="${not empty task.formResourceName}">
-                                                    <li><a class="taskactionslist taskactionslist-${task.name}" href="javascript:$('#taskrow${node.identifier}-${task.id}').toggle('fast');">${task.name}</a></li>
-                                                    <li><a class="taskactionslist taskactionslist-preview" href="javascript:window.open('${preview}','<fmt:message key="label.preview"/>')"><fmt:message key='label.preview'/></a></li>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <c:forEach items="${task.outcomes}" var="outcome">
-                                                        <li><a class="taskactionslist taskactionslist-${outcome}" href="javascript:executeTask('${node.path}', '${task.provider}:${task.id}', '${outcome}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.current}.ajax"/>','window.location=window.location;')" title="${outcome}">${outcome}</a></li>
-                                                    </c:forEach>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </ul>
-                                    </div>
-                                </td>
-                                <c:if test="${dispAssignee}">
-                                    <td headers="Assigned">
-                                    <%--${task.properties['assigneeUserKey'].string}--%>
-                                    </td>
-                                </c:if>
-                                <c:if test="${dispCreator}">
-                                <td headers="CreatedBy">
-                                <%--${task.properties['jcr:createdBy'].string}--%>
-                                </td>
-                                </c:if>
-                                <c:if test="${dispState}">
-                                <td class="center" headers="State">
-                                    <span class="task-status task-status-started"><fmt:message key="jnt_task.state.started"/></span>
-                                </td>
-                                </c:if>
-                                <c:if test="${dispDueDate}">
-                                <td headers="DueDate">
-                                    <%--<fmt:formatDate value="${task.properties['dueDate'].date.time}"--%>
-                                                                   <%--dateStyle="short" type="date"/>--%>
-                                </td>
-                                </c:if>
-                            </tr>
-                            <c:if test="${not empty task.formResourceName}">
-                                <tr class="${((status.count + 1)) % 2 == 0 ? 'odd' : 'even'} " id="taskrow${node.identifier}-${task.id}"  style="display:none;">
-                                    <td colspan="4">
-                                        <div id="task${node.identifier}-${task.id}" class="taskformdiv">
-                                            <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
-                                            <c:url value="${url.current}.ajax" var="myUrl"/>
-                                            <template:include view="contribute.workflow">
-                                                <template:param name="resourceNodeType" value="${task.formResourceName}"/>
-                                                <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
-                                                <template:param name="workflowTaskFormTaskName" value="${task.name}"/>
-                                                <template:param name="workflowTaskFormCallbackId" value="${currentNode.UUID}"/>
-                                                <template:param name="workflowTaskFormCallbackURL" value="${myUrl}"/>
-                                                <template:param name="workflowTaskFormCallbackJS"
-                                                                value=""/>
-                                                <template:param name="workflowTaskNodeUuid" value="${node.identifier}"/>
-                                            </template:include>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </c:if>
-                                </c:if>
-                        </c:if>
-                    </c:forEach>
-                </c:if>
-
                 </tbody>
             </table>
         </div>

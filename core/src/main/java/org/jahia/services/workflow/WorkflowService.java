@@ -583,7 +583,7 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         lookupProvider(provider).assignTask(taskId, user);
     }
 
-    public void completeTask(String taskId, String provider, String outcome, Map<String, Object> args, JahiaUser user) {
+    public void completeTask(String taskId, String provider, String outcome, Map<String, Object> args) {
         lookupProvider(provider).completeTask(taskId, outcome, args);
     }
 
@@ -601,7 +601,7 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
 
     public void assignAndCompleteTask(String taskId, String provider, String outcome, Map<String, Object> args, JahiaUser user) {
         assignTask(taskId, provider,  user);
-        completeTask(taskId, provider, outcome, args, user);
+        completeTask(taskId, provider, outcome, args);
     }
 
     public void addParticipatingGroup(String taskId, String provider, JahiaGroup group, String role) {

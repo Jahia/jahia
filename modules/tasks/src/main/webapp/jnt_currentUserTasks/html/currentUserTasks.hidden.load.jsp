@@ -21,6 +21,10 @@
     <c:set value="${sql} and (task.assigneeUserKey is null or task.assigneeUserKey='')" var="sql"/>
 </c:if>
 
+<c:if test="${currentNode.properties['filterOnAssignee'].string eq 'assignedToMeOrUnassigned'}">
+    <c:set value="${sql} and (task.assigneeUserKey is null or task.assigneeUserKey='' or task.assigneeUserKey='${user.name}')" var="sql"/>
+</c:if>
+
 <c:if test="${currentNode.properties['filterOnCreator'].string eq 'createdByMe'}">
     <c:set value="${sql} and task.['jcr:createdBy']='${user.name}'" var="sql"/>
 </c:if>

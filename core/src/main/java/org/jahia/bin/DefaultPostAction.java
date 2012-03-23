@@ -54,15 +54,12 @@ import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.Patterns;
 import org.json.JSONObject;
 
-import javax.jcr.InvalidItemStateException;
 import javax.jcr.PathNotFoundException;
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -124,7 +121,8 @@ public class DefaultPostAction extends Action {
                     } catch (PathNotFoundException e) {
                         if (node != null) {
                             if (!node.isCheckedOut()) {
-                                node.checkout();
+                                session.getWorkspace().getVersionManager()
+                                        .checkout(node.getPath());
                             }
                             String parentType = "jnt:contentList";
                             if (parameters.containsKey(Render.PARENT_TYPE)) {
@@ -139,7 +137,7 @@ public class DefaultPostAction extends Action {
         if (node != null) {
             String nodeType = null;
             if (parameters.containsKey(Render.NODE_TYPE)) {
-                nodeType = (String) ((List) parameters.get(Render.NODE_TYPE)).get(0);
+                nodeType = parameters.get(Render.NODE_TYPE).get(0);
             }
             if (StringUtils.isBlank(nodeType)) {
 //                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing nodeType Property");
@@ -147,7 +145,7 @@ public class DefaultPostAction extends Action {
             }
             String nodeName = null;
             if (parameters.containsKey(Render.NODE_NAME)) {
-                nodeName = (String) ((List) parameters.get(Render.NODE_NAME)).get(0);
+                nodeName = parameters.get(Render.NODE_NAME).get(0);
             }
             boolean forceCreation = false;
             if (!"*".equals(lastPath)) {
@@ -194,8 +192,8 @@ public class DefaultPostAction extends Action {
             }
 
 
-            if (parameters.containsKey(Render.AUTO_CHECKIN) && ((String) ((List) parameters.get(Render.AUTO_CHECKIN)).get(
-                    0)).length() > 0) {
+            if (parameters.containsKey(Render.AUTO_CHECKIN) && (parameters.get(Render.AUTO_CHECKIN)).get(
+                    0).length() > 0) {
                 newNode.checkpoint();
             }
         }
@@ -211,7 +209,7 @@ public class DefaultPostAction extends Action {
         }
         if (loggingService.isEnabled()) {
             loggingService.logContentEvent(renderContext.getUser().getName(), req
-                    .getRemoteAddr(), sessionID, nodeIdentifier, urlResolver.getPath(), (String) ((List) parameters.get(Render.NODE_TYPE)).get(0), "nodeCreated", new JSONObject(parameters).toString());
+                    .getRemoteAddr(), sessionID, nodeIdentifier, urlResolver.getPath(), parameters.get(Render.NODE_TYPE).get(0), "nodeCreated", new JSONObject(parameters).toString());
         }
 
         if (newNode != null) {

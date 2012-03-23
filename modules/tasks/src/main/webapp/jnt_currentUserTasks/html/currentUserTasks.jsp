@@ -61,14 +61,14 @@
 
     <script type="text/javascript">
         function sendNewStatus(uuid, task, state) {
-            $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":state}, function() {
+            $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":state,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
                 $('#currentUserTasks${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>',null,function(){
                     $("#taskdetail_"+uuid).css("display","block");
                 });
             }, "json");
         };
         function sendNewAssignee(uuid, task, key) {
-            $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":"active","assigneeUserKey":key}, function() {
+            $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":"active","assigneeUserKey":key,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
                 $('#currentUserTasks${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>',null,function(){
                     $("#taskdetail_"+uuid).css("display","block");
                 });
@@ -131,6 +131,10 @@
                                     <p class="task-info-p"><fmt:message key="label.createdBy"/>: ${task.properties['jcr:createdBy'].string}, <fmt:message key="label.createdOn"/> <fmt:formatDate value="${task.properties['jcr:created'].date.time}" dateStyle="long" type="both"/></p>
                                     <c:if test="${not empty task.properties['priority']}"><p class="task-priority-p"><fmt:message key="jnt_task.priority"/>: <span class="task-priority task-${task.properties['priority'].string}">${task.properties['priority'].string}</span></p></c:if>
                                     <p class="task-text">${task.properties['description'].string}</p>
+                                    <template:tokenizedForm>
+                                        <form id="tokenForm_${task.identifier}" name="tokenform_${task.identifier}" method="post" action="<c:url value='${url.base}'/>${task.path}">
+                                        </form>
+                                    </template:tokenizedForm> 
                                     <ul class="taskactionslist">
                                         <c:choose>
                                             <c:when test="${task.properties.state.string == 'active' and task.properties['assigneeUserKey'].string ne user.name}">

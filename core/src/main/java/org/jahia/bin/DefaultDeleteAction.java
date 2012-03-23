@@ -75,10 +75,12 @@ public class DefaultDeleteAction extends Action {
             Node parent = node.getParent();
     
             if (!parent.isCheckedOut()) {
-                parent.checkout();
+                session.getWorkspace().getVersionManager()
+                        .checkout(parent.getPath());
             }
             if (!node.isCheckedOut()) {
-                node.checkout();
+                session.getWorkspace().getVersionManager()
+                        .checkout(node.getPath());
             }
             node.remove();
             url = parent.getPath();

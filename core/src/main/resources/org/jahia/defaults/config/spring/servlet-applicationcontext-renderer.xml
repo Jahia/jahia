@@ -29,6 +29,11 @@
                 <property name="loggingService" ref="loggingService"/>
             </bean>
         </property>
+        <property name="defaultPutAction" >
+            <bean class="org.jahia.bin.DefaultPutAction">
+                <property name="loggingService" ref="loggingService"/>
+            </bean>
+        </property>        
         <property name="settingsBean" ref="settingsBean" />
         <property name="renderService" ref="RenderService" />
         <property name="jcrSessionFactory" ref="jcrSessionFactory" />

@@ -56,7 +56,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.applications.pluto.JahiaPortalURLParserImpl;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.*;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -66,8 +65,6 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.Url;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -76,7 +73,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 import javax.jcr.*;
-import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.ServletConfig;
 import javax.servlet.http.*;
 import java.io.File;
@@ -146,6 +142,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private MetricsLoggingService loggingService;
     private JahiaTemplateManagerService templateService;
     private Action defaultPostAction;
+    private Action defaultPutAction;    
     private Action defaultDeleteAction = new DefaultDeleteAction();
 
     protected SettingsBean settingsBean;
@@ -277,76 +274,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     protected void doPut(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
-                         URLResolver urlResolver) throws RepositoryException, IOException {
-        JCRSessionWrapper session = jcrSessionFactory.getCurrentUserSession(urlResolver.getWorkspace(), urlResolver.getLocale());
-        JCRNodeWrapper node = session.getNode(urlResolver.getPath());
-        session.checkout(node);
-        @SuppressWarnings("unchecked")
-        Map<String, String[]> parameters = req.getParameterMap();
-        if (parameters.containsKey(REMOVE_MIXIN)) {
-            String[] mixinTypes = (String[]) parameters.get(REMOVE_MIXIN);
-            for (String mixinType : mixinTypes) {
-                node.removeMixin(mixinType);
-            }
-        }
-        if (parameters.containsKey(Constants.JCR_MIXINTYPES)) {
-            String[] mixinTypes = (String[]) parameters.get(Constants.JCR_MIXINTYPES);
-            for (String mixinType : mixinTypes) {
-                node.addMixin(mixinType);
-            }
-        }
-        Set<Map.Entry<String, String[]>> set = parameters.entrySet();
-        try {
-            for (Map.Entry<String, String[]> entry : set) {
-                String key = entry.getKey();
-                if (!reservedParameters.contains(key)) {
-                    String[] values = entry.getValue();
-                    final ExtendedPropertyDefinition propertyDefinition =
-                            ((JCRNodeWrapper) node).getApplicablePropertyDefinition(key);
-                    if (propertyDefinition == null) {
-                        continue;
-                    }
-                    if (propertyDefinition.isMultiple()) {
-                        node.setProperty(key, values);
-                    } else if (propertyDefinition.getRequiredType() == PropertyType.DATE) {
-                        // Expecting ISO date yyyy-MM-dd'T'HH:mm:ss
-                        DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(values[0]);
-                        node.setProperty(key, dateTime.toCalendar(Locale.ENGLISH));
-                    } else {
-                        node.setProperty(key, values[0]);
-                    }
-                }
-            }
-        } catch (ConstraintViolationException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "bad parameter");
-            return;
-        }
-        session.save();
-        if (req.getParameter(AUTO_CHECKIN) != null && req.getParameter(AUTO_CHECKIN).length() > 0) {
-            session.getWorkspace().getVersionManager().checkpoint(node.getPath());
-        }
-        final String requestWith = req.getHeader("x-requested-with");
-        if (req.getHeader("accept").contains("application/json") && requestWith != null &&
-                requestWith.equals("XMLHttpRequest")) {
-            try {
-                serializeNodeToJSON(node).write(resp.getWriter());
-            } catch (JSONException e) {
-                logger.error(e.getMessage(), e);
-            }
-        } else {
-            performRedirect(null, null, req, resp, toParameterMapOfListOfString(req), false);
-        }
-        addCookie(req, resp);
-        String sessionID = "";
-        HttpSession httpSession = req.getSession(false);
-        if (httpSession != null) {
-            sessionID = httpSession.getId();
-        }
-        if (loggingService.isEnabled()) {
-            loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(), sessionID,
-                    node.getIdentifier(), urlResolver.getPath(), node.getPrimaryNodeType().getName(), "nodeUpdated",
-                    new JSONObject(req.getParameterMap()).toString());
-        }
+                         URLResolver urlResolver) throws Exception {
+        doAction(req, resp, urlResolver, renderContext, null, defaultPutAction, toParameterMapOfListOfString(req));
     }
 
     public static void addCookie(HttpServletRequest req, HttpServletResponse resp) {
@@ -1065,6 +994,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public void setDefaultPostAction(Action defaultPostActionResult) {
         this.defaultPostAction = defaultPostActionResult;
     }
+    
+    public void setDefaultPutAction(Action defaultPutActionResult) {
+        this.defaultPutAction = defaultPutActionResult;
+    }    
 
     public static Set<String> getReservedParameters() {
         return reservedParameters;

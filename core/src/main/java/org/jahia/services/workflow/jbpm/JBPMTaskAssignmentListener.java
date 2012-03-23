@@ -55,6 +55,7 @@ import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowVariable;
 import org.jahia.utils.Patterns;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jbpm.api.model.OpenExecution;
 import org.jbpm.api.model.Transition;
 import org.jbpm.api.task.Assignable;
@@ -65,10 +66,7 @@ import org.slf4j.Logger;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -106,7 +104,8 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
         final String username = (String) execution.getVariable("user");
         final JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(username);
         if (assignable instanceof TaskImpl && user != null) {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), new JCRCallback<Object>() {
+            Locale locale = (Locale) execution.getVariable("locale");
+            JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), null, locale, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRUser jcrUser;
                     if (user instanceof JCRUser) {
@@ -126,7 +125,8 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
                     JCRNodeWrapper task = tasks.addNode(JCRContentUtils.findAvailableNodeName(tasks, wfTask.getName()), "jnt:workflowTask");
                     String definitionKey = wfTask.getProcessInstance().getProcessDefinition().getKey();
                     task.setProperty("taskName", wfTask.getName());
-                    task.setProperty("taskBundle", WorkflowService.class.getPackage().getName() + "." + Patterns.SPACE.matcher(definitionKey).replaceAll(""));
+                    String bundle = WorkflowService.class.getPackage().getName() + "." + Patterns.SPACE.matcher(definitionKey).replaceAll("");
+                    task.setProperty("taskBundle", bundle);
                     task.setProperty("taskId", wfTask.getId());
                     task.setProperty("provider","jBPM");
 
@@ -154,8 +154,11 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
                     task.setProperty("state", "active");
                     task.setProperty("type", "workflow");
 
+                    String taskname = JahiaResourceBundle.lookupBundle(bundle, session.getLocale()).getString(wfTask.getName().replace(" ","."));
+                    task.setProperty("jcr:title", taskname + " : " + session.getNodeByIdentifier(uuid).getDisplayableName());
+
                     if (execution.getVariable("jcr:title") instanceof List) {
-                        task.setProperty("jcr:title", ((List<WorkflowVariable>)execution.getVariable("jcr:title")).get(0).getValue());
+                        task.setProperty("description", ((List<WorkflowVariable>)execution.getVariable("jcr:title")).get(0).getValue());
                     }
 
                     String form = wfTask.getTaskDefinition().getFormResourceName();

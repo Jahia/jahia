@@ -1,6 +1,7 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 [jnt:task] > jnt:content, mix:title
+ - jcr:title (string)
  - assignee (weakreference, choicelist[users]) protected hidden < jnt:user
  - assigneeUserKey (string)
  - candidates (string) multiple

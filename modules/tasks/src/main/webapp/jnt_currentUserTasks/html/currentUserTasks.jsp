@@ -176,7 +176,7 @@
                                                 </c:if>
                                                 <c:if test="${not empty task.properties['possibleOutcomes']}">
                                                 <c:forEach items="${task.properties['possibleOutcomes']}" var="outcome" varStatus="status">
-                                                    <li><a class="taskactionslist taskactionslist-start" href="javascript:sendNewStatus('${task.identifier}','${task.path}','finished','${outcome.string}')" title="${outcome.string}"><fmt:message bundle="${taskBundle}" key="${task.properties['taskName'].string}.${outcome.string}"/></a></li>
+                                                    <li><a class="taskactionslist taskactionslist-start" href="javascript:sendNewStatus('${task.identifier}','${task.path}','finished','${outcome.string}')" title="${outcome.string}"><fmt:message bundle="${taskBundle}" key="${fn:replace(task.properties['taskName'].string,' ','.')}.${fn:replace(outcome.string,' ','.')}"/></a></li>
                                                 </c:forEach>
                                                 </c:if>
                                                 <c:if test="${empty task.properties['possibleOutcomes']}">

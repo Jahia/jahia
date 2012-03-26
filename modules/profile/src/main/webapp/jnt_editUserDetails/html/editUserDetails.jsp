@@ -82,7 +82,7 @@
 <template:addResources>
 <script type="text/javascript">
     function ajaxReloadCallback() {
-        $('.user-profile-list').parent().load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax"/>');
+        $('.user-profile-list').parent().load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax?userUuid=${user.identifier}"/>');
     }
 
     function initEditUserDetails() {

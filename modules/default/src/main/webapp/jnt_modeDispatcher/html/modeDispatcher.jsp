@@ -26,7 +26,7 @@
           <c:when test="${renderContext.liveMode and currentNode.properties.mode.string eq 'live'
                             or renderContext.contributionMode and currentNode.properties.mode.string eq 'contribute'
                             or renderContext.previewMode and currentNode.properties.mode.string eq 'preview'}">
-              <c:set var="modeDispatcherId" value="item-${currentNode.identifier}" scope="request"/>cssddcdcs
+              <c:set var="modeDispatcherId" value="item-${currentNode.identifier}" scope="request"/>
               <c:forEach items="${jcr:getChildrenOfType(currentNode,'jmix:droppableContent')}" var="child">
                   <template:module node="${child}" />
               </c:forEach>

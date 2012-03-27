@@ -200,7 +200,7 @@
 
                             </td></c:if>
                             <c:if test="${dispDueDate}"><td headers="DueDate"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
-                                                               dateStyle="short" type="date"/></td></c:if>
+                                                               dateStyle="medium" timeStyle="short" type="both"/></td></c:if>
                         </tr>
                     </c:forEach>
                 </tbody>

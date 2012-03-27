@@ -63,7 +63,10 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Side panel tab item for browsing the content repository.
@@ -93,8 +96,10 @@ class ContentBrowseTabItem extends BrowseTabItem {
                 if (gwtJahiaFolder != null) {
                     Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
                     try {
+                        List<String> tableColumnKeys = new ArrayList<String> (config.getTableColumnKeys());
+                        tableColumnKeys.addAll(Arrays.asList(GWTJahiaNode.LOCKABLE, GWTJahiaNode.LOCKED, GWTJahiaNode.LOCKS_INFO));
                         JahiaContentManagementService.App.getInstance()
-                                .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.CONTENT_NODETYPES, null, null, config.getTableColumnKeys(), false, -1, -1, false, null, null,false, listAsyncCallback);
+                                .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.CONTENT_NODETYPES, null, null, tableColumnKeys, false, -1, -1, false, null, null,false, listAsyncCallback);
                     } catch (org.jahia.ajax.gwt.client.service.GWTJahiaServiceException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }

@@ -299,7 +299,7 @@
                   </administration-tools>
                   <my-web-projects-shortcuts j:originWS="default" j:skin="skins.box8" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My web projects shortcuts"/>
-                    <websites-list-in-edit-mode contribute="true" edit="true" j:originWS="default" jcr:primaryType="jnt:listSites" live="true" numberMaxOfSitesDisplayed="5" numberOfSitesPerPage="10">
+                    <websites-list-in-edit-mode contribute="true" edit="true" lightedit="true" j:originWS="default" jcr:primaryType="jnt:listSites" live="true" numberMaxOfSitesDisplayed="5" numberOfSitesPerPage="10">
                       <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="websites list in edit mode"/>
                     </websites-list-in-edit-mode>
                     <my-web-projects divClass="user-sites" j:originWS="default" jcr:primaryType="jnt:componentLink" targetTemplate="user-sites">
@@ -438,7 +438,7 @@
               <pagecontent j:id="user-sites" j:originWS="default" jcr:mixinTypes="jmix:customSkin" jcr:primaryType="jnt:contentList">
                 <my-sites icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_mysites.png" j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Sites"/>
-                  <websites-list-in-edit-mode contribute="true" edit="true" j:originWS="default" j:view="paginated" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10" preview="true">
+                  <websites-list-in-edit-mode contribute="true" edit="true" lightedit="true" j:originWS="default" j:view="paginated" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10" preview="true">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="websites list in edit mode"/>
                   </websites-list-in-edit-mode>
                   <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Sites"/>
@@ -453,7 +453,7 @@
                     <rich-text-1 j:originWS="default" jcr:primaryType="jnt:bigText">
                       <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h3&gt;  Contribute&lt;/h3&gt; "/>
                     </rich-text-1>
-                    <list-of-all-sites contribute="true" edit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="false" numberOfSitesPerPage="10" typeOfContent="contents"/>
+                    <list-of-all-sites contribute="true" edit="false" lightedit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="false" numberOfSitesPerPage="10" typeOfContent="contents"/>
                   </content-list-1>
                   <content-list-2 j:originWS="default" jcr:primaryType="jnt:contentList">
                     <rich-text-1 j:originWS="default" jcr:primaryType="jnt:bigText">
@@ -469,7 +469,7 @@
                     <rich-text-1 j:originWS="default" jcr:primaryType="jnt:bigText">
                       <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h3&gt;  Browse Files&lt;/h3&gt; "/>
                     </rich-text-1>
-                    <list-of-all-sites contribute="false" edit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10" typeOfContent="files"/>
+                    <list-of-all-sites contribute="false" edit="false" lightedit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10" typeOfContent="files"/>
                   </content-list-1>
                   <content-list-2 j:originWS="default" jcr:primaryType="jnt:contentList">
                     <rich-text-1 j:originWS="default" jcr:primaryType="jnt:bigText">

@@ -63,6 +63,7 @@
                         <c:set var="baseLive" value="${url.baseLive}"/>
                         <c:set var="basePreview" value="${url.basePreview}"/>
                         <c:set var="baseContribute" value="${url.baseContribute}"/>
+                        <c:set var="baseLightEdit" value="/cms/lightedit/default/${currentResource.locale}"/>
                         <c:set var="baseEdit" value="${url.baseEdit}"/>
                         <c:if test="${not fn:contains(node.languages, currentResource.locale)}">
                             <c:set var="localeLength" value="${fn:length(fn:toUpperCase(currentResource.locale))}"/>
@@ -72,6 +73,8 @@
                                    value="${fn:substring(url.basePreview,-1,fn:length(url.basePreview)-localeLength)}${node.defaultLanguage}"/>
                             <c:set var="baseContribute"
                                    value="${fn:substring(url.baseContribute,-1,fn:length(url.baseContribute)-localeLength)}${node.defaultLanguage}"/>
+                            <c:set var="baseLightEdit"
+                                   value="${fn:substring(url.baseContribute,-1,fn:length(url.baseLightEdit)-localeLength)}${node.defaultLanguage}"/>
                             <c:set var="baseEdit"
                                    value="${fn:substring(url.baseEdit,-1,fn:length(url.baseEdit)-localeLength)}${node.defaultLanguage}"/>
                         </c:if>
@@ -91,6 +94,12 @@
                                  style="position:relative; top: 4px; margin-right:2px; "><a
                                 href="<c:url value='${baseContribute}${node.path}${page}.html'/>"><fmt:message
                                 key="label.contribute"/></a>
+                        </c:if>
+                        <c:if test="${currentNode.properties.lightedit.boolean  && jcr:hasPermission(node,'contributeModeAccess') && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
+                            <img src="<c:url value='/icons/lightedit.png'/>" width="16" height="16" alt=" " role="presentation"
+                                 style="position:relative; top: 4px; margin-right:2px; "><a
+                                href="<c:url value='${baseLightEdit}${node.path}${page}.html'/>"><fmt:message
+                                key="label.lightedit"/></a>
                         </c:if>
                         <c:if test="${currentNode.properties.preview.boolean && jcr:hasPermission(node,'jcr:read_default') && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
                             <img src="<c:url value='/icons/preview.png'/>" width="16" height="16" alt=" "
@@ -143,6 +152,13 @@
                                      role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
                                     href="<c:url value='${baseContribute}${contributeModeAccess[0].path}.html'/>"><fmt:message
                                     key="label.contribute"/></a>
+                            </c:if>
+
+                            <c:if test="${not empty contributeModeAccess && currentNode.properties.lightedit.boolean && !renderContext.settings.distantPublicationServerMode}">
+                                <img src="<c:url value='/icons/lightedit.png'/>" width="16" height="16" alt=" "
+                                     role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
+                                    href="<c:url value='${baseLightEdit}${contributeModeAccess[0].path}.html'/>"><fmt:message
+                                    key="label.lightedit"/></a>
                             </c:if>
 
                             <c:if test="${not empty previewModeAccess && currentNode.properties.preview.boolean && !renderContext.settings.distantPublicationServerMode}">

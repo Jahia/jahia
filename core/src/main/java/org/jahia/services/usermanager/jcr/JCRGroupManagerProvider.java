@@ -47,6 +47,7 @@ import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.cache.Cache;
+import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -605,8 +606,9 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                 siteID = 0;
             }
             final String trueGroupKey = name + ":" + siteID;
-            if (getCache().containsKey(trueGroupKey)) {
-                JCRGroup group = getCache().get(trueGroupKey);
+            CacheEntry<JCRGroup> cacheEntry = getCache().getCacheEntry(trueGroupKey);
+            if (cacheEntry != null) {
+                JCRGroup group = cacheEntry.getObject();
                 if (group == null) {
                     return null;
                 }

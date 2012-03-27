@@ -6,6 +6,17 @@
 
     <bean id="JahiaGroupManagerService" class="org.jahia.services.usermanager.JahiaGroupManagerRoutingService" parent="jahiaServiceTemplate" factory-method="getInstance">
     	<property name="defaultProvider" ref="JCRGroupManagerProvider"/>
+        <property name="jahiaJcrEnforcedGroups">
+            <list value-type="java.lang.String">
+                <value>guest</value>
+                <value>users</value>
+                <value>administrators</value>
+                <value>privileged</value>
+                <value>site-administrators</value>
+                <value>site-privileged</value>
+            </list>
+        </property>
+        <property name="jahiaJcrEnforcedGroupsProviderKey" value="jahia_jcr"/>
     </bean>
 
 	<bean id="JahiaGroupManagerProvider" class="org.jahia.services.usermanager.JahiaGroupManagerProvider" parent="jahiaServiceTemplate" abstract="true">

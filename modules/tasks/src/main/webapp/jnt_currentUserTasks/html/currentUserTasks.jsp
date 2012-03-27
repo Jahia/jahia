@@ -68,17 +68,30 @@
 
     <script type="text/javascript">
         var ready = true;
-        <c:url  var="reloadurl" value="${url.basePreview}${currentNode.path}.html.ajax">
-        <c:forEach items="${param}" var="p">
-        <c:param name="${p.key}" value="${p.value}"/>
-        </c:forEach>
-        </c:url>
+        <c:choose>
+            <c:when test="${not empty modeDispatcherId}">
+                <c:url  var="reloadurl" value="${url.basePreview}${currentNode.parent.path}.html.ajax">
+                    <c:forEach items="${param}" var="p">
+                        <c:param name="${p.key}" value="${p.value}"/>
+                    </c:forEach>
+                </c:url>
+                <c:set var="identifierName" value="#${modeDispatcherId}"/>
+            </c:when>
+            <c:otherwise>
+                <c:url  var="reloadurl" value="${url.basePreview}${currentNode.path}.html.ajax">
+                    <c:forEach items="${param}" var="p">
+                        <c:param name="${p.key}" value="${p.value}"/>
+                    </c:forEach>
+                </c:url>
+                <c:set var="identifierName" value="#currentUserTasks${currentNode.identifier}"/>
+            </c:otherwise>
+        </c:choose>
         function sendNewStatus(uuid, task, state, finalOutcome) {
             if (ready) {
                 ready = false;
                 $(".taskactionslist").addClass("taskaction-disabled");
                 $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":state,"finalOutcome":finalOutcome,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
-                    $('#currentUserTasks${currentNode.identifier}').load('${reloadurl}',null,function() {
+                    $('${identifierName}').load('${reloadurl}',null,function() {
                         $("#taskdetail_"+uuid).css("display","block");
                     });
                 }, "json");
@@ -89,7 +102,7 @@
                 ready = false;
                 $(".taskactionslist").addClass("taskaction-disabled");
                 $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":"active","assigneeUserKey":key,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
-                    $('#currentUserTasks${currentNode.identifier}').load('${reloadurl}',null,function(){
+                    $('${identifierName}').load('${reloadurl}',null,function(){
                         $("#taskdetail_"+uuid).css("display","block");
                     });
                 }, "json");

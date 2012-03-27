@@ -170,6 +170,7 @@
 
 [jnt:listSites] > jnt:content, mix:title, jmix:siteComponent, jmix:list, jmix:studioOnly
  - edit (boolean)
+ - lightedit (boolean)
  - contribute (boolean)
  - preview (boolean)
  - live (boolean)

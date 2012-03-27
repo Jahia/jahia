@@ -159,7 +159,7 @@ public class PublicationWorkflow implements CustomWorkflow {
             }
         }
         if (i > 0) {
-            p.add(layoutContainer, new BorderLayoutData(Style.LayoutRegion.NORTH, 10 + i * 15));
+            p.add(layoutContainer, new BorderLayoutData(Style.LayoutRegion.NORTH, 5 + i * 20));
         }
     }
 

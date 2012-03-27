@@ -199,3 +199,8 @@
 [jnt:categorizing] > jnt:content, mix:title, jmix:socialComponent, jmix:bindedComponent
 
 [jnt:displayCurrentLanguage] > jnt:content, jmix:siteComponent
+
+[jnt:modeDispatcher] > jnt:content, jmix:siteComponent, jmix:studioOnly
+ orderable
+ - mode (string,choicelist) < 'live', 'edit', 'preview', 'contribute'
+ + * (jmix:droppableContent) = jmix:droppableContent version

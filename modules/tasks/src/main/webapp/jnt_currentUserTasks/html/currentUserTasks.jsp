@@ -45,19 +45,11 @@
 
 <template:addResources type="javascript" resources="timepicker.js"/>
 <template:addResources type="css" resources="timepicker.css"/>
+<div id="currentUserTasks${currentNode.identifier}">
 <c:if test="${currentResource.workspace eq 'live'}">
-    <form name="myform" method="post">
-        <input type="hidden" name="jcrNodeType" value="jnt:task">
-        <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>">
-        <input type="hidden" name="jcrNewNodeOutputFormat" value="<c:url value='${renderContext.mainResource.template}.html'/>">
-        <input type="hidden" name="state">
-    </form>
-
-    <div id="currentUserTasks${currentNode.identifier}">
-        <script type="text/javascript">
-            $('#currentUserTasks${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>');
-        </script>
-    </div>
+    <script type="text/javascript">
+        $('#currentUserTasks${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>');
+    </script>
 </c:if>
 
 <c:if test="${currentResource.workspace ne 'live'}">
@@ -67,23 +59,26 @@
         <jcr:node var="user" path="${renderContext.user.localPath}"/>
     </c:if>
 
-    <c:if test="${not renderContext.ajaxRequest}">
-        <form name="myform" method="post">
-            <input type="hidden" name="jcrNodeType" value="jnt:task">
-            <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>">
-            <input type="hidden" name="jcrNewNodeOutputFormat" value="<c:url value='${renderContext.mainResource.template}.html'/>">
-            <input type="hidden" name="state">
-        </form>
-    </c:if>
+    <form name="myform" method="post">
+        <input type="hidden" name="jcrNodeType" value="jnt:task">
+        <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>">
+        <input type="hidden" name="jcrNewNodeOutputFormat" value="<c:url value='${renderContext.mainResource.template}.html'/>">
+        <input type="hidden" name="state">
+    </form>
 
     <script type="text/javascript">
         var ready = true;
+        <c:url  var="reloadurl" value="${url.basePreview}${currentNode.path}.html.ajax">
+        <c:forEach items="${param}" var="p">
+        <c:param name="${p.key}" value="${p.value}"/>
+        </c:forEach>
+        </c:url>
         function sendNewStatus(uuid, task, state, finalOutcome) {
             if (ready) {
                 ready = false;
                 $(".taskactionslist").addClass("taskaction-disabled");
                 $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":state,"finalOutcome":finalOutcome,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
-                    $('#currentUserTasks${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>',null,function(){
+                    $('#currentUserTasks${currentNode.identifier}').load('${reloadurl}',null,function() {
                         $("#taskdetail_"+uuid).css("display","block");
                     });
                 }, "json");
@@ -94,7 +89,7 @@
                 ready = false;
                 $(".taskactionslist").addClass("taskaction-disabled");
                 $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":"active","assigneeUserKey":key,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
-                    $('#currentUserTasks${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>',null,function(){
+                    $('#currentUserTasks${currentNode.identifier}').load('${reloadurl}',null,function(){
                         $("#taskdetail_"+uuid).css("display","block");
                     });
                 }, "json");
@@ -111,6 +106,7 @@
         }
 
     </script>
+    <template:include view="hidden.header"/>
     <div id="tasklist">
         <div id="${user.UUID}">
 
@@ -138,14 +134,7 @@
                 </thead>
 
                 <tbody>
-                    <template:include view="hidden.load"/>
-                    <c:set var="listQuery" value="${moduleMap.listQuery}"/>
-                    <jcr:jqom var="tasks" qomBeanName="listQuery"/>
-
-                    <c:set var="nodes" value="${tasks.nodes}"/>
-                    <%--<c:set value="${jcr:getNodes(currentNode,'jnt:task')}" var="tasks"/>--%>
-
-                    <c:forEach items="${nodes}" var="task" varStatus="status">
+                    <c:forEach items="${moduleMap.currentList}"  var="task" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
                         <tr class="${status.count % 2 == 0 ? 'odd' : 'even'}">
                             <td headers="Title">
                                 <span class="icon-task icon-task-${task.properties['priority'].string}"></span>&nbsp;<a href="javascript:void(0)">${fn:escapeXml(task.properties['jcr:title'].string)}</a><span class="opentask" onclick="switchDisplay('${task.identifier}')"><fmt:message key="label.showTask"/></span>
@@ -219,4 +208,7 @@
         </div>
         <div class="clear"></div>
     </div>
+    <template:include view="hidden.footer"/>
+
 </c:if>
+</div>

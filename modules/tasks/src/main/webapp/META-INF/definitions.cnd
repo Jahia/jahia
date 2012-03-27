@@ -27,7 +27,7 @@
  + * (jnt:task)
 
 
-[jnt:currentUserTasks] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly
+[jnt:currentUserTasks] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly, jmix:list
  - filterOnTypes (string) nofulltext
  - filterOnStates (string, choicelist[resourceBundle]) multiple < 'active', 'started', 'finished', 'suspended'
  - filterOnAssignee (string, choicelist[resourceBundle]) < 'assignedToMe','unassigned','assignedToMeOrUnassigned'

@@ -172,7 +172,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     }
 
     public Boolean isLockable() {
-        return get(LOCKABLE);
+        return get(LOCKABLE) != null ? (Boolean) get(LOCKABLE) : false;
     }
 
     public void setLocked(Boolean locked) {
@@ -180,7 +180,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     }
 
     public Boolean isLocked() {
-        return get(LOCKED);
+        return get(LOCKED) != null ? (Boolean) get(LOCKED) : false;
     }
 
 //    public void setLanguageLocked(String language, Boolean locked) {

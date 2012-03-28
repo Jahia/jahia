@@ -445,4 +445,8 @@ public class Functions {
         }
         return buff.toString();
     }
+    
+    public static String sqlEncode(String s) {
+        return s.replace("'","''");
+    }
 }

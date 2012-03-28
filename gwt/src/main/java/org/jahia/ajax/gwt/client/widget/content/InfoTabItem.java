@@ -54,7 +54,6 @@ import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -114,11 +113,7 @@ public class InfoTabItem extends EditEngineTabItem {
                     String infos = "";
                     if (selectedNode.getLockInfos().containsKey(null) && selectedNode.getLockInfos().size() == 1) {
                         for (String s : selectedNode.getLockInfos().get(null)) {
-                            if(s.startsWith("label.")) {
-                                infos = Messages.get(s);
-                            } else {
-                                infos += s.substring(0,s.indexOf(":")) + " (" + s.substring(s.indexOf(":")+1) + ") ";
-                            }
+                            infos = Formatter.getLockLabel(s);
                         }
                     } else {
                         for (Map.Entry<String, List<String>> entry : selectedNode.getLockInfos().entrySet()) {
@@ -132,11 +127,7 @@ public class InfoTabItem extends EditEngineTabItem {
                                     if (i > 0) {
                                         infos += ", ";
                                     }
-                                    if (s.startsWith("label.")) {
-                                        infos += Messages.get(s);
-                                    } else {
-                                        infos += s.substring(0, s.indexOf(":")) + " (" + s.substring(s.indexOf(":") + 1) + ") ";
-                                    }
+                                    infos += Formatter.getLockLabel(s);
                                     i++;
                                 }
                             }

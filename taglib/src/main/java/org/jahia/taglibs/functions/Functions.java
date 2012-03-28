@@ -255,24 +255,25 @@ public class Functions {
                 break;
             }
         }
-        
-        List<Map<String, Object>> expandedResults = new LinkedList<Map<String, Object>>();
-        for (Map<String, Object> result : results) {
-            if (result.get("principalType").equals("group")) {
-                JahiaGroup g = (JahiaGroup) result.get("principal");
-                Set<Principal> principals = g.getRecursiveUserMembers();
-                for (Principal user : principals) {
-                    Map<String, Object> m = new HashMap<String, Object>(result);
-                    m.put("principalType", "user");
-                    m.put("principal", user);
-                    if (sortByDisplayName) {
-                        m.put("displayName", PrincipalViewHelper.getFullName(user));
+        if (expandGroups) {
+            List<Map<String, Object>> expandedResults = new LinkedList<Map<String, Object>>();
+            for (Map<String, Object> result : results) {
+                if (result.get("principalType").equals("group")) {
+                    JahiaGroup g = (JahiaGroup) result.get("principal");
+                    Set<Principal> principals = g.getRecursiveUserMembers();
+                    for (Principal user : principals) {
+                        Map<String, Object> m = new HashMap<String, Object>(result);
+                        m.put("principalType", "user");
+                        m.put("principal", user);
+                        if (sortByDisplayName) {
+                            m.put("displayName", PrincipalViewHelper.getFullName(user));
+                        }
+                        expandedResults.add(m);
                     }
-                    expandedResults.add(m);
                 }
             }
+            results = expandedResults;
         }
-        results = expandedResults;
         if (sortByDisplayName) {
             Collections.sort(results, DISPLAY_NAME_COMPARATOR);
         }

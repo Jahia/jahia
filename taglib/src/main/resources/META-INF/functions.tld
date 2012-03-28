@@ -449,7 +449,7 @@
         </description>
         <name>getRolesForNode</name>
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
-        <function-signature>java.util.List getRolesForNode(org.jahia.services.content.JCRNodeWrapper,boolean,java.lang.String,int,java.lang.String)</function-signature>
+        <function-signature>java.util.List getRolesForNode(org.jahia.services.content.JCRNodeWrapper,boolean,boolean,java.lang.String,int,java.lang.String)</function-signature>
         <example>${functions:getRolesForNode(node,true,null,5,"latestFirst")}</example>
     </function>
 </taglib>

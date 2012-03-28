@@ -30,6 +30,7 @@
               <c:forEach items="${jcr:getChildrenOfType(currentNode,'jmix:droppableContent')}" var="child">
                   <template:module node="${child}" />
               </c:forEach>
+              <c:remove var="modeDispatcherId" scope="request"/>
             </c:when>
             <c:otherwise>
                 <script type="text/javascript">

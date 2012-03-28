@@ -452,4 +452,14 @@
         <function-signature>java.util.List getRolesForNode(org.jahia.services.content.JCRNodeWrapper,boolean,boolean,java.lang.String,int,java.lang.String)</function-signature>
         <example>${functions:getRolesForNode(node,true,null,5,"latestFirst")}</example>
     </function>
+
+    <function>
+        <description>
+            Encode string so that they can be used in a JCR-SQL2 query
+        </description>
+        <name>sqlencode</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.String sqlEncode(java.lang.String)</function-signature>
+        <example>select * from [jnt:task] as t where isdescendantnode(t,['${fn:sqlencode(path)}'])</example>
+    </function>
 </taglib>

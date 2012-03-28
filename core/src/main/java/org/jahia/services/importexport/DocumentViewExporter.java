@@ -330,7 +330,7 @@ public class DocumentViewExporter {
                         }
                     }
                 }
-                return ISO9075.encode(path);
+                return ISO9075.encode(path).replace("_x002f_","/").replace("_x0023_","#");
             } catch (ItemNotFoundException e) {
                 return "";
             }

@@ -74,7 +74,7 @@
                             <c:set var="baseContribute"
                                    value="${fn:substring(url.baseContribute,-1,fn:length(url.baseContribute)-localeLength)}${node.defaultLanguage}"/>
                             <c:set var="baseLightEdit"
-                                   value="${fn:substring(url.baseContribute,-1,fn:length(url.baseLightEdit)-localeLength)}${node.defaultLanguage}"/>
+                                   value="${fn:substring(baseLightEdit,-1,fn:length(baseLightEdit)-localeLength)}${node.defaultLanguage}"/>
                             <c:set var="baseEdit"
                                    value="${fn:substring(url.baseEdit,-1,fn:length(url.baseEdit)-localeLength)}${node.defaultLanguage}"/>
                         </c:if>

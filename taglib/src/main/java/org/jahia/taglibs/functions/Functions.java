@@ -71,6 +71,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RangeIterator;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspTagException;
+import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -180,7 +181,7 @@ public class Functions {
         return null;
     }
 
-    public static List<Map<String, Object>> getRolesForNode(JCRNodeWrapper node, boolean includeInherited, String roles, int limit, String sortType) {
+    public static List<Map<String, Object>> getRolesForNode(JCRNodeWrapper node, boolean includeInherited, boolean expandGroups, String roles, int limit, String sortType) {
         List<Map<String, Object>> results = new LinkedList<Map<String, Object>>();
         Map<String,List<String[]>> entries = node.getAclEntries();
 
@@ -249,12 +250,29 @@ public class Functions {
                     ((List)m.get("roles")).add(details[2]);
                 }
             }
-            
+
             if (limit > 0 && results.size() >= limit) {
                 break;
             }
         }
         
+        List<Map<String, Object>> expandedResults = new LinkedList<Map<String, Object>>();
+        for (Map<String, Object> result : results) {
+            if (result.get("principalType").equals("group")) {
+                JahiaGroup g = (JahiaGroup) result.get("principal");
+                Set<Principal> principals = g.getRecursiveUserMembers();
+                for (Principal user : principals) {
+                    Map<String, Object> m = new HashMap<String, Object>(result);
+                    m.put("principalType", "user");
+                    m.put("principal", user);
+                    if (sortByDisplayName) {
+                        m.put("displayName", PrincipalViewHelper.getFullName(user));
+                    }
+                    expandedResults.add(m);
+                }
+            }
+        }
+        results = expandedResults;
         if (sortByDisplayName) {
             Collections.sort(results, DISPLAY_NAME_COMPARATOR);
         }

@@ -82,7 +82,7 @@
                     return format(item);
                 },
                 extraParams: {
-                    query : "select * from [jnt:tag] as tags where isdescendantnode(tags,'${renderContext.site.path}/tags') and localname(tags) like '%{$q}%'",
+                    query : "select * from [jnt:tag] as tags where isdescendantnode(tags,'${functions:sqlencode(renderContext.site.path)}/tags') and localname(tags) like '%{$q}%'",
                     escapeColon : "false",
                     propertyMatchRegexp : "{$q}.*",
                     removeDuplicatePropValues : "false"

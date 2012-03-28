@@ -36,7 +36,7 @@
                             </div>
                     <div class="content-body">
                         <jcr:node var="siteNode" uuid="${theSite.uuid}"/>
-                        <jcr:sql var="vanities" sql="select * from [jnt:vanityUrl] as vanity where ISDESCENDANTNODE(vanity,'${siteNode.path}') order by vanity.[j:url]"/>
+                        <jcr:sql var="vanities" sql="select * from [jnt:vanityUrl] as vanity where ISDESCENDANTNODE(vanity,'${functions:sqlencode(siteNode.path)}') order by vanity.[j:url]"/>
                         <pg:pager
                                 url="<%=url%>"
                                 items="${functions:length(vanities.nodes)}"

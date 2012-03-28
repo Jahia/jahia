@@ -36,7 +36,7 @@
 <c:if test="${currentResource.workspace ne 'live'}">
 <c:set value="" var="todayDisplayed" scope="request"/>
 <query:definition var="listQuery"
-                  statement="select * from [jnt:task] as t where isdescendantnode(t,['${bindedComponent}']) and [dueDate] is not null order by [dueDate]"/>
+                  statement="select * from [jnt:task] as t where isdescendantnode(t,['${functions:sqlencode(bindedComponent)}']) and [dueDate] is not null order by [dueDate]"/>
 <jcr:jqom var="result" qomBeanName="listQuery"/>
 
 <jsp:useBean id="now" class="java.util.Date"/>

@@ -53,6 +53,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONObject;
 
 import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -78,6 +79,8 @@ public class DefaultPutAction extends Action {
     @Override
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRNodeWrapper node = session.getNode(urlResolver.getPath());
+        // Get node information before any modification as a rule can delete it
+        String primaryNodeTypeName = node.getPrimaryNodeTypeName();
         session.checkout(node);
         
         if (parameters.containsKey(Render.REMOVE_MIXIN)) {
@@ -119,7 +122,7 @@ public class DefaultPutAction extends Action {
         if (req.getParameter(Render.AUTO_CHECKIN) != null && req.getParameter(Render.AUTO_CHECKIN).length() > 0) {
             session.getWorkspace().getVersionManager().checkpoint(node.getPath());
         }
-        
+
         String sessionID = "";
         HttpSession httpSession = req.getSession(false);
         if (httpSession != null) {
@@ -127,14 +130,18 @@ public class DefaultPutAction extends Action {
         }
         if (loggingService.isEnabled()) {
             loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(), sessionID,
-                    node.getIdentifier(), urlResolver.getPath(), node.getPrimaryNodeType().getName(), "nodeUpdated",
+                    node.getIdentifier(), urlResolver.getPath(), primaryNodeTypeName, "nodeUpdated",
                     new JSONObject(req.getParameterMap()).toString());
         }
         
         final String requestWith = req.getHeader("x-requested-with");
         if (req.getHeader("accept").contains("application/json") && requestWith != null &&
                 requestWith.equals("XMLHttpRequest")) {
-            return new ActionResult(HttpServletResponse.SC_OK, node.getPath(), Render.serializeNodeToJSON(node));
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = Render.serializeNodeToJSON(node);
+            } catch (RepositoryException e) {}
+            return new ActionResult(HttpServletResponse.SC_OK, node.getPath(), jsonObject);
         } else {
             return null;
         }

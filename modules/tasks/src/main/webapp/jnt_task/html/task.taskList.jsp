@@ -6,6 +6,7 @@
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="javascript" resources="tasks.js"/>
@@ -17,7 +18,7 @@
 
 <div class="taskComment">
         <jcr:jqom var="result"
-                  statement="select * from [jnt:user] as u where localname(u)='${user}'"/>
+                  statement="select * from [jnt:user] as u where localname(u)='${functions:sqlencode(user)}'"/>
         <c:forEach items="${result.nodes}" var="usernode">
             <div>
                 <template:module node="${usernode}" view="profile"/>

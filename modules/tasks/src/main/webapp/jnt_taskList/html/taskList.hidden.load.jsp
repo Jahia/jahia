@@ -34,16 +34,14 @@
 </c:if>
 <c:if test="${currentResource.workspace ne 'live'}">
 <c:set value="" var="todayDisplayed" scope="request"/>
-<c:set var="singleQuote" value="'"/>
-<c:set var="twoSingleQuotes" value="''"/>
-<c:set var="escapedPath" value="${fn:replace(bindedComponent, singleQuote, twoSingleQuotes)}"/>
+
 <c:if test="${not empty currentNode.properties['filterOnTypes']}">
     <query:definition var="listQuery"
-                      statement="select * from [jnt:task] as t where isdescendantnode(t,['${escapedPath}']) and t.type='${currentNode.properties['filterOnTypes'].string}' order by [jcr:created] desc"/>
+                      statement="select * from [jnt:task] as t where isdescendantnode(t,['${functions:sqlencode(bindedComponent)}']) and t.type='${currentNode.properties['filterOnTypes'].string}' order by [jcr:created] desc"/>
 </c:if>
 <c:if test="${empty currentNode.properties['filterOnTypes']}">
     <query:definition var="listQuery"
-                      statement="select * from [jnt:task] as t where isdescendantnode(t,['${escapedPath}']) order by [jcr:created] desc"/>
+                      statement="select * from [jnt:task] as t where isdescendantnode(t,['${functions:sqlencode(bindedComponent)}']) order by [jcr:created] desc"/>
 </c:if>
 <c:set target="${moduleMap}" property="listQuery" value="${listQuery}"/>
 <c:set target="${moduleMap}" property="subNodesView" value="taskList" />

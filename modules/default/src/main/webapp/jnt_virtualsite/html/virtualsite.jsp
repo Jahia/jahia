@@ -5,6 +5,7 @@
 <%@ page import="org.jahia.data.templates.JahiaTemplatesPackage" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -51,7 +52,7 @@
 
     <p>Version: <jcr:node path="j:versionInfo" var="versionInfo"/><jcr:nodeProperty node="${versionInfo}" name="j:version"/></p>
 
-    <jcr:jqom statement="select * from [jnt:template] as template where ISDESCENDANTNODE(template,'${currentNode.path}')" var="templates"/>
+    <jcr:jqom statement="select * from [jnt:template] as template where ISDESCENDANTNODE(template,'${functions:sqlencode(currentNode.path)}')" var="templates"/>
 
     <c:if test="${templates.nodes.size > 0}">
         <p>Template:</p>
@@ -64,7 +65,7 @@
         </ul>
     </c:if>
 
-    <jcr:jqom statement="select * from [jnt:page] as page where ISDESCENDANTNODE(page,'${currentNode.path}')" var="pages"/>
+    <jcr:jqom statement="select * from [jnt:page] as page where ISDESCENDANTNODE(page,'${functions:sqlencode(currentNode.path)}')" var="pages"/>
     <c:if test="${pages.nodes.size > 0}">
         <p>Prepackaged pages:</p>
         <ul>

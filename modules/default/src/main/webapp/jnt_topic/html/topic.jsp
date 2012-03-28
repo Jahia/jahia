@@ -37,7 +37,7 @@
 </c:choose>
 <ul class="genericListComment" id="${currentNode.UUID}">
     <jcr:sql var="numberOfPostsQuery"
-             sql="select * from [jnt:post] as post  where isdescendantnode(post, ['${currentNode.path}']) order by post.[jcr:lastModified] desc"/>
+             sql="select * from [jnt:post] as post  where isdescendantnode(post, ['${functions:sqlencode(currentNode.path)}']) order by post.[jcr:lastModified] desc"/>
     <c:set target="${moduleMap}" property="commentsList" value="${numberOfPostsQuery.nodes}"/>
     <c:set target="${moduleMap}" property="listTotalSize" value="${numberOfPostsQuery.nodes.size}"/>
     <template:initPager totalSize="${moduleMap.listTotalSize}" id="${currentNode.identifier}" pageSize="${pageSize}"/>

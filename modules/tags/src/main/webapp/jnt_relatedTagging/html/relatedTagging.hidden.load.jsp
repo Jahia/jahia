@@ -4,6 +4,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 
     <c:set var="statement" value="${' '}" />
     <c:set var="sign" value="'" />	
@@ -25,7 +26,7 @@
     <c:choose> 
     <c:when test="${startQuery == '1' && not empty type && not empty nbOfResult}">
         <query:definition var="listQuery"
-           statement="select * from [${type.string}] as tags where isdescendantnode(tags, '${renderContext.site.path}') and ${statement} order by tags.[jcr:lastModified] desc"
+           statement="select * from [${type.string}] as tags where isdescendantnode(tags, '${functions:sqlencode(renderContext.site.path)}') and ${statement} order by tags.[jcr:lastModified] desc"
            limit="${nbOfResult.long}"/>
     </c:when>
     <c:otherwise>

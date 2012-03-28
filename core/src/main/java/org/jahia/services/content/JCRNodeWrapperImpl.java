@@ -2579,7 +2579,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public void unlock(String type)
             throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException,
             InvalidItemStateException, RepositoryException {
-        unlock(type,getSession().getUserID());
+        if (getSession().getUser() != null) {
+            unlock(type, getSession().getUser().getName());
+        } else {
+            unlock(type,getSession().getUserID());
+        }
     }
 
     public void unlock(String type, String userID)

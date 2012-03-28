@@ -22,16 +22,26 @@
 </c:if>
 <c:if test="${!empty publicPropertiesAsString}">
     <jsp:useBean id="fields" class="java.util.HashMap"/>
-    <c:forEach items="${user.propertiesAsString}" var="entry">
-        <c:if test="${currentNode.properties[entry.key].boolean}">
-            <c:set target="${fields}" property="${entry.key}" value="${entry.value}"/>
-        </c:if>
-    </c:forEach>
+    <c:set var="fields" value="${user.propertiesAsString}"/>
 
     <c:if test="${currentNode.properties['j:title'].boolean}">
         <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle" var="title"/>
     </c:if>
-    <c:set var="person" value="${title.displayName} ${fields['j:firstName']} ${fields['j:lastName']}"/>
+    <c:if test="${not empty title and (not empty fields['j:firstName'] and currentNode.properties['j:firstName'].boolean) and (not empty fields['j:lastName'] and currentNode.properties['j:lastName'].boolean)}">
+        <c:set var="person" value="${title.displayName} ${fields['j:firstName']} ${fields['j:lastName']}"/>
+    </c:if>
+    <c:if test="${empty title and (not empty fields['j:firstName'] and currentNode.properties['j:firstName'].boolean) and (not empty fields['j:lastName'] and currentNode.properties['j:lastName'].boolean)}">
+        <c:set var="person" value="${fields['j:firstName']} ${fields['j:lastName']}"/>
+    </c:if>
+    <c:if test="${empty title and (empty fields['j:firstName'] or not currentNode.properties['j:firstName'].boolean) and (not empty fields['j:lastName'] and currentNode.properties['j:lastName'].boolean)}">
+        <c:set var="person" value="${fields['j:lastName']}"/>
+    </c:if>
+    <c:if test="${empty title and (not empty fields['j:firstName'] and currentNode.properties['j:firstName'].boolean) and (empty fields['j:lastName'] or not currentNode.properties['j:lastName'].boolean)}">
+        <c:set var="person" value="${fields['j:firstName']}"/>
+    </c:if>
+    <c:if test="${empty title and empty fields['j:firstName'] and empty fields['j:lastName']}">
+        <c:set var="person" value=""/>
+    </c:if>
     <jsp:useBean id="now" class="java.util.Date"/>
 
     <c:if test="${currentNode.properties['j:birthDate'].boolean}">

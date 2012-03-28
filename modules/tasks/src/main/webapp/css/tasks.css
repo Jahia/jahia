@@ -267,110 +267,112 @@ padding:0;
 	list-style-image:none;
 	list-style-position:outside;
 	list-style-type:none;
-	margin:0;
+	margin:0.2em 0;
 	padding:0;
 	border-bottom:none;
 	overflow:hidden;
 }
 
-.bodywrapper ul.taskaction-disabled li {
-    background-color:#aaaaaa !important;
-}
-
 .bodywrapper .taskactionslist li {
 	list-style-type:none;
 	margin:0;
-	background-color:#0099ff ;
-	color:#fff;
 	border:none;
-	text-align:center;
-	padding:4px 4px;
-	margin-right:10px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
+	padding:0;
+	margin-right:5px;
+    margin-bottom:5px;
 	float:left;
-}
-.bodywrapper .taskactionslist li:hover {
-	background-color:#008ae5 ;
 }
 .bodywrapper .taskactionslist li.taskactions-right {
 	float:right;
 	margin-right:0;
 	margin-left:10px;
 }
-
-.bodywrapper a.taskactionslist-refuse,
-.bodywrapper a.taskactionslist-refuse:link,
-.bodywrapper a.taskactionslist-refuse:visited
+.bodywrapper a.taskaction,
+.bodywrapper a.taskaction:link,
+.bodywrapper a.taskaction:visited
 {
 	color:#fff;
 	padding:6px 6px 6px 29px;
-	background:url(img/refuse.png) no-repeat 2% 50%;
+    -moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+    background-color:#0099ff;
+    background-image:url(img/start.png);
+    background-position: 4px 50%;
+    background-repeat:no-repeat;
+    display:block;
 }
-.bodywrapper a.taskactionslist-refuse:hover,
-.bodywrapper a.taskactionslist-refuse:active {
+.bodywrapper a.taskaction:hover,
+.bodywrapper a.taskaction:active {
 	text-decoration:none;
 	color:#fff;
 	background-color:#008ae5;
 }
 
-.bodywrapper a.taskactionslist-suspend,
-.bodywrapper a.taskactionslist-suspend:link,
-.bodywrapper a.taskactionslist-suspend:visited
+.bodywrapper a.taskaction-refuse,
+.bodywrapper a.taskaction-refuse:link,
+.bodywrapper a.taskaction-refuse:visited
 {
-	color:#fff;
-	padding:6px 6px 6px 29px;
-	background:url(img/suspend.png) no-repeat 2% 50%;
+	background-image:url(img/refuse.png);
 }
-.bodywrapper a.taskactionslist-suspend:hover,
-.bodywrapper a.taskactionslist-suspend:active {
-	text-decoration:none;
-	color:#fff;
-	background-color:#008ae5;
+.bodywrapper a.taskaction-suspend,
+.bodywrapper a.taskaction-suspend:link,
+.bodywrapper a.taskaction-suspend:visited
+{
+	background-image:url(img/suspend.png);
+}
+.bodywrapper a.taskaction-start,
+.bodywrapper a.taskaction-start:link,
+.bodywrapper a.taskaction-start:visited
+{
+	background-image:url(img/start.png);
+}
+.bodywrapper a.taskaction-continue,
+.bodywrapper a.taskaction-continue:link,
+.bodywrapper a.taskaction-continue:visited
+{
+	background-image:url(img/continue.png);
+}
+.bodywrapper a.taskaction-assign,
+.bodywrapper a.taskaction-assign:link,
+.bodywrapper a.taskaction-assign:visited
+{
+	background-image:url(img/assign.png);
 }
 
-.bodywrapper a.taskactionslist-start,
-.bodywrapper a.taskactionslist-start:link,
-.bodywrapper a.taskactionslist-start:visited
+.bodywrapper a.taskaction-iCalendar,
+.bodywrapper a.taskaction-iCalendar:link,
+.bodywrapper a.taskaction-iCalendar:visited
+{
+	background-image:url(img/icalendar.png);
+}
+.bodywrapper a.taskaction-preview,
+.bodywrapper a.taskaction-preview:link,
+.bodywrapper a.taskaction-preview:visited
+{
+	background-image:url(img/preview.png);
+}
+
+.bodywrapper div.taskaction-complete
 {
 	color:#fff;
 	padding:6px 6px 6px 29px;
-	background:url(img/start.png) no-repeat 2% 50%;
+    -moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+    background-color:#0099ff;
+    background-image:url(img/complete.png);
+    background-position: 4px 50%;
+    background-repeat:no-repeat;
+    display:block;
 }
-.bodywrapper a.taskactionslist-start:hover,
-.bodywrapper a.taskactionslist-start:active {
+.bodywrapper div.taskaction-button:hover{
 	text-decoration:none;
 	color:#fff;
 	background-color:#008ae5;
 }
-.bodywrapper a.taskactionslist-continue,
-.bodywrapper a.taskactionslist-continue:link,
-.bodywrapper a.taskactionslist-continue:visited
-{
-	color:#fff;
-	padding:6px 6px 6px 29px;
-	background:url(img/continue.png) no-repeat 2% 50%;
-}
-.bodywrapper a.taskactionslist-continue:hover,
-.bodywrapper a.taskactionslist-continue:active {
-	text-decoration:none;
-	color:#fff;
-	background-color:#008ae5;
-}
-.bodywrapper a.taskactionslist-assign,
-.bodywrapper a.taskactionslist-assign:link,
-.bodywrapper a.taskactionslist-assign:visited
-{
-	color:#fff;
-	padding:6px 6px 6px 29px;
-	background:url(img/assign.png) no-repeat 2% 50%;
-}
-.bodywrapper a.taskactionslist-assign:hover,
-.bodywrapper a.taskactionslist-assign:active {
-	text-decoration:none;
-	color:#fff;
-	background-color:#008ae5;
+.bodywrapper a.taskaction-disabled, .bodywrapper div.taskaction-disabled {
+    background-color:#aaaaaa !important;
 }
 /******************************************************************************
 *  task status

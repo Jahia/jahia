@@ -89,7 +89,8 @@
         function sendNewStatus(uuid, task, state, finalOutcome) {
             if (ready) {
                 ready = false;
-                $(".taskactionslist").addClass("taskaction-disabled");
+                $(".taskaction-complete").addClass("taskaction-disabled");
+                $(".taskaction").addClass("taskaction-disabled");
                 $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":state,"finalOutcome":finalOutcome,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
                     $('${identifierName}').load('${reloadurl}',null,function() {
                         $("#taskdetail_"+uuid).css("display","block");
@@ -100,7 +101,8 @@
         function sendNewAssignee(uuid, task, key) {
             if (ready) {
                 ready = false;
-                $(".taskactionslist").addClass("taskaction-disabled");
+                $(".taskaction-complete").addClass("taskaction-disabled");
+                $(".taskaction").addClass("taskaction-disabled");
                 $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":"active","assigneeUserKey":key,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
                     $('${identifierName}').load('${reloadurl}',null,function(){
                         $("#taskdetail_"+uuid).css("display","block");
@@ -130,11 +132,11 @@
 
             <table width="100%" class="table tableTasks" summary="Tasks">
                 <colgroup>
-                    <col span="1" width="${100 - (dispAssignee?15:0)- (dispCreator?15:0)- (dispState?10:0)- (dispDueDate?10:0) }%" class="col1"/>
+                    <col span="1" width="${100 - (dispAssignee?15:0)- (dispCreator?15:0)- (dispState?10:0)- (dispDueDate?15:0) }%" class="col1"/>
                     <c:if test="${dispAssignee}"><col span="1" width="15%" class="col2"/></c:if>
                     <c:if test="${dispCreator}"><col span="1" width="15%" class="col3"/></c:if>
                     <c:if test="${dispState}"><col span="1" width="10%" class="col4"/></c:if>
-                    <c:if test="${dispDueDate}"><col span="1" width="10%" class="col5"/></c:if>
+                    <c:if test="${dispDueDate}"><col span="1" width="15%" class="col5"/></c:if>
                 </colgroup>
                 <thead>
                 <tr>
@@ -155,7 +157,7 @@
                                 <div style="display:none;" class="taskdetail" id="taskdetail_${task.identifier}">
                                     <p class="task-info-p"><fmt:message key="label.createdBy"/>: ${task.properties['jcr:createdBy'].string}, <fmt:message key="label.createdOn"/> <fmt:formatDate value="${task.properties['jcr:created'].date.time}" dateStyle="long" type="both"/></p>
                                     <c:if test="${not empty task.properties['priority']}"><p class="task-priority-p"><fmt:message key="jnt_task.priority"/>: <span class="task-priority task-${task.properties['priority'].string}">${task.properties['priority'].string}</span></p></c:if>
-                                    <p class="task-text">${task.properties['description'].string}</p>
+                                    <c:if test="${not empty task.properties['description']}"><p class="task-text">${task.properties['description'].string}</p></c:if>
                                     <template:tokenizedForm>
                                         <form id="tokenForm_${task.identifier}" name="tokenform_${task.identifier}" method="post" action="<c:url value='${url.base}'/>${task.path}">
                                         </form>
@@ -163,26 +165,26 @@
                                     <ul class="taskactionslist">
                                         <c:choose>
                                             <c:when test="${task.properties.state.string == 'active' and task.properties['assigneeUserKey'].string ne user.name}">
-                                                <li><a class="taskactionslist taskactionslist-assign" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','${user.name}')" title="assign to me"><fmt:message key="label.actions.assigneToMe"/></a></li>
+                                                <li><a class="taskaction taskaction-assign" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','${user.name}')" title="assign to me"><fmt:message key="label.actions.assigneToMe"/></a></li>
                                             </c:when>
                                             <c:when test="${task.properties.state.string == 'active' and task.properties['assigneeUserKey'].string eq user.name}">
-                                                <li><a class="taskactionslist taskactionslist-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse"><fmt:message key="label.actions.refuse"/></a></li>
-                                                <li><a class="taskactionslist taskactionslist-start" href="javascript:sendNewStatus('${task.identifier}','${task.path}','started')" title="start"><fmt:message key="label.actions.start"/></a></li>
+                                                <li><a class="taskaction taskaction-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse"><fmt:message key="label.actions.refuse"/></a></li>
+                                                <li><a class="taskaction taskaction-start" href="javascript:sendNewStatus('${task.identifier}','${task.path}','started')" title="start"><fmt:message key="label.actions.start"/></a></li>
                                             </c:when>
                                             <c:when test="${task.properties.state.string == 'started' and task.properties['assigneeUserKey'].string eq user.name}">
-                                                <li><a class="taskactionslist taskactionslist-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse"><fmt:message key="label.actions.refuse"/></a></li>
-                                                <li><a class="taskactionslist taskactionslist-suspend" href="javascript:sendNewStatus('${task.identifier}','${task.path}','suspended')" title="suspend"><fmt:message key="label.actions.suspend"/></a></li>
+                                                <li><a class="taskaction taskaction-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse"><fmt:message key="label.actions.refuse"/></a></li>
+                                                <li><a class="taskaction taskaction-suspend" href="javascript:sendNewStatus('${task.identifier}','${task.path}','suspended')" title="suspend"><fmt:message key="label.actions.suspend"/></a></li>
                                                 <fmt:setBundle basename="${task.properties['taskBundle'].string}" var="taskBundle"/>
                                                 <c:if test="${not empty task.properties['targetNode'].node}">
-                                                    <li><a class="taskactionslist taskactionslist-start" target="_blank" href="<c:url value="${url.basePreview}${task.properties['targetNode'].node.path}.html"/>"><fmt:message key="label.preview"/></a></li>
+                                                    <li><a class="taskaction taskaction-preview" target="_blank" href="<c:url value="${url.basePreview}${task.properties['targetNode'].node.path}.html"/>"><fmt:message key="label.preview"/></a></li>
                                                 </c:if>
                                                 <c:if test="${not empty task.properties['possibleOutcomes']}">
                                                 <c:forEach items="${task.properties['possibleOutcomes']}" var="outcome" varStatus="status">
-                                                    <li><a class="taskactionslist taskactionslist-start" href="javascript:sendNewStatus('${task.identifier}','${task.path}','finished','${outcome.string}')" title="${outcome.string}"><fmt:message bundle="${taskBundle}" key="${fn:replace(task.properties['taskName'].string,' ','.')}.${fn:replace(outcome.string,' ','.')}"/></a></li>
+                                                    <li><a class="taskaction taskaction-start" href="javascript:sendNewStatus('${task.identifier}','${task.path}','finished','${outcome.string}')" title="${outcome.string}"><fmt:message bundle="${taskBundle}" key="${fn:replace(task.properties['taskName'].string,' ','.')}.${fn:replace(outcome.string,' ','.')}"/></a></li>
                                                 </c:forEach>
                                                 </c:if>
                                                 <c:if test="${empty task.properties['possibleOutcomes']}">
-                                                    <li class="taskactions-right"><input class="completeTaskAction" taskPath="<c:url value="${url.base}${currentNode.path}"/>" type="checkbox" onchange="sendNewStatus('${task.identifier}','${task.path}','finished')"/>&nbsp;<fmt:message key="label.actions.completed"/></li>
+                                                    <li class="taskactions-right"><div class="taskaction-complete"><input class="completeTaskAction" taskPath="<c:url value="${url.base}${currentNode.path}"/>" type="checkbox" onchange="sendNewStatus('${task.identifier}','${task.path}','finished')"/>&nbsp;<fmt:message key="label.actions.completed"/></div></li>
                                                 </c:if>
                                                 <jcr:node var="taskData" path="${task.path}/taskData"/>
                                                 <c:if test="${not empty taskData}">
@@ -193,16 +195,16 @@
                                                  </c:if>
                                             </c:when>
                                             <c:when test="${task.properties.state.string == 'finished'}">
-                                                <li class="taskactions-right"><input name="Completed" type="checkbox" disabled="disabled" checked="checked" value="Completed" />&nbsp;<fmt:message key="label.actions.completed"/></li>
+                                                <li class="taskactions-right"><div class="taskaction-complete"><input name="Completed" type="checkbox" disabled="disabled" checked="checked" value="Completed" />&nbsp;<fmt:message key="label.actions.completed"/></div></li>
                                             </c:when>
                                             <c:when test="${task.properties.state.string == 'suspended' and task.properties['assigneeUserKey'].string eq user.name}">
-                                                <li><a class="taskactionslist taskactionslist-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse"><fmt:message key="label.actions.refuse"/></a></li>
-                                                <li><a class="taskactionslist taskactionslist-continue" href="javascript:sendNewStatus('${task.identifier}','${task.path}','started')" title="start"><fmt:message key="label.actions.resume"/></a></li>
+                                                <li><a class="taskaction taskaction-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse"><fmt:message key="label.actions.refuse"/></a></li>
+                                                <li><a class="taskaction taskaction-continue" href="javascript:sendNewStatus('${task.identifier}','${task.path}','started')" title="start"><fmt:message key="label.actions.resume"/></a></li>
                                             </c:when>
                                             <c:when test="${task.properties.state.string == 'canceled'}">
                                             </c:when>
                                         </c:choose>
-                                        <c:if test="${not empty task.properties['dueDate']}"><li class="taskactions-right"><a class="iCalendarAction" href="<c:url value='${url.base}${task.path}.ics'/>" title="iCalendar"><fmt:message key="label.actions.icalendar"/></a></li></c:if>
+                                        <c:if test="${not empty task.properties['dueDate']}"><li class="taskactions-right"><a class="taskaction taskaction-iCalendar" href="<c:url value='${url.base}${task.path}.ics'/>" title="iCalendar"><fmt:message key="label.actions.icalendar"/></a></li></c:if>
                                     </ul>
                                 </div>
                             </td>

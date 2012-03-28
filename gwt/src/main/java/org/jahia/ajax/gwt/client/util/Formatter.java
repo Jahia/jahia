@@ -42,6 +42,8 @@ package org.jahia.ajax.gwt.client.util;
 
 import java.util.Date;
 
+import org.jahia.ajax.gwt.client.messages.Messages;
+
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -103,6 +105,25 @@ public class Formatter {
      */
     public static String getFormattedDate(Date date) {
         return getFormattedDate(date, null);
+    }
+    
+    /**
+     * Returns formatted lock info label based on the provided key.
+     * 
+     * @param lockInfo
+     *            the lock information key
+     * @return formatted lock info label based on the provided key
+     */
+    public static String getLockLabel(String lockInfo) {
+        if (lockInfo == null || lockInfo.length() == 0) {
+            return lockInfo;
+        }
+        if (lockInfo.startsWith("label.")) {
+            return Messages.get(lockInfo);
+        } else {
+            return lockInfo.contains(":") ? (lockInfo.substring(0, lockInfo.indexOf(":")) + " ("
+                    + lockInfo.substring(lockInfo.indexOf(":") + 1) + ")") : lockInfo;
+        }
     }
 
     /**

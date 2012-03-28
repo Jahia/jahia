@@ -54,6 +54,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -217,11 +218,7 @@ public class EditContentEngine extends AbstractContentEngine {
                     String infos = "";
                     if (node.getLockInfos().containsKey(null) && node.getLockInfos().size() == 1) {
                         for (String s : node.getLockInfos().get(null)) {
-                            if(s.startsWith("label.")) {
-                                infos = Messages.get(s);
-                            } else {
-                                infos += s.substring(0,s.indexOf(":")) + " (" + s.substring(s.indexOf(":")+1) + ") ";
-                            }
+                            infos = Formatter.getLockLabel(s);
                         }
                     } else {
                         for (Map.Entry<String, List<String>> entry : node.getLockInfos().entrySet()) {
@@ -235,11 +232,7 @@ public class EditContentEngine extends AbstractContentEngine {
                                     if (i > 0) {
                                         infos += ", ";
                                     }
-                                    if (s.startsWith("label.")) {
-                                        infos += Messages.get(s);
-                                    } else {
-                                        infos += s.substring(0, s.indexOf(":")) + " (" + s.substring(s.indexOf(":") + 1) + ") ";
-                                    }
+                                    infos += Formatter.getLockLabel(s);
                                     i++;
                                 }
                             }

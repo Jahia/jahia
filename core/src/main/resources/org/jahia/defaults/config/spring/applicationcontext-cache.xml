@@ -60,7 +60,7 @@ when we flush this entry we will flush the whole cache
     </bean>
 
     <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.AggregateCacheFilter">
-        <property name="disabled" value="false"/>
+        <property name="disabled" value="${disableOutputCache:false}"/>
         <property name="priority" value="16" />
         <property name="description" value="Module content caching filter." />
     	<property name="cacheProvider" ref="ModuleCacheProvider"/>

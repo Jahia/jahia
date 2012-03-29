@@ -161,10 +161,30 @@
                                     <template:tokenizedForm>
                                         <form id="tokenForm_${task.identifier}" name="tokenform_${task.identifier}" method="post" action="<c:url value='${url.base}'/>${task.path}">
                                         </form>
-                                    </template:tokenizedForm> 
+                                    </template:tokenizedForm>
                                     <ul class="taskactionslist">
+                                        <c:set var="assignable" value="true" />
+                                        <c:if test="${not empty task.properties['candidates'] and task.properties['assigneeUserKey'].string ne user.name}">
+                                            <c:set var="assignable" value="false" />
+                                            <c:set var="candidates" value=""/>
+                                            <c:forEach items="${task.properties['candidates']}" var="candidate">
+                                                <c:set var="candidates" value=" ${candidate.string} ${candidates} "/>
+                                            </c:forEach>
+                                            <c:set var="userKey" value="u:${user.name}" />
+                                            <c:if test="${fn:contains(candidates, userKey)}">
+                                                <c:set var="assignable" value="true" />
+                                            </c:if>
+                                            <c:if test="${not assignable}">
+                                                <c:set var="groups" value="${jcr:getUserMembership(user)}" />
+                                                <c:forEach items="${groups}" var="x">
+                                                    <c:if test="${fn:contains(candidates, x.key)}">
+                                                        <c:set var="assignable" value="true" />
+                                                    </c:if>
+                                                </c:forEach>
+                                            </c:if>
+                                        </c:if>
                                         <c:choose>
-                                            <c:when test="${task.properties.state.string == 'active' and task.properties['assigneeUserKey'].string ne user.name}">
+                                            <c:when test="${task.properties.state.string == 'active' and task.properties['assigneeUserKey'].string ne user.name and assignable eq 'true'}">
                                                 <li><a class="taskaction taskaction-assign" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','${user.name}')" title="assign to me"><fmt:message key="label.actions.assigneToMe"/></a></li>
                                             </c:when>
                                             <c:when test="${task.properties.state.string == 'active' and task.properties['assigneeUserKey'].string eq user.name}">

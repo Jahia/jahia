@@ -143,7 +143,11 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
                     List<Value> candidatesArray = new ArrayList<Value>();
                     ValueFactory valueFactory = session.getValueFactory();
                     for (JahiaPrincipal principal : principals) {
-                        candidatesArray.add(valueFactory.createValue(principal.getName()));
+                        if (principal instanceof JahiaGroup) {
+                            candidatesArray.add(valueFactory.createValue("g:"+principal.getName()));
+                        } else if (principal instanceof JahiaUser) {
+                            candidatesArray.add(valueFactory.createValue("u:"+principal.getName()));
+                        }
                     }
                     task.setProperty("candidates",candidatesArray.toArray(new Value[candidatesArray.size()]));
                     List<Value> outcomes = new ArrayList<Value>();

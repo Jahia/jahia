@@ -696,7 +696,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public String getUrl() {
         try {
         if (isNodeType(Constants.JAHIANT_FILE)) {
-            return provider.getHttpPath() + "/" + getSession().getWorkspace().getName() + Text.escapePath(getPath());
+            return provider.getHttpPath() + "/" + getSession().getWorkspace().getName() + Text.escapePath(getCanonicalPath());
         } else {
             String path = JCRSessionFactory.getInstance().getCurrentServletPath();
             if (path == null) {

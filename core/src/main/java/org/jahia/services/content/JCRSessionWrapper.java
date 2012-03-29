@@ -357,7 +357,7 @@ public class JCRSessionWrapper implements Session {
     private JCRNodeWrapper dereference(JCRNodeWrapper parent, String refPath) throws RepositoryException {
         JCRStoreProvider provider = parent.getProvider();
         JCRNodeWrapper wrapper;
-        Node referencedNode = parent.getRealNode().getProperty("j:node").getNode();
+        Node referencedNode = ((JCRNodeWrapper) parent.getProperty("j:node").getNode()).getRealNode();
         String fullPath = parent.getPath() + DEREF_SEPARATOR + refPath;
         if (parent.getPath().startsWith(referencedNode.getPath())) {
             throw new PathNotFoundException(fullPath);

@@ -21,7 +21,7 @@
                 </c:forEach>
       <template:module path="*" />
     </c:if>
-    <c:if test="${not renderContext.editMode}">
+<c:if test="${not renderContext.editMode}">
       <c:choose>
           <c:when test="${renderContext.liveMode and currentNode.properties.mode.string eq 'live'
                             or renderContext.contributionMode and currentNode.properties.mode.string eq 'contribute'
@@ -34,14 +34,14 @@
             </c:when>
             <c:otherwise>
                 <script type="text/javascript">
-                    <c:if test="${currentNode.properties.mode.string eq 'live'}">
-                    $('#item-${currentNode.identifier}').load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax"/>');
+                    <c:if test="${currentNode.properties.mode.string eq 'live'}">1
+                    $('#item-${currentNode.identifier}').load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}"/>');
                     </c:if>
-                    <c:if test="${currentNode.properties.mode.string eq 'contribute'}">
-                    $('#item-${currentNode.identifier}').load('<c:url value="${url.baseContribute}${currentNode.path}.html.ajax"/>');
+                    <c:if test="${currentNode.properties.mode.string eq 'contribute'}">2
+                    $('#item-${currentNode.identifier}').load('<c:url value="${url.baseContribute}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}"/>');
                     </c:if>
-                    <c:if test="${currentNode.properties.mode.string eq 'preview'}">
-                    $('#item-${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>');
+                    <c:if test="${currentNode.properties.mode.string eq 'preview'}">3
+                    $('#item-${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}"/>');
                     </c:if>
                 </script>
             </c:otherwise>

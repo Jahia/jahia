@@ -66,6 +66,10 @@ public class Functions {
                                                     String property) {
         JCRNodeWrapper boundComponentNode = null;
         try {
+            JCRNodeWrapper mainResource = renderContext.getMainResource().getNode();
+            if (renderContext.getAjaxResource() != null) {
+                mainResource = renderContext.getAjaxResource().getNode();
+            }
             if (currentNode.hasProperty(property)) {
                 JCRPropertyWrapper boundComponentProp = currentNode.getProperty(property);
                 if (boundComponentProp != null) {
@@ -74,10 +78,10 @@ public class Functions {
                 if (boundComponentNode != null) {
                     if (boundComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY) ||
                         boundComponentNode.isNodeType("jnt:template")) {
-                        boundComponentNode = renderContext.getMainResource().getNode();
+                        boundComponentNode = mainResource;
                     } else if (boundComponentNode.isNodeType(Constants.JAHIANT_AREA)) {
                         String areaName = boundComponentNode.getName();
-                        boundComponentNode = renderContext.getMainResource().getNode();
+                        boundComponentNode = mainResource;
                         if (boundComponentNode.hasNode(areaName)) {
                             boundComponentNode = boundComponentNode.getNode(areaName);
                         } else {
@@ -86,16 +90,16 @@ public class Functions {
                     }
                 }
             } else {
-                boundComponentNode = renderContext.getMainResource().getNode();
+                boundComponentNode = mainResource;
             }
             if (boundComponentNode != null && !boundComponentNode.getPath().equals(
-                    renderContext.getMainResource().getNode().getPath())) {
+                    mainResource.getPath())) {
                 renderContext.getResourcesStack().peek().getDependencies().add(boundComponentNode.getCanonicalPath());
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
-        return (JCRNodeWrapper) boundComponentNode;
+        return boundComponentNode;
     }
 
     public static String getBindedComponentPath(JCRNodeWrapper currentNode, RenderContext renderContext,

@@ -1,4 +1,5 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -66,11 +67,11 @@
 <c:set var="title">${currentNode.properties['jcr:title'].string}</c:set>
 <c:if test="${empty currentNode.properties['jcr:title'].string}"><c:set var="title"><fmt:message key="label.add.new.task"/></c:set></c:if>
 
-<a class="aButton createTasks" id="createTasks" href="#createTasksForm"><span>${title}</span></a>
+<a class="aButton createTasks" id="createTasks" href="#createTasksForm"><span>${fn:escapeXml(title)}</span></a>
 
 <div style="display:none">
     <div id="createTasksForm" class="popupSize">
-        <h3>${title}</h3>
+        <h3>${fn:escapeXml(title)}</h3>
 
         <div class="Form taskForm"><!--start Form -->
 

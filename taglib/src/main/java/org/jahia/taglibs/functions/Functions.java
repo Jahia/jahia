@@ -64,6 +64,7 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -447,6 +448,6 @@ public class Functions {
     }
     
     public static String sqlEncode(String s) {
-        return s.replace("'","''");
+        return s != null && s.contains("'") ? Patterns.SINGLE_QUOTE.matcher(s).replaceAll("''") : s;
     }
 }

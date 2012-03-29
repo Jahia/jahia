@@ -204,7 +204,8 @@
                                                 </c:forEach>
                                                 </c:if>
                                                 <c:if test="${empty task.properties['possibleOutcomes']}">
-                                                    <li class="taskactions-right"><div class="taskaction-complete"><input class="completeTaskAction" taskPath="<c:url value="${url.base}${currentNode.path}"/>" type="checkbox" onchange="sendNewStatus('${task.identifier}','${task.path}','finished')"/>&nbsp;<fmt:message key="label.actions.completed"/></div></li>
+                                                    <c:set var="taskId" value="${task.identifier}"/>
+                                                    <li class="taskactions-right"><div class="taskaction-complete"><input class="completeTaskAction" taskPath="<c:url value='${url.base}${currentNode.path}'/>" type="checkbox" id="btnComplete-${taskId}" onchange="sendNewStatus('${taskId}','${task.path}','finished')"/>&nbsp;<label for="btnComplete-${taskId}"><fmt:message key="label.actions.completed"/></label></div></li>
                                                 </c:if>
                                                 <jcr:node var="taskData" path="${task.path}/taskData"/>
                                                 <c:if test="${not empty taskData}">

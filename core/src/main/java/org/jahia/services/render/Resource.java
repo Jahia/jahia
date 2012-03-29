@@ -208,6 +208,9 @@ public class Resource {
         return wrappers.push(wrapper);
     }
 
+    public String getPath() {
+        return node.getPath() + "." + template + "." + templateType;
+    }
 
     @Override
     public String toString() {

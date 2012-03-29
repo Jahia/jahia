@@ -314,6 +314,9 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
                                                     } else if (principal.charAt(0) == 'g') {
                                                         JahiaGroup group = groupService.lookupGroup(site.getID(),
                                                                 principalName);
+                                                        if (group == null) {
+                                                            group = groupService.lookupGroup(0,principalName);
+                                                        }
                                                         principals.add(group);
                                                     }
                                                 }

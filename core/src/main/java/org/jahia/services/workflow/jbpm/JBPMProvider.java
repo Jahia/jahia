@@ -44,10 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -631,6 +628,12 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 if (user.getUserKey().equals(task.getAssignee())) {
                     return;
                 }
+
+                if (!checkParticipation(task, user)) {
+                    logger.error("Cannot assign task "+task.getId()+" to user "+user.getName() + ", user is not candidate");
+                    return;
+                }
+
                 taskService.takeTask(task.getId(), user.getUserKey());
             }
             if (user != null) {
@@ -668,6 +671,17 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         }
     }
 
+    private boolean checkParticipation(Task task, JahiaUser user) {
+        List<Participation> p = taskService.getTaskParticipations(task.getId());
+        for (Participation participation : p) {
+            if ((participation.getUserId() != null && user.getUserKey().equals(participation.getUserId())) ||
+                    (participation.getGroupId() != null && groupManager.getUserMembership(user).contains(participation.getGroupId()))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void completeTask(String taskId, final String outcome, Map<String, Object> args) {
         if (loop.get() != null) {
             return;
@@ -692,6 +706,11 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                     e.printStackTrace();
                 }
             }
+            if (taskService.getTask(taskId).getAssignee() == null || !taskService.getTask(taskId).getAssignee().equals(JCRSessionFactory.getInstance().getCurrentUser().getUserKey())) {
+                logger.error("Cannot complete task "+taskId+", assign it first");
+                return;
+            }
+
             taskService.completeTask(taskId, outcome, args);
         } finally {
             loop.set(null);

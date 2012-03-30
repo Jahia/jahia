@@ -595,9 +595,12 @@
         </example>
     </function>
     <function>
-        <description>Returns map of string groupName,JahiaGroup value</description>
+        <description>
+            DEPRECATED: Use user taglib instead
+            Returns map of string groupName,JahiaGroup value
+        </description>
         <name>getUserMembership</name>
-        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-class>org.jahia.taglibs.user.User</function-class>
         <function-signature>java.util.Map getUserMembership(org.jahia.services.content.JCRNodeWrapper)</function-signature>
         <example>
             ${jcr:getUserMembership(currentNode)}
@@ -674,15 +677,16 @@
     </function>
     <function>
         <description>
+            DEPRECATED: Use user taglib instead
         	Returns the full user name, including first and last name.
         	If those are not available, returns the username.
         </description>
         <name>userFullName</name>
-        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-class>org.jahia.taglibs.user.User</function-class>
         <function-signature>java.lang.String userFullName(org.jahia.services.content.JCRNodeWrapper)
         </function-signature>
         <example>
-            &lt;c:out value="${jcr:userFullName(currentUserNode)}"/&gt;        
+            &lt;c:out value="${jcr:userFullName(currentUserNode)}"/&gt;
         </example>
     </function>
     <function>

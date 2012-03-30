@@ -5,6 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="workflow" uri="http://www.jahia.org/tags/workflow" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
+<%@ taglib prefix="user" uri="http://www.jahia.org/tags/user" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
 <%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
@@ -175,7 +176,7 @@
                                                 <c:set var="assignable" value="true" />
                                             </c:if>
                                             <c:if test="${not assignable}">
-                                                <c:set var="groups" value="${jcr:getUserMembership(user)}" />
+                                                <c:set var="groups" value="${user:getUserMembership(user)}" />
                                                 <c:forEach items="${groups}" var="x">
                                                     <c:if test="${fn:contains(candidates, x.key)}">
                                                         <c:set var="assignable" value="true" />

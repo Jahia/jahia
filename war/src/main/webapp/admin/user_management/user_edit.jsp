@@ -20,6 +20,7 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://www.jahia.org/tags/uiComponentsLib" prefix="ui" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="user" uri="http://www.jahia.org/tags/user" %>
 <%@include file="/admin/include/header.inc" %>
 
 <c:set var="noneLabel"><fmt:message key="org.jahia.userMessage.none"/></c:set>
@@ -156,7 +157,7 @@
         <input type="hidden" name="username" value="<%=username%>">
         <!-- This hidden field can be changed to 'update' so that we keep the edited data without confirming changes -->
         <input type="hidden" name="actionType" value="save"/>
-        <b>${functions:displayName(theUser)}
+        <b>${user:displayName(theUser)}
         </b>
     </td>
 </tr>

@@ -279,23 +279,6 @@ public class JCRTagUtils {
         return matchingParent;
     }
 
-    public static Map<String, JahiaGroup> getUserMembership(JCRNodeWrapper user) {
-        Map<String, JahiaGroup> map = new LinkedHashMap<String, JahiaGroup>();
-        final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
-                user.getName());
-        final JahiaGroupManagerService managerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        final List<String> userMembership = managerService.getUserMembership(
-                jahiaUser);
-        for (String groupName : userMembership) {
-            final JahiaGroup group = managerService.lookupGroup(groupName);
-            if(!groupName.equals(JahiaGroupManagerService.GUEST_GROUPNAME) &&
-               !groupName.equals(JahiaGroupManagerService.USERS_GROUPNAME)) {
-                map.put(groupName,group);
-            }
-        }
-        return map;
-    }
-
     public static boolean hasPermission(JCRNodeWrapper node,String permission) {
         return node != null && node.hasPermission(permission);
     }
@@ -360,36 +343,6 @@ public class JCRTagUtils {
         return Text.escapeIllegalJcrChars(inputString);
     }
     
-    /**
-     * Returns the full user name, including first and last name. If those are
-     * not available, returns the username.
-     * 
-     * @param userNode the user JCR node
-     * @return the full user name, including first and last name. If those are
-     *         not available, returns the username
-     */
-    public static String userFullName(JCRNodeWrapper userNode) {
-        StringBuilder name = new StringBuilder();
-        String value = userNode.getPropertyAsString("j:firstName");
-        if (StringUtils.isNotEmpty(value)) {
-            name.append(value);
-        }
-        value = userNode.getPropertyAsString("j:lastName");
-        if (StringUtils.isNotEmpty(value)) {
-            if (name.length() > 0) {
-                name.append(" ");
-            }
-            name.append(value);
-        }
-
-        if (name.length() == 0) {
-            name.append(PrincipalViewHelper.getUserDisplayName(userNode.getName()));
-        }
-
-        return name.toString();
-    }
-
-
     public static List<ExtendedNodeType> getContributeTypes(JCRNodeWrapper node, JCRNodeWrapper areaNode, Value[] typelistValues) throws Exception {
         List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
 

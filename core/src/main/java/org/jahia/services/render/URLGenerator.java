@@ -101,6 +101,7 @@ public class URLGenerator {
 
     private String live;
     private String edit;
+    private String lightEdit;
     private String preview;
     private String contribute;
     private String studio;
@@ -120,6 +121,7 @@ public class URLGenerator {
     private String baseLive;
     private String baseContribute;
     private String baseEdit;
+    private String baseLightEdit;
     private String basePreview;
     private String convert;
     private String myProfile;
@@ -152,6 +154,8 @@ public class URLGenerator {
         if (!SettingsBean.getInstance().isDistantPublicationServerMode()) {
             baseEdit = Edit.getEditServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
             edit = baseEdit + resourcePath;
+            baseLightEdit = "/cms/lightedit/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+            lightEdit = baseLightEdit + resourcePath;
             baseContribute = Contribute.getContributeServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
             contribute = baseContribute + resourcePath;
         }
@@ -188,6 +192,10 @@ public class URLGenerator {
     }
 
     public String getEdit() {
+        return edit;
+    }
+
+    public String getLightEdit() {
         return edit;
     }
 
@@ -352,6 +360,10 @@ public class URLGenerator {
 
     public String getBaseEdit() {
         return baseEdit;
+    }
+
+    public String getBaseLightEdit() {
+        return baseLightEdit;
     }
 
     public String getBaseLive() {

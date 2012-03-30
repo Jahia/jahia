@@ -673,6 +673,9 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
 
     private boolean checkParticipation(Task task, JahiaUser user) {
         List<Participation> p = taskService.getTaskParticipations(task.getId());
+        if (p == null || p.isEmpty()) {
+            return true;
+        }
         for (Participation participation : p) {
             if ((participation.getUserId() != null && user.getUserKey().equals(participation.getUserId())) ||
                     (participation.getGroupId() != null && groupManager.getUserMembership(user).contains(participation.getGroupId()))) {

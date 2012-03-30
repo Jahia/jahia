@@ -485,7 +485,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 WorkflowTask action = convertToWorkflowTask(task, locale);
                 availableActions.add(action);
             } catch (Exception e) {
-                logger.debug("Cannot get task " + task.getName() + "for user", e);
+                logger.debug("Cannot get task " + task.getName() + " for user", e);
             }
         }
         taskList = taskService.findGroupTasks(user.getUserKey());
@@ -494,7 +494,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 WorkflowTask action = convertToWorkflowTask(task, locale);
                 availableActions.add(action);
             } catch (Exception e) {
-                logger.debug("Cannot get task " + task.getName() + "for user", e);
+                logger.debug("Cannot get task " + task.getName() + " for user", e);
             }
         }
         return availableActions;
@@ -708,10 +708,6 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 } catch (RepositoryException e) {
                     e.printStackTrace();
                 }
-            }
-            if (taskService.getTask(taskId).getAssignee() == null || !taskService.getTask(taskId).getAssignee().equals(JCRSessionFactory.getInstance().getCurrentUser().getUserKey())) {
-                logger.error("Cannot complete task "+taskId+", assign it first");
-                return;
             }
 
             taskService.completeTask(taskId, outcome, args);

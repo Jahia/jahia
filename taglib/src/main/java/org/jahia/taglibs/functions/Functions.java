@@ -319,53 +319,9 @@ public class Functions {
     }
 
 
-    /**
-     * Looks up the user by the specified user key (with provider prefix) or username.
-     *
-     * @param user the key or the name of the user to perform lookup for
-     * @return the user for the specified user key or name or <code>null</code> if the corresponding user cannot be found
-     * @throws IllegalArgumentException in case the specified user key is <code>null</code>
-     */
-    public static JahiaUser lookupUser(String user) throws IllegalArgumentException {
-        if (user == null) {
-            throw new IllegalArgumentException("Specified user key is null");
-        }
-        return user.startsWith("{") ? ServicesRegistry.getInstance().getJahiaUserManagerService()
-                .lookupUserByKey(user) : ServicesRegistry.getInstance()
-                .getJahiaUserManagerService().lookupUser(user);
-    }
 
     public static boolean matches(String pattern, String str) {
         return Pattern.compile(pattern).matcher(str).matches();
-    }
-
-    public static Boolean memberOf(String groups) {
-        boolean result = false;
-        final ProcessingContext jParams = Jahia.getThreadParamBean();
-        final String[] groupArray = StringUtils.split(groups, ',');
-        for (String aGroupArray : groupArray) {
-            final String groupName = aGroupArray.trim();
-            if (JCRSessionFactory.getInstance().getCurrentUser().isMemberOfGroup(jParams.getSiteID(), groupName)) {
-                return true;
-            }
-        }
-
-        return result;
-    }
-
-    public static Boolean notMemberOf(String groups) {
-        boolean result = true;
-        final ProcessingContext jParams = Jahia.getThreadParamBean();
-        final String[] groupArray = StringUtils.split(groups, ',');
-        for (String aGroupArray : groupArray) {
-            String groupName = aGroupArray.trim();
-            if (JCRSessionFactory.getInstance().getCurrentUser().isMemberOfGroup(jParams.getSiteID(),
-                    groupName)) {
-                return false;
-            }
-        }
-
-        return result;
     }
 
     public static String removeCacheTags(String txt) {

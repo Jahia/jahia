@@ -6,6 +6,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
+<%@ taglib prefix="user" uri="http://www.jahia.org/tags/user" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
@@ -30,7 +31,7 @@
         </div>
     </c:when>
     <c:otherwise>
-        <c:set var="user" value="${functions:lookupUser(boundComponent.properties['jcr:createdBy'].string).localPath}"/>
+        <c:set var="user" value="${user:lookupUser(boundComponent.properties['jcr:createdBy'].string).localPath}"/>
         <template:addCacheDependency path="${user}"/>
         <template:module path="${user}" view="${mainTemplate}">
             <template:param name="displayFirstName" value="${currentNode.properties['j:firstName'].string}"/>

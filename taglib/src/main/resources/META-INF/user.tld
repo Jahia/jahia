@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+
+    <description>Jahia User library</description>
+    <display-name>Jahia User</display-name>
+    <tlib-version>6.5</tlib-version>
+    <short-name>user</short-name>
+    <uri>http://www.jahia.org/tags/user</uri>
+
+    <function>
+        <description>Returns true if the current user is member of the specified group name or comma-separated list of
+            group names
+        </description>
+        <name>memberOf</name>
+        <function-class>org.jahia.taglibs.user.User</function-class>
+        <function-signature>java.lang.Boolean memberOf(java.lang.String)</function-signature>
+        <example>
+            &lt;c:if test="${user:memberOf('administrators')}"&gt;
+            The user belongs to administrators
+            &lt;/c:if&gt;
+        </example>
+    </function>
+    <function>
+        <description>Returns true if the current user is NOT member of the specified group name or any of the specified
+            groups
+            (comma-separated list of group names)
+        </description>
+        <name>notMemberOf</name>
+        <function-class>org.jahia.taglibs.user.User</function-class>
+        <function-signature>java.lang.Boolean notMemberOf(java.lang.String)</function-signature>
+        <example>
+            &lt;c:if test="${user:notMemberOf('administrators,editors')}"&gt;
+            The user belong neither to administrators nor to editors
+            &lt;/c:if&gt;
+        </example>
+    </function>
+    <function>
+        <description>
+            Lookup the user by the user key (with provider prefix) or username.
+        </description>
+        <name>lookupUser</name>
+        <function-class>org.jahia.taglibs.user.User</function-class>
+        <function-signature>org.jahia.services.usermanager.JahiaUser lookupUser(java.lang.String)</function-signature>
+        <example>
+            ${user:lookupUser('sergiy')} or ${user:lookupUser('{ldap}john')}
+        </example>
+    </function>
+    <function>
+        <description>
+            Retrieve the displayable name for a principal object. For the moment this implementation only changes
+            the guest user and guest group names to be localized using resource bundle entries (see jahia.properties
+            for configuration of resource bundle name and key).
+        </description>
+        <name>displayName</name>
+        <function-class>org.jahia.data.viewhelper.principal.PrincipalViewHelper</function-class>
+        <function-signature>java.lang.String getDisplayName(java.security.Principal)</function-signature>
+        <example>
+            ${user:displayName(jahiaUser)}
+        </example>
+    </function>
+    <function>
+        <description>
+            Retrieve the full name or displayable for a principal object.
+            Builds the full user name, which is build the following way :
+            - for a JahiaGroup, simply calls getDisplayName(p)
+            - for a JahiaUser, if the firstName and lastName properties are defined, they are concatenated and this method
+            returns that result. If the properties don't exist, this is equivalent to getDisplayName(p)
+        </description>
+        <name>fullName</name>
+        <function-class>org.jahia.data.viewhelper.principal.PrincipalViewHelper</function-class>
+        <function-signature>java.lang.String getFullName(java.security.Principal)</function-signature>
+        <example>
+            ${user:fullName(jahiaUser)} or ${user:fullName(jahiaGroup)}
+        </example>
+    </function>
+    <function>
+        <description>Returns map of string groupName,JahiaGroup value</description>
+        <name>getUserMembership</name>
+        <function-class>org.jahia.taglibs.user.User</function-class>
+        <function-signature>java.util.Map getUserMembership(org.jahia.services.content.JCRNodeWrapper)</function-signature>
+        <example>
+            ${user:getUserMembership(currentNode)}
+        </example>
+    </function>
+    <function>
+        <description>
+            Returns the full user name, including first and last name.
+            If those are not available, returns the username.
+        </description>
+        <name>userFullName</name>
+        <function-class>org.jahia.taglibs.user.User</function-class>
+        <function-signature>java.lang.String userFullName(org.jahia.services.content.JCRNodeWrapper)
+        </function-signature>
+        <example>
+            &lt;c:out value="${user:userFullName(currentUserNode)}"/&gt;
+        </example>
+    </function>
+
+    <function>
+        <description>
+            Returns the user search result as a list
+        </description>
+        <name>searchUsers</name>
+        <function-class>org.jahia.taglibs.user.User</function-class>
+        <function-signature>java.util.Set searchUsers(java.util.Map)</function-signature>
+        <example>
+            ${user:searchUsers()} or ${user:searchUsers(criteriasMap)}
+        </example>
+    </function>
+
+</taglib>

@@ -97,11 +97,13 @@
     </function>
 
     <function>
-        <description>Returns true if the current user is member of the specified group name or comma-separated list of
+        <description>
+            DEPRECATED: Use user taglib instead
+            Returns true if the current user is member of the specified group name or comma-separated list of
             group names
         </description>
         <name>memberOf</name>
-        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-class>org.jahia.taglibs.user.User</function-class>
         <function-signature>java.lang.Boolean memberOf(java.lang.String)</function-signature>
         <example>
             &lt;c:if test="${functions:memberOf('administrators')}"&gt;
@@ -111,12 +113,14 @@
     </function>
 
     <function>
-        <description>Returns true if the current user is NOT member of the specified group name or any of the specified
+        <description>
+            DEPRECATED: Use user taglib instead
+            Returns true if the current user is NOT member of the specified group name or any of the specified
             groups
             (comma-separated list of group names)
         </description>
         <name>notMemberOf</name>
-        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-class>org.jahia.taglibs.user.User</function-class>
         <function-signature>java.lang.Boolean notMemberOf(java.lang.String)</function-signature>
         <example>
             &lt;c:if test="${functions:notMemberOf('administrators,editors')}"&gt;
@@ -361,10 +365,11 @@
 
     <function>
 		<description>
+            DEPRECATED: Use user taglib instead
 			Lookup the user by the user key (with provider prefix) or username.
 		</description>
 		<name>lookupUser</name>
-		<function-class>org.jahia.taglibs.functions.Functions</function-class>
+		<function-class>org.jahia.taglibs.user.User</function-class>
 		<function-signature>org.jahia.services.usermanager.JahiaUser lookupUser(java.lang.String)</function-signature>
 		<example>
 			${functions:lookupUser('sergiy')} or ${functions:lookupUser('{ldap}john')}
@@ -373,6 +378,7 @@
 
     <function>
 		<description>
+            DEPRECATED: Use user taglib instead
 			Retrieve the displayable name for a principal object. For the moment this implementation only changes
             the guest user and guest group names to be localized using resource bundle entries (see jahia.properties
             for configuration of resource bundle name and key).
@@ -387,6 +393,7 @@
 
     <function>
 		<description>
+            DEPRECATED: Use user taglib instead
 			Retrieve the full name or displayable for a principal object.
             Builds the full user name, which is build the following way :
             - for a JahiaGroup, simply calls getDisplayName(p)

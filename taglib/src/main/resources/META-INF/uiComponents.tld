@@ -116,7 +116,10 @@
     </tag>
     <!--Groups and user search -->
     <tag>
-        <description>Displays a limited list of groups names</description>
+        <description>
+            DEPRECATED
+            Displays a limited list of groups names
+        </description>
         <name>groupList</name>
         <tag-class>org.jahia.taglibs.uicomponents.user.GroupListTag</tag-class>
         <body-content>JSP</body-content>
@@ -176,7 +179,10 @@
         </attribute>
     </tag>
     <tag>
-        <description>Displays a limited list of users names</description>
+        <description>
+            DEPRECATED
+            Displays a limited list of users names
+        </description>
         <name>userList</name>
         <tag-class>org.jahia.taglibs.uicomponents.user.UserListTag</tag-class>
         <body-content>JSP</body-content>

@@ -6,6 +6,7 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
+<%@ taglib prefix="user" uri="http://www.jahia.org/tags/user" %>
 
 <c:set var="user" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
     <c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
@@ -19,7 +20,7 @@
 
 <c:if test="${currentNode.properties['filterOnAssignee'].string eq 'unassigned'}">
     <c:set value="${sql} and ((task.assigneeUserKey is null or task.assigneeUserKey='') and (task.candidates is null or task.candidates='u:${functions:sqlencode(user.name)}' " var="sql"/>
-	<c:forEach items="${jcr:getUserMembership(user)}" var="membership">
+	<c:forEach items="${user:getUserMembership(user)}" var="membership">
 	    <c:set value="${sql} or task.candidates='g:${functions:sqlencode(membership.key)}'" var="sql"/>
 	</c:forEach>
     <c:set value="${sql} ))" var="sql"/>
@@ -27,7 +28,7 @@
 
 <c:if test="${currentNode.properties['filterOnAssignee'].string eq 'assignedToMeOrUnassigned'}">
     <c:set value="${sql} and (((task.assigneeUserKey is null or task.assigneeUserKey='') and (task.candidates is null or task.candidates='u:${functions:sqlencode(user.name)}' " var="sql"/>
-	<c:forEach items="${jcr:getUserMembership(user)}" var="membership">
+	<c:forEach items="${user:getUserMembership(user)}" var="membership">
 	    <c:set value="${sql} or task.candidates='g:${functions:sqlencode(membership.key)}'" var="sql"/>
 	</c:forEach>
     <c:set value="${sql} )) or task.assigneeUserKey='${functions:sqlencode(user.name)}')" var="sql"/>

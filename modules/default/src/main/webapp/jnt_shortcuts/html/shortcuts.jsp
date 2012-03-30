@@ -5,6 +5,7 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="user" uri="http://www.jahia.org/tags/user" %>
 <template:addResources type="javascript" resources="jquery.min.js, textsizer.js"/>
 
 <!-- shortcuts -->
@@ -23,7 +24,7 @@
     <ul>
         <c:if test="${renderContext.loggedIn}">
             <li>
-                <fmt:message key="welcome"/>, <span class="currentUser">${functions:fullName(currentUser)}<c:if test="${not empty currentAliasUser}">(&nbsp;<fmt:message key="as.user"/>&nbsp;${currentAliasUser.username})</c:if>:</span>
+                <fmt:message key="welcome"/>, <span class="currentUser">${user:fullName(currentUser)}<c:if test="${not empty currentAliasUser}">(&nbsp;<fmt:message key="as.user"/>&nbsp;${currentAliasUser.username})</c:if>:</span>
             </li>
             <li>
                 <a class="loginFormTopLogoutShortcuts"

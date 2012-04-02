@@ -80,6 +80,7 @@ class PortletBrowseTabItem extends BrowseTabItem {
     protected transient ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
     protected transient ListStore<GWTJahiaNode> contentStore;
     protected transient ImageDragSource dragSource;
+    protected transient ThumbsListView listView;
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
@@ -138,7 +139,7 @@ class PortletBrowseTabItem extends BrowseTabItem {
             }
         });
 
-        ThumbsListView listView = new ThumbsListView(true);
+        listView = new ThumbsListView(true);
         listView.setStyleAttribute("overflow-x", "hidden");
         listView.setStore(contentStore);
         contentContainer.add(listView);
@@ -150,14 +151,16 @@ class PortletBrowseTabItem extends BrowseTabItem {
         contentVBoxData.setFlex(2);
         tab.add(contentContainer, contentVBoxData);
 
-        dragSource = new ImageDragSource(listView);
         return tab;
     }
 
     @Override
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
-        dragSource.addDNDListener(linker.getDndListener());
+        if (linker.getConfig().isEnableDragAndDrop()) {
+            dragSource = new ImageDragSource(listView);
+            dragSource.addDNDListener(linker.getDndListener());
+        }
     }
 
     public class ImageDragSource extends ListViewDragSource {

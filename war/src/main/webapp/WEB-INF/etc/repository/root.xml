@@ -251,6 +251,10 @@
         <contributor jcr:primaryType="jnt:role" j:roleGroup="edit-role"
                      j:permissions="/permissions/repository-permissions/jcr:all_default
                      /permissions/contributeMode
+                     /permissions/editMode/engineTabs/viewContentTab
+                     /permissions/editMode/engineTabs/viewMetadataTab
+                     /permissions/editMode/engineTabs/viewCategoriesTab
+                     /permissions/editMode/engineTabs/viewTagsTab
                      /permissions/workflow-tasks/1-step-publication-start
                      /permissions/workflow-tasks/1-step-unpublication-start"
                      j:privilegedAccess="true"/>

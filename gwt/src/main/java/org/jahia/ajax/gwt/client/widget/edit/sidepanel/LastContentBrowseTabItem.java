@@ -88,6 +88,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
     protected transient ListStore<GWTJahiaNode> contentStore;
     protected transient DisplayGridDragSource displayGridSource;
     private transient LayoutContainer previewLayoutContainer;
+    protected transient Grid<GWTJahiaNode> grid;
 
     public TabItem create(final GWTSidePanelTab config) {
         super.create(config);
@@ -137,7 +138,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
                                                      100);
         col.setDateTimeFormat(DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT));
         displayColumns.add(col);
-        final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
+        grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
 
         contentContainer.add(grid);
 
@@ -175,14 +176,16 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         contentVBoxData.setFlex(1);
         tab.add(previewLayoutContainer, contentVBoxData);
 
-        displayGridSource = new DisplayGridDragSource(grid);
         return tab;
     }
 
     @Override
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
-        displayGridSource.addDNDListener(editLinker.getDndListener());
+        if (linker.getConfig().isEnableDragAndDrop()) {
+            displayGridSource = new DisplayGridDragSource(grid);
+            displayGridSource.addDNDListener(editLinker.getDndListener());
+        }
     }
 
     private void fillStore() {

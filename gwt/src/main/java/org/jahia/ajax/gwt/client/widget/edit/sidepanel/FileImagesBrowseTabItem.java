@@ -83,6 +83,7 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
     protected transient ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
     protected transient ListStore<GWTJahiaNode> contentStore;
     protected transient ImageDragSource dragSource;
+    protected transient ThumbsListView listView;
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
@@ -143,7 +144,7 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
 
         tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
 
-        final ThumbsListView listView = new ThumbsListView(true);
+        listView = new ThumbsListView(true);
         listView.setStyleAttribute("overflow-x", "hidden");
         listView.setStore(contentStore);
         contentStore.setSortField("display");
@@ -164,7 +165,7 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
                 w.setModal(true);
                 w.setClosable(true);
                 w.setMaximizable(true);
-                w.setSize(Math.max(Integer.parseInt((String)node.get("j:width")) + 60, 400), Math.max(Integer.parseInt((String)node.get("j:height")) + 80, 50));
+                w.setSize(Math.max(Integer.parseInt((String) node.get("j:width")) + 60, 400), Math.max(Integer.parseInt((String) node.get("j:height")) + 80, 50));
                 w.setBlinkModal(true);
                 w.setPlain(true);
                 w.setToolTip(text);
@@ -177,14 +178,16 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
 
         listView.setContextMenu(createContextMenu(config.getTableContextMenu(), listView.getSelectionModel()));
 
-        dragSource = new ImageDragSource(listView);
         return tab;
     }
 
     @Override
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
-        dragSource.addDNDListener(linker.getDndListener());
+        if (linker.getConfig().isEnableDragAndDrop()) {
+            dragSource = new ImageDragSource(listView);
+            dragSource.addDNDListener(linker.getDndListener());
+        }
     }
 
     public class ImageDragSource extends ListViewDragSource {

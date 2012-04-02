@@ -42,6 +42,7 @@ package org.jahia.bin;
 
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.slf4j.Logger;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.JahiaUser;
@@ -62,11 +63,13 @@ public class Edit extends Render {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(Edit.class);
     public static final String EDIT_MODE = "editmode";
 
+    private EditConfiguration editConfiguration;
+
     protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
         RenderContext context = super.createRenderContext(req, resp, user);
         context.setEditMode(true);
-        context.setEditModeConfigName(EDIT_MODE);
-        context.setServletPath(getEditServletPath());
+        context.setEditModeConfigName(editConfiguration.getName());
+        context.setServletPath(editConfiguration.getDefaultUrlMapping());
         return context;
     }
 
@@ -88,10 +91,18 @@ public class Edit extends Render {
         } catch (RepositoryException e) {
             return false;
         }
-        return node.hasPermission("editModeAccess");
+        return node.hasPermission(editConfiguration.getRequiredPermission());
     }
     @Override
     protected boolean isDisabled() {
         return settingsBean.isDistantPublicationServerMode();
+    }
+
+    public EditConfiguration getEditConfiguration() {
+        return editConfiguration;
+    }
+
+    public void setEditConfiguration(EditConfiguration editConfiguration) {
+        this.editConfiguration = editConfiguration;
     }
 }

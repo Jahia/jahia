@@ -40,7 +40,15 @@
 
 package org.jahia.ajax.gwt.client.util.content;
 
+import com.google.gwt.user.client.Window;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.PlaceholderModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ClipboardActionItem;
 
 import java.util.ArrayList;
@@ -55,7 +63,8 @@ import java.util.List;
 public class CopyPasteEngine {
 
     private static CopyPasteEngine m_instance = null ;
-
+    private List<PlaceholderModule> placeholders = new ArrayList<PlaceholderModule>();
+    
     // Copy-paste
     private List<GWTJahiaNode> copiedPaths;
     private boolean cut ;
@@ -69,6 +78,38 @@ public class CopyPasteEngine {
 
     protected CopyPasteEngine() {}
 
+    public void paste(GWTJahiaNode m, final Linker linker) {
+        final List<String> copiedPaths = new ArrayList<String>();
+        for (GWTJahiaNode node : getCopiedPaths()) {
+            copiedPaths.add(m.getPath() + "/" + node.getName());
+        }
+        JahiaContentManagementService
+                .App.getInstance().paste(JCRClientUtils.getPathesList(getCopiedPaths()), m.getPath(), null, isCut(), new BaseAsyncCallback() {
+            public void onApplicationFailure(Throwable throwable) {
+                Window.alert(Messages.get("failure.paste.label") + "\n" + throwable.getLocalizedMessage());
+                linker.loaded();
+            }
+
+            public void onSuccess(Object o) {
+                boolean refresh = false;
+                for (GWTJahiaNode n : getCopiedPaths()) {
+                    if (!n.isFile()) {
+                        refresh = true;
+                        break;
+                    }
+                }
+                onPastedPath();
+                linker.setSelectPathAfterDataUpdate(copiedPaths);
+                linker.loaded();
+                if (refresh) {
+                    linker.refresh(EditLinker.REFRESH_ALL);
+                } else {
+                    linker.refresh(Linker.REFRESH_MAIN);
+                }
+            }
+        });
+    }
+
     public List<GWTJahiaNode> getCopiedPaths() {
         return copiedPaths;
     }
@@ -77,6 +118,7 @@ public class CopyPasteEngine {
         cut = false ;
         this.copiedPaths = new ArrayList<GWTJahiaNode>(copiedPaths);
         ClipboardActionItem.setCopied(copiedPaths);
+        updatePlaceholders();
     }
 
     public void setCutPaths(List<GWTJahiaNode> cutPaths) {
@@ -84,6 +126,7 @@ public class CopyPasteEngine {
         this.copiedPaths = cutPaths;
         cut = true ;
         ClipboardActionItem.setCopied(cutPaths);
+        updatePlaceholders();
     }
 
     public void onPastedPath() {
@@ -118,4 +161,37 @@ public class CopyPasteEngine {
         return true;
     }
 
+    public boolean checkNodeType(String nodetypes) {
+        List<GWTJahiaNode> sources = getCopiedPaths();
+        boolean allowed = true;
+
+        if (nodetypes != null && nodetypes.length() > 0) {
+            if (sources != null) {
+                String[] allowedTypes = nodetypes.split(" |,");
+                for (GWTJahiaNode source : sources) {
+                    boolean nodeAllowed = false;
+                    for (String type : allowedTypes) {
+                        if (source.getNodeTypes().contains(type) || source.getInheritedNodeTypes().contains(type)) {
+                            nodeAllowed = true;
+                            break;
+                        }
+                    }
+                    allowed &= nodeAllowed;
+                }
+            }
+        } else {
+            allowed = false;
+        }
+        return allowed;
+    }
+    
+    private void updatePlaceholders() {
+        for (PlaceholderModule module : placeholders) {
+            module.updatePasteButton();
+        }
+    }
+    
+    public void addPlaceholder(PlaceholderModule module) {
+        placeholders.add(module);
+    }
 }

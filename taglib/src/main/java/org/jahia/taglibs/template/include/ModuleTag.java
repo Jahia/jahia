@@ -40,7 +40,9 @@
 
 package org.jahia.taglibs.template.include;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.bin.Studio;
@@ -251,21 +253,27 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 }
 
                 try {
-                    final boolean canEdit = canEdit(renderContext);
+                    final boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext, resource.getNode());
                     pageContext.getRequest().setAttribute("editableModule", canEdit);
                     if (canEdit) {
                         String type = getModuleType(renderContext);
-
+                        List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
+                        String oldNodeTypes = nodeTypes;
+                        String add = null;
+                        if (contributeTypes != null) {
+                            nodeTypes = StringUtils.join(contributeTypes, " ");
+                            add = "editable=\"false\"";
+                        }
                         Script script = null;
                         try {
                             script = RenderService.getInstance().resolveScript(resource, renderContext);
                             printModuleStart(type, node.getPath(), resource.getResolvedTemplate(),
-                                    script.getView().getInfo(), null);
+                                    script.getView().getInfo(), add);
                         } catch (TemplateNotFoundException e) {
                             printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), "Script not found",
-                                    null);
+                                    add);
                         }
-
+                        nodeTypes = oldNodeTypes;
                         currentResource.getDependencies().add(node.getCanonicalPath());
                         render(renderContext, resource);
                         //Copy dependencies to parent Resource (only for include of the same node)
@@ -273,7 +281,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         currentResource.getDependencies().addAll(resource.getDependencies());
                         printModuleEnd();
                     } else {
-                        resource.getModuleParams().put("readOnly", Boolean.TRUE);
+//                        resource.getModuleParams().put("readOnly", Boolean.TRUE);
                         currentResource.getDependencies().add(node.getCanonicalPath());
                         render(renderContext, resource);
                         //Copy dependencies to parent Resource (only for include of the same node)
@@ -312,6 +320,76 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
         }
         return EVAL_PAGE;
+    }
+
+    private List<String> contributeTypes(RenderContext renderContext, JCRNodeWrapper node) {
+        if (!"lighteditmode".equals(renderContext.getEditModeConfigName())) {
+            return null;
+        }
+        JCRNodeWrapper contributeNode = null;
+        if (renderContext.getRequest().getAttribute("areaListResource") != null) {
+            contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaListResource");
+        }
+//        if (contributeNode == null) {
+//            contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaResource");
+//        }
+
+        try {
+            if (node.hasProperty("j:contributeTypes")) {
+                contributeNode = node; 
+            }
+            if (contributeNode != null && contributeNode.hasProperty("j:contributeTypes")) {
+                LinkedHashSet<String> l = new LinkedHashSet<String>();
+                Value[] v = contributeNode.getProperty("j:contributeTypes").getValues();
+                for (Value value : v) {
+                    l.add(value.getString());
+                }
+                LinkedHashSet<String> subtypes = new LinkedHashSet<String>();
+                for (String s : l) {
+                    ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(s);
+                    if (nt != null) {
+                        if (!nt.isAbstract() && !nt.isMixin()) {
+                            subtypes.add(nt.getName());
+                        }
+                        for (ExtendedNodeType subtype : nt.getSubtypesAsList()) {
+                            if (!subtype.isAbstract() && !subtype.isMixin()) {
+                                subtypes.add(subtype.getName());
+                            }
+                        }
+                    }
+                }
+                if (subtypes.size() < 10) {
+                    return new ArrayList<String>(subtypes);
+                }
+                return new ArrayList<String>(l);
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
+    private boolean contributeAccess(RenderContext renderContext, JCRNodeWrapper node) {
+        if (!"lighteditmode".equals(renderContext.getEditModeConfigName())) {
+            return true;
+        }
+        JCRNodeWrapper contributeNode = null;
+        if (renderContext.getRequest().getAttribute("areaListResource") != null) {
+            contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaListResource");
+        }
+        if (contributeNode == null) {
+            contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaResource");
+        }
+
+        try {
+            if ((node.getParent().hasProperty("j:editableInContribution") && node.getParent().getProperty("j:editableInContribution").getBoolean()) ||
+                    (node.hasProperty("j:editableInContribution") && node.getProperty("j:editableInContribution").getBoolean()) ||
+                    (contributeNode != null && contributeNode.hasProperty("j:editableInContribution") && contributeNode.getProperty("j:editableInContribution").getBoolean())) {
+                return true;
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return false;
     }
 
     protected void findNode(RenderContext renderContext, Resource currentResource) throws IOException {
@@ -498,7 +576,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             currentResource.getMissingResources().add(path);
         }
 
-        if (canEdit(renderContext)) {
+        if (canEdit(renderContext) && contributeAccess(renderContext, currentResource.getNode())) {
             if (currentResource.getNode().hasPermission("jcr:addChildNodes")) {
                 printModuleStart("placeholder", path, null, null, null);
                 printModuleEnd();

@@ -42,16 +42,21 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
@@ -68,6 +73,7 @@ import java.util.List;
  */
 public class PlaceholderModule extends Module {
     private LayoutContainer panel;
+    private LayoutContainer pasteButton;
 
     public PlaceholderModule(String id, String path, Element divElement, MainModule mainModule) {
         super(id, path, divElement, mainModule, new FlowLayout());
@@ -78,7 +84,7 @@ public class PlaceholderModule extends Module {
             setBorders(true);
         }
         panel = new LayoutContainer();
-        //panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
+//        panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
         panel.addStyleName("x-small-editor");
         panel.addStyleName("x-panel-header");
         panel.addStyleName("x-panel-placeholder");
@@ -94,14 +100,26 @@ public class PlaceholderModule extends Module {
     }
 
     public void onNodeTypesLoaded() {
-        DropTarget target = new ModuleDropTarget(this, EditModeDNDListener.PLACEHOLDER_TYPE);
-        target.setOperation(DND.Operation.COPY);
-        target.setFeedback(DND.Feedback.INSERT);
+        if (mainModule.getConfig().isEnableDragAndDrop()) {
+            DropTarget target = new ModuleDropTarget(this, EditModeDNDListener.PLACEHOLDER_TYPE);
+            target.setOperation(DND.Operation.COPY);
+            target.setFeedback(DND.Feedback.INSERT);
 
-        target.addDNDListener(mainModule.getEditLinker().getDndListener());
+            target.addDNDListener(mainModule.getEditLinker().getDndListener());
+        }
 
         if (getParentModule().getChildCount() >= getParentModule().getListLimit() && getParentModule().getListLimit() != -1) {
             return;
+        }
+
+        String headerText;
+        if (parentModule.path.contains("/")) {
+            headerText =  parentModule.path.substring(parentModule.path.lastIndexOf('/') + 1);
+        } else {
+            headerText =   parentModule.path;
+        }
+        if (getWidth() > 300) {
+            html.setHTML("<div class=\"label-placeholder\">"+Messages.get("label.addTo") + "&nbsp;" + headerText + " : &nbsp;"+"</div>");
         }
 
         if (getParentModule() != null && getParentModule().getNodeTypes() != null) {
@@ -114,11 +132,16 @@ public class PlaceholderModule extends Module {
                 if (filter != null && !filter.contains(s)) {
                     continue;
                 }
-                Button button = new Button(ModuleHelper.getNodeType(s) != null ? ModuleHelper.getNodeType(
-                        s).getLabel() : s);
-                button.setStyleName("button-placeholder");
-                button.addClickHandler(new ClickHandler() {
-                    public void onClick(ClickEvent event) {
+                AbstractImagePrototype icon = ContentModelIconProvider.getInstance().getIcon(ModuleHelper.getNodeType(s));
+                LayoutContainer p = new HorizontalPanel();
+                p.add(icon.createImage());
+                if (getWidth() > 150) {
+                    p.add(new Text(ModuleHelper.getNodeType(s) != null ? ModuleHelper.getNodeType(s).getLabel() : s));
+                }
+                p.sinkEvents(Event.ONCLICK);
+                p.addStyleName("button-placeholder");
+                p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+                    public void handleEvent(ComponentEvent be) {
                         final GWTJahiaNode parentNode = getParentModule().getNode();
                         if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
                             ContentActions.showContentWizard(mainModule.getEditLinker(), s, parentNode,
@@ -126,9 +149,32 @@ public class PlaceholderModule extends Module {
                         }
                     }
                 });
-                panel.add(button);
-                panel.layout();
+                panel.add(p);
             }
+
+            AbstractImagePrototype icon = ToolbarIconProvider.getInstance().getIcon("paste");
+            pasteButton = new HorizontalPanel();
+            pasteButton.add(icon.createImage());
+            if (getWidth() > 150) {
+                pasteButton.add(new Text("Paste"));
+            }
+            pasteButton.sinkEvents(Event.ONCLICK);
+            pasteButton.addStyleName("button-placeholder");
+
+            pasteButton.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+                public void handleEvent(ComponentEvent be) {
+                    GWTJahiaNode parentNode = getParentModule().getNode();
+                    if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
+                        CopyPasteEngine.getInstance().paste(parentNode, mainModule.getEditLinker());
+                    }
+                }
+            });
+            CopyPasteEngine.getInstance().addPlaceholder(this);
+            updatePasteButton();
+
+            panel.add(pasteButton);
+
+            panel.layout();
         }
 
     }
@@ -139,13 +185,14 @@ public class PlaceholderModule extends Module {
 
     public void setParentModule(Module parentModule) {
         this.parentModule = parentModule;
-        String headerText;
-        if (parentModule.path.contains("/")) {
-            headerText =  parentModule.path.substring(parentModule.path.lastIndexOf('/') + 1);
-        } else {
-            headerText =   parentModule.path;
-        }
-
-        html.setHTML(Messages.get("label.addTo") + headerText + " : &nbsp;");
     }
+
+    public void updatePasteButton() {
+        if (CopyPasteEngine.getInstance().getCopiedPaths() != null && /*CopyPasteEngine.getInstance().canCopyTo(parentModule.getNode()) &&*/ CopyPasteEngine.getInstance().checkNodeType(parentModule.getNodeTypes())) {
+            pasteButton.setVisible(true);
+        } else {
+            pasteButton.setVisible(false);
+        }
+    }
+
 }

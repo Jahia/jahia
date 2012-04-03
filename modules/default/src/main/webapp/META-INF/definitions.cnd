@@ -147,6 +147,7 @@
 [jnt:topic] > jnt:content
  - topicSubject (string) primary
  - topicDescription (string)
+ - topicLastContributionDate (date)
  + * (jnt:post)
 
 [jmix:comments] mixin

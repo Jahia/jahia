@@ -73,14 +73,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 
+ *
  * User: toto
  * Date: 6 juil. 2005
  * Time: 17:31:05
  */
 public class FilesAclImportHandler extends DefaultHandler {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(FilesAclImportHandler.class);
-    
+
     private File archive;
     private NoCloseZipInputStream zis;
     private ZipEntry nextEntry;
@@ -114,15 +114,17 @@ public class FilesAclImportHandler extends DefaultHandler {
             try {
                 boolean contentFound = findContent(path);
 
-                if (path.startsWith("/shared")) {
+                if (path.startsWith("/shared") || path.startsWith("/users")) {
                     path = "/sites/" + site.getSiteKey() + "/files" + path;
-                } else if (path.startsWith("/users/")) {
+                }/* 
+                    // DB-HOT-28
+                    else if (path.startsWith("/users/")) {
                     Matcher m = Pattern.compile("/users/([^/]+)(/.*)?").matcher(path);
                     if (m.matches()) {
                         path = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));
                         path = path + "/files" + ((m.group(2) != null) ? m.group(2) : "");
                     }
-                }
+                }*/
 
                 if (session.itemExists(path)) {
                     return;

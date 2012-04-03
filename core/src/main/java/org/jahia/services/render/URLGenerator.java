@@ -195,7 +195,7 @@ public class URLGenerator {
     }
 
     public String getLightEdit() {
-        return edit;
+        return lightEdit;
     }
 
     public String getPreview() {

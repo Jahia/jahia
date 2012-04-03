@@ -218,7 +218,11 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public void addValue(Node value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        addValue(getSession().getValueFactory().createValue(value));
+        addValue(node, false);
+    }
+
+    public void addValue(Node value, boolean weak) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        addValue(getSession().getValueFactory().createValue(value, weak));
     }
 
     public void addValue(Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {

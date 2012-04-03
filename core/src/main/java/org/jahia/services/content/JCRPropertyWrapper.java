@@ -77,6 +77,8 @@ public interface JCRPropertyWrapper extends Property, JCRItemWrapper {
     void addValue(boolean value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     void addValue(Node value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
+    
+    void addValue(Node value, boolean weak) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     void addValue(Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 

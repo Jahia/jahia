@@ -320,19 +320,7 @@ public class URLGenerator {
      *         current mode
      */
     public String getMainResource() {
-        if (context.isEditMode()) {
-            if (context.getEditModeConfigName().equals(Studio.STUDIO_MODE)) {
-                return  Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getMainResource().getNode().getPath() + ".html";
-            }
-            return getEdit();
-        } else if (context.isContributionMode()) {
-            if(context.getMainResource().getResolvedTemplate()!=null) {
-                return baseContribute+context.getMainResource().getNode().getPath()+"."+context.getMainResource().getResolvedTemplate()+".html";
-            }
-            return contribute;
-        } else {
-            return Constants.LIVE_WORKSPACE.equals(resource.getWorkspace()) ? live : preview;
-        }
+        return base + context.getMainResource().getNode().getPath() + "." + context.getMainResource().getResolvedTemplate() + ".html";
     }
 
     public String buildURL(JCRNodeWrapper node, String template, String templateType) {

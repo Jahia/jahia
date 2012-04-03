@@ -72,6 +72,7 @@ import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: ktlili
@@ -92,9 +93,10 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
     public static final GridCellRenderer<GWTJahiaNode> LOCKED_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
                              ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
-            if (modelData.getLockInfos().containsKey(null) && (modelData.getLockInfos().size() == 1 || modelData.getLockInfos().containsKey(JahiaGWTParameters.getLanguage()))) {
+            Map<String,List<String>> infos = modelData.getLockInfos();
+            if (infos != null && (infos.containsKey(null) && (infos.size() == 1 || infos.containsKey(JahiaGWTParameters.getLanguage())))) {
                 return StandardIconsProvider.STANDARD_ICONS.lock().getHTML();
-            } else if (modelData.getLockInfos().size() > 1) {
+            } else if (infos != null && infos.size() > 1) {
                 return StandardIconsProvider.STANDARD_ICONS.lockLanguage().getHTML();
             } else {
                 return "";

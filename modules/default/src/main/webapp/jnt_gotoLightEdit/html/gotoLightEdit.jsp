@@ -20,6 +20,7 @@
 <c:if test="${!renderContext.settings.distantPublicationServerMode
 and renderContext.mainResource.node.properties['j:originWS'].string ne 'live'
 and not jcr:isNodeType(renderContext.mainResource.node.resolveSite, 'jmix:remotelyPublished')
+and not empty url.baseLightEdit
 }">
     <c:if test="${not renderContext.editMode}">
     <img src="${url.context}/icons/lightedit.png" width="16" height="16" alt=" " role="presentation"

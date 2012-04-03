@@ -49,6 +49,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +72,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 /**
  * Main URL generation class. This class is exposed to the template developers to make it easy to them to access
@@ -153,8 +155,13 @@ public class URLGenerator {
         if (!SettingsBean.getInstance().isDistantPublicationServerMode()) {
             baseEdit = Edit.getEditServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
             edit = baseEdit + resourcePath;
-            baseLightEdit = "/cms/lightedit/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
-            lightEdit = baseLightEdit + resourcePath;
+            try {
+                if (SpringContextSingleton.getBean("lighteditmode") != null) {
+                    baseLightEdit = "/cms/lightedit/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+                    lightEdit = baseLightEdit + resourcePath;
+                }
+            } catch (NoSuchBeanDefinitionException e) {
+            }
             baseContribute = Contribute.getContributeServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
             contribute = baseContribute + resourcePath;
         }

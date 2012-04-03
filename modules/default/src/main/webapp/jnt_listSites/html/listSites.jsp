@@ -95,7 +95,7 @@
                                 href="<c:url value='${baseContribute}${node.path}${page}.html'/>"><fmt:message
                                 key="label.contribute"/></a>
                         </c:if>
-                        <c:if test="${currentNode.properties.lightedit.boolean  && jcr:hasPermission(node,'contributeModeAccess') && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
+                        <c:if test="${currentNode.properties.lightedit.boolean  && jcr:hasPermission(node,'contributeModeAccess') && !renderContext.settings.distantPublicationServerMode && not remotelyPublished && not empty url.baseLightEdit}">
                             <img src="<c:url value='/icons/lightedit.png'/>" width="16" height="16" alt=" " role="presentation"
                                  style="position:relative; top: 4px; margin-right:2px; "><a
                                 href="<c:url value='${baseLightEdit}${node.path}${page}.html'/>"><fmt:message
@@ -154,7 +154,7 @@
                                     key="label.contribute"/></a>
                             </c:if>
 
-                            <c:if test="${not empty contributeModeAccess && currentNode.properties.lightedit.boolean && !renderContext.settings.distantPublicationServerMode}">
+                            <c:if test="${not empty contributeModeAccess && currentNode.properties.lightedit.boolean && !renderContext.settings.distantPublicationServerMode && not empty url.baseLightEdit}">
                                 <img src="<c:url value='/icons/lightedit.png'/>" width="16" height="16" alt=" "
                                      role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
                                     href="<c:url value='${baseLightEdit}${contributeModeAccess[0].path}.html'/>"><fmt:message

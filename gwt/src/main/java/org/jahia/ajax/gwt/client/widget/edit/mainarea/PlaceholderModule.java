@@ -122,7 +122,7 @@ public class PlaceholderModule extends Module {
             html.setHTML("<div class=\"label-placeholder\">"+Messages.get("label.addTo") + "&nbsp;" + headerText + " : &nbsp;"+"</div>");
         }
 
-        if (getParentModule() != null && getParentModule().getNodeTypes() != null) {
+        if (getParentModule() != null && getParentModule().getNodeTypes() != null && getParentModule().getNodeTypes().length()>0) {
             String[] nodeTypesArray = getParentModule().getNodeTypes().split(" ");
             List filter = null;
             if (nodeTypes != null && nodeTypes.length()>0) {

@@ -226,6 +226,8 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
             if (reservedUrlPrefixes.contains(splitURI[1]) && !splitURI[1].equals("cms")) {
                 return false;
             }
+        } else {
+            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_IS_RESERVED_URL, false);
         }
 
         String path = request.getPathInfo() != null ? request.getPathInfo() : "";

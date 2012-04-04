@@ -63,6 +63,7 @@ public class ServerNameToSiteMapper {
     public static final String ATTR_NAME_SITE_KEY = "jahiaSiteKeyForCurrentServerName";
     public static final String ATTR_NAME_SITE_KEY_FOR_LINK = "jahiaSiteKeyForLink";
     public static final String ATTR_NAME_SITE_KEY_MATCHES = "jahiaSiteKeyMatchesCurrentServerName";
+    public static final String ATTR_NAME_SITE_HOME = "jahiaSiteHome";
     public static final String ATTR_NAME_SKIP_INBOUND_SEO_RULES = "jahiaSkipInboundSeoRules";
     public static final String ATTR_NAME_VANITY_LANG = "vanityUrlTargetLang";
     public static final String ATTR_NAME_VANITY_PATH = "vanityUrlTargetPath";
@@ -126,7 +127,7 @@ public class ServerNameToSiteMapper {
 
         try {
             JahiaSite siteByKey = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteKey);
-            request.setAttribute(ATTR_NAME_DEFAULT_LANG_MATCHES, Boolean.valueOf(siteByKey.getDefaultLanguage().equals(language)));
+            request.setAttribute(ATTR_NAME_DEFAULT_LANG_MATCHES, siteByKey.resolveLocaleFromList(request.getLocales()).toString().equals(language));
         } catch (JahiaException e) {
             logger.error("Error resolving site by key '" + siteKey + "'", e);
         }

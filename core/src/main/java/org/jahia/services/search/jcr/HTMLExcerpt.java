@@ -109,7 +109,7 @@ public class HTMLExcerpt extends AbstractExcerpt {
                 return exProvider.getExcerpt(id, maxFragments, maxFragmentSize);
 
             } else {
-                return super.getExcerpt(id, maxFragments, maxFragmentSize);
+                return super.getExcerpt(id, maxFragments, maxFragmentSize).replaceAll("&apos;","&#39;");
             }
         } finally {
             Util.closeOrRelease(reader);

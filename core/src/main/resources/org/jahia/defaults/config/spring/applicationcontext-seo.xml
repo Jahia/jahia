@@ -31,6 +31,40 @@
         </property>
         <property name="vanityUrlService" ref="org.jahia.services.seo.jcr.VanityUrlService"/>
         <property name="urlResolverFactory" ref="urlResolverFactory" />
+        <property name="reservedUrlPrefixes">
+            <list>
+                <!--servlets-->
+                <value>administration</value>
+                <value>cms</value>
+                <value>error</value>
+                <value>files</value>
+                <value>gadgets</value>
+                <value>gwt</value>
+                <value>initializationCompleted</value>
+                <value>oauth</value>
+                <value>PlutoInvoker</value>
+                <value>repository</value>
+                <value>rest</value>
+                <value>rpc</value>
+                <value>social</value>
+                <value>start</value>
+                <value>tools</value>
+                <value>validateTicket</value>
+                <value>welcome</value>
+                <!--static-->
+                <value>admin</value>
+                <value>css</value>
+                <value>engines</value>
+                <value>errors</value>
+                <value>gwt</value>
+                <value>icons</value>
+                <value>iphone</value>
+                <value>javascript</value>
+                <value>modules</value>
+                <value>resources</value>
+                <value>tools</value>
+            </list>
+        </property>
     </bean>
                         
     <bean class="org.jahia.services.render.filter.URLFilter">

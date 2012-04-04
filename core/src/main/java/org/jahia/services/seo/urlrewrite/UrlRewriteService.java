@@ -42,10 +42,7 @@ package org.jahia.services.seo.urlrewrite;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
@@ -111,6 +108,8 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     private VanityUrlService vanityUrlService;
 
     private URLResolverFactory urlResolverFactory;
+
+    private List<String> reservedUrlPrefixes;
 
     public void afterPropertiesSet() throws Exception {
         long timer = System.currentTimeMillis();
@@ -282,7 +281,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
             String[] splittedURI = request.getRequestURI().split("/");
             if (splittedURI.length > 1) {
                 request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_IS_RESERVED_URL,
-                        ServerNameToSiteMapper.RESERVED_URL_PREFIXES.contains(splittedURI[1]));
+                        reservedUrlPrefixes.contains(splittedURI[1]));
             }
         }
 
@@ -328,4 +327,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         this.urlResolverFactory = urlResolverFactory;
     }
 
+    public void setReservedUrlPrefixes(List<String> reservedUrlPrefixes) {
+        this.reservedUrlPrefixes = reservedUrlPrefixes;
+    }
 }

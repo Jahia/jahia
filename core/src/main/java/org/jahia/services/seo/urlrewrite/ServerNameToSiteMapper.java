@@ -70,38 +70,6 @@ public class ServerNameToSiteMapper {
     public static final String ATTR_NAME_VANITY_LANG = "vanityUrlTargetLang";
     public static final String ATTR_NAME_VANITY_PATH = "vanityUrlTargetPath";
     public static final String ATTR_NAME_IS_RESERVED_URL = "jahiaIsReservedUrl";
-    public static final List<String> RESERVED_URL_PREFIXES = Arrays.asList(
-            //servlets
-            "administration",
-            "cms",
-            "error",
-            "files",
-            "gadgets",
-            "gwt",
-            "initializationCompleted",
-            "oauth",
-            "PlutoInvoker",
-            "repository",
-            "rest",
-            "rpc",
-            "social",
-            "start",
-            "tools",
-            "validateTicket",
-            "welcome",
-            //static
-            "admin",
-            "css",
-            "engines",
-            "errors",
-            "gwt",
-            "icons",
-            "iphone",
-            "javascript",
-            "modules",
-            "resources",
-            "tools"
-            );
 
     private static final Logger logger = LoggerFactory.getLogger(ServerNameToSiteMapper.class);
 

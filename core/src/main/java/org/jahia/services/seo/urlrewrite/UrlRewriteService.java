@@ -56,10 +56,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
@@ -149,8 +154,6 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     /**
      * Initializes an instance of this class.
      *
-     * @param configs
-     *            the URL rewriter configuration resource location
      */
     public UrlRewriteEngine getEngine() {
         try {
@@ -215,7 +218,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         return false;
     }
 
-    public boolean prepareInbound(HttpServletRequest request, HttpServletResponse response) {
+    public boolean prepareInbound(final HttpServletRequest request, HttpServletResponse response) {
         if ("/cms".equals(request.getServletPath())) {
             String path = request.getPathInfo() != null ? request.getPathInfo() : "";
             try{
@@ -231,7 +234,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
             }catch(Exception ex) {
                 logger.warn("Unable to load the SimpleUrlHandlerMapping", ex);
             }
-            String targetSiteKey = ServerNameToSiteMapper.getSiteKeyByServerName(request);
+            final String targetSiteKey = ServerNameToSiteMapper.getSiteKeyByServerName(request);
             request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY, targetSiteKey);
             request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG, StringUtils.EMPTY);
             request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, StringUtils.EMPTY);
@@ -252,11 +255,25 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                     logger.error("Cannot get vanity Url", e);
                 }
                 try {
-                    String defaultLanguage = ServicesRegistry.getInstance().getJahiaSitesService()
-                            .getSiteByKey(targetSiteKey).getDefaultLanguage();
+                    JahiaSite siteByKey = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(targetSiteKey);
+                    String defaultLanguage = siteByKey.resolveLocaleFromList(request.getLocales()).toString();
                     request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG,
                             defaultLanguage);
+
+                    // Cache the home page name .. ?
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, null,
+                            new JCRCallback<List<VanityUrl>>() {
+                                public List<VanityUrl> doInJCR(JCRSessionWrapper session)
+                                        throws RepositoryException {
+                                    JCRSiteNode site = (JCRSiteNode) session.getNode("/sites/"+targetSiteKey);
+                                    request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_HOME, site.getHome().getName());
+                                    return null;
+                                }
+                            });
+
                 } catch (JahiaException e) {
+                    logger.error("Cannot get site", e);
+                } catch (RepositoryException e) {
                     logger.error("Cannot get site", e);
                 }
             }

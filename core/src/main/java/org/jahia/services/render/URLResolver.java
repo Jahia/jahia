@@ -214,6 +214,7 @@ public class URLResolver {
         path = StringUtils.substringAfter(path, "/");
         String langCode = StringUtils.substringBefore(path, "/");
 
+        // TODO : Locale should be added by the url rewriting rule, not here
         if(isValidLocale(langCode)) {
             locale = StringUtils.isEmpty(langCode) ? DEFAULT_LOCALE
                 : LanguageCodeConverters.languageCodeToLocale(langCode);
@@ -221,22 +222,8 @@ public class URLResolver {
         } else {
              locale = DEFAULT_LOCALE;
              try{
-                 if(getSiteKey() != null) {
-                     boolean localeInSite = false;
-                     JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(getSiteKey());
-                     Enumeration<?> browserLocales = request.getLocales();
-                     while(!localeInSite && browserLocales.hasMoreElements()) {
-                         locale = (Locale)browserLocales.nextElement();
-                         List<Locale> sitelocales = site.getLanguagesAsLocales();
-                         for(Locale sl : sitelocales) {
-                             if(!localeInSite && sl.getDisplayName().equals(locale.getDisplayName())) {
-                                 localeInSite = true;
-                                 break;
-                             }
-                         }
-                     }
-                     if(!localeInSite) 
-                       locale = site.getLanguagesAsLocales().get(0);
+                 if(siteKey != null) {
+                     locale = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteKey).resolveLocaleFromList(request.getLocales());
                  }
              }catch(JahiaException ex) {
                  locale = request.getLocale();

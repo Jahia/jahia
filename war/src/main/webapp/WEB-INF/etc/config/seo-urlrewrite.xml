@@ -37,27 +37,28 @@
         <note>Add cms part</note>
         <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
         <condition type="attribute" name="jahiaIsReservedUrl" operator="equal">^false$</condition>
-        <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
         <from>^/(.*)$</from>
         <to>/cms/$1</to>
     </rule>
+
+    <rule>
+        <note>Add trailing /</note>
+        <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
+        <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
+        <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
+        <from>^/cms/([a-z]{2}(_[A-Z]{2})?)$</from>
+        <to>/cms/$1/</to>
+    </rule>
+
     <rule>
         <note>Add the key of the site if it was resolved by server name, and if URL does not start with /users or /sites</note>
         <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
         <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/cms/[a-z]{2}(_[A-Z]{2})?/users/.*</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/cms/[a-z]{2}(_[A-Z]{2})?/sites/.*</condition>
-        <from>^/cms/([a-z]{2}(?:_[A-Z]{2})/)?(.*)$</from>
-        <to>/cms/$1sites/%{attribute:jahiaSiteKeyForCurrentServerName}/$2</to>
-    </rule>
-
-    <rule>
-        <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
-        <name>Add the home page if missing</name>
-        <note>Add the home page if missing</note>
-        <from>^/cms/([a-zA-Z_]{2,5}/)?sites/([\p{Alnum}\-_]+)/?$</from>
-        <to>/cms/$1sites/$2/%{attribute:jahiaSiteHome}.html</to>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)/?(cms/)?([a-z]{2}(_[A-Z]{2})?/)?users/.*</condition>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)/?(cms/)?([a-z]{2}(_[A-Z]{2})?/)?sites/.*</condition>
+        <from>^/cms/([a-z]{2}(_[A-Z]{2})?/)?(.*)$</from>
+        <to>/cms/$1sites/%{attribute:jahiaSiteKeyForCurrentServerName}/$3</to>
     </rule>
 
     <rule>
@@ -81,16 +82,16 @@
         <note>Removes the site key from the URL if the current server name is mapped to this site.</note>
         <condition type="attribute" name="jahiaSiteKeyMatchesCurrentServerName" operator="equal">^true$</condition>
         <condition type="attribute" name="jahiaSiteKeyMatchesDefaultLanguage" operator="equal">^false$</condition>
-        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)/(.*)$</from>
-        <to>$1/cms/render/live/$2/$4</to>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)(/.*)?$</from>
+        <to>$1/cms/render/live/$2$4</to>
     </outbound-rule>
     <outbound-rule>
         <name>Remove the site key and the language</name>
         <note>Removes the site key from the URL if the current server name is mapped to this site.</note>
         <condition type="attribute" name="jahiaSiteKeyMatchesCurrentServerName" operator="equal">^true$</condition>
         <condition type="attribute" name="jahiaSiteKeyMatchesDefaultLanguage" operator="equal">^true$</condition>
-        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)/(.*)$</from>
-        <to>$1/cms/render/live/$4</to>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)(/.*)?$</from>
+        <to>$1/cms/render/live$4</to>
     </outbound-rule>
     <outbound-rule>
         <name>Remove the site key and switch server</name>
@@ -98,8 +99,8 @@
         <condition type="attribute" name="jahiaSiteKeyMatchesCurrentServerName" operator="notequal">^true$</condition>
         <condition type="attribute" name="jahiaSiteKeyMatchesDefaultLanguage" operator="equal">^false$</condition>
         <condition type="attribute" name="jahiaSiteKeyForLink" operator="notequal">^$</condition>
-        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)/(.*)$</from>
-        <to>%{scheme}://%{attribute:jahiaSiteKeyForLink}$1/cms/$2/$4</to>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)(/.*)?$</from>
+        <to>%{scheme}://%{attribute:jahiaSiteKeyForLink}$1/cms/$2$4</to>
     </outbound-rule>
     <outbound-rule>
         <name>Remove the site key and language and switch server</name>
@@ -107,13 +108,13 @@
         <condition type="attribute" name="jahiaSiteKeyMatchesCurrentServerName" operator="notequal">^true$</condition>
         <condition type="attribute" name="jahiaSiteKeyMatchesDefaultLanguage" operator="equal">^true$</condition>
         <condition type="attribute" name="jahiaSiteKeyForLink" operator="notequal">^$</condition>
-        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)/(.*)$</from>
-        <to>%{scheme}://%{attribute:jahiaSiteKeyForLink}$1/cms/$4</to>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)(/.*)?$</from>
+        <to>%{scheme}://%{attribute:jahiaSiteKeyForLink}$1/cms$4</to>
     </outbound-rule>
     <outbound-rule>
         <name>Remove the /cms/render/live part</name>
-        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/(.*)$</from>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live(/.*)?$</from>
         <!--<to>$1/cms/$2</to>-->
-        <to>$1/$2</to>
+        <to>$1$2</to>
     </outbound-rule>
 </urlrewrite>

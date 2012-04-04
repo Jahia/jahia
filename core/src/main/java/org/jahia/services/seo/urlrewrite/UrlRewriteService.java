@@ -278,6 +278,12 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                 }
             }
 
+        } else {
+            String[] splittedURI = request.getRequestURI().split("/");
+            if (splittedURI.length > 1) {
+                request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_IS_RESERVED_URL,
+                        ServerNameToSiteMapper.RESERVED_URL_PREFIXES.contains(splittedURI[1]));
+            }
         }
 
         return true;

@@ -50,6 +50,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Exposes the site key for the current server name as a request attribute if the corresponding server name is mapped to a site.
@@ -67,6 +69,40 @@ public class ServerNameToSiteMapper {
     public static final String ATTR_NAME_SKIP_INBOUND_SEO_RULES = "jahiaSkipInboundSeoRules";
     public static final String ATTR_NAME_VANITY_LANG = "vanityUrlTargetLang";
     public static final String ATTR_NAME_VANITY_PATH = "vanityUrlTargetPath";
+    public static final String ATTR_NAME_IS_RESERVED_URL = "jahiaIsReservedUrl";
+    public static final List<String> RESERVED_URL_PREFIXES = Arrays.asList(
+            //servlets
+            "administration",
+            "cms",
+            "error",
+            "files",
+            "gadgets",
+            "gwt",
+            "initializationCompleted",
+            "oauth",
+            "PlutoInvoker",
+            "repository",
+            "rest",
+            "rpc",
+            "social",
+            "start",
+            "tools",
+            "validateTicket",
+            "welcome",
+            //static
+            "admin",
+            "css",
+            "engines",
+            "errors",
+            "gwt",
+            "icons",
+            "iphone",
+            "javascript",
+            "modules",
+            "resources",
+            "tools"
+            );
+
     private static final Logger logger = LoggerFactory.getLogger(ServerNameToSiteMapper.class);
 
     public static String getSiteKeyByServerName(HttpServletRequest request) {

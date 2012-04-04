@@ -32,7 +32,15 @@
         <from>^/cms$</from>
         <to>/cms/</to>
     </rule>
-    
+
+    <rule>
+        <note>Add cms part</note>
+        <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
+        <condition type="attribute" name="jahiaIsReservedUrl" operator="equal">^false$</condition>
+        <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
+        <from>^/(.*)$</from>
+        <to>/cms/$1</to>
+    </rule>
     <rule>
         <note>Add the key of the site if it was resolved by server name, and if URL does not start with /users or /sites</note>
         <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
@@ -105,6 +113,7 @@
     <outbound-rule>
         <name>Remove the /cms/render/live part</name>
         <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/(.*)$</from>
-        <to>$1/cms/$2</to>
+        <!--<to>$1/cms/$2</to>-->
+        <to>$1/$2</to>
     </outbound-rule>
 </urlrewrite>

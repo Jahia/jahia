@@ -92,7 +92,9 @@ public class AddResourcesTag extends AbstractJahiaTag {
     }
 
     protected void addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage) {
-        logger.debug("Package : " + aPackage.getName() + " type : " + type + " resources : " + resources);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Package : " + aPackage.getName() + " type : " + type + " resources : " + resources);
+        }
         if (bodyContent != null) {
             try {
                 pageContext.getOut().print(bodyContent.getString());

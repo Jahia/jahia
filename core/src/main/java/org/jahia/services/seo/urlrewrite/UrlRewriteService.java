@@ -218,70 +218,71 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     }
 
     public boolean prepareInbound(final HttpServletRequest request, HttpServletResponse response) {
-        if ("/cms".equals(request.getServletPath())) {
-            String path = request.getPathInfo() != null ? request.getPathInfo() : "";
-            try{
-                List<SimpleUrlHandlerMapping> mappings = getRenderMapping();
-                for (SimpleUrlHandlerMapping mapping : mappings) {
-                    for (String registeredPattern : mapping.getUrlMap().keySet()) {
-                        if (mapping.getPathMatcher().match(registeredPattern, path)) {
-                            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SKIP_INBOUND_SEO_RULES, Boolean.TRUE);
-                            return false;
-                        }
+        String[] splitURI = request.getRequestURI().split("/");
+        if (splitURI.length > 1) {
+            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_IS_RESERVED_URL,
+                    reservedUrlPrefixes.contains(splitURI[1]));
+
+            if (reservedUrlPrefixes.contains(splitURI[1]) && !splitURI[1].equals("cms")) {
+                return false;
+            }
+        }
+
+        String path = request.getPathInfo() != null ? request.getPathInfo() : "";
+        try{
+            List<SimpleUrlHandlerMapping> mappings = getRenderMapping();
+            for (SimpleUrlHandlerMapping mapping : mappings) {
+                for (String registeredPattern : mapping.getUrlMap().keySet()) {
+                    if (mapping.getPathMatcher().match(registeredPattern, path)) {
+                        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SKIP_INBOUND_SEO_RULES, Boolean.TRUE);
+                        return false;
                     }
                 }
-            }catch(Exception ex) {
-                logger.warn("Unable to load the SimpleUrlHandlerMapping", ex);
             }
-            final String targetSiteKey = ServerNameToSiteMapper.getSiteKeyByServerName(request);
-            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY, targetSiteKey);
-            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG, StringUtils.EMPTY);
-            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, StringUtils.EMPTY);
-            if (!StringUtils.isEmpty(targetSiteKey)) {
-                try {
-                    List<VanityUrl> vanityUrls = vanityUrlService.findExistingVanityUrls(path,
-                            targetSiteKey, "live");
-                    if (!vanityUrls.isEmpty()) {
-                        vanityUrls.get(0).getLanguage();
-                        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG,
-                                vanityUrls.get(0).getLanguage());
-                        path = StringUtils.substringBefore(vanityUrls.get(0).getPath(), "/"
-                                + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/")
-                                + ".html";
-                        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, path);
-                    }
-                } catch (RepositoryException e) {
-                    logger.error("Cannot get vanity Url", e);
+        }catch(Exception ex) {
+            logger.warn("Unable to load the SimpleUrlHandlerMapping", ex);
+        }
+        final String targetSiteKey = ServerNameToSiteMapper.getSiteKeyByServerName(request);
+        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY, targetSiteKey);
+        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG, StringUtils.EMPTY);
+        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, StringUtils.EMPTY);
+        if (!StringUtils.isEmpty(targetSiteKey)) {
+            try {
+                List<VanityUrl> vanityUrls = vanityUrlService.findExistingVanityUrls(path,
+                        targetSiteKey, "live");
+                if (!vanityUrls.isEmpty()) {
+                    vanityUrls.get(0).getLanguage();
+                    request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG,
+                            vanityUrls.get(0).getLanguage());
+                    path = StringUtils.substringBefore(vanityUrls.get(0).getPath(), "/"
+                            + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/")
+                            + ".html";
+                    request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, path);
                 }
-                try {
-                    JahiaSite siteByKey = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(targetSiteKey);
-                    String defaultLanguage = siteByKey.resolveLocaleFromList(request.getLocales()).toString();
-                    request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG,
-                            defaultLanguage);
-
-                    // Cache the home page name .. ?
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, null,
-                            new JCRCallback<List<VanityUrl>>() {
-                                public List<VanityUrl> doInJCR(JCRSessionWrapper session)
-                                        throws RepositoryException {
-                                    JCRSiteNode site = (JCRSiteNode) session.getNode("/sites/"+targetSiteKey);
-                                    request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_HOME, site.getHome().getName());
-                                    return null;
-                                }
-                            });
-
-                } catch (JahiaException e) {
-                    logger.error("Cannot get site", e);
-                } catch (RepositoryException e) {
-                    logger.error("Cannot get site", e);
-                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get vanity Url", e);
             }
+            try {
+                JahiaSite siteByKey = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(targetSiteKey);
+                String defaultLanguage = siteByKey.resolveLocaleFromList(request.getLocales()).toString();
+                request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG,
+                        defaultLanguage);
 
-        } else {
-            String[] splittedURI = request.getRequestURI().split("/");
-            if (splittedURI.length > 1) {
-                request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_IS_RESERVED_URL,
-                        reservedUrlPrefixes.contains(splittedURI[1]));
+                // Cache the home page name .. ?
+                JCRTemplate.getInstance().doExecuteWithSystemSession(null, null,
+                        new JCRCallback<List<VanityUrl>>() {
+                            public List<VanityUrl> doInJCR(JCRSessionWrapper session)
+                                    throws RepositoryException {
+                                JCRSiteNode site = (JCRSiteNode) session.getNode("/sites/"+targetSiteKey);
+                                request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_HOME, site.getHome().getName());
+                                return null;
+                            }
+                        });
+
+            } catch (JahiaException e) {
+                logger.error("Cannot get site", e);
+            } catch (RepositoryException e) {
+                logger.error("Cannot get site", e);
             }
         }
 

@@ -176,9 +176,9 @@ permanentMoveForVanityURL                              = false
 +-----------------------
 # Enable this option to make URL rewrite engine "shorten" the URL to
 # content in live mode, .e.g.:
-#     http://my.acme.org/cms/render/live/en/site/myAcme/home.html
+#     http://my.acme.org/cms/render/live/en/sites/myAcme/home.html
 # can become:
-#     http://my.acme.org/cms/home.html
+#     http://my.acme.org/home.html
 urlRewriteSeoRulesEnabled                              = true
 +-----------------------
 
@@ -187,13 +187,13 @@ urlRewriteSeoRulesEnabled                              = true
   Activating this feature allows in most of the cases to "reduce", for example, the following URL: 
    
 +-----------------------
-http://my.acme.org/cms/render/live/en/site/global/home.html
+http://my.acme.org/cms/render/live/en/sites/global/home.html
 +-----------------------
 
   to:
 
 +-----------------------
-http://my.acme.org/cms/home.html
+http://my.acme.org/home.html
 +-----------------------
 
   assuming that the <<<global>>> site has the <<<my.acme.org>>> defined as a domain name in
@@ -203,14 +203,9 @@ http://my.acme.org/cms/home.html
   a German home page of the same site the URL will be:
 
 +-----------------------
-http://my.acme.org/cms/de/home.html
+http://my.acme.org/de/home.html
 +-----------------------
 
-  There are multiple improvement change requests submitted for this feature (one of them for
-  removing <<</cms>>>, which can be achieved in most of the cases), based on our
-  internal usability tests.
-
-    
 * Controlling browser {caching}
 
   The client side cache for pages and static assets (CSS, JavaScript etc.) is controlled

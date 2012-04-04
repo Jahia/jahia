@@ -176,10 +176,12 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
             LinkedList<SimpleUrlHandlerMapping> mapping = new LinkedList<SimpleUrlHandlerMapping>();
             ApplicationContext ctx = (ApplicationContext) servletContext.getAttribute(
                     "org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet");
-            mapping.addAll(ctx.getBeansOfType(SimpleUrlHandlerMapping.class).values());
-            mapping.addAll(ctx.getParent().getBeansOfType(SimpleUrlHandlerMapping.class)
-                    .values());
-            renderMapping = mapping;
+            if (ctx != null) {
+                mapping.addAll(ctx.getBeansOfType(SimpleUrlHandlerMapping.class).values());
+                mapping.addAll(ctx.getParent().getBeansOfType(SimpleUrlHandlerMapping.class)
+                        .values());
+                renderMapping = mapping;
+            }
         }
 
         return renderMapping;
@@ -233,11 +235,13 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         String path = request.getPathInfo() != null ? request.getPathInfo() : "";
         try{
             List<SimpleUrlHandlerMapping> mappings = getRenderMapping();
-            for (SimpleUrlHandlerMapping mapping : mappings) {
-                for (String registeredPattern : mapping.getUrlMap().keySet()) {
-                    if (mapping.getPathMatcher().match(registeredPattern, path)) {
-                        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SKIP_INBOUND_SEO_RULES, Boolean.TRUE);
-                        return false;
+            if (mappings != null) {
+                for (SimpleUrlHandlerMapping mapping : mappings) {
+                    for (String registeredPattern : mapping.getUrlMap().keySet()) {
+                        if (mapping.getPathMatcher().match(registeredPattern, path)) {
+                            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SKIP_INBOUND_SEO_RULES, Boolean.TRUE);
+                            return false;
+                        }
                     }
                 }
             }

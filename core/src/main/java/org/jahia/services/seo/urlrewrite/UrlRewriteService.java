@@ -229,10 +229,10 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                 return false;
             }
         } else {
-            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_IS_RESERVED_URL, false);
+            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_IS_RESERVED_URL, true);
         }
 
-        String path = request.getPathInfo() != null ? request.getPathInfo() : "";
+        String path = request.getPathInfo() != null ? request.getPathInfo() : request.getRequestURI();
         try{
             List<SimpleUrlHandlerMapping> mappings = getRenderMapping();
             if (mappings != null) {
@@ -273,21 +273,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                 String defaultLanguage = siteByKey.resolveLocaleFromList(request.getLocales()).toString();
                 request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG,
                         defaultLanguage);
-
-                // Cache the home page name .. ?
-                JCRTemplate.getInstance().doExecuteWithSystemSession(null, null,
-                        new JCRCallback<List<VanityUrl>>() {
-                            public List<VanityUrl> doInJCR(JCRSessionWrapper session)
-                                    throws RepositoryException {
-                                JCRSiteNode site = (JCRSiteNode) session.getNode("/sites/"+targetSiteKey);
-                                request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_HOME, site.getHome().getName());
-                                return null;
-                            }
-                        });
-
             } catch (JahiaException e) {
-                logger.error("Cannot get site", e);
-            } catch (RepositoryException e) {
                 logger.error("Cannot get site", e);
             }
         }

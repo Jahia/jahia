@@ -17,15 +17,15 @@
         <property name="confReloadCheckIntervalSeconds" value="300" />
         <property name="configurationResources">
             <list>
-                <value>WEB-INF/etc/config/urlrewrite.xml</value><!-- these are core rules that should not be removed -->
-                
-                <value>WEB-INF/etc/config/urlrewrite-*.xml</value>
+                <value>classpath*:org/jahia/services/seo/urlrewrite/urlrewrite.xml</value><!-- these are core rules that should not be removed -->
+                <value>WEB-INF/etc/config/urlrewrite*.xml</value>
                 <value>modules/**/META-INF/urlrewrite*.xml</value>
             </list>
         </property>
         <property name="seoRulesEnabled" value="${urlRewriteSeoRulesEnabled}"/>
         <property name="seoConfigurationResources">
             <list>
+                <value>classpath*:org/jahia/services/seo/urlrewrite/seo-urlrewrite*.xml</value><!-- these are core rules that should not be removed -->
                 <value>WEB-INF/etc/config/seo-urlrewrite*.xml</value>
                 <value>modules/**/META-INF/seo-urlrewrite*.xml</value>
             </list>

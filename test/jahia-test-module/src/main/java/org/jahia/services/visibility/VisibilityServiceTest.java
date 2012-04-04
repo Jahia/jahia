@@ -40,29 +40,46 @@
 
 package org.jahia.services.visibility;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.drools.util.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
-import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPublicationService;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.TestHelper;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.jcr.RepositoryException;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static org.junit.Assert.*;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * User: loom
@@ -71,255 +88,170 @@ import static org.junit.Assert.*;
  */
 public class VisibilityServiceTest {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(VisibilityServiceTest.class);
-    private JahiaSite site;
+    private static final String INVISIBLE_TEXT = "This is an invisible text";
+    private static Logger logger = LoggerFactory.getLogger(VisibilityServiceTest.class);
+    private final static String PASSWORD = "password";
+    private static JCRPublicationService publicationService;
+    private static JahiaSite site;
     private final static String TESTSITE_NAME = "visibilityServiceTest";
-    private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
-    HttpClient client;
-    private SimpleDateFormat yyyy_mm_dd_hh_mm_ss = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+    private final static String USERNAME = "visibilityServiceTestUser";
+
+    @BeforeClass
+    public static void oneTimeSetUp() throws Exception {
+        site = TestHelper.createSite(TESTSITE_NAME, TestHelper.INTRANET_TEMPLATES);
+        assertNotNull(site);
+        publicationService = ServicesRegistry.getInstance().getJCRPublicationService();
+        Properties properties = new Properties();
+        properties.setProperty("j:firstName", "John");
+        properties.setProperty("j:lastName", "Doe");
+        JahiaUser john = ServicesRegistry.getInstance().getJahiaUserManagerService()
+                .createUser(USERNAME, PASSWORD, properties);
+        JCRSessionFactory.getInstance().getCurrentUserSession()
+                .getNode("/sites/" + site.getSiteKey())
+                .grantRoles("u:" + john.getUsername(), ImmutableSet.of("editor-in-chief"));
+        JCRSessionFactory.getInstance().getCurrentUserSession().save();
+    }
+
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
+        try {
+            TestHelper.deleteSite(TESTSITE_NAME);
+        } catch (Exception ex) {
+            logger.warn("Exception during test oneTimeTearDown", ex);
+        }
+        JahiaUserManagerService userManagerService = ServicesRegistry.getInstance()
+                .getJahiaUserManagerService();
+        userManagerService.deleteUser(userManagerService.lookupUser(USERNAME));
+        JCRSessionFactory.getInstance().getCurrentUserSession().save();
+        JCRSessionFactory.getInstance().closeAllSessions();
+    }
+
+    private HttpClient client;
+    private JCRNodeWrapper home;
+
+    private JCRNodeWrapper invisible;
+
+    private JCRSessionWrapper session;
+
+    private boolean isPresent(String relativeUrl) {
+        String body = StringUtils.EMPTY;
+        GetMethod getMethod = new GetMethod("http://localhost:8080" + Jahia.getContextPath()
+                + relativeUrl);
+        try {
+            int responseCode = client.executeMethod(getMethod);
+            assertEquals("Response code is not OK: " + responseCode, 200, responseCode);
+            body = getMethod.getResponseBodyAsString();
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            getMethod.releaseConnection();
+        }
+        return body.contains(INVISIBLE_TEXT);
+    }
 
     @Before
     public void setUp() throws Exception {
-        try {
-            site = TestHelper.createSite(TESTSITE_NAME, "localhost" + System.currentTimeMillis(),
-                    TestHelper.INTRANET_TEMPLATES);
-            assertNotNull(site);
-        } catch (Exception ex) {
-            logger.warn("Exception during test setUp", ex);
-        }
+
+        session = publicationService.getSessionFactory().getCurrentUserSession(
+                Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+
+        home = session.getNode("/sites/" + TESTSITE_NAME + "/home");
+
+        publicationService.publishByMainId(home.getIdentifier());
+
+        session.checkout(home);
+
+        invisible = home.getNode("listA").addNode("text", "jnt:text");
+        invisible.setProperty("text", INVISIBLE_TEXT);
+
+        session.save();
 
         // Create an instance of HttpClient.
         client = new HttpClient();
 
-        // todo we should really insert content to test the find.
+        PostMethod loginMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath()
+                + "/cms/login");
+        loginMethod.addParameter("username", USERNAME);
+        loginMethod.addParameter("password", PASSWORD);
+        loginMethod.addParameter("restMode", "true");
 
-        PostMethod loginMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/login");
-        loginMethod.addParameter("username", "root");
-        loginMethod.addParameter("password", "root1234");
-        loginMethod.addParameter("redirectActive", "false");
-        // the next parameter is required to properly activate the valve check.
-        loginMethod.addParameter(LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1");
-
-        int statusCode = client.executeMethod(loginMethod);
-        if (statusCode != HttpStatus.SC_OK) {
-            System.err.println("Method failed: " + loginMethod.getStatusLine());
+        try {
+            int statusCode = client.executeMethod(loginMethod);
+            assertEquals("Login failed for user", HttpStatus.SC_OK, statusCode);
+        } finally {
+            loginMethod.releaseConnection();
         }
     }
 
     @After
     public void tearDown() throws Exception {
+        invisible.remove();
+        session.save();
+        publicationService.publishByMainId(home.getIdentifier());
 
-        try {
-            TestHelper.deleteSite(TESTSITE_NAME);
-        } catch (Exception ex) {
-            logger.warn("Exception during test tearDown", ex);
-        }
         JCRSessionFactory.getInstance().closeAllSessions();
 
-        PostMethod logoutMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/logout");
+        PostMethod logoutMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath()
+                + "/cms/logout");
         logoutMethod.addParameter("redirectActive", "false");
 
-        int statusCode = client.executeMethod(logoutMethod);
-        if (statusCode != HttpStatus.SC_OK) {
-            System.err.println("Method failed: " + logoutMethod.getStatusLine());
-        }
-
-        logoutMethod.releaseConnection();
-    }
-
-    private List<String> getUuids(List<PublicationInfo> publicationInfo) {
-        List<String> uuids = new LinkedList<String>();
-        for (PublicationInfo info : publicationInfo) {
-            uuids.addAll(info.getAllUuids());
-        }
-        return uuids;
-    }
-
-    @Test
-    public void testVisibilityRenderMatchesOneCondition() throws RepositoryException, ParseException {
-        JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
-        JCRVersionService jcrVersionService = ServicesRegistry.getInstance().getJCRVersionService();
-        JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                Locale.ENGLISH);
-        JCRNodeWrapper stageRootNode = editSession.getNode(SITECONTENT_ROOT_NODE);
-
-        // Test GWT display template
-        String gwtDisplayTemplate = VisibilityService.getInstance().getConditions().get(
-                "jnt:startEndDateCondition").getGWTDisplayTemplate(Locale.ENGLISH);
-        assertNotNull(gwtDisplayTemplate);
-
-        // get home page
-        JCRNodeWrapper stageNode = stageRootNode.getNode("home");
-
-        editSession.checkout(stageNode);
-        JCRNodeWrapper stagedSubPage = stageNode.addNode("home_subpage1", "jnt:page");
-        stagedSubPage.setProperty("j:templateNode", editSession.getNode(
-                SITECONTENT_ROOT_NODE + "/templates/base/simple"));
-        stagedSubPage.setProperty("jcr:title", "Page not visible");
-        stagedSubPage.addMixin("jmix:conditionalVisibility");
-        JCRNodeWrapper condVis = stagedSubPage.addNode("j:conditionalVisibility", "jnt:conditionalVisibility");
-        JCRNodeWrapper firstCondition = condVis.addNode("firstCondition", "jnt:startEndDateCondition");
-        Calendar instance = Calendar.getInstance();
-        instance.add(Calendar.MINUTE, 1);
-        firstCondition.setProperty("start", instance);
-        editSession.save();
-        // Validate that content is not visible in preview
-        GetMethod visibilityGet = new GetMethod(
-                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/default/en" + stageNode.getPath() +
-                ".html");
         try {
-            int responseCode = client.executeMethod(visibilityGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            String responseBody = visibilityGet.getResponseBodyAsString();
-            logger.debug("Response body=[" + responseBody + "]");
-            assertFalse("Could find non expected value (Page not visible) in response body", responseBody.indexOf(
-                    "Page not visible") > 0);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-
-        Set<String> languagesStringSet = new LinkedHashSet<String>();
-        languagesStringSet.add(Locale.ENGLISH.toString());
-        // publish it
-        List<PublicationInfo> publicationInfo = jcrService.getPublicationInfo(stageNode.getIdentifier(),
-                languagesStringSet, true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-        jcrService.publishByInfoList(publicationInfo, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
-                Collections.<String>emptyList());
-        String label = "published_at_" + yyyy_mm_dd_hh_mm_ss.format(GregorianCalendar.getInstance().getTime());
-        List<String> uuids = getUuids(publicationInfo);
-        jcrVersionService.addVersionLabel(uuids, label, Constants.LIVE_WORKSPACE);
-
-
-        // Validate that content is not visible in live
-        visibilityGet = new GetMethod(
-                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" + stageNode.getPath() +
-                ".html");
-        try {
-            int responseCode = client.executeMethod(visibilityGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            String responseBody = visibilityGet.getResponseBodyAsString();
-            logger.debug("Response body=[" + responseBody + "]");
-            assertFalse("Could find non expected value (Page not visible) in response body", responseBody.indexOf(
-                    "Page not visible") > 0);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-        try {
-            Thread.sleep(70000);
-        } catch (InterruptedException e) {
-            logger.error(e.getMessage(), e);
-        }
-        // Validate that content is visible in live
-        try {
-            int responseCode = client.executeMethod(visibilityGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            String responseBody = visibilityGet.getResponseBodyAsString();
-            logger.debug("Response body=[" + responseBody + "]");
-            assertTrue("Could not find expected value (Page not visible) in response body", responseBody.indexOf(
-                    "Page not visible") > 0);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            int statusCode = client.executeMethod(logoutMethod);
+            if (statusCode != HttpStatus.SC_OK) {
+                System.err.println("Method failed: " + logoutMethod.getStatusLine());
+            }
+        } finally {
+            logoutMethod.releaseConnection();
         }
     }
 
     @Test
-    public void testVisibilityRenderMatchesAllConditions() throws RepositoryException, ParseException {
-        JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
-        JCRVersionService jcrVersionService = ServicesRegistry.getInstance().getJCRVersionService();
-        JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                Locale.ENGLISH);
+    public void testVisibilityRenderMatchesAllConditions() throws RepositoryException,
+            ParseException {
 
-        JCRNodeWrapper stageRootNode = editSession.getNode(SITECONTENT_ROOT_NODE);
-
-        // Test GWT display template
-        String gwtDisplayTemplate = VisibilityService.getInstance().getConditions().get(
-                "jnt:startEndDateCondition").getGWTDisplayTemplate(Locale.ENGLISH);
-        assertNotNull(gwtDisplayTemplate);
-
-        // get home page
-        JCRNodeWrapper stageNode = stageRootNode.getNode("home");
-
-        editSession.checkout(stageNode);
-        JCRNodeWrapper stagedSubPage = stageNode.addNode("home_subpage1", "jnt:page");
-        stagedSubPage.setProperty("j:templateNode", editSession.getNode(
-                SITECONTENT_ROOT_NODE + "/templates/base/simple"));
-        stagedSubPage.setProperty("jcr:title", "Page not visible");
-        stagedSubPage.addMixin("jmix:conditionalVisibility");
-        JCRNodeWrapper condVis = stagedSubPage.addNode("j:conditionalVisibility", "jnt:conditionalVisibility");
+        invisible.addMixin("jmix:conditionalVisibility");
+        JCRNodeWrapper condVis = invisible.addNode("j:conditionalVisibility",
+                "jnt:conditionalVisibility");
         condVis.setProperty("j:forceMatchAllConditions", true);
-        JCRNodeWrapper firstCondition = condVis.addNode("firstCondition", "jnt:startEndDateCondition");
+        JCRNodeWrapper firstCondition = condVis.addNode("firstCondition",
+                "jnt:startEndDateCondition");
         Calendar instance = Calendar.getInstance();
-        instance.add(Calendar.MINUTE, 1);
+        instance.add(Calendar.SECOND, 20);
         firstCondition.setProperty("start", instance);
-        JCRNodeWrapper secondCondition = condVis.addNode("secondCondition", "jnt:startEndDateCondition");
+
+        JCRNodeWrapper secondCondition = condVis.addNode("secondCondition",
+                "jnt:startEndDateCondition");
         instance.add(Calendar.MINUTE, 5);
         secondCondition.setProperty("end", instance);
-        editSession.save();
+        session.save();
+
         // Validate that content is not visible in preview
-        GetMethod visibilityGet = new GetMethod(
-                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/default/en" + stageNode.getPath() +
-                ".html");
-        try {
-            int responseCode = client.executeMethod(visibilityGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            String responseBody = visibilityGet.getResponseBodyAsString();
-            logger.debug("Response body=[" + responseBody + "]");
-            assertFalse("Could find non expected value (Page not visible) in response body", responseBody.indexOf(
-                    "Page not visible") > 0);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
+        assertFalse("Found unexpected value (" + INVISIBLE_TEXT + ") in response body",
+                isPresent("/cms/render/default/en" + home.getPath() + ".html"));
 
-
-        Set<String> languagesStringSet = new LinkedHashSet<String>();
-        languagesStringSet.add(Locale.ENGLISH.toString());
         // publish it
-        List<PublicationInfo> publicationInfo = jcrService.getPublicationInfo(stageNode.getIdentifier(),
-                languagesStringSet, true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-        jcrService.publishByInfoList(publicationInfo, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
-                Collections.<String>emptyList());
-        String label = "published_at_" + yyyy_mm_dd_hh_mm_ss.format(GregorianCalendar.getInstance().getTime());
-        List<String> uuids = getUuids(publicationInfo);
-        jcrVersionService.addVersionLabel(uuids, label, Constants.LIVE_WORKSPACE);
-
+        publicationService.publishByMainId(home.getIdentifier());
 
         // Validate that content is not visible in live
-        visibilityGet = new GetMethod(
-                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" + stageNode.getPath() +
-                ".html");
-        try {
-            int responseCode = client.executeMethod(visibilityGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            String responseBody = visibilityGet.getResponseBodyAsString();
-            logger.debug("Response body=[" + responseBody + "]");
-            assertFalse("Could find non expected value (Page not visible) in response body", responseBody.indexOf(
-                    "Page not visible") > 0);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
+        assertFalse("Found unexpected value (" + INVISIBLE_TEXT + ") in response body",
+                isPresent("/cms/render/live/en" + home.getPath() + ".html"));
 
         try {
-            Thread.sleep(70000);
+            Thread.sleep(30000);
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         }
+
         // Validate that content is visible in live
-        try {
-            int responseCode = client.executeMethod(visibilityGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            String responseBody = visibilityGet.getResponseBodyAsString();
-            logger.debug("Response body=[" + responseBody + "]");
-            assertTrue("Could not find expected value (Page not visible) in response body", responseBody.indexOf(
-                    "Page not visible") > 0);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
-        Map<JCRNodeWrapper, Boolean> conditionMatchesDetails = VisibilityService.getInstance().getConditionMatchesDetails(
-                stagedSubPage);
+        assertTrue("Could not find expected value (" + INVISIBLE_TEXT + ") in response body",
+                isPresent("/cms/render/live/en" + home.getPath() + ".html"));
+
+        Map<JCRNodeWrapper, Boolean> conditionMatchesDetails = VisibilityService.getInstance()
+                .getConditionMatchesDetails(invisible);
+
         assertTrue(conditionMatchesDetails.size() == 2);
+
         Set<Map.Entry<JCRNodeWrapper, Boolean>> entries = conditionMatchesDetails.entrySet();
         for (Map.Entry<JCRNodeWrapper, Boolean> entry : entries) {
             assertTrue(entry.getValue());
@@ -327,60 +259,77 @@ public class VisibilityServiceTest {
     }
 
     @Test
-    public void testVisibilityRenderMatchesAllEmptyConditions() throws RepositoryException, ParseException {
-        JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
-        JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                Locale.ENGLISH);
-
-        JCRNodeWrapper stageRootNode = editSession.getNode(SITECONTENT_ROOT_NODE);
-
-        // Test GWT display template
-        String gwtDisplayTemplate = VisibilityService.getInstance().getConditions().get(
-                "jnt:startEndDateCondition").getGWTDisplayTemplate(Locale.ENGLISH);
-        assertNotNull(gwtDisplayTemplate);
-
-        // get home page
-        JCRNodeWrapper stageNode = stageRootNode.getNode("home");
-
-        editSession.checkout(stageNode);
-        JCRNodeWrapper stagedSubPage = stageNode.addNode("home_subpage1", "jnt:page");
-        stagedSubPage.setProperty("j:templateNode", editSession.getNode(
-                SITECONTENT_ROOT_NODE + "/templates/base/simple"));
-        stagedSubPage.setProperty("jcr:title", "Page visible");
-        stagedSubPage.addMixin("jmix:conditionalVisibility");
-        JCRNodeWrapper condVis = stagedSubPage.addNode("j:conditionalVisibility", "jnt:conditionalVisibility");
+    public void testVisibilityRenderMatchesAllEmptyConditions() throws RepositoryException,
+            ParseException {
+        invisible.addMixin("jmix:conditionalVisibility");
+        JCRNodeWrapper condVis = invisible.addNode("j:conditionalVisibility",
+                "jnt:conditionalVisibility");
         condVis.setProperty("j:forceMatchAllConditions", true);
-        editSession.save();
-        // Validate that content is not visible in preview
-        GetMethod visibilityGet = new GetMethod(
-                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/default/en" + stageNode.getPath() +
-                ".html");
-        try {
-            int responseCode = client.executeMethod(visibilityGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            String responseBody = visibilityGet.getResponseBodyAsString();
-            logger.debug("Response body=[" + responseBody + "]");
-            assertTrue("Could not find expected value (Page visible) in response body", responseBody.indexOf(
-                    "Page visible") > 0);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
+        session.save();
+
+        // Validate that content is visible in preview with no conditions
+        assertTrue("Could not find expected value (" + INVISIBLE_TEXT + ") in response body",
+                isPresent("/cms/render/default/en" + home.getPath() + ".html"));
+
+        // publish it
+        publicationService.publishByMainId(home.getIdentifier());
+
+        // Validate that content is visible in live with no conditions
+        assertTrue("Could not find expected value (" + INVISIBLE_TEXT + ") in response body",
+                isPresent("/cms/render/live/en" + home.getPath() + ".html"));
 
         condVis.setProperty("j:forceMatchAllConditions", false);
-        editSession.save();
+        session.save();
+
+        // Validate that content is visible in preview with no conditions
+        assertTrue("Could not find expected value (" + INVISIBLE_TEXT + ") in response body",
+                isPresent("/cms/render/default/en" + home.getPath() + ".html"));
+
+        // publish it
+        publicationService.publishByMainId(home.getIdentifier());
+
+        // Validate that content is visible in live with no conditions
+        assertTrue("Could not find expected value (" + INVISIBLE_TEXT + ") in response body",
+                isPresent("/cms/render/default/en" + home.getPath() + ".html"));
+    }
+
+    @Test
+    public void testVisibilityRenderMatchesOneCondition() throws RepositoryException,
+            ParseException {
+        // Test GWT display template
+        String gwtDisplayTemplate = VisibilityService.getInstance().getConditions()
+                .get("jnt:startEndDateCondition").getGWTDisplayTemplate(Locale.ENGLISH);
+        assertNotNull(gwtDisplayTemplate);
+
+        invisible.addMixin("jmix:conditionalVisibility");
+        JCRNodeWrapper condVis = invisible.addNode("j:conditionalVisibility",
+                "jnt:conditionalVisibility");
+        JCRNodeWrapper firstCondition = condVis.addNode("firstCondition",
+                "jnt:startEndDateCondition");
+        Calendar instance = Calendar.getInstance();
+        instance.add(Calendar.SECOND, 20);
+        firstCondition.setProperty("start", instance);
+        session.save();
+
         // Validate that content is not visible in preview
-        visibilityGet = new GetMethod(
-                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/default/en" + stageNode.getPath() +
-                ".html");
+        assertFalse("Found unexpected value (" + INVISIBLE_TEXT + ") in response body",
+                isPresent("/cms/render/default/en" + home.getPath() + ".html"));
+
+        // publish it
+        publicationService.publishByMainId(home.getIdentifier());
+
+        // Validate that content is not visible in live
+        assertFalse("Found unexpected value (" + INVISIBLE_TEXT + ") in response body",
+                isPresent("/cms/render/live/en" + home.getPath() + ".html"));
+
         try {
-            int responseCode = client.executeMethod(visibilityGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            String responseBody = visibilityGet.getResponseBodyAsString();
-            logger.debug("Response body=[" + responseBody + "]");
-            assertTrue("Could not find expected value (Page visible) in response body", responseBody.indexOf(
-                    "Page visible") > 0);
-        } catch (IOException e) {
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         }
+
+        // Validate that content is visible in live
+        assertTrue("Could not find expected value (" + INVISIBLE_TEXT + ") in response body",
+                isPresent("/cms/render/live/en" + home.getPath() + ".html"));
     }
 }

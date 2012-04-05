@@ -127,6 +127,7 @@
                             <c:set var="baseLive" value="${url.baseLive}"/>
                             <c:set var="basePreview" value="${url.basePreview}"/>
                             <c:set var="baseContribute" value="${url.baseContribute}"/>
+                            <c:set var="baseLightEdit" value="/cms/lightedit/default/${currentResource.locale}"/>
                             <c:set var="baseEdit" value="${url.baseEdit}"/>
                             <c:if test="${not fn:contains(node.languages, currentResource.locale)}">
                                 <c:set var="localeLength" value="${fn:length(fn:toUpperCase(currentResource.locale))}"/>
@@ -136,6 +137,8 @@
                                        value="${fn:substring(url.basePreview,-1,fn:length(url.basePreview)-localeLength)}${node.defaultLanguage}"/>
                                 <c:set var="baseContribute"
                                        value="${fn:substring(url.baseContribute,-1,fn:length(url.baseContribute)-localeLength)}${node.defaultLanguage}"/>
+                                <c:set var="baseLightEdit"
+                                       value="${fn:substring(baseLightEdit,-1,fn:length(baseLightEdit)-localeLength)}${node.defaultLanguage}"/>
                                 <c:set var="baseEdit"
                                        value="${fn:substring(url.baseEdit,-1,fn:length(url.baseEdit)-localeLength)}${node.defaultLanguage}"/>
                             </c:if>

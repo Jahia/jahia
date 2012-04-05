@@ -40,8 +40,6 @@
 
 package org.jahia.services.seo.urlrewrite;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.oro.text.regex.PatternMatcher;
 import org.jahia.settings.SettingsBean;
 
 import javax.servlet.http.HttpServletRequest;

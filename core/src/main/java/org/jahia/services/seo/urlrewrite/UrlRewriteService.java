@@ -105,7 +105,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     private URLResolverFactory urlResolverFactory;
 
-    private List<String> reservedUrlPrefixes;
+    private Set<String> reservedUrlPrefixSet;
 
     public void afterPropertiesSet() throws Exception {
         long timer = System.currentTimeMillis();
@@ -216,12 +216,16 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     }
 
     public boolean prepareInbound(final HttpServletRequest request, HttpServletResponse response) {
-        String[] splitURI = request.getRequestURI().split("/");
-        if (splitURI.length > 1) {
-            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_IS_RESERVED_URL,
-                    reservedUrlPrefixes.contains(splitURI[1]));
-
-            if (reservedUrlPrefixes.contains(splitURI[1]) && !splitURI[1].equals("cms")) {
+        String input = request.getRequestURI();
+        String prefix = StringUtils.EMPTY;
+        if (input.length() > 1 && input.indexOf('/') == 0) {
+            int end = input.indexOf('/', 1);
+            prefix = end != -1 ? input.substring(1, end) : input.substring(1); 
+        } 
+        if (prefix.length() > 1) {
+            boolean contains = reservedUrlPrefixSet.contains(prefix);
+            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_IS_RESERVED_URL, contains);
+            if (contains && !"cms".equals(prefix)) {
                 return false;
             }
         } else {
@@ -316,7 +320,9 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         this.urlResolverFactory = urlResolverFactory;
     }
 
-    public void setReservedUrlPrefixes(List<String> reservedUrlPrefixes) {
-        this.reservedUrlPrefixes = reservedUrlPrefixes;
+    public void setReservedUrlPrefixes(String reservedUrlPrefixes) {
+        this.reservedUrlPrefixSet = StringUtils.isNotBlank(reservedUrlPrefixes) ? new HashSet<String>(
+                Arrays.asList(StringUtils.split(reservedUrlPrefixes, ", "))) : Collections
+                .<String> emptySet();
     }
 }

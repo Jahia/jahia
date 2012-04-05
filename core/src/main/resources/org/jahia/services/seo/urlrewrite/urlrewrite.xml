@@ -76,7 +76,7 @@
         <name>Jahia tools</name>
         <note>Redirects to Jahia Tools overview page</note>
         <from>^/tools(/)?$</from>
-        <to type="redirect">/tools/index.jsp</to>
+        <to type="redirect">%{context-path}/tools/index.jsp</to>
     </rule>
     
 </urlrewrite>

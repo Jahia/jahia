@@ -9,12 +9,13 @@ URL Rewriting
     with the new one, but the URL locations should remain the same for preventing "broken links" for
     bookmarks and search engines.    
   
-  * {{{SEO}SEO URL rewriting}} - implies URL "shortening" by removing "technical" information (deactivated by default).
+  * {{{SEO}SEO URL rewriting}} - implies URL "shortening" by removing "technical" information (activated by default).
   
   *  {{{cache}Controlling browser caching}} - through the URL rewrite engine rules Jahia also "controls" the
     client side (Web browser and proxy server) caching of the pages and static assets.
   
-  * {{{secure}Forcing secure browsing}} for logged in users - 
+  * {{{secure}Forcing secure browsing}} for logged in users - there is an option for "forcing" a switch to an SSL
+    (HTTPS protocol) for a user session
   
   []
   

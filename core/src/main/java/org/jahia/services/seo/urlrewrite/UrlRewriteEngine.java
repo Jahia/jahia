@@ -43,9 +43,7 @@ package org.jahia.services.seo.urlrewrite;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -55,7 +53,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.taglibs.standard.tag.common.core.OutSupport;
 import org.jahia.bin.Render;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;

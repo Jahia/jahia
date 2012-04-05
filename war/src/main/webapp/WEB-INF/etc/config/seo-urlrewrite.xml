@@ -112,9 +112,21 @@
         <to>%{scheme}://%{attribute:jahiaSiteKeyForLink}$1/cms$4</to>
     </outbound-rule>
     <outbound-rule>
+        <name>Check if the vanity URL mapping contains reserved prefix</name>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/(.*)$</from>
+        <run class="org.jahia.services.seo.urlrewrite.ServerNameToSiteMapper" method="checkReservedPrefix(HttpServletRequest, String, String)"/>
+    </outbound-rule>
+    <outbound-rule>
+        <name>Remove the /render/live part</name>
+        <note>Removes the /render/live part for URLs, containing reserved prefixes, but leaves /cms</note>
+        <condition type="attribute" name="jahiaUrlContainsReservedPrefix" operator="equal">^true$</condition>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/(.*)?$</from>
+        <to>$1/cms/$2</to>
+    </outbound-rule>
+    <outbound-rule>
         <name>Remove the /cms/render/live part</name>
+        <condition type="attribute" name="jahiaUrlContainsReservedPrefix" operator="equal">^false$</condition>
         <from>^(/[\p{Alnum}\-_]*)?/cms/render/live(/.*)?$</from>
-        <!--<to>$1/cms/$2</to>-->
         <to>$1$2</to>
     </outbound-rule>
 </urlrewrite>

@@ -81,6 +81,8 @@ public class JCRSiteNode extends JCRNodeDecorator {
     private Boolean mixLanguagesActive;
 
     private String templateFolder;
+    
+    private String serverName;
 
     public JCRSiteNode(JCRNodeWrapper node) {
         super(node);
@@ -270,14 +272,18 @@ public class JCRSiteNode extends JCRNodeDecorator {
     }
 
     public String getServerName() {
-        try {
-            if (hasProperty("j:serverName")) {
-                return getProperty("j:serverName").getString();
+        if (serverName == null) {
+            try {
+                if (hasProperty("j:serverName")) {
+                    serverName = getProperty("j:serverName").getString();
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get site property",e);
+                return null;
             }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
         }
-        return null;
+        
+        return serverName;
     }
 
     public String getSiteKey() {

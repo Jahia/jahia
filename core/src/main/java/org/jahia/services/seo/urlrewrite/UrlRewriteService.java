@@ -186,6 +186,10 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     public boolean isSeoRulesEnabled() {
         return seoRulesEnabled;
     }
+    
+    public boolean isResrvedPrefix(String prefix) {
+        return reservedUrlPrefixSet.contains(prefix);
+    }
 
     protected boolean needsReloading() throws IOException {
         if (confReloadCheckIntervalSeconds > -1 && configurationResources != null

@@ -60,13 +60,14 @@ public class ServerNameToSiteMapper {
 
     public static final String ATTR_NAME_DEFAULT_LANG = "siteDefaultLanguage";
     public static final String ATTR_NAME_DEFAULT_LANG_MATCHES = "jahiaSiteKeyMatchesDefaultLanguage";
+    public static final String ATTR_NAME_IS_RESERVED_URL = "jahiaIsReservedUrl";
+    public static final String ATTR_NAME_RESERVED_PREFIX = "jahiaUrlContainsReservedPrefix";
     public static final String ATTR_NAME_SITE_KEY = "jahiaSiteKeyForCurrentServerName";
     public static final String ATTR_NAME_SITE_KEY_FOR_LINK = "jahiaSiteKeyForLink";
     public static final String ATTR_NAME_SITE_KEY_MATCHES = "jahiaSiteKeyMatchesCurrentServerName";
     public static final String ATTR_NAME_SKIP_INBOUND_SEO_RULES = "jahiaSkipInboundSeoRules";
     public static final String ATTR_NAME_VANITY_LANG = "vanityUrlTargetLang";
     public static final String ATTR_NAME_VANITY_PATH = "vanityUrlTargetPath";
-    public static final String ATTR_NAME_IS_RESERVED_URL = "jahiaIsReservedUrl";
 
     private static final Logger logger = LoggerFactory.getLogger(ServerNameToSiteMapper.class);
 
@@ -120,6 +121,16 @@ public class ServerNameToSiteMapper {
         return site != null && !Url.isLocalhost(site.getServerName()) ? site.getServerName() : null;
     }
 
+    private UrlRewriteService urlRewriteService;
+    
+    private UrlRewriteService getUrlRewriteService() {
+        if (urlRewriteService == null) {
+            urlRewriteService = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService"); 
+        }
+        
+        return urlRewriteService;
+    }
+    
     public void canResolveSiteByServerName(HttpServletRequest request, String ctx, String language,
             String siteKey) {
         String currentSiteKey = getSiteKeyByServerName(request);
@@ -149,5 +160,18 @@ public class ServerNameToSiteMapper {
                     "canResolveSiteByServerName({}, {}, {}) | currentSiteKey={} targetSiteKey={} matches {}",
                     new Object[] { ctx, language, siteKey, currentSiteKey, siteKey, matches });
         }
+    }
+
+    public void checkReservedPrefix(HttpServletRequest request, String ctx, String input) {
+        boolean reserved = false;
+        if (input.length() > 0) {
+            int end = input.indexOf('/');
+            end = end == -1 ? input.indexOf('?') : end;
+            reserved = getUrlRewriteService().isResrvedPrefix(end != -1 ? input.substring(0, end) : input);
+            if (logger.isDebugEnabled()) {
+                logger.info("checkReservedPrefix({}): {}", input, reserved);
+            }
+        }
+        request.setAttribute(ATTR_NAME_RESERVED_PREFIX, reserved);
     }
 }

@@ -72,6 +72,7 @@
         <li><a href="docConverter.jsp">Document converter</a></li>
         <li><a href="textExtractor.jsp">Document text extractor</a></li>
         <li><a href="wcagChecker.jsp">WCAG checker</a></li>
+        <li><a href="rewrite-status">URL rewriting rules</a></li>
     </ul>
 </fieldset>
         </td>

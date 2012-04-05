@@ -221,6 +221,9 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     public boolean prepareInbound(final HttpServletRequest request, HttpServletResponse response) {
         String input = request.getRequestURI();
+        if (request.getContextPath().length() > 0) {
+            input = StringUtils.substringAfter(input, request.getContextPath());
+        }
         String prefix = StringUtils.EMPTY;
         if (input.length() > 1 && input.indexOf('/') == 0) {
             int end = input.indexOf('/', 1);
@@ -236,7 +239,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
             request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_IS_RESERVED_URL, true);
         }
 
-        String path = request.getPathInfo() != null ? request.getPathInfo() : request.getRequestURI();
+        String path = request.getPathInfo() != null ? request.getPathInfo() : input;
         try{
             List<SimpleUrlHandlerMapping> mappings = getRenderMapping();
             if (mappings != null) {

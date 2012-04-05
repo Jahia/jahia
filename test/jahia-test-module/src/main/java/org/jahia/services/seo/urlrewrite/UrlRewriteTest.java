@@ -99,10 +99,11 @@ public class UrlRewriteTest {
 
     private MockHttpServletResponse response;
 
-    protected void rewrite(String in, String expectedOut) throws IOException, ServletException,
+    protected void rewrite(String in, String expectedOut, String expectedIn) throws IOException, ServletException,
             InvocationTargetException {
         if (request.getContextPath().length() > 0) {
             in = request.getContextPath() + in;
+            expectedIn = request.getContextPath() + expectedIn;
             expectedOut = request.getContextPath() + expectedOut;
         }
 
@@ -110,15 +111,20 @@ public class UrlRewriteTest {
         request.setRequestURI(in);
         String out = engine.rewriteOutbound(in, request, response);
         System.out.println(" -> " + out);
-        assertEquals("Rewritte outbound URL is wrong", expectedOut, out);
+        assertEquals("Rewritten outbound URL is wrong", expectedOut, out);
 
         request.setRequestURI(out);
         RewrittenUrl restored = null;
         if (engine.prepareInbound(request, response)) {
             restored = engine.rewriteInbound(request, response);
         }
-        assertEquals("Restored (inbound) URL is wrong", in, restored != null ? request.getContextPath() + restored.getTarget()
+        assertEquals("Restored (inbound) URL is wrong", expectedIn, restored != null ? request.getContextPath() + restored.getTarget()
                 : null);
+    }
+
+    protected void rewrite(String in, String expectedOut) throws IOException, ServletException,
+            InvocationTargetException {
+        rewrite(in, expectedOut, in);
     }
 
     @Before
@@ -141,62 +147,55 @@ public class UrlRewriteTest {
     @Test
     public void testLiveSiteLocalhost() throws Exception {
         // home page
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html", SERVLET + "/en/sites/urlRewriteSite/home.html");
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html?test=aaa", SERVLET
-                + "/en/sites/urlRewriteSite/home.html?test=aaa");
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html?param1=aaa&param2=bbb", SERVLET
-                + "/en/sites/urlRewriteSite/home.html?param1=aaa&param2=bbb");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html", "/en/sites/urlRewriteSite/home.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html?test=aaa",
+                "/en/sites/urlRewriteSite/home.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html?param1=aaa&param2=bbb",
+                "/en/sites/urlRewriteSite/home.html?param1=aaa&param2=bbb");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
-                SERVLET
-                        + "/en/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
+                "/en/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
-                SERVLET
-                        + "/en/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
+                "/en/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
 
         // page under home - 1st level
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities.html", SERVLET
-                + "/en/sites/urlRewriteSite/home/activities.html");
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities.html?test=aaa", SERVLET
-                + "/en/sites/urlRewriteSite/home/activities.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities.html",
+                "/en/sites/urlRewriteSite/home/activities.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities.html?test=aaa",
+                "/en/sites/urlRewriteSite/home/activities.html?test=aaa");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities.html?param1=aaa&param2=bbb",
-                SERVLET + "/en/sites/urlRewriteSite/home/activities.html?param1=aaa&param2=bbb");
+                "/en/sites/urlRewriteSite/home/activities.html?param1=aaa&param2=bbb");
 
         // page under home - 2st level
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html", SERVLET
-                + "/en/sites/urlRewriteSite/home/activities/last.html");
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html?test=aaa", SERVLET
-                + "/en/sites/urlRewriteSite/home/activities/last.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html",
+                "/en/sites/urlRewriteSite/home/activities/last.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html?test=aaa",
+                "/en/sites/urlRewriteSite/home/activities/last.html?test=aaa");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html?param1=aaa&param2=bbb",
-                SERVLET + "/en/sites/urlRewriteSite/home/activities/last.html?param1=aaa&param2=bbb");
+                "/en/sites/urlRewriteSite/home/activities/last.html?param1=aaa&param2=bbb");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
-                SERVLET
-                        + "/en/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
+                "/en/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
-                SERVLET
-                        + "/en/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
+               "/en/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
 
         // non-home page
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html", SERVLET
-                + "/en/sites/urlRewriteSite/search-results.html");
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html?test=aaa", SERVLET
-                + "/en/sites/urlRewriteSite/search-results.html?test=aaa");
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html?param1=aaa&param2=bbb", SERVLET
-                + "/en/sites/urlRewriteSite/search-results.html?param1=aaa&param2=bbb");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html",
+                "/en/sites/urlRewriteSite/search-results.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html?test=aaa",
+                "/en/sites/urlRewriteSite/search-results.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html?param1=aaa&param2=bbb",
+                "/en/sites/urlRewriteSite/search-results.html?param1=aaa&param2=bbb");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
-                SERVLET
-                        + "/en/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
+                "/en/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
-                SERVLET
-                        + "/en/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
+                "/en/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
 
         // non-home page
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html", SERVLET
-                + "/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html",
+                "/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?test=aaa",
-                SERVLET + "/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?test=aaa");
+                "/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?test=aaa");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb",
-                SERVLET
-                        + "/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb");
+                "/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb");
     }
 
     @Test
@@ -210,65 +209,137 @@ public class UrlRewriteTest {
         request.setServerName(SERVER_NAME);
 
         // home page
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html", SERVLET + "/home.html");
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html?test=aaa", SERVLET
-                + "/home.html?test=aaa");
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html?param1=aaa&param2=bbb", SERVLET
-                + "/home.html?param1=aaa&param2=bbb");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html", "/home.html",
+                SERVLET + "/render/live/sites/urlRewriteSite/home.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html?test=aaa", "/home.html?test=aaa",
+                SERVLET + "/render/live/sites/urlRewriteSite/home.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html?param1=aaa&param2=bbb",
+                "/home.html?param1=aaa&param2=bbb",
+                SERVLET + "/render/live/sites/urlRewriteSite/home.html?param1=aaa&param2=bbb");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
-                SERVLET + "/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
+                "/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
+                SERVLET + "/render/live/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
-                SERVLET
-                        + "/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
+                "/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
+                SERVLET + "/render/live/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
 
         // page under home - 1st level
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities.html", SERVLET
-                + "/home/activities.html");
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities.html?test=aaa", SERVLET
-                + "/home/activities.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities.html", "/home/activities.html",
+                SERVLET + "/render/live/sites/urlRewriteSite/home/activities.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities.html?test=aaa",
+                "/home/activities.html?test=aaa",
+                SERVLET + "/render/live/sites/urlRewriteSite/home/activities.html?test=aaa");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities.html?param1=aaa&param2=bbb",
-                SERVLET + "/home/activities.html?param1=aaa&param2=bbb");
+                "/home/activities.html?param1=aaa&param2=bbb",
+                SERVLET + "/render/live/sites/urlRewriteSite/home/activities.html?param1=aaa&param2=bbb");
 
         // page under home - 2st level
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html", SERVLET
-                + "/home/activities/last.html");
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html?test=aaa", SERVLET
-                + "/home/activities/last.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html",
+                "/home/activities/last.html",
+                SERVLET + "/render/live/sites/urlRewriteSite/home/activities/last.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html?test=aaa",
+                "/home/activities/last.html?test=aaa",
+                SERVLET + "/render/live/sites/urlRewriteSite/home/activities/last.html?test=aaa");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html?param1=aaa&param2=bbb",
-                SERVLET + "/home/activities/last.html?param1=aaa&param2=bbb");
+                "/home/activities/last.html?param1=aaa&param2=bbb",
+                SERVLET + "/render/live/sites/urlRewriteSite/home/activities/last.html?param1=aaa&param2=bbb");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
-                SERVLET
-                        + "/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
+                "/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
+                SERVLET + "/render/live/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
-                SERVLET
-                        + "/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
+                "/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
+                SERVLET + "/render/live/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
 
         // non-home page
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html", SERVLET
-                + "/search-results.html");
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html?test=aaa", SERVLET
-                + "/search-results.html?test=aaa");
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html?param1=aaa&param2=bbb", SERVLET
-                + "/search-results.html?param1=aaa&param2=bbb");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html", "/search-results.html",
+                SERVLET + "/render/live/sites/urlRewriteSite/search-results.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html?test=aaa",
+                "/search-results.html?test=aaa",
+                SERVLET + "/render/live/sites/urlRewriteSite/search-results.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html?param1=aaa&param2=bbb",
+                "/search-results.html?param1=aaa&param2=bbb",
+                SERVLET + "/render/live/sites/urlRewriteSite/search-results.html?param1=aaa&param2=bbb");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
-                SERVLET
-                        + "/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
+                "/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
+                SERVLET + "/render/live/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
-                SERVLET
-                        + "/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
+                "/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
+                SERVLET + "/render/live/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
 
         // non-home page
-        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html", SERVLET
-                + "/contents/aaa/my-text.viewContent.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html",
+                "/contents/aaa/my-text.viewContent.html",
+                SERVLET + "/render/live/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?test=aaa",
-                SERVLET + "/contents/aaa/my-text.viewContent.html?test=aaa");
+                "/contents/aaa/my-text.viewContent.html?test=aaa",
+                SERVLET + "/render/live/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?test=aaa");
         rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb",
-                SERVLET + "/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb");
+                "/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb",
+                SERVLET + "/render/live/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb");
     }
 
     @Test
     public void testLiveSiteServernameWithContext() throws Exception {
         request.setContextPath("/jahia");
         testLiveSiteServername();
+    }
+
+    @Test
+    public void testLiveSiteServernameNonDefaultLanguage() throws Exception {
+        request.setServerName(SERVER_NAME);
+
+        // home page
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/home.html", "/fr/home.html");
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/home.html?test=aaa", "/fr/home.html?test=aaa");
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/home.html?param1=aaa&param2=bbb",
+                "/fr/home.html?param1=aaa&param2=bbb");
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
+                "/fr/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
+                "/fr/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
+
+        // page under home - 1st level
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/home/activities.html", "/fr/home/activities.html");
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/home/activities.html?test=aaa",
+                "/fr/home/activities.html?test=aaa");
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/home/activities.html?param1=aaa&param2=bbb",
+                "/fr/home/activities.html?param1=aaa&param2=bbb");
+
+        // page under home - 2st level
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/home/activities/last.html",
+                "/fr/home/activities/last.html");
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/home/activities/last.html?test=aaa",
+                "/fr/home/activities/last.html?test=aaa");
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/home/activities/last.html?param1=aaa&param2=bbb",
+                "/fr/home/activities/last.html?param1=aaa&param2=bbb");
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
+                "/fr/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
+                "/fr/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
+
+        // non-home page
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/search-results.html", "/fr/search-results.html");
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/search-results.html?test=aaa",
+                "/fr/search-results.html?test=aaa");
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/search-results.html?param1=aaa&param2=bbb",
+                "/fr/search-results.html?param1=aaa&param2=bbb");
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
+                "/fr/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
+                "/fr/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
+
+        // non-home page
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html",
+                "/fr/contents/aaa/my-text.viewContent.html");
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?test=aaa",
+                "/fr/contents/aaa/my-text.viewContent.html?test=aaa");
+        rewrite(SERVLET + "/render/live/fr/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb",
+                "/fr/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb");
+    }
+
+    @Test
+    public void testLiveSiteServernameNonDefaultLanguageWithContext() throws Exception {
+        request.setContextPath("/jahia");
+        testLiveSiteServernameNonDefaultLanguage();
     }
 }

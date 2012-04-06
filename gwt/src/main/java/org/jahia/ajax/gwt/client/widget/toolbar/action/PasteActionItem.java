@@ -83,9 +83,9 @@ public class PasteActionItem extends BaseActionItem {
         boolean b;
 
         if (pasteInMainNode) {
-            b = lh.getMainNode() != null && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getMainNode());
+            b = lh.getMainNode() != null && hasPermission(lh.getMainNode()) && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getMainNode());
         } else {
-            b = lh.getSingleSelection() != null && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()) && lh.isPasteAllowed();
+            b = lh.getSingleSelection() != null && hasPermission(lh.getSelectionPermissions()) &&PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()) && lh.isPasteAllowed();
         }
 
         if (linker instanceof EditLinker) {

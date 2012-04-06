@@ -60,6 +60,6 @@ public class ExportActionItem extends BaseActionItem    {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && !lh.getSingleSelection().isNodeType("jnt:virtualsite"));
+        setEnabled(lh.getSingleSelection() != null && hasPermission(lh.getSingleSelection()) && !lh.getSingleSelection().isNodeType("jnt:virtualsite"));
     }
 }

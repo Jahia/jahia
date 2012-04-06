@@ -86,6 +86,6 @@ public class UnzipActionItem extends BaseActionItem {
     public void handleNewLinkerSelection(){
         LinkerSelectionContext lh = linker.getSelectionContext();
 
-        setEnabled(lh.getMultipleSelection().size() > 0 && lh.isParentWriteable() && lh.isFile() && lh.isZip());
+        setEnabled(lh.getMultipleSelection().size() > 0 && hasPermission(lh.getSelectionPermissions()) && lh.isParentWriteable() && lh.isFile() && lh.isZip());
     }
 }

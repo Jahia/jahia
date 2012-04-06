@@ -98,6 +98,7 @@ public class RenameActionItem extends NodeTypeAwareBaseActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         setEnabled(lh.getSingleSelection() != null
+                && hasPermission(lh.getSelectionPermissions())
                 && PermissionsUtils.isPermitted("jcr:write", lh.getSelectionPermissions())
                 && !lh.isLocked()
                 && !lh.isRootNode()

@@ -156,7 +156,7 @@ public class UnpublishActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         GWTJahiaNode gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
-        if (gwtJahiaNode != null && gwtJahiaNode.getAggregatedPublicationInfos() != null && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication"))) {
+        if (gwtJahiaNode != null && hasPermission(gwtJahiaNode) && gwtJahiaNode.getAggregatedPublicationInfos() != null && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication"))) {
             GWTJahiaPublicationInfo info = gwtJahiaNode.getAggregatedPublicationInfo();
             setEnabled(!info.isLocked() && info.isCanPublish() &&
                        (info.getStatus() == GWTJahiaPublicationInfo.PUBLISHED ||

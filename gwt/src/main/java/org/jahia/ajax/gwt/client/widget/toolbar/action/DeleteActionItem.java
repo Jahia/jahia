@@ -137,7 +137,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
         boolean enabled = selection != null && selection.size() > 0
                 && !lh.isSecondarySelection()
                 && !lh.isRootNode()
-                && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
+                && hasPermission(lh.getSelectionPermissions()) && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
                 && isNodeTypeAllowed(selection);
         
         if (enabled) {

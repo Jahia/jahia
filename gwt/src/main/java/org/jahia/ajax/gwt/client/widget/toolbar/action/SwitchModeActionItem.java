@@ -66,13 +66,17 @@ public class SwitchModeActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         final String workspace = getPropertyValue(getGwtToolbarItem(), "workspace");
-        if (workspace.equalsIgnoreCase("live")) {
-            final GWTJahiaNode node = linker.getSelectionContext().getMainNode();
-            if (node == null || node.getAggregatedPublicationInfo().getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED
-                    || node.getAggregatedPublicationInfo().getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
-                setEnabled(false);
-            } else {
-                setEnabled(true);
+        if (!hasPermission(linker.getSelectionContext().getMainNode())) {
+            setEnabled(false);
+        } else {
+            if (workspace.equalsIgnoreCase("live")) {
+                final GWTJahiaNode node = linker.getSelectionContext().getMainNode();
+                if (node == null || node.getAggregatedPublicationInfo().getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED
+                        || node.getAggregatedPublicationInfo().getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                    setEnabled(false);
+                } else {
+                    setEnabled(true);
+                }
             }
         }
     }

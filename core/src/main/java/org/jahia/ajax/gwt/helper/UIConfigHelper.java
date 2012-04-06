@@ -510,6 +510,7 @@ public class UIConfigHelper {
             pMap.put(gwtProperty.getName(), gwtProperty);
         }
         gwtToolbarItem.setLayout(getLayoutAsInt(item.getLayout()));
+        gwtToolbarItem.setRequiredPermission(item.getRequiredPermission());
         gwtToolbarItem.setProperties(pMap);
 
         ActionItem actionItem = item.getActionItem();

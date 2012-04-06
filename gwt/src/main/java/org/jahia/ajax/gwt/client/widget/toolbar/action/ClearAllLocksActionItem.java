@@ -86,7 +86,7 @@ public class ClearAllLocksActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         GWTJahiaNode singleSelection = lh.getSingleSelection();
-        setEnabled(singleSelection!=null && singleSelection.isLockable() &&
+        setEnabled(singleSelection!=null && singleSelection.isLockable() && hasPermission(lh.getSelectionPermissions()) &&
                 PermissionsUtils.isPermitted("jcr:lockManagement", lh.getSelectionPermissions()) && singleSelection.getLockInfos() != null &&
                 !lh.getSingleSelection().getLockInfos().isEmpty() && !lh.isSecondarySelection());
     }

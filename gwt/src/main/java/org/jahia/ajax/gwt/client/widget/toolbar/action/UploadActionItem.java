@@ -60,6 +60,7 @@ public class UploadActionItem extends NodeTypeAwareBaseActionItem {
         LinkerSelectionContext lh = linker.getSelectionContext();
 
         setEnabled(lh.getSingleSelection() != null
+                && hasPermission(lh.getSelectionPermissions())
                 && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions())
                 && isNodeTypeAllowed(lh.getSingleSelection())
                 && !lh.isLocked());

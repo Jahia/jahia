@@ -118,6 +118,6 @@ public class ZipActionItem extends NodeTypeAwareBaseActionItem  {
     public void handleNewLinkerSelection(){
         LinkerSelectionContext lh = linker.getSelectionContext();
         Boolean isContentType = lh.getSingleSelection() != null && isNodeTypeAllowed(lh.getSingleSelection());
-        setEnabled(lh.getMultipleSelection().size() > 0 && lh.isParentWriteable() && !lh.isSecondarySelection() && isContentType );
+        setEnabled(lh.getMultipleSelection().size() > 0 && hasPermission(lh.getSelectionPermissions()) && lh.isParentWriteable() && !lh.isSecondarySelection() && isContentType );
     }
 }

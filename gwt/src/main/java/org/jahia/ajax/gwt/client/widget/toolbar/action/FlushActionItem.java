@@ -79,8 +79,10 @@ public class FlushActionItem extends BaseActionItem {
     }
 
     public void handleNewLinkerSelection() {
+        setEnabled(false);
         GWTJahiaNode gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
-        if (gwtJahiaNode != null) {
+        if (gwtJahiaNode != null && hasPermission(gwtJahiaNode)) {
+            setEnabled(true);
             updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName());
         }
     }

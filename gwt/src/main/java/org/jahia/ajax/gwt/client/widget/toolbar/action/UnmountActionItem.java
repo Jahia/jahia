@@ -85,6 +85,6 @@ public class UnmountActionItem extends BaseActionItem  {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && (lh.getSingleSelection().getNodeTypes().contains("jnt:mountPoint")  || lh.getSingleSelection().getInheritedNodeTypes().contains("jnt:mountPoint")));
+        setEnabled(lh.getSingleSelection() != null && hasPermission(lh.getSelectionPermissions()) && (lh.getSingleSelection().getNodeTypes().contains("jnt:mountPoint")  || lh.getSingleSelection().getInheritedNodeTypes().contains("jnt:mountPoint")));
     }
 }

@@ -61,7 +61,7 @@ public class SubscriptionManagerActionItem extends BaseActionItem {
 
 	@Override public void handleNewLinkerSelection() {
         final GWTJahiaNode n = linker.getSelectionContext().getSingleSelection();
-        setEnabled(n != null && n.getNodeTypes().contains("jnt:newsletter") &&
+        setEnabled(n != null && n.getNodeTypes().contains("jnt:newsletter") && hasPermission(n) &&
                 (n.getAggregatedPublicationInfo().getStatus() != GWTJahiaPublicationInfo.NOT_PUBLISHED));
     }
 

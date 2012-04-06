@@ -80,6 +80,7 @@ public class PasteReferenceActionItem extends BaseActionItem  {
         LinkerSelectionContext lh = linker.getSelectionContext();
         boolean b = lh.getSingleSelection() != null
                 && !lh.isLocked()
+                && hasPermission(lh.getSelectionPermissions())
                 && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions())
                 && lh.isPasteAllowed();
         String refTypes = null;

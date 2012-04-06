@@ -58,6 +58,7 @@ public class NewFolderActionItem extends NodeTypeAwareBaseActionItem {
         LinkerSelectionContext lh = linker.getSelectionContext();
         setEnabled(lh.getSingleSelection() != null
                 && !lh.isLocked()
+                && hasPermission(lh.getSelectionPermissions())
                 && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions())
                 && isNodeTypeAllowed(lh.getSingleSelection()));
     }

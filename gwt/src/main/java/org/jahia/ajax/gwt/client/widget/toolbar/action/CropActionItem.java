@@ -69,7 +69,7 @@ public class CropActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && lh.isParentWriteable() && lh.isFile() && lh.isImage());
+        setEnabled(lh.getSingleSelection() != null && hasPermission(lh.getSelectionPermissions()) && lh.isParentWriteable() && lh.isFile() && lh.isImage());
     }
 
 

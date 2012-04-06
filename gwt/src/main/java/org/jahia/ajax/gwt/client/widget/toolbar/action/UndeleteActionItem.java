@@ -121,7 +121,7 @@ public class UndeleteActionItem extends BaseActionItem {
         LinkerSelectionContext lh = linker.getSelectionContext();
         List<GWTJahiaNode> selection = lh.getMultipleSelection();
         boolean canUndelete = false;
-        if (selection != null && selection.size() > 0 && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())) {
+        if (selection != null && selection.size() > 0 && hasPermission(lh.getSelectionPermissions()) && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())) {
             canUndelete = true;
             for (GWTJahiaNode gwtJahiaNode : selection) {
                 canUndelete &= gwtJahiaNode.getNodeTypes().contains("jmix:markedForDeletionRoot");

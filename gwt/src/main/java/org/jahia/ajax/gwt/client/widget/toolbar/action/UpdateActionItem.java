@@ -59,6 +59,7 @@ public class UpdateActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         setEnabled(lh.getSingleSelection() != null
+                && hasPermission(lh.getSelectionPermissions())
                 && PermissionsUtils.isPermitted("jcr:write", lh.getSelectionPermissions())
                 && !lh.isLocked()
                 && !lh.getSingleSelection().isNodeType("jnt:virtualsite"));

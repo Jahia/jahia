@@ -63,6 +63,7 @@ public class GWTJahiaToolbarItem implements Serializable {
     private int layout = 0;
     private List<String> processes;
     private Map<String, GWTJahiaProperty> properties = new HashMap<String, GWTJahiaProperty>();
+    private String requiredPermission;
 
     private ActionItem actionItem;
 
@@ -152,4 +153,11 @@ public class GWTJahiaToolbarItem implements Serializable {
         this.processes = processes;
     }
 
+    public String getRequiredPermission() {
+        return requiredPermission;
+    }
+
+    public void setRequiredPermission(String requiredPermission) {
+        this.requiredPermission = requiredPermission;
+    }
 }

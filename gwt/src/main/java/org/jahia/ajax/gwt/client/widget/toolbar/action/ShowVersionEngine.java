@@ -74,6 +74,6 @@ public class ShowVersionEngine extends BaseActionItem {
     @Override
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null);
+        setEnabled(lh.getSingleSelection() != null && hasPermission(lh.getSingleSelection()));
     }
 }

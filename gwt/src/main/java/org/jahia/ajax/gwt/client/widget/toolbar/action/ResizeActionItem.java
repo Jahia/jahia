@@ -70,6 +70,7 @@ public class ResizeActionItem extends BaseActionItem   {
         LinkerSelectionContext lh = linker.getSelectionContext();
 
         setEnabled(lh.getSingleSelection() != null && lh.isParentWriteable() && lh.isFile() && lh.isImage()
+                && hasPermission(lh.getSingleSelection())
                 && lh.getSingleSelection().get("j:height") != null
                 && lh.getSingleSelection().get("j:width") != null);
     }

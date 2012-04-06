@@ -359,7 +359,7 @@ public class JCRTagUtils {
                         JCRNodeWrapper next = (JCRNodeWrapper) nodeIterator.next();
                         components.add(next);
                     }
-                } else if (n.isNodeType("jnt:simpleComponent") && n.hasPermission("useComponent")) {
+                } else if (n.isNodeType("jnt:simpleComponent") && n.hasPermission("useComponentForCreate")) {
                     ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(n.getName());
                     for (String s : typeList) {
                         if (t.isNodeType(s)) {

@@ -65,7 +65,7 @@ public class EditSourceContentActionItem extends BaseActionItem {
         setEnabled(singleSelection != null
                 && !lh.isRootNode()
                 && hasPermission(lh.getSelectionPermissions())
-                && !Boolean.FALSE.equals(ModuleHelper.getNodeType(singleSelection.getReferencedNode().getNodeTypes().get(0)).get("canUseComponentForEdit"))
-                && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions()) && singleSelection.isReference());
+                && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions()) && singleSelection.isReference()
+                && !Boolean.FALSE.equals(ModuleHelper.getNodeType(singleSelection.getReferencedNode().getNodeTypes().get(0)).get("canUseComponentForEdit")));
 	}
 }

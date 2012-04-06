@@ -164,7 +164,7 @@ public class ComponentRegistry {
                     JCRNodeWrapper next = (JCRNodeWrapper) nodeIterator.next();
                     components.add(next);
                 }
-            } else if (n.isNodeType("jnt:simpleComponent") && n.hasPermission("useComponent")) {
+            } else if (n.isNodeType("jnt:simpleComponent") /*&& n.hasPermission("useComponentForCreate")*/) {
                 ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(n.getName());
                 if (allowType(t, includeTypeList, excludeTypeList)) {
                     typeComponentMap.put(t, n);

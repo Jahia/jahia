@@ -96,6 +96,7 @@ import org.jahia.services.search.SearchCriteria.Term;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.services.search.SearchCriteria.Term.SearchFields;
 import org.jahia.services.tags.TaggingService;
+import org.jahia.services.visibility.VisibilityService;
 import org.jahia.utils.DateUtils;
 import org.jahia.utils.Patterns;
 
@@ -255,6 +256,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             }
         } catch (RepositoryException e) {
             logger.debug("Error while trying to check for node language", e);
+        }
+        //check if current node is visible
+        if(!skipNode) {
+        	skipNode = VisibilityService.getInstance().matchesConditions(node);
         }
 
         return skipNode;

@@ -220,6 +220,8 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     }
 
     public boolean prepareInbound(final HttpServletRequest request, HttpServletResponse response) {
+        resetState(request);
+
         String input = request.getRequestURI();
         if (request.getContextPath().length() > 0) {
             input = StringUtils.substringAfter(input, request.getContextPath());
@@ -286,6 +288,19 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         }
 
         return true;
+    }
+
+    private void resetState(HttpServletRequest request) {
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG_MATCHES);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_IS_RESERVED_URL);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_RESERVED_PREFIX);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY_FOR_LINK);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY_MATCHES);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SKIP_INBOUND_SEO_RULES);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH);
     }
 
     public RewrittenUrl rewriteInbound(HttpServletRequest request, HttpServletResponse response)

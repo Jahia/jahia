@@ -44,10 +44,7 @@ import java.io.IOException;
 import java.util.*;
 
 import javax.jcr.RepositoryException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
@@ -70,6 +67,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
+import org.tuckey.web.filters.urlrewrite.RewrittenUrl;
 
 /**
  * Logout controller.
@@ -160,58 +158,78 @@ public class Logout implements Controller {
             }
         }
         if (StringUtils.isNotEmpty(redirect)) {
-            String url = redirect;
-            String contextPath = request.getContextPath();
-            String prefix = contextPath + "/cms/";
-            if (url.startsWith(contextPath)) {
-                url = StringUtils.substringAfter(url, contextPath);
-            }
-            if (url.startsWith("/cms")) {
-                url = StringUtils.substringAfter(url, "/cms");
-            }
-            if (!url.startsWith("/")) {
-                url = "/" + url;
-            }
-            String hash = StringUtils.substringAfterLast(url, "#");
-            url = StringUtils.substringBefore(url, ";jsessionid");
-            url = StringUtils.substringBefore(url, "?");
-            url = StringUtils.substringBefore(url, "#");
-            if (hash != null && hash.startsWith("/sites/") && url.contains("/sites/")) {
-                url = StringUtils.substringBefore(url, "/sites/") + StringUtils.substringBefore(hash, ":") + ".html";
+            UrlRewriteService rewriteService = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService");
+            try {
+                final String r = redirect;
+                HttpServletRequestWrapper wrapper = new HttpServletRequestWrapper(request) {
+                    @Override
+                    public String getRequestURI() {
+                        return r;
+                    }
+
+                    @Override
+                    public String getPathInfo() {
+                        if (r.startsWith("/cms/")) {
+                            return StringUtils.substringAfter(r,"/cms");
+                        }
+                        return null;
+                    }
+                };
+
+                if (rewriteService.prepareInbound(wrapper, response)) {
+                    RewrittenUrl restored = rewriteService.rewriteInbound(wrapper, response);
+                    if (restored != null) {
+                        redirect = restored.getTarget();
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("Cannot rewrite redirection url",e);
             }
 
-            List<String> urls = new ArrayList<String>();
-            urls.add(url);
-            if (url.startsWith("/edit/")) {
-                url = "/render/" + StringUtils.substringAfter(url,"/edit/");
-                urls.add(url);
-            } else if (url.startsWith("/contribute/")) {
-                url = "/render/" + StringUtils.substringAfter(url,"/contribute/");
-                urls.add(url);
-            } else if (url.startsWith("/render/default/")) {
-                url = "/render/live/" + StringUtils.substringAfter(url,"/render/default/");
-                urls.add(url);
-            } else if (!url.startsWith("/render/live")) {
-                url = "/render/live/" + StringUtils.substringAfter(url,"/");
-                urls.add(url);
-            }
-            for (String currentUrl : urls) {
-                try {
-                    URLResolver r = urlResolverFactory.createURLResolver(currentUrl, request.getServerName(), request);
-                    if (r.getPath().startsWith("/sites/")) {
-                        JCRNodeWrapper n = r.getNode();
-                        redirect = prefix + r.getServletPart() + "/" + r.getWorkspace() + "/"
-                                + resolveLanguage(request, n.getResolveSite()) + n.getPath() + ".html";
-                    } else {
-                        redirect = request.getContextPath() + "/";
-                    }
-                    response.sendRedirect(response.encodeRedirectURL(redirect));
-                    return;
-                } catch (Exception e) {
+            String prefix = request.getContextPath() + "/cms/";
+            if (redirect.startsWith(prefix)) {
+                String url = "/" + StringUtils.substringAfter(redirect, prefix);
+                String hash = StringUtils.substringAfterLast(url, "#");
+                url = StringUtils.substringBefore(url, ";jsessionid");
+                url = StringUtils.substringBefore(url, "?");
+                url = StringUtils.substringBefore(url, "#");
+                if (hash != null && hash.startsWith("/sites/") && url.contains("/sites/")) {
+                    url = StringUtils.substringBefore(url, "/sites/") + StringUtils.substringBefore(hash, ":") + ".html";
                 }
+
+                List<String> urls = new ArrayList<String>();
+                urls.add(url);
+                if (url.startsWith("/edit/")) {
+                    url = "/render/" + StringUtils.substringAfter(url,"/edit/");
+                    urls.add(url);
+                } else if (url.startsWith("/contribute/")) {
+                    url = "/render/" + StringUtils.substringAfter(url,"/contribute/");
+                    urls.add(url);
+                }
+                if (url.startsWith("/render/default/")) {
+                    url = "/render/live/" + StringUtils.substringAfter(url,"/render/default/");
+                    urls.add(url);
+                }
+                for (String currentUrl : urls) {
+                    try {
+                        URLResolver r = urlResolverFactory.createURLResolver(currentUrl, request.getServerName(), request);
+                        if (r.getPath().startsWith("/sites/")) {
+                            JCRNodeWrapper n = r.getNode();
+                            redirect = prefix + r.getServletPart() + "/" + r.getWorkspace() + "/"
+                                    + resolveLanguage(request, n.getResolveSite()) + n.getPath() + ".html";
+                        } else {
+                            redirect = request.getContextPath() + "/";
+                        }
+                        redirect = rewriteService.rewriteOutbound(redirect, request, response);
+                        response.sendRedirect(response.encodeRedirectURL(redirect));
+                        return;
+                    } catch (Exception e) {
+                        logger.debug("Cannot redirect to "+currentUrl, e);
+                    }
+                }
+                response.sendRedirect(response.encodeRedirectURL(prefix + StringUtils.substringAfter(urls.get(0), "/")));
+                return;
             }
-            response.sendRedirect(response.encodeRedirectURL(prefix + StringUtils.substringAfter(urls.get(0), "/")));
-            return;
         }
 
         response.sendRedirect(response.encodeRedirectURL(StringUtils.isNotEmpty(redirect) ? redirect : request.getContextPath() + "/"));

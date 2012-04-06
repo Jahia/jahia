@@ -152,7 +152,10 @@
 
         <editMode jcr:primaryType="jnt:permission">
             <editModeAccess jcr:primaryType="jnt:permission"/>
-            <useComponent jcr:primaryType="jnt:permission"/>
+            <useComponent jcr:primaryType="jnt:permission">
+                <useComponentForCreate jcr:primaryType="jnt:permission"/>
+                <useComponentForEdit jcr:primaryType="jnt:permission"/>
+            </useComponent>
             <editSelector jcr:primaryType="jnt:permission">
                 <categoriesSelector jcr:primaryType="jnt:permission"/>
                 <contentSelector jcr:primaryType="jnt:permission"/>

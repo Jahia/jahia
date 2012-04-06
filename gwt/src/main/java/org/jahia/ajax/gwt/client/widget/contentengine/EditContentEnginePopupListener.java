@@ -44,6 +44,7 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
 public class EditContentEnginePopupListener implements Listener<ComponentEvent> {
     private final Module module;
@@ -59,6 +60,8 @@ public class EditContentEnginePopupListener implements Listener<ComponentEvent> 
         if (!module.isSelectable()) {
             return;
         }
-        EngineLoader.showEditEngine(editLinker, module.getNode());
+        if (!Boolean.FALSE.equals(ModuleHelper.getNodeType(module.getNode().getNodeTypes().get(0)).get("canUseComponentForEdit"))) {
+            EngineLoader.showEditEngine(editLinker, module.getNode());
+        }
     }
 }

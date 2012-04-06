@@ -76,6 +76,7 @@ import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -203,7 +204,10 @@ class SearchTabItem extends SidePanelTabItem {
         tab.add(panel);
         grid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
-                EngineLoader.showEditEngine(editLinker, (GWTJahiaNode) ((GridEvent) be).getModel());
+                GWTJahiaNode node = (GWTJahiaNode) ((GridEvent) be).getModel();
+                if (!Boolean.FALSE.equals(ModuleHelper.getNodeType(node.getNodeTypes().get(0)).get("canUseComponentForEdit"))) {
+                    EngineLoader.showEditEngine(editLinker, node);
+                }
             }
         });
         grid.setContextMenu(createContextMenu(config.getTableContextMenu(), grid.getSelectionModel()));

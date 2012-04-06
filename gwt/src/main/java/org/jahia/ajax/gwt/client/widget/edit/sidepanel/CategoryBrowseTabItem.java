@@ -60,6 +60,7 @@ import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
 import java.util.Comparator;
 
@@ -139,7 +140,9 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
             public void handleEvent(BaseEvent baseEvent) {
                 GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) (((GridEvent) baseEvent).getModel());
                 if (gwtJahiaNode != null && editLinker != null) {
-                    EngineLoader.showEditEngine(editLinker, gwtJahiaNode);
+                    if (!Boolean.FALSE.equals(ModuleHelper.getNodeType(gwtJahiaNode.getNodeTypes().get(0)).get("canUseComponentForEdit"))) {
+                        EngineLoader.showEditEngine(editLinker, gwtJahiaNode);
+                    }
                 }
             }
         });

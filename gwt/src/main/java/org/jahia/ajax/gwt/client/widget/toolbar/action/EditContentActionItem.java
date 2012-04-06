@@ -40,10 +40,12 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
 /**
  * 
@@ -65,6 +67,7 @@ public class EditContentActionItem extends BaseActionItem {
         LinkerSelectionContext lh = linker.getSelectionContext();
         final GWTJahiaNode singleSelection = lh.getSingleSelection();
         setEnabled(singleSelection != null
+                && !Boolean.FALSE.equals(ModuleHelper.getNodeType(singleSelection.getNodeTypes().get(0)).get("canUseComponentForEdit"))
                 && hasPermission(lh.getSelectionPermissions())
                 && (allowRootNodeEditing || !lh.isRootNode())
                 && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions()));

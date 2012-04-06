@@ -368,8 +368,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public Map<String,List<? extends ModelData>> getNodesAndTypes(List<String> paths, List<String> fields, List<String> types) throws GWTJahiaServiceException {
         Map<String,List<? extends ModelData>> m = new HashMap<String,List<? extends ModelData>>();
-        m.put("nodes",getNodes(paths, fields));
+        List<GWTJahiaNode> nodes = getNodes(paths, fields);
+        m.put("nodes", nodes);
+        for (GWTJahiaNode node : nodes) {
+            if (!types.contains(node.getNodeTypes().get(0))) {
+                types.add(node.getNodeTypes().get(0));
+            }
+        }
         m.put("types", getNodeTypes(types));
+
         return m;
     }
 
@@ -1935,7 +1942,39 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public List<GWTJahiaNodeType> getNodeTypes(List<String> names) throws GWTJahiaServiceException {
-        return contentDefinition.getNodeTypes(names, getUILocale());
+        List<GWTJahiaNodeType> types = contentDefinition.getNodeTypes(names, getUILocale());
+
+        JCRSessionWrapper s = retrieveCurrentSession();
+
+        Map<String, JCRNodeWrapper> nodesForTypes = new HashMap<String, JCRNodeWrapper>();
+        try {
+            Query q = s.getWorkspace().getQueryManager().createQuery("select * from [jnt:component] as c " +
+                    "where isdescendantnode(c,'"+getSite().getPath()+"')", Query.JCR_SQL2);
+            QueryResult qr = q.execute();
+            NodeIterator ni = qr.getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper node  = (JCRNodeWrapper) ni.next();
+                if (names.contains(node.getName())) {
+                    nodesForTypes.put(node.getName(), node);
+                }
+            }
+
+            for (GWTJahiaNodeType type : types) {
+                if (!type.isMixin()) {
+                    JCRNodeWrapper n = nodesForTypes.get(type.getName());
+                    if (n != null) {
+                        type.set("canUseComponentForCreate",n.hasPermission("useComponentForCreate"));
+                        type.set("canUseComponentForEdit",n.hasPermission("useComponentForEdit"));
+                    } else {
+                        type.set("canUseComponentForCreate",false);
+                        type.set("canUseComponentForEdit",false);
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get components",e);
+        }
+        return types;
     }
 
     public List<GWTJahiaNodeType> getSubNodeTypes(List<String> names) throws GWTJahiaServiceException {

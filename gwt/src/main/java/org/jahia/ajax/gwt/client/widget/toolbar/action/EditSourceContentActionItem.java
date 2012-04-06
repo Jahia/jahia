@@ -44,6 +44,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
 /**
  * Action item used to open the edit engine for the original content source.
@@ -64,6 +65,7 @@ public class EditSourceContentActionItem extends BaseActionItem {
         setEnabled(singleSelection != null
                 && !lh.isRootNode()
                 && hasPermission(lh.getSelectionPermissions())
+                && !Boolean.FALSE.equals(ModuleHelper.getNodeType(singleSelection.getReferencedNode().getNodeTypes().get(0)).get("canUseComponentForEdit"))
                 && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions()) && singleSelection.isReference());
 	}
 }

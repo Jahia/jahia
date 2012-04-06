@@ -365,7 +365,10 @@ public class ContentDefinitionHelper {
         try {
             List<GWTJahiaNodeType> list = new ArrayList<GWTJahiaNodeType>();
             for (String name : names) {
-                list.add(getNodeType(name, uiLocale));
+                GWTJahiaNodeType nodeType = getNodeType(name, uiLocale);
+                if (nodeType != null) {
+                    list.add(nodeType);
+                }
             }
             return list;
         } catch (Exception e) {

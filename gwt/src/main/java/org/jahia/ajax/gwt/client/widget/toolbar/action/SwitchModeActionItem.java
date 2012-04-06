@@ -77,6 +77,8 @@ public class SwitchModeActionItem extends BaseActionItem {
                 } else {
                     setEnabled(true);
                 }
+            } else {
+                setEnabled(true);
             }
         }
     }

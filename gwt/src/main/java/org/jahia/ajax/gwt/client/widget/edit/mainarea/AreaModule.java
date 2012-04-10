@@ -58,6 +58,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -215,12 +216,18 @@ public class AreaModule extends SimpleModule {
             if (getNodeTypes() != null) {
                 String[] nodeTypesArray = getNodeTypes().split(" ");
                 for (final String s : nodeTypesArray) {
-
-                    icon = ContentModelIconProvider.getInstance().getIcon(ModuleHelper.getNodeType(s));
+                    GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(s);
+                    if (nodeType != null) {
+                        Boolean canUseComponentForCreate = (Boolean) nodeType.get("canUseComponentForCreate");
+                        if (canUseComponentForCreate != null && !canUseComponentForCreate) {
+                            continue;
+                        }
+                    }
+                    icon = ContentModelIconProvider.getInstance().getIcon(nodeType);
                     p = new HorizontalPanel();
                     p.add(icon.createImage());
                     if (getWidth() > 150) {
-                        p.add(new Text(ModuleHelper.getNodeType(s) != null ? ModuleHelper.getNodeType(s).getLabel() : s));
+                        p.add(new Text(nodeType != null ? nodeType.getLabel() : s));
                     }
                     p.sinkEvents(Event.ONCLICK);
                     p.addStyleName("button-placeholder");

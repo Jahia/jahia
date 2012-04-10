@@ -83,7 +83,6 @@
 	<bean class="org.jahia.services.channels.filters.ChannelResolutionFilter">
 		<property name="priority" value="6" />
         <property name="description" value="Set channel depending of the user agent"/>
-		<property name="applyOnModes" value="live,preview,edit,contribute" />
 		<property name="applyOnConfigurations" value="page,wrappedcontent" />
         <property name="channelService" ref="ChannelService" />
 	</bean>
@@ -91,7 +90,6 @@
     <bean class="org.jahia.services.channels.filters.ChannelExclusionFilter">
         <property name="priority" value="7" />
         <property name="description" value="Exclude a module from render if it is excluded for the channel"/>
-        <property name="applyOnModes" value="live,preview,edit,contribute" />
         <property name="applyOnConfigurations" value="module,wrappedcontent" />
     </bean>
 

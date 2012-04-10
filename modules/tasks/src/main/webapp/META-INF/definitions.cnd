@@ -6,7 +6,7 @@
  - assigneeUserKey (string)
  - candidates (string) multiple
  - description (string)
- - priority (string, choicelist[resourceBundle]) = 'medium' nofulltext analyzer='keyword' < 'very_low', 'low', 'medium', 'high', 'very_high'
+ - priority (string, choicelist[resourceBundle]) = 'normal' nofulltext analyzer='keyword' < 'low', 'normal', 'high'
  - dueDate (date, datetimepicker) = now('1000*60*60*24')
  - state (string, choicelist[resourceBundle]) = 'active' nofulltext analyzer='keyword' < 'active', 'started', 'finished', 'suspended'
  - type (string)

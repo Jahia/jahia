@@ -204,7 +204,9 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                     Object inArea = request.getAttribute("inArea");
                     args.add(inArea != null ? inArea.toString() : "");
                 } else if ("site".equals(field)) {
-                    args.add(renderContext.getSite().getSiteKey()+(Url.isLocalhost(renderContext.getRequest().getServerName())?"localhost:":""));
+                    args.add(Url.isLocalhost(renderContext.getRequest().getServerName()) ? (renderContext
+                            .getSite().getSiteKey() + "localhost:") : renderContext.getSite()
+                            .getSiteKey());
                 }
             }
         }

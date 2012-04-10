@@ -27,18 +27,8 @@ Search index configuration and maintenance
 * Rebuilding indexes
 
   After e.g. an abnormal server process termination or severe I/O error, the index may become inconsistent.
-  To rebuild the index, stop Jahia server, delete the corresponding index directory, and start the server again.
-  The index will automatically be re-built on start-up. Depending on the amount of data in the repository this can take some time.
+  To rebuild the index (since Jahia 6.7), please, go into the <Search Engine Management> in the <Jahia Tools Area> ({{{http://localhost:8080/tools/search.jsp}http://localhost:8080/tools/search.jsp}})
+  and click on <Repository re-indexing>. This will force an index re-build on the next Jahia startup. Restart your Jahia server.
   
-  To rebuild all three indexes, you can set the following option to <<<true>>>
-
-+------------------------
-jahia.jackrabbit.reindexOnStartup = true
-+------------------------
-
-  in <<<\<jahia-web-app-dir\>/WEB-INF/etc/config/jahia.properties>>> file and restart the Jahia server.
-  This will force Jahia to delete all indexes and re-create them on the server startup. Please, don't forget
-  to set the value of the <<<jahia.jackrabbit.reindexOnStartup>>> back to <<<false>>>.      
-
   In order to rebuild indexes, used in the {{{./didYouMean.html} "Did you mean"}} search suggestion feature, you
   should trigger the index update as described in the {{{./didYouMean.html#Index}Index updates}} section. 

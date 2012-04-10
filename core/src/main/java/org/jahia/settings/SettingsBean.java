@@ -59,6 +59,7 @@
 package org.jahia.settings;
 
 import org.apache.commons.collections.FastHashMap;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRContentUtils;
@@ -387,21 +388,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             System.setProperty("jahia.jackrabbit.consistencyCheck", String.valueOf(getBoolean("jahia.jackrabbit.consistencyCheck", false)));
             System.setProperty("jahia.jackrabbit.consistencyFix", String.valueOf(getBoolean("jahia.jackrabbit.consistencyFix", false)));
             System.setProperty("jahia.jackrabbit.onWorkspaceInconsistency", getString("jahia.jackrabbit.onWorkspaceInconsistency", "log"));
-            if (getBoolean("jahia.jackrabbit.reindexOnStartup", false)) {
-                Resource repoHome = applicationContext.getResource(getString(
-                        "jahia.jackrabbit.home", "WEB-INF/var/repository"));
-                try {
-                    if (repoHome.exists() && repoHome.getFile() != null) {
-                        JCRContentUtils.deleteJackrabbitIndexes(repoHome.getFile());
-                    } else {
-                        logger.warn("Unable to delete JCR repository index folders in home {}",
-                                repoHome);
-                    }
-                } catch (IOException e) {
-                    logger.error("Unable to delete JCR repository index folders in home "
-                            + repoHome, e);
-                }
-            }
+            
+            reindexIfNeeded();
+            
         } catch (NullPointerException npe) {
             logger.error("Properties file is not valid...!", npe);
         } catch (NumberFormatException nfe) {
@@ -409,6 +398,32 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         }
     } // end load
 
+
+    public File getRepositoryHome() throws IOException {
+        Resource repoHome = applicationContext.getResource(getString("jahia.jackrabbit.home",
+                "WEB-INF/var/repository"));
+
+        return repoHome != null && repoHome.exists() ? repoHome.getFile() : null;
+    }
+
+    private void reindexIfNeeded() {
+        File repoHome = null;
+
+        try {
+            repoHome = getRepositoryHome();
+            if (repoHome != null
+                    && (getBoolean("jahia.jackrabbit.reindexOnStartup", false) || new File(
+                            repoHome, "reindex").exists())) {
+                File reindexFile = new File(repoHome, "reindex");
+                if (reindexFile.exists()) {
+                    FileUtils.deleteQuietly(reindexFile);
+                }
+                JCRContentUtils.deleteJackrabbitIndexes(repoHome);
+            }
+        } catch (IOException e) {
+            logger.error("Unable to delete JCR repository index folders in home " + repoHome, e);
+        }
+    }
 
     public Locale getDefaultLocale() {
         return defaultLocale;

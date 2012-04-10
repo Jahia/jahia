@@ -157,7 +157,7 @@
 
                                 <div style="display:none;" class="taskdetail" id="taskdetail_${task.identifier}">
                                     <p class="task-info-p"><fmt:message key="label.createdBy"/>: ${task.properties['jcr:createdBy'].string}, <fmt:message key="label.createdOn"/> <fmt:formatDate value="${task.properties['jcr:created'].date.time}" dateStyle="long" type="both"/></p>
-                                    <c:if test="${not empty task.properties['priority']}"><p class="task-priority-p"><fmt:message key="jnt_task.priority"/>: <span class="task-priority task-${task.properties['priority'].string}">${task.properties['priority'].string}</span></p></c:if>
+                                    <c:if test="${not empty task.properties['priority']}"><p class="task-priority-p"><fmt:message key="jnt_task.priority"/>: <span class="task-priority task-${task.properties['priority'].string}"><jcr:nodePropertyRenderer node="${task}" name="priority" renderer="resourceBundle"/></span></p></c:if>
                                     <c:if test="${not empty task.properties['description']}"><p class="task-text">${task.properties['description'].string}</p></c:if>
                                     <template:tokenizedForm>
                                         <form id="tokenForm_${task.identifier}" name="tokenform_${task.identifier}" method="post" action="<c:url value='${url.base}'/>${task.path}">

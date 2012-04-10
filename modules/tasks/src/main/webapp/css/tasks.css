@@ -201,11 +201,11 @@ padding:0;
 	margin-right:5px;
 	vertical-align:text-bottom;
 }
-.bodywrapper span.icon-task-medium {
+.bodywrapper span.icon-task-normal {
 	display:inline-block;
 	width:18px;
 	height:18px;
-	background: url(img/task-medium.png) no-repeat top left;
+	background: url(img/task-normal.png) no-repeat top left;
 	margin-right:5px;
 	vertical-align:text-bottom;
 }
@@ -249,7 +249,7 @@ padding:0;
 .task-low {
     background-color: #669900;
 }
-.task-medium {
+.task-normal {
     background-color: #333333;
 }
 .task-high {

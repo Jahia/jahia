@@ -169,8 +169,8 @@ public class Logout implements Controller {
 
                     @Override
                     public String getPathInfo() {
-                        if (r.startsWith("/cms/")) {
-                            return StringUtils.substringAfter(r,"/cms");
+                        if (r.startsWith(getContextPath() + "/cms/")) {
+                            return StringUtils.substringAfter(r,getContextPath() + "/cms");
                         }
                         return null;
                     }
@@ -179,7 +179,7 @@ public class Logout implements Controller {
                 if (rewriteService.prepareInbound(wrapper, response)) {
                     RewrittenUrl restored = rewriteService.rewriteInbound(wrapper, response);
                     if (restored != null) {
-                        redirect = restored.getTarget();
+                        redirect = request.getContextPath() + restored.getTarget();
                     }
                 }
             } catch (Exception e) {
@@ -227,7 +227,7 @@ public class Logout implements Controller {
                         logger.debug("Cannot redirect to "+currentUrl, e);
                     }
                 }
-                response.sendRedirect(response.encodeRedirectURL(prefix + StringUtils.substringAfter(urls.get(0), "/")));
+                response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/"));
                 return;
             }
         }

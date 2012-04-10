@@ -97,7 +97,7 @@ public class PreviewWindow extends Window {
         JahiaContentManagementService.App.getInstance().getRenderedContent(
                 jahiaNode.getPath(), null, JahiaGWTParameters.getLanguage(),
                 "default", configuration, params, true, linker.getConfig().getName(),
-                new BaseAsyncCallback<GWTRenderResult>() {
+                null, new BaseAsyncCallback<GWTRenderResult>() {
                     public void onSuccess(GWTRenderResult gwtRenderResult) {
                         htmlPreview.removeAll();
                         htmlPreview.add(new HTML(gwtRenderResult.getResult()));

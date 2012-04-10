@@ -80,7 +80,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.channels.Channel;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -296,6 +295,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             config.setSitesMap(sitesMap);
 
             setAvailablePermissions(config);
+
+            config.setChannels(channelHelper.getChannels());
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -1035,8 +1036,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template,
-                                              String configuration,final Map<String, List<String>> contextParams, boolean editMode,
-                                              String configName) throws GWTJahiaServiceException {
+                                              String configuration, final Map<String, List<String>> contextParams, boolean editMode,
+                                              String configName, String channelIdentifier) throws GWTJahiaServiceException {
         Locale localValue = getLocale();
         if (locale != null) {
             localValue = LanguageCodeConverters.languageCodeToLocale(locale);
@@ -1046,7 +1047,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         return this.template
                 .getRenderedContent(path, template, configuration, contextParams, editMode, configName, getRequest(),
-                        getResponse(), retrieveCurrentSession(workspace, localValue, true), getUILocale());
+                        getResponse(), retrieveCurrentSession(workspace, localValue, true), getUILocale(), channelIdentifier);
     }
 
     public String getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace,

@@ -74,6 +74,7 @@ public class EditManager extends ContentPanel {
         JahiaGWTParameters.setSiteNode(config.getSiteNode());
         JahiaGWTParameters.setSitesLocation(config.getSitesLocation());
         JahiaGWTParameters.setSitesMap(config.getSitesMap());
+        JahiaGWTParameters.setChannels(config.getChannels());
 
         borderLayout =  new BorderLayout();
         setLayout(borderLayout);

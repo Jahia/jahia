@@ -43,7 +43,6 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
@@ -114,7 +113,7 @@ public class LayoutTabItem extends PropertiesTabItem {
                     if (engine.getNode() != null) {
                         JahiaContentManagementService
                                 .App.getInstance().getRenderedContent(engine.getNode().getPath(), null, LayoutTabItem.this.language,
-                                template, "preview", contextParams, false, null, new BaseAsyncCallback<GWTRenderResult>() {
+                                template, "preview", contextParams, false, null, null, new BaseAsyncCallback<GWTRenderResult>() {
                             public void onSuccess(GWTRenderResult result) {
                                 HTML html = new HTML(result.getResult());
 

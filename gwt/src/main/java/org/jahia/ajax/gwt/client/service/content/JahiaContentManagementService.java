@@ -201,7 +201,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void uploadedFile(List<String[]> uploadeds) throws GWTJahiaServiceException;
 
-    public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, List<String>> contextParams, boolean editMode, String configName) throws GWTJahiaServiceException;
+    public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, List<String>> contextParams, boolean editMode, String configName, String channelIdentifier) throws GWTJahiaServiceException;
 
     public String getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace, String locale) throws GWTJahiaServiceException;
 

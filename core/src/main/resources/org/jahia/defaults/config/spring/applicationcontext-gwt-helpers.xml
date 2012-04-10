@@ -83,6 +83,7 @@
 
     <bean name="TemplateHelper" class="org.jahia.ajax.gwt.helper.TemplateHelper">
         <property name="renderService" ref="RenderService"/>
+        <property name="channelService" ref="ChannelService"/>
     </bean>
 
     <bean name="VersioningHelper" class="org.jahia.ajax.gwt.helper.VersioningHelper">

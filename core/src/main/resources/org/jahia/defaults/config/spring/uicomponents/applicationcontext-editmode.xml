@@ -148,6 +148,7 @@
             <bean id="editModeMainModuleToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
+                        <!--ref bean="Toolbar.ItemsGroup.ChannelSwitcher"/-->
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.edit"/>
                             <!-- <property name="icon" value="editAction"/>  -->

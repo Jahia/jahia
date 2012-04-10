@@ -155,7 +155,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
                     JahiaContentManagementService.App.getInstance().getRenderedContent(
                             evt.getSelectedItem().getPath(), null, editLinker.getLocale(),
                             "default", "preview", null, true, config.getName(),
-                            new BaseAsyncCallback<GWTRenderResult>() {
+                            editLinker.getActiveChannelIdentifier(), new BaseAsyncCallback<GWTRenderResult>() {
     
                                 public void onSuccess(GWTRenderResult gwtRenderResult) {
                                     previewLayoutContainer.removeAll();

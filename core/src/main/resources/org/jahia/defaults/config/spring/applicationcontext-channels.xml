@@ -15,9 +15,15 @@
                     <property name="displayName" value="iPhone" />
                     <property name="capabilities">
                         <map>
+                            <entry key="variants" value="portrait,landscape" />
+                            <entry key="variants-displayNames" value="Portrait,Landscape" />
+                            <entry key="usable-resolutions" value="320x356,480x208" />
+                            <entry key="device-image" value="/engines/images/edit/devices/iphone-small.png" />
+                            <entry key="decorator-images" value="/engines/images/edit/devices/iphone-portrait.png,/engines/images/edit/devices/iphone-landscape.png" />
+                            <entry key="decorator-image-sizes" value="388x738,734x383" />
+                            <entry key="decorator-screen-positions" value="35x216,124x115" />
                             <entry key="resolution_width" value="320"/>
                             <entry key="resolution_height" value="480"/>
-                            <entry key="dual_orientation" value="true"/>
                             <entry key="userAgentPattern" value=".*iPhone.*"/>
                         </map>
                     </property>
@@ -27,9 +33,15 @@
                     <property name="displayName" value="iPad" />
                     <property name="capabilities">
                         <map>
+                            <entry key="variants" value="portrait,landscape" />
+                            <entry key="variants-displayNames" value="Portrait,Landscape" />
+                            <entry key="usable-resolutions" value="768x947,1024x691" />
+                            <entry key="device-image" value="/engines/images/edit/devices/ipad-small.png" />
+                            <entry key="decorator-images" value="/engines/images/edit/devices/ipad-portrait.png,/engines/images/edit/devices/ipad-landscape.png" />
+                            <entry key="decorator-image-sizes" value="1007x1296,1276x1004" />
+                            <entry key="decorator-screen-positions" value="122x221,127x194" />
                             <entry key="resolution_width" value="768"/>
                             <entry key="resolution_height" value="1024"/>
-                            <entry key="dual_orientation" value="true"/>
                             <entry key="userAgentPattern" value=".*iPad.*"/>
                         </map>
                     </property>
@@ -39,9 +51,34 @@
                     <property name="displayName" value="Android" />
                     <property name="capabilities">
                         <map>
+                            <entry key="variants" value="portrait,landscape" />
+                            <entry key="variants-displayNames" value="Portrait,Landscape" />
+                            <entry key="device-image" value="/engines/images/edit/devices/android-small.png" />
+                            <entry key="usable-resolutions" value="412x651,651x412" />
+                            <entry key="decorator-images" value="/engines/images/edit/devices/android-portrait.png,/engines/images/edit/devices/android-landscape.png" />
+                            <entry key="decorator-image-sizes" value="508x986,508x986" />
+                            <entry key="decorator-screen-positions" value="50x181,50x181" />
                             <entry key="resolution_width" value="320"/>
                             <entry key="resolution_height" value="480"/>
                             <entry key="userAgentPattern" value=".*Android.*"/>
+                        </map>
+                    </property>
+                </bean>
+                <bean class="org.jahia.services.channels.Channel">
+                    <constructor-arg index="0" value="bbstorm" />
+                    <property name="displayName" value="Blackberry Storm" />
+                    <property name="capabilities">
+                        <map>
+                            <entry key="variants" value="portrait,landscape" />
+                            <entry key="variants-displayNames" value="Portrait,Landscape" />
+                            <entry key="device-image" value="/engines/images/edit/devices/bbstorm-small.png" />
+                            <entry key="usable-resolutions" value="317x312,312x317" />
+                            <entry key="decorator-images" value="/engines/images/edit/devices/bbstorm-portrait.png,/engines/images/edit/devices/bbstorm-landscape.png" />
+                            <entry key="decorator-image-sizes" value="386x672,386x672" />
+                            <entry key="decorator-screen-positions" value="35x190,190x35" />
+                            <entry key="resolution_width" value="320"/>
+                            <entry key="resolution_height" value="480"/>
+                            <entry key="userAgentPattern" value=".*BBStorm.*"/>
                         </map>
                     </property>
                 </bean>

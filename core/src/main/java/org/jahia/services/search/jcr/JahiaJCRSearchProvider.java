@@ -52,10 +52,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import javax.jcr.PathNotFoundException;
-import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
@@ -197,6 +194,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                     results.add(hit);
                                 }
                             }
+                        }
+                    } catch (ItemNotFoundException e) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Found node is not visible or published: " + row.getPath(), e);
                         }
                     } catch (PathNotFoundException e) {
                         if (logger.isDebugEnabled()) {

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@page import="java.io.File"%>
+<%@page import="org.apache.commons.io.FileUtils"%>
+<%@page import="org.jahia.settings.SettingsBean"%>
 <%@page import="org.jahia.services.search.spell.CompositeSpellChecker"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -16,11 +19,16 @@
 			<% CompositeSpellChecker.updateSpellCheckerIndex(); %>
 			<p style="color: blue">Spell checker index update triggered</p>
 		</c:when>
+        <c:when test="${param.action == 'reindex'}">
+            <% FileUtils.touch(new File(SettingsBean.getInstance().getRepositoryHome(), "reindex")); %>
+            <p style="color: blue">Re-indexing of the repository content will be done on next Jahia startup</p>
+        </c:when>
 	</c:choose>
 </c:if>
 <p>Available actions:</p>
 <ul>
-	<li><a href="?action=updateSpellCheckerIndex">Spell checker index update</a> - triggers the update of the spell checker
+    <li><a href="?action=reindex">Repository re-indexing</a> - Do repository re-indexing on the next Jahia start</li>
+	<li><a href="?action=updateSpellCheckerIndex">Spell checker index update</a> - triggers an immediate update (no restart needed) of the spell checker
 	dictionary index used by the "Did you mean" search feature</li>
 </ul>
 <%@ include file="gotoIndex.jspf" %>

@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
@@ -85,6 +86,9 @@ public class EditLinker implements Linker {
     private Widget mainAreaComponent;
     private int mainAreaVScrollPosition;
     private String locale;
+    private GWTJahiaChannel activeChannel;
+    private boolean channelDisplayActivated = false;
+    private String activeChannelVariant = null;
 
     public EditLinker(MainModule mainModule, SidePanel sidePanel, ActionToolbarLayoutContainer toolbar,
                       GWTEditConfiguration config) {
@@ -288,5 +292,36 @@ public class EditLinker implements Linker {
 
     public boolean isDisplayHiddenProperties() {
         return false;
+    }
+
+    public GWTJahiaChannel getActiveChannel() {
+        return activeChannel;
+    }
+
+    public void setActiveChannel(GWTJahiaChannel activeChannel) {
+        this.activeChannel = activeChannel;
+    }
+
+    public String getActiveChannelIdentifier() {
+        if (activeChannel != null) {
+            return activeChannel.getValue();
+        }
+        return null;
+    }
+
+    public boolean isChannelDisplayActivated() {
+        return channelDisplayActivated;
+    }
+
+    public void setChannelDisplayActivated(boolean channelDisplayActivated) {
+        this.channelDisplayActivated = channelDisplayActivated;
+    }
+
+    public String getActiveChannelVariant() {
+        return activeChannelVariant;
+    }
+
+    public void setActiveChannelVariant(String activeChannelVariant) {
+        this.activeChannelVariant = activeChannelVariant;
     }
 }

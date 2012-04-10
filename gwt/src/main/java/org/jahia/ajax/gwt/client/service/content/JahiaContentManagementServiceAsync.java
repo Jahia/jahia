@@ -190,7 +190,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void uploadedFile(List<String[]> uploadeds, AsyncCallback async);
 
-    void getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, List<String>> contextParams, boolean editMode, String configName, AsyncCallback<GWTRenderResult> async);
+    void getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, List<String>> contextParams, boolean editMode, String configName, String channelIdentifier, AsyncCallback<GWTRenderResult> async);
 
     void getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace, String locale, AsyncCallback<String> async);
 

@@ -45,10 +45,18 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.form.AdapterField;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.http.client.URL;
@@ -61,6 +69,8 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaBasicDataBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -79,6 +89,7 @@ import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem;
 
 import java.util.*;
+import java.util.List;
 
 /**
  * First module of any rendered element.
@@ -97,6 +108,12 @@ public class MainModule extends Module {
 
     Map<Element, Module> m;
     protected LayoutContainer scrollContainer;
+    protected ContentPanel borderContainer;
+    protected ContentPanel west,center,east;
+    protected transient Grid<GWTJahiaBasicDataBean> grid;
+    protected ComboBox<GWTJahiaBasicDataBean> orientationComponent;
+    protected Image deviceImage;
+    protected Label deviceNameLabel;
 
     public MainModule(final String html, final String path, final String template, String nodeTypes, GWTEditConfiguration config) {
         super("main", path, template, nodeTypes, new FlowLayout());
@@ -117,10 +134,146 @@ public class MainModule extends Module {
             head.setStyleAttribute("position", "relative");
             add(head);
         }
-        
+
+        borderContainer = new ContentPanel(new BorderLayout());
+        borderContainer.setBorders(false);
+        borderContainer.setBodyBorder(false);
+        borderContainer.setHeaderVisible(false);
+
         scrollContainer = new LayoutContainer(new FlowLayout());
-        add(scrollContainer);
+        //scrollContainer.setBorders(false);
+        //scrollContainer.setBodyBorder(false);
+        //scrollContainer.setHeaderVisible(false);
         scrollContainer.addStyleName("gwt-body-edit");
+
+        west = new ContentPanel(new FitLayout());
+        west.setHeading(Messages.get("label.channels", "Channels"));
+        west.setBodyBorder(false);
+        west.setBorders(false);
+        BorderLayoutData westData = new BorderLayoutData(Style.LayoutRegion.WEST);
+        westData.setSplit(true);
+        westData.setCollapsible(true);
+        westData.setSize(100);
+        westData.setHidden(true);
+        ListView<GWTJahiaChannel> channelListView = new ListView<GWTJahiaChannel>();
+        channelListView.setStore(new ListStore<GWTJahiaChannel>());
+        channelListView.getStore().add(JahiaGWTParameters.getChannels());
+        channelListView.setTemplate(getChannelTemplate());
+        channelListView.setItemSelector("div.thumb-wrap");
+        channelListView.getSelectionModel().addListener(Events.SelectionChange,
+                new Listener<SelectionChangedEvent<GWTJahiaChannel>>() {
+                    public void handleEvent(SelectionChangedEvent<GWTJahiaChannel> event) {
+                        GWTJahiaChannel selectedChannel = event.getSelectedItem();
+                        switchChannel(selectedChannel);
+                    }
+
+                });
+        west.add(channelListView);
+
+        center = new ContentPanel(new FlowLayout());
+        center.setBorders(false);
+        center.setBodyBorder(false);
+        center.setHeaderVisible(false);
+        center.setScrollMode(Style.Scroll.NONE);
+        BorderLayoutData centerData = new BorderLayoutData(Style.LayoutRegion.CENTER);
+
+        east = new ContentPanel(new FitLayout());
+        east.setHeading(Messages.get("label.details", "Details"));
+        east.setBorders(false);
+        east.setBodyBorder(false);
+        east.setScrollMode(Style.Scroll.AUTO);
+
+        VBoxLayout verticalEastLayout = new VBoxLayout();
+        verticalEastLayout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
+        ContentPanel verticalEastContainer = new ContentPanel(verticalEastLayout);
+        verticalEastContainer.setHeaderVisible(false);
+        verticalEastContainer.setBodyBorder(false);
+        verticalEastContainer.setBorders(false);
+
+        VerticalPanel deviceDetailsPanel = new VerticalPanel();
+        deviceDetailsPanel.setTableWidth("100%");
+        deviceDetailsPanel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
+
+        deviceImage = new Image("/engines/images/edit/devices/default-small.png");
+        deviceDetailsPanel.add(deviceImage, new TableData("64px", "64px"));
+        deviceNameLabel = new Label(Messages.get("label.deviceName", "Device name"));
+        deviceDetailsPanel.add(deviceNameLabel);
+
+        FormPanel formPanel = new FormPanel();
+        formPanel.setPadding(2);
+        formPanel.setBorders(false);
+        formPanel.setBodyBorder(false);
+        formPanel.setHeaderVisible(false);
+
+        // we will setup the right elements now because we will need to reference them in the event listener
+        final ListStore<GWTJahiaBasicDataBean> orientations = new ListStore<GWTJahiaBasicDataBean>();
+        orientations.add(new GWTJahiaBasicDataBean("portrait", "Portrait"));
+        orientations.add(new GWTJahiaBasicDataBean("landscape", "Landscape"));
+        orientationComponent = new ComboBox<GWTJahiaBasicDataBean>();
+        orientationComponent.setEmptyText(Messages.get("label.variant", "Select variant..."));
+        orientationComponent.setDisplayField("displayName");
+        orientationComponent.setName("previewChannelOrientation");
+        orientationComponent.setStore(orientations);
+        orientationComponent.setTypeAhead(true);
+        orientationComponent.setWidth(100);
+        orientationComponent.setFieldLabel(Messages.get("label.variant", "Variant"));
+        orientationComponent.setTriggerAction(ComboBox.TriggerAction.ALL);
+        orientationComponent.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaBasicDataBean>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaBasicDataBean> se) {
+                editLinker.setActiveChannelVariant(se.getSelectedItem().getValue());
+                switchChannel(editLinker.getActiveChannel());
+            }
+        });
+        formPanel.add(orientationComponent, new FormData("100%"));
+
+        deviceDetailsPanel.add(formPanel);
+
+        VBoxLayoutData firstBoxLayoutData = new VBoxLayoutData();
+        firstBoxLayoutData.setFlex(1);
+
+        verticalEastContainer.add(deviceDetailsPanel, firstBoxLayoutData);
+
+        ContentPanel gridContentPanel = new ContentPanel(new FitLayout());
+        gridContentPanel.setHeading(Messages.get("label.capabilities", "Capabilities"));
+
+        ListStore<GWTJahiaBasicDataBean> capabilitiesStore = new ListStore<GWTJahiaBasicDataBean>();
+        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+
+        ColumnConfig column = new ColumnConfig();
+        column.setId("displayName");
+        column.setHeader("Name");
+        column.setRowHeader(true);
+        column.setWidth(100);
+        configs.add(column);
+
+        column = new ColumnConfig();
+        column.setId("value");
+        column.setHeader("Value");
+        column.setWidth(100);
+        configs.add(column);
+        ColumnModel cm = new ColumnModel(configs);
+
+        grid = new Grid<GWTJahiaBasicDataBean>(capabilitiesStore, cm);
+        gridContentPanel.add(grid);
+        // grid.setAutoExpandColumn(cm.getAutoExpand());
+        VBoxLayoutData contentVBoxData = new VBoxLayoutData();
+        contentVBoxData.setFlex(3);
+        verticalEastContainer.add(gridContentPanel, contentVBoxData);
+        BorderLayoutData eastData = new BorderLayoutData(Style.LayoutRegion.EAST);
+        eastData.setSplit(true);
+        eastData.setCollapsible(true);
+        eastData.setSize(200);
+        eastData.setHidden(true);
+
+        east.add(verticalEastContainer);
+
+        borderContainer.add(west, westData);
+        borderContainer.add(center, centerData);
+        borderContainer.add(east, eastData);
+
+        add(borderContainer);
+
         Hover.getInstance().setMainModule(this);
         Selection.getInstance().setMainModule(this);
 
@@ -128,8 +281,20 @@ public class MainModule extends Module {
         exportStaticMethod();
     }
 
+    private native String getChannelTemplate() /*-{
+     return ['<tpl for=".">',
+     '<div class="thumb-wrap" id="{display}">',
+     '<div class="thumb"><img src="{image}" title="{display}" width="64" height="64" style="margin-left:auto;margin-right:auto;display:block"></div>',
+     '<div class="x-editable" style="text-align:center">{display}</div></div>',
+     '</tpl>',
+     '<div class="x-clear"></div>'].join("");
+
+     }-*/;
+
     public void initWithLinker(EditLinker linker) {
         this.editLinker = linker;
+
+        layoutChannel();
 
         if (head != null) {
             for (GWTJahiaToolbarItem item : config.getMainModuleToolbar().getGwtToolbarItems()) {
@@ -185,6 +350,156 @@ public class MainModule extends Module {
         infoLayers.initWithLinker(linker);
     }
 
+    private void layoutChannel() {
+
+        center.removeAll();
+
+        if (editLinker.isChannelDisplayActivated()) {
+
+            GWTJahiaChannel activeChannel = editLinker.getActiveChannel();
+            int activeChannelIndex = 0;
+
+            deviceImage.setUrl("/engines/images/edit/devices/default-small.png");
+            deviceNameLabel.setText(Messages.get("label.default", "Default"));
+            if (activeChannel != null) {
+                if (activeChannel.getCapability("device-image") != null) {
+                    deviceImage.setUrl(activeChannel.getCapability("device-image"));
+
+                }
+                deviceNameLabel.setText(activeChannel.getDisplay());
+            }
+
+            orientationComponent.getStore().removeAll();
+            if (activeChannel != null && activeChannel.getCapability("variants") != null) {
+                String[] variantValueArray = activeChannel.getCapability("variants").split(",");
+                String[] variantDisplayNameArray = variantValueArray;
+                if (activeChannel.getCapability("variants-displayNames") != null) {
+                    variantDisplayNameArray = activeChannel.getCapability("variants-displayNames").split(",");
+                }
+
+                activeChannelIndex = getActiveChannelIndex();
+
+                List<GWTJahiaBasicDataBean> selectedItems = new ArrayList<GWTJahiaBasicDataBean>();
+                int i=0;
+                for (String variantValue : variantValueArray) {
+                    String displayName = variantValue;
+                    if (i < variantDisplayNameArray.length) {
+                        displayName = variantDisplayNameArray[i];
+                    }
+                    GWTJahiaBasicDataBean currentVariant = new GWTJahiaBasicDataBean(variantValue, displayName);
+                    if (activeChannelIndex == i) {
+                        selectedItems.add(currentVariant);
+                    }
+                    orientationComponent.getStore().add(currentVariant);
+                    i++;
+                }
+                orientationComponent.setSelection(selectedItems);
+                orientationComponent.enable();
+            } else {
+                orientationComponent.disable();
+            }
+
+            grid.getStore().removeAll();
+            if (activeChannel != null && activeChannel.getCapabilities() != null) {
+                for (Map.Entry<String,String> capabilityEntry : activeChannel.getCapabilities().entrySet()) {
+                    grid.getStore().add(new GWTJahiaBasicDataBean(capabilityEntry.getValue(), capabilityEntry.getKey()));
+                }
+            }
+
+            if (activeChannel == null || "default".equals(activeChannel.getValue())) {
+                int[] usableResolution = getUsableDeviceResolution(activeChannelIndex);
+                scrollContainer.setSize(usableResolution[0], usableResolution[1]);
+                scrollContainer.setScrollMode(Style.Scroll.AUTO);
+                center.add(scrollContainer);
+            } else {
+
+            // first let setup the device decorator layout container
+            ContentPanel deviceDecoratorContainer = new ContentPanel(new AbsoluteLayout());
+            deviceDecoratorContainer.setBodyBorder(false);
+            deviceDecoratorContainer.setHeaderVisible(false);
+            deviceDecoratorContainer.setBorders(false);
+            if (activeChannel != null) {
+                int[] decoratorImageSize = activeChannel.getVariantDecoratorImageSize(activeChannelIndex);
+                if (decoratorImageSize.length == 0) {
+                    decoratorImageSize = new int[] { -1, -1 };
+                }
+                deviceDecoratorContainer.setSize(decoratorImageSize[0], decoratorImageSize[1]);
+                deviceDecoratorContainer.setStyleAttribute("margin-left", "auto");
+                deviceDecoratorContainer.setStyleAttribute("margin-right", "auto");
+                AbsoluteData deviceOuterData = new AbsoluteData(0, 0);
+                deviceOuterData.setMargins(new Margins(0, 0, 0, 0));
+                if (activeChannel.getVariantDecoratorImage(activeChannelIndex) != null) {
+                    deviceDecoratorContainer.add(new Image(activeChannel.getVariantDecoratorImage(activeChannelIndex)), deviceOuterData);
+                }
+            } else {
+                deviceDecoratorContainer.setSize(-1, -1);
+            }
+
+            int[] usableResolution = getUsableDeviceResolution(activeChannelIndex);
+            scrollContainer.setSize(usableResolution[0], usableResolution[1]);
+            scrollContainer.setScrollMode(Style.Scroll.AUTO);
+
+            int[] screenPosition = null;
+            if (activeChannel != null) {
+                screenPosition = activeChannel.getVariantDecoratorScreenPosition(activeChannelIndex);
+            }
+            if (screenPosition == null || screenPosition.length == 0) {
+                screenPosition = new int[] { 0, 0};
+            }
+
+            AbsoluteData deviceData = new AbsoluteData(screenPosition[0], screenPosition[1]);
+            deviceData.setMargins(new Margins(0, 0, 0, 0));
+            deviceDecoratorContainer.add(scrollContainer, deviceData);
+            center.add(deviceDecoratorContainer);
+            }
+
+            ((BorderLayout) borderContainer.getLayout()).show(Style.LayoutRegion.WEST);
+            ((BorderLayout) borderContainer.getLayout()).show(Style.LayoutRegion.EAST);
+
+        } else {
+            scrollContainer.setScrollMode(Style.Scroll.AUTO);
+            ((BorderLayout) borderContainer.getLayout()).hide(Style.LayoutRegion.WEST);
+            ((BorderLayout) borderContainer.getLayout()).hide(Style.LayoutRegion.EAST);
+            center.add(scrollContainer);
+        }
+
+        layout();
+    }
+
+    private int getActiveChannelIndex() {
+        int result = 0;
+        if (editLinker.getActiveChannel() != null && editLinker.getActiveChannelVariant() != null) {
+            String[] variantValueArray = editLinker.getActiveChannel().getCapability("variants").split(",");
+            for (int i=0; i < variantValueArray.length; i++) {
+                if (variantValueArray[i].equals(editLinker.getActiveChannelVariant())) {
+                    // we found the active variant !
+                    result = i;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    private int[] getUsableDeviceResolution(int activeChannelIndex) {
+        int[] usableResolution = new int[]{-1, -1};
+        if (editLinker.getActiveChannel() != null) {
+            usableResolution = editLinker.getActiveChannel().getVariantUsableResolution(activeChannelIndex);
+            if (usableResolution.length == 0) {
+                usableResolution = new int[]{
+                        -1,
+                        -1
+                };
+            }
+        } else {
+            usableResolution = new int[]{
+                    getWidth(),
+                    getHeight() - (head != null ? head.getOffsetHeight() : 0)
+            };
+        }
+        return usableResolution;
+    }
+
     /**
      * select current module
      */
@@ -208,7 +523,7 @@ public class MainModule extends Module {
     private void refresh(final String previousPath, final String previousTemplate, final boolean forceImageRefresh) {
         JahiaContentManagementService.App.getInstance()
                 .getRenderedContent(path, null, editLinker.getLocale(), template, "gwt", moduleParams, true,
-                        config.getName(), new BaseAsyncCallback<GWTRenderResult>() {
+                        config.getName(), editLinker.getActiveChannelIdentifier(), new BaseAsyncCallback<GWTRenderResult>() {
                             public void onSuccess(GWTRenderResult result) {
                                 int i = scrollContainer.getVScrollPosition();
                                 if (head != null) {
@@ -372,14 +687,16 @@ public class MainModule extends Module {
         $doc.title = title;
     }-*/;
 
-
     private void display(String result) {
         display(result, false);
     }
 
     private void display(String result, boolean forceImageReload) {
+
+        layoutChannel();
+
         scrollContainer.removeAll();
-        scrollContainer.setScrollMode(Style.Scroll.AUTO);
+        // scrollContainer.setScrollMode(Style.Scroll.AUTO);
         html = new HTML(result);
         if (forceImageReload) {
             refreshImages(html);
@@ -417,14 +734,28 @@ public class MainModule extends Module {
         if (m != null) {
             ModuleHelper.move(m);
         }
-        scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
-        scrollContainer.setWidth(getWidth());
+        borderContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
+        borderContainer.setWidth(getWidth());
+
+        if (!editLinker.isChannelDisplayActivated()) {
+            int[] usableResolution = getUsableDeviceResolution(getActiveChannelIndex());
+            scrollContainer.setSize(usableResolution[0], usableResolution[1]);
+        }
+        //scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
     }
 
     protected void onResize(int width, int height) {
         super.onResize(width, height);
-        scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
-        scrollContainer.setWidth(getWidth());
+        borderContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
+        borderContainer.setWidth(getWidth());
+
+        if (!editLinker.isChannelDisplayActivated()) {
+            int[] usableResolution = getUsableDeviceResolution(getActiveChannelIndex());
+            scrollContainer.setSize(usableResolution[0], usableResolution[1]);
+        }
+
+        //scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
+        //scrollContainer.setWidth(getWidth());
         if (editLinker.getSelectedModule() != null) {
             Selection.getInstance().hide();
             Selection.getInstance().show();
@@ -467,6 +798,21 @@ public class MainModule extends Module {
     public void switchLanguage(GWTJahiaLanguage language) {
         mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
         editLinker.setLocale(language);
+        editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
+    }
+
+    public void switchChannel(GWTJahiaChannel channel) {
+        mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+        editLinker.setActiveChannel(channel);
+        editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
+    }
+
+    public void setChannelDisplay(boolean channelDisplay) {
+        mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+        if (!channelDisplay) {
+            editLinker.setActiveChannel(null);
+        }
+        editLinker.setChannelDisplayActivated(channelDisplay);
         editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
     }
 

@@ -22,7 +22,11 @@ public class ChannelHelper {
         List<Channel> channels = channelService.getAllChannels();
         List<GWTJahiaChannel> gwtJahiaChannels = new ArrayList<GWTJahiaChannel>();
         for (Channel channel : channels) {
-            GWTJahiaChannel gwtJahiaChannel = new GWTJahiaChannel(channel.getIdentifier(), channel.getDisplayName(), channel.getCapabilities());
+            String imageURL = channel.getCapability("device-image");
+            if (imageURL == null) {
+                imageURL = "/engines/images/edit/devices/default-small.png";
+            }
+            GWTJahiaChannel gwtJahiaChannel = new GWTJahiaChannel(channel.getIdentifier(), channel.getDisplayName(), imageURL, channel.getCapabilities());
             gwtJahiaChannels.add(gwtJahiaChannel);
         }
         return gwtJahiaChannels;

@@ -68,6 +68,10 @@ public class ChannelResolutionFilter extends AbstractFilter {
     public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
         Cookie[] cookies = context.getRequest().getCookies();
 
+        if (context.getChannel() != null) {
+            return null;
+        }
+
         if (!StringUtils.isEmpty(context.getRequest().getParameter(ACTIVE_CHANNEL_QUERY_PARAMETER))) {
             String activeChannel = context.getRequest().getParameter(ACTIVE_CHANNEL_QUERY_PARAMETER);
             Channel resolvedChannel = channelService.getChannel(activeChannel);

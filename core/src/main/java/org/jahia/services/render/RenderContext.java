@@ -96,7 +96,7 @@ public class RenderContext {
     private Resource ajaxResource = null;
 
     // the current rendering channel, for example "iphone", "ipad", "android", etc...
-    private Channel channel = Channel.DEFAULT_CHANNEL;
+    private Channel channel = null;
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
@@ -290,13 +290,10 @@ public class RenderContext {
     }
 
     /**
-     * Sets the currently active channel. If null is passed internally the value will be set to DEFAULT_CHANNEL
+     * Sets the currently active channel.
      * @param channel a Channel containing the value for the currently active channel
      */
     public void setChannel(Channel channel) {
-        if (channel == null) {
-            this.channel = Channel.DEFAULT_CHANNEL;
-        }
         this.channel = channel;
     }
 }

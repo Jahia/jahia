@@ -78,6 +78,8 @@ public class ChannelResolutionFilter extends AbstractFilter {
             if (resolvedChannel != null) {
                 setChannel(context, resource, resolvedChannel);
                 return null;
+            } else {
+                context.setChannel(Channel.DEFAULT_CHANNEL);
             }
         }
 
@@ -98,6 +100,8 @@ public class ChannelResolutionFilter extends AbstractFilter {
             Channel resolvedChannel = channelService.resolveChannel(context.getRequest());
             if (resolvedChannel != null) {
                 setChannel(context, resource, resolvedChannel);
+            } else {
+                context.setChannel(Channel.DEFAULT_CHANNEL);
             }
         }
         return null;

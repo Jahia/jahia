@@ -30,6 +30,7 @@
                 <value>org.jahia.services.content.ContentTest</value>
                 <value>org.jahia.services.content.MarkForDeletionTest</value>
                 <value>org.jahia.services.content.MultiLanguageTest</value>
+                <value>org.jahia.services.content.ReferencesTest</value>
                 <value>org.jahia.services.content.interceptor.HtmlFilteringInterceptorTest</value>
                 <value>org.jahia.services.content.interceptor.URLInterceptorTest</value>
                 <value>org.jahia.services.content.impl.vfs.VFSContentStoreProviderTest</value>

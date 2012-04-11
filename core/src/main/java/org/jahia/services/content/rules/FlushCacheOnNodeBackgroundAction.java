@@ -43,7 +43,7 @@ package org.jahia.services.content.rules;
 import javax.jcr.RepositoryException;
 
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.rules.BaseBackgroundAction;
+import org.jahia.services.content.files.FileCacheManager;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,11 +58,16 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
 
     private static Logger logger = LoggerFactory.getLogger(FlushCacheOnNodeBackgroundAction.class);
 
+    private FileCacheManager fileCacheManager;
     private ModuleCacheProvider cacheProvider;
 
     private int startLevel;
 
     private int levelsUp;
+
+    public FlushCacheOnNodeBackgroundAction() {
+        fileCacheManager = FileCacheManager.getInstance();
+    }
 
     public void setCacheProvider(ModuleCacheProvider cacheProvider) {
         this.cacheProvider = cacheProvider;
@@ -74,6 +79,9 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
             for (int level = 0; level <= (startLevel + levelsUp); level++) {
                 if (level >= startLevel) {
                     cacheProvider.invalidate(currentNode.getPath());
+                    if (currentNode.isFile()) {
+                        fileCacheManager.invalidate(currentNode.getSession().getWorkspace().getName(), currentNode.getPath());
+                    }
                 }
                 currentNode = currentNode.getParent();
             }

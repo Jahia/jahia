@@ -29,6 +29,13 @@
                 <value>modules/**/META-INF/seo-urlrewrite*.xml</value>
             </list>
         </property>
+        <property name="lastConfigurationResources">
+            <list>
+                <value>classpath*:org/jahia/services/seo/urlrewrite/last-urlrewrite.xml</value><!-- these are core rules that should not be removed -->
+                <value>WEB-INF/etc/config/last-urlrewrite*.xml</value>
+                <value>modules/**/META-INF/last-urlrewrite*.xml</value>
+            </list>
+        </property>
         <property name="vanityUrlService" ref="org.jahia.services.seo.jcr.VanityUrlService"/>
         <property name="urlResolverFactory" ref="urlResolverFactory" />
         <property name="siteService" ref="JahiaSitesService" />

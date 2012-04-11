@@ -127,22 +127,27 @@ public class Url {
     }
 
     public static String appendServerNameIfNeeded(JCRNodeWrapper node, String nodeURL, HttpServletRequest request) throws RepositoryException, MalformedURLException {
-        if (!isLocalhost(request.getServerName()) &&
-                !isLocalhost(node.getResolveSite().getServerName()) &&
-                !StringUtils.isEmpty(node.getResolveSite().getServerName()) &&
-                !request.getServerName().equals(node.getResolveSite().getServerName())
-                ) {
+        if (!SettingsBean.getInstance().isUrlRewriteUseAbsoluteUrls()) {
+            return nodeURL;
+        }
+        
+        String requestServerName = request.getServerName();
+        if (isLocalhost(requestServerName)) {
+            return nodeURL;
+        }
+        
+        String serverName = node.getResolveSite().getServerName();
+        if (!StringUtils.isEmpty(serverName) && !isLocalhost(serverName)
+                && !requestServerName.equals(serverName)) {
             int serverPort = SettingsBean.getInstance().getSiteURLPortOverride();
 
             if (serverPort == 0) {
                 serverPort = request.getServerPort();
             }
-            if ("http".equals(request.getScheme()) && (serverPort == 80)) {
-                serverPort = -1;
-            } else if ("https".equals(request.getScheme()) && (serverPort == 443)) {
+            if (serverPort == 80 && "http".equals(request.getScheme()) || serverPort == 443 && "https".equals(request.getScheme())) {
                 serverPort = -1;
             }
-            nodeURL = new URL(request.getScheme(), node.getResolveSite().getServerName(), serverPort, nodeURL).toString();
+            nodeURL = new URL(request.getScheme(), serverName, serverPort, nodeURL).toString();
         }
         return nodeURL;
     }
@@ -168,8 +173,7 @@ public class Url {
 
         url.append(scheme).append("://").append(host);
 
-        if (!(("http".equals(scheme) && (port == 80)) ||
-              ("https".equals(scheme) && (port == 443)))) {
+        if (!(port == 80 && "http".equals(scheme) || port == 443 && "https".equals(scheme))) {
             url.append(":").append(port);
         }
 

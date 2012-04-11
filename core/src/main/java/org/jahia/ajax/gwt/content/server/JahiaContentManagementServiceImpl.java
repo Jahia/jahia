@@ -94,6 +94,7 @@ import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Url;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -1036,7 +1037,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template,
-                                              String configuration, final Map<String, List<String>> contextParams, boolean editMode,
+                                              String configuration,final Map<String, List<String>> contextParams, boolean editMode,
                                               String configName, String channelIdentifier) throws GWTJahiaServiceException {
         Locale localValue = getLocale();
         if (locale != null) {
@@ -1059,7 +1060,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             String nodeURL = this.navigation.getNodeURL(servlet, node, versionDate, versionLabel, session.getWorkspace().getName(),
                     session.getLocale());
-            if ("live".equals(workspace)) {
+            
+            if ("live".equals(workspace) && !SettingsBean.getInstance().isUrlRewriteSeoRulesEnabled()) {
                 nodeURL = Url.appendServerNameIfNeeded(node, nodeURL, getRequest());
             }
 

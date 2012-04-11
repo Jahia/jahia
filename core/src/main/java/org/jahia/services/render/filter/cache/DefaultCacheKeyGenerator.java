@@ -57,7 +57,6 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -91,7 +90,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     private static final String PROPERTY_CACHE_NAME = "HTMLRequiredPermissionsCache";
     public static final String PER_USER = "_perUser_";
     private static final String MAIN_RESOURCE_KEY = "_mr_";
-    private List<String> fields = new LinkedList<String>(KNOWN_FIELDS);
+    private List<String> fields = new ArrayList<String>(KNOWN_FIELDS);
 
     private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}#{6}#{7}#{8}#{9}#{10}#{11}#{12}#{13}");
 
@@ -204,9 +203,9 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                     Object inArea = request.getAttribute("inArea");
                     args.add(inArea != null ? inArea.toString() : "");
                 } else if ("site".equals(field)) {
-                    args.add(Url.isLocalhost(renderContext.getRequest().getServerName()) ? (renderContext
-                            .getSite().getSiteKey() + "localhost:") : renderContext.getSite()
-                            .getSiteKey());
+                    args.add(new StringBuilder().append(renderContext.getSite().getSiteKey())
+                            .append(":").append(renderContext.getRequest().getServerName())
+                            .toString());
                 }
             }
         }

@@ -52,12 +52,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
@@ -106,6 +106,10 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     private URLResolverFactory urlResolverFactory;
 
     private Set<String> reservedUrlPrefixSet;
+    
+    private JahiaSitesService siteService;
+    
+    private SettingsBean settingsBean;
 
     public void afterPropertiesSet() throws Exception {
         long timer = System.currentTimeMillis();
@@ -226,19 +230,20 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         if (request.getContextPath().length() > 0) {
             input = StringUtils.substringAfter(input, request.getContextPath());
         }
+        
         String prefix = StringUtils.EMPTY;
-        if (input.length() > 1 && input.indexOf('/') == 0) {
+        if (settingsBean.isUrlRewriteRemoveCmsPrefix() && input.length() > 1 && input.indexOf('/') == 0) {
             int end = input.indexOf('/', 1);
             prefix = end != -1 ? input.substring(1, end) : input.substring(1); 
         } 
         if (prefix.length() > 1) {
             boolean contains = reservedUrlPrefixSet.contains(prefix);
-            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_IS_RESERVED_URL, contains);
+            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_ADD_CMS_PREFIX, !contains);
             if (contains && !"cms".equals(prefix)) {
                 return false;
             }
         } else {
-            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_IS_RESERVED_URL, true);
+            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_ADD_CMS_PREFIX, false);
         }
 
         String path = request.getPathInfo() != null ? request.getPathInfo() : input;
@@ -258,7 +263,6 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
             logger.warn("Unable to load the SimpleUrlHandlerMapping", ex);
         }
         final String targetSiteKey = ServerNameToSiteMapper.getSiteKeyByServerName(request);
-        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY, targetSiteKey);
         request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG, StringUtils.EMPTY);
         request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, StringUtils.EMPTY);
         if (!StringUtils.isEmpty(targetSiteKey)) {
@@ -278,7 +282,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                 logger.error("Cannot get vanity Url", e);
             }
             try {
-                JahiaSite siteByKey = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(targetSiteKey);
+                JahiaSite siteByKey = siteService.getSiteByKey(targetSiteKey);
                 String defaultLanguage = siteByKey.resolveLocaleFromList(request.getLocales()).toString();
                 request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG,
                         defaultLanguage);
@@ -291,12 +295,14 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     }
 
     private void resetState(HttpServletRequest request) {
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_CMS_TOKEN);
         request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG);
         request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG_MATCHES);
-        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_IS_RESERVED_URL);
-        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_RESERVED_PREFIX);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_LANG_TOKEN);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_ADD_CMS_PREFIX);
         request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY);
         request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY_FOR_LINK);
+        request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK);
         request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY_MATCHES);
         request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SKIP_INBOUND_SEO_RULES);
         request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG);
@@ -346,5 +352,13 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         this.reservedUrlPrefixSet = StringUtils.isNotBlank(reservedUrlPrefixes) ? new HashSet<String>(
                 Arrays.asList(StringUtils.split(reservedUrlPrefixes, ", "))) : Collections
                 .<String> emptySet();
+    }
+
+    public void setSiteService(JahiaSitesService siteService) {
+        this.siteService = siteService;
+    }
+
+    public void setSettingsBean(SettingsBean settingsBean) {
+        this.settingsBean = settingsBean;
     }
 }

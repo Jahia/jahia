@@ -31,6 +31,8 @@
         </property>
         <property name="vanityUrlService" ref="org.jahia.services.seo.jcr.VanityUrlService"/>
         <property name="urlResolverFactory" ref="urlResolverFactory" />
+        <property name="siteService" ref="JahiaSitesService" />
+        <property name="settingsBean" ref="settingsBean" />
         <property name="reservedUrlPrefixes" value="${seoReservedUrlPrefixes:administration,cms,error,files,gadgets,gwt,initializationCompleted,oauth,PlutoInvoker,repository,rest,rpc,social,start,tools,validateTicket,welcome,admin,css,engines,errors,favicon.ico,gwt,icons,iphone,javascript,modules,resources,tools}"/>
     </bean>
                         

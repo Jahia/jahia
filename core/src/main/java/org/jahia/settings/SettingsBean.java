@@ -166,7 +166,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean dumpErrorsToFiles = true;
     private int fileDumpMaxRegroupingOfPreviousException = 500;
     private boolean useJstackForThreadDumps;  
+    private boolean urlRewriteRemoveCmsPrefix;
     private boolean urlRewriteSeoRulesEnabled;
+    private boolean urlRewriteUseAbsoluteUrls;
 
     private ServerDeploymentInterface serverDeployer = null;
 
@@ -343,6 +345,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             useJstackForThreadDumps = getBoolean("useJstackForThreadDumps", false);
 
             urlRewriteSeoRulesEnabled = getBoolean("urlRewriteSeoRulesEnabled", false);
+            urlRewriteRemoveCmsPrefix = getBoolean("urlRewriteRemoveCmsPrefix", false);
+            urlRewriteUseAbsoluteUrls = getBoolean("urlRewriteUseAbsoluteUrls", true);
 
             disableJsessionIdParameter = getBoolean("disableJsessionIdParameter", true);
             jsessionIdParameterName = getString("jsessionIdParameterName", "jsessionid");
@@ -985,6 +989,14 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public boolean isFileServletStatisticsEnabled() {
         return fileServletStatisticsEnabled;
+    }
+
+    public boolean isUrlRewriteUseAbsoluteUrls() {
+        return urlRewriteUseAbsoluteUrls;
+    }
+
+    public boolean isUrlRewriteRemoveCmsPrefix() {
+        return urlRewriteRemoveCmsPrefix;
     }
 
 }

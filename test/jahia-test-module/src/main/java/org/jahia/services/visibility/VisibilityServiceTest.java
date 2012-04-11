@@ -222,7 +222,7 @@ public class VisibilityServiceTest {
 
         JCRNodeWrapper secondCondition = condVis.addNode("secondCondition",
                 "jnt:startEndDateCondition");
-        instance.add(Calendar.MINUTE, 5);
+        instance.add(Calendar.DAY_OF_MONTH, 5);
         secondCondition.setProperty("end", instance);
         session.save();
 

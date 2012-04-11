@@ -417,8 +417,7 @@ public class URLGenerator {
             
             url.append(scheme).append("://").append(host);
             
-            if (!(("http".equals(scheme) && (port == 80)) ||
-                  ("https".equals(scheme) && (port == 443)))) {
+            if (!(port == 80 && "http".equals(scheme) || port == 443 && "https".equals(scheme))) {
                 url.append(":").append(port);
             }
             

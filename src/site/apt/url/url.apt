@@ -11,7 +11,7 @@ URL Rewriting
   
   * {{{SEO}SEO URL rewriting}} - implies URL "shortening" by removing "technical" information (activated by default).
   
-  *  {{{cache}Controlling browser caching}} - through the URL rewrite engine rules Jahia also "controls" the
+  *  {{{caching}Controlling browser caching}} - through the URL rewrite engine rules Jahia also "controls" the
     client side (Web browser and proxy server) caching of the pages and static assets.
   
   * {{{secure}Forcing secure browsing}} for logged in users - there is an option for "forcing" a switch to an SSL
@@ -27,9 +27,9 @@ URL Rewriting
   When the <URL rewriting rules> are referred to, the {{{http://www.tuckey.org/urlrewrite/} UrlRewriteFilter-based rule definitions}}
   are meant here.
   
-  The lookup for rules is done in the following locations (using Ant-style patterns):
+  The loading of rules is done for the following locations (using Ant-style patterns):
   
-  * <<<WEB-INF/etc/config/urlrewrite.xml>>> - core Jahia rules  
+  * <<<org/jahia/services/seo/urlrewrite/urlrewrite.xml>>> file (packaged into <<<WEB-INF/lib/jahia-impl-*.jar>>> JAR) - core Jahia rules  
   
   * <<<WEB-INF/etc/config/urlrewrite-*.xml>>>
   
@@ -42,6 +42,16 @@ URL Rewriting
   * <<<WEB-INF/etc/config/seo-urlrewrite*.xml>>>  
   
   * <<<modules/**/META-INF/seo-urlrewrite*.xml>>>
+  
+  []
+  
+  And finally for rules that need to be executed as last in:
+   
+  * <<<org/jahia/services/seo/urlrewrite/last-urlrewrite.xml>>> file (packaged into <<<WEB-INF/lib/jahia-impl-*.jar>>> JAR) - core Jahia rules  
+  
+  * <<<WEB-INF/etc/config/last-urlrewrite-*.xml>>>
+  
+  * <<<modules/**/META-INF/last-urlrewrite*.xml>>>
   
   []
   
@@ -171,21 +181,31 @@ permanentMoveForVanityURL                              = false
   which are targeted to remove the "technical" part from the URLs to Jahia resources when
   rendering in Live mode.
   
-  In order to enable SEO URL rewriting the following flag should be set to "true" in the
+  The SEO URL rewriting rules are enabled by default and can be disabled by setting the following flag value to "false" in the
   <<<WEB-INF/etc/config/jahia.properties>>>:
   
 +-----------------------
-# Enable this option to make URL rewrite engine "shorten" the URL to
-# content in live mode, .e.g.:
-#     http://my.acme.org/cms/render/live/en/sites/myAcme/home.html
+# This option enables the URL rewrite engine to "shorten" content URLs 
+# in live mode, .e.g.:
+#     http://my.acme.org/cms/render/live/en/site/myAcme/home.html
 # can become:
 #     http://my.acme.org/home.html
-urlRewriteSeoRulesEnabled                              = true
+urlRewriteSeoRulesEnabled                              = false
 +-----------------------
 
-  Note that a flush of Jahia output caches is required after changing the value of this flag.
+  Additionally, the removal of /cms is achieved by activating the following setting in 
+  <<<WEB-INF/etc/config/jahia.properties>>>:
+  
++-----------------------
+# If set to true, the /cms prefix will be also removed from URLs
+# Note, this option is only valid if the SEO URL rewriting is activated,
+# i.e. urlRewriteSeoRulesEnabled is set to true 
+urlRewriteRemoveCmsPrefix                              = true
++-----------------------
 
-  Activating this feature allows in most of the cases to "reduce", for example, the following URL: 
+  Note that a flush of Jahia output caches is required after changing settings of SEO rewriting.
+
+  If both options are activated it allows in most of the cases to "reduce", for example, the following URL: 
    
 +-----------------------
 http://my.acme.org/cms/render/live/en/sites/global/home.html
@@ -197,7 +217,7 @@ http://my.acme.org/cms/render/live/en/sites/global/home.html
 http://my.acme.org/home.html
 +-----------------------
 
-  assuming that the <<<global>>> site has the <<<my.acme.org>>> defined as a domain name in
+  assuming that the <<<global>>> site has the <<<my.acme.org>>> defined as a <Web project host name> in
   site properties and English is the default language of the site.
   
   For non-default site-language, the language remains in the URL after rewriting. E.g. for
@@ -210,12 +230,12 @@ http://my.acme.org/de/home.html
 * Controlling browser {caching}
 
   The client side cache for pages and static assets (CSS, JavaScript etc.) is controlled
-  using URL rewrite engine rules, defined in the <<<WEB-INF/etc/config/urlrewrite.xml>>> file:
+  using URL rewrite engine rules, defined in the <<<org/jahia/services/seo/urlrewrite/last-urlrewrite.xml>>> file (packaged into <<<WEB-INF/lib/jahia-impl-*.jar>>> JAR):
   
 +-----------------------
     <!-- Client-side caching -->
     <rule>
-        <name>Set not cache headers</name>
+        <name>Set no cache headers</name>
         <note>Resources that should not be cached</note>
         <from>^/(welcome.*|start|validateTicket|administration.*|cms/.*|engines/.*\.jsp(\?.*)?|tools/.*|gwt/org\.(.*)/.*\.nocache\..*)$</from>
         <set type="response-header" name="Expires">Wed, 09 May 1979 05:30:00 GMT</set> 
@@ -227,7 +247,7 @@ http://my.acme.org/de/home.html
         <name>JCR files</name>
         <note>Do not set any cache expiration for JCR files</note>
         <from>^/(files|repository)/.*$</from>
-        <set type="response-header" name="Cache-Control">public, must-revalidate, max-age=1</set> 
+        <set type="response-header" name="Cache-Control">public, must-revalidate, max-age=1</set>
         <set type="request" name="jahiaCacheControlSet">done</set>         
     </rule>
     <rule>
@@ -241,7 +261,7 @@ http://my.acme.org/de/home.html
     <!-- end of client-side caching -->
 +-----------------------
   
-  Those rules can be adjusted to achieve fine-grained tuning of the caching strategy. 
+  Those rules can be extended to achieve fine-grained tuning of the caching strategy.
   
 * Forcing {secure} browsing for logged in users
 

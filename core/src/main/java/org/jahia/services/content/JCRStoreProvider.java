@@ -760,7 +760,7 @@ public class JCRStoreProvider {
             jcrNode = getNodeWrapper(parent.getParent(), session);
             String name = prop.getName();
             ExtendedPropertyDefinition epd = jcrNode.getApplicablePropertyDefinition(name);
-            return new JCRPropertyWrapperImpl(createWrapper(prop.getParent(), null, null, session), prop, session, this, epd, name);
+            return new JCRPropertyWrapperImpl(createWrapper(session.getLocale() != null ? prop.getParent().getParent() : prop.getParent(), null, null, session), prop, session, this, epd, name);
         } else {
             jcrNode = getNodeWrapper(prop.getParent(), session);
             ExtendedPropertyDefinition epd = jcrNode.getApplicablePropertyDefinition(prop.getName());

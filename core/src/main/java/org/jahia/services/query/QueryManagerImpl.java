@@ -64,7 +64,9 @@ import javax.jcr.query.qom.Source;
 
 import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
 import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
+import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
@@ -205,4 +207,34 @@ public class QueryManagerImpl implements QueryManager {
         }
         return res.toArray(new String[res.size()]);
     }
+    
+
+    /**
+     * Returns the ids of the nodes that refer to the <code>node</code> by weak
+     * references.
+     *
+     * @param node the target node.
+     * @return the referring nodes.
+     * @throws RepositoryException if an error occurs.
+     */
+    public Iterable<Node> getWeaklyReferringNodes(final JCRNodeWrapper node)
+            throws RepositoryException {
+        final JCRStoreProvider provider = sessionFactory.getProvider("/");
+        Iterable<Node> referringNodes = ((org.apache.jackrabbit.core.query.QueryManagerImpl) provider
+                .getQueryManager(session)).getWeaklyReferringNodes(node);
+        if (node.getSession().getLocale() != null) {
+            String currentLanguage = node.getSession().getLocale().toString();
+            List<Node> filteredNodes = new ArrayList<Node>();
+            for (Node referringNode : referringNodes) {
+                if (!referringNode.isNodeType(Constants.JAHIANT_TRANSLATION)
+                        || currentLanguage.equals(referringNode.getProperty(
+                                Constants.JCR_LANGUAGE).getString())) {
+                    filteredNodes.add(referringNode);
+                }
+            }
+            referringNodes = filteredNodes;
+        }
+        return referringNodes;
+    }
+
 }

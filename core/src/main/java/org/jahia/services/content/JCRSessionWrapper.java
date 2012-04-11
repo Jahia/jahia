@@ -494,7 +494,7 @@ public class JCRSessionWrapper implements Session {
     }
 
     public ValueFactory getValueFactory() {
-        return ValueFactoryImpl.getInstance();
+        return JCRValueFactoryImpl.getInstance();
     }
 
     /**

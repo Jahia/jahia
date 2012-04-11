@@ -91,6 +91,8 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     private Map<Integer, Long> lastModified = new HashMap<Integer, Long>(1);
 
+    private Resource[] lastConfigurationResources;
+
     private List<SimpleUrlHandlerMapping> renderMapping;
 
     private Resource[] seoConfigurationResources;
@@ -114,6 +116,8 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     public void afterPropertiesSet() throws Exception {
         long timer = System.currentTimeMillis();
         Log.setLevel("SLF4J");
+
+        // add SEO rules if provided and SEO URL rewriting is enabled 
         if (seoRulesEnabled && seoConfigurationResources != null
                 && seoConfigurationResources.length > 0) {
             if (configurationResources != null) {
@@ -125,6 +129,20 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                 configurationResources = cfg;
             } else {
                 configurationResources = seoConfigurationResources;
+            }
+        }
+        
+        // add rules which are executed as last, if provided
+        if (lastConfigurationResources != null && lastConfigurationResources.length > 0) {
+            if (configurationResources != null) {
+                Resource[] cfg = new Resource[configurationResources.length
+                        + lastConfigurationResources.length];
+                System.arraycopy(configurationResources, 0, cfg, 0, configurationResources.length);
+                System.arraycopy(lastConfigurationResources, 0, cfg, configurationResources.length,
+                        lastConfigurationResources.length);
+                configurationResources = cfg;
+            } else {
+                configurationResources = lastConfigurationResources;
             }
         }
 
@@ -360,5 +378,9 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     public void setSettingsBean(SettingsBean settingsBean) {
         this.settingsBean = settingsBean;
+    }
+
+    public void setLastConfigurationResources(Resource[] postSeoConfigurationResources) {
+        this.lastConfigurationResources = postSeoConfigurationResources;
     }
 }

@@ -45,10 +45,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import javax.jcr.Binary;
@@ -355,7 +352,7 @@ public class FileServlet extends HttpServlet {
         JCRNodeWrapper n = null;
         JCRSessionWrapper session = null;
         try {
-            session = JCRSessionFactory.getInstance().getCurrentUserSession(fileKey.getWorkspace());
+            session = JCRSessionFactory.getInstance().getCurrentUserSession(fileKey.getWorkspace(), Locale.ENGLISH);
             if (fileKey.getVersionDate() != null) {
                 session.setVersionDate(new Date(Long.valueOf(fileKey.getVersionDate())));
             }

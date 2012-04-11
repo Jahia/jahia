@@ -617,6 +617,13 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             String decodedURL = URLDecoder.decode(requestedURL, "UTF-8");
 
             int index = decodedURL.indexOf(path);
+            if (index == -1 && path.length() > 2) {
+                // no language is present in the URL
+                int startPos = path.indexOf('/', 1);
+                if (startPos != -1) {
+                    index = decodedURL.indexOf(path.substring(startPos));
+                }
+            }
 
             renderedURL = decodedURL.substring(0, index) + url +
                     (!StringUtils.isEmpty(outputFormat) ? "." + outputFormat : "");

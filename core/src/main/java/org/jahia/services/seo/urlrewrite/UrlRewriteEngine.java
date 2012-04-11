@@ -156,9 +156,10 @@ class UrlRewriteEngine extends UrlRewriter {
     @Override
     protected RewrittenOutboundUrl processEncodeURL(HttpServletResponse hsResponse, HttpServletRequest hsRequest, boolean encodeUrlHasBeenRun, String outboundUrl) {
         try {
-            if (outboundUrl.startsWith(hsRequest.getContextPath()+ Render.getRenderServletPath())) {
+            String ctx = StringUtils.defaultIfEmpty(hsRequest.getContextPath(), null);
+            if (outboundUrl.startsWith(ctx != null ? (ctx + Render.getRenderServletPath()) : Render.getRenderServletPath())) {
                 if (StringUtils.isNotEmpty(outboundUrl) && !Url.isLocalhost(hsRequest.getServerName())) {
-                    String url = StringUtils.substringAfter(outboundUrl,hsRequest.getContextPath()+"/cms");
+                    String url = StringUtils.substringAfter(outboundUrl, ctx != null ? (ctx + "/cms") : "/cms");
                     url = StringUtils.substringBefore(url,"?");
                     url = StringUtils.substringBefore(url,"#");
                     url = StringUtils.substringBefore(url,";");

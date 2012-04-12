@@ -53,10 +53,12 @@ import org.jahia.services.content.*;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.Template;
+import org.jahia.services.render.URLResolver;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -203,9 +205,10 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                     Object inArea = request.getAttribute("inArea");
                     args.add(inArea != null ? inArea.toString() : "");
                 } else if ("site".equals(field)) {
+                    // Todo : Do we need to find another way of getting the urlresolver ?
+                    URLResolver urlResolver = (URLResolver) renderContext.getRequest().getAttribute("urlResolver");
                     args.add(new StringBuilder().append(renderContext.getSite().getSiteKey())
-                            .append(":").append(renderContext.getRequest().getServerName())
-                            .toString());
+                            .append(":").append(urlResolver.getSiteKeyByServerName()==null?"virtualhost":"").toString());
                 }
             }
         }

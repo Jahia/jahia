@@ -279,6 +279,7 @@
                 <value>testGetSession(org.apache.jackrabbit.test.api.version.VersionHistoryTest)</value>
                 <value>testSameNameSiblings(org.apache.jackrabbit.test.api.AddNodeTest)</value>
                 <value>testValueFormatException(org.apache.jackrabbit.test.api.ValueFactoryTest)</value>
+                <value>testValueType(org.apache.jackrabbit.test.api.ValueFactoryTest)</value>
                 <value>testItemExistsException(org.apache.jackrabbit.test.api.query.SaveTest)</value>
                 <value>testExportDocView_handler_session_skipBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
                 <value>testExportDocView_handler_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
@@ -304,6 +305,9 @@
                 <value>testDerefMultiPropWithNodeTest(org.apache.jackrabbit.test.api.query.DerefQueryLevel1Test)</value>
                 <value>testEntryPointDefinitions(org.jahia.services.applications.ApplicationsManagerServiceTest)</value>
                 <value>testEntryPointInstance(org.jahia.services.applications.ApplicationsManagerServiceTest)</value>
+                <value>testReferences(org.apache.jackrabbit.test.api.ReferencesTest)</value>
+                <value>testGetReferencesWithName(org.apache.jackrabbit.test.api.ReferencesTest)</value>
+                <value>testAlterReference(org.apache.jackrabbit.test.api.ReferencesTest)</value>
                 <!-- Error due to using value wrappers, which have problems with identity checks implemented in StringValue.equals and DateValu.equals-->
                 <value>testValueSession(org.apache.jackrabbit.test.api.SetValueStringTest)</value>
                 <value>testValueParent(org.apache.jackrabbit.test.api.SetValueStringTest)</value>

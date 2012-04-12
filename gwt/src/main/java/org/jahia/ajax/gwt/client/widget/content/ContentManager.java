@@ -89,7 +89,7 @@ public class ContentManager extends TriPanelBrowserLayout {
             leftTree = null;
             DeferredCommand.addCommand(new Command() {
                 public void execute() {
-                    JahiaContentManagementService.App.getInstance().getRoot(config.getRepositories().get(0).getPaths(), null,null,null,null,
+                    JahiaContentManagementService.App.getInstance().getRoot(config.getRepositories().get(0).getPaths(), null,null,null,GWTJahiaNode.DEFAULT_FIELDS,
                             selectedPaths,null,false, linker.isDisplayHiddenTypes(), config.getHiddenTypes(), config.getHiddenRegex(), new BaseAsyncCallback<List<GWTJahiaNode>>() {
                         public void onSuccess(List<GWTJahiaNode> gwtJahiaNode) {
                             linker.setLeftPanelSelectionWhenHidden(gwtJahiaNode.get(0));

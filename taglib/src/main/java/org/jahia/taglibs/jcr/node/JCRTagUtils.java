@@ -43,20 +43,15 @@ package org.jahia.taglibs.jcr.node;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
-import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.render.RenderContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.templates.ComponentRegistry;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 
@@ -390,6 +385,9 @@ public class JCRTagUtils {
         }
 
         List<String> typeList = getContributeTypesAsString(node, areaNode, typelistValues);
+        if (typeList == null) { // there is type restriction defined and none is allowed in contribute mode
+            return Collections.emptyMap();
+        }
 
         return ComponentRegistry.getComponentTypes(node, typeList, null, displayLocale);
     }
@@ -408,12 +406,47 @@ public class JCRTagUtils {
         if (typelistValues == null) {
             return Collections.emptyList();
         }
+        
+        Value[] allowedTypeValues = null;
+        if (node.hasProperty("j:allowedTypes")) {
+            allowedTypeValues = node.getProperty("j:allowedTypes").getValues();
+        }
+        if (allowedTypeValues == null && areaNode != null && areaNode.hasProperty("j:allowedTypes")) {
+            allowedTypeValues = areaNode.getProperty("j:allowedTypes").getValues();
+        }   
+        Set<String> allowedTypes = allowedTypeValues == null ? Collections.<String>emptySet() : new HashSet<String>(allowedTypeValues.length);
+        if (allowedTypeValues != null) {
+            for (Value value : allowedTypeValues) {
+                allowedTypes.add(value.getString());
+            }
+        }
 
         List<String> typeList = new LinkedList<String>();
         for (Value value : typelistValues) {
-            typeList.add(value.getString());
+            String type = value.getString();
+            if (allowedTypes.isEmpty() || allowedTypes.contains(type)
+                    || isAllowedSubnodeType(type, allowedTypes)) {
+                typeList.add(type);
+            }
         }
-        return typeList;
+        return !allowedTypes.isEmpty() && typeList.isEmpty() ? null : typeList;
+    }
+    
+    private static boolean isAllowedSubnodeType(String nodeType, Set<String> allowedTypes) {
+        boolean isAllowed = false;
+        try {
+            ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(nodeType);
+            for (String allowedType : allowedTypes) {
+                if (t.isNodeType(allowedType)) {
+                    isAllowed = true;
+                    break;
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.warn("Nodetype " + nodeType + " not found while checking for allowed node types!", nodeType);
+        }
+        
+        return isAllowed;
     }
 
     public static JCRNodeWrapper findDisplayableNode(JCRNodeWrapper node, RenderContext context) {

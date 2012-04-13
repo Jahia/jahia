@@ -37,18 +37,19 @@
     </style>
 
 <c:if test="${empty areaResource.properties['j:numberOfItems'] or fn:length(moduleMap.currentList) lt areaResource.properties['j:numberOfItems'].long}">
-<h3 class="titleaddnewcontent">
-    <img title="" alt="" src="<c:url value='${url.currentModule}/images/add.png'/>"/><fmt:message key="label.add.new.content"/>
-</h3>
-
-<h3 class="titleaddnewcontent titlepaste" style="display:none;">
-<img title="" alt="" src="<c:url value='${url.currentModule}/images/paste.png'/>"/><a href="#" id="paste-${currentNode.identifier}" class="pastelink" onclick="pasteNodes(contributeParameters${fn:replace(currentNode.UUID,"-" ,"_")}); return false;" style="display:none;"><fmt:message
-        key="label.paste"/></a>
-</h3>
 
 <c:set var="types" value="${jcr:getContributeTypesDisplay(currentNode, areaResource, null, renderContext.UILocale)}"/>
 
 <c:if test="${not empty types}">
+    <h3 class="titleaddnewcontent">
+        <img title="" alt="" src="<c:url value='${url.currentModule}/images/add.png'/>"/><fmt:message key="label.add.new.content"/>
+    </h3>
+
+    <h3 class="titleaddnewcontent titlepaste" style="display:none;">
+        <img title="" alt="" src="<c:url value='${url.currentModule}/images/paste.png'/>"/><a href="#" id="paste-${currentNode.identifier}" class="pastelink" onclick="pasteNodes(contributeParameters${fn:replace(currentNode.UUID,"-" ,"_")}); return false;" style="display:none;"><fmt:message
+            key="label.paste"/></a>
+    </h3>
+  
     <ul class="pagecontributeToolbar">
     <c:forEach items="${types}" var="nodeType" varStatus="status">
         <jcr:icon var="icon" type="${nodeType.key}"/>

@@ -43,11 +43,11 @@ package org.jahia.services.render;
 import static org.jahia.api.Constants.LIVE_WORKSPACE;
 
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
@@ -59,6 +59,7 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.Url;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaNotFoundException;
@@ -92,12 +93,14 @@ import org.jahia.utils.LanguageCodeConverters;
 public class URLResolver {
 
     private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
-
+    
     private static final String DEFAULT_WORKSPACE = LIVE_WORKSPACE;
 
     private static final String VANITY_URL_NODE_PATH_SEGMENT = "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/";
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(URLResolver.class);
+    private static final Pattern LANGUAGE_PATTERN = Pattern.compile("[a-z]{2}(_[A-Z]{2})?");
+    
+    private static Logger logger = LoggerFactory.getLogger(URLResolver.class);
 
     private static String[] servletsAllowingUrlMapping = new String[] {
             StringUtils.substringAfterLast(Render.getRenderServletPath(), "/")
@@ -149,7 +152,7 @@ public class URLResolver {
                     getUrlPathInfo().length());
         } 
         if (!resolveUrlMapping(serverName)) {
-            init(request);
+            init();
             if (!Url.isLocalhost(serverName) && isMappable()
                     && SettingsBean.getInstance().isPermanentMoveForVanityURL()) {
                 try {
@@ -195,42 +198,15 @@ public class URLResolver {
 
         if (!StringUtils.isEmpty(urlPathInfo)) {
             path = getUrlPathInfo().substring(1);
-            init(context.getRequest());
+            init();
         }
     }
  
-    private boolean isValidLocale(String value) {
-        Locale []locales = Locale.getAvailableLocales();
-        for (Locale l : locales) {
-          if (value.equals(l.toString())) {
-            return true;
-          }
-        }
-        return false;
-      }
-    
-    private void init(HttpServletRequest request) {
+    private void init() {
         workspace = verifyWorkspace(StringUtils.substringBefore(path, "/"));
         path = StringUtils.substringAfter(path, "/");
-        String langCode = StringUtils.substringBefore(path, "/");
-
-        // TODO : Locale should be added by the url rewriting rule, not here
-        if(isValidLocale(langCode)) {
-            locale = StringUtils.isEmpty(langCode) ? DEFAULT_LOCALE
-                : LanguageCodeConverters.languageCodeToLocale(langCode);
-            path = "/" + StringUtils.substringAfter(path, "/");
-        } else {
-             locale = DEFAULT_LOCALE;
-             try{
-                 if(siteKey != null) {
-                     locale = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteKey).resolveLocaleFromList(request.getLocales());
-                 }
-             }catch(JahiaException ex) {
-                 locale = request.getLocale();
-                 logger.info("Cannot get JahiaSite to get Locales, default Browser locale will be used", ex);
-             }
-             path = "/" + path;
-        }
+        locale = verifyLanguage(StringUtils.substringBefore(path, "/"));
+        path = "/" + (locale != null ? StringUtils.substringAfter(path, "/") : path);
 
         // TODO: this is perhaps a temporary limitation as URL points to special templates, when 
         // there are more than one dots - and the path needs to end with .html
@@ -680,6 +656,18 @@ public class URLResolver {
 
     public void setVanityUrl(String vanityUrl) {
         this.vanityUrl = vanityUrl;
+    }
+    
+    protected Locale verifyLanguage(String lang) {
+        if (StringUtils.isEmpty(lang)) {
+            return DEFAULT_LOCALE;
+        }
+        
+        if (!LANGUAGE_PATTERN.matcher(lang).matches()) {
+            return null;
+        }
+        
+        return LanguageCodeConverters.languageCodeToLocale(lang);
     }
     
     protected String verifyWorkspace(String workspace) {

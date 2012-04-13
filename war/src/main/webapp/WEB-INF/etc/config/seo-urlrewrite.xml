@@ -29,6 +29,16 @@
     </rule>
 
     <rule>
+        <note>Add language to URL if not present</note>
+        <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
+        <condition type="attribute" name="siteDefaultLanguage" operator="notequal">^$</condition>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?[a-z]{2}(_[A-Z]{2})?/.*</condition>
+        <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
+        <from>^/cms/(.*)$</from>
+        <to>/cms/%{attribute:siteDefaultLanguage}/$1</to>
+    </rule>
+    
+    <rule>
         <note>Add the key of the site if it was resolved by server name, and if URL does not start with /users or /sites</note>
         <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
@@ -61,7 +71,6 @@
             If the /cms prefix should be removed (if the removal is not disabled by setting urlRewriteRemoveCmsPrefix to false in jahia.properties) and the following
             path is not starting with the reserved keyword, the jahiaSeoCmsToken attribute will be set to an empty string. Othewise it will be set to /cms to preserve the prefix.
         </note>
-        <condition type="server-name" operator="notequal">^localhost</condition>
         <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)/(.*)$</from>
         <run class="org.jahia.services.seo.urlrewrite.ServerNameToSiteMapper" method="analyzeLink(HttpServletRequest, String, String, String, String)"/>
     </outbound-rule>

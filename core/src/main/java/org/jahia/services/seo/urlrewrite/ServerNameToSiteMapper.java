@@ -143,7 +143,7 @@ public class ServerNameToSiteMapper {
         JahiaSite siteByKey = null;
         try {
             siteByKey = JahiaSitesBaseService.getInstance().getSiteByKey(siteKey);
-            boolean languageMatches = siteByKey.resolveLocaleFromList(request.getLocales()).toString().equals(language);
+            boolean languageMatches = siteByKey.getDefaultLanguage().equals(language);
             request.setAttribute(ATTR_NAME_DEFAULT_LANG_MATCHES, languageMatches);
             request.setAttribute(ATTR_NAME_LANG_TOKEN, languageMatches ? "" : "/" + language);
         } catch (JahiaException e) {

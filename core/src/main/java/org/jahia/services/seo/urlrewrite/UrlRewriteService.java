@@ -56,7 +56,6 @@ import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.FileUtils;
@@ -280,10 +279,10 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         }catch(Exception ex) {
             logger.warn("Unable to load the SimpleUrlHandlerMapping", ex);
         }
-        final String targetSiteKey = ServerNameToSiteMapper.getSiteKeyByServerName(request);
+        String targetSiteKey = ServerNameToSiteMapper.getSiteKeyByServerName(request);
         request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG, StringUtils.EMPTY);
         request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, StringUtils.EMPTY);
-        if (!StringUtils.isEmpty(targetSiteKey)) {
+        if (StringUtils.isNotEmpty(targetSiteKey)) {
             try {
                 List<VanityUrl> vanityUrls = vanityUrlService.findExistingVanityUrls(path,
                         targetSiteKey, "live");
@@ -299,15 +298,18 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
             } catch (RepositoryException e) {
                 logger.error("Cannot get vanity Url", e);
             }
-            try {
-                JahiaSite siteByKey = siteService.getSiteByKey(targetSiteKey);
-                String defaultLanguage = siteByKey.resolveLocaleFromList(request.getLocales()).toString();
-                request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG,
-                        defaultLanguage);
-            } catch (JahiaException e) {
-                logger.error("Cannot get site", e);
-            }
+        } else if (path.startsWith("/sites/")) {
+            targetSiteKey = StringUtils.substringBetween(path, "/sites/", "/");
         }
+        
+        if (StringUtils.isNotEmpty(targetSiteKey)) {
+            try {
+                request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG, siteService
+                        .getSiteByKey(targetSiteKey).getDefaultLanguage());
+            } catch (JahiaException e) {
+                logger.error("Cannot get site for key " + targetSiteKey, e);
+            }
+        } 
 
         return true;
     }

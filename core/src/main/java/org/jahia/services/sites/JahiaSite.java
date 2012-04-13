@@ -489,17 +489,6 @@ public class JahiaSite implements Serializable {
         this.uuid = uuid;
     }
 
-    public Locale resolveLocaleFromList(Enumeration<?> browserLocales) {
-        while(browserLocales.hasMoreElements()) {
-            Locale locale = (Locale) browserLocales.nextElement();
-            if (getLanguages().contains(locale.toString()) && !getInactiveLanguages().contains(locale.toString())) {
-                return locale;
-            }
-        }
-        return LanguageCodeConverters.getLocaleFromCode(getDefaultLanguage());
-    }
-
-
     public String toString() {
         final StringBuffer buff = new StringBuffer();
         buff.append("JahiaSite: ID = ").append(mSiteID).

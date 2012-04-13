@@ -174,7 +174,7 @@ class UrlRewriteEngine extends UrlRewriter {
                                             node,
                                             urlResolver.getWorkspace(),
                                             urlResolver.getLocale(), context != null ? context.getSite().getSiteKey() : null);
-                            if (vanityUrl != null) {
+                            if (vanityUrl != null && vanityUrl.isActive()) {
                                 outboundUrl = outboundUrl.replace("/" + urlResolver.getLocale()
                                         + urlResolver.getPath(), vanityUrl.getUrl());
                             }

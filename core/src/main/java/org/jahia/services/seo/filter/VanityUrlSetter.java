@@ -72,7 +72,12 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
      */
     public String visit(final String attrValue, RenderContext context, String tagName, String attrName, Resource resource) {
         String value = attrValue;
-        if (StringUtils.isNotEmpty(attrValue) && !Url.isLocalhost(context.getRequest().getServerName())) {
+        if (StringUtils.isNotEmpty(attrValue)
+                && !Url.isLocalhost(context.getRequest().getServerName())
+                && attrValue
+                        .startsWith(context.getRequest().getContextPath().length() > 0 ? context
+                                .getRequest().getContextPath() + context.getServletPath() : context
+                                .getServletPath())) {
             URLResolver urlResolver = urlResolverFactory.createURLResolver(attrValue, context);
             if (urlResolver.isMapped()) {
                 try {
@@ -81,7 +86,7 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
                                     urlResolver.getNode(),
                                     urlResolver.getWorkspace(),
                                     urlResolver.getLocale(), context.getSite().getSiteKey());
-                    if (vanityUrl != null) {
+                    if (vanityUrl != null && vanityUrl.isActive()) {
                         value = attrValue.replace("/" + urlResolver.getLocale()
                                 + urlResolver.getPath(), vanityUrl.getUrl());
                     }

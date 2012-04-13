@@ -46,10 +46,7 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
+import javax.script.*;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -86,7 +83,7 @@ public class JSR223ScriptJob extends BackgroundJob {
         ScriptEngine scriptEngine = ScriptEngineUtils.getInstance().scriptEngine(FilenameUtils.getExtension(jobScriptPath));
         if (scriptEngine != null) {
             ScriptContext scriptContext = scriptEngine.getContext();
-            final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+            final Bindings bindings = new SimpleBindings();
             bindings.put("jobDataMap", map);
             InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(jobScriptPath);
             if (scriptInputStream != null) {

@@ -671,7 +671,7 @@ public class UIConfigHelper {
             try {
                 ScriptEngine byName = scriptEngineUtils.getEngineByName("velocity");
                 ScriptContext scriptContext = byName.getContext();
-                final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+                final Bindings bindings = new SimpleBindings();
                 bindings.put("currentSite", site);
                 bindings.put("currentUser", jahiaUser);
                 scriptContext.setWriter(new StringWriter());

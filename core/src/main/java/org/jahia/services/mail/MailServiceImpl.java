@@ -51,10 +51,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.jcr.RepositoryException;
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
+import javax.script.*;
 
 import org.apache.camel.*;
 import org.apache.commons.io.IOUtils;
@@ -318,7 +315,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
             } else {
                 resourceBundle = new JahiaResourceBundle(locale, templatePackageName);
             }
-            final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+            final Bindings bindings = new SimpleBindings();
             bindings.put("bundle", resourceBundle);
             bindings.putAll(boundObjects);
             Reader scriptContent = null;

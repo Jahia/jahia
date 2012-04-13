@@ -203,7 +203,7 @@ public class RulesNotificationService {
         String extension = StringUtils.substringAfterLast(template, ".");
         ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(extension);
         ScriptContext scriptContext = scriptEngine.getContext();
-        final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+        final Bindings bindings = new SimpleBindings();
         bindings.put("currentUser", user);
         InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(template);
         if (scriptInputStream != null) {

@@ -254,7 +254,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         if (element!=null) {
             Map<String, String> map = (Map<String, String>) element.getValue();
             String path = nodePath;
-            while ((!path.equals("")) && !map.containsKey(path)) {
+            while ((!path.equals("")) && !map.containsKey(path) && !aclGroups.containsKey(path)) {
                 path = StringUtils.substringBeforeLast(path, "/");
             }
             if (checkRootPath) {
@@ -291,6 +291,9 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 }
                 aclGroups.addAll(allAclsGroups.get(fakePath));
                 fakePath = StringUtils.substringBeforeLast(fakePath, "/");
+                if (fakePath.equals("")) {
+                    aclGroups.addAll(allAclsGroups.get("/"));
+                }
             }
 
             for (JahiaGroup g : aclGroups) {
@@ -353,6 +356,9 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         if (element == null) {
             initCache(userName);
             element = cache.get(userName);
+            synchronized (aclGroups) {
+                getAllAclsGroups();
+            }
         }
         return element;
     }
@@ -436,7 +442,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                             group = groupManagerService.lookupGroup(s);
                         }
                         if (group != null) {
-                            String path = node.getParent().getParent().getPath();
+                            JCRNodeWrapper parent = node.getParent().getParent();
+                            String path = parent.getPath();
                             boolean granted = node.getProperty("j:aceType").getString().equals("GRANT");
                             if (granted) {
                                 Set<JahiaGroup> groups;
@@ -447,6 +454,17 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                                     groups = aclGroups.get(path);
                                 }
                                 groups.add(group);
+                                try {
+                                    path = parent.getParent().getPath();
+                                    if (!aclGroups.containsKey(path)) {
+                                        groups = new LinkedHashSet<JahiaGroup>();
+                                        aclGroups.put(path, groups);
+                                    } else {
+                                        groups = aclGroups.get(path);
+                                    }
+                                    groups.add(group);
+                                } catch (RepositoryException e) {
+                                }
                             }
                         }
                     }

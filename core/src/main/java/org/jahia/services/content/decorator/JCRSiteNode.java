@@ -70,11 +70,15 @@ public class JCRSiteNode extends JCRNodeDecorator {
 
     private Set<String> activeLanguages;
     
+    private List<Locale> activeLanguagesAsLocales;
+    
     private String defaultLanguage;
     
     private JCRNodeWrapper home;
 
     private Set<String> languages;
+    
+    private List<Locale> languagesAsLocales;
     
     private Set<String> mandatoryLanguages;
     
@@ -133,17 +137,21 @@ public class JCRSiteNode extends JCRNodeDecorator {
      * @return a List of Locale elements
      */
     public List<Locale> getActiveLanguagesAsLocales() {
-        Set<String> languages = getActiveLanguages();
-
-        List<Locale> localeList = new ArrayList<Locale>();
-        if (languages != null) {
-            for (String language : languages) {
-                Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(language);
-                localeList.add(tempLocale);
+        if (activeLanguagesAsLocales == null) {
+            Set<String> languages = getActiveLanguages();
+    
+            List<Locale> localeList = new ArrayList<Locale>();
+            if (languages != null) {
+                for (String language : languages) {
+                    Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(language);
+                    localeList.add(tempLocale);
+                }
+    
             }
-
+            activeLanguagesAsLocales = localeList;
         }
-        return localeList;
+        
+        return activeLanguagesAsLocales;
     }
 
     public String getDefaultLanguage() {
@@ -234,17 +242,21 @@ public class JCRSiteNode extends JCRNodeDecorator {
      * @return an List of Locale elements.
      */
     public List<Locale> getLanguagesAsLocales() {
-        Set<String> languages = getLanguages();
-
-        List<Locale> localeList = new ArrayList<Locale>();
-        if (languages != null) {
-            for (String language : languages) {
-                Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(language);
-                localeList.add(tempLocale);
+        if (languagesAsLocales == null) {
+            Set<String> languages = getLanguages();
+    
+            List<Locale> localeList = new ArrayList<Locale>();
+            if (languages != null) {
+                for (String language : languages) {
+                    Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(language);
+                    localeList.add(tempLocale);
+                }
+    
             }
-
+            languagesAsLocales = localeList;
         }
-        return localeList;
+        
+        return languagesAsLocales;
     }
 
     @SuppressWarnings("unchecked")

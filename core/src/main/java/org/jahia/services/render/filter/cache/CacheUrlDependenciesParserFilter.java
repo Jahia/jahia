@@ -42,10 +42,7 @@ import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser;
 
 /**
- * Created by IntelliJ IDEA.
- *
- * @author : rincevent
- * @since : JAHIA 6.1
+ * @author rincevent
  *        Created : 12/15/11
  */
 public class CacheUrlDependenciesParserFilter implements HtmlTagAttributeTraverser.HtmlTagAttributeVisitor {
@@ -65,8 +62,12 @@ public class CacheUrlDependenciesParserFilter implements HtmlTagAttributeTravers
      */
     public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
         String contextConfiguration = resource.getContextConfiguration();
-        if (context.isLiveMode() && StringUtils.isNotEmpty(value) &&
-            (contextConfiguration.equals(Resource.CONFIGURATION_MODULE))) {
+        if (context.isLiveMode()
+                && StringUtils.isNotEmpty(value)
+                && contextConfiguration.equals(Resource.CONFIGURATION_MODULE)
+                && value.startsWith(context.getRequest().getContextPath().length() > 0 ? context
+                        .getRequest().getContextPath() + context.getServletPath() : context
+                        .getServletPath())) {
             try {
                 URLResolver urlResolver = urlResolverFactory.createURLResolver(value, context);
                 JCRNodeWrapper nodeWrapper = urlResolver.getNode();

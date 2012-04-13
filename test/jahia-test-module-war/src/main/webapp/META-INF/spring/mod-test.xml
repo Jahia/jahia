@@ -308,6 +308,8 @@
                 <value>testReferences(org.apache.jackrabbit.test.api.ReferencesTest)</value>
                 <value>testGetReferencesWithName(org.apache.jackrabbit.test.api.ReferencesTest)</value>
                 <value>testAlterReference(org.apache.jackrabbit.test.api.ReferencesTest)</value>
+                <value>testSaveReferentialIntegrityException(org.apache.jackrabbit.test.api.NodeUUIDTest)</value>
+                <value>testSaveReferentialIntegrityException(org.apache.jackrabbit.test.api.SessionUUIDTest)</value>
                 <!-- Error due to using value wrappers, which have problems with identity checks implemented in StringValue.equals and DateValu.equals-->
                 <value>testValueSession(org.apache.jackrabbit.test.api.SetValueStringTest)</value>
                 <value>testValueParent(org.apache.jackrabbit.test.api.SetValueStringTest)</value>

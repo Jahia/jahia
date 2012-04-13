@@ -58,7 +58,6 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -207,8 +206,10 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 } else if ("site".equals(field)) {
                     // Todo : Do we need to find another way of getting the urlresolver ?
                     URLResolver urlResolver = (URLResolver) renderContext.getRequest().getAttribute("urlResolver");
-                    args.add(new StringBuilder().append(renderContext.getSite().getSiteKey())
-                            .append(":").append(urlResolver.getSiteKeyByServerName()==null?"virtualhost":"").toString());
+                    args.add(urlResolver.getSiteKeyByServerName() == null ? new StringBuilder()
+                            .append(renderContext.getSite().getSiteKey()).append(":")
+                            .append("virtualhost").toString() : renderContext.getSite()
+                            .getSiteKey());
                 }
             }
         }
@@ -293,7 +294,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 fakePath = StringUtils.substringBeforeLast(fakePath, "/");
                 if (fakePath.equals("")) {
                     aclGroups.addAll(allAclsGroups.get("/"));
-                }
+            }
             }
 
             for (JahiaGroup g : aclGroups) {
@@ -358,7 +359,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             element = cache.get(userName);
             synchronized (aclGroups) {
                 getAllAclsGroups();
-            }
+        }
         }
         return element;
     }

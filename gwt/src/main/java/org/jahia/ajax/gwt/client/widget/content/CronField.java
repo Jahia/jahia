@@ -94,7 +94,7 @@ public class CronField extends AdapterField {
         choose = new SimpleComboBox<String>();
         choose.setEditable(false);
         choose.setTriggerAction(ComboBox.TriggerAction.ALL);
-        choose.add(Messages.get("empty", ""));
+        choose.add("");
         choose.add(Messages.get("label.minute", "minute"));
         choose.add(Messages.get("label.hour", "hour"));
         choose.add(Messages.get("label.day", "day"));

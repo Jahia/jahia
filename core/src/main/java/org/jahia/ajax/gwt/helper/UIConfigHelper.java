@@ -347,7 +347,7 @@ public class UIConfigHelper {
         GWTColumn col = new GWTColumn();
         col.setKey(item.getKey());
         if (item.getTitleKey() != null) {
-            col.setTitle(getResources(item.getTitleKey(), uiLocale != null ? uiLocale : locale, site, null));
+            col.setTitle(item.getTitleKey().equals("empty") ? "" : getResources(item.getTitleKey(), uiLocale != null ? uiLocale : locale, site, null));
         } else if (item.getDeclaringNodeType() != null) {
             try {
                 ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(item.getDeclaringNodeType()).getPropertyDefinition(item.getKey());

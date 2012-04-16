@@ -1951,26 +1951,28 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         Map<String, JCRNodeWrapper> nodesForTypes = new HashMap<String, JCRNodeWrapper>();
         try {
-            Query q = s.getWorkspace().getQueryManager().createQuery("select * from [jnt:component] as c " +
-                    "where isdescendantnode(c,'"+getSite().getPath()+"')", Query.JCR_SQL2);
-            QueryResult qr = q.execute();
-            NodeIterator ni = qr.getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper node  = (JCRNodeWrapper) ni.next();
-                if (names.contains(node.getName())) {
-                    nodesForTypes.put(node.getName(), node);
+            if (getSite().getPath().startsWith("/sites")) {
+                Query q = s.getWorkspace().getQueryManager().createQuery("select * from [jnt:component] as c " +
+                        "where isdescendantnode(c,'"+getSite().getPath()+"')", Query.JCR_SQL2);
+                QueryResult qr = q.execute();
+                NodeIterator ni = qr.getNodes();
+                while (ni.hasNext()) {
+                    JCRNodeWrapper node  = (JCRNodeWrapper) ni.next();
+                    if (names.contains(node.getName())) {
+                        nodesForTypes.put(node.getName(), node);
+                    }
                 }
-            }
 
-            for (GWTJahiaNodeType type : types) {
-                if (!type.isMixin()) {
-                    JCRNodeWrapper n = nodesForTypes.get(type.getName());
-                    if (n != null) {
-                        type.set("canUseComponentForCreate",n.hasPermission("useComponentForCreate"));
-                        type.set("canUseComponentForEdit",n.hasPermission("useComponentForEdit"));
-                    } else {
-                        type.set("canUseComponentForCreate",false);
-                        type.set("canUseComponentForEdit",false);
+                for (GWTJahiaNodeType type : types) {
+                    if (!type.isMixin() && !type.isAbstract()) {
+                        JCRNodeWrapper n = nodesForTypes.get(type.getName());
+                        if (n != null) {
+                            type.set("canUseComponentForCreate",n.hasPermission("useComponentForCreate"));
+                            type.set("canUseComponentForEdit",n.hasPermission("useComponentForEdit"));
+                        } else {
+                            type.set("canUseComponentForCreate",false);
+                            type.set("canUseComponentForEdit",false);
+                        }
                     }
                 }
             }

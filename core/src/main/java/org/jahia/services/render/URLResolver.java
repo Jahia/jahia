@@ -490,6 +490,9 @@ public class URLResolver {
             logger.debug("Resolving resource for workspace '" + workspace
                     + "' locale '" + locale + "' and path '" + path + "'");
         }
+        if (locale == null) {
+            throw new PathNotFoundException("Unknown locale");
+        }
         final URLResolver urlResolver = this;
         return JCRTemplate.getInstance().doExecuteWithSystemSession(null,
                 workspace, locale, new JCRCallback<Resource>() {

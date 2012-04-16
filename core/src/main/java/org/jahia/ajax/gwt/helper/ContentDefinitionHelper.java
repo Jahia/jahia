@@ -116,6 +116,7 @@ public class ContentDefinitionHelper {
         GWTJahiaNodeType gwt = new GWTJahiaNodeType();
         gwt.setName(nodeType.getName());
         gwt.setMixin(nodeType.isMixin());
+        gwt.setAbstract(nodeType.isAbstract());
         gwt.setDescription(nodeType.getDescription(uiLocale));
         String label = nodeType.getLabel(uiLocale);
         gwt.setLabel(label);

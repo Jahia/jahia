@@ -37,6 +37,7 @@
                 <value>org.jahia.services.htmlvalidator.WAIValidatorTest</value>
                 <value>org.jahia.services.importexport.ImportExportTest</value>
                 <value>org.jahia.services.logging.ServiceLoggingTest</value>
+                <value>org.jahia.services.logout.LogoutTest</value>
                 <value>org.jahia.services.notification.CamelNotificationServiceTest</value>
                 <value>org.jahia.services.notification.HtmlExternalizationServiceTest</value>
                 <value>org.jahia.services.publication.PublicationTest</value>

@@ -113,6 +113,14 @@ public class GWTJahiaNodeType extends BaseModelData implements Serializable {
         set("isMixin",new Boolean(mixin));
     }
 
+    public boolean isAbstract() {
+        return (Boolean)get("isAbstract");
+    }
+
+    public void setAbstract(boolean isAbstract) {
+        set("isAbstract",new Boolean(isAbstract));
+    }
+
     public String getIcon() {
         return get("icon");
     }

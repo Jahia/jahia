@@ -72,6 +72,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -352,7 +353,8 @@ public class FileServlet extends HttpServlet {
         JCRNodeWrapper n = null;
         JCRSessionWrapper session = null;
         try {
-            session = JCRSessionFactory.getInstance().getCurrentUserSession(fileKey.getWorkspace(), Locale.ENGLISH);
+            session = JCRSessionFactory.getInstance().getCurrentUserSession(fileKey.getWorkspace());
+
             if (fileKey.getVersionDate() != null) {
                 session.setVersionDate(new Date(Long.valueOf(fileKey.getVersionDate())));
             }
@@ -361,6 +363,10 @@ public class FileServlet extends HttpServlet {
             }
 
             n = session.getNode(fileKey.getPath());
+
+            if (Constants.LIVE_WORKSPACE.equals(fileKey.getWorkspace()) && !VisibilityService.getInstance().matchesConditions(n)) {
+                n = null;
+            }
         } catch (RuntimeException e) {
             // throw by the session.setVersionLabel()
             logger.debug(e.getMessage(), e);

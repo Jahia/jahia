@@ -70,7 +70,10 @@
 </c:if>
 <c:set value="select * from [jnt:task] as task${sql}" var="sql"/>
 <c:if test="${not empty currentNode.properties['sortBy']}">
-    <c:set value="${sql} order by task.['${currentNode.properties['sortBy'].string}'] desc" var="sql"/>
+    <c:set value="${sql} order by task.['${currentNode.properties['sortBy'].string}']" var="sql"/>
+    <c:if test="${not empty currentNode.properties['sortOrder']}">
+        <c:set value="${sql} ${currentNode.properties['sortOrder'].string}" var="sql"/>
+    </c:if>
 </c:if>
 
 <query:definition var="listQuery" statement="${sql}" scope="request"/>

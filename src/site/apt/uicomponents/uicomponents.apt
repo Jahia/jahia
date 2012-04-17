@@ -2,6 +2,29 @@ Core module - UiComponents framework
 
   UiComponents framework allows integrators to customize a part of the Edit mode and Content managers.
 
+* Action items
+
+  The action items, defined in /WEB-INF/spring/uicomponents/applicationcontext-toolbar.xml , list all buttons that are
+  available for the different content managers and edit mode configuration.
+
+  They are all beans of type <org.jahia.services.uicomponents.bean.toolbar.Item>, and can define the following properties :
+
+    - actionItem: mandatory, this is the GWT class that handles the rendering of the button, and the operation that are done
+    when it is clicked.
+
+    - title or titleKey: Contains the title of the button, are the resource bundle key for that title
+
+    - icon: the icon name, which should be found in the /icons folder.
+
+    - visibility: conditional visibility of the button, based on the context (global permission, running mode, ..)
+
+    - requiredPermission: the permission that is required on the current selection to be able to use this item. Note that it
+    is different from the visibility settings, as the button will be visible but enable only the permission is verified on the
+    current selection.
+
+    - properties: optional list of properties that can be used by the actionItem code.
+
+
 * Content manager
 
   The content manager is divided in four parts:

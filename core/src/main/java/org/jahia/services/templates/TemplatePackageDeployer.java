@@ -371,11 +371,17 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         private File referenceDir;
         private File sourceDir;
         private File destDir;
+        private String basePath;
 
         public TracingFileFilter(File sourceDir, File destDir, File referenceDir) {
             this.sourceDir = sourceDir;
             this.destDir = destDir;
             this.referenceDir = referenceDir;
+        }
+        
+        public TracingFileFilter(File sourceDir, File destDir, File referenceDir, String basePath) {
+            this(sourceDir, destDir, referenceDir);
+            this.basePath = basePath;
         }
 
         public boolean accept(File file) {
@@ -387,6 +393,9 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 String referencePath = fileRelativePath;
                 if (file.getAbsolutePath().startsWith(referenceDirPath)) {
                     referencePath = file.getAbsolutePath().substring(referenceDirPath.length());
+                }
+                if (basePath != null) {
+                    fileDestPath = StringUtils.substringAfter(fileDestPath, basePath);
                 }
                 copiedFiles.put(referencePath, fileDestPath);
             }
@@ -444,7 +453,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             tmplRootFolder.mkdirs();
 
             try {
-                JahiaArchiveFileHandler archiveFileHandler = new JahiaArchiveFileHandler(templateWar.getPath());
+                JahiaArchiveFileHandler archiveFileHandler = new JahiaArchiveFileHandler(templateWar.getPath(), servletContext.getRealPath("/"));
                 Map<String,String> unzippedFiles = archiveFileHandler.unzip(tmplRootFolder.getAbsolutePath(), TEMPLATE_FILTER);
                 deployedFiles.putAll(unzippedFiles);
             } catch (Exception e) {
@@ -458,7 +467,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 if (classesFolder.exists()) {
                     if (classesFolder.list().length > 0) {
                         logger.info("Deploying classes for module " + packageName);
-                        TracingFileFilter tracingFileFilter = new TracingFileFilter(classesFolder, new File(settingsBean.getClassDiskPath()), tmplRootFolder);
+                        TracingFileFilter tracingFileFilter = new TracingFileFilter(classesFolder, new File(settingsBean.getClassDiskPath()), tmplRootFolder, servletContext.getRealPath("/"));
                         FileUtils.copyDirectory(classesFolder, new File(settingsBean.getClassDiskPath()), tracingFileFilter);
                         deployedFiles.putAll(tracingFileFilter.getCopiedFiles());
                     }
@@ -474,7 +483,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 if (libFolder.exists()) {
                     if (libFolder.list().length > 0) {
                         logger.info("Deploying JARs for module " + packageName);
-                        TracingFileFilter tracingFileFilter = new TracingFileFilter(libFolder, new File(servletContext.getRealPath("/WEB-INF/lib")), tmplRootFolder);
+                        TracingFileFilter tracingFileFilter = new TracingFileFilter(libFolder, new File(servletContext.getRealPath("/WEB-INF/lib")), tmplRootFolder, servletContext.getRealPath("/"));
                         FileUtils.copyDirectory(libFolder, new File(servletContext.getRealPath("/WEB-INF/lib")), tracingFileFilter);
                         deployedFiles.putAll(tracingFileFilter.getCopiedFiles());
                     }
@@ -540,7 +549,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         moduleElement.addContent(new Element("deployment-timestamp").setText(iso8601DeploymentTimestamp));
         Element packageElement = new Element("package");
         packageElement.setAttribute("name", packageWar.getName());
-        packageElement.setAttribute("path", packageWar.getAbsolutePath());
+        packageElement.setAttribute("path", StringUtils.substringAfter(packageWar.getAbsolutePath(), servletContext.getRealPath("/")));
         moduleElement.addContent(packageElement);
 
         Element installedFiles = new Element("deployed");

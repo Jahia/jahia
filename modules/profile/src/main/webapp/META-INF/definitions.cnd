@@ -17,7 +17,7 @@
  - j:facebookID (boolean)
  - j:linkedinID (boolean)
  - j:picture (boolean)
- - j:editProfileView (string) nofulltext = user-edit-details
+ - j:editProfileView (string) = user-edit-details nofulltext
 
 [jnt:editUserDetails] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly
  - j:firstName (boolean)

@@ -55,6 +55,7 @@ import org.jahia.services.importexport.NoCloseZipInputStream;
 import org.jahia.utils.zip.ZipEntry;
 import org.jahia.utils.zip.ZipOutputStream;
 
+import javax.jcr.ItemExistsException;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -203,7 +204,14 @@ public class ZipHelper {
                     JCRNodeWrapper target = ensureDir(parentName, currentUserSession);
 
                     if (zipentry.isDirectory()) {
-                        target.createCollection(JCRContentUtils.escapeLocalNodeName(filename));
+                        String folderName = JCRContentUtils.escapeLocalNodeName(filename);
+                        if (!target.hasNode(folderName)) {
+                            try {
+                                target.createCollection(folderName);
+                            } catch (ItemExistsException e) {
+                                // ignore - it is already there
+                            }
+                        }
                     } else {
                         String contentType = JahiaContextLoaderListener.getServletContext().getMimeType(filename);
                         target.uploadFile(filename, zis, contentType);

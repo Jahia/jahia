@@ -512,7 +512,7 @@ public class URLResolver {
                                         if (renderContext != null) {
                                             renderContext.setAjaxRequest(true);
                                             HttpServletRequest req = renderContext.getRequest();
-                                            if (req.getParameter("mainResource") != null) {
+                                            if (req.getParameter("mainResource") != null && !req.getParameter("mainResource").equals(path)) {
                                                 Resource resource = urlResolver.getResource(req.getParameter(
                                                         "mainResource"));
                                                 renderContext.setAjaxResource(resource);

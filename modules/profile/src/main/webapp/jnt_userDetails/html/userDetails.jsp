@@ -6,6 +6,14 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%@ include file="../../getUser.jspf"%>
 
 <template:addResources type="css" resources="userProfile.css"/>
@@ -165,7 +173,12 @@
     </div>
 </c:if>
 <c:if test="${renderContext.user.username == user.name}">
-<div class="divButtonRight"><a class="aButton" href="<c:url value='${url.base}${user.path}.user-edit-details.html'/>"><span><fmt:message key="label.editProfile"/></span></a></div>
+    <c:set var="jsite" value="${param.jsite}"/>
+    <c:if test="${empty jsite}">
+        <c:set var="jsite" value="${renderContext.site.identifier}"/>
+    </c:if>
+    <c:set var="editUserView" value="${!empty currentNode.properties['j:editProfileView']?currentNode.properties['j:editProfileView'].string:'user-edit-details'}"/>
+<div class="divButtonRight"><a class="aButton" href="<c:url value='${url.base}${user.path}.${editUserView}.html?jsite=${jsite}'/>"><span><fmt:message key="label.editProfile"/></span></a></div>
 </c:if>
 
 

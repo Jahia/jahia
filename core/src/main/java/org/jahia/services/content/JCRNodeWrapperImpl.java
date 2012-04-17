@@ -45,8 +45,6 @@ import static org.jahia.api.Constants.*;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.commons.iterator.PropertyIteratorAdapter;
@@ -227,7 +225,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     n = n.getParent();
                 }
             } catch (ItemNotFoundException e) {
-                logger.debug(e.getMessage(), e);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(e.getMessage(), e);
+                }
             }
 
 
@@ -577,7 +577,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 file.getSession().checkout(file);
             }
         } catch (PathNotFoundException e) {
-            logger.debug("file " + name + " does not exist, creating...");
+            if (logger.isDebugEnabled()) {
+                logger.debug("file " + name + " does not exist, creating...");
+            }
             if (!isCheckedOut()) {
                 getSession().checkout(this);
             }
@@ -2736,7 +2738,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         }
                     }
                 } catch (ItemNotFoundException e) {
-                    logger.debug("checkLock : no i18n node for node " + localPathInProvider);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("checkLock : no i18n node for node " + localPathInProvider);
+                    }
                 }
             }
         }
@@ -3051,7 +3055,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             try {
                 co &= versionManager.isCheckedOut(getI18N(session.getLocale()).getPath());
             } catch (ItemNotFoundException e) {
-                logger.debug("isCheckedOut : no i18n node for node " + localPathInProvider);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("isCheckedOut : no i18n node for node " + localPathInProvider);
+                }
             }
         }
 

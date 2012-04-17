@@ -37,6 +37,7 @@
  - displayAssignee (boolean)
  - displayCreator (boolean)
  - sortBy (string,choicelist) < 'jcr:created','dueDate'
+ - sortOrder (string, choicelist) < 'asc', 'desc'
 
 [jnt:createTaskForm] > jnt:content, mix:title, jmix:formContent, jmix:bindedComponent, jmix:studioOnly
  - useDescription (boolean)

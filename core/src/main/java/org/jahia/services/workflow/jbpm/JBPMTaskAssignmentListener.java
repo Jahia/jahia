@@ -101,8 +101,13 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
         }
         assignable.addCandidateGroup(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(0).getGroupKey());
 
+        createTask(assignable, execution, principals);
+    }
+
+    protected void createTask(final Assignable assignable, final OpenExecution execution, final List<JahiaPrincipal> candidates) throws RepositoryException {
         final String username = (String) execution.getVariable("user");
         final JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(username);
+
         if (assignable instanceof TaskImpl && user != null) {
             Locale locale = (Locale) execution.getVariable("locale");
             JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), null, locale, new JCRCallback<Object>() {
@@ -115,7 +120,7 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
                     }
                     JCRNodeWrapper n = jcrUser.getNode(session);
                     JCRNodeWrapper tasks;
-                    
+
                     if (!n.hasNode("workflowTasks")) {
                         tasks = n.addNode("workflowTasks", "jnt:tasks");
                     } else {
@@ -142,7 +147,7 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
                     }
                     List<Value> candidatesArray = new ArrayList<Value>();
                     ValueFactory valueFactory = session.getValueFactory();
-                    for (JahiaPrincipal principal : principals) {
+                    for (JahiaPrincipal principal : candidates) {
                         if (principal instanceof JahiaGroup) {
                             candidatesArray.add(valueFactory.createValue("g:"+principal.getName()));
                         } else if (principal instanceof JahiaUser) {

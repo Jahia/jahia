@@ -619,7 +619,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         JCRNodeWrapper modules = session.getNode("/templateSets");
         JCRNodeWrapper m = modules.getNode(pack.getRootFolder());
         m.setProperty("j:title", pack.getName());
-        m.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(pack.getName())});
+        m.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(pack.getFileName())});
         if (pack.getModuleType() != null) {
             m.setProperty("j:siteType",pack.getModuleType());
         }

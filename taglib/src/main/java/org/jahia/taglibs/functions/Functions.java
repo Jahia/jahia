@@ -233,7 +233,7 @@ public class Functions {
 
             for (String[] details : entry.getValue()) {
                 if (details[1].equals("GRANT")) {
-                    if (roles != null) {
+                    if (!StringUtils.isEmpty(roles)) {
                         if (!roles.contains(details[2])) {
                             continue;
                         }
@@ -271,6 +271,8 @@ public class Functions {
                         }
                         expandedResults.add(m);
                     }
+                } else {
+                    expandedResults.add(result);
                 }
             }
             results = expandedResults;

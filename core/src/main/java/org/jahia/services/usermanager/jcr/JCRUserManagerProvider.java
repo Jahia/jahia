@@ -477,13 +477,21 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                         if (providerKey != null) {
                             query.append(query.length() > 0 ? " AND " : "").append(" u.[" + JCRUser.J_EXTERNAL_SOURCE + "] = '").append(providerKey).append("'");
                         }
-                        
-                        if (searchCriterias != null && searchCriterias.size() > 0) {
+                        Properties filters = new Properties(searchCriterias);
+                        if (searchCriterias != null && filters.size() > 0) {
+                            String operation = " OR ";
+                            if(filters.containsKey(JahiaUserManagerService.MULTI_CRITERIA_SEARCH_OPERATION)) {
+                                if(((String) filters.get(JahiaUserManagerService.MULTI_CRITERIA_SEARCH_OPERATION)).trim().toLowerCase().equals(
+                                        "and")) {
+                                    operation = " AND ";
+                                }
+                                filters.remove(JahiaUserManagerService.MULTI_CRITERIA_SEARCH_OPERATION);
+                            }
                             // Avoid wildcard attribute
-                            if (!(searchCriterias.containsKey(
-                                    "*") && searchCriterias.size() == 1 && searchCriterias.getProperty("*").equals(
+                            if (!(filters.containsKey(
+                                    "*") && filters.size() == 1 && filters.getProperty("*").equals(
                                     "*"))) {
-                                Iterator<Map.Entry<Object, Object>> objectIterator = searchCriterias.entrySet().iterator();
+                                Iterator<Map.Entry<Object, Object>> objectIterator = filters.entrySet().iterator();
                                 if (objectIterator.hasNext()) {
                                     query.append(query.length() > 0 ? " AND " : "").append(" (");
                                     while (objectIterator.hasNext()) {
@@ -511,7 +519,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                                                     " LIKE '").append(propertyValue.toLowerCase()).append("'");
                                         }
                                         if (objectIterator.hasNext()) {
-                                            query.append(" OR ");
+                                            query.append(operation);
                                         }
                                     }
                                     query.append(")");

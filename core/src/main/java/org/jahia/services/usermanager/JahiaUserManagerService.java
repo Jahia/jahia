@@ -74,6 +74,8 @@ public abstract class JahiaUserManagerService extends JahiaService {
      */
     public static final String GUEST_USERNAME = Constants.GUEST_USERNAME;
 
+    public static final String MULTI_CRITERIA_SEARCH_OPERATION = "multi_criteria_search_op";
+
     private JahiaUserSplittingRule userSplittingRule;
 // -------------------------- STATIC METHODS --------------------------
 

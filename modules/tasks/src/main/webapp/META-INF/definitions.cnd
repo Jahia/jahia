@@ -45,6 +45,8 @@
  - usePriority (boolean)
  - useDueDate (boolean)
  - taskType (string)
+ - checkRolesOnMainResource (boolean)
+ - rolesList (weakreference,choicelist[nodes='/roles;jnt:role']) multiple nofulltext
 
 [jnt:taskList] > jnt:content, mix:title, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly, jmix:list
  - filterOnTypes (string)

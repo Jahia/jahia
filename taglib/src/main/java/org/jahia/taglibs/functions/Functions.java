@@ -183,104 +183,16 @@ public class Functions {
     }
 
     public static List<Map<String, Object>> getRolesForNode(JCRNodeWrapper node, boolean includeInherited, boolean expandGroups, String roles, int limit, String sortType) {
-        List<Map<String, Object>> results = new LinkedList<Map<String, Object>>();
-        Map<String,List<String[]>> entries = node.getAclEntries();
-
-        if (sortType != null && sortType.equalsIgnoreCase("latestFirst")) {
-            entries = reverse(entries);
-        }
+        List<Map<String, Object>> results;
 
         boolean sortByDisplayName = sortType != null && sortType.equalsIgnoreCase("displayName");
-        int siteId = -1;
-        
-        JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        
-        for (Map.Entry<String, List<String[]>> entry : entries.entrySet()) {
-            Map<String, Object> m = new HashMap<String, Object>();
-            String entryKey = entry.getKey();
-            if (entryKey.startsWith("u:")) {
-                JahiaUser u = userService.lookupUser(StringUtils.substringAfter(entryKey, "u:"));
-                if (u == null) {
-                    logger.warn("User {} cannot be found. Skipping.", StringUtils.substringAfter(entryKey, "u:"));
-                    continue;
-                }
-                m.put("principalType","user");
-                m.put("principal",u);
-                if (sortByDisplayName) {
-                    m.put("displayName", PrincipalViewHelper.getFullName(u));
-                }
-            } else if (entryKey.startsWith("g:")) {
-                if (siteId == -1) {
-                    try {
-                        JCRSiteNode resolveSite = node.getResolveSite();
-                        siteId = resolveSite != null ? resolveSite.getID() : 0;
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-                JahiaGroup g = groupService.lookupGroup(siteId, StringUtils.substringAfter(entryKey, "g:"));
-                if (g == null) {
-                    logger.warn("Group {} cannot be found for site with ID={}. Skipping.", StringUtils.substringAfter(entryKey, "g:"), siteId);
-                    continue;
-                }
-                m.put("principalType","group");
-                m.put("principal",g);
-                if (sortByDisplayName) {
-                    m.put("displayName", PrincipalViewHelper.getFullName(g));
-                }
-            }
-
-            for (String[] details : entry.getValue()) {
-                if (details[1].equals("GRANT")) {
-                    if (!StringUtils.isEmpty(roles)) {
-                        if (!roles.contains(details[2])) {
-                            continue;
-                        }
-                    }
-                
-                    if (!includeInherited) {
-                        if (!details[0].equals(node.getPath())) {
-                            continue;
-                        }
-                    }
-                    if (!m.containsKey("roles")) {
-                        m.put("roles", new LinkedList<String>());
-                        results.add(m);
-                    }
-                    ((List)m.get("roles")).add(details[2]);
-                }
-            }
-
-            if (limit > 0 && results.size() >= limit) {
-                break;
-            }
-        }
-        if (expandGroups) {
-            List<Map<String, Object>> expandedResults = new LinkedList<Map<String, Object>>();
-            for (Map<String, Object> result : results) {
-                if (result.get("principalType").equals("group")) {
-                    JahiaGroup g = (JahiaGroup) result.get("principal");
-                    Set<Principal> principals = g.getRecursiveUserMembers();
-                    for (Principal user : principals) {
-                        Map<String, Object> m = new HashMap<String, Object>(result);
-                        m.put("principalType", "user");
-                        m.put("principal", user);
-                        if (sortByDisplayName) {
-                            m.put("displayName", PrincipalViewHelper.getFullName(user));
-                        }
-                        expandedResults.add(m);
-                    }
-                } else {
-                    expandedResults.add(result);
-                }
-            }
-            results = expandedResults;
-        }
+        results = JCRContentUtils.getRolesForNode(node, includeInherited, expandGroups, roles, limit,sortType != null && sortType.equalsIgnoreCase("latestFirst"));
         if (sortByDisplayName) {
+            for (Map<String, Object> result : results) {
+                result.put("displayName", PrincipalViewHelper.getFullName((Principal) result.get("principal")));
+            }
             Collections.sort(results, DISPLAY_NAME_COMPARATOR);
         }
-        
         return results;
     }
 

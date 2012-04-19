@@ -42,18 +42,17 @@ package org.jahia.bin;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.Patterns;
@@ -86,7 +85,7 @@ public class FindUser extends BaseFindController {
     protected Properties buildSearchCriteria(String queryTerm) {
         Properties props = new Properties();
         for (String key : searchProperties) {
-            props.put(key, queryTerm);
+            props.put(key, queryTerm.contains("*")?queryTerm:queryTerm+"*");
         }
 
         return props;
@@ -104,8 +103,17 @@ public class FindUser extends BaseFindController {
         }
         
         Set<Principal> result = search(queryTerm, request);
-
-        writeResults(result, request, response);
+        JCRNodeWrapper jcrNodeWrapper = null;
+        if(request.getParameter("node")!=null) {
+        try {
+            jcrNodeWrapper = JCRSessionFactory
+                    .getInstance().getCurrentUserSession().getNode(request.getParameter("node"));
+        } catch (RepositoryException e) {
+           jcrNodeWrapper=null;
+        }
+        }
+        String permission = request.getParameter("perm");
+        writeResults(result, request, response, jcrNodeWrapper, permission);
     }
 
     protected Set<Principal> search(String queryTerm, HttpServletRequest request) {
@@ -163,16 +171,31 @@ public class FindUser extends BaseFindController {
         return toJSON((JahiaUser) principal);
     }
 
-    protected void writeResults(Set<Principal> users, HttpServletRequest request,
-            HttpServletResponse response) throws IOException, JSONException {
+    protected void writeResults(Set<Principal> users, HttpServletRequest request, HttpServletResponse response,
+                                JCRNodeWrapper jcrNodeWrapper, String permission) throws IOException, JSONException {
 
         response.setContentType("application/json; charset=UTF-8");
 
         List<JSONObject> jsonResults = new LinkedList<JSONObject>();
         int count = 0;
+
+        List<Map<String,Object>> rolesForNode = Collections.emptyList();
+        if(jcrNodeWrapper!=null && permission!=null) {
+            rolesForNode = JCRContentUtils.getRolesForNode(jcrNodeWrapper, true, true, permission, 0, false);
+        }
+
         for (Principal user : users) {
-            jsonResults.add(toJSON(user));
-            count++;
+            if(jcrNodeWrapper!=null && permission!=null) {
+                for (Map<String, Object> stringObjectMap : rolesForNode) {
+                    if(stringObjectMap.get("principalType").equals("user") && stringObjectMap.get("principal").equals(user)) {
+                        jsonResults.add(toJSON(user));
+                        count++;
+                    }
+                }
+            } else {
+                jsonResults.add(toJSON(user));
+                count++;
+            }
             if (count >= hardLimit) {
                 logger.info("{} principals were found, limiting results to {}", users.size(), hardLimit);
                 break;

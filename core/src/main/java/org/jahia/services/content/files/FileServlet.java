@@ -45,10 +45,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import javax.jcr.Binary;
@@ -75,6 +72,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -356,6 +354,7 @@ public class FileServlet extends HttpServlet {
         JCRSessionWrapper session = null;
         try {
             session = JCRSessionFactory.getInstance().getCurrentUserSession(fileKey.getWorkspace());
+
             if (fileKey.getVersionDate() != null) {
                 session.setVersionDate(new Date(Long.valueOf(fileKey.getVersionDate())));
             }
@@ -364,6 +363,10 @@ public class FileServlet extends HttpServlet {
             }
 
             n = session.getNode(fileKey.getPath());
+
+            if (Constants.LIVE_WORKSPACE.equals(fileKey.getWorkspace()) && !VisibilityService.getInstance().matchesConditions(n)) {
+                n = null;
+            }
         } catch (RuntimeException e) {
             // throw by the session.setVersionLabel()
             logger.debug(e.getMessage(), e);

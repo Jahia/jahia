@@ -145,13 +145,18 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             boolean reloadSpringContext = false;
             boolean changed = false;
 
+            LinkedHashSet<File> remaining = new LinkedHashSet<File>();
+
             // list WEB-INF/var/shared_modules
             File[] existingFiles = getPackageFiles(sharedTemplatesFolder);
             for (File file : existingFiles) {
                 if (!timestamps.containsKey(file.getPath()) || timestamps.get(file.getPath()) != file.lastModified()) {
                     logger.debug("Detected modified resource {}", file.getPath());
                     try {
-                    deployPackage(file);
+                        File folder = deployPackage(file);
+                        if (folder != null) {
+                            remaining.add(folder);
+                        }
                         timestamps.put(file.getPath(), file.lastModified());
                     reloadSpringContext = true;
                     changed = true;
@@ -163,9 +168,9 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                     }
                 }
             }
+
             if (settingsBean.isDevelopmentMode()) {
-                LinkedHashSet<File> remaining = new LinkedHashSet<File>();
-    
+
                 IOFileFilter fileFilter = new NotFileFilter(new SuffixFileFilter(new String[] {".pkg"}));
 
                 // list first level folders under /modules
@@ -224,27 +229,27 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                     }
                 }
 
-                if (!remaining.isEmpty()) {
-                    LinkedHashSet<JahiaTemplatesPackage> remainingPackages = new LinkedHashSet<JahiaTemplatesPackage>();
-                    for (File pkgFolder : remaining) {
-                        JahiaTemplatesPackage packageHandler = getPackage(pkgFolder);
-                        if (packageHandler != null) {
-                            remainingPackages.add(packageHandler);
-                        }
-                    }
-                    remainingPackages.addAll(unresolvedDependencies);
-                    for (JahiaTemplatesPackage pack : getOrderedPackages(remainingPackages).values()) {
-                        if (unzippedPackages.contains(pack.getRootFolder())) {
-                            unzippedPackages.remove(pack.getRootFolder());
-                            initialImports.add(pack);
-                        }
-                        unresolvedDependencies.remove(pack);
-                        templatePackageRegistry.register(pack);
-                        changed = true;
+            }
+            if (!remaining.isEmpty()) {
+                LinkedHashSet<JahiaTemplatesPackage> remainingPackages = new LinkedHashSet<JahiaTemplatesPackage>();
+                for (File pkgFolder : remaining) {
+                    JahiaTemplatesPackage packageHandler = getPackage(pkgFolder);
+                    if (packageHandler != null) {
+                        remainingPackages.add(packageHandler);
                     }
                 }
+                remainingPackages.addAll(unresolvedDependencies);
+                for (JahiaTemplatesPackage pack : getOrderedPackages(remainingPackages).values()) {
+                    if (unzippedPackages.contains(pack.getRootFolder())) {
+                        unzippedPackages.remove(pack.getRootFolder());
+                        initialImports.add(pack);
+                    }
+                    unresolvedDependencies.remove(pack);
+                    templatePackageRegistry.register(pack);
+                    changed = true;
+                }
             }
-            
+
             if (changed) {
             	applicationEventPublisher.publishEvent(new TemplatePackageRedeployedEvent(TemplatePackageDeployer.class.getName()));
             }
@@ -393,7 +398,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         }
     }
 
-    private void deployPackage(File templateWar) throws IOException {
+    private File deployPackage(File templateWar) throws IOException {
         String packageName = null;
         String rootFolder = null;
         String implementationVersionStr = null;
@@ -444,7 +449,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 deployedFiles.putAll(unzippedFiles);
             } catch (Exception e) {
                 logger.error("Cannot unzip file: " + templateWar, e);
-                return;
+                return null;
             }
 
             // deploy classes
@@ -497,6 +502,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             unzippedPackages.add(tmplRootFolder.getName());
             tmplRootFolder.setLastModified(templateWar.lastModified());
         }
+        return tmplRootFolder;
     }
 
     /**

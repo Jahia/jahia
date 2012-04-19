@@ -54,9 +54,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
-import org.jahia.bin.Contribute;
 import org.jahia.bin.Jahia;
-import org.jahia.bin.Render;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRQueryNode;
@@ -880,8 +878,11 @@ public class NavigationHelper {
                             if (!results.containsKey(entry.getKey())) {
                                 results.put(entry.getKey(), new LinkedList<String>());
                             }
-                            results.get(entry.getKey()).add("label.locked.by." + type.toString().toLowerCase());
-
+                            results.get(entry.getKey())
+                                    .add(JCRNodeLockType.USER.equals(type)
+                                            && StringUtils.isNotBlank(s) ? StringUtils
+                                            .substringBefore(s, ":") : ("label.locked.by." + type
+                                            .toString().toLowerCase()));
                         }
                     }
                 }

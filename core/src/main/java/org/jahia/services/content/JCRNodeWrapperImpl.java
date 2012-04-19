@@ -45,6 +45,8 @@ import static org.jahia.api.Constants.*;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.commons.iterator.PropertyIteratorAdapter;
@@ -52,6 +54,7 @@ import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
+import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.util.Text;
 import org.jahia.services.visibility.VisibilityService;
 import org.slf4j.Logger;
@@ -67,6 +70,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.ReferencesHelper;
+import org.jahia.services.query.QueryManagerImpl;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -1548,7 +1552,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             throw new ConstraintViolationException("Couldn't find definition for property " + name);
         }
 
-        if (value != null && PropertyType.UNDEFINED != epd.getRequiredType() && value.getType() != epd.getRequiredType()) {
+        if (value != null
+                && PropertyType.UNDEFINED != epd.getRequiredType()
+                && value.getType() != epd.getRequiredType()
+                && !(value.getType() == PropertyType.WEAKREFERENCE
+                        && epd.getRequiredType() == PropertyType.REFERENCE)) {
             // if the type doesn't match the required type, we attempt a conversion.
             value = getSession().getValueFactory().createValue(value.getString(), epd.getRequiredType());
         }
@@ -1635,7 +1643,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             for (int i = 0; i < values.length; i++) {
                 if (values[i] instanceof ExternalReferenceValue) {
                     hasExternalReferenceValue = true;
-                } else if (values[i] != null && PropertyType.UNDEFINED != epd.getRequiredType() && values[i].getType() != epd.getRequiredType()) {
+                } else if (values[i] != null
+                        && PropertyType.UNDEFINED != epd.getRequiredType()
+                        && values[i].getType() != epd.getRequiredType()
+                        && !(values[i].getType() == PropertyType.WEAKREFERENCE
+                                && epd.getRequiredType() == PropertyType.REFERENCE)) {
                     values[i] = getSession().getValueFactory()
                             .createValue(values[i].getString(), epd.getRequiredType());
                 }
@@ -1659,6 +1671,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         return new JCRPropertyWrapperImpl(this, objectNode.setProperty(name, values), session, provider, epd);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public JCRPropertyWrapper setProperty(String namespace, String name, String value) throws RepositoryException {
+        String pref = objectNode.getSession().getNamespacePrefix(namespace);
+        String key = pref + ":" + name;
+        return setProperty(key, value);
     }
 
     /**
@@ -1793,7 +1814,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
             if (epd != null) {
                 if (value.getClass().getName().equals(getRealNode().getClass().getName())) {
-                    v = getSession().getValueFactory().createValue(value, epd.getRequiredType() == PropertyType.WEAKREFERENCE);
+                    v = getSession().getValueFactory().createValue(value, true); // in Jahia we always create weak-references
                 } else {
                     return setExternalReferenceProperty(name, value, epd);
 
@@ -1854,14 +1875,25 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
 
         }
-        Value newNodeIdentifierValue = getSession().getValueFactory().createValue(nodeIdentifier);
-        if (!nodeIdentifiers.contains(newNodeIdentifierValue)) {
+        List<String> identifiersAsString = new ArrayList<String>(nodeIdentifiers.size());
+        for (Value nodeId : nodeIdentifiers) {
+            identifiersAsString.add(nodeId.getString());
+        };
+        
+        if (!identifiersAsString.contains(nodeIdentifier)) {
+            Value newNodeIdentifierValue = getSession().getValueFactory().createValue(nodeIdentifier);
             nodeIdentifiers.add(newNodeIdentifierValue);
         }
         setProperty(refNodeIdentifierPropertyName, nodeIdentifiers.toArray(new Value[nodeIdentifiers.size()]));
 
-        Value newPropertyReferenceValue = getSession().getValueFactory().createValue(nodeIdentifier + EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR + name);
-        if (!referenceProperties.contains(newPropertyReferenceValue)) {
+        List<String> propertyNamesAsString = new ArrayList<String>(referenceProperties.size());
+        for (Value propertyName : referenceProperties) {
+            propertyNamesAsString.add(propertyName.getString());
+        };              
+                    
+        String newPropertyReferenceName = nodeIdentifier + EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR + name;        
+        if (!propertyNamesAsString.contains(newPropertyReferenceName)) {
+            Value newPropertyReferenceValue = getSession().getValueFactory().createValue(newPropertyReferenceName);
             referenceProperties.add(newPropertyReferenceValue);
         }
         setProperty(refPropertyNamesPropertyName, referenceProperties.toArray(new Value[referenceProperties.size()]));
@@ -1906,17 +1938,27 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 referenceProperties = new ArrayList<Value>();
             }
         }
+        List<String> identifiersAsString = new ArrayList<String>(nodeIdentifiers.size());
+        for (Value nodeId : nodeIdentifiers) {
+            identifiersAsString.add(nodeId.getString());
+        };
         for (Value value : values) {
-            Value newNodeIdentifierValue = getSession().getValueFactory().createValue(value.getString());
-            if (!nodeIdentifiers.contains(newNodeIdentifierValue)) {
+            if (!identifiersAsString.contains(value.getString())) {
+                Value newNodeIdentifierValue = getSession().getValueFactory().createValue(value.getString());
                 nodeIdentifiers.add(newNodeIdentifierValue);
             }
         }
         setProperty(refNodeIdentifierPropertyName, nodeIdentifiers.toArray(new Value[nodeIdentifiers.size()]));
 
+        List<String> propertyNamesAsString = new ArrayList<String>(referenceProperties.size());
+        for (Value propertyName : referenceProperties) {
+            propertyNamesAsString.add(propertyName.getString());
+        };              
+        
         for (Value value : values) {
-            Value newPropertyReferenceValue = getSession().getValueFactory().createValue(value.getString() + EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR + name);
-            if (!referenceProperties.contains(newPropertyReferenceValue)) {
+            String newPropertyReferenceName = value.getString() + EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR + name;
+            if (!propertyNamesAsString.contains(newPropertyReferenceName)) {
+                Value newPropertyReferenceValue = getSession().getValueFactory().createValue(newPropertyReferenceName);
                 referenceProperties.add(newPropertyReferenceValue);
             }
         }
@@ -1951,10 +1993,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (identifiers.size() == 0) {
             nodeIdentifierProperty.remove();
             return;
-        }
-        Value externalReferenceIdValue = getSession().getValueFactory().createValue(externalReferenceId);
-        if (identifiers.contains(externalReferenceIdValue)) {
-            identifiers.remove(externalReferenceIdValue);
+        } 
+        List<String> identifiersAsString = new ArrayList<String>(identifiers.size());
+        for (Value nodeId : identifiers) {
+            identifiersAsString.add(nodeId.getString());
+        };
+        
+        int foundIndex = identifiersAsString.indexOf(externalReferenceId);
+        if (foundIndex != -1) {
+            identifiers.remove(foundIndex);
         }
         if (identifiers.size() > 0) {
             setProperty(refNodeIdentifierPropertyName, identifiers.toArray(new Value[identifiers.size()]));
@@ -1968,9 +2015,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (propertyNames.size() == 0) {
             referencePropertyNames.remove();
         }
-        Value externalReferencePropertyValue = getSession().getValueFactory().createValue(externalReferenceId + EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR + name);
-        if (propertyNames.contains(externalReferencePropertyValue)) {
-            propertyNames.remove(externalReferencePropertyValue);
+        List<String> propertyNamesAsString = new ArrayList<String>(propertyNames.size());
+        for (Value propertyName : propertyNames) {
+            propertyNamesAsString.add(propertyName.getString());
+        };
+        foundIndex = propertyNamesAsString.indexOf(externalReferenceId + EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR + name);
+        if (foundIndex != -1) {
+            propertyNames.remove(foundIndex);
         }
         if (propertyNames.size() > 0) {
             setProperty(refPropertyNamesPropertyName, propertyNames.toArray(new Value[propertyNames.size()]));
@@ -2096,15 +2147,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return true;
         }
         return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public JCRPropertyWrapper setProperty(String namespace, String name, String value) throws RepositoryException {
-        String pref = objectNode.getSession().getNamespacePrefix(namespace);
-        String key = pref + ":" + name;
-        return setProperty(key, value);
     }
 
     /**
@@ -3248,7 +3290,32 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public PropertyIterator getWeakReferences() throws RepositoryException {
         if (provider.getKey().equals("default")) {
-            return new PropertyIteratorImpl(objectNode.getWeakReferences(), this);
+
+            // shortcut if node isn't referenceable
+            if (!isNodeType(Constants.MIX_REFERENCEABLE)) {
+                return new PropertyIteratorImpl(PropertyIteratorAdapter.EMPTY, this);
+            }
+
+            Value ref = getRealNode().getSession().getValueFactory().createValue(this, true);
+            List<Property> props = new ArrayList<Property>();
+            QueryManagerImpl qm = (QueryManagerImpl) getSession().getWorkspace().getQueryManager();
+            for (Node n : qm.getWeaklyReferringNodes(this)) {
+                for (PropertyIterator it = n.getProperties(); it.hasNext(); ) {
+                    Property p = it.nextProperty();
+                    if (p.getType() == PropertyType.WEAKREFERENCE) {
+                        Collection<Value> refs;
+                        if (p.isMultiple()) {
+                            refs = Arrays.asList(p.getValues());
+                        } else {
+                            refs = Collections.singleton(p.getValue());
+                        }
+                        if (refs.contains(ref)) {
+                            props.add(p);
+                        }
+                    }
+                }
+            }
+            return new PropertyIteratorImpl(new PropertyIteratorAdapter(props), this);            
         } else {
             return getExternalWeakReferences(null);
         }
@@ -3262,7 +3329,46 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public PropertyIterator getWeakReferences(String name) throws RepositoryException {
         if (provider.getKey().equals("default")) {
-            return new PropertyIteratorImpl(objectNode.getWeakReferences(name), this);
+            if (name == null) {
+                return getWeakReferences();
+            }
+
+            // shortcut if node isn't referenceable
+            if (!isNodeType(Constants.MIX_REFERENCEABLE)) {
+                return new PropertyIteratorImpl(PropertyIteratorAdapter.EMPTY, this);
+            }
+
+            try {
+                StringBuilder stmt = new StringBuilder();
+                stmt.append("//*[@").append(ISO9075.encode(name));
+                stmt.append(" = '").append(getIdentifier()).append("'");
+                if (getSession().getLocale() != null) {
+                    stmt.append(" and (@jcr:language = '")
+                            .append(getSession().getLocale().toString())
+                            .append("' or not(@jcr:language))");
+                }
+                stmt.append("]");
+                Query q = getSession().getWorkspace().getQueryManager().createQuery(
+                        stmt.toString(), Query.XPATH);
+                QueryResult result = q.execute();
+                List<Property> l = new ArrayList<Property>();
+                Set<Node> uniqueResults = new HashSet<Node>();
+                for (NodeIterator nit = result.getNodes(); nit.hasNext();) {
+                    Node n = nit.nextNode();
+                    if (uniqueResults.add(n) && n.hasProperty(name)) {
+                        l.add(n.getProperty(name));
+                    }
+                }
+                if (l.isEmpty()) {
+                    return new PropertyIteratorImpl(PropertyIteratorAdapter.EMPTY, this);
+                } else {
+                    return new PropertyIteratorImpl(new PropertyIteratorAdapter(l), this);
+                }
+            } catch (RepositoryException e) {
+                String msg = "Unable to retrieve WEAKREFERENCE properties that refer to " + getIdentifier();
+                logger.debug(msg);
+                throw new RepositoryException(msg, e);
+            }            
         } else {
             return getExternalWeakReferences(name);
         }

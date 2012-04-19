@@ -50,7 +50,7 @@
                     <jcr:node var="home" path="${node.home.path}"/>
                     <c:if test="${jcr:hasPermission(home,requiredPermission)}">
                         <li><img src="${url.context}/icons/${icon}.png" width="16" height="16" alt=" "
-                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; ">${fn:escapeXml(node.displayableName)}&nbsp;<a
+                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; " />${fn:escapeXml(node.displayableName)}&nbsp;<a
                                 href="${url.context}/engines/manager.jsp?conf=${conf}&site=${node.identifier}"
                                 target="_blank">
                             <c:if test="${!empty currentNode.properties['jcr:title']}">
@@ -68,7 +68,7 @@
         </c:if>
         <c:if test="${!multisite && jcr:hasPermission(currentNode,requiredPermission)}">
             <img src="${url.context}/icons/${icon}.png" width="16" height="16" alt=" " role="presentation"
-                 style="position:relative; top: 4px; margin-right:2px; "><a href="${url.context}/engines/manager.jsp?conf=${conf}&site=${renderContext.site.identifier}" target="_blank">
+                 style="position:relative; top: 4px; margin-right:2px; " /><a href="${url.context}/engines/manager.jsp?conf=${conf}&site=${renderContext.site.identifier}" target="_blank">
             <c:if test="${!empty currentNode.properties['jcr:title']}">
                 ${fn:escapeXml(currentNode.properties["jcr:title"].string)}
             </c:if>

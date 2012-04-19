@@ -468,6 +468,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Set<JahiaUser>>() {
                 public Set<JahiaUser> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    int limit = 0;
                     Set<JahiaUser> users = new HashSet<JahiaUser>();
                     if (session.getWorkspace().getQueryManager() != null) {
                         StringBuilder query = new StringBuilder(128);
@@ -486,6 +487,11 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                                     operation = " AND ";
                                 }
                                 filters.remove(JahiaUserManagerService.MULTI_CRITERIA_SEARCH_OPERATION);
+                            }
+                            if (filters.containsKey(JahiaUserManagerService.COUNT_LIMIT)) {
+                                limit = Integer.parseInt((String) filters.get(JahiaUserManagerService.COUNT_LIMIT));
+                                logger.debug("Limit of results has be set to " + limit);
+                                filters.remove(JahiaUserManagerService.COUNT_LIMIT);
                             }
                             // Avoid wildcard attribute
                             if (!(filters.containsKey(
@@ -536,6 +542,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                         }
                         Query q = session.getWorkspace().getQueryManager().createQuery(query.toString(),
                                 Query.JCR_SQL2);
+                        if (limit > 0) {
+                            q.setLimit(limit);
+                        }
                         QueryResult qr = q.execute();
                         NodeIterator ni = qr.getNodes();
                         while (ni.hasNext()) {

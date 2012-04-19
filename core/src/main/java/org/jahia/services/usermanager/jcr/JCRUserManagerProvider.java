@@ -477,8 +477,8 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                         if (providerKey != null) {
                             query.append(query.length() > 0 ? " AND " : "").append(" u.[" + JCRUser.J_EXTERNAL_SOURCE + "] = '").append(providerKey).append("'");
                         }
-                        Properties filters = new Properties(searchCriterias);
-                        if (searchCriterias != null && filters.size() > 0) {
+                        if (searchCriterias != null && searchCriterias.size() > 0) {
+                            Properties filters = (Properties) searchCriterias.clone();
                             String operation = " OR ";
                             if(filters.containsKey(JahiaUserManagerService.MULTI_CRITERIA_SEARCH_OPERATION)) {
                                 if(((String) filters.get(JahiaUserManagerService.MULTI_CRITERIA_SEARCH_OPERATION)).trim().toLowerCase().equals(

@@ -50,11 +50,13 @@ import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
+import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.Map;
@@ -296,6 +298,20 @@ public abstract class BaseActionItem implements ActionItem {
 
     public  void handleNewMainNodeLoaded(GWTJahiaNode node){
 
+    }
+
+    public boolean hasPermission(GWTJahiaNode node) {
+        if (gwtToolbarItem.getRequiredPermission() != null) {
+            return PermissionsUtils.isPermitted(gwtToolbarItem.getRequiredPermission(), node);
+        }
+        return true;
+    }
+
+    public boolean hasPermission(GWTBitSet permissions) {
+        if (gwtToolbarItem.getRequiredPermission() != null) {
+            return PermissionsUtils.isPermitted(gwtToolbarItem.getRequiredPermission(), permissions);
+        }
+        return true;
     }
 
     protected void updateTitle(String title) {

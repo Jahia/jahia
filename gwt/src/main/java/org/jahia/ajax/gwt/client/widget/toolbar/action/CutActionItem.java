@@ -99,6 +99,7 @@ public class CutActionItem extends NodeTypeAwareBaseActionItem  {
         LinkerSelectionContext lh = linker.getSelectionContext();
         setEnabled(lh.getMultipleSelection() != null
                 && lh.getMultipleSelection().size() > 0
+                && hasPermission(lh.getSelectionPermissions())
                 && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
                 && !lh.isRootNode()
                 && !lh.isLocked()

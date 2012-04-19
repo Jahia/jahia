@@ -63,6 +63,7 @@ public class EditSourceContentActionItem extends BaseActionItem {
         final GWTJahiaNode singleSelection = lh.getSingleSelection();
         setEnabled(singleSelection != null
                 && !lh.isRootNode()
+                && hasPermission(lh.getSelectionPermissions())
                 && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions()) && singleSelection.isReference());
 	}
 }

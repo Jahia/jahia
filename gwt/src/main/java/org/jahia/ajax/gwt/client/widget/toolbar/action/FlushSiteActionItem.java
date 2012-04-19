@@ -81,7 +81,7 @@ public class FlushSiteActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         setEnabled(false);
         GWTJahiaNode gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
-        if (gwtJahiaNode != null && gwtJahiaNode.getSiteUUID()!=null) {
+        if (gwtJahiaNode != null && gwtJahiaNode.getSiteUUID()!=null && hasPermission(gwtJahiaNode)) {
             setEnabled(true);
             updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getSiteKey());
         }

@@ -64,14 +64,14 @@ public class PublishAllActionItem extends PublishActionItem {
         setEnabled(false);
         LinkerSelectionContext ctx = linker.getSelectionContext();
         if (ctx.getMultipleSelection() != null
-                && ctx.getMultipleSelection().size() > 1) {
+                && ctx.getMultipleSelection().size() > 1 && hasPermission(ctx.getSelectionPermissions())) {
             if (!isChildOfMarkedForDeletion(ctx)) {
                 setEnabled(true);
                 updateTitle(Messages.get("label.publish.all.selected.items"));
             }
         } else {
             gwtJahiaNode = ctx.getSingleSelection();
-            if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication"))) {
+            if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode)) {
                 setEnabled(true);
                 if(gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
                     updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());

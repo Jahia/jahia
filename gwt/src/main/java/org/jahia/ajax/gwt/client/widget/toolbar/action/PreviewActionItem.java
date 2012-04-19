@@ -60,6 +60,6 @@ public class PreviewActionItem extends BaseActionItem  {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && lh.isFile() && lh.isImage());
+        setEnabled(lh.getSingleSelection() != null && hasPermission(lh.getSingleSelection()) && lh.isFile() && lh.isImage());
     }
 }

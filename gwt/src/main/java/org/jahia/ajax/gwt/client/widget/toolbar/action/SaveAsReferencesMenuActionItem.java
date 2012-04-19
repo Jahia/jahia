@@ -158,7 +158,7 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && !lh.isSecondarySelection() && lh.getSingleSelection().getInheritedNodeTypes().contains(
+        setEnabled(lh.getSingleSelection() != null && hasPermission(lh.getSingleSelection())&& !lh.isSecondarySelection() && lh.getSingleSelection().getInheritedNodeTypes().contains(
                 allowedNodeType.getValue()) && menuItemsCount);
     }
 

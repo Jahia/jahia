@@ -67,6 +67,7 @@ public class LockActionItem extends BaseActionItem   {
         LinkerSelectionContext lh = linker.getSelectionContext();
         GWTJahiaNode singleSelection = lh.getSingleSelection();
         setEnabled(singleSelection!=null
+                && hasPermission(lh.getSelectionPermissions())
                 && singleSelection.isLockable()
                 && !lh.isLocked()
                 && PermissionsUtils.isPermitted("jcr:lockManagement", lh.getSelectionPermissions())

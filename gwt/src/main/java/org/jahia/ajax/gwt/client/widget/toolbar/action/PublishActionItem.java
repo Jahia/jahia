@@ -108,14 +108,14 @@ public class PublishActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext ctx = linker.getSelectionContext();
         if (ctx.getMultipleSelection() != null
-                && ctx.getMultipleSelection().size() > 1) {
+                && ctx.getMultipleSelection().size() > 1 && hasPermission(ctx.getSelectionPermissions())) {
             if (!isChildOfMarkedForDeletion(ctx)) {
                 setEnabled(true);
                 updateTitle(Messages.get("label.publish.selected.items"));
             }
         } else {
             gwtJahiaNode = ctx.getSingleSelection();
-            if (gwtJahiaNode != null && gwtJahiaNode.getWorkflowInfo() != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication"))) {
+            if (gwtJahiaNode != null && gwtJahiaNode.getWorkflowInfo() != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode)) {
                 wf = gwtJahiaNode.getWorkflowInfo().getActiveWorkflows().get(new GWTJahiaWorkflowType("publish"));
                 if (wf != null) {
                     if (!wf.getAvailableTasks().isEmpty()) {

@@ -300,25 +300,29 @@ public class TagsTabItem extends EditEngineTabItem {
     }
 
     public void updateProperties(List<GWTJahiaNodeProperty> list, Set<String> addedTypes, Set<String> removedTypes) {
+        if (newValues == null) {
+            return;
+        }
+        
         boolean noTag = true;
-        if (newValues != null) {
-            for (Map.Entry<String, GWTJahiaNodeProperty> entry : newValues.entrySet()) {
-                GWTJahiaNodeProperty newTag = entry.getValue();
-                GWTJahiaNodeProperty oldTag = oldValues.get(entry.getKey());
+        
+        for (Map.Entry<String, GWTJahiaNodeProperty> entry : newValues.entrySet()) {
+            GWTJahiaNodeProperty newTag = entry.getValue();
+            GWTJahiaNodeProperty oldTag = oldValues.get(entry.getKey());
 
-                if (!newTag.equals(oldTag)) {
-                    if (!newTag.getValues().isEmpty()) {
-                        // Add new tags
-                        noTag = false;
-                        list.add(newTag);
-                    }
-                } else if (oldTag != null) {
-                    if (!oldTag.getValues().isEmpty()) {
-                        noTag = false;
-                    }
+            if (!newTag.equals(oldTag)) {
+                if (!newTag.getValues().isEmpty()) {
+                    // Add new tags
+                    noTag = false;
+                    list.add(newTag);
+                }
+            } else if (oldTag != null) {
+                if (!oldTag.getValues().isEmpty()) {
+                    noTag = false;
                 }
             }
         }
+
         if (noTag) {
             removedTypes.add("jmix:tagged");
             addedTypes.remove("jmix:tagged");

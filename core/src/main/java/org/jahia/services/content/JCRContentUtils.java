@@ -54,18 +54,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.security.Principal;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
@@ -103,9 +93,11 @@ import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRComponentNode;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -114,6 +106,10 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Template;
 import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -1501,5 +1497,107 @@ public final class JCRContentUtils {
     public void setHandleFallbackLocaleForPath(String handleFallbackLocaleForPath) {
         this.handleFallbackLocaleForPath = StringUtils.isNotEmpty(handleFallbackLocaleForPath) ? Pattern
                 .compile(handleFallbackLocaleForPath) : null;
+    }
+
+    public static List<Map<String, Object>> getRolesForNode(JCRNodeWrapper node, boolean includeInherited, boolean expandGroups, String roles, int limit,
+                                                            boolean latestFirst) {
+        List<Map<String, Object>> results = new LinkedList<Map<String, Object>>();
+        Map<String,List<String[]>> entries = node.getAclEntries();
+        if(latestFirst) {
+            entries = reverse(entries);
+        }
+        int siteId = -1;
+
+        JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
+        JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
+
+        for (Map.Entry<String, List<String[]>> entry : entries.entrySet()) {
+            Map<String, Object> m = new HashMap<String, Object>();
+            String entryKey = entry.getKey();
+            if (entryKey.startsWith("u:")) {
+                JahiaUser u = userService.lookupUser(StringUtils.substringAfter(entryKey, "u:"));
+                if (u == null) {
+                    logger.warn("User {} cannot be found. Skipping.", StringUtils.substringAfter(entryKey, "u:"));
+                    continue;
+                }
+                m.put("principalType","user");
+                m.put("principal",u);
+            } else if (entryKey.startsWith("g:")) {
+                if (siteId == -1) {
+                    try {
+                        JCRSiteNode resolveSite = node.getResolveSite();
+                        siteId = resolveSite != null ? resolveSite.getID() : 0;
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+                JahiaGroup g = groupService.lookupGroup(siteId, StringUtils.substringAfter(entryKey, "g:"));
+                if (g == null) {
+                    logger.warn("Group {} cannot be found for site with ID={}. Skipping.", StringUtils.substringAfter(entryKey, "g:"), siteId);
+                    continue;
+                }
+                m.put("principalType","group");
+                m.put("principal",g);
+            }
+
+            for (String[] details : entry.getValue()) {
+                if (details[1].equals("GRANT")) {
+                    if (!StringUtils.isEmpty(roles)) {
+                        if (!roles.contains(details[2])) {
+                            continue;
+                        }
+                    }
+
+                    if (!includeInherited) {
+                        if (!details[0].equals(node.getPath())) {
+                            continue;
+                        }
+                    }
+                    if (!m.containsKey("roles")) {
+                        m.put("roles", new LinkedList<String>());
+                        results.add(m);
+                    }
+                    ((List)m.get("roles")).add(details[2]);
+                }
+            }
+
+            if (limit > 0 && results.size() >= limit) {
+                break;
+            }
+        }
+        if (expandGroups) {
+            List<Map<String, Object>> expandedResults = new LinkedList<Map<String, Object>>();
+            for (Map<String, Object> result : results) {
+                if (result.get("principalType").equals("group")) {
+                    JahiaGroup g = (JahiaGroup) result.get("principal");
+                    Set<Principal> principals = g.getRecursiveUserMembers();
+                    for (Principal user : principals) {
+                        Map<String, Object> m = new HashMap<String, Object>(result);
+                        m.put("principalType", "user");
+                        m.put("principal", user);
+                        expandedResults.add(m);
+                    }
+                } else {
+                    expandedResults.add(result);
+                }
+            }
+            results = expandedResults;
+        }
+
+        return results;
+    }
+
+    public static <T> Map<String, T> reverse(Map<String, T> orderedMap) {
+        if (orderedMap == null || orderedMap.isEmpty()) {
+            return orderedMap;
+        }
+        LinkedHashMap<String, T> reversed = new LinkedHashMap<String, T>(orderedMap.size());
+        ListIterator<String> li = new LinkedList<String>(orderedMap.keySet())
+                .listIterator(orderedMap.size());
+        while (li.hasPrevious()) {
+            String key = li.previous();
+            reversed.put(key, orderedMap.get(key));
+        }
+        return reversed;
     }
 }

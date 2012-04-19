@@ -5,7 +5,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
-
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
+<%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript"
                        resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="javascript" resources="jquery.fancybox.js"/>
@@ -33,8 +42,19 @@
 
         $("a#createTasks").fancybox();
 
-
-        $("#task_assignee").autocomplete("<c:url value='${url.findUser}'/>", {
+        <c:url value='${url.findUser}' var="findUserURL">
+            <c:if test="${not empty currentNode.properties['checkRolesOnMainResource'] and currentNode.properties['checkRolesOnMainResource'].boolean and not empty currentNode.properties['rolesList']}">
+                <c:set var="roles" value=""/>
+                <jcr:nodeProperty node="${currentNode}" name="rolesList" var="rolesList"/>
+                <c:forEach items="${rolesList}" var="roleNode">
+                    <c:set var="roleName" value="${roleNode.node.name}"/>
+                    <c:set var="roles" value="${roles} ${roleName}"/>
+                </c:forEach>
+                <c:param name="node" value="${renderContext.mainResource.node.path}"/>
+                <c:param name="perm" value="${roles}"/>
+            </c:if>
+        </c:url>
+        $("#task_assignee").autocomplete("${findUserURL}", {
                         dataType: "json",
                         cacheLength: 1,
                         parse: function (data) {

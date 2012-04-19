@@ -43,6 +43,8 @@ package org.jahia.bin;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.*;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -51,7 +53,9 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.tools.files.FileUpload;
 import org.json.JSONObject;
 
+import javax.jcr.InvalidItemStateException;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.http.HttpServletRequest;
@@ -160,6 +164,16 @@ public class DefaultPostAction extends Action {
                                 itemEntry.getValue().getContentType());
                     }
                 }
+
+                for (String s : newNode.getNodeTypes()) {
+                    ExtendedPropertyDefinition[] propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitions();
+                    for (ExtendedPropertyDefinition propDef : propDefs) {
+                        if (propDef.isMandatory() && !propDef.isProtected() && !newNode.hasProperty(propDef.getName())) {
+                            throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
+                        }
+                    }
+                }
+
                 session.save();
             } catch (ConstraintViolationException e) {
                 return new ActionResult(HttpServletResponse.SC_BAD_REQUEST);

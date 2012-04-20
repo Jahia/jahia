@@ -64,7 +64,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Controller for performing user search.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class FindUser extends BaseFindController {
@@ -85,7 +85,7 @@ public class FindUser extends BaseFindController {
     protected Properties buildSearchCriteria(String queryTerm) {
         Properties props = new Properties();
         for (String key : searchProperties) {
-            props.put(key, queryTerm.contains("*")?queryTerm:queryTerm+"*");
+            props.put(key, queryTerm.contains("*") ? queryTerm : queryTerm + "*");
         }
 
         return props;
@@ -101,19 +101,19 @@ public class FindUser extends BaseFindController {
         if (queryTerm.length() < 1 || Patterns.STAR.matcher(queryTerm).replaceAll("").trim().length() < 1) {
             throw new JahiaBadRequestException("Please specify more exact term for user search");
         }
-        
+
         Set<Principal> result = search(queryTerm, request);
         JCRNodeWrapper jcrNodeWrapper = null;
-        if(request.getParameter("node")!=null) {
-        try {
-            jcrNodeWrapper = JCRSessionFactory
-                    .getInstance().getCurrentUserSession().getNode(request.getParameter("node"));
-        } catch (RepositoryException e) {
-           jcrNodeWrapper=null;
+        if (request.getParameter("node") != null) {
+            try {
+                jcrNodeWrapper = JCRSessionFactory
+                        .getInstance().getCurrentUserSession().getNode(request.getParameter("node"));
+            } catch (RepositoryException e) {
+                jcrNodeWrapper = null;
+            }
         }
-        }
-        String permission = request.getParameter("perm");
-        writeResults(result, request, response, jcrNodeWrapper, permission);
+        String roles = request.getParameter("roles");
+        writeResults(result, request, response, jcrNodeWrapper, roles);
     }
 
     protected Set<Principal> search(String queryTerm, HttpServletRequest request) {
@@ -132,7 +132,7 @@ public class FindUser extends BaseFindController {
         if (logger.isDebugEnabled()) {
             logger.debug("Found {} matching users", result.size());
         }
-        
+
         return result;
     }
 
@@ -172,22 +172,22 @@ public class FindUser extends BaseFindController {
     }
 
     protected void writeResults(Set<Principal> users, HttpServletRequest request, HttpServletResponse response,
-                                JCRNodeWrapper jcrNodeWrapper, String permission) throws IOException, JSONException {
+                                JCRNodeWrapper jcrNodeWrapper, String roles) throws IOException, JSONException {
 
         response.setContentType("application/json; charset=UTF-8");
 
         List<JSONObject> jsonResults = new LinkedList<JSONObject>();
         int count = 0;
 
-        List<Map<String,Object>> rolesForNode = Collections.emptyList();
-        if(jcrNodeWrapper!=null && permission!=null) {
-            rolesForNode = JCRContentUtils.getRolesForNode(jcrNodeWrapper, true, true, permission, 0, false);
+        List<Map<String, Object>> rolesForNode = Collections.emptyList();
+        if (jcrNodeWrapper != null && roles != null) {
+            rolesForNode = JCRContentUtils.getRolesForNode(jcrNodeWrapper, true, true, roles, 0, false);
         }
 
         for (Principal user : users) {
-            if(jcrNodeWrapper!=null && permission!=null) {
+            if (jcrNodeWrapper != null && roles != null) {
                 for (Map<String, Object> stringObjectMap : rolesForNode) {
-                    if(stringObjectMap.get("principalType").equals("user") && stringObjectMap.get("principal").equals(user)) {
+                    if (stringObjectMap.get("principalType").equals("user") && stringObjectMap.get("principal").equals(user)) {
                         jsonResults.add(toJSON(user));
                         count++;
                     }
@@ -201,9 +201,9 @@ public class FindUser extends BaseFindController {
                 break;
             }
         }
-        
+
         sortResults(jsonResults);
-        
+
         JSONArray results = new JSONArray(jsonResults);
 
         results.write(response.getWriter());

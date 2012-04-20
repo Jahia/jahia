@@ -424,9 +424,14 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             long manifestTime = jarFile.getEntry("META-INF/MANIFEST.MF").getTime();
             packageTimestamp.setTimeInMillis(manifestTime);
             implementationVersionStr = (String) jarFile.getManifest().getMainAttributes().get(new Attributes.Name("Implementation-Version"));
-            jarFile.close();
         } catch (IOException e) {
             logger.warn("Cannot read MANIFEST file from " + templateWar, e);
+        } finally {
+            try {
+                jarFile.close();
+            } catch (IOException e) {
+                logger.warn("Error closing JAR file " + jarFile, e);
+            }
         }
         if (packageName == null) {
             packageName = StringUtils.substringBeforeLast(templateWar.getName(), ".");
@@ -452,13 +457,18 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
 
             tmplRootFolder.mkdirs();
 
+            JahiaArchiveFileHandler archiveFileHandler = null;
             try {
-                JahiaArchiveFileHandler archiveFileHandler = new JahiaArchiveFileHandler(templateWar.getPath(), servletContext.getRealPath("/"));
+                archiveFileHandler = new JahiaArchiveFileHandler(templateWar.getPath(), servletContext.getRealPath("/"));
                 Map<String,String> unzippedFiles = archiveFileHandler.unzip(tmplRootFolder.getAbsolutePath(), TEMPLATE_FILTER);
                 deployedFiles.putAll(unzippedFiles);
             } catch (Exception e) {
                 logger.error("Cannot unzip file: " + templateWar, e);
                 return null;
+            } finally {
+                if (archiveFileHandler != null) {
+                    archiveFileHandler.closeArchiveFile();
+                }
             }
 
             // deploy classes

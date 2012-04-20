@@ -15,32 +15,36 @@
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <div id="item-${currentNode.identifier}">
     <c:if test="${renderContext.editMode}">
-        Loaded from ${currentNode.properties.mode.string} :
-	<c:forEach items="${jcr:getChildrenOfType(currentNode,'jmix:droppableContent')}" var="child">
-                  <template:module node="${child}" />
-                </c:forEach>
-      <template:module path="*" />
+        Loaded with AJAX call
+        <c:if test="${not empty currentNode.properties.mode.string}">
+            from mode ${currentNode.properties.mode.string}
+        </c:if>
+        <c:forEach items="${jcr:getChildrenOfType(currentNode,'jmix:droppableContent')}" var="child">
+            <template:module node="${child}"/>
+        </c:forEach>
+        <template:module path="*"/>
     </c:if>
-<c:if test="${not renderContext.editMode}">
-      <c:choose>
-          <c:when test="${renderContext.liveMode and currentNode.properties.mode.string eq 'live'
-                            or renderContext.contributionMode and currentNode.properties.mode.string eq 'contribute'
-                            or renderContext.previewMode and currentNode.properties.mode.string eq 'preview'}">
-              <c:set var="modeDispatcherId" value="item-${currentNode.identifier}" scope="request"/>
-              <c:forEach items="${jcr:getChildrenOfType(currentNode,'jmix:droppableContent')}" var="child">
-                  <template:module node="${child}" />
-              </c:forEach>
-              <c:remove var="modeDispatcherId" scope="request"/>
+    <c:if test="${not renderContext.editMode}">
+        <c:choose>
+            <c:when test="${renderContext.ajaxRequest}">
+                <c:set var="modeDispatcherId" value="item-${currentNode.identifier}" scope="request"/>
+                <c:forEach items="${jcr:getChildrenOfType(currentNode,'jmix:droppableContent')}" var="child">
+                    <template:module node="${child}"/>
+                </c:forEach>
+                <c:remove var="modeDispatcherId" scope="request"/>
             </c:when>
             <c:otherwise>
                 <script type="text/javascript">
-                    <c:if test="${currentNode.properties.mode.string eq 'live'}">1
+                    <c:if test="${empty currentNode.properties.mode.string}">
+                    $('#item-${currentNode.identifier}').load('<c:url value="${url.base}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}"/>');
+                    </c:if>
+                    <c:if test="${currentNode.properties.mode.string eq 'live'}">
                     $('#item-${currentNode.identifier}').load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}"/>');
                     </c:if>
-                    <c:if test="${currentNode.properties.mode.string eq 'contribute'}">2
+                    <c:if test="${currentNode.properties.mode.string eq 'contribute'}">
                     $('#item-${currentNode.identifier}').load('<c:url value="${url.baseContribute}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}"/>');
                     </c:if>
-                    <c:if test="${currentNode.properties.mode.string eq 'preview'}">3
+                    <c:if test="${currentNode.properties.mode.string eq 'preview'}">
                     $('#item-${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}"/>');
                     </c:if>
                 </script>

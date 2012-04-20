@@ -39,12 +39,7 @@
  */
 package org.jahia.services.content.impl.jackrabbit;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -391,9 +386,8 @@ public class RepositoryMigrator {
 
                     performMigration(sourceCfg, targetCfg);
 
-                    swapRepositoryHome(tempRepoHome);
-
                     JCRContentUtils.deleteJackrabbitIndexes(repoHome);
+                    JCRContentUtils.deleteJackrabbitIndexes(tempRepoHome);
 
                     // swap configuration with the target one
                     File target = new File(tempConfigFile.getParentFile(),
@@ -417,9 +411,9 @@ public class RepositoryMigrator {
                         FileUtils.deleteQuietly(target);
                     }
 
-                    File workspaceConfig = new File(repoHome, "workspaces/default/workspace.xml");
+                    File workspaceConfig = new File(tempRepoHome, "workspaces/default/workspace.xml");
                     removeCopyPrefix(workspaceConfig, workspaceConfig);
-                    workspaceConfig = new File(repoHome, "workspaces/live/workspace.xml");
+                    workspaceConfig = new File(tempRepoHome, "workspaces/live/workspace.xml");
                     removeCopyPrefix(workspaceConfig, workspaceConfig);
 
                     dbExecute("jackrabbit-migration-2-drop-original-tables.sql",
@@ -427,6 +421,8 @@ public class RepositoryMigrator {
 
                     dbExecute("jackrabbit-migration-3-rename-temp-tables.sql",
                             "Temporary DB tables renamed");
+
+                    swapRepositoryHome(tempRepoHome);
 
                     logger.info("Complete repository migration took {} ms", (System.currentTimeMillis() - timer));
                 } catch (Exception e) {
@@ -469,15 +465,40 @@ public class RepositoryMigrator {
     }
 
     private void swapRepositoryHome(File repoHomeCopy) throws IOException {
-        if (keepBackup) {
-            File backupDir = new File(repoHome.getParentFile(), "repository-original");
-            FileUtils.moveDirectory(repoHome, backupDir);
-            logger.info("Backup of the source repository folder at {}", backupDir);
-        } else {
-            FileUtils.deleteDirectory(repoHome);
-        }
+        String repoHomePath = repoHome.getAbsolutePath();
+        try {
+            if (keepBackup) {
+                File backupDir = new File(repoHome.getParentFile(), "repository-original");
+                FileUtils.moveDirectory(repoHome, backupDir);
+                logger.info("Backup of the source repository folder at {}", backupDir);
+            } else {
+                try {
+                    FileUtils.deleteDirectory(repoHome);
+                } catch (IOException e) {
+                    logger.warn("Issue while deleting the " + repoHomePath
+                            + " directory, we will try to empty it");
+                    FileUtils.cleanDirectory(repoHome);                    
+                }
+            }
 
-        FileUtils.moveDirectory(repoHomeCopy, repoHome);
+            FileUtils.moveDirectory(repoHomeCopy, repoHome);
+        } catch (IOException e) {
+            logger.error(
+                    "The migration was successful, except the last step: we are unable to delete directory {}."
+                            + " Jahia server will be stopped now.", repoHomePath);
+            String repoHomeCopyPath = repoHomeCopy.getAbsolutePath();
+            logger.error(
+                    "Please delete the directory {} manually (perhaps an OS reboot is required to free the file locks)"
+                            + " and copy the content of {} to {}", new String[] { repoHomePath,
+                            repoHomeCopyPath, repoHomePath });
+            logger.error(
+                    "Also delete the following folders if they are present:\n{}\\index\n{}\\workspaces\\default\\index\n{}\\workspaces\\live\\index",
+                    new String[] { repoHomePath, repoHomePath, repoHomePath });
+
+            logger.error("Start Jahia server afterwards.", new String[] { repoHomePath,
+                    repoHomeCopyPath, repoHomePath });
+            System.exit(1);
+        }
 
         logger.info("Replaced repository with the migrated copy");
     }

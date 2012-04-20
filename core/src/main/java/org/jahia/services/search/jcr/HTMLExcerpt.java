@@ -41,6 +41,7 @@
 package org.jahia.services.search.jcr;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.query.lucene.*;
@@ -69,6 +70,8 @@ public class HTMLExcerpt extends AbstractExcerpt {
      * Logger instance for this class.
      */
     private static final Logger log = LoggerFactory.getLogger(HTMLExcerpt.class);
+    
+    private static final Pattern APOS = Pattern.compile("&apos;");
 
 
     @Override
@@ -109,7 +112,7 @@ public class HTMLExcerpt extends AbstractExcerpt {
                 return exProvider.getExcerpt(id, maxFragments, maxFragmentSize);
 
             } else {
-                return super.getExcerpt(id, maxFragments, maxFragmentSize).replaceAll("&apos;","&#39;");
+                return APOS.matcher(super.getExcerpt(id, maxFragments, maxFragmentSize)).replaceAll("&#39;");
             }
         } finally {
             Util.closeOrRelease(reader);

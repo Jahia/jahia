@@ -51,7 +51,7 @@
                     <c:set var="roles" value="${roles} ${roleName}"/>
                 </c:forEach>
                 <c:param name="node" value="${renderContext.mainResource.node.path}"/>
-                <c:param name="perm" value="${roles}"/>
+                <c:param name="roles" value="${roles}"/>
             </c:if>
         </c:url>
         $("#task_assignee").autocomplete("${findUserURL}", {

@@ -71,6 +71,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.RangeIterator;
 import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
 import java.security.Principal;
 import java.util.*;
@@ -319,5 +320,9 @@ public class Functions {
     
     public static String sqlEncode(String s) {
         return s != null && s.contains("'") ? Patterns.SINGLE_QUOTE.matcher(s).replaceAll("''") : s;
+    }
+
+    public static String modulePath(HttpServletRequest req, String moduleName) {
+        return req.getContextPath() + "/modules/" + moduleName;
     }
 }

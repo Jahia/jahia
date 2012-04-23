@@ -128,16 +128,17 @@
 
             <c:set value="${currentNode.properties['displayState'].boolean}" var="dispState"/>
             <c:set value="${currentNode.properties['displayDueDate'].boolean}" var="dispDueDate"/>
+            <c:set value="${currentNode.properties['displayLastModifiedDate'].boolean}" var="dispLastModifiedDate"/>
             <c:set value="${currentNode.properties['displayAssignee'].boolean}" var="dispAssignee"/>
             <c:set value="${currentNode.properties['displayCreator'].boolean}" var="dispCreator"/>
 
             <table width="100%" class="table tableTasks" summary="Tasks">
                 <colgroup>
-                    <col span="1" width="${100 - (dispAssignee?15:0)- (dispCreator?15:0)- (dispState?10:0)- (dispDueDate?15:0) }%" class="col1"/>
+                    <col span="1" width="${100 - (dispAssignee?15:0)- (dispCreator?15:0)- (dispState?10:0)- (dispDueDate or dispLastModifiedDate ? 20:0) }%" class="col1"/>
                     <c:if test="${dispAssignee}"><col span="1" width="15%" class="col2"/></c:if>
                     <c:if test="${dispCreator}"><col span="1" width="15%" class="col3"/></c:if>
                     <c:if test="${dispState}"><col span="1" width="10%" class="col4"/></c:if>
-                    <c:if test="${dispDueDate}"><col span="1" width="15%" class="col5"/></c:if>
+                    <c:if test="${dispDueDate or dispLastModifiedDate}"><col span="1" width="20%" class="col5"/></c:if>
                 </colgroup>
                 <thead>
                 <tr>
@@ -145,7 +146,10 @@
                     <c:if test="${dispAssignee}"><th id="Assigned" scope="col"><fmt:message key="jnt_task.assignee"/></th></c:if>
                     <c:if test="${dispCreator}"><th id="CreatedBy" scope="col"><fmt:message key="mix_createdBy.jcr_createdBy"/></th></c:if>
                     <c:if test="${dispState}"><th id="State" class="center" scope="col"><fmt:message key="jnt_task.state"/></th></c:if>
-                    <c:if test="${dispDueDate}"><th id="DueDate" scope="col"><fmt:message key="jnt_task.dueDate"/></th></c:if>
+                    <c:choose>
+                    <c:when test="${dispDueDate}"><th id="DueDate" scope="col"><fmt:message key="jnt_task.dueDate"/></th></c:when>
+                    <c:when test="${dispLastModifiedDate}"><th id="LastModifiedDate" scope="col"><fmt:message key="jnt_task.lastModifiedDate"/></th></c:when>
+                    </c:choose>
                 </tr>
                 </thead>
 
@@ -236,8 +240,12 @@
                                 <span class="task-status task-status-${task.properties.state.string}"><fmt:message key="jnt_task.state.${task.properties.state.string}"/></span>
 
                             </td></c:if>
-                            <c:if test="${dispDueDate}"><td headers="DueDate"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
-                                                               dateStyle="medium" timeStyle="short" type="both"/></td></c:if>
+                            <c:choose>
+                            <c:when test="${dispDueDate}"><td headers="DueDate"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
+                                                               dateStyle="medium" timeStyle="short" type="both"/></td></c:when>
+                            <c:when test="${dispLastModifiedDate}"><td headers="LastModifiedDate"><fmt:formatDate value="${task.properties['jcr:lastModified'].date.time}"
+                                                               dateStyle="medium" timeStyle="short" type="both"/></td></c:when>                                                               
+                            </c:choose>                                   
                         </tr>
                     </c:forEach>
                 </tbody>

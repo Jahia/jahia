@@ -469,4 +469,14 @@
         <function-signature>java.lang.String sqlEncode(java.lang.String)</function-signature>
         <example>select * from [jnt:task] as t where isdescendantnode(t,['${fn:sqlencode(path)}'])</example>
     </function>
+
+    <function>
+        <description>
+            Get the URL path to a module root directory
+        </description>
+        <name>modulePath</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.String modulePath(javax.servlet.http.HttpServletRequest,java.lang.String)</function-signature>
+        <example>${fn:modulePath(request, 'default'])</example>
+    </function>
 </taglib>

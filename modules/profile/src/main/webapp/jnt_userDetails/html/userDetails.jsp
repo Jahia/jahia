@@ -177,7 +177,7 @@
     <c:if test="${empty jsite}">
         <c:set var="jsite" value="${renderContext.site.identifier}"/>
     </c:if>
-    <c:set var="editUserView" value="${!empty currentNode.properties['j:editProfileView']?currentNode.properties['j:editProfileView'].string:'user-edit-details'}"/>
+    <c:set var="editUserView" value="${!empty currentNode.properties['j:editProfileView'] ? currentNode.properties['j:editProfileView'].string : 'user-edit-details'}"/>
 <div class="divButtonRight"><a class="aButton" href="<c:url value='${url.base}${user.path}.${editUserView}.html?jsite=${jsite}'/>"><span><fmt:message key="label.editProfile"/></span></a></div>
 </c:if>
 

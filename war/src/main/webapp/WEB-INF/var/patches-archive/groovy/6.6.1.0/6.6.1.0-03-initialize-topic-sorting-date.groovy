@@ -5,7 +5,7 @@ import org.jahia.services.content.*
 
 def log = log;
 
-log.info("Start intializing new topic parameter for forum sorting")
+log.info("Start initializing new topic parameter for forum sorting")
 
 Integer updated = JCRTemplate.getInstance().doExecuteWithSystemSession(null,"live",null, new JCRCallback<Integer>() {
     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -20,10 +20,9 @@ Integer updated = JCRTemplate.getInstance().doExecuteWithSystemSession(null,"liv
                 if (post.getParent().isNodeType("jnt:topic")) {
                     Calendar postCreationDate = post.getProperty("jcr:created").getDate();
                     post.getParent().setProperty("topicLastContributionDate",postCreationDate);
-                    session.save();
                     log.debug("update topic : {}", post.getParent().getName());
+                    count++;
                 }
-                count++;
                 if (count > 0 && (count % 1000 == 0)) {
                     session.save();
                 }

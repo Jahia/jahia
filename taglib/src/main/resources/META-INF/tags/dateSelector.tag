@@ -34,12 +34,12 @@
     /* <![CDATA[ */
     <c:if test="${empty time or time eq false}">
     $(document).ready(function() {
-        $('#${fieldId}').datepicker(${options});
+        $('\#${fieldId}').datepicker(${options});
     });
     </c:if>
     <c:if test="${not empty time and time eq true}">
     $(document).ready(function() {
-        $('#${fieldId}').datetime(${options});
+        $('\#${fieldId}').datetime(${options});
     });
     </c:if>
     /* ]]> */

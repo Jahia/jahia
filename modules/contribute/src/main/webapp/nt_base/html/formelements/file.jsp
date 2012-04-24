@@ -32,7 +32,7 @@
 
 
 <c:set var="onSelect">function(uuid, path, title) {
-    $('#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}').val(uuid);
+    $('\#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}').val(uuid);
     <c:choose>
         <c:when test="${propertyDefinition.selectorOptions.type == 'image'}">
             $('#display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}').html('${selected} <img src="${previewPath}'+path+'"/>');

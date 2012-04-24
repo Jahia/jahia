@@ -77,7 +77,7 @@
                     });
 
         $("#createTaskForm").submit(function() {
-            var datePicked = $("#${currentNode.name}-dueDate").val().replace(/^\s+|\s+$/g, '').replace(" ", "T");
+            var datePicked = $("\#${currentNode.name}-dueDate").val().replace(/^\s+|\s+$/g, '').replace(" ", "T");
             $("#dueDate_hidden").val(datePicked);
             return true;
         })

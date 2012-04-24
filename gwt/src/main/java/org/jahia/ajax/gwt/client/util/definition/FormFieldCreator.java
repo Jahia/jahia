@@ -90,7 +90,7 @@ public class FormFieldCreator {
      * @return
      */
     public static Field<?> createField(GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property,
-                                       GWTJahiaFieldInitializer initializer, boolean displayHiddenProperty, GWTBitSet permissions) {
+                                       GWTJahiaFieldInitializer initializer, boolean displayHiddenProperty, GWTBitSet permissions, String locale) {
         Field<?> field = null;
         if (definition.isHidden() && !displayHiddenProperty) {
             return null;
@@ -270,7 +270,7 @@ public class FormFieldCreator {
         if (property != null) {
             fillValue(field, definition, property, initializer);
         }
-        field.setId("JahiaGxtField"+ "_" + field.getName().replace(":","_"));
+        field.setId("JahiaGxtField"+ "_" + field.getName().replace(":","_")+"_"+locale);
         return field;
     }
 

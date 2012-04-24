@@ -243,7 +243,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                         outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + staticsAsset + "\n<");
                         out = outputDocument.toString();
                     } else {
-                        out = previousOut + "\n" + staticsAsset;
+                        out = staticsAsset + "\n" + previousOut;
                     }
                 }
             }

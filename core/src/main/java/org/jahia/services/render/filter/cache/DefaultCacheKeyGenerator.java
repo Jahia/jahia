@@ -206,10 +206,11 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 } else if ("site".equals(field)) {
                     // Todo : Do we need to find another way of getting the urlresolver ?
                     URLResolver urlResolver = (URLResolver) renderContext.getRequest().getAttribute("urlResolver");
-                    args.add(urlResolver.getSiteKeyByServerName() == null ? new StringBuilder()
-                            .append(renderContext.getSite().getSiteKey()).append(":")
-                            .append("virtualhost").toString() : renderContext.getSite()
-                            .getSiteKey());
+                    args.add(urlResolver == null
+                            || urlResolver.getSiteKeyByServerName() == null ? new StringBuilder()
+                            .append(renderContext.getSite().getSiteKey())
+                            .append(":").append("virtualhost").toString()
+                            : renderContext.getSite().getSiteKey());
                 }
             }
         }

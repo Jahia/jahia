@@ -49,7 +49,7 @@
 <c:set var="includeChildren" value="${functions:default(param[fieldIdIncludeChildren], empty paramValues[fieldId] ? includeChildren : 'false')}"/>
 <c:if test="${empty label}"><c:set var="label"><fmt:message key="selectors.select"/></c:set></c:if>
 <c:if test="${empty includeChildrenLabel}"><c:set var="includeChildrenLabel"><fmt:message key="selectors.includeChildren"/></c:set></c:if>
-<a href="#${fieldId}-treeItemSelector" id="${fieldId}-treeItemSelectorTrigger">${fn:escapeXml(label)}</a>
+<a href="\#${fieldId}-treeItemSelector" id="${fieldId}-treeItemSelectorTrigger">${fn:escapeXml(label)}</a>
 <c:if test="${displayIncludeChildren}">
     &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldIdIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}">${fn:escapeXml(includeChildrenLabel)}</label>
 </c:if>

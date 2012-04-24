@@ -250,7 +250,7 @@ public class PropertiesEditor extends FormPanel {
             final GWTJahiaNodeProperty gwtJahiaNodeProperty = currentProperties.get(definition.getName());
             GWTJahiaFieldInitializer fieldInitializer = initializersValues != null ?
                     initializersValues.get(definition.getOverrideDeclaringNodeType() + "." + definition.getName()) : null;
-            Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, fieldInitializer, displayHiddenProperties, permissions);
+            Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, fieldInitializer, displayHiddenProperties, permissions, locale);
             propertyDefinitions.put(gwtJahiaNodeProperty.getName(), definition);
             if (field != null) {
                 if (fieldSet == null || fieldSetGrouping &&
@@ -508,7 +508,7 @@ public class PropertiesEditor extends FormPanel {
     /**
      * Returns a list with property values, populated from the field value depending on its type.
      *
-     * @param fld     the form field, holding the value
+     * @param field   the form field, holding the value
      * @param itemDef the definition of the corresponding node/property
      * @return a list with property values, populated from the field value depending on its type
      */

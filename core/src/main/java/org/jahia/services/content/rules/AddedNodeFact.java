@@ -62,7 +62,7 @@ import java.util.List;
  * Date: 20 déc. 2007
  * Time: 11:53:45
  */
-public class AddedNodeFact implements Updateable, NodeFact {
+public class AddedNodeFact extends AbstractNodeFact implements Updateable, NodeFact {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(AddedNodeFact.class);
 
     private AddedNodeFact parentNode;
@@ -70,17 +70,12 @@ public class AddedNodeFact implements Updateable, NodeFact {
     private String name;
     private String type;
 
-    private JCRNodeWrapper node;
-
-    private String workspace;
-    private String operationType;
-
     public AddedNodeFact(JCRNodeWrapper node) throws RepositoryException {
-        this.node = node;
-        workspace = node.getSession().getWorkspace().getName();
+        super(node);
     }
 
     public AddedNodeFact(AddedNodeFact parentNodeWrapper, String name, String type, KnowledgeHelper drools) throws RepositoryException {
+        super(null);
         this.parentNode = parentNodeWrapper;
         workspace = parentNode.getNode().getSession().getWorkspace().getName();
 
@@ -141,40 +136,6 @@ public class AddedNodeFact implements Updateable, NodeFact {
         return null;
     }
 
-    public AddedNodeFact getContent() throws RepositoryException {
-        if (node.hasNode(Constants.JCR_CONTENT)) {
-            AddedNodeFact nodeFact = new AddedNodeFact(node.getNode(Constants.JCR_CONTENT));
-            nodeFact.setOperationType(this.getOperationType());
-            return nodeFact;
-        }
-        return null;
-    }
-
-    public String getMimeType() throws RepositoryException {
-        if (node.hasNode(Constants.JCR_CONTENT)) {
-            return node.getNode(Constants.JCR_CONTENT).getProperty(Constants.JCR_MIMETYPE).getString();
-        }
-        return null;
-    }
-
-    public List<AddedNodeFact> getChildNodes() throws RepositoryException {
-        List<AddedNodeFact> results = new ArrayList<AddedNodeFact>();
-        NodeIterator it = node.getNodes();
-        while (it.hasNext()) {
-            JCRNodeWrapper n = (JCRNodeWrapper) it.nextNode();
-            AddedNodeFact nodeFact = new AddedNodeFact(n);
-            nodeFact.setOperationType(this.getOperationType());
-            results.add(nodeFact);
-        }
-        return results;
-    }
-
-    public AddedNodeFact getParent() throws RepositoryException {
-        AddedNodeFact nodeFact = new AddedNodeFact(node.getParent());
-        nodeFact.setOperationType(this.getOperationType());
-        return nodeFact;
-    }
-
     public List<ChangedPropertyFact> getProperties() throws RepositoryException {
         List<ChangedPropertyFact> results = new ArrayList<ChangedPropertyFact>();
         PropertyIterator it = node.getProperties();
@@ -187,20 +148,6 @@ public class AddedNodeFact implements Updateable, NodeFact {
 
     public ChangedPropertyFact getProperty(String propertyName) throws RepositoryException {
         return new ChangedPropertyFact(this,node.getProperty(propertyName));
-    }
-
-    public List<String> getTypes() throws RepositoryException {
-        List<String> r = new ArrayList<String>();
-        recurseOnTypes(r,node.getPrimaryNodeType());
-        recurseOnTypes(r,node.getMixinNodeTypes());
-        return r;
-    }
-
-    private void recurseOnTypes(List<String> res, NodeType... nt) {
-        for (NodeType nodeType : nt) {
-            if (!res.contains(nodeType.getName())) res.add(nodeType.getName());
-            recurseOnTypes(res,nodeType.getSupertypes());
-        }
     }
 
     public void addType(String type, KnowledgeHelper drools) throws RepositoryException {
@@ -240,16 +187,6 @@ public class AddedNodeFact implements Updateable, NodeFact {
         return null;
     }
 
-    public JCRNodeWrapper getNode() {
-        return node;
-    }
-
-    public AddedNodeFact getNode(String relPath) throws RepositoryException {
-        AddedNodeFact nodeFact = new AddedNodeFact(node.getNode(relPath));
-        nodeFact.setOperationType(this.getOperationType());
-        return nodeFact;
-    }
-
     public String toString() {
         return node.getPath();
     }
@@ -287,22 +224,4 @@ public class AddedNodeFact implements Updateable, NodeFact {
         return node != null ? node.getIdentifier() : null;
     }
 
-    public String getWorkspace() throws RepositoryException {
-        return workspace;
-    }
-
-    /**
-     * Returns the current JCR operation type.
-     *
-     * @return the current JCR operation type
-     * @throws javax.jcr.RepositoryException in case of a repository access error
-     * @since Jahia 6.6
-     */
-    public String getOperationType() {
-        return operationType;
-    }
-
-    public void setOperationType(String operationType) {
-        this.operationType = operationType;
-    }
 }

@@ -45,25 +45,16 @@ import net.htmlparser.jericho.TextExtractor;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.Jahia;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
-import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.Url;
 import org.slf4j.Logger;
@@ -324,5 +315,29 @@ public class Functions {
 
     public static String modulePath(HttpServletRequest req, String moduleName) {
         return req.getContextPath() + "/modules/" + moduleName;
+    }
+    
+    /**
+     * Returns the first parent of the specified node, which has the ACL inheritance broken. If not found, null<code>null</code> is
+     * returned.
+     * 
+     * @param node
+     *            the node to search parent for
+     * 
+     * @return the first parent of the specified node, which has the ACL inheritance broken. If not found, null<code>null</code> is returned
+     */
+    public static JCRNodeWrapper getParentWithAclInheritanceBroken(JCRNodeWrapper node) {
+        try {
+            return JCRContentUtils.getParentWithAclInheritanceBroken(node);
+        } catch (RepositoryException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(e.getMessage(), e);
+            } else {
+                logger.warn("Unable to get parent of a node " + node.getPath()
+                        + " with ACL inheritance break. Cause: " + e.getMessage());
+            }
+        }
+
+        return null;
     }
 }

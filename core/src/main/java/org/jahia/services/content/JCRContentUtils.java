@@ -1600,4 +1600,34 @@ public final class JCRContentUtils {
         }
         return reversed;
     }
+
+    /**
+     * Returns the first parent of the specified node, which has the ACL inheritance broken. If not found, null<code>null</code> is
+     * returned.
+     * 
+     * @param node
+     *            the node to search parent for
+     * 
+     * @return the first parent of the specified node, which has the ACL inheritance broken. If not found, null<code>null</code> is returned
+     * @throws RepositoryException
+     *             in case of JCR errors
+     */
+    public static JCRNodeWrapper getParentWithAclInheritanceBroken(JCRNodeWrapper node)
+            throws RepositoryException {
+        JCRNodeWrapper found = null;
+        JCRNodeWrapper parent = node;
+        try {
+            while (true) {
+                if (parent.getAclInheritanceBreak()) {
+                    found = parent;
+                    break;
+                }
+                parent = parent.getParent();
+            }
+        } catch (ItemNotFoundException e) {
+            // reached the root node
+        }
+
+        return found;
+    }
 }

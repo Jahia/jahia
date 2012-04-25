@@ -479,4 +479,15 @@
         <function-signature>java.lang.String modulePath(javax.servlet.http.HttpServletRequest,java.lang.String)</function-signature>
         <example>${fn:modulePath(request, 'default'])</example>
     </function>
+    
+    <function>
+        <description>
+            Returns the first parent of the current node, which has the ACL inheritance broken,
+            i.e. node.getAclInheritanceBreak() returns true.
+        </description>
+        <name>getParentWithAclInheritanceBroken</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>org.jahia.services.content.JCRNodeWrapper getParentWithAclInheritanceBroken(org.jahia.services.content.JCRNodeWrapper)</function-signature>
+        <example>${functions:getParentWithAclInheritanceBroken(node)}</example>
+    </function>
 </taglib>

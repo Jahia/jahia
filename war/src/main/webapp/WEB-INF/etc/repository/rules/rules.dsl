@@ -2,6 +2,8 @@
 [condition][]A new node "{name}" is created=node : AddedNodeFact ( name == "{name}")
 [condition][]A new node is created=node : AddedNodeFact ( )
 [condition][]A node is deleted=node : DeletedNodeFact ( )
+[condition][]A node is moved=node : MovedNodeFact ( )
+[condition][]A node is published=node : PublishedNodeFact ( )
 [condition][]A property has been set on a node=property : ChangedPropertyFact ( propertyName : name, propertyValue : stringValues , node : node )
 [condition][]A property has been removed from a node=property : DeletedPropertyFact ( propertyName : name, node : node )
 [condition][]A property {property} has been set on a node=property : ChangedPropertyFact ( name == "{property}" , propertyValue : stringValues , propertyValueAsString : stringValue , node : node )
@@ -40,6 +42,8 @@
 [condition][]- in operation {operation}=operationType == "{operation}"
 [condition][]A search result hit is present=searchHit : JCRNodeHit ( )
 [condition][]- the node is of type {type}=type == "{type}"
+[condition][]The {node} has not been added=not AddedNodeFact ( path == ({node}.getPath()) )
+[condition][]The {node} has not been moved=not MovedNodeFact ( path == ({node}.getPath()) )
 [consequence][]Append URL query-parameter "{parameterName}" with {parameterValue}=urlService.addURLQueryParameter(searchHit, "{parameterName}", {parameterValue});
 [consequence][]Add the type {type}=node.addType ( "{type}", drools );
 [consequence][]Remove the type {type}=node.removeType ( "{type}", drools );

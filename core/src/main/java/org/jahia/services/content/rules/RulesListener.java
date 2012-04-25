@@ -111,7 +111,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED +
-                Event.PROPERTY_REMOVED;
+                Event.PROPERTY_REMOVED + Event.NODE_MOVED;
     }
 
     private StatelessSession getStatelessSession(Map<String, Object> globals) {
@@ -353,6 +353,13 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                             }
                                             logger.warn("Couldn't access path " + path + ", ignoring it since it's not supported on some external repositories... ");
                                         }
+                                    } else if (propertyName.equals("j:lastPublished")) {
+                                        JCRNodeWrapper n = eventUuid != null ? s.getNodeByIdentifier(eventUuid) : s.getNode(path);
+                                        if (n.isNodeType("jmix:observable") && !n.isNodeType("jnt:translation")) {
+                                            final PublishedNodeFact e = new PublishedNodeFact(n);
+                                            setNodeFactOperationType(e,operationType);
+                                            list.add(e);
+                                        }
                                     }
                                 } else if (type == Event.NODE_REMOVED) {
                                     String parentPath = null;
@@ -393,6 +400,13 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                         } catch (PathNotFoundException e) {
                                             // ignore if parent has also been deleted ?
                                         }
+                                    }
+                                } else if (type == Event.NODE_MOVED) {
+                                    JCRNodeWrapper n = eventUuid != null ? s.getNodeByIdentifier(eventUuid) : s.getNode(path);
+                                    if (n.isNodeType("jmix:observable") && !n.isNodeType("jnt:translation")) {
+                                        final MovedNodeFact e = new MovedNodeFact(n,(String) event.getInfo().get("srcAbsPath"));
+                                        setNodeFactOperationType(e,operationType);
+                                        list.add(e);
                                     }
                                 }
                             }

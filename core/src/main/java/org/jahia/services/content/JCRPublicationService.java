@@ -325,6 +325,8 @@ public class JCRPublicationService extends JahiaService {
                         destNode.setProperty("j:published", Boolean.TRUE);
                     } catch (ItemNotFoundException e) {
                     }
+                } else if (jcrNodeWrapper.isNodeType("jmix:lastPublished")) {
+                    jcrNodeWrapper.setProperty("j:published", Boolean.TRUE);
                 }
             }
             sourceNode.getSession().save();

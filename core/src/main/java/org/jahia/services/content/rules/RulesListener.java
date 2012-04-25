@@ -353,7 +353,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                             }
                                             logger.warn("Couldn't access path " + path + ", ignoring it since it's not supported on some external repositories... ");
                                         }
-                                    } else if (propertyName.equals("j:lastPublished")) {
+                                    } else if (propertyName.equals("j:published")) {
                                         JCRNodeWrapper n = eventUuid != null ? s.getNodeByIdentifier(eventUuid) : s.getNode(path);
                                         if (n.isNodeType("jmix:observable") && !n.isNodeType("jnt:translation")) {
                                             final PublishedNodeFact e = new PublishedNodeFact(n);

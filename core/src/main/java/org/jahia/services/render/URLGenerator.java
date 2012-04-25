@@ -61,6 +61,7 @@ import org.jahia.bin.Find;
 import org.jahia.bin.FindPrincipal;
 import org.jahia.bin.FindUser;
 import org.jahia.bin.FindUsersAndGroups;
+import org.jahia.bin.FindUsersAndGroupsInAcl;
 import org.jahia.bin.Initializers;
 import org.jahia.bin.Login;
 import org.jahia.bin.Logout;
@@ -450,6 +451,10 @@ public class URLGenerator {
 
     public String getFindUsersAndGroups() {
         return FindUsersAndGroups.getFindUsersAndGroupsServletPath();
+    }
+
+    public String getFindUsersAndGroupsInAcl() {
+        return FindUsersAndGroupsInAcl.getFindUsersAndGroupsInAclServletPath();
     }
 
     @Override

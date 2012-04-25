@@ -31,6 +31,8 @@
         </c:otherwise>
     </c:choose>
     <template:initPager totalSize="${moduleMap.listTotalSize}" pageSize="${pageSize}" id="${boundComponent.identifier}"/>
+    <jsp:useBean id="pagerLimits" class="java.util.HashMap" scope="request"/>
+    <c:set target="${pagerLimits}" property="${boundComponent.identifier}" value="${moduleMap.end}"/>
     <c:if test="${currentNode.properties.displayPager.boolean}">
         <template:displayPagination id="${boundComponent.identifier}" nbOfPages="${currentNode.properties.nbOfPages.string}" 
               displayNumberOfItemsPerPage="${currentNode.properties.displayNbOfItemsPerPage.boolean}" nbItemsList="${currentNode.properties.displayNbOfItemsPerPageValues.string}"/>

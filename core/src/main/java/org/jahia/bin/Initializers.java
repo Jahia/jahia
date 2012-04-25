@@ -108,7 +108,7 @@ public class Initializers extends JahiaController {
         if (StringUtils.isEmpty(request.getParameter("path"))
                 && StringUtils.isEmpty(request.getParameter("nodeuuid"))
                 && StringUtils.isEmpty(request.getParameter("type"))) {
-            throw new JahiaBadRequestException("One of therequired parameters is missing");
+            throw new JahiaBadRequestException("One of the required parameters is missing");
         }
 
         ExtendedNodeType type = null;

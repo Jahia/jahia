@@ -97,22 +97,29 @@ public class FindUser extends BaseFindController {
         checkUserLoggedIn();
         checkUserAuthorized();
 
+        boolean badQuery = false;
         String queryTerm = getParameter(request, "q");
         if (queryTerm.length() < 1 || Patterns.STAR.matcher(queryTerm).replaceAll("").trim().length() < 1) {
-            throw new JahiaBadRequestException("Please specify more exact term for user search");
-        }
-
-        Set<Principal> result = search(queryTerm, request);
-        JCRNodeWrapper jcrNodeWrapper = null;
-        if (request.getParameter("node") != null) {
-            try {
-                jcrNodeWrapper = JCRSessionFactory
-                        .getInstance().getCurrentUserSession().getNode(request.getParameter("node"));
-            } catch (RepositoryException e) {
-                jcrNodeWrapper = null;
+            badQuery = true;
+            if (!Boolean.valueOf(getParameter(request, "emptyResultForBadQuery", "false"))) {
+                throw new JahiaBadRequestException("Please specify more exact term for user search");
             }
         }
-        String roles = request.getParameter("roles");
+
+        Set<Principal> result = !badQuery ? search(queryTerm, request) : Collections.<Principal>emptySet();
+        JCRNodeWrapper jcrNodeWrapper = null;
+        String roles = null;
+        if (!result.isEmpty()) {
+            if (request.getParameter("node") != null) {
+                try {
+                    jcrNodeWrapper = JCRSessionFactory
+                            .getInstance().getCurrentUserSession().getNode(request.getParameter("node"));
+                } catch (RepositoryException e) {
+                    jcrNodeWrapper = null;
+                }
+            }
+            roles = request.getParameter("roles");
+        }
         writeResults(result, request, response, jcrNodeWrapper, roles);
     }
 

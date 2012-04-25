@@ -70,7 +70,7 @@ rule "Flush caches when j:conditionalVisibility is suppressed"
     salience 25
     when
         A node is deleted
-             - the node has the type jnt:conditionalVisibility
+             - its name is j:conditionalVisibility
     then
     	Log "Visibility settings were changed (conditions node deleted). Flushing caches on node " + node.getPath()
         Execute the action "flushVisibilityOnDeleteAll" now on the parent

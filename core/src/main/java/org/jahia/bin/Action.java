@@ -45,6 +45,7 @@ import java.util.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -71,6 +72,28 @@ import javax.servlet.http.HttpServletRequest;
 public abstract class Action {
 
     /**
+     * Returns a single value for the specified parameter. If the parameter is not present throws the {@link JahiaBadRequestException}.
+     * 
+     * @param parameters
+     *            the map of action parameters
+     * @param paramName
+     *            the name of the parameter in question
+     * @return a single value for the specified parameter. If the parameter is not present throws the {@link JahiaBadRequestException}
+     * @throws JahiaBadRequestException
+     *             if the specified parameter is not present in the request
+     * 
+     */
+    protected static String getRequiredParameter(Map<String, List<String>> parameters,
+            String paramName) throws JahiaBadRequestException {
+        if (parameters.get(paramName) == null) {
+            throw new JahiaBadRequestException("Missing required '" + paramName
+                    + "' parameter in request.");
+        }
+
+        return getParameter(parameters, paramName, null);
+    }
+
+    /**
      * Returns a single value for the specified parameter. If the parameter is
      * not present or its value is empty, returns <code>null</code>.
      * 
@@ -82,6 +105,7 @@ public abstract class Action {
     protected static String getParameter(Map<String, List<String>> parameters, String paramName) {
         return getParameter(parameters, paramName, null);
     }
+    
     /**
      * Returns a single value for the specified parameter. If the parameter is
      * not present or its value is empty, returns the provided default value.

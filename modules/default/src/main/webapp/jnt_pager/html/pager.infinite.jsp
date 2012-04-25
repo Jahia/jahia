@@ -15,11 +15,12 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js"/>
+
 <c:set var="boundComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty boundComponent and jcr:isNodeType(boundComponent, 'jmix:list')}">
     <template:addCacheDependency node="${boundComponent}"/>
-    <template:option node="${boundComponent}" nodetype="${boundComponent.primaryNodeTypeName},jmix:list" view="hidden.header"/>
+
     <c:set var="pagesizeid" value="pagesize${boundComponent.identifier}"/>
     <c:choose>
         <c:when test="${not empty param[pagesizeid]}">
@@ -32,7 +33,17 @@
             <c:set var="pageSize" value="${currentNode.properties['pageSize'].long}"/>
         </c:otherwise>
     </c:choose>
-    <template:initPager totalSize="${moduleMap.listTotalSize}" pageSize="${pageSize}" id="${boundComponent.identifier}"/>
+    <jsp:useBean id="pagerLimits" class="java.util.HashMap" scope="request"/>
+    <c:set var="varName">${boundComponent.identifier}_loaded</c:set>
+    <c:set var="totalSize" value="${2147483647}"/>
+
+    <c:if test="${not empty pagerLimits[varName]}">
+        <c:set var="totalSize" value="${pagerLimits[varName]+1}"/>
+    </c:if>
+    <template:initPager totalSize="${totalSize}" pageSize="${pageSize}" id="${boundComponent.identifier}"/>
+
+    <c:set target="${pagerLimits}" property="${boundComponent.identifier}" value="${moduleMap.end}"/>
+
     <c:if test="${currentNode.properties.displayPager.boolean}">
 
         <c:set var="beginid" value="begin${boundComponent.identifier}"/>

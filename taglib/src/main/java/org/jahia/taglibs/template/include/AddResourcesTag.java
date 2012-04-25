@@ -123,8 +123,14 @@ public class AddResourcesTag extends AbstractJahiaTag {
             resource = resource.trim();
             if (resource.startsWith("/") || resource.startsWith("http://") || resource.startsWith("https://")) {
                 found = true;
+                if (mapping.containsKey(resource)) {
+                    for (String mappedResource : mapping.get(resource).split(" ")) {
+                        writeResourceTag(type, mappedResource, mappedResource);
+                    }
+                } else {
+                    writeResourceTag(type, resource, resource);
+                }
                 resource = mapping.containsKey(resource) ? mapping.get(resource) : resource;
-                writeResourceTag(type, resource, resource);
             } else {
                 for (String lookupPath : lookupPaths) {
                     String path = lookupPath + resource;
@@ -135,10 +141,15 @@ public class AddResourcesTag extends AbstractJahiaTag {
 
                             // apply mapping
                             if (mapping.containsKey(path)) {
-                                path = mapping.get(path);
-                                pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ? renderContext.getRequest().getContextPath() + path : path;
+                                for (String mappedResource : mapping.get(path).split(" ")) {
+                                    path = mappedResource;
+                                    pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ? renderContext.getRequest().getContextPath() + path : path;
+                                    writeResourceTag(type, pathWithContext, resource);
+                                }
+                            } else {
+                                writeResourceTag(type, pathWithContext, resource);
                             }
-                            writeResourceTag(type, pathWithContext, resource);
+
                             found = true;
                             if (builder.length() > 0) {
                                 builder.append(",");

@@ -7,8 +7,11 @@
         <property name="mapping">
             <map>
                 <entry key="/modules/assets/javascript/jquery.js"
-                    value="/modules/assets/javascript/jquery.min.js"/>
-                    
+                    value="/modules/assets/javascript/jquery.min.js /modules/assets/javascript/jquery.jahia.js"/>
+
+                <entry key="/modules/assets/javascript/jquery.min.js"
+                    value="/modules/assets/javascript/jquery.min.js /modules/assets/javascript/jquery.jahia.js"/>
+
                 <!-- Google CDN for jQuery and jQuery UI -->
                 <!--
                 <entry key="/modules/assets/javascript/jquery.min.js"

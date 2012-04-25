@@ -477,7 +477,7 @@
         <name>modulePath</name>
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
         <function-signature>java.lang.String modulePath(javax.servlet.http.HttpServletRequest,java.lang.String)</function-signature>
-        <example>${functions:modulePath(request, 'default')}</example>
+        <example>${functions:modulePath(pageContext.request, 'default')}</example>
     </function>
     
     <function>

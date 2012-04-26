@@ -1,6 +1,9 @@
 /**
  *  @description Override jQuery load method, remove the script that were previously loaded
  */
+
+var _load = jQuery.fn.load;
+
 (function($) {
     $.fn.load = function( url, params, callback ) {
 		if ( typeof url !== "string" && _load ) {

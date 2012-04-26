@@ -40,6 +40,7 @@
 
 package org.jahia.taglibs.template.include;
 
+import org.jahia.registries.ServicesRegistry;
 import org.slf4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.SpringContextSingleton;
@@ -47,6 +48,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.Patterns;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
@@ -86,26 +88,34 @@ public class AddResourcesTag extends AbstractJahiaTag {
     @Override
     public int doEndTag() throws JspException {
         JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule", PageContext.REQUEST_SCOPE);
-        addResources(getRenderContext(), templatesPackage);
+        try {
+            JahiaTemplatesPackage templatesSetPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(getRenderContext().getMainResource().getNode().getResolveSite().getTemplatePackageName());
+            if (!addResources(getRenderContext(), templatesSetPackage, false)) {
+                addResources(getRenderContext(), templatesPackage, true);
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot resolve site",e);
+        }
+
         resetState();
         return super.doEndTag();
     }
 
-    protected void addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage) {
+    protected boolean addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage, boolean checkDependencies) {
         if (logger.isDebugEnabled()) {
             logger.debug("Package : " + aPackage.getName() + " type : " + type + " resources : " + resources);
         }
         if (bodyContent != null) {
             try {
                 pageContext.getOut().print(bodyContent.getString());
-                return;
+                return true;
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             }
         }
         if (renderContext == null) {
             logger.warn("No render context found. Unable to add a resoure");
-            return;
+            return false;
         }
 
         final Map<String, String> mapping = getStaticAssetMapping();
@@ -114,8 +124,10 @@ public class AddResourcesTag extends AbstractJahiaTag {
 
         List<String> lookupPaths = new LinkedList<String>();
         lookupPaths.add(aPackage.getRootFolderPath() + "/" + type + "/");
-        for (JahiaTemplatesPackage pack : aPackage.getDependencies()) {
-            lookupPaths.add(pack.getRootFolderPath() + "/" + type + "/");
+        if (checkDependencies) {
+            for (JahiaTemplatesPackage pack : aPackage.getDependencies()) {
+                lookupPaths.add(pack.getRootFolderPath() + "/" + type + "/");
+            }
         }
         StringBuilder builder = new StringBuilder();
         for (String resource : strings) {
@@ -163,12 +175,13 @@ public class AddResourcesTag extends AbstractJahiaTag {
                 }
             }
             if (!found) {
-                logger.warn("Unable to find resource '" + resource + "' in: " + lookupPaths);
+                return false;
             }
         }
         if (var != null && !"".equals(var.trim())) {
             pageContext.setAttribute(var, builder.toString());
         }
+        return true;
     }
 
     public void setType(String type) {

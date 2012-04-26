@@ -52,6 +52,7 @@ import javax.jcr.Binary;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.ValueFormatException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -364,7 +365,7 @@ public class FileServlet extends HttpServlet {
 
             n = session.getNode(fileKey.getPath());
 
-            if (Constants.LIVE_WORKSPACE.equals(fileKey.getWorkspace()) && !VisibilityService.getInstance().matchesConditions(n)) {
+            if (!isValid(n)) {
                 n = null;
             }
         } catch (RuntimeException e) {
@@ -381,6 +382,18 @@ public class FileServlet extends HttpServlet {
             }
         }
         return n;
+    }
+
+    private boolean isValid(JCRNodeWrapper n) throws ValueFormatException, PathNotFoundException,
+            RepositoryException {
+        if (!Constants.LIVE_WORKSPACE.equals(n.getSession().getWorkspace().getName())) {
+            // we check validity only in live workspace
+            return true;
+        }
+
+        // the file node should be published and visible
+        return (!n.hasProperty("j:published") || n.getProperty("j:published").getBoolean())
+                && VisibilityService.getInstance().matchesConditions(n);
     }
 
     public void init(ServletConfig config) throws ServletException {

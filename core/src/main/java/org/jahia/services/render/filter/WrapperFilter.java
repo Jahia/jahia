@@ -64,9 +64,6 @@ public class WrapperFilter extends AbstractFilter {
 
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
-        if (renderContext.isAjaxRequest()) {
-            return previousOut;
-        }
         JCRNodeWrapper node = resource.getNode();
         if (wrapper == null) {
             while (resource.hasWrapper()) {

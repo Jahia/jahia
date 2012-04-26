@@ -44,6 +44,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapperImpl;
 import org.slf4j.Logger;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
 
@@ -85,7 +86,11 @@ public class JCRReferenceNode extends JCRNodeDecorator {
     
     public Node getContextualizedNode() throws RepositoryException {
         if (hasProperty("j:node")) {
-            return getProperty("j:node").getContextualizedNode();
+            try {
+                return getProperty("j:node").getContextualizedNode();
+            } catch (ItemNotFoundException e) {
+                return null;
+            }
         }
         return null;
     }

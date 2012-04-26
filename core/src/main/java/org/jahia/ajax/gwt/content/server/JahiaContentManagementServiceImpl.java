@@ -1165,7 +1165,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         JCRSessionWrapper session = retrieveCurrentSession();
         publication.unpublish(uuids, Collections.singleton(session.getLocale().toString()),
                 session.getUser());
-        logger.debug("-->" + (System.currentTimeMillis() - l));
+        if (logger.isDebugEnabled()) {
+            logger.debug("-->" + (System.currentTimeMillis() - l));
+        }
     }
 
     /**
@@ -1308,7 +1310,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             if (date != null && (date / 1000 == lastAccessed / 1000)) {
                 // last call was (probably) a poll call
                 long first = (Long) session.getAttribute("firstPoll");
-                logger.debug("Inactive since : " + (now - first));
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Inactive since : " + (now - first));
+                }
                 if (now - first < session.getMaxInactiveInterval() * 1000) {
                     session.setMaxInactiveInterval(session.getMaxInactiveInterval() - (int) ((now - first) / 1000));
                 } else {

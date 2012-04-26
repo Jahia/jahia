@@ -61,10 +61,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.servlet.http.HttpServletRequest;
@@ -104,6 +101,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     private Cache permissionCache;
     public static Pattern mainResourcePattern = Pattern.compile(MAIN_RESOURCE_KEY);
     public static Pattern perUserPattern = Pattern.compile(PER_USER);
+    private static final Pattern depAclsPattern = Pattern.compile("_depacl_");
+    private static final Pattern aclsPathPattern = Pattern.compile("_p_");
 
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
         this.groupManagerService = groupManagerService;
@@ -217,7 +216,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         return args.toArray(new String[KNOWN_FIELDS.size()]);
     }
 
-    public String appendAcls(Resource resource, RenderContext renderContext, boolean appendNodePath) {
+    public String appendAcls(final Resource resource, final RenderContext renderContext, boolean appendNodePath) {
         try {
             if (renderContext.getRequest() != null && Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.perUser"))) {
                 return PER_USER;
@@ -239,7 +238,33 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 }
             }
             String nodePath = node.getPath();
-            return getAclsKeyPart(renderContext, checkRootPath, nodePath, appendNodePath);
+            final Set<String> aclsKeys = new LinkedHashSet<String>();
+            aclsKeys.add(getAclsKeyPart(renderContext, checkRootPath, nodePath, appendNodePath, null));
+            final Set<String> dependencies = resource.getDependencies();
+            for (final String dependency : dependencies) {
+                if(!dependency.equals(nodePath)) {
+                    if(!JCRContentUtils.isNotJcrUuid(dependency)){
+                        final boolean finalCheckRootPath = checkRootPath;
+                        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                final JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(dependency);
+                                aclsKeys.add(getAclsKeyPart(renderContext, finalCheckRootPath, nodeByIdentifier.getPath(), true, null));
+                                return null;
+                            }
+                        });
+                    } else if(dependency.contains("/")) {
+                        aclsKeys.add(getAclsKeyPart(renderContext, checkRootPath, dependency, true, null));
+                    }
+                }
+            }
+            StringBuilder stringBuilder = new StringBuilder();
+            for (String aclsKey : aclsKeys) {
+                if(stringBuilder.length()>0) {
+                    stringBuilder.append("_depacl_");
+                }
+                stringBuilder.append(aclsKey);
+            }
+            return stringBuilder.toString();
 
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -247,11 +272,35 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         return "";
     }
 
-    public String getAclsKeyPart(RenderContext renderContext, boolean checkRootPath, String nodePath, boolean appendNodePath)
+    public String getAclsKeyPart(RenderContext renderContext, boolean checkRootPath, String nodePath,
+                                 boolean appendNodePath, String acls)
             throws RepositoryException {
         // Search for user specific acl
         JahiaUser principal = renderContext.getUser();
         final String userName = principal.getUsername();
+        if (nodePath.contains("_depacl_")) {
+            String[] aclKeys = depAclsPattern.split(acls);
+            StringBuilder stringBuilder = new StringBuilder();
+            for (String aclKey : aclKeys) {
+                if (aclKey.contains("/")) {
+                    String path;
+                    path = "/" + StringUtils.substringAfter(aclsPathPattern.split(aclKey)[1], "/");
+                    if (stringBuilder.length() > 0) {
+                        stringBuilder.append("_depacl_");
+                    }
+                    stringBuilder.append(getAclKeyPartForNode(renderContext, checkRootPath, path, true, principal,
+                            userName));
+                }
+            }
+            return stringBuilder.toString();
+        } else {
+            return getAclKeyPartForNode(renderContext, checkRootPath, nodePath, appendNodePath, principal, userName);
+        }
+    }
+
+    private String getAclKeyPartForNode(RenderContext renderContext, boolean checkRootPath, String nodePath,
+                                        boolean appendNodePath, JahiaUser principal, String userName)
+            throws RepositoryException {
         Element element = hasUserAcl(userName);
         if (element!=null) {
             Map<String, String> map = (Map<String, String>) element.getValue();

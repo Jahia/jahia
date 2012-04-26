@@ -262,7 +262,7 @@ To manually run the tests:
 
 - Go to the test module, execute:
 
-mvn install jahia:deploy
+mvn install jahia:deploy -Djahia.deploy.deployTests
 ( note that class hotswap is also working for this module, test code change won't require a jahia restart )
 
 - Startup your jahia

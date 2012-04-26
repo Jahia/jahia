@@ -31,7 +31,7 @@ JCRCallback callback = new JCRCallback<Integer>() {
                     }
                 }
                 count++;
-                log.debug("updated ${next.path} node, converted j:targetNode value from ${targetUuid} to ${path}");
+                log.debug("updated ${next.path} node");
             }
         } catch (InvalidQueryException e) {
             if (e.getCause() == null || !(e.getCause() instanceof NoSuchNodeTypeException)) {

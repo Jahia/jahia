@@ -21,14 +21,15 @@ JCRCallback callback = new JCRCallback<Integer>() {
             while (ni.hasNext()) {
                 JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
                 log.debug("  processing  {}", next.path);
-                if (!next.hasProperty("j:message")) {
-                    next.remove();
-                    log.debug("removed ${next.path} node");
-                } else {
-                    next.setProperty("j:activityType","text");
-                    log.debug("updated ${next.path}");
+                if (!next.hasProperty("j:activityType")) {
+                    if (!next.hasProperty("j:message")) {
+                        next.remove();
+                        log.debug("removed ${next.path} node");
+                    } else {
+                        next.setProperty("j:activityType","text");
+                        log.debug("updated ${next.path}");
+                    }
                 }
-
                 count++;
                 log.debug("updated ${next.path} node, converted j:targetNode value from ${targetUuid} to ${path}");
             }

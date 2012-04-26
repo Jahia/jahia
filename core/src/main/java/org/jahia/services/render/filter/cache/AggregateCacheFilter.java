@@ -51,9 +51,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jahia.services.cache.CacheEntry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.RenderService;
@@ -311,7 +309,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         try {
             if (cacheable) {
+                int nbOfDependencies = resource.getDependencies().size();
                 addReferencesToDependencies(resource);
+                if(resource.getDependencies().size()> nbOfDependencies) {
+                    String newKey = cacheProvider.getKeyGenerator().generate(resource, renderContext);
+                    perUserKey = replacePlaceholdersInCacheKey(renderContext, newKey);
+                }
                 String perUser = (String) renderContext.getRequest().getAttribute("perUser");
                 if (perUser != null) {
                     // This content must be cached by user as it is defined in the options panel
@@ -486,21 +489,30 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @throws RepositoryException
      *             in case of a repository error
      */
-    private void addReferencesToDependencies(Resource resource) throws RepositoryException {
+    private void addReferencesToDependencies(final Resource resource) throws RepositoryException {
         if (resource.getNode().isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
-            NodeIterator ni = resource.getNode().getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
-            while (ni.hasNext()) {
-                JCRNodeWrapper ref = (JCRNodeWrapper) ni.nextNode();
-                try {
-                    resource.getDependencies().add(ref.getProperty("j:reference").getString());
-                } catch (PathNotFoundException e) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("j:reference property is not found on node {}", ref.getCanonicalPath());
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    NodeIterator ni = session.getNodeByIdentifier(resource.getNode().getIdentifier()).getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
+                    while (ni.hasNext()) {
+                        JCRNodeWrapper ref = (JCRNodeWrapper) ni.nextNode();
+                        try {
+                            resource.getDependencies().add(ref.getProperty("j:reference").getNode().getPath());
+                        } catch (PathNotFoundException e) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("j:reference property is not found on node {}", ref.getCanonicalPath());
+                            }
+                        } catch (RepositoryException e) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("referenced node does not exist anymore {}", ref.getCanonicalPath());
+                            }
+                        } catch (Exception e) {
+                            logger.warn("Error adding dependency to node " + resource.getNode().getCanonicalPath(), e);
+                        }
                     }
-                } catch (Exception e) {
-                    logger.warn("Error adding dependency to node " + resource.getNode().getCanonicalPath(), e);
+                    return null;
                 }
-            }
+            });
         }
     }
 
@@ -523,7 +535,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
                         String[] split = P_REGEXP.split(keyAttrbs.get("acls"));
                         String nodePath = "/"+StringUtils.substringAfter(split[1],"/");
-                        String acls = defaultCacheKeyGenerator.getAclsKeyPart(renderContext, Boolean.parseBoolean(StringUtils.substringBefore(split[1],"/")), nodePath, true);
+                        String acls = defaultCacheKeyGenerator.getAclsKeyPart(renderContext, Boolean.parseBoolean(StringUtils.substringBefore(split[1],"/")), nodePath, true, keyAttrbs.get("acls"));
                         cacheKey = keyGenerator.replaceField(cacheKey, "acls", acls);
                         if (renderContext.getRequest().getParameter("ec") != null &&
                             renderContext.getRequest().getParameter("ec").equals(keyAttrbs.get("resourceID"))) {

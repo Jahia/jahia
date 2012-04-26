@@ -93,7 +93,6 @@ import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRComponentNode;
@@ -1618,11 +1617,11 @@ public final class JCRContentUtils {
         JCRNodeWrapper parent = node;
         try {
             while (true) {
+                parent = parent.getParent();
                 if (parent.getAclInheritanceBreak()) {
                     found = parent;
                     break;
                 }
-                parent = parent.getParent();
             }
         } catch (ItemNotFoundException e) {
             // reached the root node

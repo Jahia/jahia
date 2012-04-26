@@ -177,7 +177,6 @@
 		<property name="priority" value="40" />
         <property name="description" value="Adds a wrapper to a content"/>
 		<property name="skipOnConfiguration" value="include,wrapper" />
-		<property name="skipOnAjaxRequest" value="true" />
 	</bean>
 	<bean class="org.jahia.services.render.filter.TemplateScriptFilter">
 		<property name="priority" value="99" />

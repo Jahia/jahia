@@ -17,24 +17,23 @@
         </description>
         <name>memberOf</name>
         <function-class>org.jahia.taglibs.user.User</function-class>
-        <function-signature>java.lang.Boolean memberOf(java.lang.String)</function-signature>
+        <function-signature>java.lang.Boolean memberOf(java.lang.String, org.jahia.services.render.RenderContext)</function-signature>
         <example>
-            &lt;c:if test="${user:memberOf('administrators')}"&gt;
+            &lt;c:if test="${user:memberOf('administrators', renderContext)}"&gt;
             The user belongs to administrators
             &lt;/c:if&gt;
         </example>
     </function>
     <function>
         <description>Returns true if the current user is NOT member of the specified group name or any of the specified
-            groups
-            (comma-separated list of group names)
+            groups (comma-separated list of group names)
         </description>
         <name>notMemberOf</name>
         <function-class>org.jahia.taglibs.user.User</function-class>
-        <function-signature>java.lang.Boolean notMemberOf(java.lang.String)</function-signature>
+        <function-signature>java.lang.Boolean notMemberOf(java.lang.String, org.jahia.services.render.RenderContext)</function-signature>
         <example>
-            &lt;c:if test="${user:notMemberOf('administrators,editors')}"&gt;
-            The user belong neither to administrators nor to editors
+            &lt;c:if test="${user:notMemberOf('administrators,editors', renderContext)}"&gt;
+            The user neither belongs to administrators nor to editors
             &lt;/c:if&gt;
         </example>
     </function>

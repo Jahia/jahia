@@ -2084,4 +2084,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         return result;
     }
+
+	public boolean isCropImageSizeVisible() {
+		return SettingsBean.getInstance().isCropImageSizeVisible();
+	}
 }

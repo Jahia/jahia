@@ -270,8 +270,6 @@ public interface JahiaContentManagementServiceAsync {
     public void getWorkflowHistoryTasks(String provider, String processId, String locale, AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> async);
 
     void getWorkflowHistoryForUser(AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> async);
-    
-    public boolean isCropImageSizeVisible();
 
     void isValidSession(AsyncCallback<Integer> async) throws GWTJahiaServiceException;
 

@@ -365,7 +365,7 @@ public class RenderService {
 
         String key = new StringBuffer(templateNode.getPath()).append(type).append(
                 isNotDefaultTemplate ? resource.getTemplate() : "default").toString() + renderContext.getServletPath() + resource.getWorkspace() + renderContext.isLoggedIn() +
-                     resource.getNode().getPrimaryNodeTypeName()+cacheKeyGenerator.appendAcls(resource, renderContext, false);
+                resource.getNode().getNodeTypes()+cacheKeyGenerator.appendAcls(resource, renderContext, false);
 
         Template template = templatesCache.get(key);
 

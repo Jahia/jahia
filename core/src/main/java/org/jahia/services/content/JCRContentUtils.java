@@ -1614,8 +1614,8 @@ public final class JCRContentUtils {
     public static JCRNodeWrapper getParentWithAclInheritanceBroken(JCRNodeWrapper node)
             throws RepositoryException {
         JCRNodeWrapper found = null;
-        JCRNodeWrapper parent = node;
         try {
+            JCRNodeWrapper parent = node.getParent();
             while (true) {
                 parent = parent.getParent();
                 if (parent.getAclInheritanceBreak()) {

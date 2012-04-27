@@ -42,8 +42,16 @@ package org.jahia.services.render.filter.cache;
 
 import net.sf.ehcache.Element;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.params.valves.LoginEngineAuthValveImpl;
+import org.jahia.services.usermanager.jcr.JCRGroup;
+import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
+import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +63,6 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.query.IndexOptionsTest;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
@@ -190,7 +197,7 @@ public class CacheFilterTest {
 
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
         CacheKeyGenerator generator = moduleCacheProvider.getKeyGenerator();
-        final String key = (String) generator.generate(resource, context);
+        final String key = generator.generate(resource, context);
 
         RenderChain chain = new RenderChain(attributesFilter, cacheFilter, outFilter);
 
@@ -239,6 +246,7 @@ public class CacheFilterTest {
                                     RenderService.getInstance().resolveScript(
                                             resource, context));
                         } catch (TemplateNotFoundException e) {
+                            logger.debug("Template not found during unit test execution");
                         }
 
                         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton
@@ -246,7 +254,7 @@ public class CacheFilterTest {
                                 .getBean("ModuleCacheProvider");
                         CacheKeyGenerator generator = moduleCacheProvider
                                 .getKeyGenerator();
-                        String key = (String) generator.generate(resource,
+                        String key = generator.generate(resource,
                                 context);
                         String resourceId = StringUtils.substringAfterLast(key,
                                 "#");
@@ -273,10 +281,12 @@ public class CacheFilterTest {
             assertEquals("Response code " + responseCode, 200, responseCode);
             String responseBody = nodeGet.getResponseBodyAsString();
             logger.info("Response body=[" + responseBody + "]");
-            assertTrue(
-                    "First and second response are not equal",
-                    responseBody.replaceAll("(?m)^[ \t]*\r?\n", "").replaceAll("(?m)^[ \t]+", "").replaceAll("\r\n", "\n").equals(
-                            firstResponse.replaceAll("(?m)^[ \t]*\r?\n", "").replaceAll("(?m)^[ \t]+", "").replaceAll("\r\n", "\n")));
+            if (firstResponse != null) {
+                assertTrue(
+                        "First and second response are not equal",
+                        responseBody.replaceAll("(?m)^[ \t]*\r?\n", "").replaceAll("(?m)^[ \t]+", "").replaceAll("\r\n", "\n").equals(
+                                firstResponse.replaceAll("(?m)^[ \t]*\r?\n", "").replaceAll("(?m)^[ \t]+", "").replaceAll("\r\n", "\n")));
+            }
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
@@ -310,18 +320,139 @@ public class CacheFilterTest {
         RenderFilter cacheFilter = (RenderFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
         CacheKeyGenerator generator = moduleCacheProvider.getKeyGenerator();
-        final String key = (String) generator.generate(resource, context);
+        final String key = generator.generate(resource, context);
 
         RenderChain chain = new RenderChain(attributesFilter, cacheFilter, outFilter);
 
-        String result = chain.doFilter(context, resource);
+        chain.doFilter(context, resource);
 
-        final Element element = moduleCacheProvider.getCache().get(key);
         final Element element1 = moduleCacheProvider.getDependenciesCache().get(node.getPath());
         assertNotNull("Node /shared should have dependencies",element1);
         assertTrue("Dependencies must not be empty",((Set<String>) element1.getValue()).size()>0);
     }
-/*
+
+    /*
+      Here is the scenario:
+
+      create 3 users:
+     - userAB
+     - userAC
+     - userBC
+
+     create 3 groups
+     - groupA -> userAB, userAC
+     - groupB -> userAB, userBC
+     - groupC -> userAC, userBC
+
+     create 3 contents:
+     - contentA -> only visible for groupA
+     - contentB -> only visible for groupB
+     - contentC -> only visible for groupC
+
+     I log with userAB -> I see contentA and contentB
+     I log with userAC -> I see contentA and contentB (this is the bug; I should only see contentA and contentC)
+     If I flush the cache and reload the page with userAC, see contentA and contentC.
+     */
+    @Test
+    public void testAclsCasesWithinLiveMode() throws Exception {
+        String templatesFolder = "/sites/"+site.getSiteKey() + "/templates";
+        session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+        // Create three users
+        final JCRUserManagerProvider userManagerProvider = JCRUserManagerProvider.getInstance();
+        final JCRUser userAB = userManagerProvider.createUser("userAB", "password", new Properties());
+        final JCRUser userAC = userManagerProvider.createUser("userAC", "password", new Properties());
+        final JCRUser userBC = userManagerProvider.createUser("userBC", "password", new Properties());
+        // Create three groups
+        final JCRGroupManagerProvider groupManagerProvider = JCRGroupManagerProvider.getInstance();
+        final JCRGroup groupA = groupManagerProvider.createGroup(site.getID(), "groupA", new Properties(), false);
+        final JCRGroup groupB = groupManagerProvider.createGroup(site.getID(), "groupB", new Properties(), false);
+        final JCRGroup groupC = groupManagerProvider.createGroup(site.getID(), "groupC", new Properties(), false);
+        // Associate each user to two group
+        groupA.addMember(userAB);
+        groupA.addMember(userAC);
+        groupB.addMember(userAB);
+        groupB.addMember(userBC);
+        groupC.addMember(userAC);
+        groupC.addMember(userBC);
+        // Create three content
+        JCRNodeWrapper shared = this.site.getNode("home");
+        if (shared.hasNode("testAclContent")) {
+            shared.getNode("testAclContent").remove();
+        }
+        if(shared.isVersioned()) session.checkout(shared);
+        node = shared.addNode("testAclContent", "jnt:page");
+        node.setProperty("jcr:title", "English test page");
+        node.setProperty("j:templateNode", session.getNode(
+                templatesFolder + "/base/pagetemplate/subpagetemplate"));
+        final JCRNodeWrapper list = node.addNode("maincontent", "jnt:contentList");
+        final JCRNodeWrapper contentA = list.addNode("contentA", "jnt:mainContent");
+        contentA.setProperty("body","Content__A__");
+        final JCRNodeWrapper contentB = list.addNode("contentB", "jnt:mainContent");
+        contentB.setProperty("body","Content__B__");
+        final JCRNodeWrapper contentC = list.addNode("contentC", "jnt:mainContent");
+        contentC.setProperty("body","Content__C__");
+        // Set acls for each content
+        contentA.setAclInheritanceBreak(true);
+        contentA.grantRoles("g:" + groupA.getGroupname(), new LinkedHashSet<String>(Arrays.asList("reader")));
+        contentB.setAclInheritanceBreak(true);
+        contentB.grantRoles("g:" + groupB.getGroupname(), new LinkedHashSet<String>(Arrays.asList("reader")));
+        contentC.setAclInheritanceBreak(true);
+        contentC.grantRoles("g:" + groupC.getGroupname(), new LinkedHashSet<String>(Arrays.asList("reader")));
+        session.save();
+        // Publish all
+        final JCRPublicationService service = JCRPublicationService.getInstance();
+
+        List<PublicationInfo> infoList = service.getPublicationInfo(
+                session.getNode(
+                        templatesFolder + "/base/pagetemplate").getIdentifier(), new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH.toString())),
+                true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+        service.publishByInfoList(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,Collections.<String>emptyList());
+
+        infoList = service.getPublicationInfo(
+                shared.getIdentifier(), new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH.toString())),
+                true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+        service.publishByInfoList(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,Collections.<String>emptyList());
+        // Login as userAB using httpclient
+        checkContentForUser("userAB", "Content__A__", "Content__B__", "Content__C__");
+        // Login as userAC using httpclient
+        checkContentForUser("userAC", "Content__A__", "Content__C__", "Content__B__");
+        // Login as userBC using httpclient
+        checkContentForUser("userBC", "Content__B__", "Content__C__", "Content__A__");
+    }
+
+    private void checkContentForUser(String username, CharSequence firstContent, CharSequence secondContent,
+                                     String missingContent) throws IOException {
+        HttpClient client = new HttpClient();
+        PostMethod loginMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/login");
+        loginMethod.addParameter("username", username);
+        loginMethod.addParameter("password", "password");
+        loginMethod.addParameter("redirectActive", "false");
+        // the next parameter is required to properly activate the valve check.
+        loginMethod.addParameter(LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1");
+
+        int statusCode = client.executeMethod(loginMethod);
+        assertTrue(statusCode== HttpStatus.SC_OK);
+        // Use httpclient to render page
+        GetMethod nodeGet = new GetMethod(
+                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" +
+                node.getPath() + ".html");
+        try {
+            int responseCode = client.executeMethod(nodeGet);
+            assertEquals("Response code " + responseCode, 200, responseCode);
+            String firstResponse = nodeGet.getResponseBodyAsString();
+            // Assert existence of content
+            assertTrue("Page for "+username+" should contains "+firstContent,firstResponse.contains(firstContent));
+            assertTrue("Page for "+username+" should contains "+secondContent,firstResponse.contains(secondContent));
+            assertFalse("Page for "+username+" should not contains "+missingContent,firstResponse.contains(missingContent));
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+        String baseurl = "http://localhost:8080" + Jahia.getContextPath();
+        HttpMethod method = new GetMethod(baseurl + "/cms/logout");
+        client.executeMethod(method);
+    }
+
+    /*
     public void testEventListenerFlushingOfCache() throws Exception {
 
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);

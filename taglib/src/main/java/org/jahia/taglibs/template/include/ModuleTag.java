@@ -40,7 +40,6 @@
 
 package org.jahia.taglibs.template.include;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.slf4j.Logger;
@@ -296,7 +295,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             throw new JspException(ex);
         } finally {
             if (var != null) {
-                pageContext.setAttribute(var, buffer);
+                pageContext.setAttribute(var, buffer.toString());
             }
             path = null;
             node = null;

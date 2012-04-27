@@ -462,18 +462,18 @@
         <function-signature>org.jahia.services.content.JCRNodeWrapper getBindedComponent(org.jahia.services.content.JCRNodeWrapper, org.jahia.services.render.RenderContext, java.lang.String)
         </function-signature>
         <example>
-            ${facet:getAppliedFacetFilters(facet:decodeFacetUrlParam(param[facetParamVarName])[facetParamVarName])}
+            ${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}
         </example>
     </function>
 
     <function>
-        <description>Get the bound component node</description>
+        <description>Get the path of the bound component node</description>
         <name>getBindedComponentPath</name>
         <function-class>org.jahia.taglibs.uicomponents.Functions</function-class>
         <function-signature>java.lang.String getBindedComponentPath(org.jahia.services.content.JCRNodeWrapper, org.jahia.services.render.RenderContext, java.lang.String)
         </function-signature>
         <example>
-            ${facet:getAppliedFacetFilters(facet:decodeFacetUrlParam(param[facetParamVarName])[facetParamVarName])}
+            ${uiComponents:getBindedComponentPath(currentNode, renderContext, 'j:bindedComponent')}
         </example>
     </function>
 

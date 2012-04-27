@@ -40,37 +40,17 @@
 
 package org.jahia.taglibs.user;
 
-import net.htmlparser.jericho.Source;
-import net.htmlparser.jericho.TextExtractor;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.RenderService;
-import org.jahia.services.render.TemplateNotFoundException;
-import org.jahia.services.render.filter.cache.AggregateCacheFilter;
-import org.jahia.services.seo.VanityUrl;
-import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.services.usermanager.*;
-import org.jahia.utils.Url;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.jcr.RangeIterator;
-import javax.jcr.RepositoryException;
-import javax.servlet.jsp.JspTagException;
-import java.io.IOException;
-import java.security.Principal;
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * User and group related functions.
@@ -79,35 +59,53 @@ import java.util.regex.Pattern;
  */
 public class User {
 
-    private static final Logger logger = LoggerFactory.getLogger(User.class);
-
-    public static Boolean memberOf(String groups) {
+    public static Boolean memberOf(String groups, RenderContext renderContext) {
         boolean result = false;
-        final ProcessingContext jParams = Jahia.getThreadParamBean();
-        final String[] groupArray = StringUtils.split(groups, ',');
-        for (String aGroupArray : groupArray) {
-            final String groupName = aGroupArray.trim();
-            if (JCRSessionFactory.getInstance().getCurrentUser().isMemberOfGroup(jParams.getSiteID(), groupName)) {
-                return true;
+        if (JCRSessionFactory.getInstance().getCurrentUser() != null) {
+            final String[] groupArray = StringUtils.split(groups, ',');
+            for (String aGroupArray : groupArray) {
+                final String groupName = aGroupArray.trim();
+                if (JCRSessionFactory
+                        .getInstance()
+                        .getCurrentUser()
+                        .isMemberOfGroup(retrieveSiteId(renderContext),
+                                groupName)) {
+                    return true;
+                }
             }
         }
-
         return result;
     }
 
-    public static Boolean notMemberOf(String groups) {
+    public static Boolean notMemberOf(String groups, RenderContext renderContext) {
         boolean result = true;
-        final ProcessingContext jParams = Jahia.getThreadParamBean();
-        final String[] groupArray = StringUtils.split(groups, ',');
-        for (String aGroupArray : groupArray) {
-            String groupName = aGroupArray.trim();
-            if (JCRSessionFactory.getInstance().getCurrentUser().isMemberOfGroup(jParams.getSiteID(),
-                    groupName)) {
-                return false;
+        if (JCRSessionFactory.getInstance().getCurrentUser() != null) {
+            final String[] groupArray = StringUtils.split(groups, ',');
+            for (String aGroupArray : groupArray) {
+                String groupName = aGroupArray.trim();
+                if (JCRSessionFactory
+                        .getInstance()
+                        .getCurrentUser()
+                        .isMemberOfGroup(retrieveSiteId(renderContext),
+                                groupName)) {
+                    return false;
+                }
             }
         }
-
         return result;
+    }
+    
+    private static int retrieveSiteId(RenderContext renderContext) {
+        int siteId = 0;
+        if (renderContext != null && renderContext.getSite() != null) {
+            siteId = renderContext.getSite().getID();
+        } else {
+             final ProcessingContext jParams = Jahia.getThreadParamBean();
+             if (jParams != null) {
+                 siteId = jParams.getSiteID();
+             }
+        }
+        return siteId;
     }
 
     /**

@@ -104,20 +104,15 @@ public class ImageCrop extends Window {
         left.setId("left");
         left.setVisible(false);
         form.add(left);
-        boolean setSizeVisible = JahiaContentManagementService.App.getInstance().isCropImageSizeVisible();
         final NumberField width = new NumberField();
-        width.setFieldLabel(Messages.get("label.width", "Width"));
-        width.setStyleName("stylewidth");
         width.setName("width");
         width.setId("width");
-        width.setVisible(setSizeVisible);
+        width.setVisible(false);
         form.add(width);
         final NumberField height = new NumberField();
-        height.setFieldLabel(Messages.get("label.height", "Height"));
-        height.setStyleName("stylehight");
         height.setName("height");
         height.setId("height");
-        height.setVisible(setSizeVisible);
+        height.setVisible(false);
         form.add(height);
         
         final Image image = new Image();

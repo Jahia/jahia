@@ -273,8 +273,6 @@ public interface JahiaContentManagementService extends RemoteService {
                                                                      String locale) throws GWTJahiaServiceException;
 
     List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryForUser() throws GWTJahiaServiceException;
-    
-    public boolean isCropImageSizeVisible();
 
     public Integer isValidSession() throws GWTJahiaServiceException;
 

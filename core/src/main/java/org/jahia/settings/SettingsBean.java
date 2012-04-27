@@ -160,8 +160,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean considerPreferredLanguageAfterLogin;
     
     private boolean considerDefaultJVMLocale;
-    
-    private boolean cropImageSizeVisible = false;
 
     private boolean permanentMoveForVanityURL = true;
 
@@ -315,8 +313,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             defaultLocale = LanguageCodeConverters.languageCodeToLocale(defaultLanguageCode);
 
             considerDefaultJVMLocale = getBoolean("considerDefaultJVMLocale", false);
-            
-            cropImageSizeVisible = getBoolean("cropImageSizeVisible", false);
                 
             considerPreferredLanguageAfterLogin = getBoolean("considerPreferredLanguageAfterLogin", false);
 
@@ -1001,10 +997,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public boolean isUrlRewriteRemoveCmsPrefix() {
         return urlRewriteRemoveCmsPrefix;
-    }
-    
-    public boolean isCropImageSizeVisible() {
-    	return cropImageSizeVisible;
     }
 
 }

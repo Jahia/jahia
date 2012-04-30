@@ -47,7 +47,6 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.services.usermanager.jcr.JCRGroup;
 import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRUser;
@@ -94,14 +93,6 @@ import static org.junit.Assert.*;
  */
 public class CacheFilterTest {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheFilterTest.class);
-
-    private static class TestFilter extends AbstractFilter {
-        @Override
-        public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
-                throws Exception {
-            return "TestFilter " + chain.doFilter(renderContext, resource);
-        }
-    }
 
     private JCRNodeWrapper node;
     private ParamBean paramBean;
@@ -427,8 +418,6 @@ public class CacheFilterTest {
         loginMethod.addParameter("username", username);
         loginMethod.addParameter("password", "password");
         loginMethod.addParameter("redirectActive", "false");
-        // the next parameter is required to properly activate the valve check.
-        loginMethod.addParameter(LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1");
 
         int statusCode = client.executeMethod(loginMethod);
         assertTrue(statusCode== HttpStatus.SC_OK);
@@ -446,89 +435,15 @@ public class CacheFilterTest {
             assertFalse("Page for "+username+" should not contains "+missingContent,firstResponse.contains(missingContent));
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            nodeGet.releaseConnection();
         }
         String baseurl = "http://localhost:8080" + Jahia.getContextPath();
         HttpMethod method = new GetMethod(baseurl + "/cms/logout");
-        client.executeMethod(method);
+        try {
+            client.executeMethod(method);
+        } finally {
+            method.releaseConnection();
+        }
     }
-
-    /*
-    public void testEventListenerFlushingOfCache() throws Exception {
-
-        JahiaUser admin = JahiaAdminUser.getAdminUser(0);
-
-        RenderFilter outFilter = new AbstractFilter() {
-            @Override
-            public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
-                    throws Exception {
-                return "out";
-            }
-        };
-        outFilter.setRenderService(RenderService.getInstance());
-
-        RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
-        context.setSite(site);
-        context.setLiveMode(true);
-        final JCRNodeWrapper user = node.getNode("testType2");
-        Resource resource = new Resource(user, "html", "default", Resource.CONFIGURATION_PAGE);
-        context.setMainResource(resource);
-        context.getRequest().setAttribute("script",
-                RenderService.getInstance().resolveScript(resource, context));
-
-        // test on a resource from the default Jahia module
-        BaseAttributesFilter attributesFilter = new BaseAttributesFilter();
-        attributesFilter.setRenderService(RenderService.getInstance());
-
-        RenderFilter cacheFilter = (RenderFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
-        ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
-        CacheKeyGenerator generator = moduleCacheProvider.getKeyGenerator();
-        final String key = (String) generator.generate(resource, context);
-
-        RenderChain chain = new RenderChain(attributesFilter, cacheFilter, outFilter);
-
-        String result = chain.doFilter(context, resource);
-
-        final Cache cache = moduleCacheProvider.getCache();
-        Element element = cache.get(key);
-        assertNotNull("Html Cache does not contains our html rendering", element);
-        assertTrue("Content Cache and rendering are not equals",result.equals(((CacheEntry)element.getValue()).getObject()));
-
-        user.setProperty("j:body","Test");
-
-        session.save();
-        assertFalse("After properties set; Html Cache should not contains our html rendering", cache.isKeyInCache(key));
-        chain = new RenderChain(attributesFilter, cacheFilter, outFilter);
-        result = chain.doFilter(context, resource);
-
-         element = cache.get(key);
-        assertNotNull("After properties set; Html Cache does not contains our html rendering", element);
-        assertTrue("After properties set; Content Cache and rendering are not equals",result.equals(((CacheEntry)element.getValue()).getObject()));
-
-        user.getProperty("j:body").setValue("Test Updated");
-
-        session.save();
-        assertFalse("After properties changed; Html Cache should not contains our html rendering",  cache.isKeyInCache(key));
-        chain = new RenderChain(attributesFilter, cacheFilter, outFilter);
-        result = chain.doFilter(context, resource);
-
-        element = cache.get(key);
-        assertNotNull("After properties changed; Html Cache does not contains our html rendering", element);
-        assertTrue("After properties changed; Content Cache and rendering are not equals",result.equals(((CacheEntry)element.getValue()).getObject()));
-
-        user.getProperty("j:body").remove();
-
-        session.save();
-        assertFalse("After properties removal; Html Cache should not contains our html rendering",  cache.isKeyInCache(key));
-        chain = new RenderChain(attributesFilter, cacheFilter, outFilter);
-        result = chain.doFilter(context, resource);
-
-         element = cache.get(key);
-        assertNotNull("After properties removal; Html Cache does not contains our html rendering", element);
-        assertTrue("After properties removal; Content Cache and rendering are not equals",result.equals(((CacheEntry)element.getValue()).getObject()));
-
-        user.remove();
-
-        session.save();
-        assertFalse("After node removal; Html Cache should not contains our html rendering",  cache.isKeyInCache(key));
-    }*/
 }

@@ -36,16 +36,16 @@
             <c:otherwise>
                 <script type="text/javascript">
                     <c:if test="${empty currentNode.properties.mode.string}">
-                    $('#item-${currentNode.identifier}').load('<c:url value="${url.base}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}"/>');
+                    $('#item-${currentNode.identifier}').load('<c:url value="${url.base}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}&includeJavascripts=true"/>');
                     </c:if>
                     <c:if test="${currentNode.properties.mode.string eq 'live'}">
-                    $('#item-${currentNode.identifier}').load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}"/>');
+                    $('#item-${currentNode.identifier}').load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}&includeJavascripts=true"/>');
                     </c:if>
                     <c:if test="${currentNode.properties.mode.string eq 'contribute'}">
-                    $('#item-${currentNode.identifier}').load('<c:url value="${url.baseContribute}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}"/>');
+                    $('#item-${currentNode.identifier}').load('<c:url value="${url.baseContribute}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}&includeJavascripts=true"/>');
                     </c:if>
                     <c:if test="${currentNode.properties.mode.string eq 'preview'}">
-                    $('#item-${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}"/>');
+                    $('#item-${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}&includeJavascripts=true"/>');
                     </c:if>
                 </script>
             </c:otherwise>

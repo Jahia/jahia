@@ -314,7 +314,9 @@ public class LegacyImportHandler extends DefaultHandler {
                     String title = attributes.getValue("jahia:title");
                     if (HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
                         String acl = null;
-                        logger.info(currentCtx.peek().acls.toString());
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("page acls: " + currentCtx.peek().acls.toString());
+                        }
                         for (String a : currentCtx.peek().acls) {
                             if (a != null) {
                                 acl = a;
@@ -386,11 +388,15 @@ public class LegacyImportHandler extends DefaultHandler {
             currentCtx.pop();
             if (!currentCtx.isEmpty()) {
                 currentCtx.peek().pop();
-                logger.info(StringUtils.repeat(" ", level) + "</" + localName + "> , popped full ctx , ctx = " + (currentCtx.peek().ctx.empty() ? "empty" : currentCtx.peek().ctx.peek()));
+                if (logger.isDebugEnabled()) {
+                    logger.debug(StringUtils.repeat(" ", level) + "</" + localName + "> , popped full ctx , ctx = " + (currentCtx.peek().ctx.empty() ? "empty" : currentCtx.peek().ctx.peek()));
+                }
             }
         } else {
             level--;
-            logger.info(StringUtils.repeat(" ", level) + "</" + localName + "> , ctx = " + currentCtx.peek().ctx.peek());
+            if (logger.isDebugEnabled()) {
+                logger.debug(StringUtils.repeat(" ", level) + "</" + localName + "> , ctx = " + currentCtx.peek().ctx.peek());
+            }
             currentCtx.peek().pop();
         }
     }
@@ -751,6 +757,11 @@ public class LegacyImportHandler extends DefaultHandler {
     }
 
     private void setProperties(JCRNodeWrapper node, Map<String, String> properties) {
+        if (logger.isDebugEnabled()) {
+            final StringBuilder sb = new StringBuilder();
+            for (String p : properties.keySet()) sb.append(MessageFormat.format("[{0}={1}]", p, properties.get(p)));
+            logger.debug(MessageFormat.format("setProperties action called on {0} with values : {1}", node.getPath(), sb.toString()));
+        }
         if (properties == null) {
             return;
         }
@@ -1180,7 +1191,9 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         void pushList(JCRNodeWrapper node, ExtendedNodeType type) {
-            logger.info(" push " + currentNode + " , ctx = " + CTX_LIST);
+            if (logger.isDebugEnabled()) {
+                logger.debug(" push " + currentNode + " , ctx = " + CTX_LIST);
+            }
             contents.push(node);
             contentsType.push(type);
             propertyNames.push(null);
@@ -1190,7 +1203,9 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         void pushContainer(JCRNodeWrapper node, ExtendedNodeType type) {
-            logger.info(" push " + currentNode + " , ctx = " + CTX_CTN);
+            if (logger.isDebugEnabled()) {
+                logger.debug(" push " + currentNode + " , ctx = " + CTX_CTN);
+            }
             contents.push(node);
             contentsType.push(type);
             propertyNames.push(null);
@@ -1200,7 +1215,9 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         void pushField(String propertyName) {
-            logger.info(" push " + currentNode + " , ctx = " + CTX_FIELD);
+            if (logger.isDebugEnabled()) {
+                logger.debug(" push " + currentNode + " , ctx = " + CTX_FIELD);
+            }
             contents.push(contents.peek());
             contentsType.push(contentsType.peek());
             propertyNames.push(propertyName);
@@ -1210,7 +1227,9 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         void pushNavLink(ExtendedNodeType t, String acl) {
-            logger.info(" push " + currentNode + " , ctx = " + CTX_NAVLINK);
+            if (logger.isDebugEnabled()) {
+                logger.debug(" push " + currentNode + " , ctx = " + CTX_NAVLINK);
+            }
             contents.push(contents.peek());
             contentsType.push(contentsType.peek());
             propertyNames.push(null);
@@ -1220,7 +1239,9 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         void pushSkip() {
-            logger.info(" push " + currentNode + " , ctx = " + CTX_SKIP);
+            if (logger.isDebugEnabled()) {
+                logger.debug(" push " + currentNode + " , ctx = " + CTX_SKIP);
+            }
             contents.push(contents.peek());
             contentsType.push(contentsType.peek());
             propertyNames.push(null);
@@ -1230,7 +1251,9 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         void pushShareable(ExtendedNodeType t) {
-            logger.info(" push " + currentNode + " , ctx = " + CTX_SHAREABLE);
+            if (logger.isDebugEnabled()) {
+                logger.debug(" push " + currentNode + " , ctx = " + CTX_SHAREABLE);
+            }
             contents.push(contents.peek());
             contentsType.push(t);
             propertyNames.push(null);

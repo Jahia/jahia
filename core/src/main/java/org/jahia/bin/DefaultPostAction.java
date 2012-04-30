@@ -165,7 +165,7 @@ public class DefaultPostAction extends Action {
                 }
 
                 for (String s : newNode.getNodeTypes()) {
-                    ExtendedPropertyDefinition[] propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitions();
+                    Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
                     for (ExtendedPropertyDefinition propDef : propDefs) {
                         if (propDef.isMandatory() && !propDef.isProtected() && !newNode.hasProperty(propDef.getName())) {
                             throw new ConstraintViolationException("Mandatory field : "+propDef.getName());

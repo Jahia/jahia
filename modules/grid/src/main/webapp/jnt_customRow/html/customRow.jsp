@@ -57,12 +57,12 @@
             <c:if test="${nbNames == nbAreas}">
                 <c:forTokens items="${currentNode.properties.colNames.string}" var="colName" delims="," varStatus="vs1">
                     <c:if test="${count.count == vs1.count}">
-                        <template:area path="${colName}"/>
+                        <template:area path="${colName}" areaAsSubNode="true"/>
                     </c:if>
                 </c:forTokens>
             </c:if>
             <c:if test="${nbNames != nbAreas}">
-                <template:area path="${currentNode.name}-${col.key}"/>
+                <template:area path="${currentNode.name}-${col.key}" areaAsSubNode="true"/>
             </c:if>
             <div class='clear'></div>
         </div>

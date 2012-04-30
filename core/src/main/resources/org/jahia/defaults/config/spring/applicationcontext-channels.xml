@@ -82,6 +82,24 @@
                         </map>
                     </property>
                 </bean>
+                <bean class="org.jahia.services.channels.Channel">
+                    <constructor-arg index="0" value="kindlefire" />
+                    <property name="displayName" value="Kindle Fire" />
+                    <property name="capabilities">
+                        <map>
+                            <entry key="variants" value="portrait,landscape" />
+                            <entry key="variants-displayNames" value="Portrait,Landscape" />
+                            <entry key="device-image" value="/engines/images/edit/devices/kindlefire-small.png" />
+                            <entry key="usable-resolutions" value="600x815,1024x395" />
+                            <entry key="decorator-images" value="/engines/images/edit/devices/kindlefire-portrait.png,/engines/images/edit/devices/kindlefire-landscape.png" />
+                            <entry key="decorator-image-sizes" value="797x1260,1260x797" />
+                            <entry key="decorator-screen-positions" value="97x243,138x242" />
+                            <entry key="resolution_width" value="600"/>
+                            <entry key="resolution_height" value="1024"/>
+                            <entry key="userAgentPattern" value=".*Silk.*"/>
+                        </map>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>

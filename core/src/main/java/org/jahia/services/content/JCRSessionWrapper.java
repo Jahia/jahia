@@ -437,7 +437,7 @@ public class JCRSessionWrapper implements Session {
         if (!isSystem() && getLocale() != null) {
             for (JCRNodeWrapper node : newNodes.values()) {
                 for (String s : node.getNodeTypes()) {
-                    ExtendedPropertyDefinition[] propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitions();
+                    Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
                     for (ExtendedPropertyDefinition propDef : propDefs) {
                         if (propDef.isMandatory() &&
                                 propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&

@@ -253,11 +253,16 @@ public class DocumentViewExporter {
                             value = getValue(property.getValue());
                         } else {
                             Value[] vs = property.getValues();
+                            List<String> values = new ArrayList<String>();
+                            for (Value v : vs) {
+                                values.add(getValue(v));
+                            }
+                            Collections.sort(values);
                             StringBuffer b = new StringBuffer();
-                            for (int i = 0; i < vs.length; i++) {
-                                Value v = vs[i];
-                                b.append(getValue(v));
-                                if (i + 1 < vs.length) {
+                            for (int i = 0; i < values.size(); i++) {
+                                String v = values.get(i);
+                                b.append(v);
+                                if (i + 1 < values.size()) {
                                     b.append(" ");
                                 }
                             }

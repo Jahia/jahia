@@ -112,7 +112,11 @@ public class HTMLExcerpt extends AbstractExcerpt {
                 return exProvider.getExcerpt(id, maxFragments, maxFragmentSize);
 
             } else {
-                return APOS.matcher(super.getExcerpt(id, maxFragments, maxFragmentSize)).replaceAll("&#39;");
+                final String excerpt = super.getExcerpt(id, maxFragments, maxFragmentSize);
+                if(excerpt!=null && !"".equals(excerpt.trim())) {
+                    return APOS.matcher(excerpt).replaceAll("&#39;");
+                } else
+                    return excerpt;
             }
         } finally {
             Util.closeOrRelease(reader);

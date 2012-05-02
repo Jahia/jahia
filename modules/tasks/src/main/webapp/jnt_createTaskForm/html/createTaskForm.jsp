@@ -156,7 +156,7 @@
                 </c:if>
                 <input type="hidden" name="state" value="active"/>
 
-                <div><input type="submit" id="submit" class="button" value="Create task"
+                <div><input type="submit" id="submit" class="button" value="<fmt:message key='label.submit'/>"
                                               tabindex="28"/>
                 </div>
             </form>

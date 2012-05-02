@@ -113,9 +113,7 @@
 
                 <c:if test="${currentNode.properties['useDescription'].boolean}">
                     <p>
-                        <label for="task_description">
-                            <fmt:message key="jnt_task.description"/>
-                            :</label>
+                        <label for="task_description"><fmt:message key="jnt_task.description"/>:</label>
                         <textarea name="description" id="task_description" class="field" value=""
                                   tabindex="17"></textarea>
                     </p>
@@ -123,9 +121,7 @@
 
                 <c:if test="${currentNode.properties['usePriority'].boolean}">
                     <p>
-                        <label for="task_priority">
-                            <fmt:message key="jnt_task.priority"/>
-                            :</label>
+                        <label for="task_priority"><fmt:message key="jnt_task.priority"/>:</label>
                         <select name="priority" id="task_priority" class="combo" tabindex="21">
                             <c:forEach items="${priorities}" var="priority">
                                 <option value="${priority.value.string}"> ${priority.displayName} </option>
@@ -135,18 +131,7 @@
                 </c:if>
                 <c:if test="${currentNode.properties['useAssignee'].boolean}">
                     <p>
-                        <label for="task_assignee">
-                            <fmt:message key="jnt_task.assignee"/>
-                            :</label>
-
-                        <%--<select name="assignee" id="task_assignee" class="combo" tabindex="21">--%>
-
-                            <%--<option value=""><fmt:message key="label.noassignee"/></option>--%>
-                            <%--<option value="${renderContext.user}"><fmt:message key="Me (${renderContext.user})"/></option>--%>
-                            <%--<c:forEach items="${users}" var="user">--%>
-                                <%--<option value="${user.value.string}"> ${user.displayName} </option>--%>
-                            <%--</c:forEach>--%>
-                        <%--</select>--%>
+                        <label for="task_assignee"><fmt:message key="jnt_task.assignee"/>:</label>
 
                         <input id="task_assignee" name="assigneeName" type="text" value="${startSearching}" tabindex="22"
                                onfocus="if(this.value==this.defaultValue)this.value='';"

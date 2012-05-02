@@ -3,11 +3,23 @@
 # This script generates a hierachical of f folder(s) d depth containing n files 
 
 # define default values here
-f=3
+f=10
 d=2
-n=3
-target="tmp"
-directory="/media/f219db68-809b-4a63-90f8-2696a55f600d/backup/Pictures"
+n=10
+target="/tmp/import"
+directory="/Volumes/Storage/images/documents"
+
+while getopts f:d:n:t:s: o
+do	case "$o" in
+	f)	f="$OPTARG";;
+	d)	d="$OPTARG";;
+	n)	n="$OPTARG";;
+	t)	target="$OPTARG";;
+	s)	directory="$OPTARG";;
+	[?])	echo >&2 "Usage: $0 [-f folders by level] [-d depth] [-n files per folder] [-s source folder] [-t target folder]"
+		exit 1;;
+	esac
+done
 
 declare -i f
 declare -i d
@@ -47,11 +59,13 @@ echo "start generatePath for currentDepth $currentDepth process $f folders gener
 			str="$str\n$line/$depthName$i"
 			mkdir -p $target$line/$depthName$i
 			local -i j=0
+			local -i count=`ls $directory | wc -l`
 			until [ $((n - j)) = "0" ];
 			do
-				file=`ls $directory | shuf -n 1`
+				l=$(( ($RANDOM * (count -1) / 32767) + 1)) 
+				file=`ls $directory | head -$l | tail -1`
 				echo "copy '$directory/$file' to $target$line/$depthName$i" 
-				cp "$directory/$file" $target$line/$depthName$i 
+				cp "$directory/$file" "$target$line/$depthName$i/$j$file" 
 				j=j+1				
 			done
 

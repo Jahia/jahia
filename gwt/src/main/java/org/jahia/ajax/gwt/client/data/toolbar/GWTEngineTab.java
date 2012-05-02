@@ -50,7 +50,6 @@ import java.io.Serializable;
  * Time: 3:43:34 PM
  */
 public class GWTEngineTab implements Serializable {
-    private String id;
     private String title;
     private String requiredPermission;
 
@@ -78,14 +77,6 @@ public class GWTEngineTab implements Serializable {
 
     public void setRequiredPermission(String requiredPermission) {
         this.requiredPermission = requiredPermission;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
 }

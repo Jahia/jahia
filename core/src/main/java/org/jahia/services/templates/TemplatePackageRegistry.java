@@ -370,8 +370,7 @@ class TemplatePackageRegistry {
      */
     public JahiaTemplatesPackage lookup(String packageName) {
         if (packageName == null || registry == null) return null;
-        return registry.containsKey(packageName) ? registry.get(packageName)
-                : null;
+        return registry.get(packageName);
     }
 
     /**

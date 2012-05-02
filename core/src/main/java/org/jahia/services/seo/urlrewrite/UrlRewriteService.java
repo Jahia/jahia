@@ -247,6 +247,9 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         if (request.getContextPath().length() > 0) {
             input = StringUtils.substringAfter(input, request.getContextPath());
         }
+        if (input.contains(";")) {
+            input = StringUtils.substringBefore(input, ";");
+        }
         
         String prefix = StringUtils.EMPTY;
         if (settingsBean.isUrlRewriteRemoveCmsPrefix() && input.length() > 1 && input.indexOf('/') == 0) {

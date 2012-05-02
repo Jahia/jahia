@@ -460,6 +460,36 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
+    /**
+     * Evaluates to <code>true</code> if the current site's template set matches the specified one
+     * 
+     * @author Sergiy Shyrkov
+     * @since 6.6.1.0 
+     */
+    public static class SiteTemplateSetCondition implements ExecutionCondition {
+
+        private String templateSet;
+
+        /**
+         * Initializes an instance of this class.
+         *
+         * @param templateSet the template set name to match
+         */
+        public SiteTemplateSetCondition(String templateSet) {
+            super();
+            this.templateSet = templateSet;
+        }
+
+        public boolean matches(RenderContext renderContext, Resource resource) {
+            return renderContext.getSite() != null && templateSet.equals(renderContext.getSite().getTemplatePackageName());
+        }
+        
+        @Override
+        public String toString() {
+            return "siteTemplateSet == " + templateSet;
+        }
+    }
+
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(AbstractFilter.class);
 
     private List<ExecutionCondition> conditions = new LinkedList<ExecutionCondition>();
@@ -721,6 +751,25 @@ public abstract class AbstractFilter implements RenderFilter {
             addCondition(condition);
         } else {
             addCondition(new TemplateTypeCondition(templateTypes));
+        }
+    }
+
+    /**
+     * Comma-separated list of template set names this filter will be executed for (all others are skipped).
+     * 
+     * @param templateSets
+     *            comma-separated list of template type names this filter will be executed for (all others are skipped)
+     * @since 6.6.1.0
+     */
+    public void setApplyOnSiteTemplateSets(String templateSets) {
+        if (templateSets.contains(",")) {
+            AnyOfCondition condition = new AnyOfCondition();
+            for (String templateSet : Patterns.COMMA.split(templateSets)) {
+                condition.add(new SiteTemplateSetCondition(templateSet.trim()));
+            }
+            addCondition(condition);
+        } else {
+            addCondition(new SiteTemplateSetCondition(templateSets));
         }
     }
 

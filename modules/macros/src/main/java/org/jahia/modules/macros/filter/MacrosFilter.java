@@ -117,7 +117,7 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
                     scriptEngine.eval(macro[0],
                             getBindings(renderContext, resource, scriptContext, matcher));
                     String scriptResult = scriptContext.getWriter().toString().trim();
-                    previousOut = matcher.replaceFirst(scriptResult);
+                    previousOut = StringUtils.replace(previousOut, matcher.group(), scriptResult);
                 } catch (ScriptException e) {
                     logger.warn("Error during execution of macro "+macroName+" with message "+ e.getMessage(), e);
                     previousOut = matcher.replaceFirst(macroName);

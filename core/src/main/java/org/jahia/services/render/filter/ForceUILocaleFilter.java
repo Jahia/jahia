@@ -50,18 +50,26 @@ import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
 /**
- * A render filter for forcing the usage of the UI (user preferred) locale in the docspace related templates.
+ * A render filter for forcing the usage of the UI (user preferred) locale in templates.
  * 
  * @author Sergiy Shyrkov
  */
 public class ForceUILocaleFilter extends AbstractFilter {
 
+    public static final String RENDERING_FORCED_LOCALE = "org.jahia.rendering.forcedLocale";
+
     @Override
     public String prepare(RenderContext context, Resource resource, RenderChain chain)
             throws Exception {
+        Locale uiLocale = context.getUILocale();
+        if (uiLocale.equals(resource.getLocale())) {
+            return null;
+        }
+
+        chain.pushAttribute(context.getRequest(), RENDERING_FORCED_LOCALE, uiLocale);
+
         Script script = (Script) context.getRequest().getAttribute("script");
         if (script != null) {
-            Locale uiLocale = context.getUILocale();
             chain.pushAttribute(context.getRequest(), Config.FMT_LOCALIZATION_CONTEXT + ".request",
                     new LocalizationContext(new JahiaResourceBundle(uiLocale, script.getView()
                             .getModule().getName()), uiLocale));

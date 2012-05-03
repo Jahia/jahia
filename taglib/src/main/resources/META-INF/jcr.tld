@@ -108,7 +108,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>the properties on which we sort</description>
+            <description>the properties on which we sort (the first property is a boolean, set it to false to make the sort case sensitive)</description>
             <name>properties</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>

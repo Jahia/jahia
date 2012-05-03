@@ -111,7 +111,12 @@ public class JCRSortTag extends AbstractJCRTag {
         }
 
         public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
-        	boolean ignoreCase = Boolean.valueOf(props[0]).booleanValue();
+        	// default value is true, if the corresponding property has not been provided at the beginning of the list 
+        	// (templates developed before this change)
+        	boolean ignoreCase = true;
+        	if (props.length % 2 == 1) {
+        		ignoreCase = Boolean.valueOf(props[0]).booleanValue();
+        	}
         	
             for (int i = 1; i < props.length; i+=2) {
                 String prop = props[i];

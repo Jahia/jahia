@@ -7,6 +7,7 @@
     <SITEKEY_PLACEHOLDER jcr:primaryType="jnt:virtualsite">
         <home j:displayInMenu="primary" j:isHomePage="true"
               jcr:primaryType="jnt:page" j:templateNode="/templateSets/SITEKEY_PLACEHOLDER/templates/base/home">
+            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Home" />
         </home>
 
         <portlets jcr:primaryType="jnt:portletFolder"/>

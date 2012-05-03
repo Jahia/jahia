@@ -162,6 +162,9 @@ public class JCRUserNode extends JCRNodeDecorator {
             return b&canGetProperty(s);
         } else {
             String property = (user instanceof JahiaExternalUser) ? ((JahiaExternalUser) user).getExternalProperties().getProperty(s) : user.getProperty(s);
+            if(property==null && user instanceof JahiaExternalUser) {
+                property = ((JahiaExternalUser) user).getUserProperties().getProperty(s);
+            }
             return null != property&canGetProperty(s);
         }
     }
@@ -239,6 +242,28 @@ public class JCRUserNode extends JCRNodeDecorator {
 
             }
             return prop;
+        }
+    }
+
+    public boolean isPropertyEditable(String name) {
+        try {
+            if (JCRUser.J_EXTERNAL.equals(name) || Constants.CHECKIN_DATE.equals(name)) {
+                return false;
+            }
+            if (!canGetProperty(name)) {
+                return false;
+            }
+            if (user == null) {
+                user = lookupUser();
+            }
+            if (user == null || user instanceof JCRUser) {
+                return true;
+            } else {
+                return user instanceof JahiaExternalUser &&
+                       !((JahiaExternalUser) user).getExternalProperties().hasProperty(name);
+            }
+        } catch (RepositoryException e) {
+            return false;
         }
     }
 

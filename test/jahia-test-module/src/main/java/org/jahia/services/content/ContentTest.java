@@ -658,6 +658,7 @@ public class ContentTest {
 
             logger.debug("Create a new page");
             JCRNodeWrapper page = siteNode.addNode("page" + System.currentTimeMillis(), "jnt:page");
+            page.setProperty("jcr:title","test");
             logger.debug("Create a new list");
             JCRNodeWrapper listNode = page.addNode("list" + System.currentTimeMillis(), "jnt:contentList");
 

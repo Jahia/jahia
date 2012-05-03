@@ -111,4 +111,16 @@
         </example>
     </function>
 
+    <function>
+        <description>
+            Check if a property is editable.
+        </description>
+        <name>isPropertyEditable</name>
+        <function-class>org.jahia.taglibs.user.User</function-class>
+        <function-signature>java.lang.Boolean isPropertyEditable(org.jahia.services.content.decorator.JCRUserNode,java.lang.String)
+        </function-signature>
+        <example>
+            &lt;c:if test="${user:isPropertyEditable(currentUserNode,'j:firstName')}"/&gt;
+        </example>
+    </function>
 </taglib>

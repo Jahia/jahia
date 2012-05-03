@@ -47,6 +47,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.*;
 
@@ -187,5 +188,9 @@ public class User {
             searchResults.addAll(provider.searchUsers(searchCriterias));
         }
         return searchResults;
+    }
+
+    public static Boolean isPropertyEditable(JCRUserNode userNode, String name) {
+        return userNode.isPropertyEditable(name);
     }
 }

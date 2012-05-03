@@ -39,6 +39,8 @@
  */
 package org.jahia.services.render.filter;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 import org.jahia.services.render.RenderContext;
@@ -54,17 +56,27 @@ public class ForceUILocaleFilter extends AbstractFilter {
 
     public static final String RENDERING_FORCED_LOCALE = "org.jahia.rendering.forcedLocale";
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public String prepare(RenderContext context, Resource resource, RenderChain chain)
             throws Exception {
-        if (context.getRequest().getAttribute(RENDERING_FORCED_LOCALE) != null) {
-            return null;
+        Locale forcedLocale = (Locale) context.getRequest().getAttribute(RENDERING_FORCED_LOCALE);
+        if (forcedLocale == null) {
+            forcedLocale = context.getUILocale();
+            if (!forcedLocale.equals(resource.getLocale())) {
+                chain.pushAttribute(context.getRequest(), RENDERING_FORCED_LOCALE, forcedLocale);
+            } else {
+                forcedLocale = null;
+            }
         }
-        
-        Locale uiLocale = context.getUILocale();
-        
-        if (!uiLocale.equals(resource.getLocale())) {
-            chain.pushAttribute(context.getRequest(), RENDERING_FORCED_LOCALE, uiLocale);
+        if (context.isLiveMode() && forcedLocale != null) {
+            List l = (List) context.getRequest().getAttribute("module.cache.additional.key");
+            if (l == null) {
+                l = new LinkedList();
+                context.getRequest().setAttribute("module.cache.additional.key", l);
+            }
+
+            l.add(forcedLocale.toString());
         }
 
         return null;

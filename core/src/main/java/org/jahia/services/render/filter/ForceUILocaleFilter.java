@@ -41,16 +41,12 @@ package org.jahia.services.render.filter;
 
 import java.util.Locale;
 
-import javax.servlet.jsp.jstl.core.Config;
-import javax.servlet.jsp.jstl.fmt.LocalizationContext;
-
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.scripting.Script;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
 /**
- * A render filter for forcing the usage of the UI (user preferred) locale in templates.
+ * A render filter for forcing the usage of the UI (user preferred) locale in templates, by just setting a request attribute with the locale
+ * to use.
  * 
  * @author Sergiy Shyrkov
  */
@@ -61,18 +57,14 @@ public class ForceUILocaleFilter extends AbstractFilter {
     @Override
     public String prepare(RenderContext context, Resource resource, RenderChain chain)
             throws Exception {
-        Locale uiLocale = context.getUILocale();
-        if (uiLocale.equals(resource.getLocale())) {
+        if (context.getRequest().getAttribute(RENDERING_FORCED_LOCALE) != null) {
             return null;
         }
-
-        chain.pushAttribute(context.getRequest(), RENDERING_FORCED_LOCALE, uiLocale);
-
-        Script script = (Script) context.getRequest().getAttribute("script");
-        if (script != null) {
-            chain.pushAttribute(context.getRequest(), Config.FMT_LOCALIZATION_CONTEXT + ".request",
-                    new LocalizationContext(new JahiaResourceBundle(uiLocale, script.getView()
-                            .getModule().getName()), uiLocale));
+        
+        Locale uiLocale = context.getUILocale();
+        
+        if (!uiLocale.equals(resource.getLocale())) {
+            chain.pushAttribute(context.getRequest(), RENDERING_FORCED_LOCALE, uiLocale);
         }
 
         return null;

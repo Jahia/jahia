@@ -484,4 +484,62 @@ public class JCRTagUtils {
         }
         return results;
     }
+
+    
+    /**
+     * Returns a string with comma-separated keywords, found on the current node (or the parent one, if inheritance is considered), or an
+     * empty string if no keywords are present.
+     * 
+     * @param node
+     *            the node to retrieve keywords from
+     * @param considerInherted
+     *            if set to <code>true</code> the keywords are also looked up to the parent nodes, if not found on the current one
+     * @return a string with comma-separated keywords, found on the current node (or the parent one, if inheritance is considered), or an
+     *         empty string if no keywords are present
+     */
+    public static String getKeywords(JCRNodeWrapper node, boolean considerInherted) {
+        if (node == null) {
+            return StringUtils.EMPTY;
+        }
+        String keywords = null;
+        try {
+            JCRNodeWrapper current = node;
+            while (current != null) {
+                JCRPropertyWrapper property = current.hasProperty("j:keywords") ? current
+                        .getProperty("j:keywords") : null;
+                        
+                if (property != null) {
+                    if (property.getDefinition().isMultiple()) {
+                        StringBuilder buff = new StringBuilder(64);
+                        for (Value val : property.getValues()) {
+                            String keyword = val.getString();
+                            if (StringUtils.isNotEmpty(keyword)) {
+                                if (buff.length() > 0) {
+                                    buff.append(", ");
+                                }
+                                buff.append(keyword);
+                            }
+                        }
+                        keywords = buff.toString();
+                    } else {
+                        keywords = property.getString();
+                    }
+                    break;
+                } else if (considerInherted && !"/".equals(current.getPath())) {
+                    current = current.getParent();
+                } else {
+                    break;
+                }
+            }
+        } catch (RepositoryException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(e.getMessage(), e);
+            } else {
+                logger.warn("Unable to get keyworkds for node " + node.getPath() + ". Cause: "
+                        + e.getMessage());
+            }
+        }
+
+        return StringUtils.defaultString(keywords);
+    }
 }

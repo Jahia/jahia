@@ -42,6 +42,8 @@ package org.jahia.services.image;
 
 import ij.ImagePlus;
 
+import java.awt.image.BufferedImage;
+
 /**
 * User: toto
 * Date: 3/11/11
@@ -52,11 +54,13 @@ public class ImageJImage implements Image {
 
     private ImagePlus ip;
     private int imageType;
+    private BufferedImage originalImage;
 
-    public ImageJImage(String path, ImagePlus ip, int imageType) {
+    public ImageJImage(String path, ImagePlus ip, int imageType, BufferedImage originalImage) {
         this.path = path;
         this.imageType = imageType;
         this.ip = ip;
+        this.originalImage = originalImage;
     }
 
     public String getPath() {
@@ -69,6 +73,10 @@ public class ImageJImage implements Image {
 
     public int getImageType() {
         return imageType;
+    }
+
+    public BufferedImage getOriginalImage() {
+        return originalImage;
     }
 
     @Override

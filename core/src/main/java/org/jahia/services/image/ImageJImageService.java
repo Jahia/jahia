@@ -49,8 +49,11 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.tools.imageprocess.ImageProcess;
 
+import javax.imageio.ImageIO;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 
 /**
@@ -75,8 +78,6 @@ public class ImageJImageService  implements JahiaImageService {
         return instance;
     }
 
-
-
     public Image getImage(JCRNodeWrapper node) throws IOException, RepositoryException {
         File tmp = null;
         OutputStream os = null;
@@ -85,15 +86,25 @@ public class ImageJImageService  implements JahiaImageService {
             Node contentNode = node.getNode(Constants.JCR_CONTENT);
             os = new BufferedOutputStream(new FileOutputStream(tmp));
             InputStream is = contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream();
+            String mimeType = contentNode.getProperty(Constants.JCR_MIMETYPE).getString();
             try {
                 IOUtils.copy(is, os);
             } finally {
                 IOUtils.closeQuietly(os);
                 IOUtils.closeQuietly(is);
             }
+            ImagePlus ip = null;
             Opener op = new Opener();
-            ImagePlus ip = op.openImage(tmp.getPath());
-            return new ImageJImage(node.getPath(), ip, op.getFileType(tmp.getPath()));
+            BufferedImage originalImage = null;
+            int fileType = op.getFileType(tmp.getPath());
+            if (fileType == Opener.PNG) {
+                // Read image to scale
+                originalImage = ImageIO.read(new File(tmp.getPath()));
+                ip = new ImagePlus(node.getName(), originalImage);
+            } else {
+                ip = op.openImage(tmp.getPath());
+            }
+            return new ImageJImage(node.getPath(), ip, fileType, originalImage);
         } finally {
             IOUtils.closeQuietly(os);
             FileUtils.deleteQuietly(tmp);
@@ -111,19 +122,48 @@ public class ImageJImageService  implements JahiaImageService {
         if (ip == null) {
             return false;
         }
-        ip = new ImagePlus(ip.getTitle(), ip.getImageStack());
-        ImageProcessor processor = ip.getProcessor();
-        if(square) {
-            processor = processor.resize(size, size);
-        } else if (ip.getWidth() > ip.getHeight()) {
-            processor = processor.resize(size, ip.getHeight()*size/ip.getWidth());
-        } else {
-            processor = processor.resize(ip.getWidth()*size/ip.getHeight(), size);
-        }
-        ip.setProcessor(null,processor);
         int type = ((ImageJImage) iw).getImageType();
+        if (type == Opener.PNG) {
+            // Create scaled destination image with transparency (ARGB)
 
-        return ImageProcess.save(type, ip, outputFile);
+            int destWidth, destHeight;
+            if(square) {
+                destWidth = size;
+                destHeight = size;
+            } else if (ip.getWidth() > ip.getHeight()) {
+                destWidth = size;
+                destHeight = ip.getHeight()*size/ip.getWidth();
+            } else {
+                destWidth = ip.getWidth()*size/ip.getHeight();
+                destHeight = size;
+            }
+
+            BufferedImage dest = new BufferedImage(destWidth, destHeight,
+            BufferedImage.TYPE_INT_ARGB);
+
+            // Paint source image into the destination, scaling as needed
+            Graphics2D graphics2D = dest.createGraphics();
+            graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            graphics2D.drawImage(((ImageJImage)iw).getOriginalImage(), 0, 0, destWidth, destHeight, null);
+            graphics2D.dispose();
+
+            // Save destination image
+            return ImageIO.write(dest, "PNG", outputFile);
+        } else {
+            ip = new ImagePlus(ip.getTitle(), ip.getImageStack());
+            ImageProcessor processor = ip.getProcessor();
+            if(square) {
+                processor = processor.resize(size, size, true);
+            } else if (ip.getWidth() > ip.getHeight()) {
+                processor = processor.resize(size, ip.getHeight()*size/ip.getWidth(), true);
+            } else {
+                processor = processor.resize(ip.getWidth()*size/ip.getHeight(), size, true);
+            }
+            ip.setProcessor(null,processor);
+
+            return ImageProcess.save(type, ip, outputFile);
+        }
     }
 
     public int getHeight(Image i) {
@@ -156,7 +196,7 @@ public class ImageJImageService  implements JahiaImageService {
     public boolean resizeImage(Image i, File outputFile, int width, int height) {
         ImagePlus ip = ((ImageJImage)i).getImagePlus();
         ImageProcessor processor = ip.getProcessor();
-        processor = processor.resize(width, height);
+        processor = processor.resize(width, height, true);
         ip.setProcessor(null, processor);
 
         return ImageProcess.save(((ImageJImage) i).getImageType(), ip, outputFile);

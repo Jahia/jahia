@@ -47,7 +47,7 @@
 <template:addResources type="css" resources="timepicker.css"/>
 <template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
-<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
+<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.UILocale}.js"/>
 <template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
 <template:addCacheDependency node="${user}"/>
 <jsp:useBean id="now" class="java.util.Date"/>
@@ -98,6 +98,7 @@
             submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
             cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
             tooltip : contributionI18n['edit'],
+            placeholder : contributionI18n['edit'],
             target:$(".userPicture${currentNode.identifier}").attr('jcr:fileUrl'),
             callback : function (data, status,original) {
                 var datas;
@@ -112,10 +113,9 @@
                 var callableUrl = $(original).attr('jcr:url');
                 datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];
                 $.post($(original).attr('jcr:url'), datas, function(result) {
-                    //$(".userProfileImage").attr("src", result.j_picture+"?t=avatar_120");
                     ajaxReloadCallback();
                 }, "json");
-                $(".userPicture${currentNode.identifier}").html(original.revert); // original.reset() doesn't work
+                $(".userPicture${currentNode.identifier}").html(original.revert);
             }
         });
     }

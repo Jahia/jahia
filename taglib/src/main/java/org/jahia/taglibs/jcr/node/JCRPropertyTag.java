@@ -116,7 +116,9 @@ public class JCRPropertyTag extends AbstractJahiaTag {
                     }
                 } else {
                     if (!inherited) {
-                        logger.debug("Property : " + name + " not defined in node " + node.getPath());
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Property : {} not defined in node {}", name, node.getPath());
+                        }
                         return returnValue;
                     } else {
                         try {

@@ -105,15 +105,6 @@
             <url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo/</url>
         </pluginRepository>
         <pluginRepository>
-            <id>internal</id>
-            <url>http://build-1.rack.sourcelabs.com/repos/internal/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>tlc</id>
-            <name>TLC Repository</name>
-            <url>http://commons.ucalgary.ca/pub/m2</url>
-        </pluginRepository>
-        <pluginRepository>
             <id>jahiaRepository</id>
             <name>Jahia's Maven Repository</name>
             <url>http://maven.jahia.org/maven2</url>

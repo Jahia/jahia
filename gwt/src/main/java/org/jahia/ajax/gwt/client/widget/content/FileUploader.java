@@ -42,6 +42,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.ProgressBar;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -50,9 +51,11 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -157,7 +160,6 @@ public class FileUploader extends Window {
         form.setMethod(FormPanel.Method.POST);
 
         form.setLabelWidth(200);
-
         setModal(true);
 
         // upload location
@@ -182,6 +184,23 @@ public class FileUploader extends Window {
         form.add(dest);
         form.add(unzip);
 
+        form.addListener(Events.Submit, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent ce){
+                String r = ((FormEvent)ce).getResultHtml();
+                if (r != null && r.contains("UPLOAD-ISSUE:")) {
+                    final Dialog dl = new Dialog();
+                    dl.setModal(true);
+                    dl.setHeading(Messages.get("label.error"));
+                    dl.setHideOnButtonClick(true);
+                    dl.setLayout(new FlowLayout());
+                    dl.setWidth(300);
+                    dl.setScrollMode(Style.Scroll.NONE);
+                    dl.add(new HTML(new DirectionalTextHelper((new HTML(r)).getElement(),true).getTextOrHtml(false)));
+                    dl.setHeight(150);
+                    dl.show();
+                }
+            }
+        });
         Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide();

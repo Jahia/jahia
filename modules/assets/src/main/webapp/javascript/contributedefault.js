@@ -66,7 +66,7 @@ function initEditFields(id, escapeTextValue, callback) {
             error:errorOnSave(thisField)
         }).done(function() {
             if (callback != null) {
-                callback();
+                callback(submitId);
             }
         });
 
@@ -100,7 +100,7 @@ function initEditFields(id, escapeTextValue, callback) {
           error:errorOnSave(thisField)
         }).done(function() {
             if (callback != null) {
-                callback();
+                callback(submitId);
             }
         });
 
@@ -142,7 +142,7 @@ function initEditFields(id, escapeTextValue, callback) {
           error:errorOnSave(thisField)
         }).done(function() {
             if (callback != null) {
-                callback();
+                callback(submitId);
             }
         });
 
@@ -177,7 +177,7 @@ function initEditFields(id, escapeTextValue, callback) {
           error:errorOnSave(thisField)
         }).done(function() {
             if (callback != null) {
-                callback();
+                callback(submitId);
             }
         });
 
@@ -219,7 +219,7 @@ function setChoiceListEdit(id, callback) {
             error:errorOnSave(thisField)
         }).done(function() {
             if (callback != null) {
-                callback();
+                callback(submitId);
             }
         });
 
@@ -273,9 +273,10 @@ function setFileEdit(id, callback) {
                         $("#renderingOfFile" + id).html(data);
                     });
                 }
-                $(".file"+id).html(decodeURI(result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")]));
+                var submitId = $(".fileSelector"+id).attr("jcr:id");
+                $(".file"+id).html(decodeURI(result[submitId.replace(":","_")]));
                 if (callback != null) {
-                    callback();
+                    callback(submitId);
                 }
             }, "json");
         }
@@ -313,9 +314,10 @@ function setFileSelector(id, callback) {
                     $("#renderingOfFile" + id).html(data);
                 });
             }
-            $(".fileSelector"+id).html(decodeURI(result[$(".fileSelector"+id).attr("jcr:id").replace(":","_")]));
+            var submitId = $(".fileSelector"+id).attr("jcr:id");
+            $(".fileSelector"+id).html(decodeURI(result[submitId.replace(":","_")]));
             if (callback != null) {
-                callback();
+                callback(submitId);
             }
         }, "json");
         return(value);

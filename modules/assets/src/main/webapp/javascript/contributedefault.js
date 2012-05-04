@@ -77,6 +77,7 @@ function initEditFields(id, escapeTextValue, callback) {
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
+        placeholder:contributionI18n['edit']
     });
 
     $(".ckeditorEdit" + id).editable(function (value, settings) {
@@ -111,6 +112,7 @@ function initEditFields(id, escapeTextValue, callback) {
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
+        placeholder:contributionI18n['edit'],
         ckeditorToolbar : $(".ckeditorEdit" + id).attr('jcr:ckeditorToolbar'),
         onreset: function (settings, original) {
             $('#wcag-' + $(original).attr('id') + '_ckeditor').remove();
@@ -153,6 +155,7 @@ function initEditFields(id, escapeTextValue, callback) {
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
+        placeholder:contributionI18n['edit'],
         loaddata : {defaultValue:($(".dateEdit" + id).attr('jcr:valuems') != null ? $(".dateEdit" + id).attr('jcr:valuems') : $(".dateEdit" + id).attr('jcr:value'))}
     });
 
@@ -188,6 +191,7 @@ function initEditFields(id, escapeTextValue, callback) {
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
+        placeholder:contributionI18n['edit'],
         loaddata : {defaultValue:($(".dateTimeEdit" + id).attr('jcr:valuems') != null ? $(".dateTimeEdit" + id).attr('jcr:valuems') : $(".dateTimeEdit" + id).attr('jcr:value'))}
     });
     setChoiceListEdit(id, callback);
@@ -232,7 +236,8 @@ function setChoiceListEdit(id, callback) {
         onblur : 'ignore',
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
-        tooltip : contributionI18n['edit']
+        tooltip : contributionI18n['edit'],
+        placeholder:contributionI18n['edit']
     });
 }
 
@@ -247,6 +252,7 @@ function setFileEdit(id, callback) {
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
+        placeholder:contributionI18n['edit'],
         target:$(".file" + id).attr('jcr:url')+"?jcrContributePost=true",
         callback : function (data, status,original) {
             var datas;
@@ -327,6 +333,7 @@ function setFileSelector(id, callback) {
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
+        placeholder:contributionI18n['edit'],
         nodeTypes : $(".fileSelector" + id).attr('jeditabletreeselector:nodetypes'),
         selectableNodeTypes : $(".fileSelector" + id).attr('jeditabletreeselector:selectablenodetypes'),
         baseURL : $(".fileSelector" + id).attr('jeditabletreeselector:baseURL'),

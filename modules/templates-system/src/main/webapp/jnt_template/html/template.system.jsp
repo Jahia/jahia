@@ -20,18 +20,7 @@
 
     <jcr:nodeProperty node="${renderContext.mainResource.node}" name="jcr:description" inherited="true" var="description"/>
     <jcr:nodeProperty node="${renderContext.mainResource.node}" name="jcr:createdBy" inherited="true" var="author"/>
-    <jcr:nodeProperty node="${renderContext.mainResource.node}" name="j:keywords" inherited="true" var="kws"/>
-    <c:set var="keywords" value=""/>
-    <c:forEach items="${kws}" var="keyword">
-        <c:choose>
-           <c:when test="${empty keywords}">
-                <c:set var="keywords" value="${keyword.string}"/>
-            </c:when>
-            <c:otherwise>
-                <c:set var="keywords" value="${keywords}, ${keyword.string}"/>
-            </c:otherwise>
-        </c:choose>
-    </c:forEach>
+    <c:set var="keywords" value="${jcr:getKeywords(renderContext.mainResource.node, true)}"/>
     <c:if test="${!empty description}"><meta name="description" content="${fn:escapeXml(description.string)}" /></c:if>
     <c:if test="${!empty author}"><meta name="author" content="${fn:escapeXml(author.string)}" /></c:if>
     <c:if test="${!empty keywords}"><meta name="keywords" content="${fn:escapeXml(keywords)}" /></c:if>

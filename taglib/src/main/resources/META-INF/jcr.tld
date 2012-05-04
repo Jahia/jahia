@@ -739,4 +739,18 @@
         <function-class>org.jahia.services.content.JCRContentUtils</function-class>
         <function-signature>boolean isADisplayableNode(org.jahia.services.content.JCRNodeWrapper,org.jahia.services.render.RenderContext)</function-signature>
     </function>
+    <function>
+        <description>
+            Returns a string with comma-separated keywords, found on the current node (or the parent one, if inheritance is considered), or an
+            empty string if no keywords are present.
+        </description>
+        <name>getKeywords</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>java.lang.String getKeywords(org.jahia.services.content.JCRNodeWrapper,boolean)</function-signature>
+        <example><![CDATA[
+            <c:set var="keywords" value="${jcr:getKeywords(renderContext.mainResource.node, true)}"/>
+            <c:if test="${!empty keywords}"><meta name="keywords" content="${fn:escapeXml(keywords)}" /></c:if>
+        ]]>
+        </example>
+    </function>
 </taglib>

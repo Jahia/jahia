@@ -129,15 +129,21 @@ public class Url {
     }
 
     public static String appendServerNameIfNeeded(JCRNodeWrapper node, String nodeURL, HttpServletRequest request) throws RepositoryException, MalformedURLException {
+        if (!SettingsBean.getInstance().isUrlRewriteUseAbsoluteUrls()) {
+            return nodeURL;
+        }
+        
         if (!isLocalhost(request.getServerName()) &&
                 !isLocalhost(node.getResolveSite().getServerName()) &&
                 !StringUtils.isEmpty(node.getResolveSite().getServerName()) &&
                 !request.getServerName().equals(node.getResolveSite().getServerName())
                 ) {
-            int serverPort = request.getServerPort();
-            if ("http".equals(request.getScheme()) && (request.getServerPort() == 80)) {
-                serverPort = -1;
-            } else if ("https".equals(request.getScheme()) && (request.getServerPort() == 443)) {
+            int serverPort = SettingsBean.getInstance().getSiteURLPortOverride();
+
+            if (serverPort == 0) {
+                serverPort = request.getServerPort();
+            }
+            if (serverPort == 80 && "http".equals(request.getScheme()) || serverPort == 443 && "https".equals(request.getScheme())) {
                 serverPort = -1;
             }
             nodeURL = new URL(request.getScheme(), node.getResolveSite().getServerName(), serverPort, nodeURL).toString();

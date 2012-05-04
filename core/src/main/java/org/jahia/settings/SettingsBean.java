@@ -166,6 +166,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private int fileDumpMaxRegroupingOfPreviousException = 500;
     private boolean useJstackForThreadDumps;  
     private boolean urlRewriteSeoRulesEnabled;
+    private boolean urlRewriteUseAbsoluteUrls;
 
     private ServerDeploymentInterface serverDeployer = null;
 
@@ -339,6 +340,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             useJstackForThreadDumps = getBoolean("useJstackForThreadDumps", false);
 
             urlRewriteSeoRulesEnabled = getBoolean("urlRewriteSeoRulesEnabled", false);
+            urlRewriteUseAbsoluteUrls = getBoolean("urlRewriteUseAbsoluteUrls", true);
 
             disableJsessionIdParameter = getBoolean("disableJsessionIdParameter", true);
             jsessionIdParameterName = getString("jsessionIdParameterName", "jsessionid");
@@ -976,5 +978,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public boolean isFileServletStatisticsEnabled() {
         return fileServletStatisticsEnabled;
+    }
+
+    public boolean isUrlRewriteUseAbsoluteUrls() {
+        return urlRewriteUseAbsoluteUrls;
     }
 }

@@ -1307,6 +1307,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             Long date = (Long) session.getAttribute("lastPoll");
             long lastAccessed = session.getLastAccessedTime();
             long now = System.currentTimeMillis();
+            boolean invalidated = false;
             if (date != null && (date / 1000 == lastAccessed / 1000)) {
                 // last call was (probably) a poll call
                 long first = (Long) session.getAttribute("firstPoll");
@@ -1317,12 +1318,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     session.setMaxInactiveInterval(session.getMaxInactiveInterval() - (int) ((now - first) / 1000));
                 } else {
                     session.invalidate();
+                    invalidated = true;
                 }
             } else {
                 session.setAttribute("firstPoll", now);
             }
 
-            session.setAttribute("lastPoll", now);
+            if (!invalidated) {
+                session.setAttribute("lastPoll", now);
+            }
             return sessionPollingFrequency;
         } else {
             return 0;

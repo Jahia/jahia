@@ -82,8 +82,12 @@
 
 <template:addResources>
 <script type="text/javascript">
-    function ajaxReloadCallback() {
-        $('.user-profile-list').parent().load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax?userUuid=${user.identifier}"/>');
+    function ajaxReloadCallback(jcrId) {
+    	if (jcrId == 'preferredLanguage') {
+    		window.location.reload();
+    	} else {
+        	$('.user-profile-list').parent().load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax?userUuid=${user.identifier}"/>');
+    	}
     }
 
     function initEditUserDetails() {
@@ -292,10 +296,10 @@
     <c:if test="${currentNode.properties['preferredLanguage'].boolean}">
         <li>
             <span class="label"><fmt:message key="jnt_user.preferredLanguage"/></span>
-
-            <div jcr:id="preferredLanguage" class="choicelistEdit${currentNode.identifier}"
+            <jcr:nodeProperty node="${user}" name="preferredLanguage" var="prefLang"/><c:set var="prefLocale" value="${functions:toLocale(prefLang.string)}"/>
+            <span jcr:id="preferredLanguage" class="choicelistEdit${currentNode.identifier}"
                   jcr:url="<c:url value='${url.basePreview}${user.path}'/>" <c:if test="${empty fields['preferredLanguage']}">init:data="<%= getPublicPropertiesData((JCRNodeWrapper)pageContext.getAttribute("user"), "preferredLanguage")%>"</c:if>
-                  jcr:options="{<c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status"><c:if test="${status.index > 0}">,</c:if>'${adLocale}':'${adLocale}'</c:forEach>}"><jcr:nodePropertyRenderer node="${user}" name="preferredLanguage" renderer="resourceBundle"/></div>
+                  jcr:options="{<c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status"><c:if test="${status.index > 0}">,</c:if>'${adLocale}':'${functions:escapeJavaScript(functions:displayLocaleNameWith(adLocale, adLocale))}'</c:forEach>}">${functions:displayLocaleNameWith(prefLocale, prefLocale)}</span>
         </li>
 
     </c:if>

@@ -22,7 +22,7 @@
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
-<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
+<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.UILocale}.js"/>
 
 <template:addResources type="javascript" resources="jquery.form.js"/>
 

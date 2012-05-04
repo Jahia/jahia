@@ -75,43 +75,6 @@ public class ImageProcess {
     private static final transient Logger logger = LoggerFactory
             .getLogger(ImageProcess.class);
 
-    /**
-     * Creates a JPEG thumbnail from inputFile and saves it to disk in
-     * outputFile. scaleWidth is the width to scale the image to
-     */
-    public boolean createThumb(InputStream istream, File outputFile, int size) throws IOException {
-
-        File parDir = outputFile.getParentFile();
-        if (!parDir.exists())
-            parDir.mkdir(); // create directory for thumbnails
-
-        // Load the input image.
-
-        File tmp = File.createTempFile("image", null);
-        FileOutputStream out = new FileOutputStream(tmp);
-        try {
-            IOUtils.copy(istream, out);
-        } finally {
-            IOUtils.closeQuietly(out);
-        }
-        Opener op = new Opener();
-        ImagePlus ip = op.openImage(tmp.getPath());
-        if (ip == null ) {
-            return false;
-        }
-        int type = op.getFileType(tmp.getPath());
-        tmp.delete();
-        ImageProcessor processor = ip.getProcessor();
-        if (ip.getWidth() > ip.getHeight()) {
-            processor = processor.resize(size, ip.getHeight()*size/ip.getWidth());
-        } else {
-            processor = processor.resize(ip.getWidth()*size/ip.getHeight(), size);
-        }
-        ip.setProcessor(null,processor);
-
-        return save(type,ip,outputFile);
-    }
-
     public static boolean save(int type, ImagePlus ip, File outputFile) {
         switch (type) {
             case Opener.TIFF:

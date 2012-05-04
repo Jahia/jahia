@@ -131,7 +131,7 @@
 
             <span <c:if test="${user:isPropertyEditable(user,'j:firstName')}"> jcr:id="j:firstName" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_firstName" <c:if test="${empty fields['j:firstName']}">init:data="<%= getPublicPropertiesData((JCRNodeWrapper)pageContext.getAttribute("user"), "j:firstName")%>"</c:if>
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:firstName']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:firstName']}">${fn:escapeXml(fields['j:firstName'])}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:firstName'] and user:isPropertyEditable(user,'j:firstName')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:firstName']}">${fn:escapeXml(fields['j:firstName'])}</c:if></span>
         </li>
     </c:if>
     <c:if test="${currentNode.properties['j:lastName'].boolean}">
@@ -140,7 +140,7 @@
 
             <span <c:if test="${user:isPropertyEditable(user,'j:lastName')}"> jcr:id="j:lastName" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_lastName" <c:if test="${empty fields['j:lastName']}">init:data="<%= getPublicPropertiesData((JCRNodeWrapper)pageContext.getAttribute("user"), "j:lastName")%>"</c:if>
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:lastName']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:lastName']}">${fn:escapeXml(fields['j:lastName'])}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:lastName'] and user:isPropertyEditable(user,'j:lastName')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:lastName']}">${fn:escapeXml(fields['j:lastName'])}</c:if></span>
         </li>
     </c:if>
     <c:if test="${currentNode.properties['j:picture'].boolean}">
@@ -216,7 +216,7 @@
 
             <span <c:if test="${user:isPropertyEditable(user,'j:organization')}"> jcr:id="j:organization" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_organization" <c:if test="${empty fields['j:organization']}">init:data="<%= getPublicPropertiesData((JCRNodeWrapper)pageContext.getAttribute("user"), "j:organization")%>"</c:if>
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:organization']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:organization']}">${fn:escapeXml(fields['j:organization'])}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:organization'] and user:isPropertyEditable(user,'j:organization')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:organization']}">${fn:escapeXml(fields['j:organization'])}</c:if></span>
         </li>
     </c:if>
 
@@ -226,7 +226,7 @@
 
             <span <c:if test="${user:isPropertyEditable(user,'j:function')}"> jcr:id="j:function" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_function" <c:if test="${empty fields['j:function']}">init:data="<%= getPublicPropertiesData((JCRNodeWrapper)pageContext.getAttribute("user"), "j:function")%>"</c:if>
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:function']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:function']}">${fn:escapeXml(fields['j:function'])}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:function'] and user:isPropertyEditable(user,'j:function')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:function']}">${fn:escapeXml(fields['j:function'])}</c:if></span>
         </li>
     </c:if>
 
@@ -247,7 +247,7 @@
 
             <span <c:if test="${user:isPropertyEditable(user,'j:email')}"> jcr:id="j:email" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_email" <c:if test="${empty fields['j:email']}">init:data="<%= getPublicPropertiesData((JCRNodeWrapper)pageContext.getAttribute("user"), "j:email")%>"</c:if>
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:email']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:email']}">${fn:escapeXml(fields['j:email'])}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:email'] and user:isPropertyEditable(user,'j:email')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:email']}">${fn:escapeXml(fields['j:email'])}</c:if></span>
         </li>
     </c:if>
 
@@ -257,7 +257,7 @@
 
             <span <c:if test="${user:isPropertyEditable(user,'j:skypeID')}"> jcr:id="j:skypeID" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_skypeID" <c:if test="${empty fields['j:skypeID']}">init:data="<%= getPublicPropertiesData((JCRNodeWrapper)pageContext.getAttribute("user"), "j:skypeID")%>"</c:if>
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:skypeID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:skypeID']}">${fn:escapeXml(fields['j:skypeID'])}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:skypeID'] and user:isPropertyEditable(user,'j:skypeID')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:skypeID']}">${fn:escapeXml(fields['j:skypeID'])}</c:if></span>
         </li>
     </c:if>
 
@@ -267,7 +267,7 @@
 
             <span <c:if test="${user:isPropertyEditable(user,'j:twitterID')}"> jcr:id="j:twitterID" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_twitterID" <c:if test="${empty fields['j:twitterID']}">init:data="<%= getPublicPropertiesData((JCRNodeWrapper)pageContext.getAttribute("user"), "j:twitterID")%>"</c:if>
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:twitterID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:twitterID']}">${fn:escapeXml(fields['j:twitterID'])}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:twitterID'] and user:isPropertyEditable(user,'j:twitterID')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:twitterID']}">${fn:escapeXml(fields['j:twitterID'])}</c:if></span>
         </li>
     </c:if>
 
@@ -277,7 +277,7 @@
 
             <span <c:if test="${user:isPropertyEditable(user,'j:facebookID')}"> jcr:id="j:facebookID" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_facebookID" <c:if test="${empty fields['j:facebookID']}">init:data="<%= getPublicPropertiesData((JCRNodeWrapper)pageContext.getAttribute("user"), "j:facebookID")%>"</c:if>
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:facebookID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:facebookID']}">${fn:escapeXml(fields['j:facebookID'])}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:facebookID'] and user:isPropertyEditable(user,'j:facebookID')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:facebookID']}">${fn:escapeXml(fields['j:facebookID'])}</c:if></span>
         </li>
     </c:if>
 
@@ -287,7 +287,7 @@
 
             <span <c:if test="${user:isPropertyEditable(user,'j:linkedinID')}"> jcr:id="j:linkedinID" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_linkedinID" <c:if test="${empty fields['j:linkedinID']}">init:data="<%= getPublicPropertiesData((JCRNodeWrapper)pageContext.getAttribute("user"), "j:linkedinID")%>"</c:if>
-                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:linkedinID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:linkedinID']}">${fn:escapeXml(fields['j:linkedinID'])}</c:if></span>
+                  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:linkedinID'] and user:isPropertyEditable(user,'j:linkedinID')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:linkedinID']}">${fn:escapeXml(fields['j:linkedinID'])}</c:if></span>
         </li>
     </c:if>
 

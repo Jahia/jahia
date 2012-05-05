@@ -100,6 +100,7 @@ public class FormFieldCreator {
         }
         if (!definition.isNode()) {
             GWTJahiaPropertyDefinition propDefinition = (GWTJahiaPropertyDefinition) definition;
+            String emptyText = "";
             switch (definition.getSelector()) {
                 case GWTJahiaNodeSelectorType.SMALLTEXT:
                     switch (propDefinition.getRequiredType()) {
@@ -221,7 +222,6 @@ public class FormFieldCreator {
                             }
                         };
                         combo.setStore(store);
-                        combo.setEmptyText(""); // todo: allow to set the default value
                         combo.setDisplayField("display");
                         combo.setTypeAhead(true);
                         combo.setTriggerAction(TriggerAction.ALL);
@@ -232,7 +232,7 @@ public class FormFieldCreator {
 
                     // if there is no values, the field is hidden
                     if (store.getModels().isEmpty()) {
-                        field.setEmptyText(Messages.get("label.no.values"));
+                        emptyText = Messages.get("label.no.values");
                     }
 
                     break;
@@ -248,6 +248,9 @@ public class FormFieldCreator {
                     }
                     break;
             }
+            // moved here due to IE problem reported in BOUYGUES-40 
+            field.setEmptyText(emptyText); // todo: allow to set the default value
+
             if (propDefinition.isInternationalized()) {
                 field.setLabelSeparator(" <img width='11px' height='11px' src='" + JahiaGWTParameters.getContextPath() +
                         "/css/images/sharedLang.gif'/>");

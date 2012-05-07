@@ -466,7 +466,7 @@ public class ContentManagerHelper {
             } else {
                 uuids = callback.doInJCR(currentUserSession);
             }
-        
+
             if (missedPaths.size() > 0) {
                 StringBuilder errors = new StringBuilder("The following files could not have their reference pasted:");
                 for (String err : missedPaths) {
@@ -547,7 +547,7 @@ public class ContentManagerHelper {
                         nodeToDelete.unmarkForDeletion();
                     } else {
                         missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - locked by ")
-                            .append(nodeToDelete.getLockOwner()).toString());
+                                .append(nodeToDelete.getLockOwner()).toString());
                     }
                 }
                 if (!nodeToDelete.hasPermission(Privilege.JCR_REMOVE_NODE)) {
@@ -1117,7 +1117,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public GWTJahiaNode createTemplateSet(String key, String baseSet,final String siteType, JCRSessionWrapper session) throws GWTJahiaServiceException {
         String shortName = JCRContentUtils.generateNodeName(key, 50);
         if (baseSet == null) {
             try {
@@ -1128,11 +1128,22 @@ public class ContentManagerHelper {
                 templateSet.setProperty("j:siteType", siteType);
                 templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
                 templateSet.setProperty("j:title", key);
-
-                String skeletons = MODULE_SKELETONS.replace("${type}", siteType);
-                HashMap<String, String> replacements = new HashMap<String, String>();
-                replacements.put("SITEKEY_PLACEHOLDER", shortName);
-                JCRContentUtils.importSkeletons(skeletons, "/templateSets", session, replacements);
+                session.save();
+                final String s = shortName;
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<Object>>() {
+                    public List<Object> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        String skeletons = MODULE_SKELETONS.replace("${type}", siteType);
+                        HashMap<String, String> replacements = new HashMap<String, String>();
+                        replacements.put("SITEKEY_PLACEHOLDER", s);
+                        try {
+                            JCRContentUtils.importSkeletons(skeletons, "/templateSets", session, replacements);
+                        }
+                        catch (IOException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                        return null;
+                    }
+                });
 //                if (isTemplatesSet) {
 //                    templateSet.getNode("templates/base").setProperty("j:view", shortName);
 //                }
@@ -1141,8 +1152,6 @@ public class ContentManagerHelper {
                 session.getNode("/templateSets/"+shortName).addNode("j:versionInfo","jnt:versionInfo").setProperty("j:version","1.0");
                 session.save();
                 return navigation.getGWTJahiaNode(templateSet, GWTJahiaNode.DEFAULT_SITE_FIELDS);
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -1152,10 +1161,10 @@ public class ContentManagerHelper {
                 shortName = JCRContentUtils.findAvailableNodeName(node, shortName);
 
                 List<GWTJahiaNode> result = copy(Arrays.asList("/templateSets/" + baseSet), "/templateSets", shortName, false, false, false, true, session);
-                siteType = session.getNode("/templateSets/" + baseSet).getProperty("j:siteType").getValue().getString();
+                String s = session.getNode("/templateSets/" + baseSet).getProperty("j:siteType").getValue().getString();
                 session.getNode("/templateSets/" + shortName).setProperty("j:title", key);
 
-                boolean isTemplatesSet = JahiaTemplateManagerService.MODULE_TYPE_TEMPLATES_SET.equals(siteType);
+                boolean isTemplatesSet = JahiaTemplateManagerService.MODULE_TYPE_TEMPLATES_SET.equals(s);
 
                 if (isTemplatesSet) {
                     Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:template] as t where t.[j:view]='" + baseSet + "' and isdescendantnode(t,'/templateSets/" + shortName + "')", Query.JCR_SQL2);
@@ -1166,7 +1175,7 @@ public class ContentManagerHelper {
                     }
                 }
                 session.save();
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().duplicateModule(shortName, siteType, baseSet);
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().duplicateModule(shortName, s, baseSet);
                 if (!session.getNode("/templateSets/"+shortName).hasNode("j:versionInfo")) {
                     session.getNode("/templateSets/"+shortName).addNode("j:versionInfo","jnt:versionInfo");
                 }

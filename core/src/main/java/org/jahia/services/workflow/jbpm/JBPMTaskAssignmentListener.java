@@ -54,6 +54,7 @@ import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowVariable;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jbpm.api.model.OpenExecution;
@@ -109,8 +110,8 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
         final JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(username);
 
         if (assignable instanceof TaskImpl && user != null) {
-            Locale locale = (Locale) execution.getVariable("locale");
-            JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), null, locale, new JCRCallback<Object>() {
+            final Locale locale = (Locale) execution.getVariable("locale");
+            JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), null, null, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRUser jcrUser;
                     if (user instanceof JCRUser) {
@@ -162,9 +163,16 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
                     task.setProperty("possibleOutcomes", outcomes.toArray(new Value[outcomes.size()]));
                     task.setProperty("state", "active");
                     task.setProperty("type", "workflow");
-
-                    String taskname = JahiaResourceBundle.lookupBundle(bundle, session.getLocale()).getString(wfTask.getName().replace(" ","."));
-                    task.setProperty("jcr:title", taskname + " : " + session.getNodeByIdentifier(uuid).getDisplayableName());
+                    //todo : get titles for all locales
+                    List<Locale> locales = LanguageCodeConverters.getAvailableBundleLocales(bundle, locale);
+                    for (Locale aLocale : locales) {
+                        try {
+                            String taskname = JahiaResourceBundle.lookupBundle(bundle, aLocale).getString(Patterns.SPACE.matcher(wfTask.getName()).replaceAll(".").trim().toLowerCase());
+                            task.getOrCreateI18N(aLocale).setProperty("jcr:title", taskname + " : " + session.getNodeByIdentifier(uuid).getDisplayableName());
+                        } catch (MissingResourceException e) {
+                            task.setProperty("jcr:title", wfTask.getName() + " : " + session.getNodeByIdentifier(uuid).getDisplayableName());
+                        }
+                    }
 
                     if (execution.getVariable("jcr:title") instanceof List) {
                         task.setProperty("description", ((List<WorkflowVariable>)execution.getVariable("jcr:title")).get(0).getValue());

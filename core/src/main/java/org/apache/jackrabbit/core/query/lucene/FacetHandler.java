@@ -129,10 +129,10 @@ public class FacetHandler {
         totalSize = nodes.size();
     }
 
-    public boolean hasFacetFunctions() {
+    public static boolean hasFacetFunctions(Map<String, PropertyValue> columns, SessionImpl session) {
         boolean hasFacetRequest = false;
         for (String column : columns.keySet()) {
-            if (isFacetFunction(column)) {
+            if (isFacetFunction(column, session)) {
                 hasFacetRequest = true;
                 break;
             }
@@ -144,7 +144,7 @@ public class FacetHandler {
      * @param name a String.
      * @return <code>true</code> if <code>name</code> is the rep:facet function, <code>false</code> otherwise.
      */
-    private boolean isFacetFunction(String name) {
+    private static boolean isFacetFunction(String name, SessionImpl session) {
         try {
             return name.trim().startsWith(session.getJCRName(REP_FACET_LPAR));
         } catch (NamespaceException e) {
@@ -162,7 +162,7 @@ public class FacetHandler {
             int counter = 0;
             Set<Integer> selectorIndexes = new HashSet<Integer>();
             for (Map.Entry<String, PropertyValue> column : columns.entrySet()) {
-                if (isFacetFunction(column.getKey())) {
+                if (isFacetFunction(column.getKey(), session)) {
                     String facetOptions = StringUtils.substring(column.getKey(), StringUtils
                             .indexOf(column.getKey(), facetFunctionPrefix)
                             + facetFunctionPrefix.length(), StringUtils.lastIndexOf(column

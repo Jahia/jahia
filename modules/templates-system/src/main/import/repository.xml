@@ -249,7 +249,6 @@
                   <my-space icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_myspace.png" j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(label.start)##"/>
                     <shortcutslist j:id="Shortcutsadmin" j:originWS="default" j:skin="skins.custom" jcr:mixinTypes="jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentList">
-                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="ShortcutsList"/>
                       <profile-page-items j:node="_x002f_templateSets_x002f_templates-system_x002f_contents_x002f_profile-page-items" j:originWS="default" jcr:primaryType="jnt:contentFolderReference"/>
                     </shortcutslist>
                   </my-space>
@@ -270,9 +269,7 @@
                   </administration-tools>
                   <my-web-projects-shortcuts j:originWS="default" j:skin="skins.box8" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myWebProjectShortcuts)##"/>
-                    <websites-list-in-edit-mode contribute="true" edit="true" lightedit="true" j:originWS="default" jcr:primaryType="jnt:listSites" live="true" numberMaxOfSitesDisplayed="5" numberOfSitesPerPage="10">
-                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="websites list in edit mode"/>
-                    </websites-list-in-edit-mode>
+                    <websites-list-in-edit-mode contribute="true" edit="true" lightedit="true" j:originWS="default" jcr:primaryType="jnt:listSites" live="true" numberMaxOfSitesDisplayed="5" numberOfSitesPerPage="10"/>
                     <my-web-projects divClass="user-sites" j:originWS="default" jcr:primaryType="jnt:componentLink" targetTemplate="user-sites">
                       <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myWebProjects)##"/>
                     </my-web-projects>
@@ -289,13 +286,6 @@
                   <editUserDetails-1 age="true" j:about="true" j:birthDate="true" j:email="true" j:facebookID="true" j:firstName="true" j:function="true" j:gender="true" j:lastName="true" j:linkedinID="true" j:organization="true" j:originWS="default" j:picture="true" j:skypeID="true" j:title="true" j:twitterID="true" jcr:primaryType="jnt:editUserDetails" password="true" preferredLanguage="true"/>
                 </pagecontent>
               </pagecontent>
-              <row-col3 j:originWS="default" j:skin="skins.box2style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList"/>
-              <row-col1 j:originWS="default" j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <editUserDetails-1 age="true" j:about="false" j:birthDate="false" j:email="false" j:facebookID="false" j:firstName="false" j:function="false" j:gender="true" j:lastName="false" j:linkedinID="false" j:organization="false" j:originWS="default" j:picture="true" j:skypeID="false" j:title="false" j:twitterID="false" jcr:primaryType="jnt:editUserDetails" password="true" preferredLanguage="true"/>
-              </row-col1>
-              <row-col2 j:originWS="default" j:skin="skins.box7" j:style="green" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Public fields"/>
-              </row-col2>
               <user-profile-aside-right j:originWS="default" jcr:primaryType="jnt:contentList">
                 <content-list j:originWS="default" j:skin="skins.box8" j:style="grey" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.publicFields)##"/>
@@ -334,7 +324,6 @@
                   <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h2&gt;##resourceBundle(system.doWithJahia)##&lt;/h2&gt; "/>
                 </rich-text>
                 <shortcuts-list j:columns="2" j:originWS="default" j:view="columns" jcr:mixinTypes="jmix:renderable jmix:columns" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Shortcuts List"/>
                   <my-settings-2 j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myContent)##"/>
                     <image-reference j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_folder-content-files.png" j:originWS="default" jcr:primaryType="jnt:imageReference">
@@ -390,9 +379,7 @@
               <pagecontent j:id="user-sites" j:originWS="default" jcr:mixinTypes="jmix:customSkin" jcr:primaryType="jnt:contentList">
                 <my-sites icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_mysites.png" j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myWebProjects)##"/>
-                  <websites-list-in-edit-mode contribute="true" edit="true" lightedit="true" j:originWS="default" j:view="paginated" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10" preview="true">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="websites list in edit mode"/>
-                  </websites-list-in-edit-mode>
+                  <websites-list-in-edit-mode contribute="true" edit="true" lightedit="true" j:originWS="default" j:view="paginated" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10" preview="true"/>
                 </my-sites>
               </pagecontent>
             </user-sites>

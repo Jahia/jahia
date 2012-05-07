@@ -1137,6 +1137,7 @@ public class ContentManagerHelper {
                         replacements.put("SITEKEY_PLACEHOLDER", s);
                         try {
                             JCRContentUtils.importSkeletons(skeletons, "/templateSets", session, replacements);
+                            session.save();
                         }
                         catch (IOException e) {
                             logger.error(e.getMessage(), e);
@@ -1147,7 +1148,6 @@ public class ContentManagerHelper {
 //                if (isTemplatesSet) {
 //                    templateSet.getNode("templates/base").setProperty("j:view", shortName);
 //                }
-                session.save();
                 ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName, siteType, JahiaTemplateManagerService.MODULE_TYPE_TEMPLATES_SET.equals(siteType));
                 session.getNode("/templateSets/"+shortName).addNode("j:versionInfo","jnt:versionInfo").setProperty("j:version","1.0");
                 session.save();

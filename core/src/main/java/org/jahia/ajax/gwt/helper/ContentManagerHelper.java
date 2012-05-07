@@ -1136,6 +1136,7 @@ public class ContentManagerHelper {
                         replacements.put("SITEKEY_PLACEHOLDER", s);
                         try {
                             JCRContentUtils.importSkeletons(skeletons, "/templateSets", session, replacements);
+                            session.save();
                         }
                         catch (IOException e) {
                             logger.error(e.getMessage(), e);

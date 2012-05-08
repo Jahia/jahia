@@ -29,7 +29,9 @@
 <p>Available actions:</p>
 <ul>
 	<li><a href="?action=flushOutputCaches">Flush HTML output caches</a> - performs flush of module output caches that are responsible for caching HTML page and fragment output, rendered in Live mode.</li>
+	<% if(org.jahia.services.cache.CacheHelper.canFlushHibernateCaches()) { %>
     <li><a href="?action=flushHibernateCaches">Flush Hibernate caches</a> - does the flush of Hibernate second level caches.</li>
+    <% } %>
     <li><a href="?action=flushAllCaches">Flush all caches</a> - triggers the flush of all caches, including back-end, front-end (module output) and HIbernate second level caches.</li>
 </ul>
 <p>Please, not that except for the Hibernate caches, all others are flushed only on the current cluster node (flushes are not propagated to other nodes).</p>

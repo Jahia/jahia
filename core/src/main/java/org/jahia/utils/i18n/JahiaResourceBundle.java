@@ -52,7 +52,10 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.settings.SettingsBean;
@@ -73,6 +76,7 @@ public class JahiaResourceBundle extends ResourceBundle {
     private final JahiaTemplatesPackage templatesPackage;
     public static final String JAHIA_INTERNAL_RESOURCES = "JahiaInternalResources";
     private static final String MISSING_RESOURCE = "???";
+    private static final Pattern RB_MACRO = Pattern.compile("##resourceBundle\\((.*)\\)##");
 
 
     /**
@@ -314,7 +318,45 @@ public class JahiaResourceBundle extends ResourceBundle {
 
         return match;
     }
+    
+    public static String interpolateResourceBunldeMacro(String input, Locale locale,
+            String templatePackageName) {
+        if (StringUtils.isEmpty(input)) {
+            return input;
+        }
 
+        String result = input;
+        Matcher m = RB_MACRO.matcher(input);
+        if (m.matches()) {
+            String params = m.group(1);
+            if (StringUtils.isNotEmpty(params)) {
+                String bundle = null;
+                String key = null;
+                if (params.indexOf('"') != -1) {
+                    params = Patterns.DOUBLE_QUOTE.matcher(params).replaceAll(StringUtils.EMPTY);
+                }
+                if (params.indexOf('\'') != -1) {
+                    params = Patterns.SINGLE_QUOTE.matcher(params).replaceAll(StringUtils.EMPTY);
+                }
+                if (params.indexOf(',') != -1) {
+                    String[] paramArray = Patterns.COMMA.split(params);
+                    if (paramArray.length > 0) {
+                        key = paramArray[0];
+                        bundle = paramArray.length > 1 ? paramArray[1] : null;
+                    }
+                } else {
+                    key = params;
+                }
+                if (StringUtils.isNotEmpty(key)) {
+                    String replacement = getString(bundle, key, locale, templatePackageName);
+                    result = StringUtils.replace(input, m.group(), replacement);
+                }
+            }
+        }
+
+        return result;
+    }
+    
     /**
      * Get message depending on a key. If not found, return the default value
      *

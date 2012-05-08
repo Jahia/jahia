@@ -62,6 +62,8 @@ public final class Patterns {
 
     public static final Pattern DOT = Pattern.compile(".", Pattern.LITERAL);
 
+    public static final Pattern DOUBLE_QUOTE = Pattern.compile("\"", Pattern.LITERAL);
+
     public static final Pattern EXCLAMATION_MARK = Pattern.compile("!", Pattern.LITERAL);
 
     public static final Pattern PERCENT = Pattern.compile("%", Pattern.LITERAL);
@@ -73,7 +75,7 @@ public final class Patterns {
     public static final Pattern SEMICOLON = Pattern.compile(";", Pattern.LITERAL);
 
     public static final Pattern SINGLE_QUOTE = Pattern.compile("'", Pattern.LITERAL);
-
+    
     public static final Pattern SLASH = Pattern.compile("/", Pattern.LITERAL);
 
     public static final Pattern SPACE = Pattern.compile(" ", Pattern.LITERAL);

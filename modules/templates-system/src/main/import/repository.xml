@@ -6,7 +6,7 @@
       <files j:originWS="default" jcr:primaryType="jnt:folder"/>
       <contents j:originWS="default" jcr:primaryType="jnt:contentFolder">
         <profile-page-items j:originWS="default" jcr:primaryType="jnt:contentFolder">
-          <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Profile Page Items"/>
+          <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.profilePageItems)##"/>
           <home divClass="user-home" j:originWS="default" jcr:primaryType="jnt:componentLink" targetTemplate="user-home">
             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(home)##"/>
           </home>
@@ -227,9 +227,7 @@
             <pagecontent j:originWS="default" jcr:primaryType="jnt:contentList">
               <header colNames="header-col1,header-colContent" customColumn="4, 12 " divID="header" j:originWS="default" jcr:primaryType="jnt:customRow">
                   <header-col1 j:originWS="default" jcr:primaryType="jnt:contentList">
-                      <logo-jahia j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_themes_x002f_default_x002f_logo-jahia.png" j:originWS="default" jcr:primaryType="jnt:imageReference">
-                          <j:translation_en j:alternateText="logo-jahia" jcr:language="en" jcr:primaryType="jnt:translation"/>
-                      </logo-jahia>
+                      <logo-jahia j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_themes_x002f_default_x002f_logo-jahia.png" j:originWS="default" jcr:primaryType="jnt:imageReference"/>
                   </header-col1>
                   <header-colContent j:originWS="default" jcr:primaryType="jnt:contentList">
                       <current-user j:originWS="default" j:userView="welcome" jcr:primaryType="jnt:currentUserDisplay"/>
@@ -326,9 +324,7 @@
                 <shortcuts-list j:columns="2" j:originWS="default" j:view="columns" jcr:mixinTypes="jmix:renderable jmix:columns" jcr:primaryType="jnt:contentList">
                   <my-settings-2 j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myContent)##"/>
-                    <image-reference j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_folder-content-files.png" j:originWS="default" jcr:primaryType="jnt:imageReference">
-                      <j:translation_en j:alternateText="folder content and files icon" jcr:language="en" jcr:primaryType="jnt:translation"/>
-                    </image-reference>
+                    <image-reference j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_folder-content-files.png" j:originWS="default" jcr:primaryType="jnt:imageReference"/>
                     <rich-text j:originWS="default" jcr:primaryType="jnt:bigText">
                       <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;##resourceBundle(system.myContent.description)##&lt;/p&gt; "/>
                     </rich-text>
@@ -338,9 +334,7 @@
                   </my-settings-2>
                   <my-settings-1 j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myTasks)##"/>
-                    <image-reference j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_my-tasks.png" j:originWS="default" jcr:primaryType="jnt:imageReference">
-                      <j:translation_en j:alternateText="my tasks icon" jcr:language="en" jcr:primaryType="jnt:translation"/>
-                    </image-reference>
+                    <image-reference j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_my-tasks.png" j:originWS="default" jcr:primaryType="jnt:imageReference"/>
                     <rich-text j:originWS="default" jcr:primaryType="jnt:bigText">
                       <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;##resourceBundle(system.myTasks.description)##&lt;/p&gt; "/>
                     </rich-text>
@@ -350,9 +344,7 @@
                   </my-settings-1>
                   <my-settings-3 j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myWebProjects)##"/>
-                    <image-reference j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_my-sites.png" j:originWS="default" jcr:primaryType="jnt:imageReference">
-                      <j:translation_en j:alternateText="my web projects icon" jcr:language="en" jcr:primaryType="jnt:translation"/>
-                    </image-reference>
+                    <image-reference j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_my-sites.png" j:originWS="default" jcr:primaryType="jnt:imageReference"/>
                     <rich-text j:originWS="default" jcr:primaryType="jnt:bigText">
                       <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;##resourceBundle(system.myWebProjects.description)##&lt;/p&gt; "/>
                     </rich-text>
@@ -362,9 +354,7 @@
                   </my-settings-3>
                   <my-settings j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.mySettings)##"/>
-                    <image-reference j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_my-settings.png" j:originWS="default" jcr:primaryType="jnt:imageReference">
-                      <j:translation_en j:alternateText="my settings icon" jcr:language="en" jcr:primaryType="jnt:translation"/>
-                    </image-reference>
+                    <image-reference j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_my-settings.png" j:originWS="default" jcr:primaryType="jnt:imageReference"/>
                     <rich-text j:originWS="default" jcr:primaryType="jnt:bigText">
                       <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;##resourceBundle(system.mySettings.description)##&lt;/p&gt; "/>
                     </rich-text>
@@ -476,9 +466,7 @@
       </templates>
       <categories j:originWS="default" jcr:primaryType="jnt:category" jcr:title="Categories"/>
       <home changefreq="monthly" j:isHomePage="true" j:originWS="default" j:templateNode="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_base_x002f_home" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
-        <j:translation_de jcr:language="de" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Start"/>
-        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Home"/>
-        <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Accueil"/>
+        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(home)##"/>
       </home>
       <components j:originWS="default" jcr:primaryType="jnt:componentFolder"/>
     </templates-system>

@@ -55,12 +55,14 @@ public class ImageJImage implements Image {
     private ImagePlus ip;
     private int imageType;
     private BufferedImage originalImage;
+    private String mimeType;
 
-    public ImageJImage(String path, ImagePlus ip, int imageType, BufferedImage originalImage) {
+    public ImageJImage(String path, ImagePlus ip, int imageType, BufferedImage originalImage, String mimeType) {
         this.path = path;
         this.imageType = imageType;
         this.ip = ip;
         this.originalImage = originalImage;
+        this.mimeType = mimeType;
     }
 
     public String getPath() {
@@ -77,6 +79,10 @@ public class ImageJImage implements Image {
 
     public BufferedImage getOriginalImage() {
         return originalImage;
+    }
+
+    public String getMimeType() {
+        return mimeType;
     }
 
     @Override

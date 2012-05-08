@@ -104,7 +104,7 @@ public class ImageJImageService  implements JahiaImageService {
             } else {
                 ip = op.openImage(tmp.getPath());
             }
-            return new ImageJImage(node.getPath(), ip, fileType, originalImage);
+            return new ImageJImage(node.getPath(), ip, fileType, originalImage, mimeType);
         } finally {
             IOUtils.closeQuietly(os);
             FileUtils.deleteQuietly(tmp);
@@ -138,14 +138,16 @@ public class ImageJImageService  implements JahiaImageService {
                 destHeight = size;
             }
 
-            BufferedImage dest = new BufferedImage(destWidth, destHeight,
-            BufferedImage.TYPE_INT_ARGB);
+            BufferedImage originalImage = ((ImageJImage)iw).getOriginalImage();
+            BufferedImage dest = new BufferedImage(destWidth, destHeight, originalImage.getType());
 
             // Paint source image into the destination, scaling as needed
             Graphics2D graphics2D = dest.createGraphics();
             graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            graphics2D.drawImage(((ImageJImage)iw).getOriginalImage(), 0, 0, destWidth, destHeight, null);
+            RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+            RenderingHints.VALUE_ANTIALIAS_ON);
+            graphics2D.drawImage(originalImage, 0, 0, destWidth, destHeight, null);
             graphics2D.dispose();
 
             // Save destination image

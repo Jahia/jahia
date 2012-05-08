@@ -72,6 +72,7 @@ import org.jahia.services.query.QueryManagerImpl;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -3772,7 +3773,21 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 title = null;
             }
         }
-        return title != null ? title : getName();
+        return title != null ? (session.getWorkspace().getName().equals(Constants.EDIT_WORKSPACE) && title.contains("##resourceBundle(") ? interpolateResourceBunlde(title) : title) : getName();
+    }
+
+    private String interpolateResourceBunlde(String title) {
+        Locale locale = getSession().getLocale();
+        JCRSiteNode site = null;
+        try {
+            site = getResolveSite();
+        } catch (RepositoryException e) {
+            logger.warn("Unable to resolve the site for node {}. Cause: {}", getPath(),
+                    e.getMessage());
+        }
+
+        return JahiaResourceBundle.interpolateResourceBunldeMacro(title, locale != null ? locale
+                : session.getFallbackLocale(), site != null ? site.getTemplatePackageName() : null);
     }
 
     public void flushLocalCaches() {

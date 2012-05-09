@@ -19,11 +19,14 @@
 <template:addResources type="css" resources="tabularList.css"/>
 <c:set var="displayTab" value="${not empty renderContext.mainResource.moduleParams.displayTab ? renderContext.mainResource.moduleParams.displayTab : param.displayTab}"/>
 <c:set var="ps" value=""/>
+<c:url var="encodedUrl" value="${url.current}">
 <c:forEach items="${param}" var="p">
     <c:if test="${p.key ne 'displayTab'}">
-        <c:set var="ps" value="${ps}&${p.key}=${p.value}" />
+        <c:param name="${p.key}" value="${p.value}"/>
     </c:if>
 </c:forEach>
+</c:url>
+<c:set var="ps" value="&${fn:substringAfter(encodedUrl, '?')}"/>
 <div id="tabs${currentNode.name}">
     <div class="idTabsContainer"><!--start idTabsContainer-->
         <ul class="idTabs">

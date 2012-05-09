@@ -152,7 +152,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         String contentType = item.getContentType();
         if (!KNOWN_IMPORT_CONTENT_TYPES.contains(contentType)) {
             contentType = Jahia.getStaticServletConfig().getServletContext()
-                    .getMimeType(item.getOriginalFileName());
+                    .getMimeType(item.getOriginalFileName() != null ? item.getOriginalFileName().toLowerCase() : item.getOriginalFileName());
             if (!KNOWN_IMPORT_CONTENT_TYPES.contains(contentType)) {
                 if (StringUtils.endsWithIgnoreCase(item.getOriginalFileName(), ".xml")) {
                     contentType = "application/xml";
@@ -223,7 +223,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                         try {
                                             dest.uploadFile(file.getName(), is,
                                                     JahiaContextLoaderListener.getServletContext().getMimeType(
-                                                            file.getName()));
+                                                            file.getName() != null ? file.getName().toLowerCase() : file.getName()));
                                         } finally {
                                             IOUtils.closeQuietly(is);
                                         }
@@ -717,7 +717,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                             if (!zipentry.isDirectory()) {
                                 try {
                                     String filename = name.substring(name.lastIndexOf('/') + 1);
-                                    String contentType = JahiaContextLoaderListener.getServletContext().getMimeType(filename);
+                                    String contentType = JahiaContextLoaderListener.getServletContext().getMimeType(filename != null ? filename.toLowerCase() : filename);
                                     ensureFile(session, name, zis, contentType, site);
                                 } catch (Exception e) {
                                     logger.error("Cannot upload file " + zipentry.getName(), e);

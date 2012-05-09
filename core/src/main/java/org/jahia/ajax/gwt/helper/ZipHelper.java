@@ -213,7 +213,7 @@ public class ZipHelper {
                             }
                         }
                     } else {
-                        String contentType = JahiaContextLoaderListener.getServletContext().getMimeType(filename);
+                        String contentType = JahiaContextLoaderListener.getServletContext().getMimeType(filename != null ? filename.toLowerCase() : filename);
                         target.uploadFile(filename, zis, contentType);
                     }
                     result = true;

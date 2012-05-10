@@ -829,4 +829,21 @@ public class Service extends JahiaService {
             }
         }
     }
+
+    public void deleteNodesWithReference(final String nodetype, final String propertyName, final NodeFact node) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                QueryManager q = session.getWorkspace().getQueryManager();
+                String sql = "select * from [" + nodetype + "] where " + propertyName + " = '" + node.getIdentifier() + "'";
+                QueryResult qr = q.createQuery(sql, Query.JCR_SQL2).execute();
+                NodeIterator ni = qr.getNodes();
+                while (ni.hasNext()) {
+                    JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+                    next.remove();
+                }
+                session.save();
+                return null;
+            }
+        });
+    }
 }

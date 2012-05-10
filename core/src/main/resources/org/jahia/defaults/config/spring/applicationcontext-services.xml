@@ -228,6 +228,10 @@
 
     <bean id="ImageJImageService" class="org.jahia.services.image.ImageJImageService"  factory-method="getInstance" />
 
+    <bean id="Java2DImageService" class="org.jahia.services.image.Java2DImageService"  factory-method="getInstance" />
+
+    <bean id="ImageJAndJava2DImageService" class="org.jahia.services.image.ImageJAndJava2DImageService"  factory-method="getInstance" />
+
     <bean id="ImageMagickImageService" class="org.jahia.services.image.ImageMagickImageService" factory-method="getInstance" init-method="init">
         <property name="imageMagickPath" value="${imageMagickPath}"/>
     </bean>

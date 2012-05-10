@@ -86,7 +86,7 @@ public class ZipHelper {
         List<String> missedPaths = null;
         File tmp = null;
         try {
-            tmp = File.createTempFile("jahiazip", null);
+            tmp = File.createTempFile("jahiazip", ".zip");
             final ZipOutputStream zout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(tmp)));
             final byte[] buffer = new byte[4096];
             String parentDir = parentDirectory.getPath();

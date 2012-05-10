@@ -437,7 +437,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         OutputStream tmpOut = outputStream;
         if (xsl != null) {
             String filename = Patterns.SPACE.matcher(rootNode.getName()).replaceAll("_");
-            File tempFile = File.createTempFile("exportTemplates-" + filename, "xml");
+            File tempFile = File.createTempFile("exportTemplates-" + filename, ".xml");
             tmpOut = new DeferredFileOutputStream(1024 * 1024 * 10, tempFile);
         }
         DataWriter dw = new DataWriter(new OutputStreamWriter(tmpOut, "UTF-8"));
@@ -1132,7 +1132,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         File tempFile = null;
 
         try {
-            tempFile = File.createTempFile("import-xml-", "");
+            tempFile = File.createTempFile("import-xml-", ".xml");
             FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
             IOUtils.copy(content, fileOutputStream);
             fileOutputStream.close();

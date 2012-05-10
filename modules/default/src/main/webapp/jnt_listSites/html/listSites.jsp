@@ -15,30 +15,30 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="javascript" resources="jquery.min.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="css" resources="listsites.css"/>
+<template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+
+<template:addResources type="javascript" resources="jquery.fancybox.js"/>
+<template:addResources type="javascript" resources="managesites.js"/>
+<template:addResources type="javascript" resources="jquery.form.js"/>
+
 <c:set var="ajaxRequired"
        value="${currentResource.workspace eq 'live' and jcr:hasPermission(currentResource.node, 'jcr:read_default')}"/>
 <c:if test="${ajaxRequired}">
     <div id="listsites${currentNode.identifier}">
         <script type="text/javascript">
-            $('#listsites${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>');
+            $('#listsites${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax?includeJavascripts=true"/>');
         </script>
     </div>
 </c:if>
+
 <c:if test="${not ajaxRequired}">
-    <c:if test="${empty currentNode.properties['typeOfContent'] or currentNode.properties['typeOfContent'].string eq 'website'}">
-        <jcr:sql var="result"
-                 sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites') and localname(site) <> 'systemsite' order by site.[jcr:created] desc"
-                 limit="${currentNode.properties['numberMaxOfSitesDisplayed'].string}"/>
-    </c:if>
-    <c:if test="${not empty currentNode.properties['typeOfContent'] and currentNode.properties['typeOfContent'].string ne 'website'}">
-        <jcr:sql var="result"
-                 sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites') order by site.[jcr:created] desc"
-                 limit="${currentNode.properties['numberMaxOfSitesDisplayed'].string}"/>
-    </c:if>
+    <template:addResources type="css" resources="listsites.css"/>
+    <template:include view="hidden.header"/>
+
     <ul class="list-sites">
-        <c:forEach items="${result.nodes}" var="node">
+        <c:forEach items="${moduleMap.currentList}" var="node" begin="${moduleMap.begin}" end="${moduleMap.end}">
             <c:choose>
                 <c:when test="${currentNode.properties.typeOfContent.string eq 'contents'}">
                     <c:set var="page" value="/contents"/>
@@ -52,9 +52,13 @@
             </c:choose>
             <c:choose>
                 <c:when test="${not empty node and (jcr:hasPermission(node,'editModeAccess') || jcr:hasPermission(node,'contributeModeAccess'))}">
-                    <li class="listsiteicon">${node.displayableName}
+                    <li class="listsiteicon">
+                        <c:if test="${(currentNode.properties.export.boolean or currentNode.properties.delete.boolean) && jcr:hasPermission(node,'adminVirtualSites')}">
+                            <input class="sitecheckbox" type="checkbox" name="${node.name}" />
+                        </c:if>
+                        ${node.displayableName}
                         <c:set var="siteId" value="${node.properties['j:siteId'].long}"/>
-                        <c:if test="${currentNode.properties.edit.boolean && jcr:hasPermission(node,'administrationAccess')}">
+                        <c:if test="${currentNode.properties.administrationlink.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
                             <img src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" "
                                  role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
                                 href="<c:url value='/administration/?do=change&changesite=${siteId}#sites'/>"><fmt:message
@@ -112,6 +116,42 @@
                                  role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
                                 href="<c:url value='${baseLive}${node.path}${page}.html'/>"><fmt:message
                                 key="label.live"/></a>
+                        </c:if>
+                        <c:if test="${currentNode.properties.editproperties.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
+                            <img src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" "
+                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
+                                href="#" class="changePropertiesButton" id="changePropertiesButton${node.identifier}" onclick="$('#editSiteDiv${node.identifier}').slideToggle()"><fmt:message key="label.manageSite.changeProperties"/></a>
+                        </c:if>
+
+                        <jsp:useBean id="nowDate" class="java.util.Date" />
+                        <fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd-HH-mm" var="now"/>
+
+                        <c:if test="${currentNode.properties.editproperties.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
+                                <div id="editSiteDiv${node.identifier}" style="display:none">
+                                    <form class="editSiteForm ajaxForm" id="editSiteForm${node.identifier}" action="<c:url value='${url.base}${node.path}.adminEditSite.do'/>" >
+
+                                        <fieldset>
+                                            <legend><fmt:message key="label.manageSite.siteProperties"/></legend>
+                                            <h3><fmt:message key="label.manageSite.siteProperties"/></h3>
+
+                                            <p id="siteTitleForm${node.identifier}">
+                                                <label for="siteTitle${node.identifier}"><fmt:message key="jnt_virtualsite.j_title"/></label>
+                                                <input type="text" name="siteTitle" id="siteTitle${node.identifier}" value="${node.properties['j:title'].string}"/>
+                                            </p>
+
+                                            <p id="siteServerNameForm${node.identifier}">
+                                                <label for="siteServerName${node.identifier}"><fmt:message key="jnt_virtualsite.j_serverName"/></label>
+                                                <input type="text" name="siteServerName" id="siteServerName${node.identifier}" value="${node.properties['j:serverName'].string}"/>
+                                            </p>
+
+                                            <p id="siteDescrForm${node.identifier}">
+                                                <label for="siteDescr${node.identifier}"><fmt:message key="jnt_virtualsite.j_description"/></label>
+                                                <textarea type="text" name="siteDescr" id="siteDescr${node.identifier}">${node.properties['j:description'].string}</textarea>
+                                            </p>
+                                        </fieldset>
+                                    </form>
+                                    <button site="${node.identifier}" onclick="editProperties('${node.identifier}')"><fmt:message key="label.manageSite.submitChanges"/></button>
+                                </div>
                         </c:if>
                     </li>
                 </c:when>
@@ -182,4 +222,42 @@
             </c:choose>
         </c:forEach>
     </ul>
+
+    <div style="display:none">
+        <div id="dialog-delete-confirm" title=" ">
+            <p><span class="ui-icon ui-icon-alert"
+                     style="float:left; margin:0 7px 20px 0;"></span><fmt:message key="label.delete.confirm" /></p>
+        </div>
+        <div id="nothing-selected" >
+            <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><fmt:message key="label.manageSites.noSiteSelected"/></p>
+        </div>
+    </div>
+    <div style="display:none; position:fixed; left:0; top:0; width:100%; height:100%; z-index:9999" id="loading">
+        <h1><fmt:message key="org.jahia.admin.workInProgressTitle"/></h1>
+    </div>
+
+    <jcr:node var="root" path="/"/>
+    <c:if test="${currentNode.properties.delete.boolean && jcr:hasPermission(root,'adminVirtualSites')}">
+        <form class="deleteSiteForm ajaxForm" id="deleteSiteForm" action="<c:url value='${url.base}/sites.adminDeleteSite.do'/>" >
+        </form>
+    </c:if>
+    <c:if test="${currentNode.properties.export.boolean && jcr:hasPermission(root,'adminVirtualSites')}">
+        <form class="exportForm ajaxForm"  name="export" id="exportForm" method="POST">
+            <input type="hidden" name="exportformat" value="site"/>
+            <input type="hidden" name="live" value="true"/>
+        </form>
+    </c:if>
+
+    <c:if test="${currentNode.properties.delete.boolean && jcr:hasPermission(root,'adminVirtualSites')}">
+        <button class="deleteSiteButton" id="deleteSiteButton" onclick="deleteSite()"><fmt:message key="label.manageSite.deleteSite"/></button>
+    </c:if>
+    <c:if test="${currentNode.properties.export.boolean && jcr:hasPermission(root,'adminVirtualSites')}">
+        <c:url var="stagingExportUrl" value="${renderContext.request.contextPath}/cms/export/default/sites_staging_export_${now}.zip"/>
+        <button class="exportStagingButton" id="exportStagingButton" onclick="exportSite('${stagingExportUrl}',false)"><fmt:message key="label.manageSite.exportStaging"/></button>
+        <c:url var="exportUrl" value="${renderContext.request.contextPath}/cms/export/default/sites_export_${now}.zip"/>
+        <button class="exportLiveButton" id="exportLiveButton" onclick="exportSite('${exportUrl}',true)"><fmt:message key="label.manageSite.exportLive"/></button>
+    </c:if>
+
+
+    <template:include view="hidden.footer"/>
 </c:if>

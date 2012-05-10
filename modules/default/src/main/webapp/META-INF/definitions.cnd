@@ -177,8 +177,12 @@
  - contribute (boolean)
  - preview (boolean)
  - live (boolean)
+ - administrationlink (boolean)
+ - editproperties (boolean)
+ - export (boolean)
+ - delete (boolean)
  - typeOfContent (string,choicelist[resourceBundle]) = website indexed=no < website,contents,files
- - numberOfSitesPerPage (long) = 10 mandatory
+ - numberOfSitesPerPage (long) = 10 mandatory hidden
  - numberMaxOfSitesDisplayed (long)
 
 [jmix:gadget] mixin

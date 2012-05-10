@@ -17,7 +17,15 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 
-<query:definition var="result"
-         statement="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites') and localname(site) <> 'systemsite'"/>
+<c:if test="${empty currentNode.properties['typeOfContent'] or currentNode.properties['typeOfContent'].string eq 'website'}">
+    <query:definition var="result"
+             statement="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites') and localname(site) <> 'systemsite' order by site.[jcr:created] desc"
+             limit="${currentNode.properties['numberMaxOfSitesDisplayed'].string}"/>
+</c:if>
+<c:if test="${not empty currentNode.properties['typeOfContent'] and currentNode.properties['typeOfContent'].string ne 'website'}">
+    <query:definition var="result"
+             statement="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites') order by site.[jcr:created] desc"
+             limit="${currentNode.properties['numberMaxOfSitesDisplayed'].string}"/>
+</c:if>
 
 <c:set target="${moduleMap}" property="listQuery" value="${result}"/>

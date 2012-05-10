@@ -369,7 +369,7 @@
               <pagecontent j:id="user-sites" j:originWS="default" jcr:mixinTypes="jmix:customSkin" jcr:primaryType="jnt:contentList">
                 <my-sites icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_mysites.png" j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myWebProjects)##"/>
-                  <websites-list-in-edit-mode contribute="true" edit="true" lightedit="true" j:originWS="default" j:view="paginated" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10" preview="true"/>
+                  <websites-list-in-edit-mode contribute="true" edit="true" lightedit="true" j:originWS="default" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10" preview="true"/>
                 </my-sites>
               </pagecontent>
             </user-sites>

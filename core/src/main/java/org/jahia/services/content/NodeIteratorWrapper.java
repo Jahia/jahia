@@ -70,9 +70,11 @@ public class NodeIteratorWrapper implements NodeIterator {
     private void prefetchNext() {
         do {
             try {
-                if (ni.hasNext()) {
-                    Node n = ni.nextNode();
-
+                Node n = null;
+                while (ni.hasNext() && (n == null)) {
+                    n = ni.nextNode();
+                }
+                if (n != null) {
                     if (session.getLocale() != null && n.isNodeType(Constants.JAHIANT_TRANSLATION)) {
                         try {
                             n = n.getParent();

@@ -341,6 +341,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                         node = node.getParent();
                     }
                 }
+            } catch (ItemNotFoundException e) {
             } catch (RepositoryException e) {
                 logger.error("Cannot get node "+nodeId,e);
             }

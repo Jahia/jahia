@@ -40,6 +40,7 @@
 
 package org.jahia.services.content.rules;
 
+import org.apache.commons.io.FilenameUtils;
 import org.drools.ObjectFilter;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
@@ -95,6 +96,9 @@ public class ImageService {
             return (Image) it.next();
         }
         Image iw = imageService.getImage(imageNode.getNode());
+        if (iw == null) {
+            return null;
+        }
         drools.insertLogical(iw);
         return iw;
     }
@@ -110,11 +114,17 @@ public class ImageService {
             if (contentDate.after(thumbDate)) {
                 AddedNodeFact thumbNode = new AddedNodeFact(node);
                 File f = getThumbFile(imageNode, size,square, drools);
+                if (f == null) {
+                    return;
+                }
                 drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_DATA, f, drools));
                 drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools));
             }
         } else {
             File f = getThumbFile(imageNode, size,square, drools);
+            if (f == null) {
+                return;
+            }
 
             AddedNodeFact thumbNode = new AddedNodeFact(imageNode, name, "jnt:resource", drools);
             if (thumbNode.getNode() != null) {
@@ -144,13 +154,26 @@ public class ImageService {
         String savePath = org.jahia.settings.SettingsBean.getInstance().getTmpContentDiskPath();
         File Ftemp = new File(savePath);
         if (!Ftemp.exists()) Ftemp.mkdirs();
-        final File f = File.createTempFile("thumb","jpg", Ftemp);
+        String fileExtension = FilenameUtils.getExtension(imageNode.getName());
+        if ((fileExtension != null) && (!"".equals(fileExtension))) {
+            fileExtension += "." + fileExtension;
+        } else {
+            fileExtension = null;
+        }
+        final File f = File.createTempFile("thumb", fileExtension, Ftemp);
 
         Image iw = getImageWrapper(imageNode, drools);
+        if (iw == null) {
+            return null;
+        }
 
-        imageService.createThumb(iw, f, size, square);
-        f.deleteOnExit();
-        return f;
+        if (imageService.createThumb(iw, f, size, square)) {
+            f.deleteOnExit();
+            return f;
+        } else {
+            f.deleteOnExit();
+            return null;
+        }
     }
 
     public void setHeight(AddedNodeFact imageNode, String propertyName, KnowledgeHelper drools) throws Exception {

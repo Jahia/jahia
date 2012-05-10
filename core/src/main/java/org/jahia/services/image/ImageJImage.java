@@ -56,13 +56,15 @@ public class ImageJImage implements Image {
     private int imageType;
     private BufferedImage originalImage;
     private String mimeType;
+    private boolean java2DUsed = false;
 
-    public ImageJImage(String path, ImagePlus ip, int imageType, BufferedImage originalImage, String mimeType) {
+    public ImageJImage(String path, ImagePlus ip, int imageType, BufferedImage originalImage, String mimeType, boolean java2DUsed) {
         this.path = path;
         this.imageType = imageType;
         this.ip = ip;
         this.originalImage = originalImage;
         this.mimeType = mimeType;
+        this.java2DUsed = java2DUsed;
     }
 
     public String getPath() {
@@ -83,6 +85,10 @@ public class ImageJImage implements Image {
 
     public String getMimeType() {
         return mimeType;
+    }
+
+    public boolean isJava2DUsed() {
+        return java2DUsed;
     }
 
     @Override

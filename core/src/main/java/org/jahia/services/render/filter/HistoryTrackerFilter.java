@@ -11,17 +11,22 @@ import java.util.LinkedList;
  */
 public class HistoryTrackerFilter extends AbstractFilter {
     private int historySize = 10;
+    private String name = "historyTracker";
 
     public void setHistorySize(int historySize) {
         this.historySize = historySize;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         HttpSession session = renderContext.getRequest().getSession();
-        LinkedList<String> historyTracker = (LinkedList<String>) session.getAttribute("historyTracker");
+        LinkedList<String> historyTracker = (LinkedList<String>) session.getAttribute(name);
         if (historyTracker == null) {
-            session.setAttribute("historyTracker", historyTracker = new LinkedList<String>());
+            session.setAttribute(name, historyTracker = new LinkedList<String>());
         }
         String identifier = renderContext.getMainResource().getNode().getIdentifier();
         historyTracker.remove(identifier);

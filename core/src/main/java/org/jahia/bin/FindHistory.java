@@ -113,8 +113,11 @@ public class FindHistory extends BaseFindController {
             if (request.getSession() == null) {
                 return;
             }
-
-            List<String> l = (List<String>) request.getSession().getAttribute("historyTracker");
+            String name = request.getParameter("trackerName");
+            if (name == null) {
+                name = "historyTracker";
+            }
+            List<String> l = (List<String>) request.getSession().getAttribute(name);
 
             if (l == null) {
                 return;

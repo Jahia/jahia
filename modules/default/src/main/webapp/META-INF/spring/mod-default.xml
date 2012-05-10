@@ -119,4 +119,15 @@
         <property name="requiredPermission" value="addPrincipalsInRoles" />
     </bean>
 
+    <bean class="org.jahia.modules.defaultmodule.actions.admin.AdminEditSiteAction">
+        <property name="sitesService" ref="JahiaSitesService"/>
+        <property name="requiredPermission" value="adminVirtualSites" />
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.admin.AdminDeleteSiteAction">
+        <property name="sitesService" ref="JahiaSitesService"/>
+        <property name="requiredPermission" value="adminVirtualSites" />
+    </bean>
+
+
 </beans>

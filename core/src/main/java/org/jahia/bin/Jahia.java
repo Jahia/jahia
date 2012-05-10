@@ -60,26 +60,25 @@ package org.jahia.bin;
 
 import org.apache.commons.io.IOUtils;
 import org.jahia.api.Constants;
-import org.jahia.params.*;
-import org.jahia.services.JahiaAfterInitializationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.jahia.bin.errors.DefaultErrorHandler;
-import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Version;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -370,131 +369,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                          final HttpServletResponse response)
         throws IOException,
         ServletException {
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("--------------------------------------------- NEW "
-                    + request.getMethod().toUpperCase() + " REQUEST ---");
-            logger.debug("New request, URL=[" + request.getRequestURI()
-                    + "], query=[" + request.getQueryString()
-                    + "] serverName=[" + request.getServerName() + "]");
-
-        logger.debug("Character encoding set as: "
-                     + request.getCharacterEncoding());
-        }
-
-        HttpSession session = request.getSession(false);
-        if (session == null || !request.isRequestedSessionIdValid()) {
-            // Session could be false because of new user, or missing JSESSIONID
-            // id for a non-cookie browser, or a false cookie maybe ?
-            logger.debug("Session is null");
-            session = request.getSession(true);
-            logger.debug("New session id=[" + session.getId() + "]");
-        }
-
-        // WEB APP ISSUE
-        // This session attribute is used to track that targeted application
-        // has been already processed or not.
-        final String appid = request.getParameter("appid");
-        if ( appid != null ){
-            if ( "true".equals(request.getParameter("resetAppSession")) ){
-                session.removeAttribute("org.jahia.services.applications.wasProcessed." + appid);
-            }
-        }
-
-        try {
-
-            if (jahiaContextPath == null) {
-                jahiaContextPath = request.getContextPath();
-            }
-
-            if (Jahia.jahiaHttpPort == -1) {
-                Jahia.jahiaHttpPort = request.getServerPort();
-            }
-
-            if (ParamBean.getDefaultSite() == null) {
-                JahiaSitesService jahiaSitesService = ServicesRegistry.getInstance().getJahiaSitesService();
-                if (jahiaSitesService.getNbSites() > 0) {
-                    jahiaSitesService.setDefaultSite(jahiaSitesService.getSites().next());
-                } else {
-                    getServletContext().getRequestDispatcher("/administration?do=sites&sub=list").forward(request, response);
-                    return;
-                }
-            }
-
-            // create the parambean (jParams)...
-            final ParamBean jParams = createParamBean(request,response,session);
-
-            if (jParams == null) {
-                logger.warn("ParamBean not available, aborting processing...");
-                return;
-            }
-            servletThreadLocal.set(this);
-
-            request.setAttribute("org.jahia.params.ParamBean",
-                    jParams);
-            final JahiaData jData = new JahiaData(jParams, false);
-            jParams.getRequest().setAttribute("org.jahia.data.JahiaData", jData);
-
-            // display time to fetch object plus other info
-            if (jParams.getUser() != null && logger.isInfoEnabled()) {
-                if (!"true".equals(jParams.getSessionState().getAttribute("needToRefreshParentPage"))) {
-                    StringBuffer sb = new StringBuffer(100);
-                    sb.append("Processed [").append(jParams.getRequest().getRequestURI());
-                    sb.append("] user=[").append(jParams.getUser().getUsername() )
-                            .append("] ip=[" ).append(jParams.getRequest().getRemoteAddr() )
-                            .append("] sessionID=[").append(jParams.getSessionID())
-                            .append("] in [" ).append(System.currentTimeMillis() - jParams.getStartTime())
-                            .append("ms]");
-                            
-                    logger.info(sb.toString());
-                }
-            }
-            if (accessLogger.isDebugEnabled()) {
-                accessLogger.debug(new StringBuilder(255).append(";").append(jParams.getRealRequest().getRemoteAddr()).append(";").append(jParams.getSiteID()).append(";").append(jParams.getPageID()).append(";").append(jParams.getLocale().toString()).append(";").append(jParams.getUser().getUsername()).toString());
-            }
-        } catch (Exception e) {
-            DefaultErrorHandler.getInstance().handle(e, request, response);
-        } finally {
-            paramBeanThreadLocal.set(null);
-            servletThreadLocal.set(null);
-        }
     } // end service
-
-    public static ParamBean createParamBean(final HttpServletRequest request,
-                                            final HttpServletResponse response,
-                                            final HttpSession session)
-    throws IOException, JahiaException {
-
-        // all is okay, let's continue...
-        boolean exitAdminMode;
-        final Integer I = (Integer) session.getAttribute(ProcessingContext.
-             SESSION_JAHIA_RUNNING_MODE);
-
-        ParamBean jParams = null;
-            final ProcessingContextFactory pcf = (ProcessingContextFactory) SpringContextSingleton.
-                    getInstance().getContext().getBean(ProcessingContextFactory.class.getName());
-
-            jParams = pcf.getContext(request, response, getStaticServletConfig().getServletContext());
-
-            if (jParams != null) {
-
-                exitAdminMode = ( (I != null) &&
-                        (I.intValue() == ADMIN_MODE) &&
-                        jParams.getEngine().equals(ProcessingContext.
-                        CORE_ENGINE_NAME));
-
-                paramBeanThreadLocal.set(jParams);
-
-                // tell we are in Jahia Core mode
-                if (exitAdminMode) {
-                    session.setAttribute(ProcessingContext.
-                            SESSION_JAHIA_RUNNING_MODE,
-                            Integer.valueOf(Jahia.CORE_MODE));
-                    logger.debug("Switch to Jahia.CORE_MODE");
-                }
-            }
-        return jParams;
-    }
 
     public static String getServletPath () {
         return jahiaServletPath;
@@ -504,32 +379,12 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         return jahiaContextPath;
     }
 
-    /**
-     * @deprecated since Jahia 6.5
-     */
-    @Deprecated
-    public static int getJahiaHttpPort() {
-        return jahiaHttpPort;
-    }
-
-    /**
-     * @deprecated since Jahia 6.5
-     */
-    @Deprecated
-    public static void setJahiaHttpPort(int theJahiaHttpPort) {
-        Jahia.jahiaHttpPort = theJahiaHttpPort;
-    }
-
     public static ProcessingContext getThreadParamBean () {
         return paramBeanThreadLocal.get();
     }
 
     public static void setThreadParamBean(final ProcessingContext processingContext) {
         paramBeanThreadLocal.set(processingContext);
-    }
-
-    public static HttpServlet getJahiaServlet () {
-        return servletThreadLocal.get();
     }
 
     //-------------------------------------------------------------------------

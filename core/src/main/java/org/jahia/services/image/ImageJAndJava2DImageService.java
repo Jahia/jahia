@@ -25,7 +25,7 @@ public class ImageJAndJava2DImageService extends Java2DImageService {
     public void init() {
     }
 
-    public static synchronized ImageJAndJava2DImageService getInstance() {
+    public static ImageJAndJava2DImageService getInstance() {
         return instance;
     }
 

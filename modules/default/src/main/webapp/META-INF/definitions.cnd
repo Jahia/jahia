@@ -208,6 +208,9 @@
 
 [jnt:displayCurrentLanguage] > jnt:content, jmix:siteComponent
 
+[jnt:workflowMonitor] > jnt:content, jmix:siteComponent, jmix:bindedComponent, jmix:studioOnly
+ - workflowType (string,choicelist[workflowTypes])
+
 [jnt:modeDispatcher] > jnt:content, jmix:siteComponent, jmix:studioOnly
  orderable
  - mode (string,choicelist) < 'live', 'edit', 'preview', 'contribute','live-or-preview'

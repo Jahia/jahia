@@ -49,7 +49,17 @@ function editProperties(id) {
 function createSite() {
     if ($("#webProjectCreationForm input[name=siteTitle]").val() == '' ||
         $("#webProjectCreationForm input[name=siteKey]").val() == '') {
-        return false;
+        $("#no-title").dialog({
+             resizable:false,
+             height:180,
+             modal:true,
+             buttons:{
+                 "Ok":function () {
+                     $(this).dialog("close");
+                 }
+             }
+         });
+        return;
     }
 
     showLoading();

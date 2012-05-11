@@ -1,9 +1,6 @@
 package org.jahia.services.image;
 
-import ij.ImagePlus;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.slf4j.Logger;
@@ -43,8 +40,6 @@ public class Java2DImageService extends AbstractImageService {
     }
 
     public Image getImage(JCRNodeWrapper node) throws IOException, RepositoryException {
-        File tmp = null;
-        OutputStream os = null;
         try {
             String fileExtension = FilenameUtils.getExtension(node.getName());
             if ((fileExtension != null) && (!"".equals(fileExtension))) {
@@ -52,36 +47,21 @@ public class Java2DImageService extends AbstractImageService {
             } else {
                 fileExtension = null;
             }
-            tmp = File.createTempFile("image", fileExtension);
             Node contentNode = node.getNode(Constants.JCR_CONTENT);
-            os = new BufferedOutputStream(new FileOutputStream(tmp));
             InputStream is = contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream();
             String mimeType = contentNode.getProperty(Constants.JCR_MIMETYPE).getString();
-            try {
-                IOUtils.copy(is, os);
-            } finally {
-                IOUtils.closeQuietly(os);
-                IOUtils.closeQuietly(is);
-            }
-            ImagePlus ip = null;
-            BufferedImage originalImage = null;
-            boolean java2DUsed = true;
-            originalImage = ImageIO.read(new File(tmp.getPath()));
+            BufferedImage originalImage = ImageIO.read(is);
             if (originalImage == null) {
-                logger.warn("Unable to open file " + tmp.getPath() + " for node " + node.getPath());
+                logger.warn("Unable to load image for node {}", node.getPath());
                 return null;
             }
-            ip = new ImagePlus(node.getName(), originalImage);
-            return new ImageJImage(node.getPath(), ip, 0, originalImage, mimeType, java2DUsed);
+            return new ImageJImage(node.getPath(), null, 0, originalImage, mimeType, true);
         } catch (Exception e) {
-            logger.error("Error opening file " + tmp.getPath() + " for node " + node.getPath() + ": " + e.getLocalizedMessage());
+            logger.error("Error opening image for node {}. Cause: {}", node.getPath(), e.getLocalizedMessage());
             if (logger.isDebugEnabled()) {
-                logger.debug("Error opening file " + tmp.getPath() + " for node " + node.getPath() + ": ", e);
+                logger.debug("Error opening image for node " + node.getPath(), e);
             }
             return null;
-        } finally {
-            IOUtils.closeQuietly(os);
-            FileUtils.deleteQuietly(tmp);
         }
     }
 
@@ -91,9 +71,7 @@ public class Java2DImageService extends AbstractImageService {
      * outputFile. scaleWidth is the width to scale the image to
      */
     public boolean createThumb(Image iw, File outputFile, int size, boolean square) throws IOException {
-        ImagePlus ip = ((ImageJImage)iw).getImagePlus();
-        // Load the input image.
-        if (ip == null) {
+        if (((ImageJImage)iw).getOriginalImage() == null) {
             return false;
         }
         if (square) {
@@ -204,7 +182,7 @@ public class Java2DImageService extends AbstractImageService {
                 currentHeight,
                 dest.getType()
         );
-
+        
         Graphics2D g = getGraphics2D(tempImage);
         g.setComposite(AlphaComposite.Src);
 
@@ -252,6 +230,7 @@ public class Java2DImageService extends AbstractImageService {
         }
 
         g.dispose();
+
 
         // Draw the resized image onto the destination image.
         graphics2D.drawImage(tempImage, resizeCoords.getTargetStartPosX(), resizeCoords.getTargetStartPosY(), targetWidth, targetHeight, 0, 0, currentWidth, currentHeight, null);

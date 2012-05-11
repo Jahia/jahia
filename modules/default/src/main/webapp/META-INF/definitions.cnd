@@ -182,7 +182,7 @@
  - export (boolean)
  - delete (boolean)
  - typeOfContent (string,choicelist[resourceBundle]) = website indexed=no < website,contents,files
- - numberOfSitesPerPage (long) = 10 mandatory hidden
+ - numberOfSitesPerPage (long) hidden
  - numberMaxOfSitesDisplayed (long)
 
 [jmix:gadget] mixin
@@ -210,5 +210,5 @@
 
 [jnt:modeDispatcher] > jnt:content, jmix:siteComponent, jmix:studioOnly
  orderable
- - mode (string,choicelist) < 'live', 'edit', 'preview', 'contribute'
+ - mode (string,choicelist) < 'live', 'edit', 'preview', 'contribute','live-or-preview'
  + * (jmix:droppableContent) = jmix:droppableContent version

@@ -47,6 +47,15 @@
                     <c:if test="${currentNode.properties.mode.string eq 'preview'}">
                     $('#item-${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}&includeJavascripts=true"/>');
                     </c:if>
+                    <jcr:node var="root" path="/"/>
+                    <c:if test="${currentNode.properties.mode.string eq 'live-or-preview'}">
+                    <c:if test="${jcr:hasPermission(root,'jcr:read_default')}">
+                        $('#item-${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}&includeJavascripts=true"/>');
+                    </c:if>
+                    <c:if test="${not jcr:hasPermission(root,'jcr:read_default')}">
+                        $('#item-${currentNode.identifier}').load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}&includeJavascripts=true"/>');
+                    </c:if>
+                    </c:if>
                 </script>
             </c:otherwise>
         </c:choose>

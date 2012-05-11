@@ -35,7 +35,7 @@ public class Java2DImageService extends AbstractImageService {
     public void init() {
     }
 
-    public static synchronized Java2DImageService getInstance() {
+    public static Java2DImageService getInstance() {
         return instance;
     }
 

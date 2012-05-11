@@ -1,3 +1,4 @@
+<%@page import="javax.jcr.query.Row"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java"
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -167,19 +168,26 @@ try {
         q.setOffset(Long.valueOf((String) pageContext.getAttribute("offset")));
         QueryResult result = q.execute();
         pageContext.setAttribute("count", JCRContentUtils.size(result.getNodes()));
-        pageContext.setAttribute("nodes", result.getNodes());
+        if (result.getSelectorNames().length == 1) {
+            pageContext.setAttribute("nodes", result.getNodes());
+        } else {
+            pageContext.setAttribute("selectorNames", result.getSelectorNames());
+            pageContext.setAttribute("rows", result.getRows());
+        }
         pageContext.setAttribute("took", Long.valueOf(System.currentTimeMillis() - actionTime));
     }
 %>
 <c:if test="${not empty param.query}">
 <fieldset>
-    <legend>Displaying <strong>${count} nodes</strong> (query took ${took} ms)</legend>
+    <legend>Displaying <strong>${count} results</strong> (query took ${took} ms)</legend>
     <c:if test="${showActions}">
         <div style="position: absolute; right: 20px;">
             <a href="#delete" onclick='if (!confirm("You are about to permanently delete ALL the nodes this query is matching. Continue?")) return false; go("action", "deleteAll"); return false;' title="Delete All"><img src="<c:url value='/icons/delete.png'/>" height="16" width="16" title="Delete All" border="0"/> Delete ALL</a>
         </div>
     </c:if>
 <ol start="${offset + 1}">
+<c:choose>
+<c:when test="${empty rows}">
 <c:forEach var="node" items="${nodes}" varStatus="status">
     <li>
         <a title="Open in JCR Browser" href="<c:url value='/tools/jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true'/>" target="_blank"><strong>${fn:escapeXml(not empty node.displayableName ? node.name : '<root>')}</strong></a> (${fn:escapeXml(node.nodeTypes)})
@@ -202,6 +210,38 @@ try {
         </c:if>
     </li>
 </c:forEach>
+</c:when>
+<c:otherwise>
+<c:forEach var="row" items="${rows}" varStatus="status">
+    <li>
+      <c:forEach var="selectorName" items="${selectorNames}" varStatus="nodestatus">
+        <c:set var="node" value="<%=((Row)pageContext.getAttribute("row")).getNode((String)pageContext.getAttribute("selectorName"))%>"/>
+        <a title="Open in JCR Browser" href="<c:url value='/tools/jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true'/>" target="_blank"><strong>${fn:escapeXml(not empty node.displayableName ? node.name : '<root>')}</strong></a> (${fn:escapeXml(node.nodeTypes)})
+        <a title="Open in Repository Explorer" href="<c:url value='/engines/manager.jsp?selectedPaths=${node.path}&workspace=${workspace}'/>" target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt="open" title="Open in Repository Explorer"></a>
+        <c:if test="${showActions}">
+        	&nbsp;<a href="#delete" onclick='var nodeName="${node.name}"; if (!confirm("You are about to delete the node \"" + nodeName + "\" with all child nodes. Continue?")) return false; go("action", "delete", "target", "${node.identifier}"); return false;' title="Delete"><img src="<c:url value='/icons/delete.png'/>" height="16" width="16" title="Delete" border="0"/></a>
+        </c:if>
+        <br/>
+        <strong>Path: </strong>${fn:escapeXml(node.path)}<br/>
+        <strong>ID: </strong>${fn:escapeXml(node.identifier)}<br/>
+		<jcr:nodeProperty node="${node}" name="jcr:created" var="created"/>
+		<jcr:nodeProperty node="${node}" name="jcr:createdBy" var="createdBy"/>
+		<jcr:nodeProperty node="${node}" name="jcr:lastModified" var="lastModified"/>
+		<jcr:nodeProperty node="${node}" name="jcr:lastModifiedBy" var="lastModifiedBy"/>
+        <c:if test="${not empty created}">
+        <strong>created on </strong><fmt:formatDate value="${created.time}" pattern="yyyy-MM-dd HH:mm" /><strong> by </strong>${not empty createdBy.string ? fn:escapeXml(createdBy.string) : 'n.a.'},
+        </c:if>
+        <c:if test="${not empty lastModified}">
+        <strong> last modified on </strong><fmt:formatDate value="${lastModified.time}" pattern="yyyy-MM-dd HH:mm" /><strong> by </strong>${not empty lastModifiedBy.string ? fn:escapeXml(lastModifiedBy.string) : 'n.a.'}
+        </c:if>
+        <c:if test="${not nodestatus.last}">
+          <br/>
+        </c:if>
+      </c:forEach>
+    </li>
+</c:forEach>
+</c:otherwise>
+</c:choose>
 </ol>
 </fieldset>
 </c:if>

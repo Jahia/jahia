@@ -4,6 +4,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
+<template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <template:addResources type="css" resources="pageformcreation.css"/>
 <template:addResources type="javascript" resources="managesites.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
@@ -56,13 +59,20 @@
             <input type="hidden" name="templatesSet" value="${currentNode.properties['defaultTemplatesSet'].node.name}">
         </c:if>
         <div>
-            <fmt:message key="label.noTitle" var="i18nNoTitle"/>
             <input type="button" class="button"
                    value="${currentNode.properties['buttonLabel'].string}" tabindex="28"
-                   onclick="if (!createSite()) alert('${functions:escapeJavaScript(i18nNoTitle)}')" ${disabled}/>
+                   onclick="createSite()" ${disabled}/>
         </div>
     </fieldset>
 </form>
+    <div style="display:none">
+        <div id="no-title" >
+            <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><fmt:message key="label.noTitle"/></p>
+        </div>
+    </div>
+    <div style="display:none; position:fixed; left:0; top:0; width:100%; height:100%; z-index:9999" id="loading">
+        <h1><fmt:message key="org.jahia.admin.workInProgressTitle"/></h1>
+    </div>
 </template:tokenizedForm>
 
 <c:if test="${not empty currentNode.properties['class']}">

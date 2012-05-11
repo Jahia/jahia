@@ -73,9 +73,6 @@ import javax.jcr.query.qom.*;
 import java.io.IOException;
 import java.util.*;
 
-import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO;
-import static org.apache.jackrabbit.core.query.lucene.FieldNames.LOCAL_NAME;
-import static org.apache.jackrabbit.core.query.lucene.TransformConstants.TRANSFORM_NONE;
 import static org.apache.lucene.search.BooleanClause.Occur.MUST;
 
 /**
@@ -186,6 +183,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         String id;
         int docNb = sn.getDoc(reader);
 
+        @SuppressWarnings("serial")
         Document doc = reader.document(docNb, new FieldSelector() {
             public FieldSelectorResult accept(String fieldName) {
                 if (FieldNames.UUID == fieldName) {
@@ -339,6 +337,9 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                     node = session.getNodeById(nodeId);
                     if (node.isNodeType("jnt:translation")) {
                         node = node.getParent();
+                    }
+                    if (node != null) {
+                        node = provider.getNodeWrapper(node, jcrSession); 
                     }
                 }
             } catch (ItemNotFoundException e) {

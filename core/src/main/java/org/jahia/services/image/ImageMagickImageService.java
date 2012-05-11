@@ -85,9 +85,11 @@ public class ImageMagickImageService extends AbstractImageService {
         ProcessStarter.setGlobalSearchPath(imageMagickPath);
     }
 
-    public static synchronized ImageMagickImageService getInstance() {
+    public static ImageMagickImageService getInstance() {
         if (instance == null) {
-            instance = new ImageMagickImageService();
+            synchronized (ImageMagickImageService.class) {
+                instance = new ImageMagickImageService();
+            }
         }
         return instance;
     }

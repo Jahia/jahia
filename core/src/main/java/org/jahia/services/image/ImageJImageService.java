@@ -47,25 +47,15 @@ import ij.process.ImageProcessor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.FileImageOutputStream;
-import javax.imageio.stream.ImageOutputStream;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.IndexColorModel;
 import java.io.*;
-import java.util.Iterator;
 
 /**
  * User: toto
@@ -84,9 +74,13 @@ public class ImageJImageService extends AbstractImageService {
     public void init() {
     }
 
-    public static synchronized ImageJImageService getInstance() {
+    public static ImageJImageService getInstance() {
         if (instance == null) {
-            instance = new ImageJImageService();
+            synchronized (ImageJImageService.class) {
+                if (instance == null) {
+                    instance = new ImageJImageService();
+                }
+            }
         }
         return instance;
     }

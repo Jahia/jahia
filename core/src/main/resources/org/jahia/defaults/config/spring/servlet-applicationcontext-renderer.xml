@@ -20,6 +20,7 @@
         </property>
     </bean>
 
+    <bean name="wfImage" class="org.jahia.modules.defaultmodule.actions.WorkflowImageController"/>
 
     <bean name="abstractRender" class="org.jahia.bin.Render">
         <property name="loggingService" ref="loggingService"/>
@@ -142,6 +143,7 @@
                         <property name="requestLoadAverage" ref="RequestLoadAverage" />
                     </bean>
                 </entry>
+                <entry key="/wfImage" value-ref="wfImage"/>
             </map>
         </property>
     </bean>

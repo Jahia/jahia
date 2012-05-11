@@ -23,17 +23,6 @@
 <template:addResources type="javascript" resources="managesites.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
 
-<c:set var="ajaxRequired"
-       value="${currentResource.workspace eq 'live' and jcr:hasPermission(currentResource.node, 'jcr:read_default')}"/>
-<c:if test="${ajaxRequired}">
-    <div id="listsites${currentNode.identifier}">
-        <script type="text/javascript">
-            $('#listsites${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax?includeJavascripts=true"/>');
-        </script>
-    </div>
-</c:if>
-
-<c:if test="${not ajaxRequired}">
     <template:addResources type="css" resources="listsites.css"/>
     <template:include view="hidden.header"/>
 
@@ -260,4 +249,3 @@
 
 
     <template:include view="hidden.footer"/>
-</c:if>

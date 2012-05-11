@@ -86,7 +86,7 @@
     	if (jcrId == 'preferredLanguage') {
     		window.location.reload();
     	} else {
-        	$('.user-profile-list').parent().load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax?userUuid=${user.identifier}"/>');
+        	$('.user-profile-list').parent().load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax?includeJavascripts=true&userUuid=${user.identifier}"/>');
     	}
     }
 

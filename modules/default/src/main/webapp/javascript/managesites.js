@@ -46,6 +46,19 @@ function editProperties(id) {
     })
 }
 
+function createSite() {
+    if ($("#webProjectCreationForm input[name=siteTitle]").val() == '' ||
+        $("#webProjectCreationForm input[name=siteKey]").val() == '') {
+        return false;
+    }
+
+    showLoading();
+    $('#webProjectCreationForm').ajaxSubmit(function() {
+        window.location.reload();
+    })
+    return true;
+}
+
 function exportSite(url,live) {
     if ($(".sitecheckbox:checked").length == 0) {
         $("#nothing-selected").dialog({

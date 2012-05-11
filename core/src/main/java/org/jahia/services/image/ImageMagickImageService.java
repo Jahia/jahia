@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -218,13 +219,17 @@ public class ImageMagickImageService extends AbstractImageService {
     }
 
     public boolean resizeImage(Image i, File outputFile, int width, int height, ResizeType resizeType) throws IOException {
+        return resizeImage(getFile(i), outputFile, width, height, resizeType);
+    }
+
+    protected boolean resizeImage(File inputFile, File outputFile, int width, int height, ResizeType resizeType) throws IOException {
         try {
             // create command
             ConvertCmd cmd = new ConvertCmd();
 
             // create the operation, add images and operators/options
             IMOperation op = new IMOperation();
-            op.addImage(getFile(i).getPath());
+            op.addImage(inputFile.getPath());
 
             if (ResizeType.ADJUST_SIZE.equals(resizeType)) {
                 op.resize(width,height);
@@ -246,12 +251,18 @@ public class ImageMagickImageService extends AbstractImageService {
 
             cmd.run(op);
         } catch (Exception e) {
-            logger.error("Error resizing image " + i.getPath() + "(" + getFile(i) + ") : " + e.getLocalizedMessage());
+            logger.error("Error resizing image " + inputFile + ": " + e.getLocalizedMessage());
             if (logger.isDebugEnabled()) {
-                logger.debug("Error resizing image " + i.getPath() + "(" + getFile(i) + ")", e);
+                logger.debug("Error resizing image " + inputFile, e);
             }
             return false;
         }
         return true;
+    }
+
+    public BufferedImage resizeImage(BufferedImage image, int width, int height,
+            ResizeType resizeType) throws IOException {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

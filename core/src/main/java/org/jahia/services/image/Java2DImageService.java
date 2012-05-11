@@ -103,7 +103,7 @@ public class Java2DImageService extends AbstractImageService {
             clippingHeight = originalImage.getHeight() - top;
         }
         BufferedImage clipping = getDestImage(clippingWidth, clippingHeight, originalImage);
-        Graphics2D area = getGraphics2D(clipping);
+        Graphics2D area = getGraphics2D(clipping, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         area.drawImage(originalImage, 0, 0, clippingWidth, clippingHeight, left, top, left + clippingWidth,
                 top + clippingHeight, null);
         area.dispose();
@@ -123,7 +123,7 @@ public class Java2DImageService extends AbstractImageService {
 
         BufferedImage dest = getDestImage(originalImage.getHeight(), originalImage.getWidth(), originalImage);
         // Paint source image into the destination, scaling as needed
-        Graphics2D graphics2D = getGraphics2D(dest);
+        Graphics2D graphics2D = getGraphics2D(dest, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
         double angle = Math.toRadians(clockwise ? 90 : -90);
         double sin = Math.abs(Math.sin(angle)), cos = Math.abs(Math.cos(angle));
@@ -160,7 +160,7 @@ public class Java2DImageService extends AbstractImageService {
         BufferedImage dest = getDestImage(newWidth, newHeight, originalImage);
 
         // Paint source image into the destination, scaling as needed
-        Graphics2D graphics2D = getGraphics2D(dest);
+        Graphics2D graphics2D = getGraphics2D(dest, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
         // If multi-step downscaling is not required, perform one-step.
         if ((newWidth * 2 >= resizeCoords.getSourceWidth()) && (newHeight * 2 >= resizeCoords.getSourceHeight())) {
@@ -183,7 +183,7 @@ public class Java2DImageService extends AbstractImageService {
                 dest.getType()
         );
         
-        Graphics2D g = getGraphics2D(tempImage);
+        Graphics2D g = getGraphics2D(tempImage, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         g.setComposite(AlphaComposite.Src);
 
         /*
@@ -258,7 +258,7 @@ public class Java2DImageService extends AbstractImageService {
         }
     }
 
-    protected Graphics2D getGraphics2D(BufferedImage dest) {
+    protected Graphics2D getGraphics2D(BufferedImage dest, Object interpolationValue) {
         // Paint source image into the destination, scaling as needed
         Graphics2D graphics2D = dest.createGraphics();
         if (dest.getColorModel() instanceof IndexColorModel) {
@@ -280,7 +280,7 @@ public class Java2DImageService extends AbstractImageService {
                 graphics2D.fillRect(0, 0, dest.getWidth(), dest.getHeight());
             }
         } else {
-            graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, interpolationValue);
             graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             graphics2D.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
             graphics2D.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);

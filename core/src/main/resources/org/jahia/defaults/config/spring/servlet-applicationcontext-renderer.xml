@@ -144,6 +144,9 @@
                     </bean>
                 </entry>
                 <entry key="/wfImage" value-ref="wfImage"/>
+                <entry key="/storeHistory">
+                    <bean class="org.jahia.bin.StoreHistory"/>
+                </entry>
             </map>
         </property>
     </bean>

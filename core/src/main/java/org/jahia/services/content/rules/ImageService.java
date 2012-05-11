@@ -71,9 +71,13 @@ public class ImageService {
 
     private static ImageService instance;
 
-    public static synchronized ImageService getInstance() {
+    public static ImageService getInstance() {
         if (instance == null) {
-            instance = new ImageService();
+            synchronized (ImageService.class) {
+                if (instance == null) {
+                    instance = new ImageService();
+                }
+            }
         }
         return instance;
     }
@@ -160,12 +164,12 @@ public class ImageService {
         } else {
             fileExtension = null;
         }
-        final File f = File.createTempFile("thumb", fileExtension, Ftemp);
-
         Image iw = getImageWrapper(imageNode, drools);
         if (iw == null) {
             return null;
         }
+
+        final File f = File.createTempFile("thumb", fileExtension, Ftemp);
 
         if (imageService.createThumb(iw, f, size, square)) {
             f.deleteOnExit();

@@ -55,6 +55,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
+import java.awt.image.BufferedImage;
 import java.io.*;
 
 /**
@@ -68,7 +70,7 @@ public class ImageJImageService extends AbstractImageService {
     private static final Logger logger = LoggerFactory.getLogger(ImageJImageService.class);
 
     protected ImageJImageService() {
-
+        super();
     }
 
     public void init() {
@@ -160,14 +162,14 @@ public class ImageJImageService extends AbstractImageService {
 
         ImageJImage imageJImage = (ImageJImage) i;
 
-        ImagePlus ip = ((ImageJImage)i).getImagePlus();
+        ImagePlus ip = imageJImage.getImagePlus();
         ImageProcessor processor = ip.getProcessor();
 
         processor.setRoi(left, top, width, height);
         processor = processor.crop();
         ip.setProcessor(null, processor);
 
-        return ImageProcess.save(((ImageJImage) i).getImageType(), ip, outputFile);
+        return ImageProcess.save(imageJImage.getImageType(), ip, outputFile);
     }
 
     public boolean resizeImage(Image i, File outputFile, int width, int height) throws IOException {
@@ -178,7 +180,7 @@ public class ImageJImageService extends AbstractImageService {
 
         ImageJImage imageJImage = (ImageJImage) i;
 
-        ImagePlus ip = ((ImageJImage)i).getImagePlus();
+        ImagePlus ip = imageJImage.getImagePlus();
         ImageProcessor processor = ip.getProcessor();
         if (clockwise) {
             processor = processor.rotateRight();
@@ -187,15 +189,21 @@ public class ImageJImageService extends AbstractImageService {
         }
         ip.setProcessor(null, processor);
 
-        return ImageProcess.save(((ImageJImage) i).getImageType(), ip, outputFile);
+        return ImageProcess.save(imageJImage.getImageType(), ip, outputFile);
     }
 
     public boolean resizeImage(Image i, File outputFile, int width, int height, ResizeType resizeType) throws IOException {
 
         ImageJImage imageJImage = (ImageJImage) i;
 
-        ImagePlus ip = ((ImageJImage)i).getImagePlus();
+        ImagePlus ip = imageJImage.getImagePlus();
+        
+        resizeImage(ip, width, height, resizeType);
 
+        return ImageProcess.save(imageJImage.getImageType(), ip, outputFile);
+    }
+
+    protected void resizeImage(ImagePlus ip, int width, int height, ResizeType resizeType) throws IOException {
         ImageProcessor processor = ip.getProcessor();
 
         int originalWidth = ip.getWidth();
@@ -223,8 +231,14 @@ public class ImageJImageService extends AbstractImageService {
             processor = newProcessor;
         }
         ip.setProcessor(null, processor);
-
-        return ImageProcess.save(((ImageJImage) i).getImageType(), ip, outputFile);
     }
 
+    public BufferedImage resizeImage(BufferedImage image, int width, int height,
+            ResizeType resizeType) throws IOException {
+        ImagePlus ip = new ImagePlus(null, image);
+
+        resizeImage(ip, width, height, resizeType);
+
+        return ip.getBufferedImage();
+    }
 }

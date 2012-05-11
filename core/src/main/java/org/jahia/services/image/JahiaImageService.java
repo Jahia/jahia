@@ -43,6 +43,8 @@ package org.jahia.services.image;
 import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.RepositoryException;
+
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -169,4 +171,21 @@ public interface JahiaImageService {
      */
     public boolean resizeImage(Image i, File outputFile, int width, int height, ResizeType resizeType) throws IOException;
 
+    /**
+     * Resize an image using different types of resize algorithms.
+     * 
+     * @see #resizeImage(Image, File, int, int, ResizeType) for details of the resizing
+     * @param image
+     *            the image to resize
+     * @param width
+     *            the width of the resized image
+     * @param height
+     *            the height of the resized image
+     * @param resizeType
+     *            the type of resize algorithm to use. Uses a {@link ResizeType} enum also available in this interface
+     * @return the result image or <code>null</code> in case of a failure
+     * @throws IOException
+     */
+    BufferedImage resizeImage(BufferedImage image, int width, int height, ResizeType resizeType)
+            throws IOException;
 }

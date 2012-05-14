@@ -742,7 +742,7 @@
         <eclipse.plugin.version>2.8</eclipse.plugin.version>
 
         <!-- Jahia Maven plugin version and default settings -->
-        <jahia.plugin.version>2.67</jahia.plugin.version>
+        <jahia.plugin.version>2.68</jahia.plugin.version>
         <!-- common settings -->
         <jahia.configure.useDataStore>true</jahia.configure.useDataStore>
 		<jahia.configure.storeFilesInDB>false</jahia.configure.storeFilesInDB>

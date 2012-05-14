@@ -53,6 +53,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.QueryHandlerContext;
+import org.apache.jackrabbit.core.state.ChildNodeEntry;
 import org.apache.jackrabbit.core.state.ItemStateException;
 import org.apache.jackrabbit.core.state.ItemStateManager;
 import org.apache.jackrabbit.core.state.NoSuchItemStateException;
@@ -99,6 +100,9 @@ public class JahiaNodeIndexer extends NodeIndexer {
     public static final String TRANSLATED_NODE_PARENT = "_:TRANSLATED_PARENT".intern();
     public static final String TRANSLATION_LANGUAGE = "_:TRANSLATION_LANGUAGE".intern();
 
+    public static final String ACL_UUID = "_:ACL_UUID".intern();
+    public static final Name J_ACL = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "acl");
+    
     public static final String FACET_HIERARCHY = "_:FACET_HIERARCHY".intern();
 
     /**
@@ -719,6 +723,35 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 logger.error(e.getMessage(), e);
             }
         }
+        if (isIndexed(J_ACL)) {
+            addAclUuid(doc);
+        }
         return doc;
+    }
+    
+    protected void addAclUuid(Document doc) throws RepositoryException {
+        ChildNodeEntry aclChildNode = node.getChildNodeEntry(J_ACL, 1);
+        if (aclChildNode == null) {
+            try {
+                NodeState currentNode = node;
+                while (currentNode.getParentId() != null) {
+                    currentNode = (NodeState) stateProvider
+                            .getItemState(currentNode.getParentId());
+                    aclChildNode = currentNode.getChildNodeEntry(J_ACL, 1);
+                    if (aclChildNode != null) {
+                        break;
+                    }
+                }
+            } catch (NoSuchItemStateException e) {
+                throwRepositoryException(e);
+            } catch (ItemStateException e) {
+                throwRepositoryException(e);
+            }
+        }
+        if (aclChildNode != null) {
+            doc.add(new Field(ACL_UUID, aclChildNode.getId().toString(),
+                    Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
+                    Field.TermVector.NO));
+        }
     }
 }

@@ -42,10 +42,7 @@ package org.jahia.services.image;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.im4java.core.ConvertCmd;
-import org.im4java.core.IMOperation;
-import org.im4java.core.Info;
-import org.im4java.core.InfoException;
+import org.im4java.core.*;
 import org.im4java.process.ProcessStarter;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -231,21 +228,7 @@ public class ImageMagickImageService extends AbstractImageService {
             IMOperation op = new IMOperation();
             op.addImage(inputFile.getPath());
 
-            if (ResizeType.ADJUST_SIZE.equals(resizeType)) {
-                op.resize(width,height);
-            } else if (ResizeType.ASPECT_FILL.equals(resizeType)) {
-                op.resize(width,height,"^");
-                op.gravity("center");
-                op.crop(width,height,0,0);
-                op.p_repage();
-            } else if (ResizeType.ASPECT_FIT.equals(resizeType)) {
-                op.resize(width,height);
-                op.gravity("center");
-                op.background("none");
-                op.extent(width,height);
-            } else {
-                op.resize(width,height,"!");
-            }
+            setupIMResize(op, width, height, resizeType);
 
             op.addImage(outputFile.getPath());
 
@@ -260,9 +243,49 @@ public class ImageMagickImageService extends AbstractImageService {
         return true;
     }
 
+    private void setupIMResize(IMOperation op, int width, int height, ResizeType resizeType) {
+        if (ResizeType.ADJUST_SIZE.equals(resizeType)) {
+            op.resize(width,height);
+        } else if (ResizeType.ASPECT_FILL.equals(resizeType)) {
+            op.resize(width,height,"^");
+            op.gravity("center");
+            op.crop(width,height,0,0);
+            op.p_repage();
+        } else if (ResizeType.ASPECT_FIT.equals(resizeType)) {
+            op.resize(width,height);
+            op.gravity("center");
+            op.background("none");
+            op.extent(width,height);
+        } else {
+            op.resize(width,height,"!");
+        }
+    }
+
     public BufferedImage resizeImage(BufferedImage image, int width, int height,
-            ResizeType resizeType) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
+                                     ResizeType resizeType) throws IOException {
+        try {
+        IMOperation op = new IMOperation();
+        op.addImage();                        // input
+
+        setupIMResize(op, width, height, resizeType);
+
+        op.addImage("png:-");                 // output: stdout
+
+        // set up command
+        ConvertCmd convert = new ConvertCmd();
+        Stream2BufferedImage s2b = new Stream2BufferedImage();
+        convert.setOutputConsumer(s2b);
+
+        // run command and extract BufferedImage from OutputConsumer
+        convert.run(op, image);
+        BufferedImage img = s2b.getImage();
+            return img;
+        } catch (Exception e) {
+            logger.error("Error resizing image : " + e.getLocalizedMessage());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Error resizing image ", e);
+            }
+            return null;
+        }
     }
 }

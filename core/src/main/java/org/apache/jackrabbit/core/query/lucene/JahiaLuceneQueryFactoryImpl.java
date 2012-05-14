@@ -49,6 +49,7 @@ import org.apache.jackrabbit.core.query.lucene.join.OperandEvaluator;
 import org.apache.jackrabbit.core.query.lucene.join.SelectorRow;
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.document.FieldSelectorResult;
 import org.apache.lucene.index.IndexReader;
@@ -130,30 +131,51 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             List<Row> rows = new ArrayList<Row>();
             QueryHits hits = searcher.evaluate(qp.mainQuery);
             ScoreNode node = hits.nextScoreNode();
+            Map<String, Boolean> checkedAcls = new HashMap<String, Boolean>();
+            
             while (node != null) {
-                if (foundIds.add(getId(node, reader))) {  // <-- Added by jahia
+                String[] ids = getIds(node, reader);
+                if (foundIds.add(ids[0])) {  // <-- Added by jahia
                     try {
-                        if (filter == Predicate.TRUE) {  // <-- Added by jahia
-                            Row row = new LazySelectorRow(
-                                    columns, evaluator, selector.getSelectorName(),
-                                    node.getNodeId(), node.getScore());
-                            rows.add(row);
-                            if (hasFacets) {
-                                nodes.add(node); // <-- Added by jahia
+                        Boolean aclChecked = checkedAcls.get(ids[1]);
+                        boolean canRead = true;
+                        if (aclChecked == null) {
+                            try {
+                                canRead = session.getAccessManager().canRead(null,
+                                        node.getNodeId());
+                                checkedAcls.put(ids[1], canRead);
+                            } catch (RepositoryException e) {
                             }
                         } else {
-                            NodeImpl objectNode = session.getNodeById(node.getNodeId());
-                            if (objectNode.isNodeType("jnt:translation")) {
-                                objectNode = (NodeImpl) objectNode.getParent();
-                            }
-                            Row row = new SelectorRow(
-                                    columns, evaluator, selector.getSelectorName(),
-                                    provider.getNodeWrapper(objectNode, jcrSession),
-                                    node.getScore());
-                            if (filter.evaluate(row)) {
+                            canRead = aclChecked;
+                        }
+                        if (canRead) {
+                            if (filter == Predicate.TRUE) { // <-- Added by jahia
+                                Row row = new LazySelectorRow(columns,
+                                        evaluator, selector.getSelectorName(),
+                                        node.getNodeId(), node.getScore());
+
                                 rows.add(row);
                                 if (hasFacets) {
                                     nodes.add(node); // <-- Added by jahia
+                                }
+
+                            } else {
+                                NodeImpl objectNode = session.getNodeById(node
+                                        .getNodeId());
+                                if (objectNode.isNodeType("jnt:translation")) {
+                                    objectNode = (NodeImpl) objectNode
+                                            .getParent();
+                                }
+                                Row row = new SelectorRow(columns, evaluator,
+                                        selector.getSelectorName(),
+                                        provider.getNodeWrapper(objectNode,
+                                                jcrSession), node.getScore());
+                                if (filter.evaluate(row)) {
+                                    rows.add(row);
+                                    if (hasFacets) {
+                                        nodes.add(node); // <-- Added by jahia
+                                    }
                                 }
                             }
                         }
@@ -179,8 +201,11 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         }
     }
 
-    private String getId (ScoreNode sn, IndexReader reader) throws IOException {
-        String id;
+    /**
+     * get the uuid of the language independent node and the acl-id and eventually other ids to check whether node can be read
+     */
+    private String[] getIds (ScoreNode sn, IndexReader reader) throws IOException {
+        String[] id = new String[2];
         int docNb = sn.getDoc(reader);
 
         @SuppressWarnings("serial")
@@ -192,6 +217,8 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                     return FieldSelectorResult.LOAD;
                 } else if (FieldNames.PARENT == fieldName) {
                     return FieldSelectorResult.LOAD;
+                } else if (JahiaNodeIndexer.ACL_UUID == fieldName) {
+                    return FieldSelectorResult.LOAD;                    
                 } else {
                     return FieldSelectorResult.NO_LOAD;
                 }
@@ -199,10 +226,15 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         });
 
         if (doc.getField(JahiaNodeIndexer.TRANSLATED_NODE_PARENT) != null) {
-            id = doc.getField(FieldNames.PARENT).stringValue();
+            id[0] = doc.getField(FieldNames.PARENT).stringValue();
         } else {
-            id = sn.getNodeId().toString();
+            id[0] = sn.getNodeId().toString();
         }
+        Field aclUuidField = doc.getField(JahiaNodeIndexer.ACL_UUID);
+        if (aclUuidField != null) {
+            id[1] = aclUuidField.stringValue();
+        }
+
         return id;
     }
 
@@ -328,6 +360,11 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         LazySelectorRow(Map<String, PropertyValue> columns, OperandEvaluator evaluator, String selector, NodeId nodeId, double score) {
             super(columns, evaluator, selector, null, score);
             this.nodeId = nodeId;
+        }        
+        
+        LazySelectorRow(Map<String, PropertyValue> columns, OperandEvaluator evaluator, String selector, Node node, double score) {
+            super(columns, evaluator, selector, node, score);
+            this.node = node;
         }
 
         @Override

@@ -285,6 +285,8 @@ public class CreateContentEngine extends AbstractContentEngine {
                 } else {
                     CreateContentEngine.this.tabs.removeAll();
                     CreateContentEngine.this.initTabs();
+                    changedI18NProperties.clear();
+                    changedProperties.clear();
                     CreateContentEngine.this.tabs.setSelection(tabs.getItem(0));
                     CreateContentEngine.this.layout(true);
                     unmask();

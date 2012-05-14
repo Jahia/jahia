@@ -184,6 +184,7 @@
  - typeOfContent (string,choicelist[resourceBundle]) = website indexed=no < website,contents,files
  - numberOfSitesPerPage (long) hidden
  - numberMaxOfSitesDisplayed (long)
+ - templatesSets (weakreference,choicelist[nodes='/templateSets;jnt:virtualsite']) multiple
 
 [jmix:gadget] mixin
 
@@ -216,7 +217,7 @@
  - mode (string,choicelist) < 'live', 'edit', 'preview', 'contribute','live-or-preview'
  + * (jmix:droppableContent) = jmix:droppableContent version
 
-[jnt:createWebProject] > jnt:content, jmix:siteComponent, jmix:studioOnly
+[jnt:createWebProject] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
  - useServerName (boolean)
  - useDescription (boolean)
  - useTemplatesSet (boolean)

@@ -13,7 +13,7 @@
 }
 
 a.delete {
-    background: url("/icons/delete.png") no-repeat scroll 0 0 transparent;
+    background: url("img/delete.png") no-repeat scroll 0 0 transparent;
     display: inline;
     padding-right: 18px;
 }

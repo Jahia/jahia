@@ -224,3 +224,9 @@
  - class (string) indexed=no
  - defaultTemplatesSet (weakreference,choicelist[nodes='/templateSets;jnt:virtualsite'])
  - buttonLabel (string) i18n nofulltext
+
+[jnt:openInPopup] > jnt:content, jmix:siteComponent, jmix:studioOnly
+ + * (jmix:droppableContent) = jmix:droppableContent version
+ - popupClass (string) indexed=no
+ - buttonClass (string) indexed=no
+ - buttonLabel (string) i18n nofulltext

@@ -491,7 +491,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     private void addReferencesToDependencies(final Resource resource) throws RepositoryException {
         if (resource.getNode().isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null,resource.getNode().getSession().getWorkspace().getName(), null, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     NodeIterator ni = session.getNodeByIdentifier(resource.getNode().getIdentifier()).getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
                     while (ni.hasNext()) {

@@ -62,8 +62,9 @@
             </c:if>
         </c:when>
         <c:otherwise>
+            <jcr:nodeProperty node="${currentNode}" name="j:type" var="wantedNodeType"/>
             <query:definition var="mainQuery" scope="page">
-                <query:selector nodeTypeName="nt:base"/>
+                <query:selector nodeTypeName="${not empty wantedNodeType and not empty wantedNodeType.string ? wantedNodeType.string : 'nt:base'}"/>
                 <c:set var="descendantNode" value="${fn:substringAfter(boundComponent.path,'/sites/')}"/>
                 <c:set var="descendantNode" value="${fn:substringAfter(descendantNode,'/')}"/>
                 <query:descendantNode path="/sites/${renderContext.site.name}/${descendantNode}"/>

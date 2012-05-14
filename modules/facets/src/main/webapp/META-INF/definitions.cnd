@@ -4,6 +4,7 @@
 [jnt:facets] > jnt:content, jmix:queryContent, jmix:bindedComponent
 orderable
 - j:bindedComponent (weakreference)
+- j:type (string, choicelist[subnodetypes = 'jnt:file,jnt:folder,nt:hierarchyNode,jnt:page,jnt:content,jmix:basicContent,jmix:editorialContent,jmix:retrievableContent',resourceBundle]) indexed=no mandatory
 + * (jnt:facet)
 
 [jnt:facet] > jnt:content abstract

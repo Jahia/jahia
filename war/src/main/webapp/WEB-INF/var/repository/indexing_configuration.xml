@@ -24,7 +24,6 @@ The following example creates an index aggregate on jnt:file that includes the c
     </index-rule>
 
     <i18ncopy>
-        <exclude-property>j:tags</exclude-property>    
         <exclude-property>j:locktoken</exclude-property>
         <exclude-property>jcr:language</exclude-property>        
         <exclude-property>jcr:lastModified</exclude-property>

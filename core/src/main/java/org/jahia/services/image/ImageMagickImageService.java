@@ -105,6 +105,7 @@ public class ImageMagickImageService extends AbstractImageService {
             fileExtension = null;
         }
         File tmp = File.createTempFile("image", fileExtension);
+        tmp.deleteOnExit();
         InputStream is = contentNode.getProperty(Constants.JCR_DATA).getStream();
         OutputStream os = new BufferedOutputStream(new FileOutputStream(tmp));
         try {

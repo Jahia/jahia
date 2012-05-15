@@ -152,8 +152,9 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                         }
                         if (canRead
                                 && (!Constants.LIVE_WORKSPACE.equals(session
-                                        .getWorkspace().getName()) || "true"
-                                        .equals(infos[3]))) {
+                                        .getWorkspace().getName())
+                                        || infos[3] == null || "true"
+                                            .equals(infos[3]))) {
                             if (filter == Predicate.TRUE) { // <-- Added by jahia
                                 Row row = null;
                             
@@ -229,7 +230,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
      * [3] "true" node is published / "false" node is not published
      */
     private String[] getIndexedNodeInfo (ScoreNode sn, IndexReader reader) throws IOException {
-        String[] id = new String[4];
+        String[] info = new String[4];
         int docNb = sn.getDoc(reader);
 
         @SuppressWarnings("serial")
@@ -254,23 +255,23 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         });
 
         if (doc.getField(JahiaNodeIndexer.TRANSLATED_NODE_PARENT) != null) {
-            id[0] = doc.getField(FieldNames.PARENT).stringValue();
+            info[0] = doc.getField(FieldNames.PARENT).stringValue();
         } else {
-            id[0] = sn.getNodeId().toString();
+            info[0] = sn.getNodeId().toString();
         }
         Field aclUuidField = doc.getField(JahiaNodeIndexer.ACL_UUID);
         if (aclUuidField != null) {
-            id[1] = aclUuidField.stringValue();
+            info[1] = aclUuidField.stringValue();
         }
         Field checkVisibilityField = doc.getField(JahiaNodeIndexer.CHECK_VISIBILITY);
         if (checkVisibilityField != null) {
-            id[2] = checkVisibilityField.stringValue();
+            info[2] = checkVisibilityField.stringValue();
         }
         Field publishedField = doc.getField(JahiaNodeIndexer.PUBLISHED);
         if (publishedField != null) {
-            id[3] = publishedField.stringValue();
+            info[3] = publishedField.stringValue();
         }        
-        return id;
+        return info;
     }
 
     protected Query getNodeIdQuery(String field, String path) throws RepositoryException {

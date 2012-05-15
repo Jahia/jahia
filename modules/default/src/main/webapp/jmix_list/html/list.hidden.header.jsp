@@ -49,15 +49,39 @@
            value="${facet:getAppliedFacetFilters(activeFacetsVars[facetParamVarName])}"/>
 </c:if>
 <c:if test="${empty moduleMap.currentList and not empty moduleMap.listQuery}">
+    <c:choose>
+      <c:when test="${not empty moduleMap.listQueryResultVar}">
+          <c:set var="resultName" value="${moduleMap.listQueryResultVar}"/>
+      </c:when>
+      <c:otherwise>
+          <c:set var="resultName" value="result_${currentNode.identifier}"/>
+      </c:otherwise>
+    </c:choose>
+
     <query:definition var="listQuery" qom="${moduleMap.listQuery}">
         <c:forEach items="${activeFacetsVars[activeFacetMapVarName]}" var="facet">
             <c:forEach items="${facet.value}" var="facetValue">
+                <c:if test="${not fn:endsWith(resultName, '-withFacetFilter')}">
+                    <c:set var="resultName" value="${resultName}-withFacetFilter"/>
+                </c:if>
                 <query:fullTextSearch propertyName="rep:filter(${jcr:escapeIllegalJcrChars(facet.key)})"
                                       searchExpression="${facetValue.value}"/>
             </c:forEach>
         </c:forEach>
     </query:definition>
-    <jcr:jqom var="result" qomBeanName="listQuery"/>
+    
+    <c:choose>
+        <c:when test='${empty queryMap[resultName] }'>
+            <jcr:jqom var="result" qomBeanName="listQuery"/>
+            <c:if test='${queryMap == null}'>
+                <jsp:useBean id="queryMap" class="java.util.HashMap" scope="request"/>
+            </c:if>
+            <c:set target="${queryMap}" property="${resultName}" value="${result}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="result" value="${queryMap[resultName]}"/>
+        </c:otherwise>
+    </c:choose>    
 
     <%-- pager specific --%>
     <c:set target="${moduleMap}" property="end" value="${functions:length(result.nodes)}"/>

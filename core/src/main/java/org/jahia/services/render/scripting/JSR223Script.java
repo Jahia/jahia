@@ -89,7 +89,7 @@ public class JSR223Script implements Script {
             logger.error(e.getMessage(), e);
         }
         if (scriptEngine != null) {
-            ScriptContext scriptContext = scriptEngine.getContext();
+            ScriptContext scriptContext = new SimpleScriptContext();
             final Bindings bindings = new SimpleBindings();
             Enumeration attrNamesEnum = context.getRequest().getAttributeNames();
             while (attrNamesEnum.hasMoreElements()) {
@@ -107,7 +107,9 @@ public class JSR223Script implements Script {
                     scriptContext.setErrorWriter(new StringWriter());
                     // The following binding is necessary for Javascript, which doesn't offer a console by default.
                     bindings.put("out", new PrintWriter(scriptContext.getWriter()));
-                    scriptEngine.eval(scriptContent, bindings);
+                    scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+                    scriptContext.setBindings(scriptContext.getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
+                    scriptEngine.eval(scriptContent, scriptContext);
                     StringWriter writer = (StringWriter) scriptContext.getWriter();
                     return writer.toString().trim();
                 } catch (ScriptException e) {

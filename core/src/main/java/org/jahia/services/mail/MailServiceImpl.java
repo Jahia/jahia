@@ -300,7 +300,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
             throws RepositoryException, ScriptException {
         // Resolve template :
         ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(StringUtils.substringAfterLast(template, "."));
-        ScriptContext scriptContext = scriptEngine.getContext();
+        ScriptContext scriptContext = new SimpleScriptContext();
         String templateRealPath = TemplateUtils.lookupTemplate(templatePackageName, template);
         InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(
                 templateRealPath);
@@ -327,8 +327,10 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
                 InputStream stream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(
                         subjectTemplatePath);
                 scriptContent = new InputStreamReader(stream);
+                scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+                scriptContext.setBindings(scriptContext.getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
                 scriptContext.setWriter(new StringWriter());
-                scriptEngine.eval(scriptContent, bindings);
+                scriptEngine.eval(scriptContent, scriptContext);
                 subject = ((StringWriter) scriptContext.getWriter()).toString().trim();
             } catch (Exception e) {
                 subject = resourceBundle.getString(StringUtils.substringBeforeLast(StringUtils.substringAfterLast(template, "/"), ".") + ".subject");

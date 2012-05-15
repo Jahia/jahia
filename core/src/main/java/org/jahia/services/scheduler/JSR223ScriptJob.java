@@ -82,7 +82,7 @@ public class JSR223ScriptJob extends BackgroundJob {
     	
         ScriptEngine scriptEngine = ScriptEngineUtils.getInstance().scriptEngine(FilenameUtils.getExtension(jobScriptPath));
         if (scriptEngine != null) {
-            ScriptContext scriptContext = scriptEngine.getContext();
+            ScriptContext scriptContext = new SimpleScriptContext();
             final Bindings bindings = new SimpleBindings();
             bindings.put("jobDataMap", map);
             InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(jobScriptPath);
@@ -94,7 +94,9 @@ public class JSR223ScriptJob extends BackgroundJob {
                     scriptContext.setWriter(out);
                     // The following binding is necessary for Javascript, which doesn't offer a console by default.
                     bindings.put("out", new PrintWriter(scriptContext.getWriter()));
-                    scriptEngine.eval(scriptContent, bindings);
+                    scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+                    scriptContext.setBindings(scriptContext.getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
+                    scriptEngine.eval(scriptContent, scriptContext);
                     map.put(JOB_SCRIPT_OUTPUT, out.toString());
                 	logger.info("...JSR-223 script job {} execution finished", jobScriptPath);
                 } catch (ScriptException e) {

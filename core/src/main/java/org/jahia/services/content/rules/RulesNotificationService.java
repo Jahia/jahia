@@ -202,7 +202,7 @@ public class RulesNotificationService {
         // Resolve template :
         String extension = StringUtils.substringAfterLast(template, ".");
         ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(extension);
-        ScriptContext scriptContext = scriptEngine.getContext();
+        ScriptContext scriptContext = new SimpleScriptContext();
         final Bindings bindings = new SimpleBindings();
         bindings.put("currentUser", user);
         InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(template);
@@ -225,7 +225,9 @@ public class RulesNotificationService {
                 scriptContext.setWriter(new StringWriter());
                 // The following binding is necessary for Javascript, which doesn't offer a console by default.
                 bindings.put("out", new PrintWriter(scriptContext.getWriter()));
-                scriptEngine.eval(scriptContent, bindings);
+                scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+                scriptContext.setBindings(scriptContext.getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
+                scriptEngine.eval(scriptContent, scriptContext);
                 StringWriter writer = (StringWriter) scriptContext.getWriter();
                 String body = writer.toString();
                 notificationService.sendMessage(fromMail, toMail, ccList, bcclist, subject, null, body);

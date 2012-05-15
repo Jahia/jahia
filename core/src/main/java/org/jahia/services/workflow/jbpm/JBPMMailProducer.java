@@ -334,13 +334,15 @@ public class JBPMMailProducer extends MailProducerImpl {
 
     private String evaluateExpression(Execution execution, String scriptToExecute, JCRSessionWrapper session)
             throws RepositoryException, ScriptException {
-        ScriptContext scriptContext = scriptEngine.getContext();
+        ScriptContext scriptContext = new SimpleScriptContext();
         if (bindings == null) {
             bindings = getBindings(execution, session);
         }
         scriptContext.setWriter(new StringWriter());
         scriptContext.setErrorWriter(new StringWriter());
-        scriptEngine.eval(scriptToExecute, bindings);
+        scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+        scriptContext.setBindings(scriptContext.getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
+        scriptEngine.eval(scriptToExecute, scriptContext);
         String error = scriptContext.getErrorWriter().toString();
         if (error.length() > 0) {
             logger.error("Scripting error : " + error);

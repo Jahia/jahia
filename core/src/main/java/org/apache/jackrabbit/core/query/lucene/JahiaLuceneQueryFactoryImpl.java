@@ -60,6 +60,7 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
+import org.jahia.api.Constants;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.search.facets.JahiaQueryParser;
@@ -134,26 +135,45 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             Map<String, Boolean> checkedAcls = new HashMap<String, Boolean>();
             
             while (node != null) {
-                String[] ids = getIds(node, reader);
-                if (foundIds.add(ids[0])) {  // <-- Added by jahia
+                String[] infos = getIndexedNodeInfo(node, reader);
+                if (foundIds.add(infos[0])) {  // <-- Added by jahia
                     try {
-                        Boolean aclChecked = checkedAcls.get(ids[1]);
+                        Boolean aclChecked = checkedAcls.get(infos[1]);
                         boolean canRead = true;
                         if (aclChecked == null) {
                             try {
                                 canRead = session.getAccessManager().canRead(null,
                                         node.getNodeId());
-                                checkedAcls.put(ids[1], canRead);
+                                checkedAcls.put(infos[1], canRead);
                             } catch (RepositoryException e) {
                             }
                         } else {
                             canRead = aclChecked;
                         }
-                        if (canRead) {
+                        if (canRead
+                                && (!Constants.LIVE_WORKSPACE.equals(session
+                                        .getWorkspace().getName()) || "true"
+                                        .equals(infos[3]))) {
                             if (filter == Predicate.TRUE) { // <-- Added by jahia
-                                Row row = new LazySelectorRow(columns,
-                                        evaluator, selector.getSelectorName(),
-                                        node.getNodeId(), node.getScore());
+                                Row row = null;
+                            
+                                if ("1".equals(infos[2])) {
+                                    NodeImpl objectNode = session.getNodeById(node
+                                            .getNodeId());
+                                    if (objectNode.isNodeType("jnt:translation")) {
+                                        objectNode = (NodeImpl) objectNode
+                                                .getParent();
+                                    }
+                                    row = new LazySelectorRow(columns,
+                                            evaluator, selector.getSelectorName(),
+                                            provider.getNodeWrapper(objectNode,
+                                                    jcrSession), node.getScore());
+                                } else {
+                                    row = new LazySelectorRow(columns,
+                                            evaluator,
+                                            selector.getSelectorName(),
+                                            node.getNodeId(), node.getScore());
+                                }
 
                                 rows.add(row);
                                 if (hasFacets) {
@@ -202,10 +222,14 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
     }
 
     /**
-     * get the uuid of the language independent node and the acl-id and eventually other ids to check whether node can be read
+     * Get a String array of indexed fields for running quick checks 
+     * [0] the uuid of the language independent node 
+     * [1] the acl-id 
+     * [2] "1" if visibility rule is set for node
+     * [3] "true" node is published / "false" node is not published
      */
-    private String[] getIds (ScoreNode sn, IndexReader reader) throws IOException {
-        String[] id = new String[2];
+    private String[] getIndexedNodeInfo (ScoreNode sn, IndexReader reader) throws IOException {
+        String[] id = new String[4];
         int docNb = sn.getDoc(reader);
 
         @SuppressWarnings("serial")
@@ -218,7 +242,11 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                 } else if (FieldNames.PARENT == fieldName) {
                     return FieldSelectorResult.LOAD;
                 } else if (JahiaNodeIndexer.ACL_UUID == fieldName) {
-                    return FieldSelectorResult.LOAD;                    
+                    return FieldSelectorResult.LOAD;
+                } else if (JahiaNodeIndexer.CHECK_VISIBILITY == fieldName) {
+                    return FieldSelectorResult.LOAD;                
+                } else if (JahiaNodeIndexer.PUBLISHED == fieldName) {
+                    return FieldSelectorResult.LOAD;                                    
                 } else {
                     return FieldSelectorResult.NO_LOAD;
                 }
@@ -234,7 +262,14 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         if (aclUuidField != null) {
             id[1] = aclUuidField.stringValue();
         }
-
+        Field checkVisibilityField = doc.getField(JahiaNodeIndexer.CHECK_VISIBILITY);
+        if (checkVisibilityField != null) {
+            id[2] = checkVisibilityField.stringValue();
+        }
+        Field publishedField = doc.getField(JahiaNodeIndexer.PUBLISHED);
+        if (publishedField != null) {
+            id[3] = publishedField.stringValue();
+        }        
         return id;
     }
 
@@ -371,15 +406,16 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         public Node getNode() {
             try {
                 if (node == null) {
-                    node = session.getNodeById(nodeId);
-                    if (node.isNodeType("jnt:translation")) {
-                        node = node.getParent();
+                    Node originalNode = session.getNodeById(nodeId);
+                    if (originalNode.isNodeType("jnt:translation")) {
+                        originalNode = originalNode.getParent();
                     }
-                    if (node != null) {
-                        node = provider.getNodeWrapper(node, jcrSession); 
+                    if (originalNode != null) {
+                        node = provider.getNodeWrapper(originalNode, jcrSession); 
                     }
                 }
             } catch (ItemNotFoundException e) {
+            } catch (PathNotFoundException e) {                
             } catch (RepositoryException e) {
                 logger.error("Cannot get node "+nodeId,e);
             }

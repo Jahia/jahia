@@ -20,12 +20,18 @@
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 
 <template:addResources type="javascript" resources="jquery.fancybox.js"/>
+<template:addResources type="css" resources="jquery.fancybox.css"/>
 <template:addResources type="javascript" resources="managesites.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
 
     <template:addResources type="css" resources="listsites.css"/>
     <template:include view="hidden.header"/>
 
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("a.detailsButton").fancybox();
+    });
+</script>
     <ul class="list-sites">
         <c:forEach items="${moduleMap.currentList}" var="node" begin="${moduleMap.begin}" end="${moduleMap.end}">
             <c:choose>
@@ -110,6 +116,9 @@
                             <img src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" "
                                  role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
                                 href="#" class="changePropertiesButton" id="changePropertiesButton${node.identifier}" onclick="$('#editSiteDiv${node.identifier}').slideToggle()"><fmt:message key="label.manageSite.changeProperties"/></a>
+                        </c:if>
+                        <c:if test="${currentNode.properties.details.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
+                            <a href="<c:url value='${basePreview}${node.path}${page}.${currentNode.properties.detailsTemplate.string}.html'/>" class="detailsButton" id="detailsButton${node.identifier}">${currentNode.properties.detailsLabel.string}</a>
                         </c:if>
 
                         <jsp:useBean id="nowDate" class="java.util.Date" />

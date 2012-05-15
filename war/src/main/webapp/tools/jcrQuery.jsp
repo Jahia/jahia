@@ -1,7 +1,7 @@
-<%@page import="javax.jcr.query.Row"%>
-<%@ page contentType="text/html;charset=UTF-8" language="java"
-%><?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@page import="javax.jcr.query.Row"%>
+<%@page contentType="text/html;charset=UTF-8" language="java"%>
 <%@page import="java.io.PrintWriter"%>
 <%@page import="java.io.StringWriter"%>
 <%@page import="java.util.Locale"%>
@@ -215,7 +215,7 @@ try {
 <c:forEach var="row" items="${rows}" varStatus="status">
     <li>
       <c:forEach var="selectorName" items="${selectorNames}" varStatus="nodestatus">
-        <c:set var="node" value="<%=((Row)pageContext.getAttribute("row")).getNode((String)pageContext.getAttribute("selectorName"))%>"/>
+        <c:set var="node" value='<%=((Row)pageContext.getAttribute("row")).getNode((String)pageContext.getAttribute("selectorName"))%>'/>
         <a title="Open in JCR Browser" href="<c:url value='/tools/jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true'/>" target="_blank"><strong>${fn:escapeXml(not empty node.displayableName ? node.name : '<root>')}</strong></a> (${fn:escapeXml(node.nodeTypes)})
         <a title="Open in Repository Explorer" href="<c:url value='/engines/manager.jsp?selectedPaths=${node.path}&workspace=${workspace}'/>" target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt="open" title="Open in Repository Explorer"></a>
         <c:if test="${showActions}">

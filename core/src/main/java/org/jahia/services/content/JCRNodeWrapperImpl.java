@@ -3685,34 +3685,43 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         while (rowIterator.hasNext()) {
             Row row = rowIterator.nextRow();
             JCRNodeWrapper node = (JCRNodeWrapper) row.getNode();
-            Property referenceProperty = node.getProperty(REFERENCE_PROPERTY_NAMES_PROPERTYNAME);
-            Value[] propertyReferences = referenceProperty.getValues();
-            String foundPropertyName = null;
-            for (Value propertyReference : propertyReferences) {
-                String curPropertyReference = propertyReference.getString();
-                String[] refParts = EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR_PATTERN.split(curPropertyReference);
-                String curNodeIdentifier = refParts[0];
-                String curPropertyName = refParts[1];
-                if (curNodeIdentifier.equals(getIdentifier())) {
-                    if (name == null) {
-                        foundPropertyName = curPropertyName;
-                        break;
-                    } else if (name.equals(curPropertyName)) {
-                        foundPropertyName = curPropertyName;
-                        break;
+            if (node != null) {
+                Property referenceProperty = node
+                        .getProperty(REFERENCE_PROPERTY_NAMES_PROPERTYNAME);
+                Value[] propertyReferences = referenceProperty.getValues();
+                String foundPropertyName = null;
+                for (Value propertyReference : propertyReferences) {
+                    String curPropertyReference = propertyReference.getString();
+                    String[] refParts = EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR_PATTERN
+                            .split(curPropertyReference);
+                    String curNodeIdentifier = refParts[0];
+                    String curPropertyName = refParts[1];
+                    if (curNodeIdentifier.equals(getIdentifier())) {
+                        if (name == null) {
+                            foundPropertyName = curPropertyName;
+                            break;
+                        } else if (name.equals(curPropertyName)) {
+                            foundPropertyName = curPropertyName;
+                            break;
+                        }
                     }
                 }
-            }
-            if (foundPropertyName != null) {
-                ExtendedPropertyDefinition epd = node.getApplicablePropertyDefinition(foundPropertyName);
-                if (epd != null)  {
-                    Property nodeProperty = new ExternalReferencePropertyImpl(foundPropertyName, epd, node, session, getIdentifier(), this);
-                    matchingProperties.add(new JCRPropertyWrapperImpl(node, nodeProperty, session, provider, epd));
+                if (foundPropertyName != null) {
+                    ExtendedPropertyDefinition epd = node
+                            .getApplicablePropertyDefinition(foundPropertyName);
+                    if (epd != null) {
+                        Property nodeProperty = new ExternalReferencePropertyImpl(
+                                foundPropertyName, epd, node, session,
+                                getIdentifier(), this);
+                        matchingProperties.add(new JCRPropertyWrapperImpl(node,
+                                nodeProperty, session, provider, epd));
+                    }
+                } else {
+                    throw new PathNotFoundException(
+                            "Couldn't find matching external property reference for name "
+                                    + foundPropertyName);
                 }
-            } else {
-                throw new PathNotFoundException("Couldn't find matching external property reference for name " + foundPropertyName);
             }
-
         }
 
         // now let's query all the shared external references

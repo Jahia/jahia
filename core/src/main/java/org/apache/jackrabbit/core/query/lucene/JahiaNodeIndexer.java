@@ -50,6 +50,8 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.HierarchyManager;
+import org.apache.jackrabbit.core.id.ItemId;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.QueryHandlerContext;
@@ -71,10 +73,6 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.Parser;
 import org.jahia.api.Constants;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -103,6 +101,12 @@ public class JahiaNodeIndexer extends NodeIndexer {
     public static final String ACL_UUID = "_:ACL_UUID".intern();
     public static final Name J_ACL = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "acl");
     
+    public static final String CHECK_VISIBILITY = "_:CHECK_VISIBILITY".intern();
+    public static final Name J_VISIBILITY = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "conditionalVisibility");
+    
+    public static final String PUBLISHED = "_:PUBLISHED".intern();
+    public static final Name J_PUBLISHED = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "published");
+    
     public static final String FACET_HIERARCHY = "_:FACET_HIERARCHY".intern();
 
     /**
@@ -114,6 +118,11 @@ public class JahiaNodeIndexer extends NodeIndexer {
      * The persistent namespace registry
      */
     protected final NamespaceRegistry namespaceRegistry;
+    
+    /**
+     * The hierarchy manager
+     */
+    protected final HierarchyManager hierarchyMgr;    
 
     /**
      * The <code>ExtendedNodeType</code> of the node to index
@@ -153,6 +162,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         super(node, stateProvider, mappings, executor, parser);
         this.nodeTypeRegistry = NodeTypeRegistry.getInstance();
         this.namespaceRegistry = context.getNamespaceRegistry();
+        this.hierarchyMgr = context.getHierarchyManager();
         try {
             Name nodeTypeName = node.getNodeTypeName();
             nodeType = nodeTypeRegistry != null ? nodeTypeRegistry.getNodeType(namespaceRegistry
@@ -499,7 +509,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
      */
     protected void addFacetValue(Document doc, String fieldName, Object internalValue) {
         // simple String
-        String stringValue = (String) internalValue;
+        String stringValue = internalValue.toString();
         if (stringValue.length() == 0) {
             return;
         }
@@ -523,33 +533,38 @@ public class JahiaNodeIndexer extends NodeIndexer {
      *            The value for the field to add to the document.
      */
     protected void addHierarchicalFacetValue(Document doc, String fieldName, Object internalValue) {
-        final String stringValue = (String) internalValue;
+        final String stringValue = (String) internalValue.toString();
         if (stringValue.length() == 0) {
             return;
         }
-
+        ItemId itemId = (ItemId)internalValue;
         int idx = fieldName.indexOf(':');
         fieldName = fieldName.substring(0, idx + 1) + FACET_PREFIX + fieldName.substring(idx + 1);
 
         final List<String> hierarchyPaths = new ArrayList<String>();
         final List<String> parentIds = new ArrayList<String>(); 
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<Object>>() {
-                public List<Object> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    JCRNodeWrapper node = session.getNodeByIdentifier(stringValue);
-                    String typeName = node.getPrimaryNodeTypeName();
-                    while (typeName.equals(node.getParent().getPrimaryNodeTypeName())) {
-                        hierarchyPaths.add(node.getPath());
-                        parentIds.add(node.getIdentifier());
-                        node = node.getParent();
-                    }
-                    while (!"/".equals(node.getPath())) {
-                        parentIds.add(node.getIdentifier());
-                        node = node.getParent();
-                    }
-                    return null;
-                }
-            });
+            NodeState node = (NodeState) stateProvider.getItemState(itemId);
+            Name typeName = node.getNodeTypeName();
+            NodeState parent = (NodeState) stateProvider.getItemState(node
+                    .getParentId());
+
+            while (typeName.equals(parent.getNodeTypeName())) {
+                hierarchyPaths.add(StringUtils.remove(resolver.getJCRPath(hierarchyMgr
+                        .getPath(node.getNodeId())), "0:"));
+                parentIds.add(node.getNodeId().toString());
+                node = parent;
+                parent = (NodeState) stateProvider.getItemState(node
+                        .getParentId());
+            }
+            while (!"/".equals(resolver.getJCRPath(hierarchyMgr.getPath(node
+                    .getNodeId())))) {
+                parentIds.add(node.getNodeId().toString());
+                node = (NodeState) stateProvider.getItemState(node
+                        .getParentId());
+            }
+        } catch (ItemStateException e) {
+            logger.error(e.getMessage(), e);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -641,9 +656,9 @@ public class JahiaNodeIndexer extends NodeIndexer {
         ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
         if (definition != null && definition.isFacetable()) {
             if (definition.isHierarchical()) {
-                addHierarchicalFacetValue(doc, fieldName, internalValue.toString());
+                addHierarchicalFacetValue(doc, fieldName, internalValue);
             } else {
-                addFacetValue(doc, fieldName, internalValue.toString());
+                addFacetValue(doc, fieldName, internalValue);
             }
         }                                
     }
@@ -665,14 +680,6 @@ public class JahiaNodeIndexer extends NodeIndexer {
             try {
                 NodeState parentNode = (NodeState) stateProvider.getItemState(node.getParentId());
 
-//                /// Move translation node on its parent place
-//                doc.removeField(FieldNames.UUID);
-//                doc.add(new Field(
-//                    FieldNames.UUID, parentNode.getNodeId().toString(),
-//                    Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-
-                /// add direct parent for translation
-//                doc.removeField(FieldNames.PARENT);
                 doc.add(new Field(
                         TRANSLATED_NODE_PARENT, parentNode.getParentId().toString(),
                         Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
@@ -714,6 +721,12 @@ public class JahiaNodeIndexer extends NodeIndexer {
                         throwRepositoryException(e);
                     }
                 }
+                
+                if (isIndexed(J_VISIBILITY) && parentNode.hasChildNodeEntry(J_VISIBILITY)) {
+                    doc.add(new Field(CHECK_VISIBILITY, "1",
+                            Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
+                            Field.TermVector.NO));
+                }
 
                 // now add fields that are not used in excerpt (must go at the end)
                 for (Fieldable field : doNotUseInExcerpt) {
@@ -725,6 +738,23 @@ public class JahiaNodeIndexer extends NodeIndexer {
         }
         if (isIndexed(J_ACL)) {
             addAclUuid(doc);
+        }
+        if (isIndexed(J_VISIBILITY) && node.hasChildNodeEntry(J_VISIBILITY)) {
+            doc.add(new Field(CHECK_VISIBILITY, "1",
+                    Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
+                    Field.TermVector.NO));
+        }
+        if (isIndexed(J_PUBLISHED) && node.getPropertyNames().contains(J_PUBLISHED)) {
+            PropertyId id = new PropertyId(node.getNodeId(), J_PUBLISHED);
+            try {
+                PropertyState propState = (PropertyState) stateProvider.getItemState(id);
+                
+                doc.add(new Field(PUBLISHED, propState.getValues()[0].getString(),
+                        Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
+                        Field.TermVector.NO));
+            } catch (ItemStateException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
         return doc;
     }

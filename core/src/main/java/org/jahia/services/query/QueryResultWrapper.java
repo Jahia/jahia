@@ -146,7 +146,7 @@ public class QueryResultWrapper implements QueryResult {
                 JCRPropertyWrapper property = null;
                 if (!columnName.startsWith("rep:spellcheck(")
                         && !columnName.startsWith("rep:excerpt(")
-                        && !row.getNode().hasProperty(columnName)) {
+                        && !(row.getNode() != null && row.getNode().hasProperty(columnName))) {
                     JCRNodeWrapper node = (JCRNodeWrapper) getNode();
                     try {
                         property = node.getProperty(columnName);
@@ -168,7 +168,7 @@ public class QueryResultWrapper implements QueryResult {
 
         private Node wrap(Node node) throws RepositoryException {
             JCRSessionWrapper session = getSession();
-            if (session.getLocale() != null && node.hasProperty(Constants.JCR_LANGUAGE)) {
+            if (node != null && session.getLocale() != null && node.hasProperty(Constants.JCR_LANGUAGE)) {
                 String language = node.getProperty(Constants.JCR_LANGUAGE).getString();
                 if (!getSessionLanguage().equals(language)) {
                     session = ServicesRegistry

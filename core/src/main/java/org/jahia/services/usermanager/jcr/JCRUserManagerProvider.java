@@ -278,9 +278,11 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                         RowIterator rows = qr.getRows();
                         while (rows.hasNext()) {
                             Row usersFolderNode = rows.nextRow();
-                            String userName = "{jcr}" + usersFolderNode.getNode().getName();
-                            if (!users.contains(userName)) {
-                                users.add(userName);
+                            if (usersFolderNode.getNode() != null) {
+                                String userName = "{jcr}" + usersFolderNode.getNode().getName();
+                                if (!users.contains(userName)) {
+                                    users.add(userName);
+                                }
                             }
                         }
                     }

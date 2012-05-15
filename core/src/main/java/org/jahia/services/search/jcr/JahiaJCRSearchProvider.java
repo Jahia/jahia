@@ -172,11 +172,11 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     Row row = it.nextRow();
                     try {
                         JCRNodeWrapper node = (JCRNodeWrapper) row.getNode();
-                        if (node.isNodeType(Constants.JAHIANT_TRANSLATION)
-                                || Constants.JCR_CONTENT.equals(node.getName())) {
+                        if (node != null && (node.isNodeType(Constants.JAHIANT_TRANSLATION)
+                                || Constants.JCR_CONTENT.equals(node.getName()))) {
                             node = node.getParent();
                         }
-                        if (addedNodes.add(node.getIdentifier())) {
+                        if (node != null && addedNodes.add(node.getIdentifier())) {
                             boolean skipNode = isNodeToSkip(node, criteria, languages);
                                     
                             Hit<?> hit = !skipNode ? buildHit(row, node, context, usageFilterSites) : null;

@@ -179,6 +179,9 @@
  - live (boolean)
  - administrationlink (boolean)
  - editproperties (boolean)
+ - details (boolean)
+ - detailsLabel (string) i18n nofulltext
+ - detailsTemplate (string)
  - export (boolean)
  - delete (boolean)
  - typeOfContent (string,choicelist[resourceBundle]) = website indexed=no < website,contents,files

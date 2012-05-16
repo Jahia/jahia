@@ -40,10 +40,14 @@
 
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.extjs.gxt.ui.client.core.DomQuery;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.URL;
@@ -57,6 +61,9 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
  *
  */
 public class ThumbsListView extends ListView<GWTJahiaNode> {
+
+    private boolean detailed = false;
+
     public ThumbsListView() {
         setItemSelector("div.thumb-wrap");
         setOverStyle("x-view-over");
@@ -65,6 +72,7 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
 
     public ThumbsListView(boolean detailed) {
         this();
+        this.detailed = detailed;
         if (detailed) {
             setTemplate(getDetailedTemplate());
         } else {
@@ -91,8 +99,12 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
             } else {
                 model.set("nodeImg", "<img src=\"" + URL.appendTimestamp(model.getPreview()) + "\" title=\"" + model.getName() + "\">");
             }
-            model.set("widthHTML", "<div><b>" + Messages.get("width.label", "Width") + " </b>" + model.get("j:width") + " px</div>");
-            model.set("heightHTML", "<div><b>" + Messages.get("height.label", "Height") + " </b>" + model.get("j:height") + " px</div>");
+            if (detailed) {
+                model.set("widthHTML", "<div><b>" + Messages.get("width.label", "Width") + " </b>" + model.get("j:width") + " px</div>");
+                model.set("heightHTML", "<div><b>" + Messages.get("height.label", "Height") + " </b>" + model.get("j:height") + " px</div>");
+            } else {
+                model.set("widthAndHeightHTML", model.get("j:width") + " x " + model.get("j:height"));
+            }
         } else if (model.getPreview() != null) {
             model.set("nodeImg", "<img src=\"" + URL.appendTimestamp(model.getPreview()) + "\" title=\"" + model.getName() + "\">");
         } else {
@@ -116,6 +128,15 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
         super.setContextMenu(menu);
     }
 
+    public void setSize(int thumbnailSize) {
+        NodeList<Element> imageThumbNails = DomQuery.select("#images-view .thumb");
+        for (int i=0; i < imageThumbNails.getLength(); i++) {
+            Element currentThumbnail = imageThumbNails.getItem(i);
+            currentThumbnail.getStyle().setWidth(thumbnailSize, Style.Unit.PX);
+            currentThumbnail.getStyle().setHeight(thumbnailSize, Style.Unit.PX);
+        }
+    }
+
     public native String getSimpleTemplate() /*-{
         return ['<tpl for=".">',
             '<div title="{name}" class="thumb-wrap" id="{name}">',
@@ -127,9 +148,7 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
             '<tpl if="markedForDeletion == \'true\'">',
             '</span>',
             '</tpl>',
-            '{widthHTML}',
-            '{heightHTML}',
-            '{tagsHTML}',
+            '<span class="x-editable">{widthAndHeightHTML}</span>',
             '</div>',
             '</tpl>',
             '<div class="x-clear"></div>'

@@ -46,9 +46,11 @@ import java.io.File;
  * ImageMagick image
  */
 public class ImageMagickImage implements Image {
-
     private File file;
     private String path;
+    
+    private Integer height;
+    private Integer width;
 
     public ImageMagickImage(File file, String path) {
         this.file = file;
@@ -67,5 +69,27 @@ public class ImageMagickImage implements Image {
     protected void finalize() throws Throwable {
         super.finalize();
         file.delete();
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public void dispose() {
+        if (file != null) {
+            file.delete();
+        }
     }
 }

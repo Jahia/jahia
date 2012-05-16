@@ -43,6 +43,7 @@ package org.jahia.services.image;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.im4java.core.*;
+import org.im4java.process.ArrayListOutputConsumer;
 import org.im4java.process.ProcessStarter;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -59,6 +60,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -116,32 +118,52 @@ public class ImageMagickImageService extends AbstractImageService {
         return new ImageMagickImage(tmp, node.getPath());
     }
 
-    public int getHeight(Image i) throws IOException {
-        ImageMagickImage imageMagickImage = (ImageMagickImage) i;
+    protected void readDimensions(ImageMagickImage img) {
         try {
-            Info imageInfo = new Info(getFile(i).getPath());
-            return Integer.parseInt(GEOMETRY_PATTERN.split(imageInfo.getProperty("Geometry"))[1]);
-        } catch (InfoException e) {
-            logger.error("Error retrieving image " + imageMagickImage.getPath() + " height: " + e.getLocalizedMessage());
+            IMOperation op = new IMOperation();
+            op.format("%w\n%h");
+            op.addImage(img.getFile().getPath());
+
+            // execute ...
+            IdentifyCmd identify = new IdentifyCmd();
+            ArrayListOutputConsumer output = new ArrayListOutputConsumer();
+            identify.setOutputConsumer(output);
+            identify.run(op);
+
+            // ... and parse result
+            List<String> cmdOutput = output.getOutput();
+            img.setWidth(Integer.parseInt(cmdOutput.get(0)));
+            img.setHeight(Integer.parseInt(cmdOutput.get(1)));
+        } catch (Exception e) {
+            logger.error("Error retrieving image dimensions for " + img.getPath() + ": " + e.getLocalizedMessage());
             if (logger.isDebugEnabled()) {
-                logger.debug("Error retrieving image " + imageMagickImage.getPath() + " height", e);
+                logger.error("Error retrieving image dimensions for " + img.getPath(), e);
             }
-            return -1;
+            img.setWidth(-1);
+            img.setHeight(-1);
         }
     }
 
-    public int getWidth(Image i) throws IOException {
-        ImageMagickImage imageMagickImage = (ImageMagickImage) i;
-        try {
-            Info imageInfo = new Info(getFile(i).getPath());
-            return Integer.parseInt(GEOMETRY_PATTERN.split(imageInfo.getProperty("Geometry"))[0]);
-        } catch (InfoException e) {
-            logger.error("Error retrieving image " + imageMagickImage.getPath() + " weight: " + e.getLocalizedMessage());
-            if (logger.isDebugEnabled()) {
-                logger.debug("Error retrieving image " + imageMagickImage.getPath() + " weight", e);
-            }
-            return -1;
+    public int getHeight(Image i) throws IOException {
+        ImageMagickImage img = (ImageMagickImage) i;
+        if (img.getHeight() != null) {
+            return img.getHeight();
         }
+        
+        readDimensions(img);
+        
+        return img.getHeight();
+    }
+
+    public int getWidth(Image i) throws IOException {
+        ImageMagickImage img = (ImageMagickImage) i;
+        if (img.getWidth() != null) {
+            return img.getWidth();
+        }
+        
+        readDimensions(img);
+        
+        return img.getWidth();
     }
 
     public boolean cropImage(Image i, File outputFile, int top, int left, int width, int height) throws IOException {

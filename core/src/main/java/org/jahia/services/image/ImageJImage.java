@@ -77,4 +77,12 @@ public class ImageJImage implements Image {
         }
     }
 
+    public void dispose() {
+        if (ip != null) {
+            ip.close();
+            ip.flush();
+            ip = null;
+        }
+    }
+
 }

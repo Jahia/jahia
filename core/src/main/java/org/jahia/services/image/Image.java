@@ -45,6 +45,8 @@ package org.jahia.services.image;
  */
 public interface Image {
 
-    public String getPath();
+    String getPath();
+    
+    void dispose();
 
 }

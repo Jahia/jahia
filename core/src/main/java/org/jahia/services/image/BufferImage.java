@@ -27,4 +27,11 @@ public class BufferImage implements Image {
     public String getMimeType() {
         return mimeType;
     }
+
+    public void dispose() {
+        if (originalImage != null) {
+            originalImage.flush();
+            originalImage = null;
+        }
+    }
 }

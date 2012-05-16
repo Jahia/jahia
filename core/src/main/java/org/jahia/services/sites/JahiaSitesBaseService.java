@@ -536,6 +536,23 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                                 + target + ". Cause: " + re.getMessage(), re);
                                     }
                                 }
+                                //Auto deploy all modules that define this behavior on site creation
+                                final List<JahiaTemplatesPackage> availableTemplatePackages = templateService.getAvailableTemplatePackages();
+                                for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
+                                    if(availableTemplatePackage.getAutoDeployOnSite()!=null){
+                                        if("all".equals(availableTemplatePackage.getAutoDeployOnSite())||siteKey1.equals(availableTemplatePackage.getAutoDeployOnSite())){
+                                            String source = "/templateSets/" + availableTemplatePackage.getRootFolder();
+                                            String target = "/sites/" + siteKey1;
+                                            try {
+                                                logger.info("Deploying module {} to {}", source, target);
+                                                templateService.deployModule(source, target, session);
+                                            } catch (RepositoryException re) {
+                                                logger.error("Unable to deploy module " + source + " to "
+                                                             + target + ". Cause: " + re.getMessage(), re);
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
 

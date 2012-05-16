@@ -253,7 +253,10 @@ final class JahiaTemplatesPackageHandler {
                 if (StringUtils.isNotBlank(resourceBundle)) {
                     templatePackage.setResourceBundleName(resourceBundle.trim());
                 }
-
+                String autoDeployOnSite = (String) manifest.getMainAttributes().get(new Attributes.Name("deploy-on-site"));
+                if(autoDeployOnSite != null && autoDeployOnSite.matches("systemsite|all")){
+                    templatePackage.setAutoDeployOnSite(autoDeployOnSite);
+                }
                 templatePackage.setName(packageName);
                 templatePackage.setRootFolder(rootFolder);
                 templatePackage.setModuleType(moduleType);

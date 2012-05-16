@@ -1,0 +1,94 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Jahia version 6.0 Beta ReadMe</title>
+<link rel="stylesheet" href="screen.css" type="text/css" />
+</head>
+<body>
+<div id="wrapper">
+  <div id="header">
+    <h1>Jahia</h1>
+    <h2>Jahia Community Edition v6 Readme</h2>
+  </div>
+  <br class="c"/>
+  <div id="nav">
+    <div class="rb10">
+        <div class="boxtitle"><span>Jahia Community Edition</span></div>
+ <div class="boxcontent">
+             <ul class="s">
+             <li><a href="readme.html">Jahia Community Edition v6 Readme</a><br/><br/></li>
+            </ul>
+      </div>
+	</div>
+    <div class="rb10">
+
+	</div>
+    <div class="rb10">
+        <div class="boxtitle"><span>General information</span></div>
+ <div class="boxcontent">
+             <ul class="s">
+                <li><a href="http://www.jahia.org" target="_blank">Community Website</a></li>
+                <li><a href="http://jira.jahia.org" target="_blank">Jira Issue Tracking system</a></li>
+                <li><a href="http://www.jahia.org/forum/" target="_blank">Developers Forum</a></li>
+            </ul>
+      </div>
+	</div>
+  </div>
+  <div id="main">
+    <div class="boxtitle"><span>How to Install </span></div>
+  <div class="boxcontent">
+  <div class="boxintro">
+    <p><strong><em>In this section</em></strong></p>
+    <ul>
+      <li><a href="#anchor_1">System requirements</a> </li>
+      <li><a href="#anchor_1">Installation</a></li>
+    </ul>
+    </div>
+    <a name="anchor_1"></a>
+    <h3>System requirements </h3>
+    <p>Please find below the minimum system requirements in order to properly run Jahia. </p>
+    <h4 class="subtitle"><u>Operating System</u></h4>
+    <ul>
+     <li>Windows NT / 2000 / XP<br /></li>
+     <li>Linux<br /></li>
+     <li>Solaris<br /></li>
+     <li>Mac OSX</li>
+     </ul>
+     <h4 class="subtitle"><u>Suggested Min. Development Configuration:</u></h4>
+    <ul>
+     <li>Bi-Pro Pentium 2GHz or +<br /></li>
+     <li>2 GB RAM<br /></li>
+     <li>5 GB HD</li>
+     </ul>
+     <h4 class="subtitle"><u>Suggested Min. Production Environments: </u></h4>
+    <ul>
+     <li>Bi-or quadri Pro (64 bits CPU and OS)<br /></li>
+     <li>4 or 8 GB RAM<br /></li>
+     <li>100 GB HD<br /><br /></li>
+     </ul>
+    <p>Warning: 32 bits JVM are limited in max memory (1.5 GB under Windows - 2 or 3 GB under Linux/Solaris). Jahia 6.0 tries to cache a maximum of data in order to boost performance. So we highly recommend 64 bits environments with enough memory available at least for all production environments.</p>
+
+    <a name="anchor_2"></a>
+    <h3>Installation</h3>
+<p>In order to run Jahia, you first need to install a Java 2 Software Development Kit (JDK or Java2SE SDK) 1.5 or better on your system. As Jahia needs to compile some jsp files, the Java Runtime Environment (or JRE) will not work, you will need to install the complete JDK (or Java2SE SDK).</p>
+<p>You can find both versions for Linux and Windows on the SUN web site:<br />
+  <a href="http://java.sun.com/j2se/" target="_blank">http://java.sun.com/j2se/</a></p>
+  <p>To check if Java is already installed on your system, type the following command line at the prompt of your system:<br />
+  java -version</p>
+    <p>You should get a message indicating which Java version is installed on your system. Please note that the same message will be displayed if you only have a JRE installed. If an error is returned, you probably don't have a complete JDK installed. <br />
+      If you have installed other versions of the Java Development Kit, Java Runtime Environment or other Java servers on your system, we recommend that you run a few checks before start¬ing the installation in order to be sure that Jahia will run without problems.<br />
+      Check that you have no TOMCAT_HOME and no CATALINA_HOME environment variable set. Note that once installed, Jahia will check at run time that this variable is not already set, and will stop if it is the case.<br />
+      To install a Java virtual machine on a Windows system (WindowsNT, Windows 2000 or Windows XP), you need to have administrator rights on your computer. Please contact your system administrator if you don’t have sufficient permissions.<br />
+      After the installation, you have to set the JAVA_HOME environment variable to the directory where your have installed the Java virtual machine. The default installation path of the SUN 1.5.0 Java virtual machine on Windows is &quot;c:\j2sdk1.5.0_xx&quot;, where xx is the release number. Note that Jahia will check at run time that this variable is correctly set, and will stop if it is not the case. </p>
+      <p>Find more information on How to install and configure Jahia Enterprise Edition v6 on<br />
+      <a href="http://extranet.jahia.com/jahia/Jahia/op/edit/documentation/pid/634" target="_blank">http://extranet.jahia.com/jahia/Jahia/op/edit/documentation/pid/634</a></p>
+
+
+
+   </div>
+  </div>
+</div>
+</body>
+</html>

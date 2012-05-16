@@ -42,29 +42,19 @@ package org.jahia.services.image;
 
 import ij.ImagePlus;
 
-import java.awt.image.BufferedImage;
-
 /**
-* User: toto
-* Date: 3/11/11
-* Time: 14:41
+ * ImageJ image
 */
 public class ImageJImage implements Image {
     private String path;
 
     private ImagePlus ip;
     private int imageType;
-    private BufferedImage originalImage;
-    private String mimeType;
-    private boolean java2DUsed = false;
 
-    public ImageJImage(String path, ImagePlus ip, int imageType, BufferedImage originalImage, String mimeType, boolean java2DUsed) {
+    public ImageJImage(String path, ImagePlus ip, int imageType) {
         this.path = path;
         this.imageType = imageType;
         this.ip = ip;
-        this.originalImage = originalImage;
-        this.mimeType = mimeType;
-        this.java2DUsed = java2DUsed;
     }
 
     public String getPath() {
@@ -79,18 +69,6 @@ public class ImageJImage implements Image {
         return imageType;
     }
 
-    public BufferedImage getOriginalImage() {
-        return originalImage;
-    }
-
-    public String getMimeType() {
-        return mimeType;
-    }
-
-    public boolean isJava2DUsed() {
-        return java2DUsed;
-    }
-
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
@@ -98,4 +76,5 @@ public class ImageJImage implements Image {
             ip.close();
         }
     }
+
 }

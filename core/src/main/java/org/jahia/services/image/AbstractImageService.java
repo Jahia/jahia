@@ -1,9 +1,17 @@
 package org.jahia.services.image;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+
 /**
  * Abstract class to share some methods between service implementations
  */
 public abstract class AbstractImageService implements JahiaImageService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractImageService.class);
 
     public class ResizeCoords {
         private int targetStartPosX, targetStartPosY, targetHeight, targetWidth,
@@ -92,6 +100,27 @@ public abstract class AbstractImageService implements JahiaImageService {
             resultSourceStartPosY = (sourceHeight - resultSourceHeight) / 2;
         }
         return new ResizeCoords(resultTargetStartPosX, resultTargetStartPosY, resultTargetWidth, resultTargetHeight, resultSourceStartPosX, resultSourceStartPosY, resultSourceWidth, resultSourceHeight);
+    }
+
+    public boolean createThumb(Image iw, File outputFile, int size, boolean square) throws IOException {
+        try {
+            if (square) {
+                resizeImage(iw, outputFile, size, size, ResizeType.ASPECT_FILL);
+            } else {
+                resizeImage(iw, outputFile, size, size, ResizeType.ADJUST_SIZE);
+            }
+        } catch (Exception e) {
+            logger.error("Error creating thumbnail of size "+size +" for image " + iw.getPath() + ":" + e.getLocalizedMessage());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Error creating thumbnail of size "+size +" for image " + iw.getPath(), e);
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public boolean resizeImage(Image i, File outputFile, int width, int height) throws IOException {
+        return resizeImage(i, outputFile, width, height, ResizeType.ADJUST_SIZE);
     }
 
 }

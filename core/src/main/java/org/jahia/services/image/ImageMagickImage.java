@@ -43,11 +43,10 @@ package org.jahia.services.image;
 import java.io.File;
 
 /**
- * User: toto
- * Date: 3/11/11
- * Time: 14:49
+ * ImageMagick image
  */
 public class ImageMagickImage implements Image {
+
     private File file;
     private String path;
 

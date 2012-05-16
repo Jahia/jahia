@@ -117,27 +117,6 @@ public class ImageMagickImageService extends AbstractImageService {
         return new ImageMagickImage(tmp, node.getPath());
     }
 
-    private File getFile(Image i) {
-        return ((ImageMagickImage) i).getFile();
-    }
-
-    public boolean createThumb(Image iw, File outputFile, int size, boolean square) throws IOException {
-        try {
-            if (square) {
-                resizeImage(iw, outputFile, size, size, ResizeType.ASPECT_FILL);
-            } else {
-                resizeImage(iw, outputFile, size, size, ResizeType.ADJUST_SIZE);
-            }
-        } catch (Exception e) {
-            logger.error("Error creating thumbnail of size "+size +" for image " + getFile(iw) + ":" + e.getLocalizedMessage());
-            if (logger.isDebugEnabled()) {
-                logger.debug("Error creating thumbnail of size "+size +" for image " + getFile(iw), e);
-            }
-            return false;
-        }
-        return true;
-    }
-
     public int getHeight(Image i) throws IOException {
         ImageMagickImage imageMagickImage = (ImageMagickImage) i;
         try {
@@ -173,12 +152,13 @@ public class ImageMagickImageService extends AbstractImageService {
 
             // create the operation, add images and operators/options
             IMOperation op = new IMOperation();
-            op.addImage(getFile(i).getPath());
+            op.addImage(i.getPath());
             op.background("none");
             op.crop(width, height, left, top);
             op.p_repage();
             op.addImage(outputFile.getPath());
 
+            // logger.info("Running ImageMagic command: convert " + op);
             cmd.run(op);
         } catch (Exception e) {
             logger.error("Error cropping image " + i.getPath() + " to size " + width + "x" + height + ": " + e.getLocalizedMessage());
@@ -190,26 +170,23 @@ public class ImageMagickImageService extends AbstractImageService {
         return true;
     }
 
-    public boolean resizeImage(Image i, File outputFile, int width, int height) throws IOException {
-        return resizeImage(i, outputFile, width, height, ResizeType.ADJUST_SIZE);
-    }
-
-    public boolean rotateImage(Image i, File outputFile, boolean clockwise) throws IOException {
+    public boolean rotateImage(Image image, File outputFile, boolean clockwise) throws IOException {
         try {
             // create command
             ConvertCmd cmd = new ConvertCmd();
 
             // create the operation, add images and operators/options
             IMOperation op = new IMOperation();
-            op.addImage(getFile(i).getPath());
+            op.addImage(image.getPath());
             op.rotate(clockwise ? 90. : -90.);
             op.addImage(outputFile.getPath());
 
+            // logger.info("Running ImageMagic command: convert " + op);
             cmd.run(op);
         } catch (Exception e) {
-            logger.error("Error rotating image " + i.getPath(), e);
+            logger.error("Error rotating image " + image.getPath(), e);
             if (logger.isDebugEnabled()) {
-                logger.debug("Error rotating image " + i.getPath(), e);
+                logger.debug("Error rotating image " + image.getPath(), e);
             }
             return false;
         }
@@ -218,48 +195,6 @@ public class ImageMagickImageService extends AbstractImageService {
 
     public boolean resizeImage(Image i, File outputFile, int width, int height, ResizeType resizeType) throws IOException {
         return resizeImage(getFile(i), outputFile, width, height, resizeType);
-    }
-
-    protected boolean resizeImage(File inputFile, File outputFile, int width, int height, ResizeType resizeType) throws IOException {
-        try {
-            // create command
-            ConvertCmd cmd = new ConvertCmd();
-
-            // create the operation, add images and operators/options
-            IMOperation op = new IMOperation();
-            op.addImage(inputFile.getPath());
-
-            setupIMResize(op, width, height, resizeType);
-
-            op.addImage(outputFile.getPath());
-
-            cmd.run(op);
-        } catch (Exception e) {
-            logger.error("Error resizing image " + inputFile + ": " + e.getLocalizedMessage());
-            if (logger.isDebugEnabled()) {
-                logger.debug("Error resizing image " + inputFile, e);
-            }
-            return false;
-        }
-        return true;
-    }
-
-    private void setupIMResize(IMOperation op, int width, int height, ResizeType resizeType) {
-        if (ResizeType.ADJUST_SIZE.equals(resizeType)) {
-            op.resize(width,height);
-        } else if (ResizeType.ASPECT_FILL.equals(resizeType)) {
-            op.resize(width,height,"^");
-            op.gravity("center");
-            op.crop(width,height,0,0);
-            op.p_repage();
-        } else if (ResizeType.ASPECT_FIT.equals(resizeType)) {
-            op.resize(width,height);
-            op.gravity("center");
-            op.background("none");
-            op.extent(width,height);
-        } else {
-            op.resize(width,height,"!");
-        }
     }
 
     public BufferedImage resizeImage(BufferedImage image, int width, int height,
@@ -289,4 +224,51 @@ public class ImageMagickImageService extends AbstractImageService {
             return null;
         }
     }
+
+    protected boolean resizeImage(File inputFile, File outputFile, int width, int height, ResizeType resizeType) throws IOException {
+        try {
+            // create command
+            ConvertCmd cmd = new ConvertCmd();
+
+            // create the operation, add images and operators/options
+            IMOperation op = new IMOperation();
+            op.addImage(inputFile.getPath());
+
+            setupIMResize(op, width, height, resizeType);
+
+            op.addImage(outputFile.getPath());
+
+            cmd.run(op);
+        } catch (Exception e) {
+            logger.error("Error resizing image " + inputFile + ": " + e.getLocalizedMessage());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Error resizing image " + inputFile, e);
+            }
+            return false;
+        }
+        return true;
+    }
+
+    private File getFile(Image i) {
+        return ((ImageMagickImage) i).getFile();
+    }
+
+    private void setupIMResize(IMOperation op, int width, int height, ResizeType resizeType) {
+        if (ResizeType.ADJUST_SIZE.equals(resizeType)) {
+            op.resize(width,height);
+        } else if (ResizeType.ASPECT_FILL.equals(resizeType)) {
+            op.resize(width,height,"^");
+            op.gravity("center");
+            op.crop(width,height,0,0);
+            op.p_repage();
+        } else if (ResizeType.ASPECT_FIT.equals(resizeType)) {
+            op.resize(width,height);
+            op.gravity("center");
+            op.background("none");
+            op.extent(width,height);
+        } else {
+            op.resize(width,height,"!");
+        }
+    }
+
 }

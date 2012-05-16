@@ -1,0 +1,15 @@
+Definitions
+-----------
+The JAHIA COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (JCDDL) and/or the JAHIA SUSTAINABLE SOFTWARE LICENSE (JSSL) are known as the "Licenses".
+
+Coverage
+--------
+The contents of the "Jahia" software are subject to either of the Licenses, under the terms of the Governing Law and Dispute Resolution described below.
+
+Governing Law
+-------------
+These Licenses shall be exclusively governed by the laws of Switzerland. The application of the United Nations Convention on Contracts for the International Sale of Goods is expressly excluded. 
+ 
+Dispute Resolution
+------------------
+All disputes arising out of or in connection with the present Licenses, including disputes on their conclusions, binding effects, amendments and termination shall be resolved, to the exclusion of the ordinary courts by a single Arbitrator in accordance with the International Arbitration Rules of the Geneva Chamber of Commerce. The decision of the Arbitrator shall be final, and the parties waive all challenge of the award in accordance with art. 192 of the Swiss Private International Law Statute. 

@@ -40,6 +40,8 @@ in Jahia's FLOSS exception. You should have received a copy of the text
 describing the FLOSS exception, and it is also available here:
 http://www.jahia.com/license"
 
+The GPL license is available in the LICENSE folder of this program.
+
 2/ JSEL - Commercial and Supported Versions of the program
 ----------------------------------------------------------
 
@@ -48,6 +50,8 @@ IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TER
 "Alternatively, commercial and supported versions of the program may be used
 in accordance with the terms and conditions contained
 in a separate written agreement between you and Jahia Solutions Group SA."
+
+The JSEL license is available in the LICENSE folder of this program.
 
 If you are unsure which license is appropriate for your use,
 please contact the sales department at sales@jahia.com.

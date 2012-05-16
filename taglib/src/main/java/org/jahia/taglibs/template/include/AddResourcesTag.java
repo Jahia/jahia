@@ -88,13 +88,9 @@ public class AddResourcesTag extends AbstractJahiaTag {
     @Override
     public int doEndTag() throws JspException {
         JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule", PageContext.REQUEST_SCOPE);
-        try {
-            JahiaTemplatesPackage templatesSetPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(getRenderContext().getMainResource().getNode().getResolveSite().getTemplatePackageName());
-            if (!addResources(getRenderContext(), templatesSetPackage, false)) {
-                addResources(getRenderContext(), templatesPackage, true);
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot resolve site",e);
+        JahiaTemplatesPackage templatesSetPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(getRenderContext().getSite().getTemplatePackageName());
+        if (!addResources(getRenderContext(), templatesSetPackage, false)) {
+            addResources(getRenderContext(), templatesPackage, true);
         }
 
         resetState();

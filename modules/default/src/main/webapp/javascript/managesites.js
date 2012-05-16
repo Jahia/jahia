@@ -5,6 +5,7 @@ function deleteSite() {
              resizable:false,
              height:180,
              modal:true,
+             zIndex:1200,
              buttons:{
                  "Ok":function () {
                      $(this).dialog("close");
@@ -24,6 +25,7 @@ function deleteSite() {
         resizable:false,
         height:180,
         modal:true,
+        zIndex:1200,
         buttons:{
             "Ok":function () {
                 $(this).dialog("close");
@@ -53,6 +55,7 @@ function createSite() {
              resizable:false,
              height:180,
              modal:true,
+             zIndex:1200,
              buttons:{
                  "Ok":function () {
                      $(this).dialog("close");
@@ -75,6 +78,7 @@ function exportSite(url,live) {
              resizable:false,
              height:180,
              modal:true,
+             zIndex:1200,
              buttons:{
                  "Ok":function () {
                      $(this).dialog("close");

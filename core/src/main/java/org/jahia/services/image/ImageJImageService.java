@@ -41,7 +41,10 @@
 package org.jahia.services.image;
 
 import ij.ImagePlus;
+import ij.WindowManager;
+import ij.io.FileSaver;
 import ij.io.Opener;
+import ij.plugin.PlugIn;
 import ij.process.Blitter;
 import ij.process.ImageProcessor;
 import org.apache.commons.io.FileUtils;
@@ -49,7 +52,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.tools.imageprocess.ImageProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,9 +62,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 
 /**
- * User: toto
- * Date: 3/11/11
- * Time: 11:33
+ * ImageJ application operation implementation
  */
 public class ImageJImageService extends AbstractImageService {
     private static ImageJImageService instance;
@@ -101,7 +101,6 @@ public class ImageJImageService extends AbstractImageService {
             Node contentNode = node.getNode(Constants.JCR_CONTENT);
             os = new BufferedOutputStream(new FileOutputStream(tmp));
             InputStream is = contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream();
-            String mimeType = contentNode.getProperty(Constants.JCR_MIMETYPE).getString();
             try {
                 IOUtils.copy(is, os);
             } finally {
@@ -110,35 +109,16 @@ public class ImageJImageService extends AbstractImageService {
             }
             ImagePlus ip = null;
             Opener op = new Opener();
-            boolean java2DUsed = false;
             int fileType = op.getFileType(tmp.getPath());
             ip = op.openImage(tmp.getPath());
             if (ip == null) {
                 logger.error("Couldn't open file " + tmp.getPath() + " for node " + node.getPath() + " with ImageJ !");
                 return null;
             }
-            return new ImageJImage(node.getPath(), ip, fileType, ip.getBufferedImage(), mimeType, java2DUsed);
+            return new ImageJImage(node.getPath(), ip, fileType);
         } finally {
             IOUtils.closeQuietly(os);
             FileUtils.deleteQuietly(tmp);
-        }
-    }
-
-
-    /**
-     * Creates a JPEG thumbnail from inputFile and saves it to disk in
-     * outputFile. scaleWidth is the width to scale the image to
-     */
-    public boolean createThumb(Image iw, File outputFile, int size, boolean square) throws IOException {
-        ImagePlus ip = ((ImageJImage)iw).getImagePlus();
-        // Load the input image.
-        if (ip == null) {
-            return false;
-        }
-        if (square) {
-            return resizeImage(iw, outputFile, size, size, ResizeType.ASPECT_FILL);
-        } else {
-            return resizeImage(iw, outputFile, size, size, ResizeType.ADJUST_SIZE);
         }
     }
 
@@ -169,11 +149,7 @@ public class ImageJImageService extends AbstractImageService {
         processor = processor.crop();
         ip.setProcessor(null, processor);
 
-        return ImageProcess.save(imageJImage.getImageType(), ip, outputFile);
-    }
-
-    public boolean resizeImage(Image i, File outputFile, int width, int height) throws IOException {
-        return resizeImage(i, outputFile, width, height, ResizeType.ADJUST_SIZE);
+        return save(imageJImage.getImageType(), ip, outputFile);
     }
 
     public boolean rotateImage(Image i, File outputFile, boolean clockwise) throws IOException {
@@ -189,7 +165,7 @@ public class ImageJImageService extends AbstractImageService {
         }
         ip.setProcessor(null, processor);
 
-        return ImageProcess.save(imageJImage.getImageType(), ip, outputFile);
+        return save(imageJImage.getImageType(), ip, outputFile);
     }
 
     public boolean resizeImage(Image i, File outputFile, int width, int height, ResizeType resizeType) throws IOException {
@@ -200,7 +176,16 @@ public class ImageJImageService extends AbstractImageService {
         
         resizeImage(ip, width, height, resizeType);
 
-        return ImageProcess.save(imageJImage.getImageType(), ip, outputFile);
+        return save(imageJImage.getImageType(), ip, outputFile);
+    }
+
+    public BufferedImage resizeImage(BufferedImage image, int width, int height,
+            ResizeType resizeType) throws IOException {
+        ImagePlus ip = new ImagePlus(null, image);
+
+        resizeImage(ip, width, height, resizeType);
+
+        return ip.getBufferedImage();
     }
 
     protected void resizeImage(ImagePlus ip, int width, int height, ResizeType resizeType) throws IOException {
@@ -233,12 +218,42 @@ public class ImageJImageService extends AbstractImageService {
         ip.setProcessor(null, processor);
     }
 
-    public BufferedImage resizeImage(BufferedImage image, int width, int height,
-            ResizeType resizeType) throws IOException {
-        ImagePlus ip = new ImagePlus(null, image);
-
-        resizeImage(ip, width, height, resizeType);
-
-        return ip.getBufferedImage();
+    protected static boolean save(int type, ImagePlus ip, File outputFile) {
+        switch (type) {
+            case Opener.TIFF:
+                return new FileSaver(ip).saveAsTiff(outputFile.getPath());
+            case Opener.GIF:
+                return new FileSaver(ip).saveAsGif(outputFile.getPath());
+            case Opener.JPEG:
+                return new FileSaver(ip).saveAsJpeg(outputFile.getPath());
+            case Opener.TEXT:
+                return new FileSaver(ip).saveAsText(outputFile.getPath());
+            case Opener.LUT:
+                return new FileSaver(ip).saveAsLut(outputFile.getPath());
+            case Opener.ZIP:
+                return new FileSaver(ip).saveAsZip(outputFile.getPath());
+            case Opener.BMP:
+                return new FileSaver(ip).saveAsBmp(outputFile.getPath());
+            case Opener.PNG:
+                ImagePlus tempImage = WindowManager.getTempCurrentImage();
+                WindowManager.setTempCurrentImage(ip);
+                PlugIn p =null;
+                try {
+                    p = (PlugIn) Class.forName("ij.plugin.PNG_Writer").newInstance();
+                } catch (InstantiationException e) {
+                    logger.error(e.getMessage(), e);
+                } catch (IllegalAccessException e) {
+                    logger.error(e.getMessage(), e);
+                } catch (ClassNotFoundException e) {
+                    logger.error(e.getMessage(), e);
+                }
+                p.run(outputFile.getPath());
+                WindowManager.setTempCurrentImage(tempImage);
+                return true;
+            case Opener.PGM:
+                return new FileSaver(ip).saveAsPgm(outputFile.getPath());
+        }
+        return false;
     }
+
 }

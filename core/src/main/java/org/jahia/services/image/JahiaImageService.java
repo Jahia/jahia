@@ -173,7 +173,7 @@ public interface JahiaImageService {
 
     /**
      * Resize an image using different types of resize algorithms.
-     * 
+     *
      * @see #resizeImage(Image, File, int, int, ResizeType) for details of the resizing
      * @param image
      *            the image to resize
@@ -188,4 +188,5 @@ public interface JahiaImageService {
      */
     BufferedImage resizeImage(BufferedImage image, int width, int height, ResizeType resizeType)
             throws IOException;
+
 }

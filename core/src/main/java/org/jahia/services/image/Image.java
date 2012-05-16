@@ -41,9 +41,7 @@
 package org.jahia.services.image;
 
 /**
- * User: toto
- * Date: 3/11/11
- * Time: 11:35
+ * Common interface for all image implementations
  */
 public interface Image {
 

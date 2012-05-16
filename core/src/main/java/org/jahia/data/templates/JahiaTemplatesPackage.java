@@ -131,6 +131,7 @@ public class JahiaTemplatesPackage {
     private long buildNumber;
 
     private Version version;
+    private String autoDeployOnSite;
 
     /**
      * Return the template name
@@ -513,5 +514,13 @@ public class JahiaTemplatesPackage {
 
     public void setModuleType(String moduleType) {
         this.moduleType = moduleType;
+    }
+
+    public void setAutoDeployOnSite(String autoDeployOnSite) {
+        this.autoDeployOnSite = autoDeployOnSite;
+    }
+
+    public String getAutoDeployOnSite() {
+        return autoDeployOnSite;
     }
 }

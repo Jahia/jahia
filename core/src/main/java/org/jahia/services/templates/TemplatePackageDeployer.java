@@ -65,6 +65,7 @@ import org.apache.commons.io.filefilter.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportService;
@@ -610,11 +611,13 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                         }
                         resetModuleAttributes(session, pack);
                         session.save();
+                        autoDeployModulesToSites(session, pack);
                         logger.info("... finished initial import for module package '" + pack.getName() + "'.");
                         return true;
                     }
                     resetModuleAttributes(session, pack);
                     session.save();
+                    autoDeployModulesToSites(session, pack);
                     return false;
                 }
             });
@@ -622,6 +625,21 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             logger.error("Unable to import content for package '" + pack.getName()
                     + "'. Cause: " + e.getMessage(), e);
             return false;
+        }
+    }
+
+    private void autoDeployModulesToSites(JCRSessionWrapper session, JahiaTemplatesPackage pack)
+            throws RepositoryException {
+        if(pack.getAutoDeployOnSite()!=null) {
+            if("system".equals(pack.getAutoDeployOnSite())) {
+                if(session.nodeExists("/sites/systemsite")) {
+                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployModule("/templateSets/"+pack.getRootFolder(),"/sites/systemsite",session);
+                }
+            } else if ("all".equals(pack.getAutoDeployOnSite())) {
+                if(session.nodeExists("/sites/systemsite")) {
+                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployModuleToAllSites("/templateSets/"+pack.getRootFolder(),false,session);
+                }
+            }
         }
     }
 

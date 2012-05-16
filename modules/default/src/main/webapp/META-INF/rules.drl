@@ -45,10 +45,12 @@ rule "Image update"
         A file content has been modified
              - the mimetype matches image/.*
     then
+        > long timer = System.currentTimeMillis();
         Create an image "thumbnail" of size 150
         Create an image "thumbnail2" of size 350
         Set the property j:width of the node with the width of the image
         Set the property j:height of the node with the height of the image
-        Log "Image updated " + node.getPath()
+        Dispose image
+        Log "Image " + node.getPath() + " updated in " + (System.currentTimeMillis() - timer) + " ms"
 end
 

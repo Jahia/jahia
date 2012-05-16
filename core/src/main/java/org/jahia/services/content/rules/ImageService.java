@@ -181,31 +181,47 @@ public class ImageService {
     }
 
     public void setHeight(AddedNodeFact imageNode, String propertyName, KnowledgeHelper drools) throws Exception {
-        if (!imageNode.getNode().hasProperty(propertyName)) {
-            Image iw = getImageWrapper(imageNode, drools);
-            if (iw == null) {
-                return;
-            }
-            int height = imageService.getHeight(iw);
-            if (height == -1 ) {
-                return;
-            }
-            drools.insert(new ChangedPropertyFact(imageNode, propertyName, height, drools));
+        Image iw = getImageWrapper(imageNode, drools);
+        if (iw == null) {
+            return;
         }
+        int height = imageService.getHeight(iw);
+        if (height == -1) {
+            return;
+        }
+        drools.insert(new ChangedPropertyFact(imageNode, propertyName, height, drools));
     }
 
     public void setWidth(AddedNodeFact imageNode, String propertyName, KnowledgeHelper drools) throws Exception {
-        if (!imageNode.getNode().hasProperty(propertyName)) {
-            Image iw = getImageWrapper(imageNode, drools);
-            if (iw == null) {
-                return;
+        Image iw = getImageWrapper(imageNode, drools);
+        if (iw == null) {
+            return;
+        }
+        int width = imageService.getWidth(iw);
+        if (width == -1) {
+            return;
+        }
+        drools.insert(new ChangedPropertyFact(imageNode, propertyName, width, drools));
+    }
+    
+    public void disposeImageForNode(final AddedNodeFact imageNode, KnowledgeHelper drools) throws Exception {
+        Iterator<?> it = drools.getWorkingMemory().iterateObjects(new ObjectFilter() {
+            public boolean accept(Object o) {
+                if (o instanceof Image) {
+                    try {
+                        return (((Image) o).getPath().equals(imageNode.getPath()));
+                    } catch (RepositoryException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return false;
             }
-            int width = imageService.getWidth(iw);
-            if (width == -1 ) {
-                return;
-            }
-            drools.insert(new ChangedPropertyFact(imageNode, propertyName, width, drools));
+        });
+        for (; it.hasNext();) {
+            Image img = (Image) it.next();
+            drools.retract(img);
+            img.dispose();
+            img = null;
         }
     }
-
 }

@@ -54,6 +54,7 @@
 [consequence][]Create a square thumbnail on reference "{name}" of size {size}=imageService.addSquareThumbnail(property, "{name}",{size}, drools);
 [consequence][]Create a thumbnail on reference "{name}" of size {size}=imageService.addThumbnail(property, "{name}",{size}, drools);
 [consequence][]Create an image "{name}" of size {size}=imageService.addThumbnail(node, "{name}",{size}, drools);
+[consequence][]Dispose image=imageService.disposeImageForNode(node, drools);
 [consequence][]Extract properties from the file=extractionService.extractProperties(node, drools);
 [consequence][]Get the ancestor "{name}" of type {type}=AddedNodeFact {name} = node.getAncestor("{type}");
 [consequence][]Import the node=service.importNode(node,drools);

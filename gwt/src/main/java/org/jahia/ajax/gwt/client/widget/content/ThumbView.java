@@ -49,6 +49,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Slider;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.StoreFilterField;
@@ -143,6 +144,20 @@ public class ThumbView extends AbstractView {
 
         bar.add(sort);
         bar.add(sortOrder);
+
+        bar.add(new FillToolItem());
+
+        final Slider slider = new Slider();
+        slider.setMinValue(32);
+        slider.setMaxValue(150);
+        slider.setValue(100);
+        slider.setWidth(50);
+        slider.addListener(Events.Change, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent be) {
+                view.setSize(slider.getValue());
+            }
+        });
+        bar.add(slider);
 
         m_component.setTopComponent(bar);
 

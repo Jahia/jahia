@@ -40,7 +40,6 @@
 
 package org.jahia.services.content.rules;
 
-import org.drools.FactException;
 import org.slf4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;

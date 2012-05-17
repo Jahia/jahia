@@ -63,27 +63,27 @@ printMenu = { node, navMenuLevel, omitFormatting ->
                     print "<li class=\"${listItemCssClass}\">"
 
                     // template:module : page.menuElement.jsp - need to handle other types than page
-                    title = menuItem.properties['jcr:title']
+                    title = menuItem.displayableName
                     description = menuItem.properties['jcr:description']
                     linkTitle = description ? " title=\"${description.string}\"" : ""
                     if (menuItem.isNodeType("jnt:page")) {
                         link = menuItem.url
 
-                        print "<a href=\"${link}\"${linkTitle}>${title.string}</a>"
+                        print "<a href=\"${link}\"${linkTitle}>${title}</a>"
                     } else if (menuItem.isNodeType("jnt:nodeLink")) {
                         reference = menuItem.properties['j:node']
                         target = menuItem.properties['j:target']
                         if (reference && reference.node) {
                             link = url.base + reference.node.path + ".html"
-                            print "<a href=\"${link}\"${linkTitle} ${target ? target.string : ""}>${title.string}</a>"
+                            print "<a href=\"${link}\"${linkTitle} ${target ? target.string : ""}>${title}</a>"
                         }
                     } else if (menuItem.isNodeType("jnt:externalLink")) {
                         url = menuItem.properties['j:url']
                         target = menuItem.properties['j:target']
                         if (!url.string.startsWith("http")) {
-                            print "<a href=\"http://${url.string}\" ${linkTitle} ${target ? target.string : ""}>${title.string}</a>"
+                            print "<a href=\"http://${url.string}\" ${linkTitle} ${target ? target.string : ""}>${title}</a>"
                         } else {
-                            print "<a href=\"${url.string}\" ${linkTitle} ${target ? target.string : ""}>${title.string}</a>"
+                            print "<a href=\"${url.string}\" ${linkTitle} ${target ? target.string : ""}>${title}</a>"
                         }
                     }
                     // end template:module

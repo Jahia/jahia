@@ -107,6 +107,7 @@ public class SidePanel extends ContentPanel {
             }
 
         });
+        refreshButton.setId("JahiaGxtRefreshSidePanelButton");
         head.addTool(refreshButton);
 
         for (SidePanelTabItem tab : tabs) {

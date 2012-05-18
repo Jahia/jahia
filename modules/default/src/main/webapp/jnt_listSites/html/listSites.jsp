@@ -29,6 +29,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+        $("a.changePropertiesButton").fancybox();
         $("a.detailsButton").fancybox({
             margin : 50,
             scrolling : 'auto',
@@ -181,8 +182,7 @@
                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; "/></a>
                     </c:if>
                     <c:if test="${currentNode.properties.editproperties.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
-                        <a href="#" class="changePropertiesButton" id="changePropertiesButton${node.identifier}"
-                           onclick="$('#editSiteDiv${node.identifier}').slideToggle()"
+                        <a href="#editSiteDiv${node.identifier}" class="changePropertiesButton" id="changePropertiesButton${node.identifier}"
                            title="<fmt:message key='label.manageSite.changeProperties'/>"><img
                                 src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" "
                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; "/></a>
@@ -199,7 +199,8 @@
                     <fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd-HH-mm" var="now"/>
 
                     <c:if test="${currentNode.properties.editproperties.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
-                            <div id="editSiteDiv${node.identifier}" style="display:none">
+                        <div style="display:none">
+                            <div id="editSiteDiv${node.identifier}" class="popupSize">
                                 <form class="editSiteForm ajaxForm" id="editSiteForm${node.identifier}" action="<c:url value='${url.base}${node.path}.adminEditSite.do'/>" >
 
                                     <fieldset>
@@ -224,6 +225,7 @@
                                 </form>
                                 <button site="${node.identifier}" onclick="editProperties('${node.identifier}')"><fmt:message key="label.manageSite.submitChanges"/></button>
                             </div>
+                        </div>
                     </c:if>
                 <c:if test="${currentNode.properties.displayAsTable.boolean}"></td></c:if>
             </c:when>

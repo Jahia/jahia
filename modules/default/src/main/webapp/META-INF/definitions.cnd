@@ -188,6 +188,7 @@
  - numberOfSitesPerPage (long) hidden
  - numberMaxOfSitesDisplayed (long)
  - templatesSets (weakreference,choicelist[nodes='/templateSets;jnt:virtualsite']) multiple
+ - displayAsTable (boolean)
 
 [jmix:gadget] mixin
 

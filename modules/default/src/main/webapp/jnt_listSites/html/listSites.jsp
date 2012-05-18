@@ -53,11 +53,15 @@
     </c:if>
 </c:if>
 
+<c:choose>
+<c:when test="${currentNode.properties.displayAsTable.boolean}">
 <table width="100%" class="table list-sites" summary="Site List Table" id="siteListTable">
 <caption class=" hidden">
 </caption>
 <colgroup>
-    <col span="1" width="5%" class="col1"/>
+    <c:if test="${(currentNode.properties.export.boolean or currentNode.properties.delete.boolean)}">
+        <col span="1" width="5%" class="col1"/>
+    </c:if>
     <col span="1" width="35%" class="col2"/>
     <col span="1" width="15%" class="col3"/>
     <col span="1" width="25%" class="col4"/>
@@ -65,7 +69,9 @@
 </colgroup>
 <thead>
 <tr>
-    <th class="center" id="Select" scope="col"><input type="checkbox" class="allFileCheckbox checkAll"/></th>
+    <c:if test="${(currentNode.properties.export.boolean or currentNode.properties.delete.boolean)}">
+        <th class="center" id="Select" scope="col"><input type="checkbox" class="allFileCheckbox checkAll"/></th>
+    </c:if>
     <th id="Title" scope="col"><fmt:message key="label.title"/></th>
     <th id="Key" scope="col"><fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/></th>
     <th id="ServerName" scope="col"><fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/></th>
@@ -74,16 +80,32 @@
 </thead>
 
 <tbody>
+</c:when>
+<c:otherwise>
+    <ul class="list-sites">
+</c:otherwise>
+</c:choose>
 <c:forEach items="${moduleMap.currentList}" var="node" begin="${moduleMap.begin}" end="${moduleMap.end}">
+<c:choose>
+<c:when test="${currentNode.properties.displayAsTable.boolean}">
     <tr class="odd">
-        <td class="center" headers="Select">
-            <c:if test="${(currentNode.properties.export.boolean or currentNode.properties.delete.boolean) && jcr:hasPermission(node,'adminVirtualSites')}">
-                <input class="sitecheckbox" type="checkbox" name="${node.name}" />
-            </c:if>
-        </td>
-        <td headers="Title">${node.displayableName}</td>
+</c:when>
+    <c:otherwise>
+    <li class="listsiteicon">
+    </c:otherwise>
+</c:choose>
+        <c:if test="${(currentNode.properties.export.boolean or currentNode.properties.delete.boolean)}">
+            <c:if test="${currentNode.properties.displayAsTable.boolean}"><td class="center" headers="Select"></c:if>
+                <c:if test="${jcr:hasPermission(node,'adminVirtualSites')}">
+                    <input class="sitecheckbox" type="checkbox" name="${node.name}" />
+                </c:if>
+            <c:if test="${currentNode.properties.displayAsTable.boolean}"></td></c:if>
+        </c:if>
+        <c:if test="${currentNode.properties.displayAsTable.boolean}"><td headers="Title"></c:if>${node.displayableName}<c:if test="${currentNode.properties.displayAsTable.boolean}"></td></c:if>
+        <c:if test="${currentNode.properties.displayAsTable.boolean}">
         <td headers="Key">${node.name}</td>
         <td headers="ServerName">${node.properties['j:serverName'].string}</td>
+        </c:if>
         <c:choose>
             <c:when test="${currentNode.properties.typeOfContent.string eq 'contents'}">
                 <c:set var="page" value="/contents"/>
@@ -97,7 +119,7 @@
         </c:choose>
         <c:choose>
             <c:when test="${not empty node and (jcr:hasPermission(node,'editModeAccess') || jcr:hasPermission(node,'contributeModeAccess'))}">
-                <td headers="Actions">
+                <c:if test="${currentNode.properties.displayAsTable.boolean}"><td headers="Actions"></c:if>
                     <c:set var="siteId" value="${node.properties['j:siteId'].long}"/>
                     <c:if test="${currentNode.properties.administrationlink.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
                         <a href="<c:url value='/administration/?do=change&changesite=${siteId}#sites'/>"
@@ -203,7 +225,7 @@
                                 <button site="${node.identifier}" onclick="editProperties('${node.identifier}')"><fmt:message key="label.manageSite.submitChanges"/></button>
                             </div>
                     </c:if>
-                </td>
+                <c:if test="${currentNode.properties.displayAsTable.boolean}"></td></c:if>
             </c:when>
             <c:otherwise>
                 <c:set var="editModeAccess"
@@ -213,7 +235,7 @@
                 <c:set var="previewModeAccess"
                        value="${jcr:findAllowedNodesForPermission('jcr:read_default', node, 'jnt:page')}"/>
                 <c:if test="${node.home.properties['j:published'].boolean or not empty editModeAccess or not empty contributeModeAccess or not empty previewModeAccess}">
-                    <td headers="Actions">
+                    <c:if test="${currentNode.properties.displayAsTable.boolean}"><td headers="Actions"></c:if>
                         <c:set var="baseLive" value="${url.baseLive}"/>
                         <c:set var="basePreview" value="${url.basePreview}"/>
                         <c:set var="baseContribute" value="${url.baseContribute}"/>
@@ -266,14 +288,28 @@
                                     src="<c:url value='/icons/live.png'/>" width="16" height="16" alt=" "
                                     role="presentation" style="position:relative; top: 4px; margin-right:2px; "/></a>
                         </c:if>
-                    </td>
+                    <c:if test="${currentNode.properties.displayAsTable.boolean}"></td></c:if>
                 </c:if>
             </c:otherwise>
         </c:choose>
-      </tr>
+        <c:choose>
+        <c:when test="${currentNode.properties.displayAsTable.boolean}">
+        </tr>
+        </c:when>
+        <c:otherwise>
+        </li>
+        </c:otherwise>
+        </c:choose>
     </c:forEach>
-  </tbody>
+<c:choose>
+<c:when test="${currentNode.properties.displayAsTable.boolean}">
+    </tbody>
 </table>
+</c:when>
+<c:otherwise>
+</ul>
+</c:otherwise>
+</c:choose>
 
 <div style="display:none">
     <div id="dialog-delete-confirm" title=" ">

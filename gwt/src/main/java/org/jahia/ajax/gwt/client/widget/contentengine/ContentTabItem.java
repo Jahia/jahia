@@ -138,7 +138,8 @@ public class ContentTabItem extends PropertiesTabItem {
                     autoUpdate = false;
                     autoUpdateLabel.setText("");
                 }
-
+                autoUpdateName.setId("JahiaGxtCheckbox_syncSystemNameWithTitle");
+                nameText.setId("JahiaGxtField_systemName");
                 nameText.setEnabled(nameEditingAllowed && !autoUpdate);
 
                 if (titleField != null) {

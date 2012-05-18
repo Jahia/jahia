@@ -44,7 +44,7 @@
   <parent>
     <artifactId>jahia-modules</artifactId>
     <groupId>org.jahia.modules</groupId>
-    <version>6.6.0.1</version>
+    <version>6.6.0.2-SNAPSHOT</version>
   </parent>
   <groupId>org.jahia.modules</groupId>
   <artifactId>default</artifactId>

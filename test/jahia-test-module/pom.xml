@@ -44,7 +44,7 @@
     <parent>
         <artifactId>jahia-test-parent</artifactId>
         <groupId>org.jahia.test</groupId>
-        <version>6.6.0.1</version>
+        <version>6.6.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>jahia-test-module</artifactId>
     <name>Jahia Test Module Package</name>
@@ -296,8 +296,8 @@
     </build>
 
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_0_1/jahia-test-parent/jahia-test-module</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_0_1/jahia-test-parent/jahia-test-module</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_0_1/jahia-test-parent/jahia-test-module</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-0-X-BRANCH/jahia-test-parent/jahia-test-module</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-0-X-BRANCH/jahia-test-parent/jahia-test-module</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-0-X-BRANCH/jahia-test-parent/jahia-test-module</url>
   </scm>
 </project>

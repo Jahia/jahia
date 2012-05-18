@@ -38,6 +38,15 @@
             autoDimensions : false,
             type : 'ajax'
         });
+        $(".checkAll").click(function () {
+            $(".sitecheckbox").each(function (index) {
+                if ($(".checkAll").attr("checked") == "checked") {
+                    $(this).attr("checked","checked");
+                } else {
+                    $(this).removeAttr("checked");
+                }
+            });
+        });
     });
 </script>
 

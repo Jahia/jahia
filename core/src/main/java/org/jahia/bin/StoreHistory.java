@@ -33,6 +33,8 @@
 package org.jahia.bin;
 
 import org.apache.log4j.Logger;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.render.filter.HistoryTrackerBean;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,17 +66,10 @@ public class StoreHistory extends JahiaController {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         HttpSession session = request.getSession();
         String name = getParameter(request, "h", "historyTracker");
-        LinkedList<String> historyTracker = (LinkedList<String>) session.getAttribute(name);
-        if (historyTracker == null) {
-            session.setAttribute(name, historyTracker = new LinkedList<String>());
-        }
+
+        HistoryTrackerBean bean = (HistoryTrackerBean) SpringContextSingleton.getBean("org.jahia.services.render.filter.HistoryTrackerBean." + name);
         String identifier = getParameter(request, "i");
-        historyTracker.remove(identifier);
-        historyTracker.addFirst(identifier);
-        int historySize = getIntParameter(request, "s",10);
-        if (historyTracker.size() > historySize) {
-            historyTracker.removeLast();
-        }
+        bean.addHistoryNode(request.getSession(),identifier);
         return null;
     }
 }

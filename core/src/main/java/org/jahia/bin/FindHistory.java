@@ -57,6 +57,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.*;
 import org.jahia.services.render.URLResolverFactory;
+import org.jahia.services.render.filter.HistoryTrackerBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.lucene.queryParser.QueryParser;
@@ -117,7 +118,7 @@ public class FindHistory extends BaseFindController {
             if (name == null) {
                 name = "historyTracker";
             }
-            List<String> l = (List<String>) request.getSession().getAttribute(name);
+            List<String> l = (List<String>) request.getSession().getAttribute(HistoryTrackerBean.class.getName()+"."+name);
 
             if (l == null) {
                 return;

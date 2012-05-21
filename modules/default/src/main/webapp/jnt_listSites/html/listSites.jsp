@@ -217,12 +217,12 @@
                                         <h3><fmt:message key="label.manageSite.siteProperties"/></h3>
 
                                         <p id="siteTitleForm${node.identifier}">
-                                            <label for="siteTitle${node.identifier}"><fmt:message key="jnt_virtualsite.j_title"/></label>
+                                            <label for="siteTitle${node.identifier}"><fmt:message key="jnt_virtualsite.j_title"/> (*)</label>
                                             <input type="text" name="siteTitle" id="siteTitle${node.identifier}" value="${node.properties['j:title'].string}"/>
                                         </p>
 
                                         <p id="siteServerNameForm${node.identifier}">
-                                            <label for="siteServerName${node.identifier}"><fmt:message key="jnt_virtualsite.j_serverName"/></label>
+                                            <label for="siteServerName${node.identifier}"><fmt:message key="jnt_virtualsite.j_serverName"/> (*)</label>
                                             <input type="text" name="siteServerName" id="siteServerName${node.identifier}" value="${node.properties['j:serverName'].string}"/>
                                         </p>
 
@@ -331,7 +331,7 @@
         <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><fmt:message key="label.manageSites.noSiteSelected"/></p>
     </div>
 </div>
-<div style="display:none; position:fixed; left:0; top:0; width:100%; height:100%; z-index:9999" id="loading">
+<div style="display:none; position:fixed; left:0; top:0; width:100%; height:100%; z-index:9999" class="loading">
     <h1><fmt:message key="org.jahia.admin.workInProgressTitle"/></h1>
 </div>
 

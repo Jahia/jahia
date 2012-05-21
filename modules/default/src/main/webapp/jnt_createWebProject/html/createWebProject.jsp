@@ -26,14 +26,14 @@
     <fieldset>
         <legend>${fn:escapeXml(currentNode.displayableName)}</legend>
 
-        <p><label for="siteTitle"><fmt:message key="label.title"/></label>
+        <p><label for="siteTitle"><fmt:message key="label.title"/> (*)</label>
             <input type="text" name="siteTitle" id="siteTitle" class="field" value=""tabindex="20"/></p>
 
-        <p><label for="siteKey"><fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/></label>
+        <p><label for="siteKey"><fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/> (*)</label>
             <input type="text" name="siteKey" id="siteKey" class="field" value=""tabindex="20"/></p>
 
         <c:if test="${currentNode.properties['useServerName'].boolean}">
-            <p><label for="siteServerName"><fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/></label>
+            <p><label for="siteServerName"><fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/> (*)</label>
                 <input type="text" name="siteServerName" id="siteServerName" class="field" value=""tabindex="20"/></p>
         </c:if>
 
@@ -65,12 +65,7 @@
         </div>
     </fieldset>
 </form>
-    <div style="display:none">
-        <div id="no-title" >
-            <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><fmt:message key="label.noTitle"/></p>
-        </div>
-    </div>
-    <div style="display:none; position:fixed; left:0; top:0; width:100%; height:100%; z-index:9999" id="loading">
+    <div style="display:none; position:fixed; left:0; top:0; width:100%; height:100%; z-index:9999" class="loading">
         <h1><fmt:message key="org.jahia.admin.workInProgressTitle"/></h1>
     </div>
 </template:tokenizedForm>

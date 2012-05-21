@@ -43,32 +43,38 @@ function deleteSite() {
 
 function editProperties(id) {
     showLoading();
-    $('#editSiteForm'+id).ajaxSubmit(function() {
-        window.location.reload();
-    })
+    $('#editSiteForm'+id).ajaxSubmit({
+        dataType: "json",
+        success: function(response) {
+            if (response.warn != undefined) {
+                alert(response.warn);
+                hideLoading();
+            } else {
+                window.location.reload();
+            }
+        },
+        error: function(response) {
+            hideLoading();
+        }
+    });
 }
 
 function createSite() {
-    if ($("#webProjectCreationForm input[name=siteTitle]").val() == '' ||
-        $("#webProjectCreationForm input[name=siteKey]").val() == '') {
-        $("#no-title").dialog({
-             resizable:false,
-             height:180,
-             modal:true,
-             zIndex:1200,
-             buttons:{
-                 "Ok":function () {
-                     $(this).dialog("close");
-                 }
-             }
-         });
-        return;
-    }
-
     showLoading();
-    $('#webProjectCreationForm').ajaxSubmit(function() {
-        window.location.reload();
-    })
+    $('#webProjectCreationForm').ajaxSubmit({
+        dataType: "json",
+        success: function(response) {
+            if (response.warn != undefined) {
+                alert(response.warn);
+                hideLoading();
+            } else {
+                window.location.reload();
+            }
+        },
+        error: function(response) {
+            hideLoading();
+        }
+    });
     return true;
 }
 
@@ -103,7 +109,12 @@ function exportSite(url,live) {
 }
 
 function showLoading() {
-    $('#loading').show();
-    $("#loading").appendTo("body")
+    $('.loading').show();
+    $(".loading").appendTo("body")
 }
 
+function hideLoading() {
+    $('.loading').each(function () {
+        $(this).hide();
+    });
+}

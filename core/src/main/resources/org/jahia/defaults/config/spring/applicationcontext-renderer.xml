@@ -70,7 +70,7 @@
 		<property name="priority" value="3" />
         <property name="description" value="Calls the logging service to log the display of a resource. Also initializes profiling information"/>
 		<property name="loggingService" ref="loggingService" />
-		<property name="skipOnConfiguration" value="include,wrapper" />
+		<property name="skipOnConfigurations" value="include,wrapper" />
 	</bean>
     <bean
         class="org.jahia.services.render.filter.AreaResourceFilter">
@@ -104,7 +104,7 @@
 		<property name="priority" value="15" />
         <property name="description" value="Stores the required request parameters before evaluating the template and restores original after."/>
 	</bean>
-    
+
     <bean id="markedForDeletionEditModeFilter" class="org.jahia.services.render.filter.MarkedForDeletionEditModeFilter">
         <property name="priority" value="17" />
         <property name="description" value="Adds overlays for modules in edit mode that are marked for deletion"/>
@@ -117,7 +117,7 @@
                 </div>{1}]]></value>
         </property>
     </bean>
-    
+
 	<bean
 		class="org.jahia.services.render.filter.URLSystemAttributesAppenderFilter">
 		<property name="priority" value="20" />
@@ -153,7 +153,7 @@
                     <property name="urlResolverFactory" ref="urlResolverFactory" />
 				</bean>
                 <bean class="org.jahia.services.render.filter.SiteParameterAdder" />
-                
+
 			</list>
 		</property>
 	</bean>
@@ -176,7 +176,7 @@
 	<bean class="org.jahia.services.render.filter.WrapperFilter">
 		<property name="priority" value="40" />
         <property name="description" value="Adds a wrapper to a content"/>
-		<property name="skipOnConfiguration" value="include,wrapper" />
+		<property name="skipOnConfigurations" value="include,wrapper" />
 	</bean>
 	<bean class="org.jahia.services.render.filter.TemplateScriptFilter">
 		<property name="priority" value="99" />

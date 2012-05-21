@@ -161,7 +161,7 @@ public class JahiaSearchIndex extends SearchIndex {
             }
             // if acl node is added for the first time we need to add our ACL_UUID field 
             // to parent's and all affected subnodes' index documents 
-            if (JNT_ACL.equals(node.getNodeTypeName()) && !removedIds.contains(node.getId())) {
+            if (JNT_ACL.equals(node.getNodeTypeName())) {
                 try {
                     NodeState nodeParent = (NodeState) itemStateManager.getItemState(node
                             .getParentId());
@@ -179,10 +179,8 @@ public class JahiaSearchIndex extends SearchIndex {
     private void recurseTreeForAclIdSetting (NodeState node, Set<NodeId> addedIds, Set<NodeId> removedIds, List<NodeState> addList, List<NodeId> removeList) throws ItemStateException {
         for (ChildNodeEntry childNodeEntry : node.getChildNodeEntries()) {
             NodeState childNode = (NodeState) getContext().getItemStateManager().getItemState(childNodeEntry.getId());
-            if (!childNode.hasChildNodeEntry(JahiaNodeIndexer.J_ACL)) {
-                addIdToBeIndexed(childNodeEntry.getId(), addedIds, removedIds, addList, removeList);
-                recurseTreeForAclIdSetting(childNode, addedIds, removedIds, addList, removeList);
-            }
+            addIdToBeIndexed(childNodeEntry.getId(), addedIds, removedIds, addList, removeList);
+            recurseTreeForAclIdSetting(childNode, addedIds, removedIds, addList, removeList);
         }
     }
     

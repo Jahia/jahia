@@ -65,7 +65,7 @@ when we flush this entry we will flush the whole cache
         <property name="description" value="Module content caching filter." />
     	<property name="cacheProvider" ref="ModuleCacheProvider"/>
     	<property name="skipOnTemplateTypes" value="json"/>
-        <property name="skipOnConfiguration" value="include,wrapper,option"/>
+        <property name="skipOnConfigurations" value="include,wrapper,option"/>
         <property name="applyOnModes" value="live"/>
         <property name="generatorQueue" ref="moduleGeneratorQueue"/>
         <property name="moduleParamsProperties">

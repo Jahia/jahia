@@ -79,7 +79,7 @@ public abstract class AbstractFilter implements RenderFilter {
         public boolean matches(RenderContext renderContext, Resource resource) {
             return renderContext.isAjaxRequest();
         }
-        
+
         @Override
         public String toString() {
             return "is Ajax request";
@@ -110,7 +110,7 @@ public abstract class AbstractFilter implements RenderFilter {
             }
             return matches;
         }
-        
+
         @Override
         public String toString() {
             StringBuilder out = new StringBuilder();
@@ -164,7 +164,7 @@ public abstract class AbstractFilter implements RenderFilter {
         public boolean matches(RenderContext renderContext, Resource resource) {
             return (renderContext.getMainResource().getNode().getPath().equals(resource.getNode().getPath()));
         }
-        
+
         @Override
         public String toString() {
             return "is main resource";
@@ -194,7 +194,7 @@ public abstract class AbstractFilter implements RenderFilter {
             }
             return matches;
         }
-        
+
         private String mode;
 
         /**
@@ -210,7 +210,7 @@ public abstract class AbstractFilter implements RenderFilter {
         public boolean matches(RenderContext renderContext, Resource resource) {
             return matches(renderContext, mode);
         }
-        
+
         @Override
         public String toString() {
             return "mode == " + mode;
@@ -273,7 +273,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
             return matches;
         }
-    
+
         @Override
         public String toString() {
             return "nodeTypeName == " + nodeTypeName;
@@ -347,7 +347,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Filter execution condition that evaluates to true if the specified request attribute matches the specified value.
-     * 
+     *
      * @author Sergiy Shyrkov
      * @since Jahia 6.6
      */
@@ -362,7 +362,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Filter execution condition that evaluates to true if the specified request item matches the specified value.
-     * 
+     *
      * @author Sergiy Shyrkov
      * @since Jahia 6.6
      */
@@ -383,7 +383,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Filter execution condition that evaluates to true if the specified request header matches the specified value.
-     * 
+     *
      * @author Sergiy Shyrkov
      * @since Jahia 6.6
      */
@@ -397,7 +397,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Filter execution condition that evaluates to true if the specified request parameter matches the specified value.
-     * 
+     *
      * @author Sergiy Shyrkov
      * @since Jahia 6.6
      */
@@ -411,7 +411,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Evaluates to <code>true</code> if the current resource's template matches the provided one.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class TemplateCondition extends PatternCondition {
@@ -462,9 +462,9 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Evaluates to <code>true</code> if the current site's template set matches the specified one
-     * 
+     *
      * @author Sergiy Shyrkov
-     * @since 6.6.1.0 
+     * @since 6.6.1.0
      */
     public static class SiteTemplateSetCondition implements ExecutionCondition {
 
@@ -483,7 +483,7 @@ public abstract class AbstractFilter implements RenderFilter {
         public boolean matches(RenderContext renderContext, Resource resource) {
             return renderContext.getSite() != null && templateSet.equals(renderContext.getSite().getTemplatePackageName());
         }
-        
+
         @Override
         public String toString() {
             return "siteTemplateSet == " + templateSet;
@@ -493,11 +493,11 @@ public abstract class AbstractFilter implements RenderFilter {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(AbstractFilter.class);
 
     private List<ExecutionCondition> conditions = new LinkedList<ExecutionCondition>();
-    
+
     private String description;
-    
+
     private boolean disabled;
-    
+
     private int priority = 99;
 
     protected RenderService service;
@@ -543,7 +543,7 @@ public abstract class AbstractFilter implements RenderFilter {
         if (disabled) {
             return false;
         }
-        
+
         boolean matches = true;
         for (ExecutionCondition condition : conditions) {
             if (!condition.matches(renderContext, resource)) {
@@ -564,7 +564,7 @@ public abstract class AbstractFilter implements RenderFilter {
         if(this.getClass().getName().equals(obj.getClass().getName())) {
             return this.getPriority()==((AbstractFilter)obj).getPriority();
         }
-        return false; 
+        return false;
     }
 
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
@@ -578,7 +578,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Returns a text-based representation of filter conditions.
-     * 
+     *
      * @return a text-based representation of filter conditions
      */
     public String getConditionsSummary() {
@@ -601,7 +601,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Returns a human-readable description of this filter.
-     * 
+     *
      * @return a human-readable description of this filter
      */
     public String getDescription() {
@@ -756,7 +756,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Comma-separated list of template set names this filter will be executed for (all others are skipped).
-     * 
+     *
      * @param templateSets
      *            comma-separated list of template type names this filter will be executed for (all others are skipped)
      * @since 6.6.1.0
@@ -786,7 +786,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Sets a human-readable description of this filter.
-     * 
+     *
      * @param description
      *            a human-readable description of this filter
      */
@@ -812,6 +812,11 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
+    @Deprecated
+    public void setSkipOnConfiguration(String configurations) {
+        setSkipOnConfigurations(configurations);
+    }
+
     /**
      * Comma-separated list of configuration names this filter won't be executed
      * for.
@@ -819,7 +824,7 @@ public abstract class AbstractFilter implements RenderFilter {
      * @param configurations comma-separated list of node type names this filter
      *                       won't be executed for
      */
-    public void setSkipOnConfiguration(String configurations) {
+    public void setSkipOnConfigurations(String configurations) {
         ExecutionCondition condition = null;
         if (configurations.contains(",")) {
             AnyOfCondition anyOf = new AnyOfCondition();

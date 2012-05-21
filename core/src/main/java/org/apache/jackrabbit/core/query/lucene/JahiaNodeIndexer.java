@@ -767,7 +767,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
             while (currentNode != null) {
                 ChildNodeEntry aclChildNode = currentNode.getChildNodeEntry(J_ACL, 1);
                 if (aclChildNode != null) {
-                    acls.add(0,aclChildNode.getId().toString()+"/"+currentNode.getId().toString());
+                    acls.add(0,aclChildNode.getId().toString());
                     PropertyId propId = new PropertyId(aclChildNode.getId(), J_ACL_INHERITED);
                     try {
                         PropertyState ps = (PropertyState) stateProvider.getItemState(propId);

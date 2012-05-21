@@ -100,7 +100,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     public static final String ACL_UUID = "_:ACL_UUID".intern();
     public static final Name J_ACL = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "acl");
-    
+    public static final Name J_ACL_INHERITED = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "inherit");
+
     public static final String CHECK_VISIBILITY = "_:CHECK_VISIBILITY".intern();
     public static final Name J_VISIBILITY = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "conditionalVisibility");
     
@@ -760,28 +761,38 @@ public class JahiaNodeIndexer extends NodeIndexer {
     }
     
     protected void addAclUuid(Document doc) throws RepositoryException {
-        ChildNodeEntry aclChildNode = node.getChildNodeEntry(J_ACL, 1);
-        if (aclChildNode == null) {
-            try {
-                NodeState currentNode = node;
-                while (currentNode.getParentId() != null) {
-                    currentNode = (NodeState) stateProvider
-                            .getItemState(currentNode.getParentId());
-                    aclChildNode = currentNode.getChildNodeEntry(J_ACL, 1);
-                    if (aclChildNode != null) {
-                        break;
+        List<String> acls = new ArrayList<String>();
+        try {
+            NodeState currentNode = node;
+            while (currentNode != null) {
+                ChildNodeEntry aclChildNode = currentNode.getChildNodeEntry(J_ACL, 1);
+                if (aclChildNode != null) {
+                    acls.add(0,aclChildNode.getId().toString()+"/"+currentNode.getId().toString());
+                    PropertyId propId = new PropertyId(aclChildNode.getId(), J_ACL_INHERITED);
+                    try {
+                        PropertyState ps = (PropertyState) stateProvider.getItemState(propId);
+                        if (ps.getValues().length == 1) {
+                            if (!ps.getValues()[0].getBoolean()) {
+                                break;
+                            }
+                        }
+                    } catch (ItemStateException e) {
+
                     }
                 }
-            } catch (NoSuchItemStateException e) {
-                throwRepositoryException(e);
-            } catch (ItemStateException e) {
-                throwRepositoryException(e);
+                if (currentNode.getParentId() != null) {
+                    currentNode = (NodeState) stateProvider.getItemState(currentNode.getParentId());
+                } else {
+                    currentNode = null;
+                }
             }
+        } catch (NoSuchItemStateException e) {
+            throwRepositoryException(e);
+        } catch (ItemStateException e) {
+            throwRepositoryException(e);
         }
-        if (aclChildNode != null) {
-            doc.add(new Field(ACL_UUID, aclChildNode.getId().toString(),
-                    Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
-                    Field.TermVector.NO));
-        }
+        doc.add(new Field(ACL_UUID, StringUtils.join(acls, " "),
+                Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
+                Field.TermVector.NO));
     }
 }

@@ -138,17 +138,23 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                 String[] infos = getIndexedNodeInfo(node, reader);
                 if (foundIds.add(infos[0])) {  // <-- Added by jahia
                     try {
-                        Boolean aclChecked = checkedAcls.get(infos[1]);
+                        String[] acls = infos[1].split(" ");
                         boolean canRead = true;
-                        if (aclChecked == null) {
-                            try {
-                                canRead = session.getAccessManager().canRead(null,
-                                        node.getNodeId());
-                                checkedAcls.put(infos[1], canRead);
-                            } catch (RepositoryException e) {
+
+                        for (String acl : acls) {
+                            Boolean aclChecked = checkedAcls.get(acl);
+                            if (aclChecked == null) {
+                                try {
+                                    canRead = session.getAccessManager().canRead(null, new NodeId(acl));
+                                    checkedAcls.put(acl, canRead);
+                                } catch (RepositoryException e) {
+                                }
+                            } else {
+                                canRead = aclChecked;
                             }
-                        } else {
-                            canRead = aclChecked;
+                            if (canRead) {
+                                break;
+                            }
                         }
                         if (canRead
                                 && (!Constants.LIVE_WORKSPACE.equals(session

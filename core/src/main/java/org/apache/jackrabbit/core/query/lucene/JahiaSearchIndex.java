@@ -41,23 +41,21 @@
 package org.apache.jackrabbit.core.query.lucene;
 
 import org.apache.jackrabbit.core.id.NodeId;
+import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.ExecutableQuery;
 import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
 import org.apache.jackrabbit.core.query.lucene.constraint.NoDuplicatesConstraint;
 import org.apache.jackrabbit.core.session.SessionContext;
-import org.apache.jackrabbit.core.state.ChildNodeEntry;
-import org.apache.jackrabbit.core.state.ItemStateException;
-import org.apache.jackrabbit.core.state.ItemStateManager;
-import org.apache.jackrabbit.core.state.NodeState;
+import org.apache.jackrabbit.core.state.*;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.QueryObjectModelTree;
-import org.slf4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
 import org.jahia.api.Constants;
+import org.slf4j.Logger;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -166,7 +164,7 @@ public class JahiaSearchIndex extends SearchIndex {
                     NodeState nodeParent = (NodeState) itemStateManager.getItemState(node
                             .getParentId());
                     addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
-                    recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, addList, removeList);
+                    recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, addList, removeList, itemStateManager);
                 } catch (ItemStateException e) {
                     log.warn("ACL_UUID field in documents may not be updated, so access rights check in search may not work correctly", e);
                 }
@@ -176,11 +174,26 @@ public class JahiaSearchIndex extends SearchIndex {
         super.updateNodes(removeList.iterator(), addList.iterator());
     }
     
-    private void recurseTreeForAclIdSetting (NodeState node, Set<NodeId> addedIds, Set<NodeId> removedIds, List<NodeState> addList, List<NodeId> removeList) throws ItemStateException {
+    private void recurseTreeForAclIdSetting (NodeState node, Set<NodeId> addedIds, Set<NodeId> removedIds, List<NodeState> addList, List<NodeId> removeList, ItemStateManager itemStateManager) throws ItemStateException {
         for (ChildNodeEntry childNodeEntry : node.getChildNodeEntries()) {
             NodeState childNode = (NodeState) getContext().getItemStateManager().getItemState(childNodeEntry.getId());
-            addIdToBeIndexed(childNodeEntry.getId(), addedIds, removedIds, addList, removeList);
-            recurseTreeForAclIdSetting(childNode, addedIds, removedIds, addList, removeList);
+            boolean breakInheritance = false;
+            if (childNode.hasPropertyName(JahiaNodeIndexer.J_ACL_INHERITED)) {
+                try {
+                    PropertyId propId = new PropertyId((NodeId) childNode.getId(), JahiaNodeIndexer.J_ACL_INHERITED);
+                    PropertyState ps = (PropertyState) itemStateManager.getItemState(propId);
+                    if (ps.getValues().length == 1) {
+                        if (ps.getValues()[0].getBoolean()) {
+                            breakInheritance = true;
+                        }
+                    }
+                } catch (RepositoryException e) {
+                }
+            }
+            if (!breakInheritance) {
+                addIdToBeIndexed(childNodeEntry.getId(), addedIds, removedIds, addList, removeList);
+                recurseTreeForAclIdSetting(childNode, addedIds, removedIds, addList, removeList, itemStateManager);
+            }
         }
     }
     

@@ -143,7 +143,7 @@ public class DefaultPutAction extends Action {
             } catch (RepositoryException e) {}
             return new ActionResult(HttpServletResponse.SC_OK, node.getPath(), jsonObject);
         } else {
-            return null;
+            return ActionResult.OK;
         }
     }
 }

@@ -98,6 +98,7 @@
 [consequence][]Notify current user with mail template "{template}" from "{fromMail}"=notificationService.notifyCurrentUser(user,"{template}","{fromMail}",drools);
 [consequence][]Notify {user} with mail template "{template}" from "{fromMail}" copy to "{ccList}" blind copy to "{bccList}"=notificationService.notifyUser({user},"{template}","{fromMail}","{ccList}","{bccList}",drools);
 [consequence][]Notify {user} user with mail template "{template}" from "{fromMail}"=notificationService.notifyUser({user},"{template}","{fromMail}",drools);
+[consequence][]Notify {user} user with mail template "{template}" from {fromMail}=notificationService.notifyUser({user},"{template}",{fromMail},drools);
 [consequence][]Store password history for user {user}=service.storeUserPasswordHistory({user}, drools);
 [consequence][]Deploy module {module} on site {site}=service.deployModule("{module}",{site}, drools);
 [consequence][]Grant role {role} on the {node} to the current user=service.grantRoleToUser({node}, user.getName(), "{role}", drools);

@@ -294,7 +294,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
                     if (resource.getWorkspace().equals("live") && aggregateAndCompress) {
                         assets.put("css", aggregate(assets.get("css"), "css"));
-                        assets.put("javascript", aggregate(assets.get("javascript"), "js"));
+                        Map<String, Map<String, String>> scripts = new HashMap<String, Map<String, String>>(assets.get("javascript"));
+                        Map<String, Map<String, String>> newScripts = aggregate(assets.get("javascript"), "js");
+                        assets.put("javascript", newScripts);
+                        scripts.keySet().removeAll(newScripts.keySet());
+                        assets.put("aggregatedjavascript", scripts);
                     }
 
                     bindings.put("renderContext", renderContext);
@@ -388,11 +392,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                         if (!minifiedFile.exists() || minifiedFile.lastModified() < f.lastModified()) {
                             Reader reader = new InputStreamReader(new FileInputStream(f), "UTF-8");
                             Writer writer = new OutputStreamWriter(new FileOutputStream(context.getRealPath(minifiedPath)), "UTF-8");
-                        
-                            if (type.equals("css")) {
+                            boolean compress = true;
+                            if (compress && type.equals("css")) {
                                 CssCompressor compressor = new CssCompressor(reader);
                                 compressor.compress(writer, -1);
-                            } else if (type.equals("js")) {
+                            } else if (compress && type.equals("js")) {
                                 JavaScriptCompressor compressor = null;
                                 try {
                                     compressor = new JavaScriptCompressor(reader, new ErrorReporter() {
@@ -433,7 +437,14 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                     IOUtils.copy(reader, writer);
                                 }
                             } else {
-                                IOUtils.copy(reader, writer);
+                                BufferedWriter bw = new BufferedWriter(writer);
+                                BufferedReader br = new BufferedReader(reader);
+                                String s = null;
+                                while ((s = br.readLine()) != null) {
+                                    bw.write(s+"\n");
+                                }
+                                IOUtils.closeQuietly(bw);
+                                IOUtils.closeQuietly(br);
                             }
                             IOUtils.closeQuietly(reader);
                             IOUtils.closeQuietly(writer);
@@ -444,6 +455,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     try {
                         OutputStream outMerged = new FileOutputStream(minifiedAggregatedRealPath);
                         for (String minifiedFile : minifiedPaths) {
+                            outMerged.write(("//"+minifiedFile+"\n").getBytes());
                             InputStream is = new FileInputStream(context.getRealPath(minifiedFile));
                             if (type.equals("css")) {
                                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -459,6 +471,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                 is = new ByteArrayInputStream(s.getBytes("UTF-8"));
                             }
                             IOUtils.copy(is, outMerged);
+                            outMerged.write(";\n".getBytes());
                             IOUtils.closeQuietly(is);
                         }
                         IOUtils.closeQuietly(outMerged);

@@ -2,12 +2,12 @@
  *  @description Override jQuery load method, remove the script that were previously loaded
  */
 
-var _load = jQuery.fn.load;
 
 (function($) {
+    var _load1 = jQuery.fn.load;
     $.fn.load = function( url, params, callback ) {
-		if ( typeof url !== "string" && _load ) {
-			return _load.apply( this, arguments );
+		if ( typeof url !== "string" && _load1 ) {
+			return _load1.apply( this, arguments );
 
 		// Don't do a request if no elements are being requested
 		} else if ( !this.length ) {
@@ -60,15 +60,22 @@ var _load = jQuery.fn.load;
 					jqXHR.done(function( r ) {
 						responseText = r;
 					});
-					// See if a selector was specified
 
+                    // Get the list of all scripts that have returned by the ajax call 
+					ar=[];
                     while ((match = extscript.exec(responseText)) != null) {
                         src = /src=\"([^\"]*)\"/.exec(match[1])[1]
-                        if ($('head:first script[src="' + src + '"]').length > 0) {
-                            responseText = responseText.replace(match[0],"")
+						ar[src]=match[0];
+                    }
+					for (src in ar)
+					{
+                        // If the script was already present in the head, do not add it twice
+                        if ($('head:first script[src="' + src + '"]').length > 0 || $('aggregatedscript[src="' + src + '"]').length > 0) {
+                            responseText = responseText.replace(ar[src],"")
                         }
                     }
 
+					// See if a selector was specified
                     self.html( selector ?
 						// Create a dummy div to hold the results
 

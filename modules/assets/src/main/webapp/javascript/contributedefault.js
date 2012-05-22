@@ -63,7 +63,8 @@ function initEditFields(id, escapeTextValue, callback) {
             url: $(this).attr('jcr:url'),
             data: data,
             dataType: "json",
-            error:errorOnSave(thisField)
+            error:errorOnSave(thisField),
+            traditional: true
         }).done(function() {
             if (callback != null) {
                 callback(submitId);
@@ -98,7 +99,8 @@ function initEditFields(id, escapeTextValue, callback) {
           url: $(this).attr('jcr:url'),
           data: data,
           dataType: "json",
-          error:errorOnSave(thisField)
+          error:errorOnSave(thisField),
+          traditional: true
         }).done(function() {
             if (callback != null) {
                 callback(submitId);
@@ -141,7 +143,8 @@ function initEditFields(id, escapeTextValue, callback) {
           url: $(this).attr('jcr:url'),
           data: data,
           dataType: "json",
-          error:errorOnSave(thisField)
+          error:errorOnSave(thisField),
+          traditional: true
         }).done(function() {
             if (callback != null) {
                 callback(submitId);
@@ -177,7 +180,8 @@ function initEditFields(id, escapeTextValue, callback) {
           url: $(this).attr('jcr:url'),
           data: data,
           dataType: "json",
-          error:errorOnSave(thisField)
+          error:errorOnSave(thisField),
+          traditional: true
         }).done(function() {
             if (callback != null) {
                 callback(submitId);
@@ -220,7 +224,8 @@ function setChoiceListEdit(id, callback) {
           url: $(this).attr('jcr:url'),
           data: data,
           dataType: "json",
-            error:errorOnSave(thisField)
+          error:errorOnSave(thisField),
+          traditional: true
         }).done(function() {
             if (callback != null) {
                 callback(submitId);

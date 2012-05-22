@@ -62,7 +62,6 @@
         <property name="aggregateAndCompress" value="${aggregateAndCompressAssets:true}"/>
         <property name="excludesFromAggregateAndCompress">
             <list>
-                <value>/modules/assets/javascript/ckeditor/ckeditor.js</value>
             </list>
         </property>
 	</bean>

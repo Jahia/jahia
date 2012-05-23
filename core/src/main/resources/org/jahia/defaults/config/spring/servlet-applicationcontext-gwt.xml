@@ -3,7 +3,14 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-       
+
+	<bean id="gwtPlaceholderConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="properties">
+			<ref bean="jahiaProperties" />
+		</property>
+	</bean>
+	
     <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="mappings">
             <value>
@@ -16,7 +23,7 @@
     </bean>
     
     <bean name="abstractServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController"  abstract="true">
-        <property name="sessionExpiryTime" value="30" />
+        <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
         <property name="allowPostMethodOnly" value="true"/>
         <property name="requireAuthenticatedUser" value="true"/>
     </bean>

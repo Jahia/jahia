@@ -16,7 +16,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
-<template:addResources type="css" resources="listsites.css"/>
+
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 
 <template:addResources type="javascript" resources="jquery.fancybox.js"/>
@@ -24,7 +24,7 @@
 <template:addResources type="javascript" resources="managesites.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
 
-<template:addResources type="css" resources="listsites.css"/>
+<template:addResources type="css" resources="edit-site-form.css"/>
 <template:include view="hidden.header"/>
 
 <script type="text/javascript">
@@ -177,14 +177,14 @@
                     <c:if test="${currentNode.properties.editproperties.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
                         <a href="#editSiteDiv${node.identifier}" class="changePropertiesButton" id="changePropertiesButton${node.identifier}"
                            title="<fmt:message key='label.manageSite.changeProperties'/>"><img
-                                src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" "
+                                src="<c:url value='/icons/changeProperties.png'/>" width="16" height="16" alt=" "
                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; "/></a>
                     </c:if>
                     <c:if test="${currentNode.properties.details.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
                         <a href="<c:url value='${basePreview}${node.path}${page}.${currentNode.properties.detailsTemplate.string}.html'/>"
                            class="detailsButton" id="detailsButton${node.identifier}"
                            title="${currentNode.properties.detailsLabel.string}"><img
-                                src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" "
+                                src="<c:url value='/icons/administrator.png'/>" width="16" height="16" alt=" "
                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; "/></a>
                     </c:if>
 
@@ -202,21 +202,21 @@
 
                                         <p id="siteTitleForm${node.identifier}">
                                             <label for="siteTitle${node.identifier}"><fmt:message key="jnt_virtualsite.j_title"/> (*)</label>
-                                            <input type="text" name="siteTitle" id="siteTitle${node.identifier}" value="${node.properties['j:title'].string}"/>
+                                            <input class="inputsize2" type="text" name="siteTitle" id="siteTitle${node.identifier}" value="${node.properties['j:title'].string}"/>
                                         </p>
 
                                         <p id="siteServerNameForm${node.identifier}">
                                             <label for="siteServerName${node.identifier}"><fmt:message key="jnt_virtualsite.j_serverName"/> (*)</label>
-                                            <input type="text" name="siteServerName" id="siteServerName${node.identifier}" value="${node.properties['j:serverName'].string}"/>
+                                            <input class="inputsize2" type="text" name="siteServerName" id="siteServerName${node.identifier}" value="${node.properties['j:serverName'].string}"/>
                                         </p>
 
                                         <p id="siteDescrForm${node.identifier}">
                                             <label for="siteDescr${node.identifier}"><fmt:message key="jnt_virtualsite.j_description"/></label>
-                                            <textarea type="text" name="siteDescr" id="siteDescr${node.identifier}">${node.properties['j:description'].string}</textarea>
+                                            <textarea class="inputsize2" type="text" name="siteDescr" id="siteDescr${node.identifier}">${node.properties['j:description'].string}</textarea>
                                         </p>
                                     </fieldset>
+                                    <button site="${node.identifier}" onclick="editProperties('${node.identifier}')"><fmt:message key="label.manageSite.submitChanges"/></button>
                                 </form>
-                                <button site="${node.identifier}" onclick="editProperties('${node.identifier}')"><fmt:message key="label.manageSite.submitChanges"/></button>
                             </div>
                         </div>
                     </c:if>

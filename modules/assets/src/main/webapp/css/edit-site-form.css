@@ -1,0 +1,41 @@
+/******************************************************************************
+*  edit Site Form
+******************************************************************************/
+.bodywrapper .editSiteForm {
+    margin-bottom:1em;
+    padding:1em;
+}
+
+.bodywrapper .editSiteForm legend {
+     display:none;
+}
+
+.bodywrapper .editSiteForm fieldset {
+	padding:0;
+	border:none;
+}
+.bodywrapper .editSiteForm p {
+	padding:0.2em 0 0.5em 0;
+	border:none;
+	margin:0 ;
+}
+.bodywrapper .editSiteForm label {
+    display:block;
+    padding-bottom: 0.2em;
+}
+.bodywrapper .editSiteForm label.label-inline {
+    display:inline;
+    padding-bottom: 0.2em;
+}
+.bodywrapper .editSiteForm select {
+   width:215px
+}
+.bodywrapper .editSiteForm input.	 {
+   width:200px;
+}
+.bodywrapper .editSiteForm input.inputsize2 {
+   width:90%
+}
+.bodywrapper .editSiteForm textarea.inputsize2 {
+   width:90%
+}

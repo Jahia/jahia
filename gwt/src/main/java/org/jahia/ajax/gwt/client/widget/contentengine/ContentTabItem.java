@@ -138,7 +138,7 @@ public class ContentTabItem extends PropertiesTabItem {
                     autoUpdate = false;
                     autoUpdateLabel.setText("");
                 }
-                nameText.setId("JahiaGxtField_systemName");
+                
                 nameText.setEnabled(nameEditingAllowed && !autoUpdate);
 
                 if (titleField != null) {
@@ -201,6 +201,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 nameFieldSet.setLayout(fl);
 
                 nameText = new TextField<String>();
+                nameText.setId("JahiaGxtField_systemName");
                 nameText.setWidth("250");
                 nameText.setMaxLength(maxLength);
                 nameText.setAllowBlank(false);
@@ -228,6 +229,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 panel.add(autoUpdateLabel, new HBoxLayoutData(0,5,0,5));
                 if (titleField != null) {
                     autoUpdateName = new CheckBox();
+                    autoUpdateName.setId("JahiaGxtCheckbox_syncSystemNameWithTitle");
                     autoUpdateName.setWidth(10);
                     panel.add(autoUpdateName, new HBoxLayoutData(0,5,5,5));
                 }

@@ -40,6 +40,7 @@
 
 package org.jahia.services.workflow.jbpm.custom;
 
+import org.jahia.services.content.*;
 import org.jahia.services.workflow.HistoryWorkflowTask;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
@@ -47,7 +48,6 @@ import org.jbpm.pvm.internal.model.ExecutionImpl;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.PublicationJob;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.workflow.WorkflowVariable;
 import org.jbpm.api.activity.ActivityExecution;
@@ -55,44 +55,44 @@ import org.jbpm.api.activity.ExternalActivityBehaviour;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
+import javax.jcr.RepositoryException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 /**
- * Publish custom activity for jBPM workflow
- * <p/>
- * Publish the current node
+ * Sets a property on a node
  */
-public class Publish implements ExternalActivityBehaviour {
+public class SetProperty implements ExternalActivityBehaviour {
     private static final long serialVersionUID = 1L;
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(Publish.class);
 
+    private String propertyName;
+    private String value;
+
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     public void execute(ActivityExecution execution) throws Exception {
-        List<String> uuids = (List<String>) execution.getVariable("nodeIds");
-        String workspace = (String) execution.getVariable("workspace");
-        String userKey = (String) execution.getVariable("user");
+        final List<String> uuids = (List<String>) execution.getVariable("nodeIds");
+        final String workspace = (String) execution.getVariable("workspace");
+        final String userKey = (String) execution.getVariable("user");
 
-        // try to get some user who did an action on the workflow for the last time
-        try {
-            WorkflowDefinition def = (WorkflowDefinition) execution.getVariable("workflow");
-            List<HistoryWorkflowTask> list = WorkflowService.getInstance().getHistoryWorkflowTasks(((ExecutionImpl) execution).getProcessInstance().getId(), def.getProvider(), Locale.getDefault());
-            if (list.size() > 0) {
-                userKey = list.get(list.size()-1).getUser();
+        JCRTemplate.getInstance().doExecuteWithSystemSession(null,workspace,new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                for (String uuid : uuids) {
+                    session.getNodeByUUID(uuid).setProperty(propertyName, value);
+                }
+                session.save();
+                return null;
             }
-        } catch (Exception e) {
-            logger.error("Cannot get last user on the workflow",e);
-        }
+        });
 
-        JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
-        JobDataMap jobDataMap = jobDetail.getJobDataMap();
-        jobDataMap.put(BackgroundJob.JOB_USERKEY, userKey);
-        jobDataMap.put(PublicationJob.PUBLICATION_UUIDS, uuids);
-        jobDataMap.put(PublicationJob.SOURCE, workspace);
-        jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
-        jobDataMap.put(PublicationJob.LOCK, "publication-process-" + execution.getProcessInstance().getId());
-
-        ServicesRegistry.getInstance().getSchedulerService().scheduleJobAtEndOfRequest(jobDetail);
         execution.takeDefaultTransition();
     }
 

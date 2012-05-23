@@ -8,6 +8,7 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <template:addResources type="css" resources="pageformcreation.css"/>
+<template:addResources type="css" resources="create-web-project.css"/>
 <template:addResources type="javascript" resources="managesites.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
 
@@ -27,19 +28,19 @@
         <legend>${fn:escapeXml(currentNode.displayableName)}</legend>
 
         <p><label for="siteTitle"><fmt:message key="label.title"/> (*)</label>
-            <input type="text" name="siteTitle" id="siteTitle" class="field" value=""tabindex="20"/></p>
+            <input type="text" name="siteTitle" id="siteTitle" class="inputsize2" value=""tabindex="20"/></p>
 
         <p><label for="siteKey"><fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/> (*)</label>
-            <input type="text" name="siteKey" id="siteKey" class="field" value=""tabindex="20"/></p>
+            <input type="text" name="siteKey" id="siteKey" class="inputsize2" value=""tabindex="20"/></p>
 
         <c:if test="${currentNode.properties['useServerName'].boolean}">
             <p><label for="siteServerName"><fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/> (*)</label>
-                <input type="text" name="siteServerName" id="siteServerName" class="field" value=""tabindex="20"/></p>
+                <input type="text" name="siteServerName" id="siteServerName" class="inputsize2" value=""tabindex="20"/></p>
         </c:if>
 
         <c:if test="${currentNode.properties['useDescription'].boolean}">
             <p><label for="siteDescr"><fmt:message key="label.description"/></label>
-                <textarea name="siteDescr" id="siteDescr" class="field" value=""tabindex="20"></textarea></p>
+                <textarea name="siteDescr" id="siteDescr" class="inputsize2" value=""tabindex="20"></textarea></p>
         </c:if>
 
 

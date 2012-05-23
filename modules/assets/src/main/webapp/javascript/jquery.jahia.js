@@ -70,7 +70,7 @@
 					for (src in ar)
 					{
                         // If the script was already present in the head, do not add it twice
-                        if ($('head:first script[src="' + src + '"]').length > 0 || $('aggregatedscript[src="' + src + '"]').length > 0) {
+                        if ($('head:first script[src="' + src + '"]').length > 0 || $('aggregatedscript').filter('[src="' + src + '"]').length > 0) {
                             responseText = responseText.replace(ar[src],"")
                         }
                     }

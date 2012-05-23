@@ -455,7 +455,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     try {
                         OutputStream outMerged = new FileOutputStream(minifiedAggregatedRealPath);
                         for (String minifiedFile : minifiedPaths) {
-                            outMerged.write(("//"+minifiedFile+"\n").getBytes());
+                            if (type.equals("js")) {
+                                outMerged.write(("//"+minifiedFile+"\n").getBytes());
+                            }
                             InputStream is = new FileInputStream(context.getRealPath(minifiedFile));
                             if (type.equals("css")) {
                                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -471,7 +473,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                 is = new ByteArrayInputStream(s.getBytes("UTF-8"));
                             }
                             IOUtils.copy(is, outMerged);
-                            outMerged.write(";\n".getBytes());
+                            if (type.equals("js")) {
+                                outMerged.write(";\n".getBytes());
+                            }
                             IOUtils.closeQuietly(is);
                         }
                         IOUtils.closeQuietly(outMerged);

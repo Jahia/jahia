@@ -174,7 +174,7 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
                         }
                     }
 
-                    if (execution.getVariable("jcr:title") instanceof List) {
+                    if (execution.getVariable("jcr:title") instanceof List && ((List<WorkflowVariable>)execution.getVariable("jcr:title")).size() > 0) {
                         task.setProperty("description", ((List<WorkflowVariable>)execution.getVariable("jcr:title")).get(0).getValue());
                     }
 

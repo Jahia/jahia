@@ -47,7 +47,8 @@
 
 <p>
     <a id="workflowImageLink${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')}"
-       href="#workflowImage${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')}">!!!View workflow status</a>
+       href="#workflowImage${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')}">!!!View
+        workflow status</a>
 </p>
 <jsp:useBean id="historyTasks" class="java.util.HashMap"/>
 <c:if test="${not empty activeWorkflowsMap[workflowDefinition.key]}">
@@ -65,9 +66,9 @@
                             <li>!!!User: ${historyTask.user}</li>
                             <li>!!!Duration: ${historyTask.duration/1000}s</li>
                             <li>!!!Started: <fmt:formatDate value="${historyTask.startTime}"
-                                                          pattern="yyyy-MM-dd HH:mm:ss"/></li>
+                                                            pattern="yyyy-MM-dd HH:mm:ss"/></li>
                             <li>!!!Ended: <fmt:formatDate value="${historyTask.endTime}"
-                                                        pattern="yyyy-MM-dd HH:mm:ss"/></li>
+                                                          pattern="yyyy-MM-dd HH:mm:ss"/></li>
                             <li>!!!Outcome: ${historyTask.displayOutcome}</li>
                         </ul>
                     </li>
@@ -84,7 +85,8 @@
                                                                                                  id="linktask${currentNode.identifier}-${tasks[action.name].id}"
                                                                                                  href="#task${currentNode.identifier}-${tasks[action.name].id}">!!!Execute</a></c:if>
                     <ul>
-                        <li>!!!Started: <fmt:formatDate value="${action.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></li>
+                        <li>!!!Started: <fmt:formatDate value="${action.createTime}"
+                                                        pattern="yyyy-MM-dd HH:mm:ss"/></li>
                         <li>!!!Due for: <fmt:formatDate value="${action.dueDate}" pattern="yyyy-MM-dd HH:mm:ss"/></li>
                     </ul>
                 </li>
@@ -95,7 +97,8 @@
 
 <div style="display:none">
     <div id="workflowImage${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')}">
-        <div id="workflowImageDiv${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')}" style="position:relative;">
+        <div id="workflowImageDiv${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')}"
+             style="position:relative;">
             <div style="height:50px;"></div>
             <img src="<c:url value='/cms/wfImage?workflowKey=${workflowDefinition.provider}:${workflowDefinition.key}'/>"/>
 
@@ -128,9 +131,9 @@
                             <li>!!!User: ${task.value.user}</li>
                             <li>!!!Duration: ${task.value.duration/1000}s</li>
                             <li>!!!Started: <fmt:formatDate value="${task.value.startTime}"
-                                                          pattern="yyyy-MM-dd HH:mm:ss"/></li>
+                                                            pattern="yyyy-MM-dd HH:mm:ss"/></li>
                             <li>!!!Ended: <fmt:formatDate value="${task.value.endTime}"
-                                                        pattern="yyyy-MM-dd HH:mm:ss"/></li>
+                                                          pattern="yyyy-MM-dd HH:mm:ss"/></li>
                             <li>!!!Outcome: ${task.value.displayOutcome}</li>
                         </ul>
                     </div>
@@ -223,7 +226,32 @@
 
 </script>
 <c:if test="${empty activeWorkflowsMap[workflowDefinition.key]}">
-    <a href="#" onclick="startWorkflow('${workflowDefinition.provider}:${workflowDefinition.key}')">Start workflow</a>
+    <c:choose>
+        <c:when test="${not empty workflowDefinition.formResourceName}">
+            <a class="workflowLink" href="#workflow${currentNode.identifier}-${workflowDefinition.key}">Start workflow</a>
+
+            <div style="display:none;">
+                <div id="workflow${currentNode.identifier}-${workflowDefinition.key}" class="workflowformdiv popupSize">
+                        <%--<c:set var="workflowStartFormWFCallbackJS">alert("callback");</c:set>--%>
+                    <c:url value="${url.current}.ajax" var="myUrl"/>
+                    <c:url value='${url.base}${functions:escapeJavaScript(currentNode.path)}.startWorkflow.do'
+                           var="actionUrl"/>
+                    <template:include view="contribute.workflow">
+                        <template:param name="resourceNodeType" value="${workflowDefinition.formResourceName}"/>
+                        <template:param name="workflowStartForm"
+                                        value="${workflowDefinition.provider}:${workflowDefinition.key}"/>
+                        <template:param name="workflowStartFormWFName" value="${workflowDefinition.displayName}"/>
+                        <template:param name="workflowStartAction" value="${actionUrl}"/>
+                    </template:include>
+                </div>
+            </div>
+        </c:when>
+
+        <c:otherwise>
+            <a href="#" onclick="startWorkflow('${workflowDefinition.provider}:${workflowDefinition.key}')">Start
+                workflow</a>
+        </c:otherwise>
+    </c:choose>
 </c:if>
 
 <c:forEach items="${tasks}" var="entry">

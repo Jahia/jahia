@@ -35,6 +35,9 @@
 <c:set var="scriptTypeName" value="${fn:replace(type.name,':','_')}"/>
 <div class="FormContribute">
     <c:choose>
+        <c:when test="${not empty currentResource.moduleParams.workflowStartAction}">
+            <c:set var="formAction" value="${currentResource.moduleParams.workflowStartAction}"/>
+        </c:when>
         <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">
             <c:set var="formAction" value="${url.base}${currentNode.path}.startPublicationWorkflow.do"/>
         </c:when>

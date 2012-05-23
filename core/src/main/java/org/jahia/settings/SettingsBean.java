@@ -173,6 +173,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private ServerDeploymentInterface serverDeployer = null;
 
 	private boolean maintenanceMode;
+	
+	private int sessionExpiryTime;
 
     private ServletContext servletContext;
 
@@ -250,6 +252,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             serverDeployer = ServerDeploymentFactory.getInstance().getImplementation(server + serverVersion);
             
             maintenanceMode = getBoolean("maintenanceMode", false);
+            
+            sessionExpiryTime = getInt("sessionExpiryTime", 60);
             
             jahiaTemplatesDiskPath = pathResolver.resolvePath ("/modules/");
             classDiskPath = pathResolver.resolvePath ("/WEB-INF/classes/");
@@ -848,7 +852,15 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 	public boolean isMaintenanceMode() {
 		return maintenanceMode;
 	}
-
+	
+	public int getSessionExpiryTime() {
+		return sessionExpiryTime;
+	}
+	
+	public void setSessionExpiryTime(int sessionExpiryTime) {
+		this.sessionExpiryTime = sessionExpiryTime;
+	}
+	
     public boolean isDisableJsessionIdParameter() {
         return disableJsessionIdParameter;
     }

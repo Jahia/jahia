@@ -47,15 +47,20 @@
 
 <p>
     <a id="workflowImageLink${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')}"
-       href="#workflowImage${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')}">!!!View
-        workflow status</a>
+       href="#workflowImage${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')}"><fmt:message key="label.workflow.viewWorkflowStatus"/></a>
+    <script type="text/javascript">
+        var viewWorkflowStatus = function() {
+            $("#workflowImageLink${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')}").click();
+        }
+    </script>
+
 </p>
 <jsp:useBean id="historyTasks" class="java.util.HashMap"/>
 <c:if test="${not empty activeWorkflowsMap[workflowDefinition.key]}">
     <c:if test="${currentResource.moduleParams.showHistory == 'true'}">
         <workflow:workflowHistory var="history" workflowId="${activeWorkflowsMap[workflowDefinition.key].id}"
                                   workflowProvider="${activeWorkflowsMap[workflowDefinition.key].provider}"/>
-        !!!History:
+        <fmt:message key="label.workflow.history"/>:
         <ul>
             <c:forEach items="${history}" var="historyTask">
                 <c:set target="${historyTasks}" property="${historyTask.name}" value="${historyTask}"/>
@@ -63,31 +68,31 @@
                     <li>
                             ${historyTask.displayName}
                         <ul>
-                            <li>!!!User: ${historyTask.user}</li>
-                            <li>!!!Duration: ${historyTask.duration/1000}s</li>
-                            <li>!!!Started: <fmt:formatDate value="${historyTask.startTime}"
+                            <li><fmt:message key="label.workflow.user"/>: ${historyTask.user}</li>
+                            <li><fmt:message key="label.workflow.duration"/>: ${historyTask.duration/1000}s</li>
+                            <li><fmt:message key="label.workflow.startDate"/>: <fmt:formatDate value="${historyTask.startTime}"
                                                             pattern="yyyy-MM-dd HH:mm:ss"/></li>
-                            <li>!!!Ended: <fmt:formatDate value="${historyTask.endTime}"
+                            <li><fmt:message key="label.workflow.endDate"/>: <fmt:formatDate value="${historyTask.endTime}"
                                                           pattern="yyyy-MM-dd HH:mm:ss"/></li>
-                            <li>!!!Outcome: ${historyTask.displayOutcome}</li>
+                            <li><fmt:message key="label.workflow.outcome"/>: ${historyTask.displayOutcome}</li>
                         </ul>
                     </li>
                 </c:if>
             </c:forEach>
         </ul>
     </c:if>
-    !!!Open tasks:
+    <fmt:message key="label.workflow.openTasks"/>:
     <ul>
         <c:forEach items="${activeWorkflowsMap[workflowDefinition.key].availableActions}" var="action">
             <c:if test="${(empty currentResource.moduleParams.task) or (!empty currentResource.moduleParams.task and currentResource.moduleParams.task == action.name)}">
                 <li>
                         ${action.displayName} <c:if test="${not empty tasks[action.name]}"> - <a class="workflowLink"
                                                                                                  id="linktask${currentNode.identifier}-${tasks[action.name].id}"
-                                                                                                 href="#task${currentNode.identifier}-${tasks[action.name].id}">!!!Execute</a></c:if>
+                                                                                                 href="#task${currentNode.identifier}-${tasks[action.name].id}"><fmt:message key="label.workflow.executeTask"/></a></c:if>
                     <ul>
-                        <li>!!!Started: <fmt:formatDate value="${action.createTime}"
+                        <li><fmt:message key="label.workflow.startDate"/>: <fmt:formatDate value="${action.createTime}"
                                                         pattern="yyyy-MM-dd HH:mm:ss"/></li>
-                        <li>!!!Due for: <fmt:formatDate value="${action.dueDate}" pattern="yyyy-MM-dd HH:mm:ss"/></li>
+                        <li><fmt:message key="label.workflow.dueDate"/>: <fmt:formatDate value="${action.dueDate}" pattern="yyyy-MM-dd HH:mm:ss"/></li>
                     </ul>
                 </li>
             </c:if>
@@ -113,8 +118,8 @@
                 <div id="runningInfo${task.id}"
                      style="display:none;position:absolute;border:2px solid black;background-color:white">
                     <ul>
-                        <li>!!!Started: <fmt:formatDate value="${task.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></li>
-                        <li>!!!Due for: <fmt:formatDate value="${task.dueDate}" pattern="yyyy-MM-dd HH:mm:ss"/></li>
+                        <li><fmt:message key="label.workflow.startDate"/>: <fmt:formatDate value="${task.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></li>
+                        <li><fmt:message key="label.workflow.dueDate"/>: <fmt:formatDate value="${task.dueDate}" pattern="yyyy-MM-dd HH:mm:ss"/></li>
                     </ul>
                 </div>
             </c:forEach>
@@ -128,13 +133,13 @@
                     <div id="historyInfo${task.value.actionId}"
                          style="display:none;position:absolute;border:2px solid black;background-color:white">
                         <ul>
-                            <li>!!!User: ${task.value.user}</li>
-                            <li>!!!Duration: ${task.value.duration/1000}s</li>
-                            <li>!!!Started: <fmt:formatDate value="${task.value.startTime}"
-                                                            pattern="yyyy-MM-dd HH:mm:ss"/></li>
-                            <li>!!!Ended: <fmt:formatDate value="${task.value.endTime}"
+                            <li><fmt:message key="label.workflow.user"/>: ${task.value.user}</li>
+                            <li><fmt:message key="label.workflow.duration"/>: ${task.value.duration/1000}s</li>
+                            <li><fmt:message key="label.workflow.startDate"/>: <fmt:formatDate value="${task.value.startTime}"
                                                           pattern="yyyy-MM-dd HH:mm:ss"/></li>
-                            <li>!!!Outcome: ${task.value.displayOutcome}</li>
+                            <li><fmt:message key="label.workflow.endDate"/>: <fmt:formatDate value="${task.value.endTime}"
+                                                        pattern="yyyy-MM-dd HH:mm:ss"/></li>
+                            <li><fmt:message key="label.workflow.outcome"/>: ${task.value.displayOutcome}</li>
                         </ul>
                     </div>
                 </c:if>
@@ -228,7 +233,7 @@
 <c:if test="${empty activeWorkflowsMap[workflowDefinition.key]}">
     <c:choose>
         <c:when test="${not empty workflowDefinition.formResourceName}">
-            <a class="workflowLink" href="#workflow${currentNode.identifier}-${workflowDefinition.key}">Start workflow</a>
+            <a class="workflowLink" href="#workflow${currentNode.identifier}-${workflowDefinition.key}"><fmt:message key="label.workflow.startWorkflow"/> </a>
 
             <div style="display:none;">
                 <div id="workflow${currentNode.identifier}-${workflowDefinition.key}" class="workflowformdiv popupSize">
@@ -248,6 +253,15 @@
         </c:when>
 
         <c:otherwise>
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $(".workflowStartLink").show();
+                    $(".workflowExecuteLink").hide();
+                });
+                var startCurrentWorkflow = function() {
+                    startWorkflow('${workflowDefinition.provider}:${workflowDefinition.key}');
+                }
+            </script>
             <a href="#" onclick="startWorkflow('${workflowDefinition.provider}:${workflowDefinition.key}')">Start
                 workflow</a>
         </c:otherwise>
@@ -292,5 +306,5 @@
 </c:forEach>
 </c:forEach>
 <c:if test="${empty workflowDefinitions}">
-    !!!No workflow set for: ${currentResource.moduleParams.workflowType}
+    <fmt:message key="label.workflow.noWorkflowSet"/>: ${currentResource.moduleParams.workflowType}
 </c:if>

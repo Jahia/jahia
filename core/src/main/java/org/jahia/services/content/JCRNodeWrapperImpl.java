@@ -895,9 +895,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return provider.getNodeWrapper(objectNode.getNode(s), session);
             }
         }
-        List<JCRNodeWrapper> c = getChildren(s);
-        if (!c.isEmpty()) {
-            return c.get(0);
+        NodeIterator c = getNodes(s);
+        if (c.hasNext()) {
+            return (JCRNodeWrapper) c.nextNode();
         }
         throw new PathNotFoundException(s);
     }
@@ -3795,8 +3795,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     e.getMessage());
         }
 
-        return JahiaResourceBundle.interpolateResourceBunldeMacro(title, locale != null ? locale
-                : session.getFallbackLocale(), site != null ? site.getTemplatePackageName() : null);
+        try {
+            return JahiaResourceBundle.interpolateResourceBunldeMacro(title, locale != null ? locale
+                    : session.getFallbackLocale(), site != null ? site.getTemplatePackageName() : null);
+        } catch (Exception e) {
+            return title;
+        }
     }
 
     public void flushLocalCaches() {

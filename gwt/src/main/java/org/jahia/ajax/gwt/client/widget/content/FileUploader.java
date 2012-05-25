@@ -188,6 +188,7 @@ public class FileUploader extends Window {
             public void handleEvent(ComponentEvent ce){
                 String r = ((FormEvent)ce).getResultHtml();
                 if (r != null && r.contains("UPLOAD-ISSUE:")) {
+                    unmask();
                     final Dialog dl = new Dialog();
                     dl.setModal(true);
                     dl.setHeading(Messages.get("label.error"));
@@ -209,8 +210,10 @@ public class FileUploader extends Window {
         final Button submit = new Button(Messages.get("label.ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 try {
+                    mask(Messages.get("message.uploading", "Uploading..."), "x-mask-loading");
                     form.submit();
                 } catch (Exception e) {
+                    unmask();
                     bar.reset();
                     bar.setVisible(false);
                     com.google.gwt.user.client.Window.alert(Messages.get("checkUploads.label"));
@@ -272,6 +275,7 @@ public class FileUploader extends Window {
                     submit.removeAllListeners();
                     submit.addSelectionListener(new SelectionListener<ButtonEvent>() {
                         public void componentSelected(ButtonEvent event) {
+                            mask(Messages.get("message.uploading", "Uploading..."), "x-mask-loading");
                             submit.setEnabled(false);
                             final List<Field[]> list = new ArrayList<Field[]>(exists);
                             final List<Field[]> list2 = new ArrayList<Field[]>(exists);
@@ -312,11 +316,12 @@ public class FileUploader extends Window {
         } else {
             linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_FOLDERS);
         }
-
+        unmask();
         hide();
     }
 
     private void addExistingToForm(List<Field[]> exists, String key, String tmp, final String name) {
+        unmask();
         final TextField<String> textField = new TextField<String>();
         textField.setFieldLabel("rename");
         textField.setName(key + "_name");

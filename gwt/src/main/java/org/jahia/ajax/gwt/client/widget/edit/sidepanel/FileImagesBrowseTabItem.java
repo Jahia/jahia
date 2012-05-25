@@ -178,6 +178,7 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
 
         listView.setContextMenu(createContextMenu(config.getTableContextMenu(), listView.getSelectionModel()));
 
+        tab.setId("fileImagesBrowseTab");
         return tab;
     }
 

@@ -175,7 +175,8 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         tab.add(contentContainer, contentVBoxData);
         contentVBoxData.setFlex(1);
         tab.add(previewLayoutContainer, contentVBoxData);
-
+        
+        tab.setId("lastContentBrowseTab");
         return tab;
     }
 

@@ -82,6 +82,8 @@ public class SidePanel extends ContentPanel {
         TabPanel tabPanel = new TabPanel();
         tabPanel.setBorders(false);
         tabPanel.setBodyBorder(false);
+        // this id is for the container, each tab has its own ID concatenated with this one
+        tabPanel.setId("JahiaGxtSidePanelTabs");
 
         for (GWTSidePanelTab tabConfig : config.getTabs()) {
             SidePanelTabItem tabItem = tabConfig.getTabItem();

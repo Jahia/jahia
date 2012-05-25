@@ -211,6 +211,8 @@ class SearchTabItem extends SidePanelTabItem {
             }
         });
         grid.setContextMenu(createContextMenu(config.getTableContextMenu(), grid.getSelectionModel()));
+        
+        tab.setId("searchTab");
         return tab;
     }
 

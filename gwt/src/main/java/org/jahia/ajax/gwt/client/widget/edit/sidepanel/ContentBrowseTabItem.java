@@ -151,7 +151,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);
         tab.add(contentContainer, contentVBoxData);
-
+        tab.setId("contentBrowseTab");
         return tab;
     }
 

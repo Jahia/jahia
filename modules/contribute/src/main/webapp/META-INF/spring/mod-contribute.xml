@@ -40,7 +40,7 @@
         <property name="applyOnTemplateTypes" value="html" />
         <property name="applyOnModes" value="contribution" />
         <property name="applyOnNodeTypes" value="jmix:list,jmix:area"/>
-        <property name="skipOnConfiguration" value="page,wrapper,include"/>
+        <property name="skipOnConfigurations" value="page,wrapper,include"/>
     </bean>
 
     <bean class="org.jahia.modules.contribute.filter.ContributeToolbarFilter">

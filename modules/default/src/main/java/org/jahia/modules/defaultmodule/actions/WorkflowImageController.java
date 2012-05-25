@@ -65,7 +65,12 @@ public class WorkflowImageController  extends HttpServlet implements Controller,
         String wfKey = request.getParameter("workflowKey");
         wfKey = StringUtils.substringAfter(wfKey, ":");
 
-        InputStream in = getClass().getResourceAsStream("/org/jahia/services/workflow/"+wfKey+".png");
+        String language = request.getParameter("language");
+
+        InputStream in = getClass().getResourceAsStream("/org/jahia/services/workflow/"+wfKey+"_"+language+".png");
+        if (in == null) {
+            in = getClass().getResourceAsStream("/org/jahia/services/workflow/"+wfKey+".png");
+        }
         if (in != null) {
             response.setContentType("image/png");
 

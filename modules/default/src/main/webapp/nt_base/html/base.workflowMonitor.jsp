@@ -105,7 +105,8 @@
         <div id="workflowImageDiv${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')}"
              style="position:relative;">
             <div style="height:50px;"></div>
-            <img src="<c:url value='/cms/wfImage?workflowKey=${workflowDefinition.provider}:${workflowDefinition.key}'/>"/>
+            <img src="<c:url value='/cms/wfImage?workflowKey=${workflowDefinition.provider}:${workflowDefinition.key}&language=${renderContext.UILocale}'/>"/>
+            <div style="height:50px;"></div>
 
             <c:forEach items="${activeWorkflowsMap[workflowDefinition.key].availableActions}" var="task"
                        varStatus="status">

@@ -6,7 +6,7 @@
         <property name="description" value="Filter that add skins to the current resource."/>
         <property name="priority" value="45"/>
         <property name="applyOnNodeTypes" value="jmix:list"/>
-        <property name="skipOnConfiguration" value="include,wrapper"/>
+        <property name="skipOnConfigurations" value="include,wrapper"/>
     </bean>
     <!--<bean id="skinsInitializer" class="org.jahia.modules.render.SkinsChoiceListInitializerImpl">-->
     <!--<property name="key" value="skins"/>-->

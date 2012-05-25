@@ -397,6 +397,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             System.setProperty("jahia.jackrabbit.consistencyFix", String.valueOf(getBoolean("jahia.jackrabbit.consistencyFix", false)));
             System.setProperty("jahia.jackrabbit.onWorkspaceInconsistency", getString("jahia.jackrabbit.onWorkspaceInconsistency", "log"));
             
+            System.setProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", getString("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "false"));
+            System.setProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", getString("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "false"));
+            System.setProperty("jahia.jackrabbit.searchIndex.autoRepair", getString("jahia.jackrabbit.searchIndex.autoRepair", "false"));
+            
+            checkIndexConsistencyIfNeeded();
+            
             reindexIfNeeded();
             
         } catch (NullPointerException npe) {
@@ -414,19 +420,49 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return repoHome != null && repoHome.exists() ? repoHome.getFile() : null;
     }
 
+    private void checkIndexConsistencyIfNeeded() {
+        File repoHome = null;
+
+        try {
+            repoHome = getRepositoryHome();
+            if (repoHome != null) {
+                File check = new File(repoHome, "index-check");
+                File repair = new File(repoHome, "index-fix");
+                if (check.exists()) {
+                    System.setProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "true");
+                    System.setProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "true");
+                    System.setProperty("jahia.jackrabbit.searchIndex.autoRepair", "false");
+                    FileUtils.deleteQuietly(check);
+                }
+                if (repair.exists()) {
+                    System.setProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "true");
+                    System.setProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "true");
+                    System.setProperty("jahia.jackrabbit.searchIndex.autoRepair", "true");
+                    FileUtils.deleteQuietly(repair);
+                } 
+            }
+        } catch (IOException e) {
+            logger.error("Unable to delete JCR repository index folders in home " + repoHome, e);
+        }
+    }
+
     private void reindexIfNeeded() {
         File repoHome = null;
 
         try {
             repoHome = getRepositoryHome();
-            if (repoHome != null
-                    && (getBoolean("jahia.jackrabbit.reindexOnStartup", false) || new File(
-                            repoHome, "reindex").exists())) {
-                File reindexFile = new File(repoHome, "reindex");
-                if (reindexFile.exists()) {
-                    FileUtils.deleteQuietly(reindexFile);
+            if (repoHome != null) {
+                boolean doReindex = getBoolean("jahia.jackrabbit.reindexOnStartup", false);
+                if (!doReindex) {
+                    File reindex = new File(repoHome, "reindex");
+                    if (reindex.exists()) {
+                        doReindex = true;
+                        FileUtils.deleteQuietly(reindex);
+                    }
                 }
-                JCRContentUtils.deleteJackrabbitIndexes(repoHome);
+                if (doReindex) {
+                    JCRContentUtils.deleteJackrabbitIndexes(repoHome);
+                }
             }
         } catch (IOException e) {
             logger.error("Unable to delete JCR repository index folders in home " + repoHome, e);

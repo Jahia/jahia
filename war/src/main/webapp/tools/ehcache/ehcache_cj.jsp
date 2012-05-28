@@ -10,6 +10,7 @@
 <%@ page import="java.util.Collections" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.List" %>
+<%@ page import="org.jahia.services.render.filter.cache.AggregateCacheFilter" %>
 <%--
   Output cache monitoring JSP.
   User: rincevent
@@ -93,6 +94,7 @@
             depCache.clearStatistics();
             depCache.removeAll();
             ((DefaultCacheKeyGenerator) cacheProvider.getKeyGenerator()).flushUsersGroupsKey();
+            AggregateCacheFilter.notCacheableFragment.clear();
         }
         List keys = cache.getKeys();
         Collections.sort(keys);
@@ -134,12 +136,12 @@
             <c:forEach items="${keys}" var="key" varStatus="i">
 
                 <tr class="gradeA">
+                    <td>${key}</td>
                     <% String attribute = (String) pageContext.getAttribute("key");
                         final Element element1 = cache.getQuiet(attribute);
-                        if (element1 != null) {
+                        if (element1 != null && element1.getValue()!=null) {
                     %>
 
-                    <td>${key}</td>
                     <td><%=SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(new Date(
                             element1.getExpirationTime()))%>
                     </td>
@@ -164,6 +166,9 @@
                             </div>
                         </c:if>
                     </td>
+                    <%} else { %>
+                      <td>empty</td>
+                        <td>empty</td>
                     <%}%>
                 </tr>
             </c:forEach>

@@ -61,6 +61,8 @@ import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerRoutingService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.LanguageCodeConverters;
@@ -101,7 +103,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     private static final Pattern CLEANUP_REGEXP = Pattern.compile(
             "<!-- cache:include src=\\\"(.*)\\\" -->\n|\n<!-- /cache:include -->");
     private static final Pattern QUERYSTRING_REGEXP = Pattern.compile("(.*)(_qs\\[([^\\]]+)\\]_)(.*)");
-    
+
     private static final Pattern P_REGEXP = Pattern.compile("_p_");
 
     public static final Set<String> notCacheableFragment = new HashSet<String>(512);
@@ -109,10 +111,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     static private ThreadLocal<Set<CountDownLatch>> processingLatches = new ThreadLocal<Set<CountDownLatch>>();
     static private ThreadLocal<String> acquiredSemaphore = new ThreadLocal<String>();
     static private ThreadLocal<LinkedList<String>> userKeys = new ThreadLocal<LinkedList<String>>();
+    static private ThreadLocal<Long> guestMinExpiration = new ThreadLocal<Long>();
     private static long lastThreadDumpTime = 0L;
     private Byte[] threadDumpCheckLock = new Byte[0];
     public static final String FORM_TOKEN = "form_token";
     private Map<String,String> moduleParamsProperties;
+    private boolean storeAggregatedPageForGuest = false;
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
@@ -308,6 +312,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             logger.debug("Generating content for node: {}", perUserKey);
         }
         try {
+            final boolean isGuest = JahiaUserManagerRoutingService.isGuest(renderContext.getUser()) && storeAggregatedPageForGuest;
             if (cacheable) {
                 int nbOfDependencies = resource.getDependencies().size();
                 addReferencesToDependencies(resource);
@@ -316,18 +321,28 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     perUserKey = replacePlaceholdersInCacheKey(renderContext, newKey);
                 }
                 String perUser = (String) renderContext.getRequest().getAttribute("perUser");
-                if (perUser != null) {
+                if (perUser != null && "true".equals(perUser.toLowerCase())) {
                     // This content must be cached by user as it is defined in the options panel
                     // The value of the node property from the mixin jmix:cache are only checked in the TemplatesAttributesFilter
                     // So we need to recalculate the key as we were not aware that this content needed to be cached by user
                     // We need to store content with the previously calculate dcache to avoid lock up.
-                    cache.put(new Element(perUserKey, null));
+                    if(!isGuest) {
+                        cache.put(new Element(perUserKey, null));
+                    }
                     key = cacheProvider.getKeyGenerator().replaceField(key, "acls", DefaultCacheKeyGenerator.PER_USER);
                     perUserKey = replacePlaceholdersInCacheKey(renderContext, key);
                 }
                 String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
                 Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(
                         scriptProperties != null && defaultScriptProperties!=null ? (scriptProperties.getProperty("cache.expiration")!=null?scriptProperties.getProperty("cache.expiration"):defaultScriptProperties.getProperty("cache.expiration", "-1")) : "-1");
+                if(isGuest && renderContext.getMainResource() == resource) {
+                    if(expiration!=-1l) {
+                        expiration = Math.min(guestMinExpiration.get(),expiration);
+                    }
+                    else {
+                        expiration = guestMinExpiration.get();
+                    }
+                }
                 final Cache dependenciesCache = cacheProvider.getDependenciesCache();
                 Set<String> depNodeWrappers = resource.getDependencies();
                 for (String path : depNodeWrappers) {
@@ -335,7 +350,16 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     Set<String> dependencies = element1 != null ? (Set<String>) element1.getValue() : Collections.<String>emptySet();
                     Set<String> newDependencies = new LinkedHashSet<String>(dependencies.size() + 1);
                     newDependencies.addAll(dependencies);
-                    if (newDependencies.add(perUserKey)) {
+                    if(isGuest) {
+                        LinkedList<String> userKeysLinkedList = userKeys.get();
+                        if(userKeysLinkedList!=null) {
+                            final String mainresourcekey = userKeysLinkedList.getLast();
+                            if(newDependencies.add(mainresourcekey)){
+                                dependenciesCache.put(new Element(path, newDependencies));
+                            }
+                        }
+                    }
+                    else if (newDependencies.add(perUserKey)) {
                         dependenciesCache.put(new Element(path, newDependencies));
                     }
                 }
@@ -347,93 +371,114 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     Set<String> dependencies = element1 != null ? (Set<String>) element1.getValue() : Collections.<String> emptySet();
                     Set<String> newDependencies = new LinkedHashSet<String>(dependencies.size() + 1);
                     newDependencies.addAll(dependencies);
-                    if (newDependencies.add(perUserKey)) {
+                    if(isGuest) {
+                        LinkedList<String> userKeysLinkedList = userKeys.get();
+                        if(userKeysLinkedList!=null) {
+                            final String mainresourcekey = userKeysLinkedList.getLast();
+                            if(newDependencies.add(mainresourcekey)){
+                                dependenciesCache.put(new Element(regexp, newDependencies));
+                            }
+                        }
+                    }
+                    else if (newDependencies.add(perUserKey)) {
                         regexpDependenciesCache.put(new Element(regexp, newDependencies));
                     }
                 }
                 resource.getRegexpDependencies().clear();
+                if (!isGuest || renderContext.getMainResource() == resource) {
+                    // append cache:include tag
+                    String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(previousOut).replaceAll(
+                            "</esi:include>");
+                    cachedRenderContent = ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll(
+                            "<esi:include src=\"$1\">");
 
-                // append cache:include tag
-                String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(previousOut).replaceAll(
-                        "</esi:include>");
-                cachedRenderContent = ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll(
-                        "<esi:include src=\"$1\">");
-
-                if (debugEnabled) {
-                    logger.debug("Storing for key: {}", key);
-                }
-                Source source = new Source(cachedRenderContent);
-                // This will remove all blank line and drastically reduce data in memory
+                    if (debugEnabled) {
+                        logger.debug("Storing for key: {}", key);
+                    }
+                    Source source = new Source(cachedRenderContent);
+                    // This will remove all blank line and drastically reduce data in memory
 //                source = new Source((new SourceFormatter(source)).toString());
-                List<StartTag> esiIncludeTags = source.getAllStartTags("esi:include");
-                /*if (debugEnabled) {
-                    displaySegments(esiIncludeTags);
-                }*/
-                // We will remove container content here has we do not want to store them twice in memory
-                OutputDocument outputDocument = emptyEsiIncludeTagContainer(esiIncludeTags, source);
-                String output = outputDocument.toString();
-                cachedRenderContent = surroundWithCacheTag(key, output);
-                CacheEntry<String> cacheEntry = new CacheEntry<String>(cachedRenderContent);
+                    List<StartTag> esiIncludeTags = source.getAllStartTags("esi:include");
+                    /*if (debugEnabled) {
+                        displaySegments(esiIncludeTags);
+                    }*/
+                    // We will remove container content here has we do not want to store them twice in memory
+                    OutputDocument outputDocument = emptyEsiIncludeTagContainer(esiIncludeTags, source);
+                    String output = outputDocument.toString();
+                    cachedRenderContent = surroundWithCacheTag(key, output);
+                    CacheEntry<String> cacheEntry = new CacheEntry<String>(cachedRenderContent);
 
-                if (resource.getFormInputs() != null) {
-                    cacheEntry.setProperty(FORM_TOKEN, resource.getFormInputs());
-                }
-                LinkedHashMap<String, Object> moduleParams=null;
-                for (String property : moduleParamsProperties.keySet()) {
-                    if (resource.getNode().hasProperty(property)) {
-                        if (moduleParams == null) {
-                            moduleParams = new LinkedHashMap<String, Object>();
+                    if (resource.getFormInputs() != null) {
+                        cacheEntry.setProperty(FORM_TOKEN, resource.getFormInputs());
+                    }
+                    LinkedHashMap<String, Object> moduleParams = null;
+                    for (String property : moduleParamsProperties.keySet()) {
+                        if (resource.getNode().hasProperty(property)) {
+                            if (moduleParams == null) {
+                                moduleParams = new LinkedHashMap<String, Object>();
+                            }
+                            moduleParams.put(moduleParamsProperties.get(property),
+                                    resource.getNode().getPropertyAsString(property));
                         }
-                        moduleParams.put(moduleParamsProperties.get(property),resource.getNode().getPropertyAsString(property));
                     }
-                }
-                if(moduleParams!=null && moduleParams.size()>0) {
-                    cacheEntry.setProperty("moduleParams", moduleParams);
-                }
-                if(resource.getNode().isNodeType("jnt:area") || resource.getNode().isNodeType("jnt:mainResourceDisplay")) {
-                    cacheEntry.setProperty("areaResource", resource.getNode().getIdentifier());
-                }
-                Element cachedElement = new Element(perUserKey, cacheEntry);
-                if (expiration > 0) {
-                    cachedElement.setTimeToLive(expiration.intValue() + 1);
-                    String hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template",
-                            "hidden.load");
-                    Element hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
-                    if (hiddenElement != null) {
-                        hiddenElement.setTimeToLive(expiration.intValue() + 1);
-                        cache.put(hiddenElement);
+                    if (moduleParams != null && moduleParams.size() > 0) {
+                        cacheEntry.setProperty("moduleParams", moduleParams);
                     }
-                    hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template", "hidden.footer");
-                    hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
-                    if (hiddenElement != null) {
-                        hiddenElement.setTimeToLive(expiration.intValue() + 1);
-                        cache.put(hiddenElement);
+                    if (resource.getNode().isNodeType("jnt:area") || resource.getNode().isNodeType(
+                            "jnt:mainResourceDisplay")) {
+                        cacheEntry.setProperty("areaResource", resource.getNode().getIdentifier());
                     }
-                    hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template", "hidden.header");
-                    hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
-                    if (hiddenElement != null) {
-                        hiddenElement.setTimeToLive(expiration.intValue() + 1);
-                        cache.put(hiddenElement);
+                    Element cachedElement = new Element(perUserKey, cacheEntry);
+                    if (expiration > 0) {
+                        cachedElement.setTimeToLive(expiration.intValue());
+                        String hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template",
+                                "hidden.load");
+                        Element hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
+                        if (hiddenElement != null) {
+                            hiddenElement.setTimeToLive(expiration.intValue());
+                            cache.put(hiddenElement);
+                        }
+                        hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template",
+                                "hidden.footer");
+                        hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
+                        if (hiddenElement != null) {
+                            hiddenElement.setTimeToLive(expiration.intValue());
+                            cache.put(hiddenElement);
+                        }
+                        hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template",
+                                "hidden.header");
+                        hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
+                        if (hiddenElement != null) {
+                            hiddenElement.setTimeToLive(expiration.intValue());
+                            cache.put(hiddenElement);
+                        }
                     }
-                }
-                if (expiration != 0) {
-                    cache.put(cachedElement);
+                    if (expiration != 0) {
+                        cache.put(cachedElement);
+                    } else {
+                        cachedElement = new Element(perUserKey, null);
+                        cache.put(cachedElement);
+                        notCacheableFragment.add(key);
+                    }
+                    if (debugEnabled) {
+                        logger.debug("Store in cache content of node with key: {}", perUserKey);
+                        StringBuilder stringBuilder = new StringBuilder();
+                        for (String path : depNodeWrappers) {
+                            stringBuilder.append(path).append("\n");
+                        }
+                        logger.debug("Dependencies of {}:\n", perUserKey, stringBuilder.toString());
+                    }
+                    if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
+                        return appendDebugInformation(renderContext, key, surroundWithCacheTag(key, previousOut),
+                                cachedElement);
+                    }
                 } else {
-                    cachedElement = new Element(perUserKey, null);
-                    cache.put(cachedElement);
-                    notCacheableFragment.add(key);
-                }
-                if (debugEnabled) {
-                    logger.debug("Store in cache content of node with key: {}", perUserKey);
-                    StringBuilder stringBuilder = new StringBuilder();
-                    for (String path : depNodeWrappers) {
-                        stringBuilder.append(path).append("\n");
+                    Long guestExpir = guestMinExpiration.get();
+                    if(guestExpir==null || guestExpir==-1l){
+                        guestMinExpiration.set(expiration);
+                    } else if (expiration!=-1l) {
+                        guestMinExpiration.set(Math.min(guestExpir,expiration));
                     }
-                    logger.debug("Dependencies of {}:\n", perUserKey, stringBuilder.toString());
-                }
-                if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
-                    return appendDebugInformation(renderContext, key, surroundWithCacheTag(key, previousOut),
-                            cachedElement);
                 }
             }
             if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
@@ -441,8 +486,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             }
             if (renderContext.getMainResource() == resource) {
                 return removeEsiTags(previousOut);
-            } else {
+            } else if(!isGuest){
                 return surroundWithCacheTag(key, previousOut);
+            }  else {
+                return previousOut;
             }
         } catch (Exception e) {
             cache.put(new Element(perUserKey, null));
@@ -811,6 +858,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 }
             }
         }
+        if(JahiaUserManagerRoutingService.isGuest(renderContext.getUser()) && resource==renderContext.getMainResource()) {
+            guestMinExpiration.set(-1l);
+        }
     }
 
     private CountDownLatch avoidParallelProcessingOfSameModule(String key, String contextConfiguration,
@@ -909,5 +959,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     public void afterPropertiesSet() throws Exception {
         Config.LoggerProvider = LoggerProvider.DISABLED;
+    }
+
+    public void setStoreAggregatedPageForGuest(boolean storeAggregatedPageForGuest) {
+        this.storeAggregatedPageForGuest = storeAggregatedPageForGuest;
     }
 }

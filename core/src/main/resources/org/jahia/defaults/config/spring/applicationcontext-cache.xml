@@ -73,6 +73,7 @@ when we flush this entry we will flush the whole cache
                 <entry key="j:subNodesView" value="subNodesView"/>
             </map>
         </property>
+        <property name="storeAggregatedPageForGuest" value="${storeAggregatedPageForGuest}"/>
     </bean>
 
     <bean name="cacheMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">

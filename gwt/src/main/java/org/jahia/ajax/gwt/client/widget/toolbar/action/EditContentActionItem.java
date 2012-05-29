@@ -58,14 +58,20 @@ public class EditContentActionItem extends BaseActionItem {
     private static final long serialVersionUID = 1899385924986263120L;
     
     private boolean allowRootNodeEditing;
-    
+    private boolean useMainNode = false;
+
     public void onComponentSelection() {
         EngineLoader.showEditEngine(linker, linker.getSelectionContext().getSingleSelection());
     }
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        final GWTJahiaNode singleSelection = lh.getSingleSelection();
+        GWTJahiaNode singleSelection;
+        if (useMainNode) {
+            singleSelection = lh.getMainNode();
+        }   else {
+            singleSelection = lh.getSingleSelection();
+        }
         setEnabled(singleSelection != null
                 && !Boolean.FALSE.equals(ModuleHelper.getNodeType(singleSelection.getNodeTypes().get(0)).get("canUseComponentForEdit"))
                 && hasPermission(lh.getSelectionPermissions())
@@ -75,5 +81,9 @@ public class EditContentActionItem extends BaseActionItem {
 
     public void setAllowRootNodeEditing(boolean allowRootNodeEditing) {
         this.allowRootNodeEditing = allowRootNodeEditing;
+    }
+
+    public void setUseMainNode(boolean useMainNode) {
+        this.useMainNode = useMainNode;
     }
 }

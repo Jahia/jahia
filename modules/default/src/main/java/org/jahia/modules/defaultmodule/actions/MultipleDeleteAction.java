@@ -38,12 +38,11 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.modules.contribute.toolbar.actions;
+package org.jahia.modules.defaultmodule.actions;
 
 import org.apache.log4j.Logger;
-import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
-import org.jahia.services.content.JCRContentUtils;
+import org.jahia.bin.Action;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
@@ -56,59 +55,39 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 
+ * Action item for handling the deletion of multiple elements.
  *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
- *        Created : 24 nov. 2010
+ * Created : 24 nov. 2010
  */
-public class MultiplePasteAction extends Action {
-    private transient static Logger logger = Logger.getLogger(MultiplePasteAction.class);
+public class MultipleDeleteAction extends Action {
+    private transient static Logger logger = Logger.getLogger(MultipleDeleteAction.class);
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-        List<String> uuids = (List<String>) req.getSession().getAttribute(MultipleCopyAction.UUIDS_TO_COPY);
-        if (uuids != null && uuids.size() > 0) {
-            JCRNodeWrapper targetNode = resource.getNode();
-            String targetPath = targetNode.getPath();
-            try {
-                for (String uuid : uuids) {
-                    JCRNodeWrapper node = session.getNodeByUUID(uuid);
-                    if (targetPath.startsWith(node.getPath())) {
-                        // do not copy recursively
-                        continue;
-                    }
-                    session.checkout(node);
-                    node.copy(targetNode, JCRContentUtils.findAvailableNodeName(targetNode, node.getName()), true);
+        List<String> uuids = parameters.get(MultipleCopyAction.UUIDS);
+        assert uuids != null && uuids.size()>0;
+        String mark = req.getParameter("markForDeletion");
+        String comment = req.getParameter("markForDeletionComment");
+        Boolean markForDeletion = mark != null && mark.length() > 0 ? Boolean.valueOf(mark) : null; 
+        try {
+            for (String uuid : uuids) {
+                JCRNodeWrapper node = session.getNodeByUUID(uuid);
+                session.checkout(node);
+                if (markForDeletion == null) {
+                    node.remove();
+                } else if (markForDeletion) {
+                    node.markForDeletion(comment);
+                } else {
+                    node.unmarkForDeletion();
                 }
-                session.save();
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-                return ActionResult.BAD_REQUEST;
             }
+            session.save();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            return ActionResult.BAD_REQUEST;
         }
-        req.getSession().removeAttribute(MultipleCopyAction.UUIDS_TO_COPY);
-        uuids = (List<String>) req.getSession().getAttribute(MultipleCutAction.UUIDS_TO_CUT);
-        if (uuids != null && uuids.size() > 0) {
-            JCRNodeWrapper targetNode = resource.getNode();
-            String targetPath = targetNode.getPath();
-            try {
-                for (String uuid : uuids) {
-                    JCRNodeWrapper node = session.getNodeByUUID(uuid);
-                    if (targetPath.startsWith(node.getPath())) {
-                        // do not move recursively
-                        continue;
-                    }
-                    session.checkout(node);
-                    session.move(node.getPath(),targetNode.getPath()+"/"+JCRContentUtils.findAvailableNodeName(targetNode, node.getName()));
-                }
-                session.save();
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-                return ActionResult.BAD_REQUEST;
-            }
-        }
-        req.getSession().removeAttribute(MultipleCutAction.UUIDS_TO_CUT);
         return ActionResult.OK_JSON;
     }
 }

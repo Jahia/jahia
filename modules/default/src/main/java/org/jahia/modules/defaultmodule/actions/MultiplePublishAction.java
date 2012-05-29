@@ -38,55 +38,80 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.modules.contribute.toolbar.actions;
+package org.jahia.modules.defaultmodule.actions;
 
 import org.apache.log4j.Logger;
-import org.jahia.bin.ActionResult;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
+import org.jahia.ajax.gwt.helper.PublicationHelper;
 import org.jahia.bin.Action;
-import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+import org.jahia.services.workflow.WorkflowDefinition;
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.WorkflowVariable;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
-import javax.jcr.RepositoryException;
+import javax.jcr.PropertyType;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.MessageFormat;
+import java.util.*;
 
 /**
- * Action item for handling the deletion of multiple elements.
+ * 
  *
- * @author rincevent
+ * @author : rincevent
  * @since JAHIA 6.5
- * Created : 24 nov. 2010
+ *        Created : 24 nov. 2010
  */
-public class MultipleDeleteAction extends Action {
-    private transient static Logger logger = Logger.getLogger(MultipleDeleteAction.class);
+public class MultiplePublishAction extends Action {
+    private transient static Logger logger = Logger.getLogger(MultiplePublishAction.class);
+    private WorkflowService workflowService;
+    private PublicationHelper publicationHelper;
+
+    public void setWorkflowService(WorkflowService workflowService) {
+        this.workflowService = workflowService;
+    }
+
+    public void setPublicationHelper(PublicationHelper publicationHelper) {
+        this.publicationHelper = publicationHelper;
+    }
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         List<String> uuids = parameters.get(MultipleCopyAction.UUIDS);
-        assert uuids != null && uuids.size()>0;
-        String mark = req.getParameter("markForDeletion");
-        String comment = req.getParameter("markForDeletionComment");
-        Boolean markForDeletion = mark != null && mark.length() > 0 ? Boolean.valueOf(mark) : null; 
-        try {
-            for (String uuid : uuids) {
-                JCRNodeWrapper node = session.getNodeByUUID(uuid);
-                session.checkout(node);
-                if (markForDeletion == null) {
-                    node.remove();
-                } else if (markForDeletion) {
-                    node.markForDeletion(comment);
-                } else {
-                    node.unmarkForDeletion();
-                }
-            }
-            session.save();
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+
+        Set<String> locales = new LinkedHashSet<String>(Arrays.asList(
+                renderContext.getMainResourceLocale().toString()));
+
+        List<GWTJahiaPublicationInfo> pubInfos = publicationHelper.getFullPublicationInfos(uuids, locales, session, false,
+                false);
+
+        if (pubInfos.size() == 0) {
             return ActionResult.BAD_REQUEST;
+        }
+
+        Map<PublicationWorkflow, WorkflowDefinition> workflows = publicationHelper.createPublicationWorkflows(pubInfos);
+
+        for (Map.Entry<PublicationWorkflow, WorkflowDefinition> entry : workflows.entrySet()) {
+            final HashMap<String, Object> map = new HashMap<String, Object>();
+            map.put("customWorkflowInfo", entry.getKey());
+
+            String title = MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.workflow.start.message", session.getLocale(), "{0} started by {1} on {2} - {3} content items involved"),
+                    entry.getValue().getDisplayName(), session.getUser().getName(), DateFormat.getDateInstance(DateFormat.SHORT, session.getLocale()).format(new Date()), pubInfos.size());
+
+            WorkflowVariable var = new WorkflowVariable(title, PropertyType.STRING);
+            map.put("jcr:title",Arrays.asList(var));
+            
+            if (entry.getValue() != null) {
+                workflowService.startProcessAsJob(entry.getKey().getAllUuids(),
+                        session, entry.getValue().getKey(),
+                        entry.getValue().getProvider(), map, null);
+            }
         }
         return ActionResult.OK_JSON;
     }

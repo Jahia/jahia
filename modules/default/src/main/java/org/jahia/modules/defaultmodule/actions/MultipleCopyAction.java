@@ -38,7 +38,7 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.modules.contribute.toolbar.actions;
+package org.jahia.modules.defaultmodule.actions;
 
 import org.apache.commons.collections.list.SetUniqueList;
 import org.apache.log4j.Logger;

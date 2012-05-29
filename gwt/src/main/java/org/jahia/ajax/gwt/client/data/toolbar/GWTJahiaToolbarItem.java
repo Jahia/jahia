@@ -64,6 +64,7 @@ public class GWTJahiaToolbarItem implements Serializable {
     private List<String> processes;
     private Map<String, GWTJahiaProperty> properties = new HashMap<String, GWTJahiaProperty>();
     private String requiredPermission;
+    private boolean hideWhenDisabled = false;
 
     private ActionItem actionItem;
 
@@ -159,5 +160,13 @@ public class GWTJahiaToolbarItem implements Serializable {
 
     public void setRequiredPermission(String requiredPermission) {
         this.requiredPermission = requiredPermission;
+    }
+
+    public boolean isHideWhenDisabled() {
+        return hideWhenDisabled;
+    }
+
+    public void setHideWhenDisabled(boolean hideWhenDisabled) {
+        this.hideWhenDisabled = hideWhenDisabled;
     }
 }

@@ -69,6 +69,7 @@ public class Item implements Serializable, BeanNameAware, InitializingBean {
     private Selected selected;
     private String layout;
     private String requiredPermission;
+    private boolean hideWhenDisabled;
     private List<Property> properties = new ArrayList<Property>();
     private ActionItem actionItem;
     private Object parent;
@@ -187,6 +188,14 @@ public class Item implements Serializable, BeanNameAware, InitializingBean {
 
     public void setRequiredPermission(String requiredPermission) {
         this.requiredPermission = requiredPermission;
+    }
+
+    public boolean isHideWhenDisabled() {
+        return hideWhenDisabled;
+    }
+
+    public void setHideWhenDisabled(boolean hideWhenDisabled) {
+        this.hideWhenDisabled = hideWhenDisabled;
     }
 
     public void setParent(Object parent) {

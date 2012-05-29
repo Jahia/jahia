@@ -47,6 +47,14 @@
                 }
             });
         });
+        $("a.groupMngmtButton").click(function(){
+            $.ajax({
+                url:"${url.context}/administration",
+                data:{do:'change',changesite:$(this).attr('siteid')},
+                async:false,
+                type:"POST"
+            });
+        });
     });
 </script>
 
@@ -185,6 +193,13 @@
                            class="detailsButton" id="detailsButton${node.identifier}"
                            title="${currentNode.properties.detailsLabel.string}"><img
                                 src="<c:url value='/icons/administrator.png'/>" width="16" height="16" alt=" "
+                                role="presentation" style="position:relative; top: 4px; margin-right:2px; "/></a>
+                    </c:if>
+                    <c:if test="${jcr:hasPermission(node,'adminVirtualSites')}">
+                        <a href="${url.context}/administration?do=groups&sub=display"
+                           class="groupMngmtButton" id="groupButton${node.identifier}" siteid="${siteId}"
+                           title="go to group administration"><img
+                                src="<c:url value='/css/images/andromeda/icons/group_edit.png'/>" width="16" height="16" alt=" "
                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; "/></a>
                     </c:if>
 

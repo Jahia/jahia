@@ -19,7 +19,22 @@
                             <property name="hideWhenDisabled" value="true"/>
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.NewPage">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                                    <property name="nodeTypes" value="jnt:page"/>
+                                    <property name="includeSubTypes" value="false"/>
+                                    <property name="parentTypes" value="jnt:page jnt:virtualsite"/>
+                                    <property name="useMainNode" value="true" />
+                                </bean>
+                            </property>
                             <property name="hideWhenDisabled" value="true"/>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.EditContent">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.EditContentActionItem">
+                                    <property name="useMainNode" value="true"/>
+                                </bean>
+                            </property>
                         </bean>
 
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">

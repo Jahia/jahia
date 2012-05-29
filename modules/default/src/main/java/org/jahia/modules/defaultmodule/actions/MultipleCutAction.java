@@ -38,11 +38,12 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.modules.contribute.toolbar.actions;
+package org.jahia.modules.defaultmodule.actions;
 
+import org.apache.commons.collections.list.SetUniqueList;
 import org.apache.log4j.Logger;
-import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
+import org.jahia.bin.Action;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -59,13 +60,20 @@ import java.util.Map;
  * @since JAHIA 6.5
  *        Created : 24 nov. 2010
  */
-public class CleanClipboardAction extends Action {
-    private transient static Logger logger = Logger.getLogger(CleanClipboardAction.class);
+public class MultipleCutAction extends Action {
+    private transient static Logger logger = Logger.getLogger(MultipleCutAction.class);
+    public static final String UUIDS_TO_CUT="org.jahia.uuids.to.cut";
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-        req.getSession().removeAttribute(MultipleCopyAction.UUIDS_TO_COPY);
-        req.getSession().removeAttribute(MultipleCutAction.UUIDS_TO_CUT);
+        List<String> uuids = parameters.get(MultipleCopyAction.UUIDS);
+        assert uuids != null && uuids.size()>0;
+        List<String> sessionUUIDS = (List<String>) req.getSession().getAttribute(UUIDS_TO_CUT);
+        uuids = SetUniqueList.decorate(uuids);
+        if(sessionUUIDS!=null) {
+            uuids.addAll(sessionUUIDS);
+        }
+        req.getSession().setAttribute(UUIDS_TO_CUT,uuids);
         return ActionResult.OK_JSON;
     }
 }

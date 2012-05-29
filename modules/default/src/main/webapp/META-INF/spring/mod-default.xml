@@ -87,6 +87,36 @@
     	<property name="camelContext" ref="jahiaNotificationContext"/>
     </bean>
 
+    <bean class="org.jahia.modules.defaultmodule.actions.MultipleDeleteAction">
+        <property name="name" value="deleteNodes"/>
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.MultipleCopyAction">
+        <property name="name" value="copy"/>
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.MultipleCutAction">
+        <property name="name" value="cut"/>
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.MultiplePasteAction">
+        <property name="name" value="paste"/>
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.CheckClipboardAction">
+        <property name="name" value="checkclipboard"/>
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.CleanClipboardAction">
+        <property name="name" value="emptyclipboard"/>
+    </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.MultiplePublishAction">
+        <property name="name" value="publishNodes"/>
+        <property name="workflowService" ref="workflowService"/>
+        <property name="publicationHelper" ref="PublicationHelper"/>
+    </bean>
+
     <bean class="org.jahia.modules.defaultmodule.actions.AddComment" >
         <property name="name" value="addComment"/>
         <property name="requiredPermission" value="addComment" />

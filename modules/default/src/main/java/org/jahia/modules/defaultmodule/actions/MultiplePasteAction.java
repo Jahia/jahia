@@ -38,28 +38,22 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.modules.contribute.toolbar.actions;
+package org.jahia.modules.defaultmodule.actions;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
-import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
-import org.jahia.ajax.gwt.helper.PublicationHelper;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
-import org.jahia.services.workflow.WorkflowDefinition;
-import org.jahia.services.workflow.WorkflowService;
-import org.jahia.services.workflow.WorkflowVariable;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
-import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
-import java.text.DateFormat;
-import java.text.MessageFormat;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -68,51 +62,53 @@ import java.util.*;
  * @since JAHIA 6.5
  *        Created : 24 nov. 2010
  */
-public class MultiplePublishAction extends Action {
-    private transient static Logger logger = Logger.getLogger(MultiplePublishAction.class);
-    private WorkflowService workflowService;
-    private PublicationHelper publicationHelper;
-
-    public void setWorkflowService(WorkflowService workflowService) {
-        this.workflowService = workflowService;
-    }
-
-    public void setPublicationHelper(PublicationHelper publicationHelper) {
-        this.publicationHelper = publicationHelper;
-    }
+public class MultiplePasteAction extends Action {
+    private transient static Logger logger = Logger.getLogger(MultiplePasteAction.class);
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-        List<String> uuids = parameters.get(MultipleCopyAction.UUIDS);
-
-        Set<String> locales = new LinkedHashSet<String>(Arrays.asList(
-                renderContext.getMainResourceLocale().toString()));
-
-        List<GWTJahiaPublicationInfo> pubInfos = publicationHelper.getFullPublicationInfos(uuids, locales, session, false,
-                false);
-
-        if (pubInfos.size() == 0) {
-            return ActionResult.BAD_REQUEST;
-        }
-
-        Map<PublicationWorkflow, WorkflowDefinition> workflows = publicationHelper.createPublicationWorkflows(pubInfos);
-
-        for (Map.Entry<PublicationWorkflow, WorkflowDefinition> entry : workflows.entrySet()) {
-            final HashMap<String, Object> map = new HashMap<String, Object>();
-            map.put("customWorkflowInfo", entry.getKey());
-
-            String title = MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.workflow.start.message", session.getLocale(), "{0} started by {1} on {2} - {3} content items involved"),
-                    entry.getValue().getDisplayName(), session.getUser().getName(), DateFormat.getDateInstance(DateFormat.SHORT, session.getLocale()).format(new Date()), pubInfos.size());
-
-            WorkflowVariable var = new WorkflowVariable(title, PropertyType.STRING);
-            map.put("jcr:title",Arrays.asList(var));
-            
-            if (entry.getValue() != null) {
-                workflowService.startProcessAsJob(entry.getKey().getAllUuids(),
-                        session, entry.getValue().getKey(),
-                        entry.getValue().getProvider(), map, null);
+        List<String> uuids = (List<String>) req.getSession().getAttribute(MultipleCopyAction.UUIDS_TO_COPY);
+        if (uuids != null && uuids.size() > 0) {
+            JCRNodeWrapper targetNode = resource.getNode();
+            String targetPath = targetNode.getPath();
+            try {
+                for (String uuid : uuids) {
+                    JCRNodeWrapper node = session.getNodeByUUID(uuid);
+                    if (targetPath.startsWith(node.getPath())) {
+                        // do not copy recursively
+                        continue;
+                    }
+                    session.checkout(node);
+                    node.copy(targetNode, JCRContentUtils.findAvailableNodeName(targetNode, node.getName()), true);
+                }
+                session.save();
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+                return ActionResult.BAD_REQUEST;
             }
         }
+        req.getSession().removeAttribute(MultipleCopyAction.UUIDS_TO_COPY);
+        uuids = (List<String>) req.getSession().getAttribute(MultipleCutAction.UUIDS_TO_CUT);
+        if (uuids != null && uuids.size() > 0) {
+            JCRNodeWrapper targetNode = resource.getNode();
+            String targetPath = targetNode.getPath();
+            try {
+                for (String uuid : uuids) {
+                    JCRNodeWrapper node = session.getNodeByUUID(uuid);
+                    if (targetPath.startsWith(node.getPath())) {
+                        // do not move recursively
+                        continue;
+                    }
+                    session.checkout(node);
+                    session.move(node.getPath(),targetNode.getPath()+"/"+JCRContentUtils.findAvailableNodeName(targetNode, node.getName()));
+                }
+                session.save();
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+                return ActionResult.BAD_REQUEST;
+            }
+        }
+        req.getSession().removeAttribute(MultipleCutAction.UUIDS_TO_CUT);
         return ActionResult.OK_JSON;
     }
 }

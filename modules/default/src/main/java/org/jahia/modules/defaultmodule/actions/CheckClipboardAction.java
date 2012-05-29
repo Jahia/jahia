@@ -38,18 +38,22 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.modules.contribute.toolbar.actions;
+package org.jahia.modules.defaultmodule.actions;
 
-import org.apache.commons.collections.list.SetUniqueList;
-import org.apache.log4j.Logger;
-import org.jahia.bin.ActionResult;
 import org.jahia.bin.Action;
+import org.jahia.bin.ActionResult;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+import org.json.JSONObject;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -60,20 +64,45 @@ import java.util.Map;
  * @since JAHIA 6.5
  *        Created : 24 nov. 2010
  */
-public class MultipleCutAction extends Action {
-    private transient static Logger logger = Logger.getLogger(MultipleCutAction.class);
-    public static final String UUIDS_TO_CUT="org.jahia.uuids.to.cut";
+public class CheckClipboardAction extends Action {
+    public static final String UUIDS = "uuids[]";
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-        List<String> uuids = parameters.get(MultipleCopyAction.UUIDS);
-        assert uuids != null && uuids.size()>0;
-        List<String> sessionUUIDS = (List<String>) req.getSession().getAttribute(UUIDS_TO_CUT);
-        uuids = SetUniqueList.decorate(uuids);
-        if(sessionUUIDS!=null) {
-            uuids.addAll(sessionUUIDS);
+        List<String> uuids = (List<String>) req.getSession().getAttribute(MultipleCopyAction.UUIDS_TO_COPY);
+        List<String> uuidstoCut = (List<String>) req.getSession().getAttribute(MultipleCutAction.UUIDS_TO_CUT);
+        if (uuids == null) {
+            uuids = uuidstoCut;
+        } else if (uuidstoCut != null) {
+            uuids.addAll(uuidstoCut);
         }
-        req.getSession().setAttribute(UUIDS_TO_CUT,uuids);
-        return ActionResult.OK_JSON;
+        if (uuids != null && uuids.size() > 0) {
+            JSONObject json = new JSONObject();
+            json.put(URLEncoder.encode(UUIDS,"UTF-8"), uuids);
+            List<String> paths = new LinkedList<String>();
+            List<String> nodetypes = new LinkedList<String>();
+            for (String uuid : uuids) {
+                try {
+                    JCRNodeWrapper nodeByUUID = session.getNodeByUUID(uuid);
+                    paths.add(nodeByUUID.getPath());
+                    List<String> nodeTypes = nodeByUUID.getNodeTypes();
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (String nodeType : nodeTypes) {
+                        if(stringBuilder.length()>0) {
+                            stringBuilder.append(" ");
+                        }
+                        stringBuilder.append(nodeType);
+                    }
+                    nodetypes.add(stringBuilder.toString());
+                } catch (RepositoryException e) {                    
+                }
+            }
+            json.put("paths",paths);
+            json.put("nodetypes",nodetypes);
+            json.put("size", uuids.size());
+            return new ActionResult(HttpServletResponse.SC_OK, null, json);
+        } else {
+            return ActionResult.OK;
+        }
     }
 }

@@ -15,6 +15,22 @@
                         <ref bean="Toolbar.Item.Live"/>
                         <ref bean="Toolbar.Item.Preview"/>
                         <ref bean="Toolbar.Item.Edit"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" >
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UploadActionItem">
+                                    <property name="allowedNodeTypes">
+                                        <list>
+                                            <value>jnt:folder</value>
+                                            <value>jnt:mountPoint</value>
+                                        </list>
+                                    </property>
+                                </bean>
+                            </property>
+                            <property name="titleKey" value="label.upload"/>
+                            <property name="icon" value="upload"/>
+                            <property name="hideWhenDisabled" value="true"/>
+                        </bean>
+
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.view"/>
                             <!-- <property name="icon" value="preview"/> -->

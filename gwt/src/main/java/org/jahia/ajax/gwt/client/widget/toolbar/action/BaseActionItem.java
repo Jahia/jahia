@@ -206,10 +206,18 @@ public abstract class BaseActionItem implements ActionItem {
 
     public void setEnabled(boolean enabled) {
         if (isTextToolItem()) {
-            Formatter.setButtonEnabled(getTextToolItem(), enabled);
+            if (gwtToolbarItem.isHideWhenDisabled()) {
+                getTextToolItem().setVisible(enabled);
+            } else {
+                Formatter.setButtonEnabled(getTextToolItem(), enabled);
+            }
         }
         if (isMenuItem()) {
-            Formatter.setMenuItemEnabled(getMenuItem(), enabled);
+            if (gwtToolbarItem.isHideWhenDisabled()) {
+                getMenuItem().setVisible(enabled);
+            } else {
+                Formatter.setMenuItemEnabled(getMenuItem(), enabled);
+            }
         }
         if (isContextMenuItem()) {
             getContextMenuItem().setVisible(enabled);

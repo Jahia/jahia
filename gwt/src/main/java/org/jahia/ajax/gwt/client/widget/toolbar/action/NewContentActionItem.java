@@ -94,7 +94,7 @@ public class NewContentActionItem extends BaseActionItem  {
             String nodeTypes = this.nodeTypes;
             if (linker instanceof EditLinker) {
                 Module m = ((EditLinker) linker).getSelectedModule();
-                if (m == null) {
+                if (m == null || useMainNode) {
                     m = ((EditLinker) linker).getMainModule();
                 }
                 if (m instanceof ListModule) {
@@ -103,12 +103,17 @@ public class NewContentActionItem extends BaseActionItem  {
                     nodeTypes = m.getNodeTypes();
                 }
             }
+            GWTJahiaNode parent;
+            if (useMainNode) {
+                parent = linker.getSelectionContext().getMainNode();
+            } else {
+                parent = linker.getSelectionContext().getSingleSelection();
+            }
 
             if (nodeTypes.length() > 0) {
-                ContentActions.showContentWizard(linker, nodeTypes, includeSubTypes);
+                ContentActions.showContentWizard(linker, nodeTypes, parent, includeSubTypes);
             } else {
-                ContentActions.showContentWizard(linker,
-                        linker.getSelectionContext().getSingleSelection().getChildConstraints(), includeSubTypes);
+                ContentActions.showContentWizard(linker, parent.getChildConstraints(), parent, includeSubTypes);
             }
         } else {
             ContentActions.createNode(linker,getGwtToolbarItem().getTitle(),nodeTypes, useMainNode);

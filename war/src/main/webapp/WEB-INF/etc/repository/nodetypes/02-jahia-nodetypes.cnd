@@ -693,10 +693,11 @@ extends = jnt:content
 //---------------------------------------------------------
 
 [jmix:contributeMode] mixin
+ itemtype=contributeMode
  extends = jnt:contentList, jnt:folder, jnt:contentFolder, jnt:area, jnt:mainResourceDisplay
- - j:editableInContribution (boolean)
- - j:canOrderInContribution (boolean)
- - j:canDeleteInContribution (boolean)
+ - j:editableInContribution (boolean) = true autocreated
+ - j:canOrderInContribution (boolean) hidden
+ - j:canDeleteInContribution (boolean) hidden
  - j:contributeTypes (string, choicelist[componenttypes = 'jmix:editorialContent,jnt:file,jnt:folder,jnt:contentFolder']) multiple nofulltext
 
 [jmix:listRestrictions] mixin

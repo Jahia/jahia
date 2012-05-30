@@ -274,6 +274,7 @@
                 /permissions/editMode/engineTabs/viewTagsTab
                 /permissions/editMode/engineTabs/viewSeoTab
                 /permissions/editMode/engineTabs/viewVisibilityTab
+                /permissions/editMode/engineTabs/viewContributeModeTab
                 /permissions/contributeMode
                 /permissions/templates
                 /permissions/managers/fileManager

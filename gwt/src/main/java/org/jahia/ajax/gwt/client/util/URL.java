@@ -191,6 +191,18 @@ public class URL {
         if (value.contains("$siteuuid")) {
             value = value.replace("$siteuuid", JahiaGWTParameters.getSiteUUID());
         }
+        if (value.contains("$base-url")) {
+            value = value.replace("$base-url", JahiaGWTParameters.getBaseUrl());
+        }
+        if (value.contains("$site-path")) {
+            value = value.replace("$site-path", JahiaGWTParameters.getSiteNode().getPath());
+        }
+        if (value.contains("$site-homepage-path")) {
+            String home = JahiaGWTParameters.getSiteNode().get(GWTJahiaNode.HOMEPAGE_PATH);
+            if (home != null) {
+                value = value.replace("$site-homepage-path", home);
+            }
+        }
         if (value.contains("$lang")) {
             value = value.replace("$lang", JahiaGWTParameters.getLanguage());
         }

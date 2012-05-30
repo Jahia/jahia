@@ -12,21 +12,38 @@
                 <property name="layout" value="button-label"/>
                 <property name="items">
                     <list>
-                        <ref bean="Toolbar.Item.Live"/>
-                        <ref bean="Toolbar.Item.Preview"/>
-                        <ref bean="Toolbar.Item.Edit"/>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.Upload">
-                            <property name="hideWhenDisabled" value="true"/>
-                        </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.NewPage">
-                            <property name="actionItem">
-                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
-                                    <property name="nodeTypes" value="jnt:page"/>
-                                    <property name="includeSubTypes" value="false"/>
-                                    <property name="parentTypes" value="jnt:page jnt:virtualsite"/>
-                                    <property name="useMainNode" value="true" />
-                                </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.mode"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Live"/>
+                                    <ref bean="Toolbar.Item.Preview"/>
+                                    <ref bean="Toolbar.Item.Edit"/>
+                                </list>
                             </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.site"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.SiteHome"/>
+                                    <ref bean="Toolbar.Item.SiteContent"/>
+                                    <ref bean="Toolbar.Item.SiteFiels"/>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.NewPage">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                                                <property name="nodeTypes" value="jnt:page"/>
+                                                <property name="includeSubTypes" value="false"/>
+                                                <property name="parentTypes" value="jnt:page jnt:virtualsite"/>
+                                                <property name="useMainNode" value="true" />
+                                            </bean>
+                                        </property>
+                                        <property name="hideWhenDisabled" value="true"/>
+                                    </bean>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.Upload">
                             <property name="hideWhenDisabled" value="true"/>
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.EditContent">

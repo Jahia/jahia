@@ -235,4 +235,25 @@
         <property name="applyOnModes" value="preview"/>
         <property name="priority" value="29"/>
     </bean>
+
+    <bean name="abstractRender" class="org.jahia.bin.Render">
+        <property name="loggingService" ref="loggingService"/>
+        <property name="templateService" ref="JahiaTemplateManagerService"/>
+        <property name="defaultPostAction" >
+            <bean class="org.jahia.bin.DefaultPostAction">
+                <property name="loggingService" ref="loggingService"/>
+            </bean>
+        </property>
+        <property name="defaultPutAction" >
+            <bean class="org.jahia.bin.DefaultPutAction">
+                <property name="loggingService" ref="loggingService"/>
+            </bean>
+        </property>
+        <property name="settingsBean" ref="settingsBean" />
+        <property name="renderService" ref="RenderService" />
+        <property name="jcrSessionFactory" ref="jcrSessionFactory" />
+        <property name="cookieExpirationInDays" value="1"/>
+        <property name="urlResolverFactory" ref="urlResolverFactory" />
+    </bean>
+
 </beans>

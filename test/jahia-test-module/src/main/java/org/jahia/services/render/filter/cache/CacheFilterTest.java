@@ -174,7 +174,6 @@ public class CacheFilterTest {
 
         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
         context.setSite(site);
-        context.setLiveMode(true);
         Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
         context.getRequest().setAttribute("script",
@@ -222,7 +221,6 @@ public class CacheFilterTest {
                             throws RepositoryException {
                         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), session.getUser());
                         context.setSite(site);
-                        context.setLiveMode(true);                        
                         JCRNodeWrapper pageContentNode = session
                                 .getNode("/sites/"
                                         + site.getSiteKey()
@@ -298,7 +296,6 @@ public class CacheFilterTest {
 
         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
         context.setSite(site);
-        context.setLiveMode(true);
         Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
         context.getRequest().setAttribute("script",

@@ -78,6 +78,10 @@ public class URLResolverFactory {
         urlResolverListener.setUrlResolverFactory(this); // we wire this manually to avoid loops.
     }
 
+    public URLResolver createURLResolver(String urlPathInfo, String serverName, String workspace, HttpServletRequest request) {
+        return new URLResolver(urlPathInfo, serverName, workspace, request, nodePathCache, siteInfoCache);
+    }
+
     public URLResolver createURLResolver(String urlPathInfo, String serverName, HttpServletRequest request) {
         return new URLResolver(urlPathInfo, serverName, request, nodePathCache, siteInfoCache);
     }

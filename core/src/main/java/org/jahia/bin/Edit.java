@@ -69,7 +69,7 @@ public class Edit extends Render {
         RenderContext context = super.createRenderContext(req, resp, user);
         context.setEditMode(true);
         context.setEditModeConfigName(editConfiguration.getName());
-        context.setServletPath(editConfiguration.getDefaultUrlMapping());
+//        context.setServletPath(editConfiguration.getDefaultUrlMapping());
         return context;
     }
 
@@ -91,7 +91,7 @@ public class Edit extends Render {
         } catch (RepositoryException e) {
             return false;
         }
-        return node.hasPermission(editConfiguration.getRequiredPermission());
+        return node.hasPermission(editConfiguration.getRequiredPermission()) && super.hasAccess(node);
     }
     @Override
     protected boolean isDisabled() {

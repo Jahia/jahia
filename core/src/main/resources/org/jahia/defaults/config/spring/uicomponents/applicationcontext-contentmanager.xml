@@ -842,6 +842,7 @@
                 <ref bean="Engine.Tab.Usages"/>
                 <ref bean="Engine.Tab.Versioning"/>
                 <ref bean="Engine.Tab.Visibility"/>
+                <ref bean="Engine.Tab.ContributeMode"/>
             </list>
         </property>
 
@@ -1003,6 +1004,7 @@
                 <ref bean="Engine.Tab.Usages"/>
                 <ref bean="Engine.Tab.Versioning"/>
                 <ref bean="Engine.Tab.Visibility"/>
+                <ref bean="Engine.Tab.ContributeMode"/>
             </list>
         </property>
 

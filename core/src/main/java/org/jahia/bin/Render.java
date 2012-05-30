@@ -139,6 +139,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             Arrays.asList(new String[]{String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY)}));
     private static final List<String> LIST_WITH_EMPTY_STRING = new ArrayList<String>(Arrays.asList(new String[]{StringUtils.EMPTY}));
 
+    private String requiredPermission;
+    private String workspace;
     private MetricsLoggingService loggingService;
     private JahiaTemplateManagerService templateService;
     private Action defaultPostAction;
@@ -220,7 +222,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
         RenderContext context = new RenderContext(req, resp, user);
-        context.setServletPath(getRenderServletPath());
+        context.setServletPath(req.getServletPath() + req.getPathInfo().substring(0, req.getPathInfo().indexOf("/", 1)));
         return context;
     }
 
@@ -663,7 +665,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
             Date date = getVersionDate(req);
             String versionLabel = getVersionLabel(req);
-            URLResolver urlResolver = urlResolverFactory.createURLResolver(req.getPathInfo(), req.getServerName(), req);
+            URLResolver urlResolver = urlResolverFactory.createURLResolver(req.getPathInfo(), req.getServerName(), workspace, req);
             urlResolver.setVersionDate(date);
             urlResolver.setVersionLabel(versionLabel);
 
@@ -690,8 +692,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
             RenderContext renderContext =
                     createRenderContext(req, resp, jcrSessionFactory.getCurrentUser());
-            renderContext.setLiveMode(Constants.LIVE_WORKSPACE.equals(urlResolver.getWorkspace()));
-            renderContext.setPreviewMode(!renderContext.isEditMode() && !renderContext.isContributionMode() && !renderContext.isLiveMode());
+            renderContext.setWorkspace(urlResolver.getWorkspace());
+
             urlResolver.setRenderContext(renderContext);
             req.getSession().setAttribute(ParamBean.SESSION_LOCALE, urlResolver.getLocale());
             jcrSessionFactory.setCurrentLocale(urlResolver.getLocale());
@@ -957,6 +959,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     protected boolean hasAccess(JCRNodeWrapper node) {
+        if (requiredPermission != null) {
+            return node.hasPermission(requiredPermission);
+        }
         return true;
     }
 
@@ -977,6 +982,14 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static String getRenderServletPath() {
         // TODO move this into configuration
         return "/cms/render";
+    }
+
+    public void setRequiredPermission(String requiredPermission) {
+        this.requiredPermission = requiredPermission;
+    }
+
+    public void setWorkspace(String workspace) {
+        this.workspace = workspace;
     }
 
     public void setLoggingService(MetricsLoggingService loggingService) {

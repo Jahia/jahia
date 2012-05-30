@@ -22,31 +22,21 @@
 
     <bean name="wfImage" class="org.jahia.modules.defaultmodule.actions.WorkflowImageController"/>
 
-    <bean name="abstractRender" class="org.jahia.bin.Render">
-        <property name="loggingService" ref="loggingService"/>
-        <property name="templateService" ref="JahiaTemplateManagerService"/>
-        <property name="defaultPostAction" >
-            <bean class="org.jahia.bin.DefaultPostAction">
-                <property name="loggingService" ref="loggingService"/>
-            </bean>
-        </property>
-        <property name="defaultPutAction" >
-            <bean class="org.jahia.bin.DefaultPutAction">
-                <property name="loggingService" ref="loggingService"/>
-            </bean>
-        </property>        
-        <property name="settingsBean" ref="settingsBean" />
-        <property name="renderService" ref="RenderService" />
-        <property name="jcrSessionFactory" ref="jcrSessionFactory" />
-        <property name="cookieExpirationInDays" value="1"/>
-        <property name="urlResolverFactory" ref="urlResolverFactory" />
-    </bean>
-
     <bean name="rendererMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
             <map>
                 <entry key="/render/**">
                     <bean name="org.jahia.bin.Render" parent="abstractRender"/>
+                </entry>
+                <entry key="/live/**">
+                    <bean name="org.jahia.bin.Live" parent="abstractRender">
+                        <property name="workspace" value="live"/>
+                    </bean>
+                </entry>
+                <entry key="/preview/**">
+                    <bean name="org.jahia.bin.Preview" parent="abstractRender">
+                        <property name="workspace" value="default"/>
+                    </bean>
                 </entry>
                 <entry key="/contribute/**">
                     <bean name="org.jahia.bin.Contribute" parent="abstractRender" class="org.jahia.bin.Contribute">
@@ -57,17 +47,21 @@
                     <bean name="org.jahia.bin.Edit" parent="abstractRender" class="org.jahia.bin.Edit">
                         <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
                         <property name="editConfiguration" ref="editmode"/>
+                        <property name="workspace" value="default"/>
                     </bean>
                 </entry>
                 <entry key="/lightedit/**">
                     <bean name="org.jahia.bin.LightEdit" parent="abstractRender" class="org.jahia.bin.Edit">
                         <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
                         <property name="editConfiguration" ref="lighteditmode"/>
+                        <property name="workspace" value="default"/>
                     </bean>
                 </entry>
                 <entry key="/studio/**">
                     <bean name="org.jahia.bin.Studio" parent="abstractRender" class="org.jahia.bin.Studio">
                         <property name="sessionExpiryTime" value="60" />
+                        <property name="requiredPermission" value="studioModeAccess"/>
+                        <property name="workspace" value="default"/>
                     </bean>
                 </entry>
                 <entry key="/find/**">

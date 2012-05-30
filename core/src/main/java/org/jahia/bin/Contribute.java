@@ -74,7 +74,7 @@ public class Contribute extends Render {
     protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
         RenderContext context = super.createRenderContext(req, resp, user);
         context.setContributionMode(true);
-        context.setServletPath(getContributeServletPath());
+//        context.setServletPath(getContributeServletPath());
         return context;
     }
 

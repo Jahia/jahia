@@ -148,7 +148,7 @@ public class URLGenerator {
     protected void initURL() {
         base = context.getServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
 
-        final String resourcePath = context.getMainResource().getNode().getPath() + ((!"default".equals(context.getMainResource().getTemplate()))?"."+context.getMainResource().getTemplate()+".":".") + context.getMainResource().getTemplateType();
+        final String resourcePath = getResourcePath();
 
         baseLive = Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale();
         live = baseLive + resourcePath;
@@ -166,6 +166,10 @@ public class URLGenerator {
         initializers = Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         convert = DocumentConverter.getPath() + "/" + resource.getWorkspace();
         templatesPath = "/modules";
+    }
+
+    public String getResourcePath() {
+        return context.getMainResource().getNode().getPath() + ((!"default".equals(context.getMainResource().getTemplate()))?"."+context.getMainResource().getTemplate()+".":".") + context.getMainResource().getTemplateType();
     }
 
     public String getContext() {
@@ -304,6 +308,20 @@ public class URLGenerator {
         return templateTypes;
     }
 
+    @SuppressWarnings("unchecked")
+    public Map<String, String> getBases() {
+        if (languages == null) {
+            languages = LazyMap.decorate(new HashMap<String, String>(), new Transformer() {
+                public Object transform(Object lang) {
+                    return getContext() + context.getServletPath() + "/" + resource.getWorkspace() + "/" + lang + resource.getNode().getPath() +
+                            ("default".equals(resource.getTemplate()) ? "" : "." + resource.getTemplate())
+                            + ".html";
+                }
+            });
+        }
+
+        return languages;
+    }
     /**
      * Returns the path to the templates folder.
      *

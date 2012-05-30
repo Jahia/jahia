@@ -63,17 +63,13 @@ public class Studio extends Render {
         RenderContext context = super.createRenderContext(req, resp, user);
         context.setEditMode(true);
         context.setEditModeConfigName(STUDIO_MODE);
-        context.setServletPath(getStudioServletPath());
+//        context.setServletPath(getStudioServletPath());
         return context;
     }
 
     public static String getStudioServletPath() {
         // TODO move this into configuration
         return "/cms/studio";
-    }
-
-    protected boolean hasAccess(JCRNodeWrapper node) {
-        return node.hasPermission("studioModeAccess");
     }
 
     @Override

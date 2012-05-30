@@ -150,9 +150,6 @@ public class TemplateHelper {
 
             RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
             renderContext.setEditMode(editMode);
-            if(!editMode) {
-                renderContext.setPreviewMode(true);
-            }
             renderContext.setEditModeConfigName(configName);
             renderContext.setMainResource(r);
 

@@ -131,6 +131,10 @@ public class URLResolver {
     private Cache<String, String> nodePathCache;
     private Cache<String, SiteInfo> siteInfoCache;
 
+    protected URLResolver(String urlPathInfo, String serverName, HttpServletRequest request, Cache<String, String> nodePathCache, Cache<String, SiteInfo> siteInfoCache) {
+        this(urlPathInfo, serverName, null, request, nodePathCache, siteInfoCache);
+    }
+
     /**
      * Initializes an instance of this class. This constructor is mainly used when
      * resolving URLs of incoming requests.
@@ -139,10 +143,11 @@ public class URLResolver {
      * @param serverName  the server name (usually obtained with @link javax.servlet.http.HttpServletRequest.getServerName())
      * @param request  the current HTTP servlet request object 
      */
-    protected URLResolver(String urlPathInfo, String serverName, HttpServletRequest request, Cache<String, String> nodePathCache, Cache<String, SiteInfo> siteInfoCache) {
+    protected URLResolver(String urlPathInfo, String serverName, String workspace, HttpServletRequest request, Cache<String, String> nodePathCache, Cache<String, SiteInfo> siteInfoCache) {
         super();
         this.nodePathCache = nodePathCache;
         this.siteInfoCache = siteInfoCache;
+        this.workspace = workspace;
 
         this.urlPathInfo = urlPathInfo;
         if (urlPathInfo != null) {
@@ -513,9 +518,12 @@ public class URLResolver {
                                             renderContext.setAjaxRequest(true);
                                             HttpServletRequest req = renderContext.getRequest();
                                             if (req.getParameter("mainResource") != null && !req.getParameter("mainResource").equals(path)) {
-                                                Resource resource = urlResolver.getResource(req.getParameter(
-                                                        "mainResource"));
-                                                renderContext.setAjaxResource(resource);
+                                                try {
+                                                    Resource resource = urlResolver.getResource(req.getParameter(
+                                                            "mainResource"));
+                                                    renderContext.setAjaxResource(resource);
+                                                } catch (PathNotFoundException e) {
+                                                }
                                             }
                                         }
                                     }
@@ -675,10 +683,19 @@ public class URLResolver {
     
     protected String verifyWorkspace(String workspace) {
         if (StringUtils.isEmpty(workspace)) {
-            workspace = DEFAULT_WORKSPACE;
+            if (workspace == null) {
+                workspace = DEFAULT_WORKSPACE;
+            }
         } else {
-            if (!JCRContentUtils.isValidWorkspace(workspace)) {
+            if (!JCRContentUtils.isValidWorkspace(workspace) && this.workspace == null) {
                 throw new JahiaNotFoundException("Unknown workspace '" + workspace + "'");
+            }
+            if (JCRContentUtils.isValidWorkspace(workspace) && this.workspace != null && !workspace.equals(this.workspace)) {
+                throw new JahiaNotFoundException("Invalid workspace '" + workspace + "'");
+            }
+            if (!JCRContentUtils.isValidWorkspace(workspace) && this.workspace != null) {
+                workspace = this.workspace;
+                path = this.workspace + "/" + path;
             }
         }
         

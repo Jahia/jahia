@@ -23,7 +23,7 @@
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 <template:addResources type="javascript" resources="managesites.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
-
+<template:addResources type="css" resources="loading.css"/>
 <template:addResources type="css" resources="edit-site-form.css"/>
 <template:include view="hidden.header"/>
 
@@ -316,7 +316,7 @@
         <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><fmt:message key="label.manageSites.noSiteSelected"/></p>
     </div>
 </div>
-<div style="display:none; position:fixed; left:0; top:0; width:100%; height:100%; z-index:9999" class="loading">
+<div style="display:none;" class="loading">
     <h1><fmt:message key="org.jahia.admin.workInProgressTitle"/></h1>
 </div>
 

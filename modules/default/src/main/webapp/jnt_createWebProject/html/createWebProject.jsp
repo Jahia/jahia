@@ -9,6 +9,7 @@
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <template:addResources type="css" resources="pageformcreation.css"/>
 <template:addResources type="css" resources="create-web-project.css"/>
+<template:addResources type="css" resources="loading.css"/>
 <template:addResources type="javascript" resources="managesites.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
 
@@ -66,7 +67,7 @@
         </div>
     </fieldset>
 </form>
-    <div style="display:none; position:fixed; left:0; top:0; width:100%; height:100%; z-index:9999" class="loading">
+    <div style="display:none;" class="loading">
         <h1><fmt:message key="org.jahia.admin.workInProgressTitle"/></h1>
     </div>
 </template:tokenizedForm>

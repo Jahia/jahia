@@ -61,7 +61,13 @@ public class EditContentActionItem extends BaseActionItem {
     private boolean useMainNode = false;
 
     public void onComponentSelection() {
-        EngineLoader.showEditEngine(linker, linker.getSelectionContext().getSingleSelection());
+        GWTJahiaNode singleSelection;
+        if (useMainNode) {
+            singleSelection = linker.getSelectionContext().getMainNode();
+        }   else {
+            singleSelection = linker.getSelectionContext().getSingleSelection();
+        }
+        EngineLoader.showEditEngine(linker, singleSelection);
     }
 
     public void handleNewLinkerSelection() {

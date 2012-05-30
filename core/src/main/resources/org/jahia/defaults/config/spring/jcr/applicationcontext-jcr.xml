@@ -307,6 +307,8 @@
           class="org.jahia.services.content.nodetypes.initializers.TemplatesChoiceListInitializerImpl"/>
     <bean id="templatesNodeInitializer"
           class="org.jahia.services.content.nodetypes.initializers.TemplatesNodeChoiceListInitializer"/>
+    <bean id="renderModesInitializer"
+          class="org.jahia.services.content.nodetypes.initializers.RenderModesChoiceListInitializer"/>
     <bean id="usersInitializer"
           class="org.jahia.services.content.nodetypes.initializers.UsersChoiceListInitializerImpl"/>
     <bean id="moduleImageInitializer"
@@ -368,7 +370,7 @@
                 <entry key="country" value-ref="countryInitializerRenderer"/>
                 <entry key="templates" value-ref="templatesInitializer"/>
                 <entry key="templatesNode" value-ref="templatesNodeInitializer"/>
-
+                <entry key="renderModes" value-ref="renderModesInitializer"/>
                 <entry key="users" value-ref="usersInitializer"/>
                 <entry key="nodetypes" value-ref="nodetypesInitializer"/>
                 <entry key="subnodetypes" value-ref="subNodetypesInitializer"/>

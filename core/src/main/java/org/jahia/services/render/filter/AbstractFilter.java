@@ -180,19 +180,11 @@ public abstract class AbstractFilter implements RenderFilter {
     public static class ModeCondition implements ExecutionCondition {
 
         public static boolean matches(RenderContext renderContext, String mode) {
-            boolean matches = false;
-            if ("live".equals(mode)) {
-                matches = renderContext.isLiveMode();
-            } else if ("preview".equals(mode)) {
-                matches = renderContext.isPreviewMode();
-            } else if ("edit".equals(mode)) {
-                matches = renderContext.isEditMode();
-            } else if ("contribution".equals(mode)) {
-                matches = renderContext.isContributionMode();
-            } else {
-                throw new IllegalArgumentException("Unsupported mode '" + mode + "'");
+            if (mode.equals("contribution")) {
+                mode = "contribute"; // Legacy compatibility
             }
-            return matches;
+
+            return renderContext.getMode().equals(mode);
         }
 
         private String mode;

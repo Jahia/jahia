@@ -369,9 +369,10 @@
  itemtype = permissions
  - j:requireLoggedUser (boolean)
  - j:requirePrivilegedUser (boolean)
- - j:requiredMode (string, choicelist[resourceBundle]) nofulltext < 'live', 'edit', 'contribute', 'live-or-preview'
+ - j:requiredMode (string, choicelist[renderModes]) nofulltext
  - j:requiredPermissions (weakreference, choicelist[nodes='/permissions//*;jnt:permission']) nofulltext multiple
  - j:contextNodePath (string)
+ - j:invertCondition (boolean)
 
 [jnt:pageTemplate] > jnt:template
 

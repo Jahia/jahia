@@ -87,17 +87,14 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
         } else {
             throw new TemplateNotFoundException("Unable to resolve script: "+resource.getResolvedTemplate());
         }
+
+        boolean invert = node.hasProperty("j:invertCondition") && node.getProperty("j:invertCondition").getBoolean();
+
         if (!renderContext.isEditMode()) {
             if (node.hasProperty("j:requiredMode")) {
                 String req = node.getProperty("j:requiredMode").getString();
-                if (!renderContext.isContributionMode() && req.equals("contribute")) {
-                    throw new AccessDeniedException("Content can only be accessed in contribute");
-                } else if (!renderContext.isEditMode() && req.equals("edit")) {
-                    throw new AccessDeniedException("Content can only be accessed in edit");
-                } else if (!renderContext.isLiveMode() && req.equals("live")) {
-                    throw new AccessDeniedException("Content can only be accessed in live");
-                } else if (!renderContext.isPreviewMode() && !renderContext.isLiveMode() && req.equals("live-or-preview")) {
-                    throw new AccessDeniedException("Content can only be accessed in live");
+                if (!renderContext.getMode().equals(req) && !invert) {
+                    throw new AccessDeniedException("Content can only be accessed in "+req);
                 }
             }
         }
@@ -130,11 +127,11 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                         }
                     }
                 } catch (PathNotFoundException e) {
-                    return "";
+                    return invert ? null : "";
                 }
                 for (String perm : perms) {
                     if (!contextNode.hasPermission(perm)) {
-                        return "";
+                        return invert ? null : "";
                     }
                 }
 
@@ -152,33 +149,33 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                                 }
                             }
                     )) {
-                        return "";
+                        return invert ? null : "";
                     }
                 }
 
             }
             if (node.hasProperty("j:requireLoggedUser") && node.getProperty("j:requireLoggedUser").getBoolean()) {
                 if (!renderContext.isLoggedIn()) {
-                    return "";
+                    return invert ? null : "";
                 }
                 if (aliasedUser != null) {
                     if (JahiaUserManagerService.isGuest(aliasedUser)) {
-                        return "";
+                        return invert ? null : "";
                     }
                 }
             }
             if (node.hasProperty("j:requirePrivilegedUser") && node.getProperty("j:requirePrivilegedUser").getBoolean()) {
                 if (!renderContext.getUser().isMemberOfGroup(0,JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
-                    return "";
+                    return invert ? null : "";
                 }
                 if (aliasedUser != null) {
                     if (!aliasedUser.isMemberOfGroup(0, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
-                        return "";
+                        return invert ? null : "";
                     }
                 }
             }
         }
-        return null;
+        return invert ? "" : null;
     }
 
     @Override

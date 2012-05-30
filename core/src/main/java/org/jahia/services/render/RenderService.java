@@ -416,6 +416,7 @@ public class RenderService {
                 ok = true;
             }
         }
+
         if (!checkTemplatePermission(resource, renderContext, templateNode)) return;
 
         if (ok) {
@@ -426,18 +427,13 @@ public class RenderService {
     }
 
     private boolean checkTemplatePermission(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode) throws RepositoryException {
+        boolean invert = templateNode.hasProperty("j:invertCondition") && templateNode.getProperty("j:invertCondition").getBoolean();
+
         if (templateNode.hasProperty("j:requiredMode")) {
             String req = templateNode.getProperty("j:requiredMode").getString();
-            if (!renderContext.isContributionMode() && req.equals("contribute")) {
-                return false;
-            } else if (!renderContext.isEditMode() && req.equals("edit")) {
-                return false;
-            } else if (!renderContext.isLiveMode() && req.equals("live")) {
-                return false;
-            } else if (!renderContext.isPreviewMode() && !renderContext.isLiveMode() && req.equals("live-or-preview")) {
-                return false;
+            if (!renderContext.getMode().equals(req)) {
+                return invert;
             }
-
         }
         if (templateNode.hasProperty("j:requiredPermissions")) {
             final Value[] values = templateNode.getProperty("j:requiredPermissions").getValues();
@@ -463,21 +459,21 @@ public class RenderService {
             }
             for (String perm : perms) {
                 if (!contextNode.hasPermission(perm)) {
-                    return false;
+                    return invert;
                 }
             }
         }
         if (templateNode.hasProperty("j:requireLoggedUser") && templateNode.getProperty("j:requireLoggedUser").getBoolean()) {
             if (!renderContext.isLoggedIn()) {
-                return false;
+                return invert;
             }
         }
         if (templateNode.hasProperty("j:requirePrivilegedUser") && templateNode.getProperty("j:requirePrivilegedUser").getBoolean()) {
             if (!renderContext.getUser().isMemberOfGroup(0,JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
-                return false;
+                return invert;
             }
         }
-        return true;
+        return !invert;
     }
     
     public void flushCache() {

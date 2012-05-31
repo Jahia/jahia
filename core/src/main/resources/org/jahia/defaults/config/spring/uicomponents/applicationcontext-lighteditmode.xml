@@ -30,6 +30,7 @@
                                     <ref bean="Toolbar.Item.SiteContent"/>
                                     <ref bean="Toolbar.Item.SiteFiels"/>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.NewPage">
+                                        <property name="requiredPermission" value="createPageAction"/>
                                         <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                                                 <property name="nodeTypes" value="jnt:page"/>
@@ -47,6 +48,7 @@
                             <property name="hideWhenDisabled" value="true"/>
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.EditContent">
+                            <property name="requiredPermission" value="createPageAction"/>
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.EditContentActionItem">
                                     <property name="useMainNode" value="true"/>
@@ -54,6 +56,7 @@
                             </property>
                             <property name="titleKey" value="label.editPage"/>
                             <property name="icon" value="editContent"/>
+                            <property name="hideWhenDisabled" value="true"/>
                         </bean>
 
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">

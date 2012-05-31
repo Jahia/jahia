@@ -1,21 +1,33 @@
+import java.util.*
 import javax.jcr.*
 import org.jahia.services.content.*
 
 def log = log;
 
-log.info("Start granting viewContributeModeTab permission to editor role")
+log.info("Start modifying contribute mode permissions...")
 
 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+        boolean doSave = false;
         if (RBACUtils.grantPermissionToRole(RBACUtils.getOrCreatePermission("/permissions/editMode/engineTabs/viewContributeModeTab", session).getPath(), "editor", session)) {
-            session.save();
+            doSave = true;
             log.info("Permission granted")
         } else {
             log.info("Role already has the permission")
         }
 
+        if (RBACUtils.grantPermissionToRole(RBACUtils.getOrCreatePermission("/permissions/editMode/actions", session).getPath(), "editor", session)) {
+            doSave = true;
+            log.info("Permission granted")
+        } else {
+            log.info("Role already has the permission")
+        }
+
+        if (doSave) {
+            session.save();
+        }
         return null;
     }
 });
 
-log.info("... done granting viewContributeModeTab permission to editor role.")
+log.info("... done modifying contribute mode permissions.")

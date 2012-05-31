@@ -96,4 +96,10 @@ public interface JCRPropertyWrapper extends Property, JCRItemWrapper {
 
     String getLocale() throws RepositoryException;
 
+    boolean removeValue(Value value) throws ValueFormatException, VersionException, LockException,
+            ConstraintViolationException, RepositoryException;
+
+    boolean removeValues(Value[] values) throws ValueFormatException, VersionException,
+            LockException, ConstraintViolationException, RepositoryException;
+
 }

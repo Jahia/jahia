@@ -28,7 +28,6 @@
                         <ref bean="Toolbar.Item.Live"/>
                         <ref bean="Toolbar.Item.Preview"/>
                         <ref bean="Toolbar.Item.Contribute"/>
-                        <ref bean="Toolbar.Item.LightEdit"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.view"/>
                             <!-- <property name="icon" value="preview"/> -->

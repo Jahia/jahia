@@ -1406,13 +1406,6 @@
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
-            <artifactId>contribute</artifactId>
-            <version>6.6.1.0-SNAPSHOT</version>
-            <type>war</type>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jahia.modules</groupId>
             <artifactId>default</artifactId>
             <version>6.6.1.0-SNAPSHOT</version>
             <type>war</type>

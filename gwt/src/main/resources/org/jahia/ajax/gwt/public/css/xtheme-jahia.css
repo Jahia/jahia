@@ -76,21 +76,21 @@ background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
     color:#000 !important;
 }
 /*Light Edit Mode*/
-.x-viewport-lighteditmode .x-toolbar-first{
+.x-viewport-contributemode .x-toolbar-first{
 	background:none !important;
-	background : #063996 url(../images/xtheme-jahia-andromeda/header/toolbar/lightEditMode-bg.png) no-repeat top right !important;
+	background : #063996 url(../images/xtheme-jahia-andromeda/header/toolbar/contributeMode-bg.png) no-repeat top right !important;
 	border-color:#063996 !important;
 }
-.x-viewport-lighteditmode .x-toolbar-first button {
+.x-viewport-contributemode .x-toolbar-first button {
 	color:#fff !important;
 }
-.x-viewport-lighteditmode .x-toolbar-first .x-btn-mc em.x-btn-arrow {
+.x-viewport-contributemode .x-toolbar-first .x-btn-mc em.x-btn-arrow {
 	background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 }
-.x-viewport-lighteditmode .x-toolbar-first .xtb-sep {
+.x-viewport-contributemode .x-toolbar-first .xtb-sep {
 	background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split2.gif) !important;
 }
-.x-viewport-lighteditmode .x-toolbar-first .x-btn-over button {
+.x-viewport-contributemode .x-toolbar-first .x-btn-over button {
     color:#000 !important;
 }
 /*United Content Manager*/

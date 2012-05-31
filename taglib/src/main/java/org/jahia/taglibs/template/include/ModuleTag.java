@@ -322,7 +322,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     }
 
     private List<String> contributeTypes(RenderContext renderContext, JCRNodeWrapper node) {
-        if (!"lighteditmode".equals(renderContext.getEditModeConfigName())) {
+        if (!"contributemode".equals(renderContext.getEditModeConfigName())) {
             return null;
         }
         JCRNodeWrapper contributeNode = null;
@@ -368,7 +368,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return null;
     }
     private boolean contributeAccess(RenderContext renderContext, JCRNodeWrapper node) {
-        if (!"lighteditmode".equals(renderContext.getEditModeConfigName())) {
+        if (!"contributemode".equals(renderContext.getEditModeConfigName())) {
             return true;
         }
         JCRNodeWrapper contributeNode = null;

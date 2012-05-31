@@ -162,8 +162,6 @@
 
 [jnt:gotoEdit] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
 
-[jnt:gotoLightEdit] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
-
 [jnt:gotoContribute] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
 
 [jnt:gotoAdmin] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
@@ -174,7 +172,6 @@
 
 [jnt:listSites] > jnt:content, mix:title, jmix:siteComponent, jmix:list, jmix:studioOnly
  - edit (boolean)
- - lightedit (boolean)
  - contribute (boolean)
  - preview (boolean)
  - live (boolean)

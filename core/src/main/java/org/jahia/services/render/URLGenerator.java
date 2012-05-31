@@ -40,39 +40,25 @@
 
 package org.jahia.services.render;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.utils.Url;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
-import org.jahia.bin.Captcha;
-import org.jahia.bin.Contribute;
-import org.jahia.bin.DocumentConverter;
-import org.jahia.bin.Edit;
-import org.jahia.bin.Find;
-import org.jahia.bin.FindPrincipal;
-import org.jahia.bin.FindUser;
-import org.jahia.bin.FindUsersAndGroups;
-import org.jahia.bin.FindUsersAndGroupsInAcl;
-import org.jahia.bin.Initializers;
-import org.jahia.bin.Login;
-import org.jahia.bin.Logout;
-import org.jahia.bin.Render;
-import org.jahia.bin.Studio;
+import org.jahia.bin.*;
 import org.jahia.params.valves.LoginConfig;
 import org.jahia.params.valves.LogoutConfig;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.Url;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Main URL generation class. This class is exposed to the template developers to make it easy to them to access
@@ -102,7 +88,6 @@ public class URLGenerator {
 
     private String live;
     private String edit;
-    private String lightEdit;
     private String preview;
     private String contribute;
     private String studio;
@@ -122,7 +107,6 @@ public class URLGenerator {
     private String baseLive;
     private String baseContribute;
     private String baseEdit;
-    private String baseLightEdit;
     private String basePreview;
     private String convert;
     private String myProfile;
@@ -155,9 +139,7 @@ public class URLGenerator {
         if (!SettingsBean.getInstance().isDistantPublicationServerMode()) {
             baseEdit = Edit.getEditServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
             edit = baseEdit + resourcePath;
-            baseLightEdit = "/cms/lightedit/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
-            lightEdit = baseLightEdit + resourcePath;
-            baseContribute = Contribute.getContributeServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+            baseContribute = "/cms/contribute/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
             contribute = baseContribute + resourcePath;
         }
         basePreview = Render.getRenderServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
@@ -198,10 +180,6 @@ public class URLGenerator {
 
     public String getEdit() {
         return edit;
-    }
-
-    public String getLightEdit() {
-        return lightEdit;
     }
 
     public String getPreview() {
@@ -367,10 +345,6 @@ public class URLGenerator {
 
     public String getBaseEdit() {
         return baseEdit;
-    }
-
-    public String getBaseLightEdit() {
-        return baseLightEdit;
     }
 
     public String getBaseLive() {

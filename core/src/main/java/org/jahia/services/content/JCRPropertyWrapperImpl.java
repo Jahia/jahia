@@ -58,9 +58,9 @@ import java.util.Calendar;
 import java.util.List;
 
 /**
- * Wrapper for javax.jcr.property to allow more data format.
+ * Wrapper for {@link javax.jcr.Property} to allow more data format.
  *
- * @author : toto
+ * @author toto
  */
 public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPropertyWrapper {
 
@@ -239,12 +239,16 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
 
     public void addValues(Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         List<Value> newValues = new ArrayList<Value>(Arrays.asList(getValues()));
+        boolean updated = false;
         for (Value value : values) {
             if (!newValues.contains(value)) {
                 newValues.add(value);
+                updated = true;
             }
         }
-        setValue(newValues.toArray(new Value[newValues.size()]));
+        if (updated) {
+            setValue(newValues.toArray(new Value[newValues.size()]));
+        }
     }
 
     public Value getValue() throws ValueFormatException, RepositoryException {
@@ -456,4 +460,32 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         }
         return null;
     }
+
+    public boolean removeValue(Value value) throws ValueFormatException, VersionException,
+            LockException, ConstraintViolationException, RepositoryException {
+        return removeValues(new Value[] { value });
+    }
+
+    public boolean removeValues(Value[] values) throws ValueFormatException, VersionException,
+            LockException, ConstraintViolationException, RepositoryException {
+        Value[] valueArray = getValues();
+        if (valueArray == null || valueArray.length == 0) {
+            return false;
+        }
+
+        List<Value> newValues = new ArrayList<Value>(Arrays.asList(valueArray));
+        boolean updated = false;
+        for (Value value : values) {
+            if (newValues.contains(value)) {
+                newValues.remove(value);
+                updated = true;
+            }
+        }
+        if (updated) {
+            setValue(newValues.toArray(new Value[newValues.size()]));
+        }
+
+        return updated;
+    }
+
 }

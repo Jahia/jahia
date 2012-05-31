@@ -13,13 +13,14 @@ if (renderContext.editMode && renderContext.mainResource.contextConfiguration ==
 if (renderContext.mainResource.contextConfiguration == 'page') {
     def slangmap = [en:'en_US', da:'da_DK', nl:'nl_NL', fi:'fi_FI', fr:'fr_FR', de:'de_DE', el:'el_GR', it:'it_IT', nb:'nb_NO', pt:'pt_PT', es:'es_ES', sv:'sv_SE']
     println "<script type=\"text/javascript\">"
-    println "\tvar contextJsParameters={contextPath:\"${contextPath}\",lang:\"${renderContext.mainResourceLocale}\",uilang:\"${renderContext.UILocale}\",siteUuid:\"${renderContext.site.identifier}\",wcag:${renderContext.site.WCAGComplianceCheckEnabled}}";
-    println "\tvar CKEDITOR_BASEPATH = \"${contextPath}/modules/assets/javascript/ckeditor/\";"
-    println "\tvar scayt_custom_params = new Array()"
+    print "var contextJsParameters={contextPath:\"${contextPath}\",lang:\"${renderContext.mainResourceLocale}\",uilang:\"${renderContext.UILocale}\",siteUuid:\"${renderContext.site.identifier}\",wcag:${renderContext.site.WCAGComplianceCheckEnabled}}; ";
+    print "var CKEDITOR_BASEPATH=\"${contextPath}/modules/assets/javascript/ckeditor/\"; "
+    print "var scayt_custom_params=new Array(); "
     if (slangmap[renderContext.mainResource.locale.language] != null) {
-        println "\tscayt_custom_params['sLang']='"+slangmap[renderContext.mainResource.locale.language]+"'"
+        print "scayt_custom_params['sLang']='"+slangmap[renderContext.mainResource.locale.language]+"';"
     }
-  println "</script>";
+    println "";
+    println "</script>";
 }
 renderContext.request.getAttribute("staticAssets").each { resource ->
   resource.each { type ->

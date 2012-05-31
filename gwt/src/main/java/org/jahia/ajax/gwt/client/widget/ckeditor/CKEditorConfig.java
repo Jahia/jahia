@@ -38,41 +38,89 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.ajax.gwt.client.widget.ckeditor;/**
+package org.jahia.ajax.gwt.client.widget.ckeditor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * User: ktlili
- * Date: Nov 25, 2009
- * Time: 3:46:56 PM
+ * Custom configuration options that will be passed when creating CKEditor instance.
+ * 
+ * @author ktlili
  */
 public class CKEditorConfig {
+    
+    private Map<String, String> cfg = new HashMap<String, String>();
 
-    private String width = "98%";
-    private String height = "300px";
-    private String toolbarSet = "Full";
-
-    public String getWidth() {
-        return width;
+    public CKEditorConfig() {
+        super();
+        set("width", "98%");
+        set("height", "300px");
+        set("toolbar", "Full");
     }
-
-    public void setWidth(String width) {
-        this.width = width;
+    
+    public CKEditorConfig(Map<String, String> cfg) {
+        this();
+        if (cfg != null) {
+            this.cfg.putAll(cfg);
+        }
     }
 
     public String getHeight() {
-        return height;
-    }
-
-    public void setHeight(String height) {
-        this.height = height;
+        return cfg.get("height");
     }
 
     public String getToolbarSet() {
-        return toolbarSet;
+        return cfg.get("toolbar");
+    }
+
+    public String getWidth() {
+        return cfg.get("width");
+    }
+
+    public CKEditorConfig set(String key, String value) {
+        cfg.put(key, value);
+        return this;
+    }
+
+    public void setHeight(String height) {
+        cfg.put("height", height);
     }
 
     public void setToolbarSet(String toolbarSet) {
-        this.toolbarSet = toolbarSet;
+        cfg.put("toolbar", toolbarSet);
+    }
+
+    public void setWidth(String width) {
+        cfg.put("width", width);
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("{");
+        boolean first = true;
+        for (Map.Entry<String, String> option : cfg.entrySet()) {
+            if (first) {
+                first = false;
+            } else {
+                sb.append(", ");
+            }
+            sb.append(option.getKey()).append(":");
+
+            boolean skipQuotes = option.getValue() != null
+                    && (option.getValue().startsWith("[") && option.getValue().endsWith("]") || option
+                            .getValue().startsWith("{") && option.getValue().endsWith("}"));
+            if (!skipQuotes) {
+                sb.append("\'");
+            }
+            sb.append(option.getValue());
+            if (!skipQuotes) {
+                sb.append("\'");
+            }
+        }
+        sb.append("}");
+
+        return sb.toString();
     }
 }
-

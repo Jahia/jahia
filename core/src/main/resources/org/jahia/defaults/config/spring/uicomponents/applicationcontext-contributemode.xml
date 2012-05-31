@@ -195,6 +195,7 @@
                 <ref bean="Engine.Tab.Metadata"/>
                 <ref bean="Engine.Tab.Tags"/>
                 <ref bean="Engine.Tab.Categories"/>
+                <ref bean="Engine.Tab.ContributeMode"/>
             </list>
         </property>
 

@@ -965,6 +965,15 @@
                         <value>contributeMode</value>
                     </list>
                 </property>
+                <property name="showForTypes">
+                    <list value-type="java.lang.String">
+                        <value>jnt:contentList</value>
+                        <value>jnt:folder</value>
+                        <value>jnt:contentFolder</value>
+                        <value>jnt:area</value>
+                        <value>jnt:mainResourceDisplay</value>
+                    </list>
+                </property>
             </bean>
         </property>
     </bean>

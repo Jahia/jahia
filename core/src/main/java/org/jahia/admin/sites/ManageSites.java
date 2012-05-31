@@ -947,8 +947,9 @@ public class ManageSites extends AbstractAdministrationModule {
                     JahiaSiteTools.getAdminGroup(site).addMember(adminSiteUser);
                 }
 
-                // set as current site if the session site is null
-                if (session.getAttribute(ProcessingContext.SESSION_SITE) == null) {
+                // set as current site if the session site is null or systemsite
+                JahiaSite sessionSite = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
+                if (sessionSite == null || sessionSite.getSiteKey().equals(JahiaSitesBaseService.SYSTEM_SITE_KEY)) {
                     session.setAttribute(ProcessingContext.SESSION_SITE, site);
                     session.setAttribute(JahiaAdministration.CLASS_NAME + "manageSiteID", new Integer(site.getID()));
                 }

@@ -27,7 +27,8 @@
         <condition type="header" name="Expires" operator="equal">^$</condition>
         <condition type="attribute" name="jahiaCacheControlSet" operator="equal">^$</condition>
         <set type="expires">1 month</set>
-        <set type="response-header" name="Cache-Control">public, max-age=2678400</set> 
+        <set type="response-header" name="Cache-Control">public, max-age=2678400</set>
+        <set type="request" name="jahiaCacheControlSet">done</set>   
     </rule>
     <!-- end of client-side caching -->
     

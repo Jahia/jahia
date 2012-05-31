@@ -1316,47 +1316,29 @@
     
     <bean id="Toolbar.Item.SiteHome" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GoToActionItem">
+                <property name="path" value="$site-homepage-path"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.homepage"/>
         <property name="icon" value="siteManager"/>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value" value="$context$base-url$site-homepage-path.html"/>
-                </bean>
-            </list>
-        </property>
     </bean>
     <bean id="Toolbar.Item.SiteContent" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GoToActionItem">
+                <property name="path" value="$site-path/contents"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.content"/>
         <property name="icon" value="content-manager-1616"/>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value" value="$context$base-url$site-path/contents.html"/>
-                </bean>
-            </list>
-        </property>
     </bean>
     <bean id="Toolbar.Item.SiteFiels" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GoToActionItem">
+                <property name="path" value="$site-path/files"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.selectorTab.filesimages"/>
         <property name="icon" value="files-manager-1616"/>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value" value="$context$base-url$site-path/files.html"/>
-                </bean>
-            </list>
-        </property>
     </bean>
 </beans>

@@ -198,6 +198,54 @@ public final class RBACUtils {
     }
 
     /**
+     * Checks if the specified permissions is already grated to the role.
+     * 
+     * @param rolePath
+     *            the path of the role the permission should be checked for
+     * @param permissionPath
+     *            the path of the permission to be checked
+     * @param session
+     *            current JCR session
+     * @return <code>true</code> if the role already contains the permission, <code>false</code> otherwise
+     * @throws RepositoryException
+     *             in case of an error
+     */
+    public static boolean hasPermission(String rolePath, String permissionPath,
+            JCRSessionWrapper session) throws RepositoryException {
+        if (permissionPath == null || !permissionPath.startsWith("/permissions/")) {
+            throw new IllegalArgumentException("Illegal value for the permission path: "
+                    + permissionPath);
+        }
+        if (rolePath == null || rolePath.length() == 0) {
+            throw new IllegalArgumentException("Illegal value for the role: " + rolePath);
+        }
+
+        JCRNodeWrapper permission = session.getNode(permissionPath);
+        String permissionId = permission.getIdentifier();
+        JCRNodeWrapper role = session.getNode(rolePath.contains("/") ? rolePath : "/roles/"
+                + rolePath);
+
+        if (!role.hasProperty("j:permissions")) {
+            return false;
+        }
+        Value[] values = role.getProperty("j:permissions").getValues();
+        if (values == null || values.length == 0) {
+            return false;
+        }
+
+        boolean found = false;
+
+        for (Value value : values) {
+            if (StringUtils.equals(permissionId, value.getString())) {
+                found = true;
+                break;
+            }
+        }
+
+        return found;
+    }
+
+    /**
      * Grants the specified permission to the role. Both permission and role nodes have to exist. The {@link Session#save()} is not called
      * by this method; it is the responsibility of the caller.
      * 

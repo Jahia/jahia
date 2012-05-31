@@ -177,14 +177,9 @@ public class CKEditor extends Component {
 
     private native boolean initEditor()/*-{
         var config = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::config;
-        var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId,{
-            width : config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getWidth()(),
-            height : config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getHeight()(),
-            toolbar : config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getToolbarSet()()
-        });
-        
+        eval("var customOptions=" + config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::toString()());
+        var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId, customOptions);
         oCKeditor.checkWCAGCompliance = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::checkWCAGCompliance(Ljava/lang/String;);
-        
         return true;
       }-*/;
 

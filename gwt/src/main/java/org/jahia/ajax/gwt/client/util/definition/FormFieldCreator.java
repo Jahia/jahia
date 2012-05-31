@@ -53,6 +53,7 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
+
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -75,6 +76,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class creates fields for a GXT form panel based on available jcr types and a specific mapping.
@@ -132,12 +134,30 @@ public class FormFieldCreator {
                     break;
                 case GWTJahiaNodeSelectorType.RICHTEXT:
                     CKEditorConfig config = new CKEditorConfig();
-                    if (PermissionsUtils.isPermitted("view-full-wysiwyg-editor",permissions) || PermissionsUtils.isPermitted("studioModeAccess",permissions)) {
-                        config.setToolbarSet("Full");
-                    } else if (PermissionsUtils.isPermitted("view-basic-wysiwyg-editor" ,permissions)) {
-                        config.setToolbarSet("Basic");
-                    } else {
-                        config.setToolbarSet("Light");
+                    boolean toolbarDefined = false;
+                    for (Map.Entry<String, String> option : propDefinition.getSelectorOptions()
+                            .entrySet()) {
+                        if (!option.getKey().startsWith("ckeditor.")) {
+                            continue;
+                        }
+                        String key = option.getKey().substring("ckeditor.".length());
+                        String value = option.getValue();
+                        if (value != null && value.contains("$context")) {
+                            value = value.replace("$context", JahiaGWTParameters.getContextPath());
+                        }
+                        config.set(key, value);
+                        if ("toolbar".equals(key)) {
+                            toolbarDefined = true;
+                        }
+                    }
+                    if (!toolbarDefined) {
+                        if (PermissionsUtils.isPermitted("view-full-wysiwyg-editor",permissions) || PermissionsUtils.isPermitted("studioModeAccess",permissions)) {
+                            config.setToolbarSet("Full");
+                        } else if (PermissionsUtils.isPermitted("view-basic-wysiwyg-editor" ,permissions)) {
+                            config.setToolbarSet("Basic");
+                        } else {
+                            config.setToolbarSet("Light");
+                        }
                     }
                     field = new CKEditorField(config);
                     field.setAutoWidth(false);

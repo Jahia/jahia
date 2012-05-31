@@ -164,35 +164,35 @@
 	                </archive>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>com.samaxes.maven</groupId>
-                <artifactId>maven-minify-plugin</artifactId>
-                <version>1.3.5</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>minify</goal>
-                        </goals>
-                        <configuration>
-                            <cssSourceFiles>
-                                <cssSourceFile>jquery.fancybox.css</cssSourceFile>
-                                <cssSourceFile>contentlist.css</cssSourceFile>
-                                <cssSourceFile>timepicker.css</cssSourceFile>
-                                <cssSourceFile>datepicker.css</cssSourceFile>
-                                <cssSourceFile>jquery.treeview.css</cssSourceFile>
-                                <cssSourceFile>formcontribute.css</cssSourceFile>
-                                <cssSourceFile>jquery.colorbox.css</cssSourceFile>
-                                <cssSourceFile>formbuilder.css</cssSourceFile>
-                                <cssSourceFile>ui.slider.css</cssSourceFile>
-                                <cssSourceFile>jquery-ui.smoothness.css</cssSourceFile>
-                                <cssSourceFile>jquery-ui.smoothness-jahia.css</cssSourceFile>
-                                <cssSourceFile>contribute-toolbar.css</cssSourceFile>
-                            </cssSourceFiles>
-                            <cssFinalFile>contribute.css</cssFinalFile>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>com.samaxes.maven</groupId>-->
+                <!--<artifactId>maven-minify-plugin</artifactId>-->
+                <!--<version>1.3.5</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<goals>-->
+                            <!--<goal>minify</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<cssSourceFiles>-->
+                                <!--<cssSourceFile>jquery.fancybox.css</cssSourceFile>-->
+                                <!--<cssSourceFile>contentlist.css</cssSourceFile>-->
+                                <!--<cssSourceFile>timepicker.css</cssSourceFile>-->
+                                <!--<cssSourceFile>datepicker.css</cssSourceFile>-->
+                                <!--<cssSourceFile>jquery.treeview.css</cssSourceFile>-->
+                                <!--<cssSourceFile>formcontribute.css</cssSourceFile>-->
+                                <!--<cssSourceFile>jquery.colorbox.css</cssSourceFile>-->
+                                <!--<cssSourceFile>formbuilder.css</cssSourceFile>-->
+                                <!--<cssSourceFile>ui.slider.css</cssSourceFile>-->
+                                <!--<cssSourceFile>jquery-ui.smoothness.css</cssSourceFile>-->
+                                <!--<cssSourceFile>jquery-ui.smoothness-jahia.css</cssSourceFile>-->
+                                <!--<cssSourceFile>contribute-toolbar.css</cssSourceFile>-->
+                            <!--</cssSourceFiles>-->
+                            <!--<cssFinalFile>contribute.css</cssFinalFile>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
         </plugins>
     </build>
     <reporting>

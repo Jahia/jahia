@@ -3,12 +3,12 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-    <bean id="lighteditmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
+    <bean id="contributemode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="requiredPermission" value="contributeModeAccess"/>
-        <property name="defaultUrlMapping" value="/cms/lightedit"/>
+        <property name="defaultUrlMapping" value="/cms/contribute"/>
         <property name="sitesLocation" value="/sites/*"/>
         <property name="topToolbar">
-            <bean id="lighteditModeToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="contributeModeToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="layout" value="button-label"/>
                 <property name="items">
                     <list>
@@ -136,7 +136,7 @@
             </bean>
         </property>
         <property name="sidePanelToolbar">
-            <bean id="lighteditModeSidePanelToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="contributeModeSidePanelToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
@@ -153,7 +153,7 @@
             </bean>
         </property>
         <property name="mainModuleToolbar">
-            <bean id="lighteditModeMainModuleToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="contributeModeMainModuleToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                     </list>
@@ -162,7 +162,7 @@
         </property>
 
         <property name="contextMenu">
-            <bean id="lighteditModeContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="contributeModeContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.EditContent"/>

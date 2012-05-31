@@ -125,7 +125,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
             }
 
             String additionalParameters = "missingList=\"true\"";
-            if (renderContext.getEditModeConfigName().equals("lighteditmode")) {
+            if (renderContext.getEditModeConfigName().equals("contributemode")) {
                 JCRNodeWrapper contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaListResource");
                 if (contributeNode == null || !contributeNode.hasProperty("j:contributeTypes")) {
                     additionalParameters += " editable=\"false\"";

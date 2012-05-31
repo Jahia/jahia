@@ -322,13 +322,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=8\">";
                     outputDocument.replace(idx, idx + 1, str);
                 }
-                if ((renderContext.isContributionMode() || renderContext.isPreviewMode())
-                        && !Boolean.valueOf((String) renderContext.getRequest().getAttribute(
+                if ((renderContext.isPreviewMode()) && !Boolean.valueOf((String) renderContext.getRequest().getAttribute(
                                 "org.jahia.StaticAssetFilter.doNotModifyDocumentTitle"))) {
                     for (Element title : element.getAllElements(HTMLElementName.TITLE)) {
                         int idx = title.getBegin() + title.toString().indexOf(">");
-                        String str = renderContext.isContributionMode() ? JahiaResourceBundle.getJahiaInternalResource("label.contribute", renderContext.getUILocale()) :
-                                JahiaResourceBundle.getJahiaInternalResource("label.preview", renderContext.getUILocale());
+                        String str = JahiaResourceBundle.getJahiaInternalResource("label.preview", renderContext.getUILocale());
                         str = ">" + str + " - ";
                         outputDocument.replace(idx, idx + 1, str);
                     }

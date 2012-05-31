@@ -38,11 +38,6 @@
                         <property name="workspace" value="default"/>
                     </bean>
                 </entry>
-                <entry key="/contribute/**">
-                    <bean name="org.jahia.bin.Contribute" parent="abstractRender" class="org.jahia.bin.Contribute">
-                        <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
-                    </bean>
-                </entry>
                 <entry key="/edit/**">
                     <bean name="org.jahia.bin.Edit" parent="abstractRender" class="org.jahia.bin.Edit">
                         <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
@@ -50,10 +45,10 @@
                         <property name="workspace" value="default"/>
                     </bean>
                 </entry>
-                <entry key="/lightedit/**">
-                    <bean name="org.jahia.bin.LightEdit" parent="abstractRender" class="org.jahia.bin.Edit">
+                <entry key="/contribute/**">
+                    <bean name="org.jahia.bin.Contribute" parent="abstractRender" class="org.jahia.bin.Edit">
                         <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
-                        <property name="editConfiguration" ref="lighteditmode"/>
+                        <property name="editConfiguration" ref="contributemode"/>
                         <property name="workspace" value="default"/>
                     </bean>
                 </entry>

@@ -267,9 +267,12 @@
                   </administration-tools>
                   <my-web-projects-shortcuts j:originWS="default" j:skin="skins.box8" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myWebProjectShortcuts)##"/>
-                    <ajax-mode-dispatcher j:originWS="default" jcr:primaryType="jnt:modeDispatcher" mode="live-or-preview">
-                      <websites-list-in-edit-mode contribute="true" edit="true" lightedit="true" j:originWS="default" jcr:primaryType="jnt:listSites" live="true" numberMaxOfSitesDisplayed="5" />
-                    </ajax-mode-dispatcher>
+                    <ajax-mode-dispatcher-live jcr:mixinTypes="jmix:requiredPermissions" j:originWS="default" jcr:primaryType="jnt:modeDispatcher" mode="live" j:contextNodePath="/sites" j:invertCondition="true" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default" >
+                      <websites-list-in-edit-mode contribute="true" edit="true" j:originWS="default" jcr:primaryType="jnt:listSites" live="true" numberMaxOfSitesDisplayed="5" />
+                    </ajax-mode-dispatcher-live>
+                    <ajax-mode-dispatcher-preview jcr:mixinTypes="jmix:requiredPermissions" j:originWS="default" jcr:primaryType="jnt:modeDispatcher" mode="preview" j:contextNodePath="/sites" j:invertCondition="false" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default">
+                      <websites-list-in-edit-mode contribute="true" edit="true" j:originWS="default" jcr:primaryType="jnt:listSites" live="true" numberMaxOfSitesDisplayed="5" />
+                    </ajax-mode-dispatcher-preview>
                     <my-web-projects divClass="user-sites" j:originWS="default" jcr:primaryType="jnt:componentLink" targetTemplate="user-sites">
                       <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myWebProjects)##"/>
                     </my-web-projects>
@@ -371,10 +374,14 @@
               <pagecontent j:id="user-sites" j:originWS="default" jcr:mixinTypes="jmix:customSkin" jcr:primaryType="jnt:contentList">
                 <my-sites icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_mysites.png" j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myWebProjects)##"/>
-                    <ajax-mode-dispatcher j:originWS="default" jcr:primaryType="jnt:modeDispatcher" mode="live-or-preview">
-                        <pager displayNbOfItemsPerPage="true" displayNbOfItemsPerPageValues="5,10,25,50,100" displayPager="true" j:bindedComponent="/templateSets/templates-system/templates/base/user-base/user-sites/pagecontent/my-sites/ajax-mode-dispatcher/websites-list-in-edit-mode" j:originWS="default" jcr:primaryType="jnt:pager" nbOfPages="10" pageSize="10" />
-                        <websites-list-in-edit-mode contribute="true" edit="true" j:originWS="default" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:listSites" lightedit="true" live="true" preview="true" />
-                    </ajax-mode-dispatcher>
+                    <ajax-mode-dispatcher-live jcr:mixinTypes="jmix:requiredPermissions" j:originWS="default" jcr:primaryType="jnt:modeDispatcher" mode="live" j:contextNodePath="/sites" j:invertCondition="true" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default" >
+                      <pager displayNbOfItemsPerPage="true" displayNbOfItemsPerPageValues="5,10,25,50,100" displayPager="true" j:bindedComponent="/templateSets/templates-system/templates/base/user-base/user-sites/pagecontent/my-sites/ajax-mode-dispatcher/websites-list-in-edit-mode" j:originWS="default" jcr:primaryType="jnt:pager" nbOfPages="10" pageSize="10" />
+                      <websites-list-in-edit-mode contribute="true" edit="true" j:originWS="default" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:listSites" live="true" preview="true" />
+                    </ajax-mode-dispatcher-live>
+                    <ajax-mode-dispatcher-preview jcr:mixinTypes="jmix:requiredPermissions" j:originWS="default" jcr:primaryType="jnt:modeDispatcher" mode="preview" j:contextNodePath="/sites" j:invertCondition="false" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default">
+                      <pager displayNbOfItemsPerPage="true" displayNbOfItemsPerPageValues="5,10,25,50,100" displayPager="true" j:bindedComponent="/templateSets/templates-system/templates/base/user-base/user-sites/pagecontent/my-sites/ajax-mode-dispatcher/websites-list-in-edit-mode" j:originWS="default" jcr:primaryType="jnt:pager" nbOfPages="10" pageSize="10" />
+                      <websites-list-in-edit-mode contribute="true" edit="true" j:originWS="default" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:listSites" live="true" preview="true" />
+                    </ajax-mode-dispatcher-preview>
                 </my-sites>
               </pagecontent>
             </user-sites>
@@ -386,9 +393,12 @@
                     <rich-text-1 j:originWS="default" jcr:primaryType="jnt:bigText">
                       <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h3&gt;##resourceBundle(label.contribute)##&lt;/h3&gt; "/>
                     </rich-text-1>
-                    <ajax-mode-dispatcher j:originWS="default" jcr:primaryType="jnt:modeDispatcher" mode="live-or-preview">
-                      <list-of-all-sites contribute="true" edit="false" lightedit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="false" numberOfSitesPerPage="10" typeOfContent="contents"/>
-                    </ajax-mode-dispatcher>
+                    <ajax-mode-dispatcher-live jcr:mixinTypes="jmix:requiredPermissions" j:originWS="default" jcr:primaryType="jnt:modeDispatcher" mode="live" j:contextNodePath="/sites" j:invertCondition="true" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default" >
+                      <list-of-all-sites contribute="true" edit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="false" numberOfSitesPerPage="10" typeOfContent="contents"/>
+                    </ajax-mode-dispatcher-live>
+                    <ajax-mode-dispatcher-preview jcr:mixinTypes="jmix:requiredPermissions" j:originWS="default" jcr:primaryType="jnt:modeDispatcher" mode="preview" j:contextNodePath="/sites" j:invertCondition="false" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default">
+                      <list-of-all-sites contribute="true" edit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="false" numberOfSitesPerPage="10" typeOfContent="contents"/>
+                    </ajax-mode-dispatcher-preview>
                   </content-list-1>
                   <content-list-2 j:originWS="default" jcr:primaryType="jnt:contentList">
                     <rich-text-1 j:originWS="default" jcr:primaryType="jnt:bigText">
@@ -403,9 +413,12 @@
                     <rich-text-1 j:originWS="default" jcr:primaryType="jnt:bigText">
                       <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h3&gt;##resourceBundle(system.browseFiles)##&lt;/h3&gt; "/>
                     </rich-text-1>
-                    <ajax-mode-dispatcher j:originWS="default" jcr:primaryType="jnt:modeDispatcher" mode="live-or-preview">
-                      <list-of-all-sites contribute="false" edit="false" lightedit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10" typeOfContent="files"/>
-                    </ajax-mode-dispatcher>
+                    <ajax-mode-dispatcher-live jcr:mixinTypes="jmix:requiredPermissions" j:originWS="default" jcr:primaryType="jnt:modeDispatcher" mode="live" j:contextNodePath="/sites" j:invertCondition="true" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default" >
+                      <list-of-all-sites contribute="false" edit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10" typeOfContent="files"/>
+                    </ajax-mode-dispatcher-live>
+                    <ajax-mode-dispatcher-preview jcr:mixinTypes="jmix:requiredPermissions" j:originWS="default" jcr:primaryType="jnt:modeDispatcher" mode="preview" j:contextNodePath="/sites" j:invertCondition="false" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default">
+                      <list-of-all-sites contribute="false" edit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10" typeOfContent="files"/>
+                    </ajax-mode-dispatcher-preview>
                   </content-list-1>
                   <content-list-2 j:originWS="default" jcr:primaryType="jnt:contentList">
                     <rich-text-1 j:originWS="default" jcr:primaryType="jnt:bigText">

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean class="org.jahia.modules.contribute.filter.ListContributionFilter" >
+        <property name="description" value="Set contribution template for contentLists set as editable"/>
+        <property name="renderService" ref="RenderService" />
+        <property name="priority" value="5" />
+        <property name="applyOnTemplateTypes" value="html" />
+        <property name="applyOnModes" value="contribution" />
+        <property name="applyOnNodeTypes" value="jmix:list,jmix:area"/>
+        <property name="skipOnConfigurations" value="page,wrapper,include"/>
+    </bean>
+
+    <bean class="org.jahia.modules.contribute.filter.ContributeToolbarFilter">
+        <property name="description" value="Adds the contribution toolbar after body tag"/>
+        <property name="renderService" ref="RenderService" />
+        <property name="priority" value="2"/>
+        <property name="applyOnTemplateTypes" value="html" />
+        <property name="applyOnModes" value="contribution" />
+        <property name="applyOnConfigurations" value="page"/>
+    </bean>
+</beans>

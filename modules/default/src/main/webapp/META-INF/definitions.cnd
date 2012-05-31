@@ -166,6 +166,7 @@
 
 [jnt:gotoAdmin] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
 - toAdminComponent (string, choicelist[resourceBundle]) = all indexed=no < all,users,groups
+- buttonClass (string) indexed=no
 
 [jnt:gotoManager] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
  - type (string, choicelist[resourceBundle]) = content indexed=no < content,document,unitedContent,roles

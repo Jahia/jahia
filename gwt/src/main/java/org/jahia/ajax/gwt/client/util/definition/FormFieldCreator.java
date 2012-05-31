@@ -46,6 +46,8 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -79,7 +81,11 @@ import java.util.List;
  */
 public class FormFieldCreator {
 
+    private static final int DUAL_LIST_ITEM_COUNT_TO_FILTER = 5;
+    
     public static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd.MM.yyyy HH:mm");
+
+    private static final int FILTER_FIELD_HEIGHT = 22;
 
     /**
      * Create Field
@@ -201,6 +207,21 @@ public class FormFieldCreator {
                         from.setDisplayField("display");
                         store.setSortDir(Style.SortDir.ASC);
                         store.setSortField("display");
+                        if (store.getCount() > DUAL_LIST_ITEM_COUNT_TO_FILTER) {
+                            StoreFilterField<GWTJahiaValueDisplayBean> filterField = new StoreFilterField<GWTJahiaValueDisplayBean>() {
+                                @Override
+                                protected boolean doSelect(Store<GWTJahiaValueDisplayBean> store, GWTJahiaValueDisplayBean parent,
+                                        GWTJahiaValueDisplayBean record, String property, String filter) {
+
+                                    String s = filter.toLowerCase();
+                                    return record.getValue().toLowerCase().contains(s)
+                                            || record.getDisplay().toLowerCase().contains(s);
+                                }
+                            };
+                            filterField.bind(store);
+                            filterField.setHeight(FILTER_FIELD_HEIGHT);
+                            lists.setFilterField(filterField);
+                        }
                         ListField<GWTJahiaValueDisplayBean> to = lists.getToList();
                         to.setDisplayField("display");
                         ListStore<GWTJahiaValueDisplayBean> tostore = new ListStore<GWTJahiaValueDisplayBean>();
@@ -554,8 +575,10 @@ public class FormFieldCreator {
         ].join("");
     }-*/;
 
-    private static class CustomDualListField<D extends ModelData> extends DualListField<D> {
+    public static class CustomDualListField<D extends ModelData> extends DualListField<D> {
         private List<D> originalValue = new ArrayList<D>();
+        
+        private StoreFilterField<D> filterField;
 
         public void setCustomOriginalValue(List<D> originalValue) {
             this.originalValue = originalValue;
@@ -602,6 +625,27 @@ public class FormFieldCreator {
             super.onComponentEvent(ce);
             getToList().getStore().sort("display", Style.SortDir.ASC);
             getFromList().getStore().sort("display", Style.SortDir.ASC);
+        }
+
+        public StoreFilterField<D> getFilterField() {
+            return filterField;
+        }
+
+        public void setFilterField(StoreFilterField<D> filterField) {
+            this.filterField = filterField;
+            VerticalPanel vp = new VerticalPanel();
+            vp.add(filterField);
+            vp.add(fields.remove(0));
+            fields.add(0, new AdapterField(vp));
+        }
+        
+        @Override
+        protected void onResize(int width, int height) {
+            super.onResize(width, height);
+            if (filterField != null) {
+                fromField.setHeight(fromField.getHeight() - (FILTER_FIELD_HEIGHT / 2));
+                filterField.setWidth(fromField.getWidth());
+            }
         }
     }
 }

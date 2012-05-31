@@ -8,7 +8,7 @@
 <template:addResources type="javascript" resources="jquery.fancybox.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/> 
 <template:addResources type="css" resources="jquery.fancybox.css"/>
-<c:set var="target" value="${uiComponents:getBindedCompnent(currentNode, renderContext, 'j:bindedComponent')}"/>
+<c:set var="target" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 
 <c:set var="types" value="${jcr:getContributeTypes(target, null, currentNode.properties['j:type'])}"/>
 

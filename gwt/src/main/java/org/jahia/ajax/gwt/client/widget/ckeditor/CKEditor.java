@@ -65,13 +65,13 @@ public class CKEditor extends Component {
     	super();
         if (config == null) {
             config = new CKEditorConfig();
+            String toolbar = "Light";
             if (PermissionsUtils.isPermitted("wysiwyg-editor-toolbar/full") || PermissionsUtils.isPermitted("studioModeAccess")) {
-                config.setToolbarSet("Full");
+                toolbar = "Full";
             } else if (PermissionsUtils.isPermitted("wysiwyg-editor-toolbar/basic")) {
-                config.setToolbarSet("Basic");
-            } else {
-                config.setToolbarSet("Light");
+                toolbar = "Basic";
             }
+            config.setDefaultToolbar(toolbar);
         }
         this.config = config;
         this.field = field;
@@ -177,8 +177,16 @@ public class CKEditor extends Component {
 
     private native boolean initEditor()/*-{
         var config = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::config;
-        eval("var customOptions=" + config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::toString()());
-        var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId, customOptions);
+        var cfg = {};
+        if ((typeof $wnd.CKEDITOR.customConfig) != 'undefined') {
+            $wnd.CKEDITOR.tools.extend(cfg,  $wnd.CKEDITOR.customConfig, true);
+        } 
+        eval("var overrideOptions=" + config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::toString()());
+        if ((typeof cfg.toolbar == 'undefined') && (typeof overrideOptions.toolbar == 'undefined')) {
+            overrideOptions.toolbar = overrideOptions.defaultToolbar;
+        } 
+        $wnd.CKEDITOR.tools.extend(cfg, overrideOptions, true);
+        var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId, cfg);
         oCKeditor.checkWCAGCompliance = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::checkWCAGCompliance(Ljava/lang/String;);
         return true;
       }-*/;

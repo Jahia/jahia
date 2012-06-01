@@ -56,7 +56,6 @@ public class CKEditorConfig {
         super();
         set("width", "98%");
         set("height", "300px");
-        set("toolbar", "Full");
     }
     
     public CKEditorConfig(Map<String, String> cfg) {
@@ -68,10 +67,6 @@ public class CKEditorConfig {
 
     public String getHeight() {
         return cfg.get("height");
-    }
-
-    public String getToolbarSet() {
-        return cfg.get("toolbar");
     }
 
     public String getWidth() {
@@ -87,8 +82,8 @@ public class CKEditorConfig {
         cfg.put("height", height);
     }
 
-    public void setToolbarSet(String toolbarSet) {
-        cfg.put("toolbar", toolbarSet);
+    public void setDefaultToolbar(String toolbarSet) {
+        cfg.put("defaultToolbar", toolbarSet);
     }
 
     public void setWidth(String width) {

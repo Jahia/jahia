@@ -133,33 +133,7 @@ public class FormFieldCreator {
                     field = new TextArea();
                     break;
                 case GWTJahiaNodeSelectorType.RICHTEXT:
-                    CKEditorConfig config = new CKEditorConfig();
-                    boolean toolbarDefined = false;
-                    for (Map.Entry<String, String> option : propDefinition.getSelectorOptions()
-                            .entrySet()) {
-                        if (!option.getKey().startsWith("ckeditor.")) {
-                            continue;
-                        }
-                        String key = option.getKey().substring("ckeditor.".length());
-                        String value = option.getValue();
-                        if (value != null && value.contains("$context")) {
-                            value = value.replace("$context", JahiaGWTParameters.getContextPath());
-                        }
-                        config.set(key, value);
-                        if ("toolbar".equals(key)) {
-                            toolbarDefined = true;
-                        }
-                    }
-                    if (!toolbarDefined) {
-                        if (PermissionsUtils.isPermitted("view-full-wysiwyg-editor",permissions) || PermissionsUtils.isPermitted("studioModeAccess",permissions)) {
-                            config.setToolbarSet("Full");
-                        } else if (PermissionsUtils.isPermitted("view-basic-wysiwyg-editor" ,permissions)) {
-                            config.setToolbarSet("Basic");
-                        } else {
-                            config.setToolbarSet("Light");
-                        }
-                    }
-                    field = new CKEditorField(config);
+                    field = new CKEditorField(getCKEditorConfig(propDefinition, permissions));
                     field.setAutoWidth(false);
                     field.setAutoHeight(false);
                     field.setHeight(300);
@@ -316,6 +290,37 @@ public class FormFieldCreator {
         }
         field.setId("JahiaGxtField"+ "_" + field.getName().replace(":","_")+"_"+locale);
         return field;
+    }
+
+    private static CKEditorConfig getCKEditorConfig(GWTJahiaPropertyDefinition propDefinition,
+            GWTBitSet permissions) {
+        CKEditorConfig config = new CKEditorConfig();
+        boolean toolbarDefined = false;
+        for (Map.Entry<String, String> option : propDefinition.getSelectorOptions()
+                .entrySet()) {
+            if (!option.getKey().startsWith("ckeditor.")) {
+                continue;
+            }
+            String key = option.getKey().substring("ckeditor.".length());
+            String value = option.getValue();
+            if (value != null && value.contains("$context")) {
+                value = value.replace("$context", JahiaGWTParameters.getContextPath());
+            }
+            config.set(key, value);
+            if ("toolbar".equals(key)) {
+                toolbarDefined = true;
+            }
+        }
+        if (!toolbarDefined) {
+            String toolbar = "Light";
+            if (PermissionsUtils.isPermitted("view-full-wysiwyg-editor",permissions) || PermissionsUtils.isPermitted("studioModeAccess",permissions)) {
+                toolbar = "Full";
+            } else if (PermissionsUtils.isPermitted("view-basic-wysiwyg-editor" ,permissions)) {
+                toolbar = "Basic";
+            }
+            config.setDefaultToolbar(toolbar);
+        }
+        return config;
     }
 
     private static List<String> getSelectorOptionAsList(GWTJahiaItemDefinition definition, String name) {

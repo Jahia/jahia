@@ -14,7 +14,6 @@
 
     <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true" />
 
-    <script src="./ckeditor/ckeditor.js"/>
     <!--<set-property name="user.agent" value="gecko,gecko1_8,safari"/>-->
     <!--<extend-property name="locale" values="fr"/>
     <extend-property name="locale" values="en"/>

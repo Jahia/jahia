@@ -21,23 +21,12 @@
 <c:set var="boundComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty boundComponent}">
-    <c:choose>
-        <c:when test="${not renderContext.liveMode}">
-            <template:addResources type="javascript" resources="jquery.min.js"/>
-            <div id="commentsList${boundComponent.identifier}"></div>
-            <script type="text/javascript">
-                $('#commentsList${boundComponent.identifier}').load('<c:url value="${url.baseLive}${boundComponent.path}/comments.hidden.commentsoutoflivemode.html.ajax"/>');
-            </script>
-        </c:when>
-        <c:otherwise>
-            <jcr:node var="comments" path="${boundComponent.path}/comments"/>
-            <c:if test="${not empty comments}">
-                <template:addCacheDependency node="${comments}"/>
-                <template:module node="${comments}" />
-            </c:if>
-            <c:if test="${empty comments}">
-                <template:addCacheDependency node="${boundComponent}"/>
-            </c:if>
-        </c:otherwise>
-    </c:choose>
+    <jcr:node var="comments" path="${boundComponent.path}/comments"/>
+    <c:if test="${not empty comments}">
+        <template:addCacheDependency node="${comments}"/>
+        <template:module node="${comments}" />
+    </c:if>
+    <c:if test="${empty comments}">
+        <template:addCacheDependency node="${boundComponent}"/>
+    </c:if>
 </c:if>

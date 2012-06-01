@@ -307,7 +307,7 @@ public class FormFieldCreator {
                 value = value.replace("$context", JahiaGWTParameters.getContextPath());
             }
             config.set(key, value);
-            if ("toolbar".equals(key)) {
+            if ("toolbar".equals(key) || "customConfig".equals(key) ) {
                 toolbarDefined = true;
             }
         }

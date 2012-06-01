@@ -182,7 +182,7 @@ public class CKEditor extends Component {
             $wnd.CKEDITOR.tools.extend(cfg,  $wnd.CKEDITOR.customConfig, true);
         } 
         eval("var overrideOptions=" + config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::toString()());
-        if ((typeof cfg.toolbar == 'undefined') && (typeof overrideOptions.toolbar == 'undefined')) {
+        if ((typeof cfg.toolbar == 'undefined') && (typeof overrideOptions.toolbar == 'undefined') && (typeof overrideOptions.defaultToolbar != 'undefined')) {
             overrideOptions.toolbar = overrideOptions.defaultToolbar;
         } 
         $wnd.CKEDITOR.tools.extend(cfg, overrideOptions, true);

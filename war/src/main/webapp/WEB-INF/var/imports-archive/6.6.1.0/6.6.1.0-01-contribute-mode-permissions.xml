@@ -10,9 +10,9 @@
             <engineTabs jcr:primaryType="jnt:permission">
                 <viewContributeModeTab jcr:primaryType="jnt:permission"/>
             </engineTabs>
-            <actions jcr:primaryType="jnt:permission">
+            <editModeActions jcr:primaryType="jnt:permission">
                 <createPageAction jcr:primaryType="jnt:permission"/>
-            </actions>
+            </editModeActions>
         </editMode>
     </permissions>
     

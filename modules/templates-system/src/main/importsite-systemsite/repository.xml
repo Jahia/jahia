@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:docmix="http://www.jahia.org/jahia/docspace/mix/1.0" xmlns:docnt="http://www.jahia.org/jahia/docspace/nt/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:commix="http://www.jahia.com/jahia/mix/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
+  <sites jcr:primaryType="jnt:virtualsitesFolder">
+    <systemsite changefreq="monthly" j:inactiveLanguages="" j:inactiveLiveLanguages="" j:originWS="default" j:published="true" j:wcagCompliance="true" jcr:mixinTypes="jmix:accessControlled jmix:sitemap" jcr:primaryType="jnt:virtualsite" jcr:uuid="8668a186-f3ff-44d2-91a7-96c0407a86ec" priority="0.5" j:publicationStatus="1">
+      <files j:originWS="default" j:published="true" jcr:primaryType="jnt:folder" jcr:uuid="8ca7307b-1193-4aae-81ad-a52cc6c1f87d" j:publicationStatus="1">
+        <contributed j:originWS="default" j:published="true" jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:folder" jcr:uuid="ec489860-69a8-4911-a894-5feda06eff67" j:publicationStatus="1">
+          <j:acl jcr:primaryType="jnt:acl" jcr:uuid="f37d77fd-bfbd-48e3-8327-3beaa9062b66">
+            <GRANT_g_site-privileged j:aceType="GRANT" j:principal="g:privileged" j:protected="false" j:roles="contributor" jcr:primaryType="jnt:ace" jcr:uuid="bd5dd4dd-4f0e-46c3-acc0-150f7ee013c0" />
+          </j:acl>
+        </contributed>
+      </files>
+      <portlets j:originWS="default" j:published="true" jcr:primaryType="jnt:portletFolder" jcr:uuid="00e60e86-769a-42da-bb0e-99113c5704f3" j:publicationStatus="1" />
+      <groups j:originWS="default" j:published="true" jcr:primaryType="jnt:groupsFolder" jcr:uuid="cb5fee94-5596-4b20-b7d4-99bff4a5e969" j:publicationStatus="1">
+        <site-administrators j:external="false" j:hidden="false" j:originWS="default" j:published="true" jcr:mixinTypes="jmix:systemNode" jcr:primaryType="jnt:group" jcr:uuid="11ecf8c4-205b-443d-9fa2-728de340fe2e" j:publicationStatus="1">
+          <j:members jcr:primaryType="jnt:members" jcr:uuid="0f923d11-8731-4f3b-aaac-635780664f79">
+            <root j:member="/users/root" jcr:primaryType="jnt:member" jcr:uuid="baf82622-1615-486a-9937-c39fbad3f3c7" />
+          </j:members>
+        </site-administrators>
+        <site-privileged j:external="false" j:hidden="false" j:originWS="default" j:published="true" jcr:mixinTypes="jmix:systemNode" jcr:primaryType="jnt:group" jcr:uuid="b5237152-3778-4f45-b1cb-06998a75c563" j:publicationStatus="1">
+          <j:members jcr:primaryType="jnt:members" jcr:uuid="1a05792d-7103-409b-b0e4-0b3b9ac1dc28">
+            <site-administrators___1 j:member="#/sites/systemsite/groups/site-administrators" jcr:primaryType="jnt:member" jcr:uuid="7c5e3928-4e80-45e8-ac59-4209385b1710" />
+          </j:members>
+        </site-privileged>
+      </groups>
+      <contents j:originWS="default" j:published="true" jcr:primaryType="jnt:contentFolder" jcr:uuid="7747760b-78c6-4870-9773-fe3c28f44a97" j:publicationStatus="1">
+        <profile-page-items j:originWS="default" j:published="true" jcr:primaryType="jnt:contentFolder" jcr:uuid="726a8fca-1418-4c1d-a9af-0e1352f8c2ab" j:publicationStatus="1">
+          <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.profilePageItems)##" jcr:uuid="2f6af386-1440-4132-a819-4685ef0c3fd2" />
+          <home divClass="user-home" j:originWS="default" j:published="true" jcr:primaryType="jnt:componentLink" jcr:uuid="8604c2ad-ba50-4abb-8d53-4cf4533e733d" targetTemplate="user-home">
+            <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(home)##" jcr:uuid="34373f7b-c15f-4301-93fc-4abe0281a921" />
+          </home>
+          <my-settings divClass="user-edit-details" j:originWS="default" j:published="true" jcr:primaryType="jnt:componentLink" jcr:uuid="21d06a08-427a-460e-8b15-d92f563b1a25" targetTemplate="user-edit-details">
+            <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.mySettings)##" jcr:uuid="b2b56d46-f66b-4c3c-bf10-14a6ad7b7540" />
+          </my-settings>
+          <my-tasks divClass="user-tasks" j:originWS="default" j:published="true" j:requireLoggedUser="false" j:requirePrivilegedUser="true" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:componentLink" jcr:uuid="155f872e-68e9-4f85-9902-7f28c9944e40" targetTemplate="user-tasks">
+            <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myTasks)##" jcr:uuid="a3cdea48-4e56-4b14-ba4a-265526b25667" />
+          </my-tasks>
+          <my-pages divClass="user-content" j:originWS="default" j:published="true" jcr:primaryType="jnt:componentLink" jcr:uuid="5104ad38-19ce-4f1f-9a87-a4c091e5fc1e" targetTemplate="user-content">
+            <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myPages)##" jcr:uuid="cad15fac-48db-4dd3-a9df-0f78125d99d1" />
+          </my-pages>
+          <my-content divClass="user-sites" j:originWS="default" j:published="true" jcr:primaryType="jnt:componentLink" jcr:uuid="68af9e83-18be-47c7-acae-30f501614fa3" targetTemplate="user-content-manager">
+            <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myContent)##" jcr:uuid="b401a63d-90fb-4e19-a3d9-e8287f33a440" />
+          </my-content>
+          <my-web-projects divClass="user-sites" j:originWS="default" j:published="true" jcr:primaryType="jnt:componentLink" jcr:uuid="18062dd9-5428-448a-92bf-6b5c5c16f970" targetTemplate="user-sites">
+            <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myWebProjects)##" jcr:uuid="2e63a622-3576-4478-8b7f-9373269975a7" />
+          </my-web-projects>
+        </profile-page-items>
+        <portal-components j:originWS="default" j:published="true" jcr:primaryType="jnt:contentFolder" jcr:uuid="054ebbf1-3b93-44e6-abe3-bc4ac6898fae" j:publicationStatus="1" />
+      </contents>
+      <tags j:originWS="default" j:published="true" jcr:primaryType="jnt:tagList" jcr:uuid="1f451c42-0fc5-404e-83d1-21de3dd75265" />
+      <categories j:originWS="default" j:published="true" jcr:primaryType="jnt:category" jcr:title="Categories" jcr:uuid="abd46620-d19a-4fd2-aa7a-d37d41b5952c" j:publicationStatus="1" />
+      <home changefreq="monthly" j:isHomePage="true" j:originWS="default" j:published="true" j:templateNode="_x0024_currentSite/templates/base/home" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" jcr:uuid="28845de7-13a6-4a82-bf96-f0837cb279a2" priority="0.5" j:publicationStatus="1">
+        <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(home)##" jcr:uuid="c483a9ec-c2a2-4fe8-9467-60faff6e0bcb" />
+      </home>
+      <docspace-instance-management changefreq="monthly" j:originWS="default" j:published="true" j:templateNode="_x0024_currentSite/templates/base/vibes-base/docspace-instance-management" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" jcr:uuid="4d0e6866-5e51-4d4d-97d6-7a20b2c6a12a" priority="0.5" j:publicationStatus="1">
+        <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(label.docspace.instance.management,modules.docspace-management.resources.DocspaceInstanceManagement)##" jcr:uuid="e1f20b3f-a1c3-4e3c-a85e-a3a9f43bf891" />
+      </docspace-instance-management>
+      <j:acl jcr:primaryType="jnt:acl" jcr:uuid="5de8cec2-eb91-4a50-b746-96a7528b1235">
+        <GRANT_g_site-administrators j:aceType="GRANT" j:principal="g:site-administrators" j:protected="false" j:roles="site-administrator" jcr:primaryType="jnt:ace" jcr:uuid="17a1e0b6-dbbc-427c-94cb-4e977a323aa6" />
+      </j:acl>
+    </systemsite>
+  </sites>
+</content>
+

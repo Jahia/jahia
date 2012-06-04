@@ -48,7 +48,6 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.workflow.WorkflowVariable;
 import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -172,51 +171,11 @@ public class Service extends JahiaService {
                 logger.info("Import site " + uri);
                 //String sitename = st.nextToken() + "_" + st.nextToken();
 
-                ZipEntry z;
-                Node contentNode = node.getNode().getNode(Constants.JCR_CONTENT);
-                ZipInputStream zis2 = new ZipInputStream(contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream());
-
-                Properties infos = new Properties();
-                while ((z = zis2.getNextEntry()) != null) {
-                    if ("site.properties".equals(z.getName())) {
-                        infos.load(zis2);
-                        zis2.closeEntry();
-
-                        boolean siteKeyEx = sitesService.getSiteByKey((String) infos.get("sitekey")) != null || "".equals(
-                                infos.get("sitekey"));
-                        String serverName = (String) infos.get("siteservername");
-                        boolean serverNameEx = (sitesService.getSite(serverName) != null && !Url.isLocalhost(serverName)) || "".equals(serverName);
-                        if (!user.getJahiaUser().isRoot()) {
-                            return;
-                        }
-                        if (!siteKeyEx && !serverNameEx) {
-                            // site import
-                            String tpl = (String) infos.get("templatePackageName");
-                            if ("".equals(tpl)) {
-                                tpl = null;
-                            }
-                            try {
-                                Locale locale = null;
-                                for (Object obj : infos.keySet()) {
-                                    String s = (String) obj;
-                                    if (s.startsWith("language.") && s.endsWith(".rank")) {
-                                        String code = s.substring(s.indexOf('.') + 1, s.lastIndexOf('.'));
-                                        String rank = infos.getProperty(s);
-                                        if (rank.equals("1")) {
-                                            locale = LanguageCodeConverters.languageCodeToLocale(code);
-                                        }
-                                    }
-                                }
-                                sitesService.addSite(user.getJahiaUser(), infos.getProperty("sitetitle"), infos.getProperty(
-                                        "siteservername"), infos.getProperty("sitekey"), infos.getProperty(
-                                        "description"), locale, tpl, "importRepositoryFile", null, uri, true,
-                                        false, infos.getProperty("originatingJahiaRelease"));
-                            } catch (Exception e) {
-                                logger.error("Cannot create site " + infos.get("sitetitle"), e);
-                            }
-                        }
-                    }
+                if (!user.getJahiaUser().isRoot()) {
+                    return;
                 }
+
+                ImportExportBaseService.getInstance().importSiteZip(node.getNode());
             } catch (Exception e) {
                 logger.error("Error during import of file " + uri, e);
                 cacheService.flushAllCaches();

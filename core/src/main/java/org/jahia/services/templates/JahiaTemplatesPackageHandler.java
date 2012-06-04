@@ -176,7 +176,7 @@ final class JahiaTemplatesPackageHandler {
 
         if (templatePackage.getInitialImports().isEmpty()) {
             File[] files = file.listFiles((FilenameFilter) new WildcardFileFilter(new String[]{
-                    "import.xml", "import.zip", "import-*.xml", "import-*.zip"}, IOCase.INSENSITIVE));
+                    "import.xml", "import.zip", "import-*.xml", "import-*.zip", "importsite*.zip"}, IOCase.INSENSITIVE));
             Arrays.sort(files);
             for (File importFile : files) {
                 templatePackage.addInitialImport(importFile.getName());
@@ -185,7 +185,7 @@ final class JahiaTemplatesPackageHandler {
             File metaInf = new File(file, "META-INF");
             if (metaInf.exists()) {
                 files = metaInf.listFiles((FilenameFilter) new WildcardFileFilter(new String[]{
-                        "import.xml", "import.zip", "import-*.xml", "import-*.zip"}, IOCase.INSENSITIVE));
+                        "import.xml", "import.zip", "import-*.xml", "import-*.zip", "importsite*.zip"}, IOCase.INSENSITIVE));
                 Arrays.sort(files);
                 for (File importFile : files) {
                     templatePackage.addInitialImport("META-INF/" + importFile.getName());

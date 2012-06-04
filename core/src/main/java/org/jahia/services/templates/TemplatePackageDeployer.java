@@ -70,6 +70,8 @@ import org.jahia.services.content.*;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
+import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.zip.ExclusionWildcardFilter;
 import org.jahia.utils.zip.JahiaArchiveFileHandler;
@@ -599,9 +601,20 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                                     } finally {
                                         IOUtils.closeQuietly(is);
                                     }
+                                } else if (imp.toLowerCase().contains("/importsite")) {
+                                    JCRUser user = null;
+                                    try {
+                                        user = JCRUserManagerProvider.getInstance().lookupRootUser();
+                                        JCRSessionFactory.getInstance().setCurrentUser(user);
+                                        importExportService.importSiteZip(importFile);
+                                    } finally {
+                                        JCRSessionFactory.getInstance().setCurrentUser(user);
+                                    }
+
                                 } else {
-                                    importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE,session);
+                                    importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session);
                                 }
+
                                 importFile.delete();
                                 session.save(JCRObservationManager.IMPORT);
                             } catch (Exception e) {

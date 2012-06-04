@@ -612,7 +612,9 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                     }
 
                     // attach superadmin user (current) to administrators group...
-                    adminGroup.addMember(currentUser);
+                    if (currentUser != null) {
+                        adminGroup.addMember(currentUser);
+                    }
 
                     if (!siteKey.equals(SYSTEM_SITE_KEY)) {
                         JahiaGroup sitePrivGroup = jgms.lookupGroup(site.getID(),

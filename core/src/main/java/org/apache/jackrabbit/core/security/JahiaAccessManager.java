@@ -654,7 +654,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
     public boolean matchPermission(Set<String> permissions, String role, Session s) throws RepositoryException {
         Set<Privilege> permsInRole = getPermissionsInRole(role, s);
-        logger.debug("Checking role " +role);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Checking role {}", role);
+        }
 
         for (Privilege privilege : permsInRole) {
             String privilegeName = privilege.getName();
@@ -678,7 +680,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
     private boolean checkPrivilege(Set<String> permissions, String privilegeName) {
         if (permissions.contains(privilegeName)) {
-            logger.debug("Found privilege " +privilegeName);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Found privilege {}", privilegeName);
+            }
             permissions.remove(privilegeName);
             if (permissions.isEmpty()) {
                 return true;
@@ -750,7 +754,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                         Privilege privilege = privilegeRegistry.getPrivilege(p);
                         results.add(privilege);
                     } catch (AccessControlException e) {
-                        logger.debug("Permission not available : " + p, e);
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Permission not available : " + p, e);
+                        }
                     }
                 }
             }
@@ -860,7 +866,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 n = n.getParent();
             }
         } catch (ItemNotFoundException e) {
-            logger.debug(e.getMessage(), e);
+            if (logger.isDebugEnabled()) {
+                logger.debug(e.getMessage(), e);
+            }
         }
         return grantedRoles;
     }

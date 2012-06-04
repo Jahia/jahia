@@ -115,8 +115,6 @@ public class TriPanelBrowserLayout extends ContentPanel {
         
         layout.setId("JahiaGxtManagerMain");
         
-        layout.setId("JahiaGxtManagerMain");
-        
         // layout is the main widget contained in the viewport
         add(layout);
 

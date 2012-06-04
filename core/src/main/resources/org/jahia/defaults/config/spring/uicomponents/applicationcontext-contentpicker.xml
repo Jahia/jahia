@@ -609,6 +609,7 @@
         </property>
     </bean>
 
+<<<<<<< .working
     <bean id="editoriallinkpicker" parent="abstractmanager">
         <property name="nodeTypes">
             <list>
@@ -669,26 +670,10 @@
         <property name="searchInContent" value="true"/>
         <property name="searchInFile" value="true"/>   
         <property name="allowsMultipleSelection" value="false"/>
+=======
+    <bean id="editoriallinkpicker" parent="editorialpicker">
+>>>>>>> .merge-right.r41779
         <property name="showOnlyNodesWithTemplates" value="true"/>
-        <!-- accordion panels-->
-        <property name="repositories">
-            <list>
-                <ref bean="repository.templateContents"/>
-                <ref bean="repository.site"/>
-                <ref bean="repository.sitesPicker"/>
-                <ref bean="repository.mycontent"/>
-            </list>
-        </property>
-
-        <!-- table columns-->
-        <property name="tableColumns">
-            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>icon,40,empty</value>
-                <value>displayName,*,label.title</value>
-                <value>primaryTypeLabel,140,label.type</value>
-                <value>publicationInfo,40</value>
-            </list>
-        </property>
     </bean>
 
     <!-- categorypicker -->

@@ -186,6 +186,16 @@ public class ContentTabItem extends PropertiesTabItem {
     }
 
     @Override
+    public void focusFirstField() {
+        if (nameText != null && nameText.isEnabled()) {
+            nameText.focus();
+            nameText.setCursorPos(nameText.getValue()!=null?nameText.getValue().length():0);
+        } else {
+            super.focusFirstField();
+        }
+    }
+
+    @Override
     public void attachPropertiesEditor(final NodeHolder engine, AsyncTabItem tab) {
         // handle jcr:title property
         if (!engine.isMultipleSelection()) {

@@ -234,8 +234,8 @@
         <property name="imageMagickPath" value="${imageMagickPath}"/>
     </bean>
 
-    <bean id="imageService" class="org.jahia.settings.ImageServiceFactoryBean" depends-on="ImageJImageService,ImageJAndJava2DImageService,ImageMagickImageService">
-        <constructor-arg value="${imageService}"/>
+    <bean id="imageService" class="org.springframework.beans.factory.config.BeanReferenceFactoryBean" depends-on="ImageJImageService,ImageJAndJava2DImageService,ImageMagickImageService">
+        <property name="targetBeanName" value="#{jahiaProperties['imageService'].trim()}"/>
     </bean>
 
     <bean id="visibilityService" class="org.jahia.services.visibility.VisibilityService" factory-method="getInstance">

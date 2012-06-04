@@ -16,7 +16,7 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             log.info("Role already has the permission")
         }
 
-        if (RBACUtils.grantPermissionToRole(RBACUtils.getOrCreatePermission("/permissions/editMode/actions", session).getPath(), "editor", session)) {
+        if (RBACUtils.grantPermissionToRole(RBACUtils.getOrCreatePermission("/permissions/editMode/editModeActions", session).getPath(), "editor", session)) {
             doSave = true;
             log.info("Permission granted")
         } else {

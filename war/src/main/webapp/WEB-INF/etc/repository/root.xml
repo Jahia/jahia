@@ -188,9 +188,9 @@
                 <viewContributeModeTab jcr:primaryType="jnt:permission"/>
             </engineTabs>
             
-            <actions jcr:primaryType="jnt:permission">
+            <editModeActions jcr:primaryType="jnt:permission">
                 <createPageAction jcr:primaryType="jnt:permission"/>
-            </actions>
+            </editModeActions>
         </editMode>
 
         <contributeMode jcr:primaryType="jnt:permission">
@@ -269,7 +269,7 @@
 
         <editor jcr:primaryType="jnt:role" j:roleGroup="edit-role"
                 j:permissions="/permissions/repository-permissions/jcr:all_default
-                /permissions/editMode/actions
+                /permissions/editMode/editModeActions
                 /permissions/editMode/editModeAccess
                 /permissions/editMode/editSelector
                 /permissions/editMode/engineTabs/viewContentTab

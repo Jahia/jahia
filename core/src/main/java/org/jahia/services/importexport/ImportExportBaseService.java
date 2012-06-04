@@ -53,6 +53,7 @@ import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import org.jahia.utils.Url;
 import org.jahia.utils.zip.ZipInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -359,6 +360,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Set<JCRNodeWrapper> nodes = Collections.singleton(node);
         final HashSet<String> tti = new HashSet<String>();
         tti.add("jnt:templatesFolder");
+        tti.add("jnt:componentFolder");
         tti.add(Constants.JAHIANT_USER);
         exportNodesWithBinaries(session.getRootNode(), nodes, zout, tti,
                 externalReferences, params);
@@ -558,6 +560,67 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
 
         p.store(out, "");
+    }
+
+    public void importSiteZip(JCRNodeWrapper nodeWrapper) throws RepositoryException, IOException, JahiaException {
+        String uri = nodeWrapper.getPath();
+        Node contentNode = nodeWrapper.getNode(Constants.JCR_CONTENT);
+        ZipInputStream zis = new ZipInputStream(contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream());
+
+        importSiteZip(zis, uri, null);
+    }
+
+    public void importSiteZip(File file) throws RepositoryException, IOException, JahiaException {
+        ZipInputStream zis = new ZipInputStream(new FileInputStream(file));
+
+        importSiteZip(zis, null, file);
+    }
+
+    private void importSiteZip(ZipInputStream zis2, String uri, File fileImport) throws IOException, JahiaException {
+        ZipEntry z;
+        Properties infos = new Properties();
+        while ((z = zis2.getNextEntry()) != null) {
+            if ("site.properties".equals(z.getName())) {
+                infos.load(zis2);
+                zis2.closeEntry();
+
+                boolean siteKeyEx = sitesService.getSiteByKey((String) infos.get("sitekey")) != null || "".equals(
+                        infos.get("sitekey"));
+                String serverName = (String) infos.get("siteservername");
+                boolean serverNameEx = (sitesService.getSite(serverName) != null && !Url.isLocalhost(serverName)) || "".equals(serverName);
+
+                if (!siteKeyEx && !serverNameEx) {
+                    // site import
+                    String tpl = (String) infos.get("templatePackageName");
+                    if ("".equals(tpl)) {
+                        tpl = null;
+                    }
+                    try {
+                        Locale locale = null;
+                        if (infos.getProperty("defaultLanguage") != null) {
+                            locale = LanguageCodeConverters.languageCodeToLocale(infos.getProperty("defaultLanguage"));
+                        } else {
+                            for (Object obj : infos.keySet()) {
+                                String s = (String) obj;
+                                if (s.startsWith("language.") && s.endsWith(".rank")) {
+                                    String code = s.substring(s.indexOf('.') + 1, s.lastIndexOf('.'));
+                                    String rank = infos.getProperty(s);
+                                    if (rank.equals("1")) {
+                                        locale = LanguageCodeConverters.languageCodeToLocale(code);
+                                    }
+                                }
+                            }
+                        }
+                        sitesService.addSite(JCRSessionFactory.getInstance().getCurrentUser(), infos.getProperty("sitetitle"), infos.getProperty(
+                                "siteservername"), infos.getProperty("sitekey"), infos.getProperty(
+                                "description"), locale, tpl, fileImport != null ? "fileImport" : "importRepositoryFile", fileImport, uri, true,
+                                false, infos.getProperty("originatingJahiaRelease"));
+                    } catch (Exception e) {
+                        logger.error("Cannot create site " + infos.get("sitetitle"), e);
+                    }
+                }
+            }
+        }
     }
 
     public void importSiteZip(final File file, final JahiaSite site, final Map<Object, Object> infos) throws RepositoryException, IOException {

@@ -454,6 +454,7 @@ public class JobListPanel extends LayoutContainer {
     protected void showDeleteConfirmation(final boolean deleteAllCompleted) {
         final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
         final Dialog dialog = new Dialog();
+        dialog.setModal(true);
         dialog.setHeading(Messages.get("label.delete", "Delete"));
         dialog.setButtons(Dialog.YESNO);
         dialog.addText(deleteAllCompleted ? Messages.get("label.deleteCompletedJobs.confirm", "Do you really want to delete all completed jobs?") : Messages.get("label.delete.confirm", "Do you really want to delete the current selection?"));

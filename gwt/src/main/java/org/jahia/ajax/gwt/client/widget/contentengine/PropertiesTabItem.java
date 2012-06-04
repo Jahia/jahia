@@ -299,11 +299,21 @@ public class PropertiesTabItem extends EditEngineTabItem {
             }
 
             propertiesEditor.setVisible(true);
-
             tab.layout();
         }
     }
 
+
+    public void focusFirstField() {
+        if (propertiesEditor != null && propertiesEditor.getFields() !=null) {
+            for (Field f : propertiesEditor.getFields()) {
+                if (f instanceof PropertiesEditor.PropertyAdapterField && f.isEnabled() && f.isVisible()) {
+                    ((PropertiesEditor.PropertyAdapterField) f).getField().focus();
+                    break;
+                }
+            }
+        }
+    }
 
     /**
      * Warning: this current layout is a FitLayout. That means that if you overide this method in order to add other subelement, you have to use a wrapper.

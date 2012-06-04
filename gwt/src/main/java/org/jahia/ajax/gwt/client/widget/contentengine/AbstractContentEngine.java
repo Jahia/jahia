@@ -249,6 +249,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                     if (isNewPropertiesEditor) {
                         initDynamicListInitializers(engineTabItem);
                     }
+                    if (engineTabItem instanceof PropertiesTabItem) {
+                        ((PropertiesTabItem) engineTabItem).focusFirstField();
+                    }
                 }
             }
         }

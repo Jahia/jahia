@@ -149,6 +149,10 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable, NodeF
         return new ChangedPropertyFact(this,node.getProperty(propertyName));
     }
 
+    public long getNumberOfChildren() throws RepositoryException {
+        return node.getNodes().getSize();
+    }
+
     public void addType(String type, KnowledgeHelper drools) throws RepositoryException {
         if (node.isNodeType(type)) {
             return;

@@ -66,6 +66,9 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -175,18 +178,23 @@ final class JahiaTemplatesPackageHandler {
         }
 
         if (templatePackage.getInitialImports().isEmpty()) {
-            File[] files = file.listFiles((FilenameFilter) new WildcardFileFilter(new String[]{
-                    "import.xml", "import.zip", "import-*.xml", "import-*.zip", "importsite*.zip"}, IOCase.INSENSITIVE));
-            Arrays.sort(files);
+            List<File> files = Arrays.asList(file.listFiles((FilenameFilter) new WildcardFileFilter(new String[]{
+                    "import*.xml", "import*.zip"}, IOCase.INSENSITIVE)));
+            Comparator<File> c = new Comparator<File>() {
+                public int compare(File o1, File o2) {
+                    return StringUtils.substringBeforeLast(o1.getName(), ".").compareTo(StringUtils.substringBeforeLast(o2.getName(), "."));
+                }
+            };
+            Collections.sort(files, c);
             for (File importFile : files) {
                 templatePackage.addInitialImport(importFile.getName());
                 warnMetaInf("importFile.getName()", templatePackage.getRootFolder());
             }
             File metaInf = new File(file, "META-INF");
             if (metaInf.exists()) {
-                files = metaInf.listFiles((FilenameFilter) new WildcardFileFilter(new String[]{
-                        "import.xml", "import.zip", "import-*.xml", "import-*.zip", "importsite*.zip"}, IOCase.INSENSITIVE));
-                Arrays.sort(files);
+                files = Arrays.asList(metaInf.listFiles((FilenameFilter) new WildcardFileFilter(new String[]{
+                        "import*.xml", "import*.zip"}, IOCase.INSENSITIVE)));
+                Collections.sort(files, c);
                 for (File importFile : files) {
                     templatePackage.addInitialImport("META-INF/" + importFile.getName());
                 }

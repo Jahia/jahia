@@ -238,6 +238,22 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.jahia.server</groupId>
+                <artifactId>maven-jahia-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>package-importsite</id>
+                        <configuration>
+                            <src>${basedir}/src/main/importsite-systemsite</src>
+                            <archiveName>importsite-systemsite.zip</archiveName>
+                        </configuration>
+                        <goals>
+                            <goal>package-imports</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <profiles>
@@ -270,22 +286,6 @@
                                 <id>attach-descriptor</id>
                                 <goals>
                                     <goal>attach-descriptor</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.jahia.server</groupId>
-                        <artifactId>maven-jahia-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>package-importsite</id>
-                                <configuration>
-                                    <src>${basedir}/src/main/importsite-systemsite</src>
-                                    <archiveName>importsite-systemsite.zip</archiveName>
-                                </configuration>
-                                <goals>
-                                    <goal>package-imports</goal>
                                 </goals>
                             </execution>
                         </executions>

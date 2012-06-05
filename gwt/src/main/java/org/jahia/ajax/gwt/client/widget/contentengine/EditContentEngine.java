@@ -112,7 +112,7 @@ public class EditContentEngine extends AbstractContentEngine {
      */
     protected void initTabs() {
     	// container ID, concatenated to each tab's ID
-        tabs.setId("JahiaEditEngineTabs");
+        tabs.setId("JahiaGxtEditEngineTabs");
         for (GWTEngineTab tabConfig : config) {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
             if (tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), node)) {

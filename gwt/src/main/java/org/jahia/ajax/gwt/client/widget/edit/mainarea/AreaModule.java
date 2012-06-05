@@ -100,15 +100,20 @@ public class AreaModule extends SimpleModule {
 
         this.moduleType = moduleType;
         String headerText;
+        String areaTitle;
         if (path.contains("/")) {
-            headerText = Messages.get("label."+moduleType) + " : " + path.substring(path.lastIndexOf('/') + 1);
+            areaTitle = path.substring(path.lastIndexOf('/') + 1);
         } else {
-            headerText = Messages.get("label."+moduleType)+" : " + path;
+            areaTitle = path;
         }
+        headerText = Messages.get("label."+moduleType)+" : " + areaTitle;
+        head.setId("JahiaGxtArea__" + areaTitle);
+        
         head.setText(headerText);
 //        setBodyBorder(false);
         head.addStyleName("x-panel-header");
         head.addStyleName("x-panel-header-"+moduleType+"module");
+        
         html = new HTML(divElement.getInnerHTML());
         add(html);
     }

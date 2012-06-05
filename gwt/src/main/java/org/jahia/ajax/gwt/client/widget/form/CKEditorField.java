@@ -214,11 +214,6 @@ public class CKEditorField extends Field<String> {
     }
 
     @Override
-    protected void onFocus(ComponentEvent ce) {
-
-    }
-
-    @Override
     protected void onRender(Element target, int index) {
         final Component component = getComponent();
         if (!component.isRendered()) {
@@ -531,5 +526,10 @@ public class CKEditorField extends Field<String> {
 
     public static CKEditorField getInstance(String editorInstanceId) {
         return instances.get(editorInstanceId);
+    }
+
+    @Override
+    public void focus() {
+        ckeditor.focus();
     }
 }

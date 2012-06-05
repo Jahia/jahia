@@ -249,14 +249,25 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                     if (isNewPropertiesEditor) {
                         initDynamicListInitializers(engineTabItem);
                     }
-                    if (engineTabItem instanceof PropertiesTabItem) {
-                        ((PropertiesTabItem) engineTabItem).focusFirstField();
-                    }
+                }
+                focusFirstField();
+            }
+        }
+    }
+
+    protected void focusFirstField() {
+        TabItem currentTab = tabs.getSelectedItem();
+        if (currentTab != null) {
+            Object currentTabItem = currentTab.getData("item");
+            if (currentTabItem != null && currentTabItem instanceof EditEngineTabItem) {
+                EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTabItem;
+                if (engineTabItem instanceof PropertiesTabItem) {
+                    ((PropertiesTabItem) engineTabItem).focusFirstField();
                 }
             }
         }
     }
-    
+
     protected void initDynamicListInitializers(EditEngineTabItem tabItem) {
         if (initializersValues != null && tabItem instanceof PropertiesTabItem) {
             PropertiesEditor pe = ((PropertiesTabItem) tabItem).getPropertiesEditor();

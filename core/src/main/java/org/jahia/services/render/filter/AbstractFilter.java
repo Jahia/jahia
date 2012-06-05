@@ -184,7 +184,7 @@ public abstract class AbstractFilter implements RenderFilter {
                 mode = "contribute"; // Legacy compatibility
             }
 
-            return renderContext.getMode().equals(mode);
+            return renderContext.getMode() != null && renderContext.getMode().equals(mode);
         }
 
         private String mode;

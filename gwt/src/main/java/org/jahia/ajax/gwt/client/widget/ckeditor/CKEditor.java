@@ -60,6 +60,7 @@ public class CKEditor extends Component {
     private CKEditorConfig config;
     private boolean isLoaded;
 	private CKEditorField field;
+    private boolean focus=false;
 
     public CKEditor(CKEditorConfig config, CKEditorField field) {
     	super();
@@ -91,6 +92,9 @@ public class CKEditor extends Component {
                 initEditor();
                 isLoaded = true;
                 field.afterCKEditorInstanceReady();
+                if (focus) {
+                    focusCK();
+                }
 			}
 		});
 
@@ -169,6 +173,22 @@ public class CKEditor extends Component {
       }-*/;
 
 
+    @Override
+    public void focus() {
+        focus=true;
+    }
+
+    public String getInstanceId() {
+        return instanceId;
+    }
+
+    public void checkWCAGCompliance(String editorId) {
+        CKEditorField fld = CKEditorField.getInstance(editorId);
+        if (fld != null) {
+            fld.checkWCAGCompliance();
+        }
+    }
+
     /**
      * init editior
      *
@@ -207,15 +227,12 @@ public class CKEditor extends Component {
         return $wnd.CKEDITOR.instances[this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId].checkDirty();
       }-*/;
 
+    private native void focusCK()/*-{
+        var instance = $wnd.CKEDITOR.instances[this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId];
+        if (instance)  {
+            instance.config.startupFocus = true;
 
-    public void checkWCAGCompliance(String editorId) {
-    	CKEditorField fld = CKEditorField.getInstance(editorId);
-    	if (fld != null) {
-    		fld.checkWCAGCompliance();
-    	}
-    }
+        }
+    }-*/;
 
-	public String getInstanceId() {
-    	return instanceId;
-    }
 }

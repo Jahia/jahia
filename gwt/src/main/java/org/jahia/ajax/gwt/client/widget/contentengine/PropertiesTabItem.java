@@ -48,6 +48,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -308,7 +309,12 @@ public class PropertiesTabItem extends EditEngineTabItem {
         if (propertiesEditor != null && propertiesEditor.getFields() !=null) {
             for (Field f : propertiesEditor.getFields()) {
                 if (f instanceof PropertiesEditor.PropertyAdapterField && f.isEnabled() && f.isVisible()) {
-                    ((PropertiesEditor.PropertyAdapterField) f).getField().focus();
+                    Field field = ((PropertiesEditor.PropertyAdapterField) f).getField();
+                    field.focus();
+                    if (field instanceof TextField) {
+                            TextField textField = (TextField) field;
+                            textField.setCursorPos(textField.getValue()!=null?textField.getValue().toString().length():0);
+                    }
                     break;
                 }
             }

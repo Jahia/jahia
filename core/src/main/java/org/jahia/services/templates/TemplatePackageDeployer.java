@@ -795,6 +795,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     private Map<String, JahiaTemplatesPackage> getOrderedPackages(LinkedHashSet<JahiaTemplatesPackage> remaining) {
         LinkedHashMap<String, JahiaTemplatesPackage> toDeploy = new LinkedHashMap<String, JahiaTemplatesPackage>();
         Set<String> folderNames = new HashSet<String>();
+        boolean systemTemplatesDeployed = false;
         while (!remaining.isEmpty()) {
             LinkedHashSet<JahiaTemplatesPackage> newRemaining = new LinkedHashSet<JahiaTemplatesPackage>();
             for (JahiaTemplatesPackage pack : remaining) {
@@ -803,9 +804,22 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 allDeployed.addAll(toDeploy.keySet());
                 allDeployed.addAll(folderNames);
 
-                if (pack.getDepends().isEmpty() || allDeployed.containsAll(pack.getDepends())) {
+                boolean requireSystemTemplates = false;
+                if (!systemTemplatesDeployed && !pack.getFileName().equals("templates-system")) {
+                    for (String s : pack.getInitialImports()) {
+                        if (s.startsWith("META-INF/importsite") && !systemTemplatesDeployed) {
+                            requireSystemTemplates = true;
+                            break;
+                        }
+                    }
+                }
+
+                if ((pack.getDepends().isEmpty() || allDeployed.containsAll(pack.getDepends())) && !requireSystemTemplates) {
                     toDeploy.put(pack.getName(), pack);
                     folderNames.add(pack.getRootFolder());
+                    if (pack.getFileName().equals("templates-system")) {
+                        systemTemplatesDeployed = true;
+                    }
                 } else {
                     newRemaining.add(pack);
                 }

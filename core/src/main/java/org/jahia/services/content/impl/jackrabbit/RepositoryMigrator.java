@@ -86,7 +86,7 @@ public class RepositoryMigrator {
         try {
             is = new BufferedInputStream(new FileInputStream(scriptFile));
             for (String line : IOUtils.readLines(is)) {
-                if (StringUtils.isBlank(line) || line.trim().startsWith("#")) {
+                if (StringUtils.isBlank(line) || line.trim().startsWith("#") || line.trim().startsWith("--")) {
                     continue;
                 }
                 line = line.trim();

@@ -107,11 +107,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     private static final Pattern P_REGEXP = Pattern.compile("_p_");
 
     public static final Set<String> notCacheableFragment = new HashSet<String>(512);
-
+    private static final Set<String> guestMainResourceRequestParameters = new LinkedHashSet<String>();
     static private ThreadLocal<Set<CountDownLatch>> processingLatches = new ThreadLocal<Set<CountDownLatch>>();
     static private ThreadLocal<String> acquiredSemaphore = new ThreadLocal<String>();
     static private ThreadLocal<LinkedList<String>> userKeys = new ThreadLocal<LinkedList<String>>();
-    static private ThreadLocal<Long> guestMinExpiration = new ThreadLocal<Long>();
     private static long lastThreadDumpTime = 0L;
     private Byte[] threadDumpCheckLock = new Byte[0];
     public static final String FORM_TOKEN = "form_token";
@@ -162,6 +161,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 l.add(renderContext.getMainResource().getNode().getCanonicalPath());
             }
         }
+        final boolean isGuest = JahiaUserManagerRoutingService.isGuest(renderContext.getUser()) && storeAggregatedPageForGuest;
+        if(isGuest && renderContext.getMainResource() == resource) {
+            chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", guestMainResourceRequestParameters.toArray(
+                    new String[guestMainResourceRequestParameters.size()]));
+        }
+
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
 
         if (debugEnabled) {
@@ -277,6 +282,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             }
         }
         resource.getDependencies().add(resource.getNode().getCanonicalPath());
+        final boolean isGuest = JahiaUserManagerRoutingService.isGuest(renderContext.getUser()) && storeAggregatedPageForGuest;
+        if(isGuest && renderContext.getMainResource() == resource) {
+            chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", guestMainResourceRequestParameters.toArray(new String[guestMainResourceRequestParameters.size()]));
+        }
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
         @SuppressWarnings("unchecked")
         Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
@@ -314,7 +323,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             logger.debug("Generating content for node: {}", perUserKey);
         }
         try {
-            final boolean isGuest = JahiaUserManagerRoutingService.isGuest(renderContext.getUser()) && storeAggregatedPageForGuest;
             if (cacheable) {
                 int nbOfDependencies = resource.getDependencies().size();
                 addReferencesToDependencies(resource);
@@ -340,10 +348,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         scriptProperties != null && defaultScriptProperties!=null ? (scriptProperties.getProperty("cache.expiration")!=null?scriptProperties.getProperty("cache.expiration"):defaultScriptProperties.getProperty("cache.expiration", "-1")) : "-1");
                 if(isGuest && renderContext.getMainResource() == resource) {
                     if(expiration!=-1l) {
-                        expiration = Math.min(guestMinExpiration.get(),expiration);
+                        expiration = Math.min((Long)renderContext.getRequest().getAttribute("org.jahia.cache.guestExpiration"),expiration);
                     }
                     else {
-                        expiration = guestMinExpiration.get();
+                        expiration = (Long)renderContext.getRequest().getAttribute("org.jahia.cache.guestExpiration");
                     }
                 }
                 final Cache dependenciesCache = cacheProvider.getDependenciesCache();
@@ -476,11 +484,16 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                                 cachedElement);
                     }
                 } else {
-                    Long guestExpir = guestMinExpiration.get();
+                    Long guestExpir = (Long)renderContext.getRequest().getAttribute("org.jahia.cache.guestExpiration");
                     if(guestExpir==null || guestExpir==-1l){
-                        guestMinExpiration.set(expiration);
+                        renderContext.getRequest().setAttribute("org.jahia.cache.guestExpiration",expiration);
                     } else if (expiration!=-1l) {
-                        guestMinExpiration.set(Math.min(guestExpir,expiration));
+                        renderContext.getRequest().setAttribute("org.jahia.cache.guestExpiration", Math.min(guestExpir,
+                                expiration));
+                    }
+                    String[] params = (String[]) renderContext.getRequest().getAttribute("cache.requestParameters");
+                    if (params != null && params.length > 0) {
+                        Collections.addAll(guestMainResourceRequestParameters, params);
                     }
                 }
             }
@@ -874,9 +887,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     latches.remove(countDownLatchMap.remove(perUserKey));
                 }
             }
-        }
-        if(JahiaUserManagerRoutingService.isGuest(renderContext.getUser()) && resource==renderContext.getMainResource()) {
-            guestMinExpiration.set(-1l);
         }
     }
 

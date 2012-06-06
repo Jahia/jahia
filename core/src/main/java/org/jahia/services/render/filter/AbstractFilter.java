@@ -738,11 +738,11 @@ public abstract class AbstractFilter implements RenderFilter {
         if (templateTypes.contains(",")) {
             AnyOfCondition condition = new AnyOfCondition();
             for (String templateType : Patterns.COMMA.split(templateTypes)) {
-                condition.add(new TemplateTypeCondition(templateType.trim()));
+                condition.add(new TemplateTypeCondition(templateType.trim(),true));
             }
             addCondition(condition);
         } else {
-            addCondition(new TemplateTypeCondition(templateTypes));
+            addCondition(new TemplateTypeCondition(templateTypes,true));
         }
     }
 
@@ -935,11 +935,11 @@ public abstract class AbstractFilter implements RenderFilter {
         if (templateTypes.contains(",")) {
             AnyOfCondition anyOf = new AnyOfCondition();
             for (String templateType : Patterns.COMMA.split(templateTypes)) {
-                anyOf.add(new TemplateTypeCondition(templateType.trim()));
+                anyOf.add(new TemplateTypeCondition(templateType.trim(),true));
             }
             condition = anyOf;
         } else {
-            condition = new TemplateTypeCondition(templateTypes);
+            condition = new TemplateTypeCondition(templateTypes,true);
         }
         addCondition(new NotCondition(condition));
     }

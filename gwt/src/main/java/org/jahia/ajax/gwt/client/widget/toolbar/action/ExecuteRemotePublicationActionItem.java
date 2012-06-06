@@ -45,13 +45,18 @@ import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 
 /**
  * Shows the distant publication action confirmation dialog (with optional start date field) and executes the action.
@@ -61,10 +66,14 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 public class ExecuteRemotePublicationActionItem extends ExecuteActionItem {
 
     private static final long serialVersionUID = 1008895688179692790L;
+    
+    private boolean showOptions = true;
 
     private String titleKey;
 
-    private transient CalendarField calendarField;
+    private transient CalendarField calendarFieldStart;
+
+    private transient CalendarField calendarFieldEnd;
 
     private transient Window wnd;
 
@@ -75,7 +84,8 @@ public class ExecuteRemotePublicationActionItem extends ExecuteActionItem {
             return;
         }
         wnd = new Window();
-        wnd.setSize(500, 150);
+        wnd.setWidth(550);
+        wnd.setHeight(showOptions ? 220 : 120);
         wnd.setModal(true);
         wnd.setBlinkModal(true);
         wnd.setHeading(titleKey != null ? Messages.get(titleKey) : Messages.get("label.information",
@@ -83,6 +93,7 @@ public class ExecuteRemotePublicationActionItem extends ExecuteActionItem {
         wnd.setLayout(new FitLayout());
 
         final FormPanel form = new FormPanel();
+        form.setHeight(showOptions ? 180 : 80);
         form.setHeaderVisible(false);
         form.setFrame(false);
         form.setLabelWidth(250);
@@ -93,12 +104,42 @@ public class ExecuteRemotePublicationActionItem extends ExecuteActionItem {
                 : "You are about to execute action " + action + ". Do you want to continue?"));
 
         form.add(vpLabels);
+        
+        if (showOptions) {
+            FieldSet fieldSet = new FieldSet();
+            fieldSet.setHeading(Messages.get("label.options", "Options"));
+            FormLayout layout = new FormLayout();
+            layout.setLabelWidth(250);
+            fieldSet.setLayout(layout);
+            fieldSet.setCollapsible(true);
+            fieldSet.collapse();
+            fieldSet.addListener(Events.Expand, new Listener<ComponentEvent>() {
+                public void handleEvent(ComponentEvent componentEvent) {
+                    wnd.setHeight(wnd.getHeight() + 70);
+                }
+            });
+            fieldSet.addListener(Events.Collapse, new Listener<ComponentEvent>() {
+                public void handleEvent(ComponentEvent componentEvent) {
+                    wnd.setHeight(wnd.getHeight() - 70);
+                }
+            });
 
-        calendarField = new CalendarField("yyyy-MM-dd HH:mm", true, false, "startDate", false, null);
-        calendarField.setFieldLabel( Messages.get("label.remotePublication.startDate",
-                        "Time of the first replication (optional)"));
-        calendarField.setAllowBlank(true);
-        form.add(calendarField);
+            calendarFieldStart = new CalendarField("yyyy-MM-dd HH:mm", true, false, "startDate",
+                    false, null);
+            calendarFieldStart.setFieldLabel(Messages.get("label.remotePublication.startDate",
+                    "Start time of the replication (optional)"));
+            calendarFieldStart.setAllowBlank(true);
+            fieldSet.add(calendarFieldStart);
+
+            calendarFieldEnd = new CalendarField("yyyy-MM-dd HH:mm", true, false, "endDate", false,
+                    null);
+            calendarFieldEnd.setFieldLabel(Messages.get("label.remotePublication.endDate",
+                    "End time of the replication (optional)"));
+            calendarFieldEnd.setAllowBlank(true);
+            fieldSet.add(calendarFieldEnd);
+
+            form.add(fieldSet);
+        }
 
         Button btnSubmit = new Button(Messages.get("label.yes", "Yes"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
@@ -118,14 +159,27 @@ public class ExecuteRemotePublicationActionItem extends ExecuteActionItem {
         form.setButtonAlign(HorizontalAlignment.CENTER);
 
         wnd.add(form);
+        wnd.layout();
 
         wnd.show();
     }
 
     @Override
     protected String getRequestData() {
-        return calendarField.getValue() != null ? ("start=" + calendarField.getValue()
-                .getTime()) : null;
+        if (!showOptions) {
+            return null;
+        }
+        StringBuffer data = new StringBuffer();
+        if (calendarFieldStart.getValue() != null) {
+            data.append("start=").append(calendarFieldStart.getValue().getTime());
+        }
+        if (calendarFieldEnd.getValue() != null) {
+            if (data.length() > 0) {
+                data.append("&");
+            }
+            data.append("end=").append(calendarFieldEnd.getValue().getTime());
+        }
+        return data.length() > 0 ? data.toString() : null;
     }
 
     @Override
@@ -138,5 +192,9 @@ public class ExecuteRemotePublicationActionItem extends ExecuteActionItem {
 
     public void setTitleKey(String titleKey) {
         this.titleKey = titleKey;
+    }
+
+    public void setShowOptions(boolean showOptions) {
+        this.showOptions = showOptions;
     }
 }

@@ -92,6 +92,15 @@
         <property name="applyOnConfigurations" value="module,wrappedcontent" />
     </bean>
 
+    <bean class="org.jahia.services.channels.filters.ChannelPreviewFilter">
+        <property name="description" value="Adds channel device image decoration"/>
+        <property name="renderService" ref="RenderService" />
+        <property name="priority" value="2"/>
+        <property name="applyOnTemplateTypes" value="html,html-.+" />
+        <property name="applyOnModes" value="preview" />
+        <property name="applyOnConfigurations" value="page"/>
+    </bean>
+
     <bean class="org.jahia.services.render.filter.MarkedForDeletionFilter">
         <property name="priority" value="10" />
         <property name="description" value="Filters out content in preview mode that is marked for deletion"/>
@@ -130,7 +139,8 @@
 				<value type="java.lang.String">l</value>
 				<value type="java.lang.String">alias</value>
                 <value type="java.lang.String">channel</value>
-			</list>
+                <value type="java.lang.String">variant</value>
+            </list>
 		</property>
 		<property name="traverser"
 			ref="org.jahia.services.render.filter.URLTraverser" />

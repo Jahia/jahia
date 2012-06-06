@@ -186,10 +186,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
         orientationLabel.setLabelFor("previewChannelOrientation");
         orientationLabel.hide();
         final ListStore<GWTJahiaBasicDataBean> orientations = new ListStore<GWTJahiaBasicDataBean>();
-        orientations.add(new GWTJahiaBasicDataBean("portrait", "Portrait"));
-        orientations.add(new GWTJahiaBasicDataBean("landscape", "Landscape"));
         final ComboBox<GWTJahiaBasicDataBean> orientationCombo = new ComboBox<GWTJahiaBasicDataBean>();
-        orientationCombo.setEmptyText("Orientation...");
         orientationCombo.setDisplayField("displayName");
         orientationCombo.setName("previewChannelOrientation");
         orientationCombo.setStore(orientations);
@@ -218,15 +215,22 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaChannel> event) {
                 GWTJahiaChannel selectedChannel = event.getSelectedItem();
-                if (selectedChannel.getCapabilities().get("dual_orientation") != null) {
-                    Boolean supportsDualOrientations = new Boolean(selectedChannel.getCapabilities().get("dual_orientation"));
-                    if (supportsDualOrientations.booleanValue()) {
-                        orientationLabel.show();
-                        orientationCombo.show();
-                    } else {
-                        orientationLabel.hide();
-                        orientationCombo.hide();
+                Map<String,String> capabilities = selectedChannel.getCapabilities();
+                if (capabilities != null && capabilities.containsKey("variants")) {
+                    String[] variants = capabilities.get("variants").split(",");
+                    String[] displayNames = null;
+                    if (capabilities.containsKey("variants-displayNames")) {
+                        displayNames = capabilities.get("variants-displayNames").split(",");
                     }
+                    ListStore<GWTJahiaBasicDataBean> orientations = orientationCombo.getStore();
+                    orientations.removeAll();
+                    for (int i = 0; i < variants.length; i++) {
+                        String displayName = (displayNames == null ? variants[i] : displayNames[i]);
+                        orientations.add(new GWTJahiaBasicDataBean(variants[i], displayName));
+                    }
+                    orientationCombo.setValue(orientations.getAt(0));
+                    orientationLabel.show();
+                    orientationCombo.show();
                 } else {
                     orientationLabel.hide();
                     orientationCombo.hide();
@@ -267,27 +271,23 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
                             GWTJahiaChannel channel = combo.getValue();
                             String windowFeatures = null;
                             if ((channel != null) && (!"default".equals(channel.getValue()))) {
-                                channelIdentifier = "channel=" + channel.getValue();
+                                urlParameters.add("channel=" + channel.getValue());
                                 Map<String,String> capabilities = channel.getCapabilities();
-                                if ((capabilities != null) &&
-                                        (capabilities.get("resolution_height") != null) &&
-                                        (capabilities.get("resolution_width") != null)) {
-                                    String windowWidth = capabilities.get("resolution_width");
-                                    String windowHeight = capabilities.get("resolution_height");
-                                    if (capabilities.get("dual_orientation") != null) {
-                                        Boolean supportsDualOrientations = new Boolean(capabilities.get("dual_orientation"));
-                                        if (supportsDualOrientations.booleanValue()) {
-                                            if ("landscape".equals(orientationCombo.getValue().getValue())) {
-                                                // only in this case we will switch the two values
-                                                windowWidth = capabilities.get("resolution_height");
-                                                windowHeight = capabilities.get("resolution_width");
-                                            }
+                                if (capabilities != null && capabilities.containsKey("variants")) {
+                                    int variantIndex = 0;
+                                    String[] variants = capabilities.get("variants").split(",");
+                                    String variant = orientationCombo.getValue().getValue();
+                                    urlParameters.add("variant=" + variant);
+                                    for (int i = 0; i < variants.length; i++) {
+                                        if (variants[i].equals(variant)) {
+                                            variantIndex = i;
+                                            break;
                                         }
                                     }
-                                    windowFeatures = "resizable=no,status=no,menubar=no,toolbar=no,width=" + windowWidth +
-                                            ",height=" + windowHeight;
+                                    int[] imageSize = channel.getVariantDecoratorImageSize(variantIndex);
+                                    windowFeatures = "resizable=no,status=no,menubar=no,toolbar=no,width=" + imageSize[0] +
+                                            ",height=" + imageSize[1];
                                 }
-                                urlParameters.add(channelIdentifier);
                             }
                             String urlParams="";
                             for (int i=0; i < urlParameters.size(); i++) {

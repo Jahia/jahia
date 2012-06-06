@@ -161,7 +161,7 @@
 		<property name="priority" value="22" />
         <property name="description" value=" Looks for all registered wrappers in the resource and calls the associated scripts around the output. Output is made available to the wrapper script through the 'wrappedContent' request attribute."/>
 		<property name="applyOnConfigurations" value="wrappedcontent,page,gwt" />
-		<property name="applyOnTemplateTypes" value="html,edit,html-iphone,html-ipad" />
+		<property name="applyOnTemplateTypes" value="html,html-.+" />
 	</bean>
 
 	<bean class="org.jahia.services.render.filter.TemplatePermissionCheckFilter">

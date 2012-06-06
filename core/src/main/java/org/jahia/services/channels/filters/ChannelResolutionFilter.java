@@ -110,27 +110,7 @@ public class ChannelResolutionFilter extends AbstractFilter {
     private void setChannel(RenderContext context, Resource resource, Channel newChannel) throws AccessDeniedException {
         context.setChannel(newChannel);
         String resourceTemplate = resource.getTemplate();
-        if (!resourceTemplate.contains("-")) {
-            String resolvedTemplate = resource.getResolvedTemplate();
-            // First we resolve the regular template
-            Template originalTemplate = service.resolveTemplate(resource, context);
-            // now let's try to see if a template exists for the current channel and resource
-            if (originalTemplate != null) {
-                Template lastTemplate = originalTemplate;
-                while (lastTemplate.getNext() != null) {
-                    lastTemplate = lastTemplate.getNext();
-                }
-                resource.setTemplate(lastTemplate.getName() + "-" + newChannel.getIdentifier());
-                Template newChannelTemplate = service.resolveTemplate(resource, context);
-                if (newChannelTemplate==null) {
-                    if ("default".equals(resourceTemplate)) {
-                        resource.setTemplate(null);
-                    } else {
-                        resource.setTemplate(resourceTemplate);
-                    }
-                }
-            }
-        }
+
         if (!resource.getTemplateType().contains("-")) {
             String baseType = resource.getTemplateType();
             resource.setTemplateType(baseType+"-"+newChannel.getIdentifier());

@@ -103,6 +103,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     public static Pattern perUserPattern = Pattern.compile(PER_USER);
     private static final Pattern depAclsPattern = Pattern.compile("_depacl_");
     private static final Pattern aclsPathPattern = Pattern.compile("_p_");
+    public static Pattern mainResourceAclPattern = Pattern.compile("mraclmr");
 
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
         this.groupManagerService = groupManagerService;
@@ -241,19 +242,25 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             final Set<String> aclsKeys = new LinkedHashSet<String>();
             aclsKeys.add(getAclsKeyPart(renderContext, checkRootPath, nodePath, appendNodePath, null));
             final Set<String> dependencies = resource.getDependencies();
-            for (final String dependency : dependencies) {
-                if(!dependency.equals(nodePath)) {
-                    if(!JCRContentUtils.isNotJcrUuid(dependency)){
-                        final boolean finalCheckRootPath = checkRootPath;
-                        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                final JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(dependency);
-                                aclsKeys.add(getAclsKeyPart(renderContext, finalCheckRootPath, nodeByIdentifier.getPath(), true, null));
-                                return null;
-                            }
-                        });
-                    } else if(dependency.contains("/")) {
-                        aclsKeys.add(getAclsKeyPart(renderContext, checkRootPath, dependency, true, null));
+
+            if (Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.mainResource"))) {
+                aclsKeys.add("mraclmr");
+            } else {
+                for (final String dependency : dependencies) {
+                    if (!dependency.equals(nodePath)) {
+                        if (!JCRContentUtils.isNotJcrUuid(dependency)) {
+                            final boolean finalCheckRootPath = checkRootPath;
+                            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                    final JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(dependency);
+                                    aclsKeys.add(getAclsKeyPart(renderContext, finalCheckRootPath,
+                                            nodeByIdentifier.getPath(), true, null));
+                                    return null;
+                                }
+                            });
+                        } else if (dependency.contains("/")) {
+                            aclsKeys.add(getAclsKeyPart(renderContext, checkRootPath, dependency, true, null));
+                        }
                     }
                 }
             }
@@ -283,12 +290,21 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             StringBuilder stringBuilder = new StringBuilder();
             for (String aclKey : aclKeys) {
                 if (aclKey.contains("/")) {
-                    String path;
-                    path = "/" + StringUtils.substringAfter(aclsPathPattern.split(aclKey)[1], "/");
+                    String path = "";
+                    final String[] aclRolePaths = aclsPathPattern.split(aclKey);
+                    if (aclRolePaths.length == 2) {
+                        path = "/" + StringUtils.substringAfter(aclRolePaths[1], "/");
+                        if (stringBuilder.length() > 0) {
+                            stringBuilder.append("_depacl_");
+                        }
+                        stringBuilder.append(getAclKeyPartForNode(renderContext, checkRootPath, path, true, principal,
+                                userName));
+                    }
+                }else if ("mraclmr".equals(aclKey)) {
                     if (stringBuilder.length() > 0) {
                         stringBuilder.append("_depacl_");
                     }
-                    stringBuilder.append(getAclKeyPartForNode(renderContext, checkRootPath, path, true, principal,
+                    stringBuilder.append(getAclKeyPartForNode(renderContext, checkRootPath, renderContext.getMainResource().getNode().getCanonicalPath(), true, principal,
                             userName));
                 }
             }
@@ -302,7 +318,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                                         boolean appendNodePath, JahiaUser principal, String userName)
             throws RepositoryException {
         Element element = hasUserAcl(userName);
-        if (element!=null) {
+        if (element != null) {
             Map<String, String> map = (Map<String, String>) element.getValue();
             String path = nodePath;
             while ((!path.equals("")) && !map.containsKey(path) && !aclGroups.containsKey(path)) {
@@ -314,92 +330,90 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 }
             }
             if (map.containsKey(path)) {
-                return (String) map.get(path)+"_p_"+checkRootPath + (appendNodePath ? nodePath : "");
+                return (String) map.get(path) + "_p_" + checkRootPath + (appendNodePath ? nodePath : "");
             }
         }
-        synchronized (aclGroups) {
-            StringBuilder b = new StringBuilder();
-            String path = nodePath;
-            Map<String, Set<JahiaGroup>> allAclsGroups = getAllAclsGroups();
-            if (checkRootPath) {
-                while (!allAclsGroups.containsKey(path) && !path.equals("")) {
-                    path = StringUtils.substringBeforeLast(path, "/");
-                }
-                if (path.equals("")) {
-                    path = "/";
-                }
+        StringBuilder b = new StringBuilder();
+        String path = nodePath;
+        Map<String, Set<JahiaGroup>> allAclsGroups = getAllAclsGroups();
+        if (checkRootPath) {
+            while (!allAclsGroups.containsKey(path) && !path.equals("")) {
+                path = StringUtils.substringBeforeLast(path, "/");
             }
+            if (path.equals("")) {
+                path = "/";
+            }
+        }
 
-            Set<JahiaGroup> aclGroups = new HashSet<JahiaGroup>();
+        Set<JahiaGroup> aclGroups = new HashSet<JahiaGroup>();
 
-            String fakePath = path;
-            while (!fakePath.equals("")) {
-                while (!allAclsGroups.containsKey(fakePath) && !fakePath.equals("")) {
-                    fakePath = StringUtils.substringBeforeLast(fakePath, "/");
-                }
-                if (fakePath.equals("")) {
-                    fakePath = "/";
-                }
-                aclGroups.addAll(allAclsGroups.get(fakePath));
+        String fakePath = path;
+        while (!fakePath.equals("")) {
+            while (!allAclsGroups.containsKey(fakePath) && !fakePath.equals("")) {
                 fakePath = StringUtils.substringBeforeLast(fakePath, "/");
-                if (fakePath.equals("")) {
-                    aclGroups.addAll(allAclsGroups.get("/"));
             }
+            if (fakePath.equals("")) {
+                fakePath = "/";
             }
+            aclGroups.addAll(allAclsGroups.get(fakePath));
+            fakePath = StringUtils.substringBeforeLast(fakePath, "/");
+            if (fakePath.equals("")) {
+                aclGroups.addAll(allAclsGroups.get("/"));
+            }
+        }
 
-            for (JahiaGroup g : aclGroups) {
-                if (g != null && g.isMember(principal)) {
-                    if (b.length() > 0) {
-                        b.append("|");
-                    }
-                    b.append(g.getGroupname());
-                }
-            }
-
-            if (b.toString().equals(JahiaGroupManagerService.GUEST_GROUPNAME) && !userName.equals(
-                    JahiaUserManagerService.GUEST_USERNAME)) {
-                b.append("|" + JahiaGroupManagerService.USERS_GROUPNAME);
-            }
-            String userKey = b.toString();
-            if ("".equals(userKey.trim()) && userName.equals(JahiaUserManagerService.GUEST_USERNAME)) {
-                userKey = userName;
-            }
-            if ("".equals(userKey.trim())) {
-                throw new RepositoryException(
-                        "Userkey is empty while generating cache key for path " + path + " and nodepath = " + nodePath +
-                        " checkrootpath = " + checkRootPath);
-            }
-            Resource mainResource = renderContext.getMainResource();
-            Set<String> roles;
-            if(mainResource!=null) {
-                roles = ((JahiaAccessManager) ((JCRNodeWrapper) mainResource.getNode()).getAccessControlManager()).getRoles(
-                        path);
-            } else {
-                JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path);
-                roles = ((JahiaAccessManager) ((JCRNodeWrapper) node).getAccessControlManager()).getRoles(path);
-            }
-
-            b = new StringBuilder();
-            for (String g : roles) {
+        for (JahiaGroup g : aclGroups) {
+            if (g != null && g.isMember(principal)) {
                 if (b.length() > 0) {
                     b.append("|");
                 }
-                b.append(g);
+                b.append(g.getGroupname());
             }
-            Map<String, String> map;
-            element = (Element) cache.get(userName);
-            if (element == null) {
-                map = new LinkedHashMap<String, String>();
-            } else {
-                map = (Map<String, String>) element.getValue();
-            }
-            String value = userKey + "_r_" + b.toString();
-            map.put(path, value);
-            element = new Element(userName, map);
-            element.setEternal(true);
-            cache.put(element);
-            return value + "_p_" + checkRootPath + (appendNodePath ? nodePath : "");
         }
+
+        if (b.toString().equals(JahiaGroupManagerService.GUEST_GROUPNAME) && !userName.equals(
+                JahiaUserManagerService.GUEST_USERNAME)) {
+            b.append("|" + JahiaGroupManagerService.USERS_GROUPNAME);
+        }
+        String userKey = b.toString();
+        if ("".equals(userKey.trim()) && userName.equals(JahiaUserManagerService.GUEST_USERNAME)) {
+            userKey = userName;
+        }
+        if ("".equals(userKey.trim())) {
+            throw new RepositoryException(
+                    "Userkey is empty while generating cache key for path " + path + " and nodepath = " + nodePath +
+                    " checkrootpath = " + checkRootPath);
+        }
+        Resource mainResource = renderContext.getMainResource();
+        Set<String> roles;
+        if (mainResource != null) {
+            roles = ((JahiaAccessManager) ((JCRNodeWrapper) mainResource.getNode()).getAccessControlManager()).getRoles(
+                    path);
+        } else {
+            JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path);
+            roles = ((JahiaAccessManager) ((JCRNodeWrapper) node).getAccessControlManager()).getRoles(path);
+        }
+
+        b = new StringBuilder();
+        for (String g : roles) {
+            if (b.length() > 0) {
+                b.append("|");
+            }
+            b.append(g);
+        }
+        Map<String, String> map;
+        element = (Element) cache.get(userName);
+        if (element == null) {
+            map = new LinkedHashMap<String, String>();
+        } else {
+            map = (Map<String, String>) element.getValue();
+        }
+        String value = userKey + "_r_" + b.toString();
+        map.put(path, value);
+        element = new Element(userName, map);
+        element.setEternal(true);
+        cache.put(element);
+        return value + "_p_" + checkRootPath + (appendNodePath ? nodePath : "");
     }
 
     private Element hasUserAcl(final String userName) throws RepositoryException {
@@ -407,9 +421,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         if (element == null) {
             initCache(userName);
             element = cache.get(userName);
-            synchronized (aclGroups) {
-                getAllAclsGroups();
-        }
+            getAllAclsGroups();
         }
         return element;
     }
@@ -475,7 +487,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         if (!aclGroups.isEmpty()) {
             return;
         }
-//        synchronized (aclGroups) {
+        synchronized (aclGroups) {
         if (aclGroups.isEmpty()) {
             template.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -523,7 +535,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 }
             });
         }
-//        }
+        }
     }
 
     public String getPath(String key) throws ParseException {

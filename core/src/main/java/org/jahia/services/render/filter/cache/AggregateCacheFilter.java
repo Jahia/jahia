@@ -178,6 +178,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             cacheable = false;
         }
         String perUserKey = replacePlaceholdersInCacheKey(renderContext, key);
+        perUserKey = replaceAclPlaceHolder(renderContext, key, perUserKey);
         LinkedList<String> userKeysLinkedList = userKeys.get();
         if (userKeysLinkedList == null) {
             userKeysLinkedList = new LinkedList<String>();
@@ -308,6 +309,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             key = cacheProvider.getKeyGenerator().replaceField(key, "acls", "dynamicRolesAcls");
             chain.pushAttribute(renderContext.getRequest(), "cache.dynamicRolesAcls", Boolean.FALSE);
         }*/
+        perUserKey = replaceAclPlaceHolder(renderContext, key, perUserKey);
         if (debugEnabled) {
             logger.debug("Generating content for node: {}", perUserKey);
         }
@@ -317,8 +319,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 int nbOfDependencies = resource.getDependencies().size();
                 addReferencesToDependencies(resource);
                 if(resource.getDependencies().size()> nbOfDependencies) {
-                    String newKey = cacheProvider.getKeyGenerator().generate(resource, renderContext);
-                    perUserKey = replacePlaceholdersInCacheKey(renderContext, newKey);
+                    key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
+                    perUserKey = replacePlaceholdersInCacheKey(renderContext, key);
+                    perUserKey = replaceAclPlaceHolder(renderContext, key, perUserKey);
                 }
                 String perUser = (String) renderContext.getRequest().getAttribute("perUser");
                 if (perUser != null && "true".equals(perUser.toLowerCase())) {
@@ -495,6 +498,20 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             cache.put(new Element(perUserKey, null));
             throw e;
         }
+    }
+
+    private String replaceAclPlaceHolder(RenderContext renderContext, String key, String perUserKey)
+            throws ParseException, RepositoryException {
+        if (!key.contains(DefaultCacheKeyGenerator.PER_USER)) {
+            Map<String, String> keyAttrbs = cacheProvider.getKeyGenerator().parse(key);
+            String[] split = P_REGEXP.split(keyAttrbs.get("acls"));
+            String nodePath = "/" + StringUtils.substringAfter(split[1], "/");
+            String acls = ((DefaultCacheKeyGenerator) cacheProvider.getKeyGenerator()).getAclsKeyPart(renderContext,
+                    Boolean.parseBoolean(StringUtils.substringBefore(split[1], "/")), nodePath, true, keyAttrbs.get(
+                    "acls"));
+            perUserKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "acls", acls);
+        }
+        return perUserKey;
     }
 
     private String replacePlaceholdersInCacheKey(RenderContext renderContext, String key) {

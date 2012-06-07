@@ -16,7 +16,8 @@
     <c:set var="user" value="${currentNode.properties['jcr:createdBy'].string}"/>
 </c:if>
 
-<div class="taskComment">
+<c:set value="${currentNode.properties['state'].string eq 'finished'}" var="finished"/>
+<div class="taskComment${finished ? ' taskCommentResolved' : ''}">
         <jcr:jqom var="result"
                   statement="select * from [jnt:user] as u where localname(u)='${functions:sqlencode(user)}'"/>
         <c:forEach items="${result.nodes}" var="usernode">
@@ -32,7 +33,6 @@
     ${currentNode.properties['description'].string}
 </p>
 
-<c:set value="${currentNode.properties['state'].string eq 'finished'}" var="finished"/>
 <c:set value="${jcr:hasPermission(currentNode,'jcr:modifyProperties')}" var="canchange"/>
 <p class="taskaction" >Resolved : <input class="completeTaskAction" taskPath="<c:url value="${url.base}${currentNode.path}"/>" type="checkbox" ${finished ? ' checked="true"':''} ${finished or not canchange?' disabled="true"':''} onchange="completeTask($(this))"></p>
 

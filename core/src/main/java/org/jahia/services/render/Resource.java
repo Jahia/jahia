@@ -175,7 +175,7 @@ public class Resource {
 
     public String getTemplate() {
         if (StringUtils.isEmpty(template)) {
-            template = "default";
+            return "default";
         }
         return template;
     }

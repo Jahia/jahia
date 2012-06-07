@@ -110,8 +110,9 @@ public class ChannelResolutionFilter extends AbstractFilter {
 
     private void setChannel(RenderContext context, Resource resource, Channel newChannel) throws AccessDeniedException {
         context.setChannel(newChannel);
-        String resourceTemplate = resource.getTemplate();
-
+        if (newChannel.getIdentifier().equals("default")) {
+            return;
+        }
         if (!resource.getTemplateType().contains("-")) {
             String baseType = resource.getTemplateType();
             resource.setTemplateType(baseType+"-"+newChannel.getIdentifier());

@@ -108,6 +108,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
     public static final Set<String> notCacheableFragment = new HashSet<String>(512);
     private static final Set<String> guestMainResourceRequestParameters = new LinkedHashSet<String>();
+    public static final Set<String> guestnotCacheablePages = new HashSet<String>(512);
     static private ThreadLocal<Set<CountDownLatch>> processingLatches = new ThreadLocal<Set<CountDownLatch>>();
     static private ThreadLocal<String> acquiredSemaphore = new ThreadLocal<String>();
     static private ThreadLocal<LinkedList<String>> userKeys = new ThreadLocal<LinkedList<String>>();
@@ -161,7 +162,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 l.add(renderContext.getMainResource().getNode().getCanonicalPath());
             }
         }
-        final boolean isGuest = JahiaUserManagerRoutingService.isGuest(renderContext.getUser()) && storeAggregatedPageForGuest;
+        final boolean isGuest = JahiaUserManagerRoutingService.isGuest(renderContext.getUser()) && storeAggregatedPageForGuest && !guestnotCacheablePages.contains(renderContext.getMainResource().getNode().getPath());
         if(isGuest && renderContext.getMainResource() == resource) {
             chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", guestMainResourceRequestParameters.toArray(
                     new String[guestMainResourceRequestParameters.size()]));
@@ -282,8 +283,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             }
         }
         resource.getDependencies().add(resource.getNode().getCanonicalPath());
-        final boolean isGuest = JahiaUserManagerRoutingService.isGuest(renderContext.getUser()) && storeAggregatedPageForGuest;
-        if(isGuest && renderContext.getMainResource() == resource) {
+        final boolean isGuest = JahiaUserManagerRoutingService.isGuest(renderContext.getUser()) && storeAggregatedPageForGuest && !guestnotCacheablePages.contains(renderContext.getMainResource().getNode().getPath());
+        if(isGuest && renderContext.getMainResource() == resource && !guestnotCacheablePages.contains(renderContext.getMainResource().getNode().getPath())) {
             chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", guestMainResourceRequestParameters.toArray(new String[guestMainResourceRequestParameters.size()]));
         }
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
@@ -336,7 +337,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     // This content must be cached by user as it is defined in the options panel
                     // The value of the node property from the mixin jmix:cache are only checked in the TemplatesAttributesFilter
                     // So we need to recalculate the key as we were not aware that this content needed to be cached by user
-                    // We need to store content with the previously calculate dcache to avoid lock up.
+                    // We need to store content with the previously calculated cache to avoid lock up.
                     if(!isGuest) {
                         cache.put(new Element(perUserKey, null));
                     }
@@ -346,6 +347,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
                 Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(
                         scriptProperties != null && defaultScriptProperties!=null ? (scriptProperties.getProperty("cache.expiration")!=null?scriptProperties.getProperty("cache.expiration"):defaultScriptProperties.getProperty("cache.expiration", "-1")) : "-1");
+                if(isGuest && expiration==0l) {
+                    guestnotCacheablePages.add(renderContext.getMainResource().getNode().getPath());
+                }
                 if(isGuest && renderContext.getMainResource() == resource) {
                     if(expiration!=-1l) {
                         expiration = Math.min((Long)renderContext.getRequest().getAttribute("org.jahia.cache.guestExpiration"),expiration);

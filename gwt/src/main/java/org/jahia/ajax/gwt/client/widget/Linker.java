@@ -62,6 +62,7 @@ public interface Linker {
     public final static int REFRESH_OPEN_FOLDER = 64;
     public final static int REFRESH_MANAGER = 128;
     public final static int REFRESH_DEFINITIONS = 256;
+    public final static int REFRESH_CHANNELS = 512;
 
     public void loaded();
 

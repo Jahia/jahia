@@ -20,7 +20,7 @@
 <template:addResources type="javascript" resources="jquery.fancybox.js"/>
 <template:addResources type="javascript" resources="jquery.autocomplete.js"/>
 <template:addResources type="css" resources="jquery.autocomplete.css"/>
-
+<template:addResources type="css" resources="timepicker.css"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 <c:set var="taskType" value="${currentNode.properties['taskType'].string}"/>
 

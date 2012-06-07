@@ -87,7 +87,6 @@ public class EditLinker implements Linker {
     private int mainAreaVScrollPosition;
     private String locale;
     private GWTJahiaChannel activeChannel;
-    private boolean channelDisplayActivated = false;
     private String activeChannelVariant = null;
 
     public EditLinker(MainModule mainModule, SidePanel sidePanel, ActionToolbarLayoutContainer toolbar,
@@ -309,14 +308,6 @@ public class EditLinker implements Linker {
         return null;
     }
 
-    public boolean isChannelDisplayActivated() {
-        return channelDisplayActivated;
-    }
-
-    public void setChannelDisplayActivated(boolean channelDisplayActivated) {
-        this.channelDisplayActivated = channelDisplayActivated;
-    }
-
     public String getActiveChannelVariant() {
         return activeChannelVariant;
     }
@@ -324,4 +315,21 @@ public class EditLinker implements Linker {
     public void setActiveChannelVariant(String activeChannelVariant) {
         this.activeChannelVariant = activeChannelVariant;
     }
+
+    public int getActiveChannelVariantIndex() {
+        int result = 0;
+        if (getActiveChannel() != null && getActiveChannelVariant() != null) {
+            String[] variantValueArray = getActiveChannel().getCapability("variants").split(",");
+            for (int i = 0; i < variantValueArray.length; i++) {
+                if (variantValueArray[i].equals(getActiveChannelVariant())) {
+                    // we found the active variant !
+                    result = i;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+
 }

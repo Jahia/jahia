@@ -40,8 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.ScrollListener;
+import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -64,9 +63,6 @@ public class Hover {
 
     private Map<Module, Box> boxes = new HashMap<Module, Box>();
 
-//    private LayoutContainer bg;
-
-
     public static Hover getInstance() {
         if (instance == null) {
             instance = new Hover();
@@ -88,17 +84,6 @@ public class Hover {
 
     public void setMainModule(final MainModule m) {
         this.mainModule = m;
-        m.getContainer().addScrollListener(new ScrollListener() {
-            @Override
-            public void widgetScrolled(ComponentEvent ce) {
-                for (Map.Entry<Module, Box> boxEntry : boxes.entrySet()) {
-                    LayoutContainer ctn = boxEntry.getKey().getContainer();
-                    boxEntry.getValue().setPosition(ctn.getAbsoluteLeft(), ctn.getAbsoluteTop(),ctn.getWidth(), ctn.getHeight());
-                    super.widgetScrolled(ce);
-                }
-            }
-        });
-
     }
 
     private boolean hidden = true;
@@ -110,15 +95,6 @@ public class Hover {
 
         LayoutContainer c = module.getContainer();
         Box b = new Box(c);
-//        if (module instanceof ListModule) {
-//
-//            String name = module.getPath();
-//            if (name.contains("/")) {
-//                b.setName(Messages.getResource("label.content")+" : "+ name.substring(name.lastIndexOf('/')+1));
-//            } else {
-//                b.setName(Messages.getResource("label.content")+" : "+ name);
-//            }
-//        }
 
         int max = module.getDepth();
         for (Map.Entry<Module, Box> moduleBoxEntry : boxes.entrySet()) {
@@ -206,11 +182,6 @@ public class Hover {
         private BoxComponent left;
         private BoxComponent right;
 
-//        private Text text;
-
-//        private String name;
-//        private boolean inside = false;
-
         Box(LayoutContainer ctn) {
             this.ctn = ctn;
 
@@ -235,47 +206,19 @@ public class Hover {
             right.setStyleName("hover-right-"+key);
         }
 
-//        public void setName(String name) {
-//            this.name = name;
-//
-//            text = new Text(name);
-//            text.setStyleName("x-panel-header x-panel-header-listmodule");
-//            text.setStyleAttribute("z-index","991");
-//            text.sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT);
-//
-//            Listener<ComponentEvent> hoverListener = new Listener<ComponentEvent>() {
-//                public void handleEvent(ComponentEvent ce) {
-//                    inside = true;
-//                }
-//            };
-//            Listener<ComponentEvent> outListener = new Listener<ComponentEvent>() {
-//                public void handleEvent(ComponentEvent ce) {
-//                    inside = false;
-//                }
-//            };
-//            text.addListener(Events.OnClick, new Listener<ComponentEvent>() {
-//                public void handleEvent(ComponentEvent componentEvent) {
-//                    Window.alert("click");
-//                }
-//            });
-//            text.addListener(Events.OnMouseOver, hoverListener);
-//            text.addListener(Events.OnMouseOut, outListener);
-//        }
-
         public void setPosition(int x, int y, int w, int h) {
-            top.setPosition(x, y);
-            top.setSize(w, 0);
-            bottom.setPosition(x, y + h);
-            bottom.setSize(w, 0);
-            left.setPosition(x, y);
-            left.setSize(0, h);
-            right.setPosition(x + w, y);
-            right.setSize(0, h);
-//            if (text != null) {
-//                text.setPosition(x, y - 5);
-//                text.setSize(w, 20);
-//            }
+            Point position = mainModule.getContainer().getPosition(false);
+            int offy = position.y - mainModule.getContainer().getVScrollPosition();
+            int offx = position.x - mainModule.getContainer().getHScrollPosition();
 
+            top.setPosition(x - offx, y - offy);
+            top.setSize(w, 0);
+            bottom.setPosition(x - offx, y + h - offy);
+            bottom.setSize(w, 0);
+            left.setPosition(x - offx, y - offy);
+            left.setSize(0, h);
+            right.setPosition(x + w - offx, y - offy);
+            right.setSize(0, h);
         }
 
         public void show() {
@@ -285,21 +228,20 @@ public class Hover {
             hidden = false;
 
             RootPanel.get().add(top);
+            mainModule.getContainer().el().appendChild(top.getElement());
             top.el().makePositionable(true);
 
-            RootPanel.get().add(bottom);
-            bottom.el().makePositionable(true);
-
             RootPanel.get().add(left);
+            mainModule.getContainer().el().appendChild(left.getElement());
             left.el().makePositionable(true);
 
             RootPanel.get().add(right);
+            mainModule.getContainer().el().appendChild(right.getElement());
             right.el().makePositionable(true);
 
-//            if (text != null) {
-//                RootPanel.get().add(text);
-//                text.el().makePositionable(true);
-//            }
+            RootPanel.get().add(bottom);
+            mainModule.getContainer().el().appendChild(bottom.getElement());
+            bottom.el().makePositionable(true);
 
             onShow();
 
@@ -317,9 +259,6 @@ public class Hover {
             RootPanel.get().remove(bottom);
             RootPanel.get().remove(left);
             RootPanel.get().remove(right);
-//            if (text != null) {
-//                RootPanel.get().remove(text);
-//            }
         }
 
 

@@ -2,9 +2,13 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -28,27 +32,38 @@ public class ChannelDisplayActionItem extends BaseActionItem {
      * init main component
      */
     private void initMainComponent() {
-
-        CheckBox checkBox = new CheckBox();
-        checkBox.setBoxLabel(Messages.get("label.displayChannels", "Display channels"));
-        checkBox.addListener(Events.Change, new Listener<FieldEvent>() {
-
-            public void handleEvent(FieldEvent fe) {
+        final ComboBox<GWTJahiaChannel> comboBox = new ComboBox<GWTJahiaChannel>();
+        comboBox.setDisplayField("display");
+        comboBox.setTriggerAction(ComboBox.TriggerAction.ALL);
+        comboBox.setStore(new ListStore<GWTJahiaChannel>());
+        comboBox.getStore().add(JahiaGWTParameters.getChannels());
+        comboBox.setTemplate(getChannelTemplate());
+        comboBox.setItemSelector("div.thumb-wrap");
+        comboBox.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaChannel>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaChannel> event) {
+                GWTJahiaChannel selectedChannel = event.getSelectedItem();
                 if (linker instanceof EditLinker) {
-                    ((EditLinker) linker).getMainModule().setChannelDisplay((Boolean)fe.getValue());
+                    ((EditLinker)linker).getMainModule().switchChannel(selectedChannel);
                 }
             }
         });
 
-        // Channel selector
         horizontalPanel = new HorizontalPanel();
-        horizontalPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
-        horizontalPanel.add(checkBox);
-
+        horizontalPanel.add(comboBox);
         setEnabled(true);
 
     }
 
+    private native String getChannelTemplate() /*-{
+     return ['<tpl for=".">',
+     '<div class="thumb-wrap" id="{display}">',
+     '<div class="thumb"><img src="{image}" title="{display}" width="64" height="64" style="margin-left:auto;margin-right:auto;display:block"></div>',
+     '<div class="x-editable" style="text-align:center">{display}</div></div>',
+     '</tpl>',
+     '<div class="x-clear"></div>'].join("");
+
+     }-*/;
 
     @Override
     public Component getCustomItem() {

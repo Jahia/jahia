@@ -69,6 +69,7 @@ public class ChannelResolutionFilter extends AbstractFilter {
         Cookie[] cookies = context.getRequest().getCookies();
 
         if (context.getChannel() != null) {
+            setChannel(context,resource,context.getChannel());
             return null;
         }
 

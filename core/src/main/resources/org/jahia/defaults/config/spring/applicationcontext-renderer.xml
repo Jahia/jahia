@@ -82,7 +82,6 @@
 	<bean class="org.jahia.services.channels.filters.ChannelResolutionFilter">
 		<property name="priority" value="6" />
         <property name="description" value="Set channel depending of the user agent"/>
-		<property name="applyOnConfigurations" value="page,wrappedcontent" />
         <property name="channelService" ref="ChannelService" />
 	</bean>
 

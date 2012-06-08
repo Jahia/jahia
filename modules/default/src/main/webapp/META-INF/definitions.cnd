@@ -18,7 +18,7 @@
 [jmix:listOrdered] > jmix:templateMixin mixin
  extends = jmix:list,jnt:area
  itemtype = layout
-- j:className (string, choicelist[resourceBundle]) indexed=no < '','simple','filesList'
+- j:className (string) indexed=no
 
 [jmix:columns] > jmix:templateMixin mixin
  extends = jmix:list, jnt:area

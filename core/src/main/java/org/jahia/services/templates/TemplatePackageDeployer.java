@@ -795,7 +795,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     private Map<String, JahiaTemplatesPackage> getOrderedPackages(LinkedHashSet<JahiaTemplatesPackage> remaining) {
         LinkedHashMap<String, JahiaTemplatesPackage> toDeploy = new LinkedHashMap<String, JahiaTemplatesPackage>();
         Set<String> folderNames = new HashSet<String>();
-        boolean systemTemplatesDeployed = false;
+        boolean systemTemplatesDeployed = templatePackageRegistry.containsFileName("templates-system");
         while (!remaining.isEmpty()) {
             LinkedHashSet<JahiaTemplatesPackage> newRemaining = new LinkedHashSet<JahiaTemplatesPackage>();
             for (JahiaTemplatesPackage pack : remaining) {

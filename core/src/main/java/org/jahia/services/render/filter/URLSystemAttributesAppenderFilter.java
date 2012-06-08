@@ -45,6 +45,7 @@ import org.jahia.services.render.Resource;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author rincevent
@@ -54,15 +55,20 @@ import java.util.List;
 public class URLSystemAttributesAppenderFilter extends AbstractFilter {
     private List<String> attributesToKeep;
     private HtmlTagAttributeTraverser traverser;
+    private boolean alwaysIncludeAllParams=false;
 
     public void setAttributesToKeep(List<String> attributesToKeep) {
         this.attributesToKeep = attributesToKeep;
     }
 
+    public void setAlwaysIncludeAllParams(boolean alwaysIncludeAllParams) {
+        this.alwaysIncludeAllParams = alwaysIncludeAllParams;
+    }
+
     @Override
     public String execute(String previousOut, final RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
-        if (!Collections.disjoint(attributesToKeep, renderContext.getRequest().getParameterMap().keySet())) {
+        if (alwaysIncludeAllParams || !Collections.disjoint(attributesToKeep, renderContext.getRequest().getParameterMap().keySet())) {
             previousOut = traverser.traverse(previousOut, renderContext, resource,
                     new HtmlTagAttributeTraverser.HtmlTagAttributeVisitor() {
                         public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
@@ -73,7 +79,22 @@ public class URLSystemAttributesAppenderFilter extends AbstractFilter {
                                 separateChar = "?";
                             }
                             for (String s : attributesToKeep) {
-                                if (!value.contains(s + "=") && value.startsWith(
+                                if(s.contains("*")){
+                                    if(value.startsWith(renderContext.getURLGenerator().getContext()) &&
+                                       !value.matches(s.replace("*",".*="))){
+                                        final Map<String,Object> parameterMap = (Map<String, Object>) renderContext.getRequest().getParameterMap();
+                                        for (String paramName : parameterMap.keySet()) {
+                                            if(paramName.matches(s.replace("*",".*"))) {
+                                                String parameter = renderContext.getRequest().getParameter(paramName);
+                                                if (parameter != null) {
+                                                    value += separateChar + paramName + "=" + parameter;
+                                                    separateChar = "&";
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (!value.contains(s + "=") && value.startsWith(
                                         renderContext.getURLGenerator().getContext())) {
                                     String parameter = renderContext.getRequest().getParameter(s);
                                     if (parameter != null) {

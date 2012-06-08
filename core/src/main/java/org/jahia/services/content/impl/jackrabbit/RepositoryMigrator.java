@@ -40,14 +40,11 @@
 package org.jahia.services.content.impl.jackrabbit;
 
 import java.io.*;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.jcr.RepositoryException;
-import javax.sql.DataSource;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -57,9 +54,9 @@ import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.RepositoryCopier;
 import org.apache.jackrabbit.core.RepositoryImpl;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.DatabaseUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -153,8 +150,6 @@ public class RepositoryMigrator {
     }
 
     private File configFile;
-
-    private DataSource datasource;
 
     private boolean keepBackup;
 
@@ -278,57 +273,18 @@ public class RepositoryMigrator {
 
         List<String> statements = getScriptStatements(scriptFile);
 
-        executeStatements(statements);
+        DatabaseUtils.executeStatements(statements);
 
         logger.info(description);
     }
 
     private void dbInitSettings() throws IOException, JDOMException {
-        datasource = (DataSource) SpringContextSingleton.getBean("dataSource");
         settingsBean = SettingsBean.getInstance();
 
         scriptsDir = new File(settingsBean.getJahiaDatabaseScriptsPath(), "sql/migration/"
                 + getDbType());
 
         logger.info("Migration SQL scripts will be looked up in folder {}", scriptsDir);
-    }
-
-    private void executeStatements(List<String> statements) throws SQLException {
-        Connection conn = null;
-        Statement stmt = null;
-        try {
-            conn = datasource.getConnection();
-            stmt = conn.createStatement();
-            for (String query : statements) {
-                try {
-                    stmt.execute(query);
-                } catch (SQLException e) {
-                    String lcLine = query.toLowerCase();
-                    if (!lcLine.contains("drop table") && !lcLine.contains("drop trigger")
-                            && !lcLine.contains("drop sequence")) {
-                        logger.error(
-                                "Unable to execute query: " + query + ". Cause: " + e.getMessage(),
-                                e);
-                        throw e;
-                    }
-                }
-            }
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (Exception e) {
-                    // ignore
-                }
-            }
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (Exception e) {
-                    // ignore
-                }
-            }
-        }
     }
 
     private String getDbType() throws JDOMException, IOException {

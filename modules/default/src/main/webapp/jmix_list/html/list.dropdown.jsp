@@ -17,12 +17,18 @@
 <template:include view="hidden.header"/>
 
 <ul class="dropdown ${currentNode.properties['j:className'].string}">
-    <a href="#">${currentNode.displayableName}</a>
-    <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
-        <li><template:module node="${subchild}" view="${moduleMap.subNodesView}" editable="${moduleMap.editable}"/></li>
-    </c:forEach>
-    <c:if test="${moduleMap.editable and renderContext.editMode}">
-        <li><template:module path="*"/></li>
-    </c:if>
+    <li>
+        <a href="#">${currentNode.displayableName}</a>
+        <ul>
+            <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}"
+                       end="${moduleMap.end}">
+                <li><template:module node="${subchild}" view="${moduleMap.subNodesView}"
+                                     editable="${moduleMap.editable}"/></li>
+            </c:forEach>
+            <c:if test="${moduleMap.editable and renderContext.editMode}">
+                <li><template:module path="*"/></li>
+            </c:if>
+        </ul>
+    </li>
 </ul>
 <template:include view="hidden.footer"/>

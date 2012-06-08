@@ -27,10 +27,21 @@
                 <c:param name="${facetParamVarName}" value="${functions:encodeUrlParam(facetParam)}"/>
             </c:if>
         </c:url>
-        <li>
-            <facet:facetValueLabel currentActiveFacet="${facet}" currentActiveFacetValue="${facetValue}" facetValueLabels="${facetValueLabels}"/>
-            &nbsp;<a href="${facetUrl}"><fmt:message key="facets.remove"/></a>
-        </li>
+        <c:choose>
+            <%--hack to avoid url rewriting from filters--%>
+            <c:when test="${empty facetParam}">
+                <li>
+                    <facet:facetValueLabel currentActiveFacet="${facet}" currentActiveFacetValue="${facetValue}" facetValueLabels="${facetValueLabels}"/>
+                    &nbsp;<a onclick="window.location='${facetUrl}'"><fmt:message key="facets.remove"/></a>
+                </li>
+            </c:when>
+            <c:otherwise>
+                <li>
+                    <facet:facetValueLabel currentActiveFacet="${facet}" currentActiveFacetValue="${facetValue}" facetValueLabels="${facetValueLabels}"/>
+                    &nbsp;<a href="${facetUrl}"><fmt:message key="facets.remove"/></a>
+                </li>
+            </c:otherwise>
+        </c:choose>
     </c:forEach>
     <c:if test="${activeFacetStat.last}">
     </c:if>

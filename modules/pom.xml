@@ -436,6 +436,7 @@
             </activation>
             <modules>
                 <module>assets</module>
+                <module>channels</module>
                 <module>default</module>
                 <module>facets</module>
                 <module>grid</module>
@@ -456,6 +457,7 @@
             </activation>
             <modules>
                 <module>assets</module>
+                <module>channels</module>
                 <module>contentRetrieval</module>
                 <module>default</module>
                 <module>facets</module>

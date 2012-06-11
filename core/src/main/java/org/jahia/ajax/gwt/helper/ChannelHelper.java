@@ -19,14 +19,15 @@ public class ChannelHelper {
     }
 
     public List<GWTJahiaChannel> getChannels() {
-        List<Channel> channels = channelService.getAllChannels();
+        List<String> channels = channelService.getAllChannels();
         List<GWTJahiaChannel> gwtJahiaChannels = new ArrayList<GWTJahiaChannel>();
-        for (Channel channel : channels) {
+        for (String channelName : channels) {
+            Channel channel = channelService.getChannel(channelName);
             String imageURL = channel.getCapability("device-image");
             if (imageURL == null) {
                 imageURL = "/engines/images/edit/devices/default-small.png";
             }
-            GWTJahiaChannel gwtJahiaChannel = new GWTJahiaChannel(channel.getIdentifier(), channel.getDisplayName(), imageURL, channel.getCapabilities());
+            GWTJahiaChannel gwtJahiaChannel = new GWTJahiaChannel(channel.getIdentifier(), channel.getCapability("display-name"), imageURL, channel.getCapabilities());
             gwtJahiaChannels.add(gwtJahiaChannel);
         }
         return gwtJahiaChannels;

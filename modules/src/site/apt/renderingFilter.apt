@@ -32,7 +32,7 @@ Rendering filters
 	<bean class="org.jahia.services.render.filter.StaticAssetsFilter">
 		<property name="priority" value="0" />
 		<property name="applyOnConfigurations" value="page" />
-		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
+		<property name="applyOnTemplateTypes" value="html,edit,html-.*" />
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
         <property name="ajaxTemplate" value="/modules/assets/WEB-INF/scripts/ajaxResources.groovy"/>
         <property name="template" value="/modules/assets/WEB-INF/scripts/resources.groovy"/>

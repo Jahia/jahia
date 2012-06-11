@@ -27,10 +27,11 @@ public class ChannelChoiceListInitializer implements ChoiceListInitializer {
                                                      Map<String, Object> context) {
         List<ChoiceListValue> choiceListValues = new ArrayList<ChoiceListValue>();
 
-        List<Channel> channels;
+        List<String> channels;
         channels = channelService.getAllChannels();
-        for (Channel channel : channels) {
-            choiceListValues.add(new ChoiceListValue(channel.getDisplayName(), channel.getIdentifier()));
+        for (String channelName : channels) {
+            Channel channel = channelService.getChannel(channelName);
+            choiceListValues.add(new ChoiceListValue(channel.getCapability("display-name"), channel.getIdentifier()));
         }
         return choiceListValues;
     }

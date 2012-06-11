@@ -80,7 +80,7 @@ public class ChannelResolutionFilter extends AbstractFilter {
                 setChannel(context, resource, resolvedChannel);
                 return null;
             } else {
-                context.setChannel(Channel.DEFAULT_CHANNEL);
+                context.setChannel(channelService.getChannel(Channel.DEFAULT_CHANNEL));
             }
         }
 
@@ -102,7 +102,7 @@ public class ChannelResolutionFilter extends AbstractFilter {
             if (resolvedChannel != null) {
                 setChannel(context, resource, resolvedChannel);
             } else {
-                context.setChannel(Channel.DEFAULT_CHANNEL);
+                context.setChannel(channelService.getChannel(Channel.DEFAULT_CHANNEL));
             }
         }
         return null;
@@ -110,12 +110,12 @@ public class ChannelResolutionFilter extends AbstractFilter {
 
     private void setChannel(RenderContext context, Resource resource, Channel newChannel) throws AccessDeniedException {
         context.setChannel(newChannel);
-        if (newChannel.getIdentifier().equals("default")) {
+        if (!newChannel.hasCapabilityValue("template-type-mapping")) {
             return;
         }
         if (!resource.getTemplateType().contains("-")) {
             String baseType = resource.getTemplateType();
-            resource.setTemplateType(baseType+"-"+newChannel.getIdentifier());
+            resource.setTemplateType(baseType+"-"+newChannel.getCapability("template-type-mapping"));
         }
     }
 

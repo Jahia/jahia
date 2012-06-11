@@ -1,15 +1,16 @@
 package org.jahia.services.channels;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * The channel service is the main service to access, retrieve, query, list and maybe even update channels
  */
-public class ChannelService implements ChannelProvider {
+public class ChannelService {
 
     List<ChannelProvider> channelProviders = new ArrayList<ChannelProvider>();
+
+    private Map<String,Channel> channelMap = new HashMap<String,Channel>();
 
     private static volatile ChannelService instance = new ChannelService();
 
@@ -18,29 +19,34 @@ public class ChannelService implements ChannelProvider {
     }
 
     public Channel getChannel(String identifier) {
-        Channel result = null;
+        Channel result = channelMap.get(identifier);
+        if (result != null) {
+            return result;
+        }
+        result = new Channel(identifier);
         for (ChannelProvider provider : channelProviders) {
-            result = provider.getChannel(identifier);
-            if (result != null) {
-                return result;
+            Map<String, String> channelCapabilities = provider.getChannelCapabilities(identifier);
+            if (channelCapabilities != null) {
+                result.getCapabilities().putAll(channelCapabilities);
             }
         }
+        channelMap.put(identifier, result);
         return result;
     }
 
     public Channel resolveChannel(HttpServletRequest request) {
-        Channel result = null;
+        String result = null;
         for (ChannelProvider provider : channelProviders) {
             result = provider.resolveChannel(request);
             if (result != null) {
-                return result;
+                return getChannel(result);
             }
         }
-        return result;
+        return null;
     }
 
-    public List<Channel> getAllChannels() {
-        List<Channel> result = new ArrayList<Channel>();
+    public List<String> getAllChannels() {
+        List<String> result = new ArrayList<String>();
         for (ChannelProvider provider : channelProviders) {
             result.addAll(provider.getAllChannels());
         }
@@ -51,5 +57,11 @@ public class ChannelService implements ChannelProvider {
         if (!channelProviders.contains(provider)) {
             channelProviders.add(provider);
         }
+        Collections.sort(channelProviders, new Comparator<ChannelProvider>() {
+            public int compare(ChannelProvider o1, ChannelProvider o2) {
+                int i = o1.getPriority() - o2.getPriority();
+                return i != 0 ? i : 1;
+            }
+        });
     }
 }

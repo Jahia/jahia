@@ -17,8 +17,10 @@ public class UserAgentChannelProvider implements ChannelProvider, InitializingBe
 
     public static final String USER_AGENT_HEADER_NAME = "user-agent";
 
-    Map<String,Channel> channels = new HashMap<String,Channel>();
-    Map<Pattern,Channel> userAgentChannels = new HashMap<Pattern,Channel>();
+    private int priority;
+
+    private Map<String,Channel> channels = new HashMap<String,Channel>();
+    private Map<Pattern,Channel> userAgentChannels = new HashMap<Pattern,Channel>();
 
     // the following list is used for Spring initialization, it is not used later on.
     List<Channel> channelList = new ArrayList<Channel>();
@@ -27,9 +29,14 @@ public class UserAgentChannelProvider implements ChannelProvider, InitializingBe
 
     public void setChannelList(List<Channel> channelList) {
         this.channelList = channelList;
-        if (!channelList.contains(Channel.DEFAULT_CHANNEL)) {
-            channelList.add(0, Channel.DEFAULT_CHANNEL);
-        }
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     public void setChannelService(ChannelService channelService) {
@@ -47,26 +54,29 @@ public class UserAgentChannelProvider implements ChannelProvider, InitializingBe
         channelService.addProvider(this);
     }
 
-    public Channel getChannel(String identifier) {
-        return channels.get(identifier);
-    }
-
-    public Channel resolveChannel(HttpServletRequest request) {
-        String userAgent = request.getHeader(USER_AGENT_HEADER_NAME);
-        if (userAgent != null) {
-        for (Map.Entry<Pattern,Channel> entry : userAgentChannels.entrySet()) {
-            Pattern curPattern = entry.getKey();
-            Matcher m = curPattern.matcher(userAgent);
-            if (m.matches()) {
-                return entry.getValue();
-            }
-        }
+    public Map<String, String> getChannelCapabilities(String identifier) {
+        if (channels.containsKey(identifier)) {
+            return channels.get(identifier).getCapabilities();
         }
         return null;
     }
 
-    public List<Channel> getAllChannels() {
-        return Collections.unmodifiableList(new ArrayList<Channel>(channelList));
+    public String resolveChannel(HttpServletRequest request) {
+        String userAgent = request.getHeader(USER_AGENT_HEADER_NAME);
+        if (userAgent != null) {
+            for (Map.Entry<Pattern,Channel> entry : userAgentChannels.entrySet()) {
+                Pattern curPattern = entry.getKey();
+                Matcher m = curPattern.matcher(userAgent);
+                if (m.matches()) {
+                    return entry.getValue().getIdentifier();
+                }
+            }
+        }
+        return null;
+    }
+
+    public List<String> getAllChannels() {
+        return Collections.unmodifiableList(new ArrayList<String>(channels.keySet()));
     }
 
 }

@@ -10,20 +10,14 @@ import java.util.Map;
  */
 public class Channel implements Serializable {
 
-    public static final Channel DEFAULT_CHANNEL = new Channel("default", "Default");
+    public static final String DEFAULT_CHANNEL = "generic";
 
     private String identifier;
-    private String displayName;
 
     Map<String,String> capabilities = new HashMap<String,String>();
 
     public Channel(String identifier) {
         this.identifier = identifier;
-    }
-
-    public Channel(String identifier, String displayName) {
-        this.identifier = identifier;
-        this.displayName = displayName;
     }
 
     public String getIdentifier() {
@@ -32,14 +26,6 @@ public class Channel implements Serializable {
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     public Map<String, String> getCapabilities() {

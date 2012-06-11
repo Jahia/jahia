@@ -65,7 +65,7 @@ public class ChannelPreviewFilter extends AbstractFilter {
         }
 
         Channel channel = renderContext.getChannel();
-        if (Channel.DEFAULT_CHANNEL.equals(channel)) {
+        if (Channel.DEFAULT_CHANNEL.equals(channel.getIdentifier())) {
             return previousOut;
         }
 

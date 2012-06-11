@@ -5,14 +5,16 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean id="UserAgentChannelProvider" class="org.jahia.services.channels.providers.UserAgentChannelProvider">
+        <property name="priority" value="10"/>
         <property name="channelService" ref="ChannelService"/>
         <property name="channelList">
             <list>
                 <bean class="org.jahia.services.channels.Channel">
-                    <constructor-arg index="0" value="iphone"/>
-                    <property name="displayName" value="iPhone"/>
+                    <constructor-arg index="0" value="apple_iphone_ver1"/>
                     <property name="capabilities">
                         <map>
+                            <entry key="display-name" value="iPhone"/>
+                            <entry key="template-type-mapping" value="iphone"/>
                             <entry key="variants" value="portrait,landscape"/>
                             <entry key="variants-displayNames" value="Portrait,Landscape"/>
                             <entry key="usable-resolutions" value="320x356,480x208"/>
@@ -28,10 +30,11 @@
                     </property>
                 </bean>
                 <bean class="org.jahia.services.channels.Channel">
-                    <constructor-arg index="0" value="ipad"/>
-                    <property name="displayName" value="iPad"/>
+                    <constructor-arg index="0" value="apple_ipad_ver1"/>
                     <property name="capabilities">
                         <map>
+                            <entry key="template-type-mapping" value="ipad"/>
+                            <entry key="display-name" value="iPad"/>
                             <entry key="variants" value="portrait,landscape"/>
                             <entry key="variants-displayNames" value="Portrait,Landscape"/>
                             <entry key="usable-resolutions" value="768x947,1024x691"/>
@@ -47,10 +50,11 @@
                     </property>
                 </bean>
                 <bean class="org.jahia.services.channels.Channel">
-                    <constructor-arg index="0" value="android"/>
-                    <property name="displayName" value="Android"/>
+                    <constructor-arg index="0" value="generic_android"/>
                     <property name="capabilities">
                         <map>
+                            <entry key="template-type-mapping" value="android"/>
+                            <entry key="display-name" value="Android"/>
                             <entry key="variants" value="portrait,landscape"/>
                             <entry key="variants-displayNames" value="Portrait,Landscape"/>
                             <entry key="device-image" value="/modules/channels/images/devices/android-small.png"/>
@@ -66,10 +70,11 @@
                     </property>
                 </bean>
                 <bean class="org.jahia.services.channels.Channel">
-                    <constructor-arg index="0" value="bbstorm"/>
-                    <property name="displayName" value="Blackberry Storm"/>
+                    <constructor-arg index="0" value="blackberry9530_ver1"/>
                     <property name="capabilities">
                         <map>
+                            <entry key="template-type-mapping" value="bbstorm"/>
+                            <entry key="display-name" value="Blackberry Storm"/>
                             <entry key="variants" value="portrait,landscape"/>
                             <entry key="variants-displayNames" value="Portrait,Landscape"/>
                             <entry key="device-image" value="/modules/channels/images/devices/bbstorm-small.png"/>
@@ -85,10 +90,11 @@
                     </property>
                 </bean>
                 <bean class="org.jahia.services.channels.Channel">
-                    <constructor-arg index="0" value="kindlefire"/>
-                    <property name="displayName" value="Kindle Fire"/>
+                    <constructor-arg index="0" value="amazon_kindle_fire_ver1"/>
                     <property name="capabilities">
                         <map>
+                            <entry key="template-type-mapping" value="kindlefire"/>
+                            <entry key="display-name" value="Kindle Fire"/>
                             <entry key="variants" value="portrait,landscape"/>
                             <entry key="variants-displayNames" value="Portrait,Landscape"/>
                             <entry key="device-image" value="/modules/channels/images/devices/kindlefire-small.png"/>

@@ -55,7 +55,7 @@
 		<property name="priority" value="0" />
         <property name="description" value="Render filter that 'injects' the static assets into the HEAD section of the rendered HTML document."/>
 		<property name="applyOnConfigurations" value="page,gwt" />
-		<property name="applyOnTemplateTypes" value="html,edit,html-iphone,html-ipad" />
+		<property name="applyOnTemplateTypes" value="html,edit,html-.*" />
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
         <property name="ajaxTemplate" value="/modules/assets/WEB-INF/scripts/ajaxResources.groovy"/>
         <property name="template" value="/modules/assets/WEB-INF/scripts/resources.groovy"/>
@@ -130,7 +130,7 @@
 		<property name="priority" value="20" />
         <property name="description" value="Defines attributes to keep in the links of a rendering when met in the urls"/>
 		<property name="applyOnConfigurations" value="page" />
-		<property name="applyOnTemplateTypes" value="html,edit,html-iphone,html-ipad" />
+		<property name="applyOnTemplateTypes" value="html,edit,html-.*" />
 		<property name="skipOnAjaxRequest" value="true" />
 		<property name="attributesToKeep">
 			<list>

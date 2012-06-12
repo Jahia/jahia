@@ -73,17 +73,6 @@ public class ChannelResolutionFilter extends AbstractFilter {
             return null;
         }
 
-        if (!StringUtils.isEmpty(context.getRequest().getParameter(ACTIVE_CHANNEL_QUERY_PARAMETER))) {
-            String activeChannel = context.getRequest().getParameter(ACTIVE_CHANNEL_QUERY_PARAMETER);
-            Channel resolvedChannel = channelService.getChannel(activeChannel);
-            if (resolvedChannel != null) {
-                setChannel(context, resource, resolvedChannel);
-                return null;
-            } else {
-                context.setChannel(channelService.getChannel(Channel.DEFAULT_CHANNEL));
-            }
-        }
-
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (ACTIVE_CHANNEL_COOKIE_NAME.equals(cookie.getName())) {
@@ -97,12 +86,23 @@ public class ChannelResolutionFilter extends AbstractFilter {
             }
         }
 
+        if (!StringUtils.isEmpty(context.getRequest().getParameter(ACTIVE_CHANNEL_QUERY_PARAMETER))) {
+            String activeChannel = context.getRequest().getParameter(ACTIVE_CHANNEL_QUERY_PARAMETER);
+            Channel resolvedChannel = channelService.getChannel(activeChannel);
+            if (resolvedChannel != null) {
+                setChannel(context, resource, resolvedChannel);
+                return null;
+            } else {
+                context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));
+            }
+        }
+
         if (!resource.getTemplateType().contains("-")) {
             Channel resolvedChannel = channelService.resolveChannel(context.getRequest());
             if (resolvedChannel != null) {
                 setChannel(context, resource, resolvedChannel);
             } else {
-                context.setChannel(channelService.getChannel(Channel.DEFAULT_CHANNEL));
+                context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));
             }
         }
         return null;

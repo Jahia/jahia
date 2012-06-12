@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class Channel implements Serializable {
 
-    public static final String DEFAULT_CHANNEL = "generic";
+    public static final String GENERIC_CHANNEL = "generic";
 
     private String identifier;
 
@@ -42,6 +42,10 @@ public class Channel implements Serializable {
 
     public String getCapability(String capabilityName) {
         return capabilities.get(capabilityName);
+    }
+
+    public boolean isGeneric() {
+        return identifier.equals(GENERIC_CHANNEL);
     }
 
     @Override

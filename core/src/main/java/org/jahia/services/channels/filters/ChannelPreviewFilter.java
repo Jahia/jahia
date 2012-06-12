@@ -42,11 +42,13 @@ package org.jahia.services.channels.filters;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.channels.Channel;
+import org.jahia.services.channels.ChannelService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 
+import javax.servlet.http.Cookie;
 import java.util.Map;
 
 /**
@@ -57,6 +59,8 @@ public class ChannelPreviewFilter extends AbstractFilter {
     private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ChannelPreviewFilter.class);
     public static final String ACTIVE_VARIANT_QUERY_PARAMETER = "variant";
 
+    private ChannelService channelService;
+
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
@@ -64,8 +68,8 @@ public class ChannelPreviewFilter extends AbstractFilter {
             return previousOut;
         }
 
-        Channel channel = renderContext.getChannel();
-        if (Channel.DEFAULT_CHANNEL.equals(channel.getIdentifier())) {
+        Channel channel = channelService.getChannel(renderContext.getRequest().getParameter(ChannelResolutionFilter.ACTIVE_CHANNEL_QUERY_PARAMETER));
+        if (channel.isGeneric()) {
             return previousOut;
         }
 
@@ -99,6 +103,10 @@ public class ChannelPreviewFilter extends AbstractFilter {
             out.insert(out.indexOf("</body>"), "</div>\n</div>\n");
         }
         return out.toString();
+    }
+
+    public void setChannelService(ChannelService channelService) {
+        this.channelService = channelService;
     }
 
 }

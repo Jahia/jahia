@@ -9,7 +9,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
 File indexRoot = new File(SettingsBean.getInstance().getRepositoryHome(), request.getParameter("indexPath")); %>
-<%= indexRoot.getPath() %> (<%= FileUtils.byteCountToDisplaySize(FileUtils.sizeOfDirectory(indexRoot)) %>)<br/>
+<%= indexRoot.getPath() %> (<%= org.jahia.utils.FileUtils.humanReadableByteCount(FileUtils.sizeOfDirectory(indexRoot)) %>)<br/>
 <table cellpadding="0" cellspacing="0" border="0">
 <%  int count = 0;
     for (File folder : indexRoot.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY)) {
@@ -17,7 +17,7 @@ File indexRoot = new File(SettingsBean.getInstance().getRepositoryHome(), reques
     %>
     <tr>
         <td width="100" style="padding-left: 10px"><%= folder.getName() %></td>
-        <td width="70"><%= FileUtils.byteCountToDisplaySize(FileUtils.sizeOfDirectory(folder)) %></td>
+        <td width="125"><%= org.jahia.utils.FileUtils.humanReadableByteCount(FileUtils.sizeOfDirectory(folder)) %></td>
         <%
         StringBuilder buf = new StringBuilder();
         pageContext.setAttribute("ok", Boolean.valueOf(SearchIndexUtils.checkIndex(folder, buf)));

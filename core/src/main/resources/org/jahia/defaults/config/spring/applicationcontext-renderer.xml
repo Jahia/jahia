@@ -93,7 +93,7 @@
 
     <bean class="org.jahia.services.channels.filters.ChannelPreviewFilter">
         <property name="description" value="Adds channel device image decoration"/>
-        <property name="renderService" ref="RenderService" />
+        <property name="channelService" ref="ChannelService" />
         <property name="priority" value="2"/>
         <property name="applyOnTemplateTypes" value="html,html-.+" />
         <property name="applyOnModes" value="preview" />

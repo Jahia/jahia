@@ -232,3 +232,5 @@
  - popupClass (string) indexed=no
  - buttonClass (string) indexed=no
  - buttonLabel (string) i18n nofulltext
+
+[jnt:toggleMobileDisplay] > jnt:content, jmix:siteComponent, jmix:studioOnly

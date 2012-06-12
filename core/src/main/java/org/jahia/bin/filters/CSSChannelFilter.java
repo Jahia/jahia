@@ -2,10 +2,7 @@ package org.jahia.bin.filters;
 
 import com.phloc.commons.io.IInputStreamProvider;
 import com.phloc.css.ECSSVersion;
-import com.phloc.css.decl.CSSMediaExpr;
-import com.phloc.css.decl.CSSMediaQuery;
-import com.phloc.css.decl.CSSMediaRule;
-import com.phloc.css.decl.CascadingStyleSheet;
+import com.phloc.css.decl.*;
 import com.phloc.css.handler.CSSHandler;
 import com.phloc.css.writer.CSSWriter;
 import org.apache.commons.lang.StringUtils;
@@ -49,7 +46,7 @@ public class CSSChannelFilter implements Filter {
             if (css != null) {
                 List<CSSMediaRule> filteredOutRules = new ArrayList<CSSMediaRule>();
                 for (CSSMediaRule mediaRule : css.getAllMediaRules()) {
-                    if (!evalMediaRule(channel, mediaRule)) {
+                    if (!evalMediaRule(channel, mediaRule.getAllMediaQueries())) {
                         filteredOutRules.add(mediaRule);
                     } else {
                         for (CSSMediaQuery mediaQuery : mediaRule.getAllMediaQueries()) {
@@ -57,22 +54,38 @@ public class CSSChannelFilter implements Filter {
                         }
                     }
                 }
-                if (!filteredOutRules.isEmpty()) {
+
+                List<CSSImportRule> filteredOutImports = new ArrayList<CSSImportRule>();
+                List<CSSImportRule> imports = css.getAllImportRules();
+                for (CSSImportRule anImport : imports) {
+                    if (!evalMediaRule(channel, anImport.getAllMediaQueries())) {
+                        filteredOutImports.add(anImport);
+                    }
+                }
+
+                if (!filteredOutRules.isEmpty() || !filteredOutImports.isEmpty()) {
                     for (CSSMediaRule filteredOutRule : filteredOutRules) {
                         css.removeRule(filteredOutRule);
                     }
+
+                    for (CSSImportRule filteredOutImport : filteredOutImports) {
+                        css.removeImportRule(filteredOutImport);
+                    }
+
                     CSSWriter w = new CSSWriter(ECSSVersion.CSS30);
                     w.writeCSS(css, response.getWriter());
                     return;
                 }
+                
+                
             }
         }
 
         chain.doFilter(request, response);
     }
 
-    private boolean evalMediaRule(Channel channel, CSSMediaRule mediaRule) {
-        for (CSSMediaQuery mediaQuery : mediaRule.getAllMediaQueries()) {
+    private boolean evalMediaRule(Channel channel, List<CSSMediaQuery> mediaQueries) {
+        for (CSSMediaQuery mediaQuery : mediaQueries) {
             for (CSSMediaExpr mediaExpr : mediaQuery.getExpressions()) {
                 if (!evalFeature(mediaExpr, channel)) {
                     return false;

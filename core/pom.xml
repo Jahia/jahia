@@ -1399,6 +1399,16 @@
             </snapshots>
         </repository>
         <repository>
+            <id>phloc</id>
+            <url>http://repo.phloc.com/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>javanet</id>
             <name>java.net</name>
             <url>http://download.java.net/maven/2/</url>
@@ -1653,6 +1663,11 @@
             <groupId>exolabcore</groupId>
             <artifactId>exolabcore</artifactId>
             <version>0.3.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.phloc</groupId>
+            <artifactId>phloc-css</artifactId>
+            <version>2.7.1</version>
         </dependency>
         <!--Hibernate dependencies-->
         <dependency>

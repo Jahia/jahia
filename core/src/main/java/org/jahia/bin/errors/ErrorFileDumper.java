@@ -466,12 +466,22 @@ public class ErrorFileDumper {
         }
         
         if (memory) {
+            long free = Runtime.getRuntime().freeMemory();
+            long total = Runtime.getRuntime().totalMemory();
+            long max = Runtime.getRuntime().maxMemory();
             strOut.println();
-            strOut.println("Memory status:");
+            strOut.print("Memory status: ");
+            strOut.print(100 - Math.round((float) free / (float) max * 100f));
+            strOut.println("% used");
             strOut.println("---------------");
-            strOut.println("Max memory   : " + Runtime.getRuntime().maxMemory() + " bytes");
-            strOut.println("Free memory  : " + Runtime.getRuntime().freeMemory() + " bytes");
-            strOut.println("Total memory : " + Runtime.getRuntime().totalMemory() + " bytes");
+            strOut.print("Used memory  : ");
+            strOut.println(org.jahia.utils.FileUtils.humanReadableByteCount(max - free, true));
+            strOut.print("Free memory  : ");
+            strOut.println(org.jahia.utils.FileUtils.humanReadableByteCount(free, true));
+            strOut.print("Total memory : ");
+            strOut.println(org.jahia.utils.FileUtils.humanReadableByteCount(total, true));
+            strOut.print("Max memory   : ");
+            strOut.println(org.jahia.utils.FileUtils.humanReadableByteCount(max, true));
         }
 
         if (caches) {

@@ -50,7 +50,7 @@
             <%
             long actionTime = System.currentTimeMillis();
             %>
-            <p style="color: blue">Start checking indexes for repository home <%= SettingsBean.getInstance().getRepositoryHome() %> (<%= FileUtils.byteCountToDisplaySize(FileUtils.sizeOfDirectory(SettingsBean.getInstance().getRepositoryHome())) %>)</p>
+            <p style="color: blue">Start checking indexes for repository home <%= SettingsBean.getInstance().getRepositoryHome() %> (<%= org.jahia.utils.FileUtils.humanReadableByteCount(FileUtils.sizeOfDirectory(SettingsBean.getInstance().getRepositoryHome())) %>)</p>
             <jsp:include page="searchIndexCheck.jsp">
                 <jsp:param name="indexPath" value="index"/>
             </jsp:include>

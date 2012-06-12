@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -56,6 +57,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -202,6 +204,37 @@ public final class DatabaseUtils {
         return (DataSource) SpringContextSingleton.getBean("dataSource");
     }
 
+    public static ScrollMode getFirstSupportedScrollMode(ScrollMode fallback,
+            ScrollMode... scrollModesToTest) {
+
+        ScrollMode supportedMode = null;
+        Connection conn = null;
+        try {
+            conn = getDatasource().getConnection();
+            DatabaseMetaData metaData = conn.getMetaData();
+            for (ScrollMode scrollMode : scrollModesToTest) {
+                if (metaData.supportsResultSetType(scrollMode.toResultSetType())) {
+                    supportedMode = scrollMode;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            if (logger.isDebugEnabled()) {
+                logger.warn(
+                        "Unlable to check supported scrollable resultset type. Cause: "
+                                + e.getMessage(), e);
+            } else {
+                logger.warn("Unlable to check supported scrollable resultset type. Cause: "
+                        + e.getMessage());
+            }
+        } finally {
+            closeQuietly(conn);
+        }
+
+        return supportedMode != null ? supportedMode : fallback;
+
+    }
+
     public static SessionFactory getHibernateSessionFactory() {
         return (SessionFactory) SpringContextSingleton.getBean("sessionFactory");
     }
@@ -234,7 +267,7 @@ public final class DatabaseUtils {
     public static List<String> getScriptStatements(String scriptContent) throws IOException {
         return getScriptStatements(new ReaderInputStream(new StringReader(scriptContent)));
     }
-
+    
     private DatabaseUtils() {
         super();
     }

@@ -132,7 +132,11 @@
         <filter-name>ContentManagerAccessCheckFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
-
+    <filter>
+        <description>transform css3 stylesheet to emulate mobile device stylesheet</description>
+        <filter-name>CSSChannelFilter</filter-name>
+        <filter-class>org.jahia.bin.filters.CSSChannelFilter</filter-class>
+    </filter>
     <filter-mapping>
         <filter-name>CharacterEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -191,7 +195,10 @@
         <filter-name>ContentManagerAccessCheckFilter</filter-name>
         <url-pattern>/engines/manager.jsp</url-pattern>
     </filter-mapping>
-    
+    <filter-mapping>
+        <filter-name>CSSChannelFilter</filter-name>
+        <url-pattern>*.css</url-pattern>
+    </filter-mapping>
 <!-- Shindig filter mappings -->
     <filter-mapping>
       <filter-name>ShindigAuthFilter</filter-name>

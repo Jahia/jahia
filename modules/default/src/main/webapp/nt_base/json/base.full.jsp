@@ -20,6 +20,7 @@
 <c:set var="nodeTypes" value="${functions:default(currentResource.moduleParams.nodeTypes, param.nodeTypes)}"/>
 <c:set var="selectableNodeTypes" value="${functions:default(currentResource.moduleParams.selectableNodeTypes, param.selectableNodeTypes)}"/>
 <c:set var="escapeColon" value="${functions:default(param.escapeColon, false)}" />
+<c:set var="withType" value="${functions:default(param.withType, false)}" />
 <json:object>
     <c:forEach items="${currentNode.properties}" var="prop">
         <c:set var="propName" value="${prop.name}"/>
@@ -50,6 +51,11 @@
         <json:property name="classes" value="selectable"/>
     </c:if>
     <json:property name="hasChildren" value="${not empty nodeTypes ? jcr:hasChildrenOfType(currentNode, nodeTypes) : currentNode.nodes.size > 0}"/>
+    <c:if test="${withType}">
+        <template:module node="${currentNode}" templateType="json" editable="false" view="nodetype">
+            <template:param name="definitionName" value="nodeType" />
+        </template:module>
+    </c:if>
     <c:if test="${depthLimit > 0}">
         <c:if test="${not empty nodeTypes ? jcr:hasChildrenOfType(currentNode, nodeTypes) : currentNode.nodes.size > 0}">
             <json:array name="childNodes">

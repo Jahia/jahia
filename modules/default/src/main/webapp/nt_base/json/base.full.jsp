@@ -15,6 +15,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%-- You can use a depthLimit query parameter to set a different depth limit (default = 1) --%>
 <%-- You can use a escapeColom query parameter to activate or deactivate JCR property name escaping (replacing colon with underscore --%>
+<c:set target="${renderContext}" property="contentType" value="application/json;charset=UTF-8"/>
 <c:set var="depthLimit" value="${functions:default(param.depthLimit, 1)}" />
 <c:set var="depthLimit" value="${functions:default(currentResource.moduleParams.depthLimit, depthLimit)}"/>
 <c:set var="nodeTypes" value="${functions:default(currentResource.moduleParams.nodeTypes, param.nodeTypes)}"/>

@@ -1,1 +1,0 @@
-CKEDITOR.plugins.setLang('acheck','de',{acheck:{title:'Barrierefreiheit testen'}});

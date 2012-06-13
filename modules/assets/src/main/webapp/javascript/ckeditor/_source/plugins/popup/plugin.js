@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
@@ -14,9 +14,8 @@ CKEDITOR.tools.extend( CKEDITOR.editor.prototype,
 	 * @param {String} width Popup window width.
 	 * @param {String} height Popup window height.
 	 * @param {String} options Popup window features.
-	 * @param {String} windowName Popup window name.
 	 */
-	popup : function( url, width, height, options, windowName )
+	popup : function( url, width, height, options )
 	{
 		width = width || '80%';
 		height = height || '70%';
@@ -42,7 +41,7 @@ CKEDITOR.tools.extend( CKEDITOR.editor.prototype,
 			',top='  + top +
 			',left=' + left;
 
-		var popupWindow = window.open( '', windowName, options, true );
+		var popupWindow = window.open( '', null, options, true );
 
 		// Blocked by a popup blocker.
 		if ( !popupWindow )
@@ -50,14 +49,19 @@ CKEDITOR.tools.extend( CKEDITOR.editor.prototype,
 
 		try
 		{
-			popupWindow.moveTo( left, top );
-			popupWindow.resizeTo( width, height );
+			// Chrome 18 is problematic, but it's not really needed here (#8855).
+			var ua = navigator.userAgent.toLowerCase();
+			if ( ua.indexOf( ' chrome/18' ) == -1 )
+			{
+				popupWindow.moveTo( left, top );
+				popupWindow.resizeTo( width, height );
+			}
 			popupWindow.focus();
 			popupWindow.location.href = url;
 		}
 		catch ( e )
 		{
-			popupWindow = window.open( url, windowName, options, true );
+			popupWindow = window.open( url, null, options, true );
 		}
 
 		return true;

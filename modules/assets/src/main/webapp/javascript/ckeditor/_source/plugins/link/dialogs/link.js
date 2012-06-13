@@ -778,6 +778,21 @@ CKEDITOR.dialog.add( 'link', function( editor )
 							if ( !this.getDialog().getContentElement( 'info', 'linkType' ) )
 								this.getElement().hide();
 						}
+					},
+					{
+						type : 'hbox',
+						children :
+						[
+							{
+								type : 'text',
+								label : linkLang.advisoryTitle,
+								'default' : '',
+								id : 'advTitle',
+								setup : setupAdvParams,
+								commit : commitAdvParams
+
+							}
+						]
 					}
 				]
 			},
@@ -1124,20 +1139,16 @@ CKEDITOR.dialog.add( 'link', function( editor )
 								[
 									{
 										type : 'text',
-										label : linkLang.advisoryTitle,
-										'default' : '',
-										id : 'advTitle',
-										setup : setupAdvParams,
-										commit : commitAdvParams
-
-									},
-									{
-										type : 'text',
 										label : linkLang.advisoryContentType,
 										'default' : '',
 										id : 'advContentType',
 										setup : setupAdvParams,
 										commit : commitAdvParams
+
+									},
+									{
+										type : 'html',
+										html : '&nbsp;'
 
 									}
 								]

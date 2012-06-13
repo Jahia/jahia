@@ -114,10 +114,42 @@ Basic Jahia REST API
  - withProtected : (default value = false) If activated, it will also output the protected properties and child node
  definitions for the node
 
-**** Full JSON View example query:
+ - depthLimit : (default value = 1) By default the JSON view will render the current node's nodetype, along with the
+ child definitiond and their nodetypes, but you can change the depth limit to either 0 to output only the nodetype of
+ the current node, or to a higher value to recursively output the types of the children of children, and so on. Of
+ course the deeper the depth and the larger the result tree, so be careful not setting this value too high if not
+ really needed.
+
+ - nodeType : (default value = none) By default the rendered node type (and mixin types) will be of the node specified
+ in the path, but it might be interesting to be able to query any node type registered in the system. You can do this
+ by specified this query parameter, in which case the node type and mixin types of the node specified in the path will
+ simply be ignored and the node type generated will be the one specified in the query string parameter instead. Be
+ careful with the encoding of the parameter, you will have to URL encode the colon (':') character with it's URL
+ equivalent, so for example :
+
++-----------------------------------------
+ nt:base
++-----------------------------------------
+
+ will become
+
++-----------------------------------------
+ nt%3Abase
++-----------------------------------------
+
+**** Full JSON View examples query
+
+Basic example requesting the node type of the 'docspaces' node including all the hidden and protected properties
+and child definitions:
 
 +-----------------------------------------
   http://localhost:8080/cms/wise/default/en/sites/docspaces.nodetype.json?withHidden=true&withProtected=true
++-----------------------------------------
+
+Requesting a specific nodetype, ignoring the 'docspaces' node type and mixin types:
+
++-----------------------------------------
+  http://localhost:8080/cms/wise/default/en/sites/docspaces.nodetype.json?nodeType=nt%3Abase
 +-----------------------------------------
 
 ** HTTP Post Request

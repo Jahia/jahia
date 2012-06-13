@@ -54,7 +54,7 @@
     <json:property name="hasChildren" value="${not empty nodeTypes ? jcr:hasChildrenOfType(currentNode, nodeTypes) : currentNode.nodes.size > 0}"/>
     <c:if test="${withType}">
         <template:module node="${currentNode}" templateType="json" editable="false" view="nodetype">
-            <template:param name="definitionName" value="nodeType" />
+            <template:param name="typePropertyName" value="nodeType" />
         </template:module>
     </c:if>
     <c:if test="${depthLimit > 0}">

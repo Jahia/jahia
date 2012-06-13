@@ -65,6 +65,8 @@ CKEDITOR.lang['pt'] =
 	common :
 	{
 		browseServer	: 'Navegar no Servidor',
+		browseServerFiles:'Arquivos',
+		browseServerPages:'Content',
 		url				: 'URL',
 		protocol		: 'Protocolo',
 		upload			: 'Carregar',

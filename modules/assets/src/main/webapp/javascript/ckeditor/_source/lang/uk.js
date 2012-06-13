@@ -65,6 +65,8 @@ CKEDITOR.lang['uk'] =
 	common :
 	{
 		browseServer	: 'Огляд',
+		browseServerFiles:'Файли',
+		browseServerPages:'Контент',
 		url				: 'URL',
 		protocol		: 'Протокол',
 		upload			: 'Надіслати',

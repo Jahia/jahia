@@ -65,6 +65,8 @@ CKEDITOR.lang['en-au'] =
 	common :
 	{
 		browseServer	: 'Browse Server',
+		browseServerFiles:'Files',
+		browseServerPages:'Content',
 		url				: 'URL',
 		protocol		: 'Protocol',
 		upload			: 'Upload',

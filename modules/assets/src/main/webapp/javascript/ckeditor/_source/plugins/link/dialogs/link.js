@@ -538,11 +538,37 @@ CKEDITOR.dialog.add( 'link', function( editor )
 								}
 							},
 							{
-								type : 'button',
-								id : 'browse',
-								hidden : 'true',
-								filebrowser : 'info:url',
-								label : commonLang.browseServer
+								type : 'hbox',
+								align : 'center',
+								children:
+								[
+									{
+										type : 'button',
+										id : 'browse',
+										style : 'float:right',
+										hidden : 'true',
+										filebrowser :
+										{
+											action : 'Browse',
+											url : editor.config.filebrowserLinkBrowseUrl,
+											target : 'info:url'
+										},
+										label : commonLang.browseServer + ' (' + (commonLang.browseServerPages || 'Content') + ')'
+									},
+									{
+										type : 'button',
+										id : 'browseFiles',
+										style : 'float:left',
+										hidden : 'true',
+										filebrowser :
+										{
+											action : 'Browse',
+											url : editor.config.filebrowserBrowseUrl,
+											target : 'info:url'
+										},
+										label : commonLang.browseServer + ' (' + (commonLang.browseServerFiles || 'Files') + ')'
+									}
+								]
 							}
 						]
 					},

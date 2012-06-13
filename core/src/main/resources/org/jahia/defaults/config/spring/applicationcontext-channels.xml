@@ -16,7 +16,7 @@
                     <property name="capabilities">
                         <map>
                             <entry key="display-name" value="Generic"/>
-                            <entry key="device-image" value="/modules/channels/images/devices/generic-small.png"/>
+                            <entry key="device-image" value="/engines/images/devices/generic-small.png"/>
                         </map>
                     </property>
                 </bean>

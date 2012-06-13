@@ -177,7 +177,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 
 		var url = addQueryString( this.filebrowser.url, params );
 		// TODO: V4: Remove backward compatibility (#8163).
-		editor.popup( url, width, height, editor.config.filebrowserWindowFeatures || editor.config.fileBrowserWindowFeatures );
+		editor.popup( url, width, height, editor.config.filebrowserWindowFeatures || editor.config.fileBrowserWindowFeatures, editor.config.filebrowserWindowName );
 	}
 
 	/*
@@ -506,6 +506,15 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
  * @default <code>'location=no,menubar=no,toolbar=no,dependent=yes,minimizable=no,modal=yes,alwaysRaised=yes,resizable=yes,scrollbars=yes'</code>
  * @example
  * config.filebrowserWindowFeatures = 'resizable=yes,scrollbars=no';
+ */
+
+/**
+ * The windowName to use in the file browser popup window.
+ * @name CKEDITOR.config.filebrowserWindowName
+ * @since 3.5.4
+ * @type String
+ * @example
+ * config.filebrowserWindowName = 'CKEditorFileBrowser';
  */
 
 /**

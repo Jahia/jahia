@@ -1130,17 +1130,36 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 							}
 						},
 						{
-							type : 'button',
-							id : 'browse',
-							filebrowser :
-							{
-								action : 'Browse',
-								target: 'Link:txtUrl',
-								url: editor.config.filebrowserImageBrowseLinkUrl
-							},
-							style : 'float:right',
-							hidden : true,
-							label : editor.lang.common.browseServer
+							type : 'hbox',
+							children :
+							[
+								{
+									type : 'button',
+									id : 'browse',
+									style : 'float:right',
+									hidden : true,
+									filebrowser :
+									{
+										action : 'Browse',
+										url : editor.config.filebrowserLinkBrowseUrl,
+										target : 'Link:txtUrl'
+									},
+									label : editor.lang.common.browseServer + ' (' + (editor.lang.common.browseServerPages || 'Content') + ')'
+								},
+								{
+									type : 'button',
+									id : 'browseFiles',
+									style : 'float:left',
+									hidden : true,
+									filebrowser :
+									{
+										action : 'Browse',
+										url : editor.config.filebrowserBrowseUrl,
+										target : 'Link:txtUrl'
+									},
+									label : editor.lang.common.browseServer + ' (' + (editor.lang.common.browseServerFiles || 'Files') + ')'
+								}
+							]
 						},
 						{
 							id : 'cmbTarget',

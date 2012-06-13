@@ -579,8 +579,9 @@ public class MainModule extends Module {
         editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
     }
 
-    public void switchChannel(GWTJahiaChannel channel) {
+    public void switchChannel(GWTJahiaChannel channel, String variant) {
         mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
+        editLinker.setActiveChannelVariant(variant);
         editLinker.setActiveChannel(channel);
         editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_CHANNELS);
     }

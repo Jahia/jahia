@@ -7,7 +7,7 @@
     <bean id="ChannelService" class="org.jahia.services.channels.ChannelService" factory-method="getInstance"/>
 
     <bean id="UserAgentChannelProvider" class="org.jahia.services.channels.providers.UserAgentChannelProvider">
-        <property name="priority" value="99"/>
+        <property name="priority" value="-99"/>
         <property name="channelService" ref="ChannelService"/>
         <property name="channelList">
             <list>

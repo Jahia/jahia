@@ -43,6 +43,9 @@
     <json:property name="depth" value="${currentNode.depth}" />
     <json:property name="nodename" value="${currentNode.name}" />
     <json:property name="primaryNodeType" value="${currentNode.primaryNodeType.name}" />
+    <json:array name="mixinTypes" items="${currentNode.mixinNodeTypes}" var="mixinType">
+        ${mixinType.name}
+    </json:array>
     <json:property name="depthLimit" value="${depthLimit}" />
     <c:if test="${jcr:isNodeType(currentNode, 'mix:title')}">
     <jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>

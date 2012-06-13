@@ -1,16 +1,13 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
@@ -44,7 +41,7 @@ public class ChannelDisplayActionItem extends BaseActionItem {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaChannel> event) {
                 GWTJahiaChannel selectedChannel = event.getSelectedItem();
                 if (linker instanceof EditLinker) {
-                    ((EditLinker)linker).getMainModule().switchChannel(selectedChannel);
+                    ((EditLinker)linker).getMainModule().switchChannel(selectedChannel, null);
                 }
             }
         });

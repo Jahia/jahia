@@ -21,7 +21,6 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +48,7 @@ public class ChannelsTabItem extends SidePanelTabItem {
         deviceDetailsPanel.setTableWidth("100%");
         deviceDetailsPanel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
 
-        deviceImage = new Image("/engines/images/edit/devices/default-small.png");
+        deviceImage = new Image();
         deviceDetailsPanel.add(deviceImage, new TableData("64px", "64px"));
         deviceNameLabel = new Label(Messages.get("label.deviceName", "Device name"));
         deviceDetailsPanel.add(deviceNameLabel);
@@ -67,7 +66,9 @@ public class ChannelsTabItem extends SidePanelTabItem {
         deviceCombo.setDisplayField("display");
         deviceCombo.setStore(channelListStore);
         if (channelListStore.getCount() > 0) {
-            deviceCombo.setValue(channelListStore.getAt(0));
+            GWTJahiaChannel channel = channelListStore.getAt(0);
+            deviceCombo.setValue(channel);
+            deviceImage.setUrl(channel.getCapability("device-image"));
         } else {
             deviceCombo.setValue(null);
             deviceCombo.disable();
@@ -82,7 +83,7 @@ public class ChannelsTabItem extends SidePanelTabItem {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaChannel> event) {
                 GWTJahiaChannel selectedChannel = event.getSelectedItem();
-                editLinker.getMainModule().switchChannel(selectedChannel);
+                editLinker.getMainModule().switchChannel(selectedChannel, null);
             }
         });
         formPanel.add(deviceCombo);
@@ -106,8 +107,7 @@ public class ChannelsTabItem extends SidePanelTabItem {
         orientationComponent.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaBasicDataBean>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaBasicDataBean> se) {
-                editLinker.setActiveChannelVariant(se.getSelectedItem().getValue());
-                editLinker.getMainModule().switchChannel(editLinker.getActiveChannel());
+                editLinker.getMainModule().switchChannel(editLinker.getActiveChannel(), se.getSelectedItem().getValue());
             }
         });
         formPanel.add(orientationComponent, new FormData("100%"));
@@ -162,7 +162,7 @@ public class ChannelsTabItem extends SidePanelTabItem {
             GWTJahiaChannel activeChannel = editLinker.getActiveChannel();
             int activeChannelIndex = 0;
 
-            deviceImage.setUrl("/engines/images/edit/devices/default-small.png");
+            deviceImage.setUrl("/engines/images/edit/devices/generic-small.png");
             deviceNameLabel.setText(Messages.get("label.default", "Default"));
             if (activeChannel != null) {
                 if (activeChannel.getCapability("device-image") != null) {
@@ -200,6 +200,9 @@ public class ChannelsTabItem extends SidePanelTabItem {
                 orientationComponent.disableEvents(false);
                 orientationComponent.enable();
             } else {
+                orientationComponent.disableEvents(true);
+                orientationComponent.setValue(null);
+                orientationComponent.disableEvents(false);
                 orientationComponent.disable();
             }
 

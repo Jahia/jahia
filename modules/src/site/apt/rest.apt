@@ -9,8 +9,6 @@ Basic Jahia REST API
  e.g. using jQuery library, you can run into a cross-domain restriction for Ajax requests as they are not allowed by default
  due to security concerns. In contrary, using REST API from a server side code in your external
  application does not have this restriction.
- 
-  
 
 * Login
 
@@ -34,6 +32,9 @@ Basic Jahia REST API
 *----------------+-------------+------------------------------------------------+
 |redirect        |no           |Allows you to specify another URL to redirect   |
 |                |             |after successful login                          |
+*----------------+-------------+------------------------------------------------+
+|restMode        |no           |Set this to true if you are performing a login  |
+|                |             |from an AJAX call ogin                          |
 *----------------+-------------+------------------------------------------------+
 
 * Logout
@@ -63,6 +64,61 @@ Basic Jahia REST API
  method, or update content using POST or PUT.
 
 ** HTTP Get Request
+
+ You can simply render a node by calling it in the following form :
+
+ URL : /cms/render/WORKSPACE/LANGUAGE/CONTENT_PATH(.VIEW).TEMPLATETYPE
+
+ where:
+ - WORKSPACE : 'default' for the edit workspace, 'live' for the live (production) workspace
+ - LANGUAGE : any language defined on the site
+ - CONTENT_PATH : the full path to the content object to be rendered
+ - VIEW : this is optional, specified the (alternative) view to render the content node. This depends on the available
+ views for the content node.
+ - TEMPLATE-TYPE : usually 'html' but you might want to use other template types such as 'json' (see more below)
+
+*** JSON rendering
+
+ Jahia comes with a few default views for JSON rendering, but here we will detail the two most important ones : 'full'
+  and 'nodetype'. The 'full' view will generate a JSON view of a content node, along with all it's properties and child
+ node names. It also takes optional query string parameters to expand the output:
+
+ - depthLimit : (default value = 1). The depth of children to output with the current node. You can use this value to
+ output deeper tree of children, but be aware that this will make your HTTP requests slower as more data will be output
+ and transmitted over the network.
+
+ - escapeColon : (default value = false) If activated, this will replace the colon (':') character present in property
+ names with an underscore, making it a lot easier to use Javascript code that accesses properties.
+
+ - withType : (default value = false) If activated, it will, along with the property data and child nodes, also output
+ the node type information for the node. As this will generate a lot more data for this request, it is also possible to
+ use the 'nodetype' view to generate this output seperately. Also, the 'nodetype' view also takes parameters that can be
+ directly called on the 'full' view but we will not repeat them here for the sake of brievety (see below for the query
+ string parameters and their documentation).
+
+**** Full JSON View example query:
+
++-----------------------------------------
+  http://localhost:8080/cms/wise/default/en/sites/docspaces.full.json?withType=true&depthLimit=0&escapeColon=true&withHidden=true&withProtected=true
++-----------------------------------------
+
+**** Nodetype view
+
+ The 'nodetype' view will generate a JSON output of the node type's information, making it possible for example to
+ dynamically generate forms to create a new node. By default it will not output any hidden or protected properties
+ or child node definitions, but this may be overridden with the following query string parameters:
+
+ - withHidden : (default value = false) If activated, it will also output the hidden properties and child node
+ definitions for the node
+
+ - withProtected : (default value = false) If activated, it will also output the protected properties and child node
+ definitions for the node
+
+**** Full JSON View example query:
+
++-----------------------------------------
+  http://localhost:8080/cms/wise/default/en/sites/docspaces.nodetype.json?withHidden=true&withProtected=true
++-----------------------------------------
 
 ** HTTP Post Request
 

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
@@ -14,7 +14,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
 /**
- * Constains the dictionary of language entries.
+ * Contains the dictionary of language entries.
  * @namespace
  */
 CKEDITOR.lang['cs'] =
@@ -34,8 +34,8 @@ CKEDITOR.lang['cs'] =
 	editorTitle : 'Textový editor, %1, nápovědu zobrazíte stiskem ALT 0.',
 
 	// ARIA descriptions.
-	toolbar	: 'Panel nástrojů',
-	editor	: 'Textový editor',
+	toolbars	: 'Panely nástrojů editoru',
+	editor		: 'Textový editor',
 
 	// Toolbar buttons without dialogs.
 	source			: 'Zdroj',
@@ -121,6 +121,10 @@ CKEDITOR.lang['cs'] =
 		alignBottom		: 'Dolů',
 		invalidHeight	: 'Zadaná výška musí být číslo.',
 		invalidWidth	: 'Zadaná šířka musí být číslo.',
+		invalidCssLength	: 'Hodnota určená pro pole "%1" musí být kladné číslo bez nebo s platnou jednotkou míry CSS (px, %, in, cm, mm, em, ex, pt, nebo pc).',
+		invalidHtmlLength	: 'Hodnota určená pro pole "%1" musí být kladné číslo bez nebo s platnou jednotkou míry HTML (px nebo %).',
+		invalidInlineStyle	: 'Hodnota určená pro řádkový styl se musí skládat z jedné nebo více n-tic ve formátu "název : hodnota", oddělené středníky',
+		cssLengthTooltip	: 'Zadejte číslo jako hodnotu v pixelech nebo číslo s platnou jednotkou CSS (px, %, v cm, mm, em, ex, pt, nebo pc).',
 
 		// Put the voice-only part of the label in the span.
 		unavailable		: '%1<span class="cke_accessibility">, nedostupné</span>'
@@ -182,7 +186,7 @@ CKEDITOR.lang['cs'] =
 		cssClasses		: 'Třída stylu',
 		charset			: 'Přiřazená znaková sada',
 		styles			: 'Styl',
-		rel			: 'Relationship', // MISSING
+		rel			: 'Vztah',
 		selectAnchor		: 'Vybrat kotvu',
 		anchorName		: 'Podle jména kotvy',
 		anchorId			: 'Podle Id objektu',
@@ -201,7 +205,8 @@ CKEDITOR.lang['cs'] =
 		menu		: 'Vlastnosti záložky',
 		title		: 'Vlastnosti záložky',
 		name		: 'Název záložky',
-		errorName	: 'Zadejte prosím název záložky'
+		errorName	: 'Zadejte prosím název záložky',
+		remove		: 'Odstranit záložku'
 	},
 
 	// List style dialog
@@ -237,6 +242,7 @@ CKEDITOR.lang['cs'] =
 		findWhat			: 'Co hledat:',
 		replaceWith			: 'Čím nahradit:',
 		notFoundMsg			: 'Hledaný text nebyl nalezen.',
+		findOptions			: 'Možnosti hledání',
 		matchCase			: 'Rozlišovat velikost písma',
 		matchWord			: 'Pouze celá slova',
 		matchCyclic			: 'Procházet opakovaně',
@@ -413,7 +419,6 @@ CKEDITOR.lang['cs'] =
 		upload		: 'Odeslat',
 		alt			: 'Alternativní text',
 		lockRatio	: 'Zámek',
-		unlockRatio	: 'Odemknout poměr',
 		resetSize	: 'Původní velikost',
 		border		: 'Okraje',
 		hSpace		: 'H-mezera',
@@ -495,7 +500,7 @@ CKEDITOR.lang['cs'] =
 
 	smiley :
 	{
-		toolbar	: 'Smajlíky',
+		toolbar	: 'Smajlíci',
 		title	: 'Vkládání smajlíků',
 		options : 'Nastavení smajlíků'
 	},
@@ -679,7 +684,7 @@ CKEDITOR.lang['cs'] =
 	scayt :
 	{
 		title			: 'Kontrola pravopisu během psaní (SCAYT)',
-		opera_title		: 'Not supported by Opera', // MISSING
+		opera_title		: 'Toto Opera nepodporuje',
 		enable			: 'Zapnout SCAYT',
 		disable			: 'Vypnout SCAYT',
 		about			: 'O aplikaci SCAYT',
@@ -715,6 +720,8 @@ CKEDITOR.lang['cs'] =
 	{
 		title		: 'O aplikaci CKEditor',
 		dlgTitle	: 'O aplikaci CKEditor',
+		help	: 'Prohlédněte si $1 pro nápovědu.',
+		userGuide : 'Uživatelská příručka CKEditor',
 		moreInfo	: 'Pro informace o lincenci navštivte naši webovou stránku:',
 		copy		: 'Copyright &copy; $1. All rights reserved.'
 	},
@@ -745,9 +752,64 @@ CKEDITOR.lang['cs'] =
 	toolbarCollapse	: 'Skrýt panel nástrojů',
 	toolbarExpand	: 'Zobrazit panel nástrojů',
 
+	toolbarGroups :
+	{
+		document : 'Dokument',
+		clipboard : 'Schránka/Zpět',
+		editing : 'Úpravy',
+		forms : 'Formuláře',
+		basicstyles : 'Základní styly',
+		paragraph : 'Odstavec',
+		links : 'Odkazy',
+		insert : 'Vložit',
+		styles : 'Styly',
+		colors : 'Barvy',
+		tools : 'Nástroje'
+	},
+
 	bidi :
 	{
 		ltr : 'Orientace textu zleva doprava',
 		rtl : 'Orientace textu zprava do leva'
+	},
+
+	docprops :
+	{
+		label : 'Vlastnosti dokumentu',
+		title : 'Vlastnosti dokumentu',
+		design : 'Vzhled',
+		meta : 'Metadata',
+		chooseColor : 'Výběr',
+		other : '<jiný>',
+		docTitle :	'Titulek stránky',
+		charset : 	'Znaková sada',
+		charsetOther : 'Další znaková sada',
+		charsetASCII : 'ASCII',
+		charsetCE : 'Středoevropské jazyky',
+		charsetCT : 'Tradiční čínština (Big5)',
+		charsetCR : 'Cyrilice',
+		charsetGR : 'Řečtina',
+		charsetJP : 'Japonština',
+		charsetKR : 'Korejština',
+		charsetTR : 'Turečtina',
+		charsetUN : 'Unicode (UTF-8)',
+		charsetWE : 'Západoevropské jazyky',
+		docType : 'Typ dokumentu',
+		docTypeOther : 'Jiný typ dokumetu',
+		xhtmlDec : 'Zahrnou deklarace XHTML',
+		bgColor : 'Barva pozadí',
+		bgImage : 'URL obrázku na pozadí',
+		bgFixed : 'Nerolovatelné pozadí',
+		txtColor : 'Barva textu',
+		margin : 'Okraje stránky',
+		marginTop : 'Horní',
+		marginLeft : 'Levý',
+		marginRight : 'Pravý',
+		marginBottom : 'Dolní',
+		metaKeywords : 'Klíčová slova (oddělená čárkou)',
+		metaDescription : 'Popis dokumentu',
+		metaAuthor : 'Autor',
+		metaCopyright : 'Autorská práva',
+		previewHtml : '<p>Toto je <strong>ukázkový text</strong>. Používáte <a href="javascript:void(0)">CKEditor</a>.</p>'
 	}
 };

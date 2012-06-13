@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
@@ -15,6 +15,9 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 
 	function onSelectionChange( evt )
 	{
+		if ( evt.editor.readOnly )
+			return null;
+
 		var editor = evt.editor,
 			elementPath = evt.data.path,
 			list = elementPath && elementPath.contains( listNodeNames ),
@@ -77,7 +80,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 
 	function isListItem( node )
 	{
-		return node.type = CKEDITOR.NODE_ELEMENT && node.is( 'li' );
+		return node.type == CKEDITOR.NODE_ELEMENT && node.is( 'li' );
 	}
 
 	indentCommand.prototype = {
@@ -422,6 +425,25 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 					}
 				}
 			});
+
+			editor.on( 'key', function( evt )
+			{
+				// Backspace at the beginning of  list item should outdent it.
+				if ( editor.mode == 'wysiwyg' && evt.data.keyCode == 8 )
+				{
+					var sel = editor.getSelection(),
+						range = sel.getRanges()[ 0 ],
+						li;
+
+					if ( range.collapsed &&
+						 ( li = range.startContainer.getAscendant( 'li', 1 ) ) &&
+						 range.checkBoundaryOfElement( li, CKEDITOR.START ) )
+					{
+						editor.execCommand( 'outdent' );
+						evt.cancel();
+					}
+				}
+			});
 		},
 
 		requires : [ 'domiterator', 'list' ]
@@ -451,7 +473,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
  * and instead the {@link #indentUnit} and {@link #indentOffset} properties will be used.
  * @name CKEDITOR.config.indentClasses
  * @type Array
- * default null
+ * @default null
  * @example
  * // Use the classes 'Indent1', 'Indent2', 'Indent3'
  * config.indentClasses = ['Indent1', 'Indent2', 'Indent3'];

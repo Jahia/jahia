@@ -80,7 +80,7 @@
                             <c:forEach items="${childDefinition.requiredPrimaryTypeNames}" var="requiredPrimaryTypeName">
                                 <template:module node="${currentNode}" templateType="json" editable="false" view="nodetype">
                                     <template:param name="depthLimit" value="${depthLimit -1 }" />
-                                    <template:param name="nodetype" value="${requiredPrimaryTypeName}" />
+                                    <template:param name="nodeType" value="${requiredPrimaryTypeName}" />
                                     <template:param name="typePropertyName" value="nodeType" />
                                 </template:module>
                             </c:forEach>
@@ -137,7 +137,7 @@
                                     <c:forEach items="${childDefinition.requiredPrimaryTypeNames}" var="requiredPrimaryTypeName">
                                         <template:module node="${currentNode}" templateType="json" editable="false" view="nodetype">
                                             <template:param name="depthLimit" value="${depthLimit -1 }" />
-                                            <template:param name="nodetype" value="${requiredPrimaryTypeName}" />
+                                            <template:param name="nodeType" value="${requiredPrimaryTypeName}" />
                                             <template:param name="typePropertyName" value="nodeType" />
                                         </template:module>
                                     </c:forEach>

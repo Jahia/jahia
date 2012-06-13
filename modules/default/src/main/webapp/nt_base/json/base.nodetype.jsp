@@ -1,6 +1,4 @@
 <%@ page language="java" %>
-<%@ page import="org.jahia.services.content.nodetypes.ConstraintsHelper" %>
-<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="json" uri="http://www.atg.com/taglibs/json" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
@@ -15,6 +13,9 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<%-- You can use a withHidden query parameter to generate output of hidden properties and child definitions --%>
+<%-- You can use a withProtected query parameter to generate output of protected properties and child definitions --%>
+<c:set target="${renderContext}" property="contentType" value="application/json;charset=UTF-8"/>
 <c:set var="withHidden" value="${functions:default(param.withHidden, false)}" />
 <c:set var="withProtected" value="${functions:default(param.withProtected, false)}" />
 <json:object name="${currentResource.moduleParams.definitionName}">

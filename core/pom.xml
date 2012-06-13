@@ -1399,16 +1399,6 @@
             </snapshots>
         </repository>
         <repository>
-            <id>phloc</id>
-            <url>http://repo.phloc.com/maven2</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
             <id>javanet</id>
             <name>java.net</name>
             <url>http://download.java.net/maven/2/</url>
@@ -1668,6 +1658,7 @@
             <groupId>com.phloc</groupId>
             <artifactId>phloc-css</artifactId>
             <version>2.7.2-jahia</version>
+            <classifier>jdk5</classifier>
         </dependency>
         <!--Hibernate dependencies-->
         <dependency>

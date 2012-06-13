@@ -162,7 +162,7 @@ public class ChannelsTabItem extends SidePanelTabItem {
             GWTJahiaChannel activeChannel = editLinker.getActiveChannel();
             int activeChannelIndex = 0;
 
-            deviceImage.setUrl("/engines/images/edit/devices/generic-small.png");
+            deviceImage.setUrl("");
             deviceNameLabel.setText(Messages.get("label.default", "Default"));
             if (activeChannel != null) {
                 if (activeChannel.getCapability("device-image") != null) {

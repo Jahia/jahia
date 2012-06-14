@@ -243,7 +243,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             aclsKeys.add(getAclsKeyPart(renderContext, checkRootPath, nodePath, appendNodePath, null));
             final Set<String> dependencies = resource.getDependencies();
 
-            if (Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.mainResource"))) {
+            if (renderContext.getRequest() != null && Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.mainResource"))) {
                 aclsKeys.add("mraclmr");
             } else {
                 for (final String dependency : dependencies) {

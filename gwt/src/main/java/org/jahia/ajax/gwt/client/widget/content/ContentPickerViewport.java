@@ -63,7 +63,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
  * File and folder picker control.
  *
  * @author rfelden
- *         Date: 27 ao�t 2008
  */
 public class ContentPickerViewport extends Viewport {
     private PickedContentView pickedContent;
@@ -91,9 +90,9 @@ public class ContentPickerViewport extends Viewport {
         ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                List<String> selectedNode = getSelectedNodePathes(jahiaContextPath, jahiaServletPath, filesServletPath);
-                if (selectedNode != null && !selectedNode.isEmpty()) {
-                    callback(callback, selectedNode.get(0));
+                List<String[]> selectedNodes = getSelectedNodePathes(jahiaContextPath, jahiaServletPath, filesServletPath);
+                if (selectedNodes != null && !selectedNodes.isEmpty()) {
+                    callback(callback, selectedNodes.get(0)[0], selectedNodes.get(0)[1]);
                     WindowUtil.close();
                 }
             }
@@ -140,14 +139,27 @@ public class ContentPickerViewport extends Viewport {
      *
      * @return
      */
-    public List<String> getSelectedNodePathes(final String jahiaContextPath, final String jahiaServletPath,
+    public List<String[]> getSelectedNodePathes(final String jahiaContextPath, final String jahiaServletPath,
                                               final String filesServletPath) {
         return pickedContent.getSelectedContentPath(jahiaContextPath,jahiaServletPath, filesServletPath);
     }
 
-    private native void callback(String callback, String url)/*-{
-
-        $wnd.opener.CKEDITOR.tools.callFunction(callback, url,"");
+    private native void callback(String callback, String url, String title)/*-{
+        if (typeof title == 'undefined') {
+            $wnd.opener.CKEDITOR.tools.callFunction(callback, url, "");
+        } else {
+            $wnd.opener.CKEDITOR.tools.callFunction(callback, url, function () {
+                var dlg = this.getDialog();
+                var trgt = this.filebrowser.target || null;
+                if (trgt) {
+                    var advTitle = trgt == 'info:url' ? dlg.getContentElement('info', 'advTitle') : (trgt == 'info:txtUrl' ? dlg.getContentElement('info', 'txtAlt') : null);
+                    if (advTitle) {
+                        advTitle.setValue(title);
+                    }
+                }
+                return true;
+            });
+        }
       }-*/;
 
 

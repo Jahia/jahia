@@ -360,7 +360,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Set<JCRNodeWrapper> nodes = Collections.singleton(node);
         final HashSet<String> tti = new HashSet<String>();
         tti.add("jnt:templatesFolder");
-        tti.add("jnt:componentFolder");
         tti.add(Constants.JAHIANT_USER);
         exportNodesWithBinaries(session.getRootNode(), nodes, zout, tti,
                 externalReferences, params);

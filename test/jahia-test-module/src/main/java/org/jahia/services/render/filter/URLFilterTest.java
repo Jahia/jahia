@@ -46,8 +46,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 
@@ -76,7 +76,6 @@ import com.google.common.collect.Sets;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Unit test for the {@link URLFilter} User: toto Date: Nov 26, 2009 Time: 12:57:51 PM
@@ -333,8 +332,8 @@ public class URLFilterTest {
     @Test
     public void testURLFilterResolving() throws Exception {
         Object[][] testPathes = new Object[][] {
-                { "/", Constants.LIVE_WORKSPACE, Locale.ENGLISH, "/", JCRNodeWrapper.class, "/" },
-                { "/render", Constants.LIVE_WORKSPACE, Locale.ENGLISH, "/", JCRNodeWrapper.class, "/" },
+                { "/", "", Locale.ENGLISH, "/", NoSuchWorkspaceException.class, "" },
+                { "/render", "", Locale.ENGLISH, "/", NoSuchWorkspaceException.class, "" },
                 { "/render/default", Constants.EDIT_WORKSPACE, Locale.ENGLISH, "/", JCRNodeWrapper.class, "/" },
                 { "/render/live", Constants.LIVE_WORKSPACE, Locale.ENGLISH, "/", JCRNodeWrapper.class, "/" },
                 { "/render/live/fr", Constants.LIVE_WORKSPACE, Locale.FRENCH, "/", JCRNodeWrapper.class, "/" },

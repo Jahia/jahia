@@ -22,7 +22,7 @@
 <c:set var="selectableNodeTypes" value="${functions:default(currentResource.moduleParams.selectableNodeTypes, param.selectableNodeTypes)}"/>
 <c:set var="escapeColon" value="${functions:default(param.escapeColon, false)}" />
 <c:set var="withType" value="${functions:default(param.withType, false)}" />
-<json:object>
+<json:object escapeXml="false">
     <c:forEach items="${currentNode.properties}" var="prop">
         <c:set var="propName" value="${prop.name}"/>
         <c:if test="${escapeColon}">

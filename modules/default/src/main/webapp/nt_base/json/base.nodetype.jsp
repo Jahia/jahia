@@ -27,7 +27,7 @@
 <c:if test="${not empty nodeTypeName}">
     <jcr:nodeType name="${nodeTypeName}" var="nodeType" />
 </c:if>
-<json:object name="${currentResource.moduleParams.typePropertyName}">
+<json:object name="${currentResource.moduleParams.typePropertyName}" escapeXml="false">
     <json:object name="primaryNodeType">
         <c:set var="primaryNodeType" value="${nodeType}" />
         <json:property name="name" value="${primaryNodeType.name}" />

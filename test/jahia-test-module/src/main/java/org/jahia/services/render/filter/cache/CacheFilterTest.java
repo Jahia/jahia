@@ -52,7 +52,9 @@ import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
@@ -93,22 +95,14 @@ import static org.junit.Assert.*;
  */
 public class CacheFilterTest {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheFilterTest.class);
+    private final static String TESTSITE_NAME = "test";    
 
-    private JCRNodeWrapper node;
-    private ParamBean paramBean;
-    private JCRSessionWrapper session;
-    protected JCRSiteNode site;
-
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void oneTimeSetUp() throws Exception {
         try {
-            JahiaSite site = TestHelper.createSite("test");
-            paramBean = (ParamBean) Jahia.getThreadParamBean();
-
-            paramBean.getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
-
-            session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
-            this.site = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
+            JahiaSite site = TestHelper.createSite(TESTSITE_NAME);
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+            JCRNodeWrapper siteNode = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
             
             String templatesFolder = "/sites/"+site.getSiteKey() + "/templates";
             InputStream importStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("imports/importTemplatesForCacheTest.xml");
@@ -117,12 +111,12 @@ public class CacheFilterTest {
             importStream.close();
             session.save();   
             
-            JCRNodeWrapper shared = this.site.getNode("home");
+            JCRNodeWrapper shared = siteNode.getNode("home");
             if (shared.hasNode("testContent")) {
                 shared.getNode("testContent").remove();
             }
             if(shared.isVersioned()) session.checkout(shared);
-            node = shared.addNode("testContent", "jnt:page");
+            JCRNodeWrapper node = shared.addNode("testContent", "jnt:page");
             node.setProperty("jcr:title", "English test page");
             node.setProperty("j:templateNode", session.getNode(
                     templatesFolder + "/base/pagetemplate/subpagetemplate"));            
@@ -148,8 +142,8 @@ public class CacheFilterTest {
         }
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
         try {
             TestHelper.deleteSite("test");
         } catch (Exception e) {
@@ -157,6 +151,16 @@ public class CacheFilterTest {
         }
         JCRSessionFactory.getInstance().closeAllSessions();
     }
+    
+    @Before
+    public void setUp() {
+
+    }
+
+    @After
+    public void tearDown() {
+
+    }    
 
     @Test
     public void testCacheFilter() throws Exception {
@@ -171,11 +175,16 @@ public class CacheFilterTest {
             }
         };
         outFilter.setRenderService(RenderService.getInstance());
-
+        
+        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
+        JCRNodeWrapper node = liveSession.getNode("/sites/"+TESTSITE_NAME+"/home/testContent");
+        ParamBean paramBean = (ParamBean)Jahia.getThreadParamBean();        
         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
-        context.setSite(site);
+        context.setSite(node.getResolveSite());
+        context.setServletPath("/render");
         Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
+        context.setWorkspace(liveSession.getWorkspace().getName());
         context.getRequest().setAttribute("script",
                 RenderService.getInstance().resolveScript(resource, context));
 
@@ -188,19 +197,22 @@ public class CacheFilterTest {
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
         CacheKeyGenerator generator = moduleCacheProvider.getKeyGenerator();
         final String key = generator.generate(resource, context);
-
+        moduleCacheProvider.getCache().removeAll();
+        
         RenderChain chain = new RenderChain(attributesFilter, cacheFilter, outFilter);
 
         String result = chain.doFilter(context, resource);
 
         final Element element = moduleCacheProvider.getCache().get(key);
         assertNotNull("Html Cache does not contains our html rendering", element);
-        assertTrue("Content Cache and rendering are not equals",((String)((CacheEntry)element.getValue()).getObject()).contains(result));
+        assertTrue("Content Cache and rendering are not equals",((String)((CacheEntry<?>)element.getValue()).getObject()).contains(result));
     }
     
     @Test
     public void testFixForEmptyCacheBug() throws Exception {
         String firstResponse = null;
+        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
+        final JCRNodeWrapper node = liveSession.getNode("/sites/"+TESTSITE_NAME+"/home/testContent");        
         HttpClient client = new HttpClient();
         GetMethod nodeGet = new GetMethod(
             "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" +
@@ -219,11 +231,12 @@ public class CacheFilterTest {
                 Constants.LIVE_WORKSPACE, Locale.ENGLISH, new JCRCallback<String>() {
                     public String doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
+                        ParamBean paramBean = (ParamBean)Jahia.getThreadParamBean();
                         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), session.getUser());
-                        context.setSite(site);
+                        context.setSite(node.getResolveSite());
                         JCRNodeWrapper pageContentNode = session
                                 .getNode("/sites/"
-                                        + site.getSiteKey()
+                                        + TESTSITE_NAME
                                         + "/templates/base/pagetemplate/subpagetemplate/pagecontent");
                         Resource resource = new Resource(pageContentNode,
                                 "html", null,
@@ -293,9 +306,14 @@ public class CacheFilterTest {
             }
         };
         outFilter.setRenderService(RenderService.getInstance());
-
+        
+        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
+        JCRNodeWrapper node = liveSession.getNode("/sites/"+TESTSITE_NAME+"/home/testContent");        
+        ParamBean paramBean = (ParamBean)Jahia.getThreadParamBean();
         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
-        context.setSite(site);
+        context.setSite(node.getResolveSite());
+        context.setServletPath("/render");
+        context.setWorkspace(liveSession.getWorkspace().getName());
         Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
         context.getRequest().setAttribute("script",
@@ -307,8 +325,8 @@ public class CacheFilterTest {
 
         RenderFilter cacheFilter = (RenderFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
-        CacheKeyGenerator generator = moduleCacheProvider.getKeyGenerator();
-        final String key = generator.generate(resource, context);
+        
+        moduleCacheProvider.getCache().removeAll();
 
         RenderChain chain = new RenderChain(attributesFilter, cacheFilter, outFilter);
 
@@ -343,8 +361,9 @@ public class CacheFilterTest {
      */
     @Test
     public void testAclsCasesWithinLiveMode() throws Exception {
-        String templatesFolder = "/sites/"+site.getSiteKey() + "/templates";
-        session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+        String templatesFolder = "/sites/"+TESTSITE_NAME + "/templates";
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+        JCRSiteNode site = (JCRSiteNode) session.getNode("/sites/"+TESTSITE_NAME);
         // Create three users
         final JCRUserManagerProvider userManagerProvider = JCRUserManagerProvider.getInstance();
         final JCRUser userAB = userManagerProvider.createUser("userAB", "password", new Properties());
@@ -363,12 +382,12 @@ public class CacheFilterTest {
         groupC.addMember(userAC);
         groupC.addMember(userBC);
         // Create three content
-        JCRNodeWrapper shared = this.site.getNode("home");
+        JCRNodeWrapper shared = site.getNode("home");
         if (shared.hasNode("testAclContent")) {
             shared.getNode("testAclContent").remove();
         }
         if(shared.isVersioned()) session.checkout(shared);
-        node = shared.addNode("testAclContent", "jnt:page");
+        JCRNodeWrapper node = shared.addNode("testAclContent", "jnt:page");
         node.setProperty("jcr:title", "English test page");
         node.setProperty("j:templateNode", session.getNode(
                 templatesFolder + "/base/pagetemplate/subpagetemplate"));
@@ -401,15 +420,15 @@ public class CacheFilterTest {
                 true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
         service.publishByInfoList(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,Collections.<String>emptyList());
         // Login as userAB using httpclient
-        checkContentForUser("userAB", "Content__A__", "Content__B__", "Content__C__");
+        checkContentForUser(node, "userAB", "Content__A__", "Content__B__", "Content__C__");
         // Login as userAC using httpclient
-        checkContentForUser("userAC", "Content__A__", "Content__C__", "Content__B__");
+        checkContentForUser(node, "userAC", "Content__A__", "Content__C__", "Content__B__");
         // Login as userBC using httpclient
-        checkContentForUser("userBC", "Content__B__", "Content__C__", "Content__A__");
+        checkContentForUser(node, "userBC", "Content__B__", "Content__C__", "Content__A__");
     }
 
-    private void checkContentForUser(String username, CharSequence firstContent, CharSequence secondContent,
-                                     String missingContent) throws IOException {
+    private void checkContentForUser(JCRNodeWrapper node, String username, CharSequence firstContent, CharSequence secondContent,
+                                     String missingContent) throws IOException, RepositoryException {
         HttpClient client = new HttpClient();
         PostMethod loginMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/login");
         loginMethod.addParameter("username", username);
@@ -418,6 +437,7 @@ public class CacheFilterTest {
 
         int statusCode = client.executeMethod(loginMethod);
         assertTrue(statusCode== HttpStatus.SC_OK);
+        
         // Use httpclient to render page
         GetMethod nodeGet = new GetMethod(
                 "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" +

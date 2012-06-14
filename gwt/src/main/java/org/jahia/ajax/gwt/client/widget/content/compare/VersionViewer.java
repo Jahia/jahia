@@ -131,11 +131,8 @@ public class VersionViewer extends ContentPanel {
 
         final Label[] label = {null};
 
-        if ("live".equals(workspace)) {
-            label[0] = new Label(Messages.get("label_live_version ", "Live version "));
-        } else {
-            label[0] = new Label(Messages.get("label_staging_version ", "Staging version "));
-        }
+        label[0] = new Label(("live".equals(workspace) ? Messages.get("label_live_version", "Live version") : Messages.get("label_staging_version", "Staging version"))+ " ");
+
         // combo box that allows to select the version
         if (displayVersionSelector) {
             Date startDate = new Date();
@@ -166,6 +163,9 @@ public class VersionViewer extends ContentPanel {
                                 public void onSuccess(Void result) {
                                     unmask();
                                     compareEngine.setRefreshOpener(true);
+                                    if (compareEngine.getRightPanel() != null) {
+                                        compareEngine.getRightPanel().refresh();
+                                    }
                                 }
                             });
                 }
@@ -181,7 +181,7 @@ public class VersionViewer extends ContentPanel {
             }
         });
 
-        final ToggleButton hButton = new ToggleButton("Highligthing");
+        final ToggleButton hButton = new ToggleButton(Messages.get("label.highlight", "Highligthing"));
         hButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent componentEvent) {
@@ -254,7 +254,7 @@ public class VersionViewer extends ContentPanel {
     /**
      * refresh
      */
-    private void refresh() {
+    protected void refresh() {
         load();
     }
 

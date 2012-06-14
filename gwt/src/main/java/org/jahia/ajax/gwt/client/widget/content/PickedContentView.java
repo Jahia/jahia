@@ -313,15 +313,15 @@ public class PickedContentView extends BottomRightComponent {
      *
      * @return
      */
-    public List<String> getSelectedContentPath(final String jahiaContextPath, final String jahiaServletPath,
+    public List<String[]> getSelectedContentPath(final String jahiaContextPath, final String jahiaServletPath,
                                                String filesServletPath) {
         List<GWTJahiaNode> selectedContents = getSelectedContent();
         if (selectedContents == null) {
             return null;
         } else if (selectedContents.isEmpty()) {
-            return new ArrayList<String>();
+            return new ArrayList<String[]>(0);
         } else {
-            List<String> pathes = new ArrayList<String>();
+            List<String[]> pathes = new ArrayList<String[]>();
             String prefix = jahiaContextPath + filesServletPath;
             for (GWTJahiaNode s : selectedContents) {
                 if (config.getNodeTypes().contains("nt:file")) {
@@ -334,10 +334,10 @@ public class PickedContentView extends BottomRightComponent {
                             // ignore;
                         }
                     }
-                    pathes.add(url);
+                    pathes.add(new String[] {url, s.getDisplayName()});
                 } else {
                     prefix = jahiaContextPath + jahiaServletPath;
-                    pathes.add(prefix + "/{mode}/{lang}" + s.getPath() + ".html");
+                    pathes.add(new String[] {prefix + "/{mode}/{lang}" + s.getPath() + ".html", s.getDisplayName()});
                 }
             }
             return pathes;

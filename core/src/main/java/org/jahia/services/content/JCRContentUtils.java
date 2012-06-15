@@ -396,10 +396,7 @@ public final class JCRContentUtils {
                 }
             }
         } catch (Exception e) {
-            currentNode = node;
-        }
-        if (currentNode == null) {
-            currentNode = node;
+            currentNode = null;
         }
         return currentNode;
     }
@@ -1002,7 +999,6 @@ public final class JCRContentUtils {
      *            target JCR path to perform import into
      * @param session
      *            the current JCR session
-     * @param replacements
      * @throws IOException
      *             in case of skeleton lookup error
      * @throws InvalidSerializedDataException

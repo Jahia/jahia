@@ -52,7 +52,7 @@
 [jnt:taskList] > jnt:content, mix:title, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly, jmix:list
  - filterOnTypes (string)
 
-[jnt:taskPlanning] > jnt:content, mix:title, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly
+[jnt:taskSchedule] > jnt:content, mix:title, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly
 // - filterOnCurrentUser (boolean)
 // - filterOnTypes (string)
 // - filterOnPriority (string,choicelist) multiple < 'very_low', 'low', 'medium', 'high', 'very_high'

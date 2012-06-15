@@ -100,24 +100,24 @@ padding:0;
 /******************************************************************************
 *  Planning tasks
 ******************************************************************************/
-.bodywrapper ul.planningtasks  {
+.bodywrapper ul.scheduletasks  {
 	position:relative;
 	margin:0;
 	list-style:none;
 	padding:0;
     margin-bottom:1em;
 }
-.bodywrapper .planningtasks li {
+.bodywrapper .scheduletasks li {
 	padding:10px;
 	margin:0;
 	margin-bottom:0;
 	list-style:none;
     border-bottom:1px solid #e5e5e5;
 }
-.bodywrapper .planningtasks li:last-child {
+.bodywrapper .scheduletasks li:last-child {
 
 }
-.bodywrapper .planningtasks li.now {
+.bodywrapper .scheduletasks li.now {
     background-color:#ffffd7;
     text-align:right;
     color: #333;
@@ -126,13 +126,13 @@ padding:0;
     text-transform: uppercase;
     font-size:0.8em;
 }
-.bodywrapper .planningtasks .date {
+.bodywrapper .scheduletasks .date {
     font-weight:bold;
 }
-.bodywrapper .planningtasks li.finishedTask {
+.bodywrapper .scheduletasks li.finishedTask {
     border-left:4px solid #66cc66
 }
-.bodywrapper .planningtasks li.unfinishedTask {
+.bodywrapper .scheduletasks li.unfinishedTask {
     border-left:4px solid #cc3333
 }
 

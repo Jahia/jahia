@@ -52,21 +52,21 @@ This resources are needed by the ajax loaded content
 
         <jsp:useBean id="now" class="java.util.Date"/>
         <jsp:useBean id="workflowTaskList" class="java.util.LinkedHashMap"/>
-        <ul class="planningtasks">
-            <li class="planningtask now" date="${now.time}">
+        <ul class="scheduletasks">
+            <li class="scheduletask now" date="${now.time}">
                 today
             </li>
             <c:forEach items="${result.nodes}" var="task">
                 <c:choose>
                     <c:when test="${task.properties['state'].string eq 'finished'}">
-                        <li class="planningtask finishedTask" date="${task.properties['dueDate'].date.time.time}">
+                        <li class="scheduletask finishedTask" date="${task.properties['dueDate'].date.time.time}">
                 <span class="date value"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
                                                     pattern="dd/MM/yyyy"/></span>
                             <span class="value">${task.properties['jcr:title'].string}</span>
                         </li>
                     </c:when>
                     <c:otherwise>
-                        <li class="planningtask unfinishedTask" date="${task.properties['dueDate'].date.time.time}">
+                        <li class="scheduletask unfinishedTask" date="${task.properties['dueDate'].date.time.time}">
                 <span class="date value"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
                                                     pattern="dd/MM/yyyy"/></span>
                             <span class="value">${task.properties['jcr:title'].string}</span>
@@ -96,7 +96,7 @@ This resources are needed by the ajax loaded content
                         <fmt:formatDate pattern="dd/MM/yyyy"
                                         value="${task.dueDate}"
                                         var="endDate"/>
-                        <li class="planningtask unfinishedTask" date="${task.dueDate.time}">
+                        <li class="scheduletask unfinishedTask" date="${task.dueDate.time}">
                             <span class="value">${endDate}</span>
                             <span class="value">${task.displayName} - ${node.name}</span>
                             <template:module node="${node}" view="workflowMonitor" editable="false">
@@ -113,7 +113,7 @@ This resources are needed by the ajax loaded content
         </ul>
         <script>
             $(document).ready(function () {
-                $('.planningtask').sortElements(function (a, b) {
+                $('.scheduletask').sortElements(function (a, b) {
                     return $(a).attr('date') > $(b).attr('date') ? 1 : -1;
                 });
             });

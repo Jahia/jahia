@@ -192,6 +192,9 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
                             JCRNodeWrapper refNode = (JCRNodeWrapper) it.nextProperty().getParent().getParent();
                             if (usageFilterSites == null || usageFilterSites.contains(refNode.getResolveSite().getName())) {
                                 JCRNodeWrapper node = JCRContentUtils.findDisplayableNode(refNode, context);
+                                if (node == null) {
+                                    node = refNode;
+                                }
                                 AbstractHit<?> hit = node.isNodeType(Constants.JAHIANT_PAGE) ? new PageHit(node, context) : new JCRNodeHit(
                                         node, context);
                                 if (!node.equals(resource) && addedLinks.add(hit.getLink())) {
@@ -219,6 +222,9 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     public JCRNodeWrapper getDisplayableNode() {
         if (displayableNode == null) {
             displayableNode = JCRContentUtils.findDisplayableNode(resource, context);
+            if (displayableNode == null) {
+                displayableNode = resource;
+            }
         }
         return displayableNode;
     }

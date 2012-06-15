@@ -73,7 +73,7 @@ class CreateContentTabItem extends SidePanelTabItem {
         refresh(Linker.REFRESH_DEFINITIONS);
 
         tab.add(contentTypeTree);
-        tab.setId("createContentTab");
+        tab.setId("JahiaGxtCreateContentTab");
         return tab;
     }
 

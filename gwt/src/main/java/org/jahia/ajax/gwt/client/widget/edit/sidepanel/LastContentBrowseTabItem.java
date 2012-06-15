@@ -176,7 +176,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         contentVBoxData.setFlex(1);
         tab.add(previewLayoutContainer, contentVBoxData);
         
-        tab.setId("lastContentBrowseTab");
+        tab.setId("JahiaGxtLastContentBrowseTab");
         return tab;
     }
 

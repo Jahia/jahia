@@ -91,7 +91,7 @@ public class PagesTabItem extends SidePanelTabItem {
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         tab.setLayout(new FitLayout());
-        tab.setId("pagesTab");
+        tab.setId("JahiaGxtPagesTab");
         return tab;
     }
 

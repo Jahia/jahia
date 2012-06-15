@@ -154,7 +154,7 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
         contentVBoxData.setFlex(2);
         tab.add(contentContainer, contentVBoxData);
         
-        tab.setId("categoryBrowseTab");
+        tab.setId("JahiaGxtCategoryBrowseTab");
         return tab;
     }
 

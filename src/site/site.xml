@@ -36,6 +36,7 @@
             <item name="Caches" href="cache/cache.html"/>
             <item name="Activate information about script usage" href="jahia-modules/scriptinfo.html"/>
             <item name="Contribution Mode" href="jahia-modules/contribute.html"/>
+            <item name="Channels" href="channels/channels.html"/>
         </menu>
         <menu name="Modules Development" inherit="top">
             <item name="Modules" href="modules/modules.html" collapse="true">

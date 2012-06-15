@@ -9,6 +9,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,7 @@ import java.util.List;
 /**
  */
 public class CSSChannelFilter implements Filter {
+    private static Logger logger = LoggerFactory.getLogger(CSSChannelFilter.class);
     private ServletContext servletContext;
 
     private enum Modifier { EQUALS , MIN , MAX }
@@ -78,6 +81,8 @@ public class CSSChannelFilter implements Filter {
                 }
                 
                 
+            } else {
+                logger.warn("Cannot parse CSS " + uri);
             }
         }
 

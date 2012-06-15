@@ -130,7 +130,7 @@
         <span class="label"><fmt:message key="jnt_user.j_title"/></span>
 
             <span <c:if test="${user:isPropertyEditable(user,'j:title')}"> jcr:id="j:title" class="choicelistEdit${currentNode.identifier}"
-                jcr:url="<c:url value='${url.basePreview}${user.path}'/>" <c:if test="${empty fields['j:title']}">init:data="<%= getPublicPropertiesData((JCRNodeWrapper)pageContext.getAttribute("user"), "j:title")%>"</c:if>
+                id="edit_title" jcr:url="<c:url value='${url.basePreview}${user.path}'/>" <c:if test="${empty fields['j:title']}">init:data="<%= getPublicPropertiesData((JCRNodeWrapper)pageContext.getAttribute("user"), "j:title")%>"</c:if>
                 jcr:options="{<c:forEach items="${titleInit}" varStatus="status" var="title"><c:if test="${status.index > 0}">,</c:if>'${title.value.string}':'${title.displayName}'</c:forEach>}"</c:if>><jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/></span>
     </li>
 </c:if>
@@ -191,16 +191,6 @@
             <span <c:if test="${user:isPropertyEditable(user,'j:gender')}"> jcr:id="j:gender" class="choicelistEdit${currentNode.identifier}"
                   id="edit_gender" jcr:url="<c:url value='${url.basePreview}${user.path}'/>" <c:if test="${empty fields['j:gender']}">init:data="<%= getPublicPropertiesData((JCRNodeWrapper)pageContext.getAttribute("user"), "j:gender")%>"</c:if>
                   jcr:options="{<c:forEach items="${genderInit}" varStatus="status" var="gender"><c:if test="${status.index > 0}">,</c:if>'${gender.value.string}':'${gender.displayName}'</c:forEach>}"</c:if>><jcr:nodePropertyRenderer node="${user}" name="j:gender" renderer="resourceBundle"/></span>
-        </li>
-    </c:if>
-
-    <c:if test="${currentNode.properties['j:title'].boolean}">
-        <li>
-            <span class="label"><fmt:message key="jnt_user.j_title"/></span>
-
-            <span <c:if test="${user:isPropertyEditable(user,'j:title')}"> jcr:id="j:title" class="choicelistEdit${currentNode.identifier}"
-                  id="edit_title" jcr:url="<c:url value='${url.basePreview}${user.path}'/>" <c:if test="${empty fields['j:title']}">init:data="<%= getPublicPropertiesData((JCRNodeWrapper)pageContext.getAttribute("user"), "j:title")%>"</c:if>
-                  jcr:options="{<c:forEach items="${titleInit}" varStatus="status" var="title"><c:if test="${status.index > 0}">,</c:if>'${title.value.string}':'${title.displayName}'</c:forEach>}"</c:if>><jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/></span>
         </li>
     </c:if>
 

@@ -117,6 +117,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public static final String FORM_TOKEN = "form_token";
     private Map<String,String> moduleParamsProperties;
     private boolean storeAggregatedPageForGuest = false;
+    private int dependenciesLimit = 1000;
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
@@ -363,19 +364,26 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 for (String path : depNodeWrappers) {
                     Element element1 = dependenciesCache.get(path);
                     Set<String> dependencies = element1 != null ? (Set<String>) element1.getValue() : Collections.<String>emptySet();
-                    Set<String> newDependencies = new LinkedHashSet<String>(dependencies.size() + 1);
-                    newDependencies.addAll(dependencies);
-                    if(isGuest) {
-                        LinkedList<String> userKeysLinkedList = userKeys.get();
-                        if(userKeysLinkedList!=null) {
-                            final String mainresourcekey = userKeysLinkedList.getLast();
-                            if(newDependencies.add(mainresourcekey)){
+                    if (!dependencies.contains("ALL")) {
+                        Set<String> newDependencies = new LinkedHashSet<String>(dependencies.size() + 1);
+                        newDependencies.addAll(dependencies);
+                        if((newDependencies.size()+1) > dependenciesLimit) {
+                            newDependencies.clear();
+                            newDependencies.add("ALL");
+                            dependenciesCache.put(new Element(path, newDependencies));
+                        } else {
+                            if (isGuest) {
+                                LinkedList<String> userKeysLinkedList = userKeys.get();
+                                if (userKeysLinkedList != null) {
+                                    final String mainresourcekey = userKeysLinkedList.getLast();
+                                    if (newDependencies.add(mainresourcekey)) {
+                                        dependenciesCache.put(new Element(path, newDependencies));
+                                    }
+                                }
+                            } else if (newDependencies.add(perUserKey)) {
                                 dependenciesCache.put(new Element(path, newDependencies));
                             }
                         }
-                    }
-                    else if (newDependencies.add(perUserKey)) {
-                        dependenciesCache.put(new Element(path, newDependencies));
                     }
                 }
                 resource.getDependencies().clear();
@@ -995,5 +1003,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
     public void setStoreAggregatedPageForGuest(boolean storeAggregatedPageForGuest) {
         this.storeAggregatedPageForGuest = storeAggregatedPageForGuest;
+    }
+
+    public void setDependenciesLimit(int dependenciesLimit) {
+        this.dependenciesLimit = dependenciesLimit;
     }
 }

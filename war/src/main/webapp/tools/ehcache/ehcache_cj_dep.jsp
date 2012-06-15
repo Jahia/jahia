@@ -40,33 +40,32 @@
         <script type="text/javascript" src="../resources/TableTools.js"></script>
         <title>Display content of module cache dependencies</title>
         <script type="text/javascript">
-            var myTable = $(document).ready(function() {
+            var myTable = $(document).ready(function () {
                 $('#cacheTable').dataTable({
-                            "bLengthChange": true,
-                            "bFilter": true,
-                            "bSort": true,
-                            "bInfo": false,
-                            "bAutoWidth": true,
-                            "bStateSave" : true,
-                            "sPaginationType": "full_numbers",
-                            "bJQueryUI" : true,
-                            "aLengthMenu": [
-                                [50, 100, 200, -1],
-                                [50, 100, 200, "All"]
-                            ],
-                            "sDom": '<"H"Tlfr>t<"F"p>',
-                            "oTableTools": {
-                                "sSwfPath": "../resources/swf/copy_cvs_xls.swf",
-                                "aButtons": [
-                                    "copy", "csv", "xls",
-                                    {
-                                        "sExtends":    "collection",
-                                        "sButtonText": "Save",
-                                        "aButtons":    [ "csv", "xls" ]
-                                    }
-                                ]
+                    "bLengthChange":true,
+                    "bFilter":true,
+                    "bSort":true,
+                    "bInfo":false,
+                    "bAutoWidth":true,
+                    "bStateSave":true,
+                    "sPaginationType":"full_numbers",
+                    "bJQueryUI":true,
+                    "aLengthMenu":[
+                        [50, 100, 200, -1],
+                        [50, 100, 200, "All"]
+                    ],
+                    "sDom":'<"H"Tlfr>t<"F"p>',
+                    "oTableTools":{
+                        "sSwfPath":"../resources/swf/copy_cvs_xls.swf",
+                        "aButtons":[
+                            "copy", "csv", "xls", {
+                                "sExtends":"collection",
+                                "sButtonText":"Save",
+                                "aButtons":[ "csv", "xls" ]
                             }
-                        });
+                        ]
+                    }
+                });
             });
         </script>
     </head>
@@ -113,8 +112,12 @@
                     <td>${key}</td>
                     <td><%
                         Set<String> deps = (Set<String>) element.getValue();
-                        for (String dep : deps) {
-                            out.print(dep + "<br/>");
+                        if(deps.size()>10) {
+                        out.print("Number of dependencies : "+deps.size());
+                        } else {
+                            for (String dep : deps) {
+                                out.print(dep + "<br/>");
+                            }
                         }%>
                         <br/>
                     </td>

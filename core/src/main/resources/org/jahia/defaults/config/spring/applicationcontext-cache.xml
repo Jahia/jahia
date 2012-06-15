@@ -74,6 +74,7 @@ when we flush this entry we will flush the whole cache
             </map>
         </property>
         <property name="storeAggregatedPageForGuest" value="${storeAggregatedPageForGuest}"/>
+        <property name="dependenciesLimit" value="1000"/>
     </bean>
 
     <bean name="cacheMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">

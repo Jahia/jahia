@@ -1456,6 +1456,7 @@ public class NavigationHelper {
         Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
         RenderContext renderContext = new RenderContext(null, null, node.getSession().getUser());
         renderContext.setMainResource(resource);
+        renderContext.setServletPath("/cms/"+servlet);
         Template template = RenderService.getInstance().resolveTemplate(resource, renderContext);
         if (template != null) {
             url += node.getPath() + ".html";

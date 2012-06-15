@@ -116,6 +116,7 @@ class SearchTabItem extends SidePanelTabItem {
         searchForm.setPadding(4);
         searchField = new TextField<String>();
         searchField.setFieldLabel(Messages.get("label.search"));
+        searchField.setId(gxtTabId + "__searchField");
         searchField.addListener(KeyboardEvents.Enter, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
                 // grid.mask("Loading", "x-mask-loading");

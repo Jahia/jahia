@@ -253,7 +253,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 }
 
                 try {
-                    boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext, resource.getNode()) && isExcluded(renderContext, resource);
+                    boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext, resource.getNode()) && !isExcluded(renderContext, resource);
 
                     pageContext.getRequest().setAttribute("editableModule", canEdit);
                     if (canEdit) {

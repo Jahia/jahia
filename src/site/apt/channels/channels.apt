@@ -1,0 +1,83 @@
+Core module - Channels rendering
+
+* Channels provider
+
+ The ChannelsService takes the list of available channels through multiple configurable providers. The provider are also
+ responsible for the channel detection, based on user agent or other request headers, and can provide a list of capabilities
+ for every channel.
+
+A provider should implement the interface ChannelProvider :
+
++-----------------------
+    public int getPriority();
+
+    public Map<String,String> getChannelCapabilities(String identifier);
+
+    public String resolveChannel(HttpServletRequest request);
+
+    public List<String> getAllChannels();
++-----------------------
+
+ To detect the channel, the resolveChannel() method will be called on each provider, in priority order, until one returns
+ a valid channel.
+
+ The getAllChannels() method should return the list of channels that will be available in the studio and edit mode.
+
+ ChannelService will aggregate all capabilities from the different providers by calling the getChannelCapabilities() method.
+
+  * UserAgentChannelProvider
+
+ This simple implementation use an XML spring configuration to list all the possible channels. For each channel, a regular
+ expression on the user agent can be defined for channel detection. This provider is used in the channels module.
+
++------------------------
+<bean class="org.jahia.services.channels.Channel">
+    <constructor-arg index="0" value="apple_iphone_ver1"/>
+    <property name="capabilities">
+        <map>
+            <entry key="display-name" value="iPhone"/>
+            <entry key="template-type-mapping" value="iphone"/>
+            <entry key="variants" value="portrait,landscape"/>
+            <entry key="variants-displayNames" value="Portrait,Landscape"/>
+            <entry key="usable-resolutions" value="320x356,480x208"/>
+            <entry key="device-image" value="/modules/channels/images/devices/iphone-small.png"/>
+            <entry key="decorator-images"
+                   value="/modules/channels/images/devices/iphone-portrait.png,/modules/channels/images/devices/iphone-landscape.png"/>
+            <entry key="decorator-image-sizes" value="388x738,734x383"/>
+            <entry key="decorator-screen-positions" value="35x216,124x115"/>
+            <entry key="resolution_width" value="320"/>
+            <entry key="resolution_height" value="480"/>
+            <entry key="userAgentPattern" value=".*iPhone.*"/>
+        </map>
+    </property>
+</bean>
++------------------------
+
+  * WURFLProvider
+
+ This provider, available at https://github.com/Jahia/WURFLProvider , uses the WURFL database to detect devices and get
+ the capabilities. The WURFL provider is able to detect more than 7000 devices, including phones, tablets, browsers, or
+ webTV devices. Note that the devices are not automatically available in edit mode : they have to be declared in
+ an other provider first.
+
+* View resolution with channels
+
+ When a channel is detected, the system can be used to use another view for a specific module. If a
+ component need to be rendered differently when used on some device, it is possible to create a specific jsp that will be
+ used only for that channel.
+
+ The property "template-type-mapping" that is returned in the device capabilities will be appended to the template type
+ for resolving the view. If the view is not found with this specific mapping, it will fallback to the standard view.
+
+ On an iPhone device, where template-type-mapping is iphone, the system will try to resolve the view first
+ in html-iphone folder, then in html.
+
+* Module exclusion
+
+ It is possible to exclude some components for some devices, directly in the studio. In the layout tab, select "Exclude
+ from channels" and select the channels in which the component should not appear.
+
+* Channel switching
+
+ The component jnt:toggleMobileDisplay can be used in a page to display a link to normal display. This will allows the user
+ to switch from a device-specific view to the generic view.

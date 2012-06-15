@@ -69,6 +69,7 @@ import org.jahia.ajax.gwt.client.service.UserManagerServiceAsync;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.SearchField;
+import org.jahia.ajax.gwt.client.widget.contentengine.UrlMappingEditor;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 
 import java.util.ArrayList;
@@ -301,7 +302,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
                             }
                             String url1 = url + urlParams;
 
-                            com.google.gwt.user.client.Window.open(url1, "customizedpreview", windowFeatures);
+                            openWindow(url1, "customizedpreview", windowFeatures);
                         }
 
                     });
@@ -311,4 +312,12 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
         window.setBottomComponent(ok);
         window.show();
     }
+
+    public static native void openWindow(String url, String name, String features) /*-{
+        if (typeof(previewWindow) != "undefined") {
+            previewWindow.close();
+        }
+        previewWindow = $wnd.open(url, name, features);
+    }-*/;
+
 }

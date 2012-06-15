@@ -151,7 +151,7 @@ class PortletBrowseTabItem extends BrowseTabItem {
         contentVBoxData.setFlex(2);
         tab.add(contentContainer, contentVBoxData);
 
-        tab.setId("portletBrowseTab");
+        tab.setId("JahiaGxtPortletBrowseTab");
         return tab;
     }
 

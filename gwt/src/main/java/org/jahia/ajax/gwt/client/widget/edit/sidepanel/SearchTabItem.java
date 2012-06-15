@@ -101,7 +101,9 @@ class SearchTabItem extends SidePanelTabItem {
     private transient ComboBox<GWTJahiaNodeType> defPicker;
     protected transient PagingLoader<PagingLoadResult<GWTJahiaNode>> loader;
     protected transient Grid<GWTJahiaNode> grid;
-
+    
+    private String gxtTabId = "JahiaGxtSearchTab";
+    
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
         VBoxLayout l = new VBoxLayout();
@@ -212,7 +214,7 @@ class SearchTabItem extends SidePanelTabItem {
         });
         grid.setContextMenu(createContextMenu(config.getTableContextMenu(), grid.getSelectionModel()));
         
-        tab.setId("searchTab");
+        tab.setId(gxtTabId);
         return tab;
     }
 
@@ -234,6 +236,7 @@ class SearchTabItem extends SidePanelTabItem {
         ContentPickerField field = new ContentPickerField(null, null, null, null,
                 ManagerConfigurationFactory.PAGEPICKER, false);
         field.setFieldLabel(Messages.get("label.pagePicker", "Pages"));
+        field.setId(gxtTabId + "__pageSelector");
         return field;
     }
 
@@ -253,7 +256,7 @@ class SearchTabItem extends SidePanelTabItem {
         combo.setForceSelection(true);
         combo.getStore().removeAll();
         combo.getStore().add(JahiaGWTParameters.getSiteLanguages());
-
+        combo.setId(gxtTabId + "__languageSelector");
         return combo;
     }
 
@@ -285,6 +288,7 @@ class SearchTabItem extends SidePanelTabItem {
                 Log.error("Unable to get nodetypes :", caught);
             }
         });
+        combo.setId(gxtTabId + "__nodeSelector");
         return combo;
     }
 

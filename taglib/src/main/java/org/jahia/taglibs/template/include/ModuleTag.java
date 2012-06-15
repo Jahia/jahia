@@ -41,6 +41,7 @@
 package org.jahia.taglibs.template.include;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.channels.Channel;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
@@ -252,7 +253,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 }
 
                 try {
-                    final boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext, resource.getNode());
+                    boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext, resource.getNode()) && isExcluded(renderContext, resource);
+
                     pageContext.getRequest().setAttribute("editableModule", canEdit);
                     if (canEdit) {
                         String type = getModuleType(renderContext);
@@ -319,6 +321,22 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
         }
         return EVAL_PAGE;
+    }
+
+    private boolean isExcluded(RenderContext renderContext, Resource resource) throws RepositoryException {
+        if (resource.getNode().isNodeType("jmix:channelExclusion")) {
+            // we have a mixin applied, let's test if we must exclude it from the current channel.
+            Property channelExclusionProperty = resource.getNode().getProperty("j:channelExclusions");
+            Value[] channelExclusionValues = channelExclusionProperty.getValues();
+            Channel currentChannel = renderContext.getChannel();
+            for (Value channelExclusionValue : channelExclusionValues) {
+                if (channelExclusionValue.getString() != null &&
+                        channelExclusionValue.getString().equals(currentChannel.getIdentifier())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private List<String> contributeTypes(RenderContext renderContext, JCRNodeWrapper node) {

@@ -94,6 +94,9 @@ Basic Jahia REST API
  directly called on the 'full' view but we will not repeat them here for the sake of brievety (see below for the query
  string parameters and their documentation).
 
+ * prettyPrint : (default value = false) By default the JSON rendering will be as compact as possible, which makes it
+ difficult to read by a human, by enabling this setting it will render a nicely indented output.
+
 **** Full JSON View example query:
 
 +-----------------------------------------
@@ -134,6 +137,9 @@ Basic Jahia REST API
 +-----------------------------------------
  nt%3Abase
 +-----------------------------------------
+
+      * prettyPrint : (default value = false) By default the JSON rendering will be as compact as possible, which makes
+        it difficult to read by a human, by enabling this setting it will render a nicely indented output.
 
 **** Full JSON View examples query
 

@@ -22,7 +22,8 @@
 <c:set var="selectableNodeTypes" value="${functions:default(currentResource.moduleParams.selectableNodeTypes, param.selectableNodeTypes)}"/>
 <c:set var="escapeColon" value="${functions:default(param.escapeColon, false)}" />
 <c:set var="withType" value="${functions:default(param.withType, false)}" />
-<json:object escapeXml="false">
+<c:set var="prettyPrint" value="${functions:default(param.prettyPrint, false)}" />
+<json:object escapeXml="false" prettyPrint="${prettyPrint}">
     <c:forEach items="${currentNode.properties}" var="prop">
         <c:set var="propName" value="${prop.name}"/>
         <c:if test="${escapeColon}">
@@ -45,6 +46,9 @@
     <json:property name="primaryNodeType" value="${currentNode.primaryNodeType.name}" />
     <json:array name="mixinTypes" items="${currentNode.mixinNodeTypes}" var="mixinType">
         ${mixinType.name}
+    </json:array>
+    <json:array name="supertypes" items="${currentNode.primaryNodeType.supertypes}" var="supertype">
+        ${supertype.name}
     </json:array>
     <json:property name="depthLimit" value="${depthLimit}" />
     <c:if test="${jcr:isNodeType(currentNode, 'mix:title')}">

@@ -75,7 +75,7 @@
                                                        value="${fn:escapeXml(filteredTags)}"/>
                                                 &nbsp;
                                                 <fmt:message key="label.htmlSettings.markupFiltering.info" var="msg"/>
-                                                <a href="#help" style="cursor: pointer;" onclick="alert('${functions:escapeJavaScript(msg)}'); return false;"><img src="${pageContext.request.contextPath}/engines/images/about.gif" alt="info"  style="cursor: pointer;"/></a>
+                                                <a href="#help" style="cursor: pointer;" onclick='alert("${functions:escapeJavaScript(msg)}"); return false;'><img src="${pageContext.request.contextPath}/engines/images/about.gif" alt="info"  style="cursor: pointer;"/></a>
                                             </td>
                                         </tr>
                                     </table>

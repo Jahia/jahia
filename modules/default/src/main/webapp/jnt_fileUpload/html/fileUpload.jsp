@@ -23,7 +23,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	if (jQuery.browser.msie) {
-		$('#drop-box-file-upload-${currentNode.identifier}').empty().append('${functions:escapeJavaScript(i18nDropHereIE)}');
+		$("#drop-box-file-upload-${currentNode.identifier}").empty().append("${functions:escapeJavaScript(i18nDropHereIE)}");
 	}
 });
 </script>

@@ -55,7 +55,7 @@
                                         ${path}${lineBreak}
                                     </c:forEach>
                                     </c:set>
-                                    <li><a href="#showAll" onclick="alert('${functions:escapeJavaScript(all)}'); return false;">...&lt;<fmt:message key="label.all"/>&gt;</a></li>
+                                    <li><a href="#showAll" onclick='alert("${functions:escapeJavaScript(all)}"); return false;'>...&lt;<fmt:message key="label.all"/>&gt;</a></li>
                                 </c:if>
                             </ul>
                         </li>
@@ -77,7 +77,7 @@
                                         ${path}${lineBreak}
                                     </c:forEach>
                                     </c:set>
-                                    <li><a href="#showAll" onclick="alert('${functions:escapeJavaScript(all)}'); return false;">...&lt;<fmt:message key="label.all"/>&gt;</a></li>
+                                    <li><a href="#showAll" onclick='alert("${functions:escapeJavaScript(all)}"); return false;'>...&lt;<fmt:message key="label.all"/>&gt;</a></li>
                                 </c:if>
                             </ul>
                         </li>
@@ -110,7 +110,7 @@
                                         ${path}${lineBreak}
                                     </c:forEach>
                                     </c:set>
-                                    <li><a href="#showAll" onclick="alert('${functions:escapeJavaScript(all)}'); return false;">...&lt;<fmt:message key="label.all"/>&gt;</a></li>
+                                    <li><a href="#showAll" onclick='alert("${functions:escapeJavaScript(all)}"); return false;'>...&lt;<fmt:message key="label.all"/>&gt;</a></li>
                                 </c:if>
                             </ul>
                         </li>

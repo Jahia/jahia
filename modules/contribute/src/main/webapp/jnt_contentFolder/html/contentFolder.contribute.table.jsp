@@ -104,7 +104,7 @@
                                 </fmt:message>
                                 <img height="16" width="16" border="0" style="cursor:pointer;" title="<fmt:message key='label.requestDeletionApproval'/>" alt="<fmt:message key='label.requestDeletionApproval'/>"
                                      src="<c:url value='/icons/publish.png'/>"
-                                onclick="publishNodes(new Array('${child.identifier}'), '${functions:escapeJavaScript(i18nPublishConfirm)}');">
+                                onclick='publishNodes(new Array("${child.identifier}"), "${functions:escapeJavaScript(i18nPublishConfirm)}");'>
                             </c:if>
                         </c:if>
                     </c:if>

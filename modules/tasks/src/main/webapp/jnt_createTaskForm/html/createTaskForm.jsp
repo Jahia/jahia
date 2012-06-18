@@ -1,6 +1,5 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
@@ -148,9 +147,9 @@
 
                         <input ${disabled} id="${currentNode.name}-dueDate" type="text" name="dueDate-picker" id="task_dueDate"
                                            class="" value="" tabindex="24" readonly="readonly"/>
-                        <ui:dateSelector fieldId="${currentNode.name}-dueDate" time="true" >
+                        <uiComponents:dateSelector fieldId="${currentNode.name}-dueDate" time="true" >
                             {dateFormat: $.datepicker.ISO_8601, showButtonPanel: true, showOn:'focus'}
-                        </ui:dateSelector>
+                        </uiComponents:dateSelector>
 
                     </p>
                 </c:if>

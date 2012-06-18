@@ -75,7 +75,7 @@
                     <fmt:param value="${child.displayableName}"/>
                 </fmt:message>
                 <button id="pubbtn-${child.identifier}"
-                        onclick="publishNodes(new Array('${child.identifier}'), '${functions:escapeJavaScript(i18nPublishConfirm)}');">
+                        onclick='publishNodes(new Array("${child.identifier}"), "${functions:escapeJavaScript(i18nPublishConfirm)}");'>
                     <span class="icon-contribute icon-publish"></span><fmt:message key="label.requestDeletionApproval"/></button>
             </c:if>
         </c:if>

@@ -123,7 +123,14 @@ public class AreaModule extends SimpleModule {
     @Override public void onParsed() {
         super.onParsed();
         String headerText = head.getText();
-
+        
+        String areaTitle;
+        if (path.contains("/")) {
+            areaTitle = path.substring(path.lastIndexOf('/') + 1);
+        } else {
+            areaTitle = path;
+        }
+        
         if (missingList && editable) {
 //            addStyleName("area-notcreated");
 //            addStyleName(moduleType);
@@ -133,10 +140,8 @@ public class AreaModule extends SimpleModule {
             }
             removeAll();
 
-            LayoutContainer dash = new LayoutContainer();
-            dash.addStyleName("dashedArea");
-
             ctn = new LayoutContainer();
+            ctn.setId("JahiaGxtArea__" + areaTitle);
 //            ctn.addStyleName(moduleType+"Template");
             ctn.addText(headerText);
 
@@ -155,6 +160,7 @@ public class AreaModule extends SimpleModule {
             removeAll();
 
             LayoutContainer dash = new LayoutContainer();
+            dash.setId("JahiaGxtArea__" + areaTitle);
             dash.addStyleName("dashedArea");
 
             ctn = new LayoutContainer();
@@ -163,7 +169,6 @@ public class AreaModule extends SimpleModule {
 
             dash.add(ctn);
             dash.add(html);
-
             add(dash);
         } else {
             setBorders(false);

@@ -62,7 +62,7 @@
     	});
         if (!anySelected) {
     		<fmt:message key="org.jahia.admin.site.ManageSites.noSiteSpecified.label" var="i18nNoSiteSelected"/>
-    		alert('${functions:escapeJavaScript(i18nNoSiteSelected)}');
+    		alert("${functions:escapeJavaScript(i18nNoSiteSelected)}");
         }
 		return anySelected;
     }

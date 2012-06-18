@@ -5,7 +5,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
-<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -71,7 +70,7 @@
         <input type="hidden" id="categorytoadd"/>
         <input type="text" id="category" disabled="true"/>
         <fmt:message key="label.select.category" var="categoryLabel"/>
-        <ui:treeItemSelector fieldId="categorytoadd"  valueType="identifier"
+        <uiComponents:treeItemSelector fieldId="categorytoadd"  valueType="identifier"
                              nodeTypes="jnt:category" selectableNodeTypes="jnt:category" displayIncludeChildren="false"
                              root="${jcr:getSystemSitePath()}/categories" label="${categoryLabel}" displayFieldId="category" onSelect="function(uuid, path, title) {$('#categorytoadd').val(uuid);$('#category').val(title);$('#categorySubmit').show();return false;}"/>
         <input type="submit" title="<fmt:message key='add'/>" value="<fmt:message key='add'/>" class="button"

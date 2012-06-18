@@ -18,8 +18,7 @@
                 filebrowserFlashBrowseUrl: null,
                 filebrowserImageBrowseUrl: null,
                 filebrowserLinkBrowseUrl: null
-            }, ${not empty config ? config : '{}'
-			}) );
+            }, ${not empty config ? config : '{}'}) );
         });
     </script>
 </template:addResources>

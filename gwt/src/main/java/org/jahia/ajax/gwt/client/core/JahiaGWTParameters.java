@@ -80,6 +80,7 @@ public class JahiaGWTParameters {
     public static final String QUERY_STRING = "queryString";
     public static final String STUDIO_URL = "studioUrl";
     public static final String BASE_URL = "baseUrl";
+    public static final String DEVELOPMENT_MODE = "developmentMode";
 
     public static final String SYSTEM_USER = " system "; // org.jahia.jaas.JahiaLoginModule.SYSTEM
 
@@ -104,6 +105,10 @@ public class JahiaGWTParameters {
 
     public static String getCurrentUser() {
         return jahiaParamDictionary.get(CURRENT_USER_NAME);
+    }
+
+    public static boolean isDevelopmentMode() {
+        return "true".equals(jahiaParamDictionary.get(DEVELOPMENT_MODE));
     }
 
     public static String getPathInfo() {

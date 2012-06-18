@@ -42,6 +42,7 @@ package org.jahia.ajax.gwt.utils;
 
 import org.apache.commons.lang.WordUtils;
 import org.drools.util.StringUtils;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,7 +114,7 @@ public class GWTInitializer {
         params.put(JahiaGWTParameters.SERVLET_PATH, request.getServletPath());
         params.put(JahiaGWTParameters.PATH_INFO, request.getPathInfo());
         params.put(JahiaGWTParameters.QUERY_STRING, request.getQueryString());
-
+        params.put(JahiaGWTParameters.DEVELOPMENT_MODE, SettingsBean.getInstance().isDevelopmentMode()?"true":"false");
         JahiaUser user = (JahiaUser) session.getAttribute(ParamBean.SESSION_USER);
         if (user != null) {
             String name = user.getUsername();

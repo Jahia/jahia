@@ -146,6 +146,7 @@ public class SimpleSearchTest {
             Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
             context.setMainResource(resource);
             context.setSite(homeNode.getResolveSite());
+            context.setServletPath("/cms/render");
             new URLGenerator(context, resource);
 
             SearchCriteria criteria = new SearchCriteria();
@@ -190,6 +191,7 @@ public class SimpleSearchTest {
             Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
             context.setMainResource(resource);
             context.setSite(homeNode.getResolveSite());
+            context.setServletPath("/cms/render");
             new URLGenerator(context, resource);
 
             SearchCriteria criteria = new SearchCriteria();
@@ -231,6 +233,7 @@ public class SimpleSearchTest {
             Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
             context.setMainResource(resource);
             context.setSite(homeNode.getResolveSite());
+            context.setServletPath("/cms/render");
             new URLGenerator(context, resource);
 
             SearchCriteria criteria = new SearchCriteria();
@@ -280,6 +283,7 @@ public class SimpleSearchTest {
             Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
             context.setMainResource(resource);
             context.setSite(homeNode.getResolveSite());
+            context.setServletPath("/cms/render");
             new URLGenerator(context, resource);
 
             SearchCriteria criteria = new SearchCriteria();
@@ -347,7 +351,8 @@ public class SimpleSearchTest {
             Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
             context.setMainResource(resource);
             context.setSite(homeNode.getResolveSite());
-            new URLGenerator(context, resource);
+            context.setServletPath("/cms/render");
+                new URLGenerator(context, resource);
 
             SearchCriteria criteria = new SearchCriteria();
 

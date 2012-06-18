@@ -289,68 +289,69 @@ public class ContentTabItem extends PropertiesTabItem {
         FlowPanel flowPanel = new FlowPanel();
 
 
-
-        String preview = selectedNode.getPreview();
-        if (preview != null) {
-            g.setWidget(0, 0, new Image(URL.appendTimestamp(preview)));
-        }
-
-        if (JahiaGWTParameters.isDevelopmentMode()) {
-            String path = selectedNode.getPath();
-            if (path != null) {
-                flowPanel.add(new HTML("<b>" + Messages.get("label.path") + ":</b> " + path));
+        if (selectedNode != null) {
+            String preview = selectedNode.getPreview();
+            if (preview != null) {
+                g.setWidget(0, 0, new Image(URL.appendTimestamp(preview)));
             }
-            String id = selectedNode.getUUID();
-            if (id != null) {
-                flowPanel.add(new HTML("<b>" + Messages.get("label.id", "ID") + ":</b> " + id));
-            }
-            if (selectedNode.isFile() != null &&selectedNode.isFile()) {
-                Long s = selectedNode.getSize();
-                if (s != null) {
-                    flowPanel.add(new HTML("<b>" + Messages.get("label.size") + ":</b> " +
-                            Formatter.getFormattedSize(s.longValue()) + " (" + s.toString() + " bytes)"));
+
+            if (JahiaGWTParameters.isDevelopmentMode()) {
+                String path = selectedNode.getPath();
+                if (path != null) {
+                    flowPanel.add(new HTML("<b>" + Messages.get("label.path") + ":</b> " + path));
                 }
-            }
-            Date date = selectedNode.get("jcr:lastModified");
-            if (date != null) {
-                flowPanel.add(new HTML("<b>" + Messages.get("label.lastModif") + ":</b> " +
-                        org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
-            }
-            if (selectedNode.isLocked() != null && selectedNode.isLocked() && selectedNode.getLockInfos() != null) {
-                String infos = "";
-                if (selectedNode.getLockInfos().containsKey(null) && selectedNode.getLockInfos().size() == 1) {
-                    for (String s : selectedNode.getLockInfos().get(null)) {
-                        infos = Formatter.getLockLabel(s);
+                String id = selectedNode.getUUID();
+                if (id != null) {
+                    flowPanel.add(new HTML("<b>" + Messages.get("label.id", "ID") + ":</b> " + id));
+                }
+                if (selectedNode.isFile() != null &&selectedNode.isFile()) {
+                    Long s = selectedNode.getSize();
+                    if (s != null) {
+                        flowPanel.add(new HTML("<b>" + Messages.get("label.size") + ":</b> " +
+                                Formatter.getFormattedSize(s.longValue()) + " (" + s.toString() + " bytes)"));
                     }
-                } else {
-                    for (Map.Entry<String, List<String>> entry : selectedNode.getLockInfos().entrySet()) {
-                        if (entry.getKey() != null) {
-                            if (infos.length() > 0) {
-                                infos += "; ";
-                            }
-                            infos += entry.getKey() + " : ";
-                            int i = 0;
-                            for (String s : entry.getValue()) {
-                                if (i > 0) {
-                                    infos += ", ";
+                }
+                Date date = selectedNode.get("jcr:lastModified");
+                if (date != null) {
+                    flowPanel.add(new HTML("<b>" + Messages.get("label.lastModif") + ":</b> " +
+                            org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
+                }
+                if (selectedNode.isLocked() != null && selectedNode.isLocked() && selectedNode.getLockInfos() != null) {
+                    String infos = "";
+                    if (selectedNode.getLockInfos().containsKey(null) && selectedNode.getLockInfos().size() == 1) {
+                        for (String s : selectedNode.getLockInfos().get(null)) {
+                            infos = Formatter.getLockLabel(s);
+                        }
+                    } else {
+                        for (Map.Entry<String, List<String>> entry : selectedNode.getLockInfos().entrySet()) {
+                            if (entry.getKey() != null) {
+                                if (infos.length() > 0) {
+                                    infos += "; ";
                                 }
-                                infos += Formatter.getLockLabel(s);
-                                i++;
+                                infos += entry.getKey() + " : ";
+                                int i = 0;
+                                for (String s : entry.getValue()) {
+                                    if (i > 0) {
+                                        infos += ", ";
+                                    }
+                                    infos += Formatter.getLockLabel(s);
+                                    i++;
+                                }
                             }
                         }
                     }
+                    flowPanel.add(new HTML(
+                            "<b>" + Messages.get("info.lock.label") + ":</b> " + infos));
                 }
-                flowPanel.add(new HTML(
-                        "<b>" + Messages.get("info.lock.label") + ":</b> " + infos));
-            }
 
-            flowPanel.add(new HTML("<b>" + Messages.get("nodes.label", "Types") + ":</b> " + selectedNode.getNodeTypes()));
-            flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.jcr.edit.tags.tab", "Tags") + ":</b> " + selectedNode.getTags() != null ? selectedNode.getTags() : ""));
-            g.setWidget(0, 1, flowPanel);
-        }
-        if (preview != null || JahiaGWTParameters.isDevelopmentMode()) {
-            fieldSet.add(g,fd);
-            propertiesEditor.add(fieldSet);
+                flowPanel.add(new HTML("<b>" + Messages.get("nodes.label", "Types") + ":</b> " + selectedNode.getNodeTypes()));
+                flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.jcr.edit.tags.tab", "Tags") + ":</b> " + selectedNode.getTags() != null ? selectedNode.getTags() : ""));
+                g.setWidget(0, 1, flowPanel);
+            }
+            if (preview != null || JahiaGWTParameters.isDevelopmentMode()) {
+                fieldSet.add(g,fd);
+                propertiesEditor.add(fieldSet);
+            }
         }
         super.attachPropertiesEditor(engine, tab);
     }

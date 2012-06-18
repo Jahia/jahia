@@ -422,7 +422,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         boolean isContributePost = fileUpload.getParameterNames().contains(CONTRIBUTE_POST);
                         final String requestWith = req.getHeader("x-requested-with");
                         boolean isAjaxRequest =
-                                req.getHeader("accept").contains("application/json") && requestWith != null &&
+                                req.getHeader("accept") != null && req.getHeader("accept").contains("application/json") && requestWith != null &&
                                         requestWith.equals("XMLHttpRequest") || fileUpload.getParameterMap().isEmpty();
                         List<String> uuids = new LinkedList<String>();
                         List<String> files = new ArrayList<String>();

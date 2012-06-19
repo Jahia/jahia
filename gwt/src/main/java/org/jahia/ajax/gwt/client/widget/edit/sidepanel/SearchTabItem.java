@@ -101,9 +101,9 @@ class SearchTabItem extends SidePanelTabItem {
     private transient ComboBox<GWTJahiaNodeType> defPicker;
     protected transient PagingLoader<PagingLoadResult<GWTJahiaNode>> loader;
     protected transient Grid<GWTJahiaNode> grid;
-    
+
     private String gxtTabId = "JahiaGxtSearchTab";
-    
+
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
         VBoxLayout l = new VBoxLayout();
@@ -207,14 +207,27 @@ class SearchTabItem extends SidePanelTabItem {
         tab.add(panel);
         grid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
-                GWTJahiaNode node = (GWTJahiaNode) ((GridEvent) be).getModel();
-                if (!Boolean.FALSE.equals(ModuleHelper.getNodeType(node.getNodeTypes().get(0)).get("canUseComponentForEdit"))) {
-                    EngineLoader.showEditEngine(editLinker, node);
+                final GWTJahiaNode node = (GWTJahiaNode) ((GridEvent) be).getModel();
+                if (ModuleHelper.getNodeType(node.getNodeTypes().get(0)) == null) {
+                    JahiaContentManagementService.App.getInstance().getNodeType(node.getNodeTypes().get(0), new AsyncCallback<GWTJahiaNodeType>() {
+                        public void onFailure(Throwable caught) {
+                            // Do nothing
+                        }
+                        public void onSuccess(GWTJahiaNodeType result) {
+                            if (!Boolean.FALSE.equals(result.get("canUseComponentForEdit"))) {
+                                EngineLoader.showEditEngine(editLinker, node);
+                            }
+                        }
+                    });
+                } else {
+                    if (!Boolean.FALSE.equals(ModuleHelper.getNodeType(node.getNodeTypes().get(0)).get("canUseComponentForEdit"))) {
+                        EngineLoader.showEditEngine(editLinker, node);
+                    }
                 }
             }
         });
         grid.setContextMenu(createContextMenu(config.getTableContextMenu(), grid.getSelectionModel()));
-        
+
         tab.setId(gxtTabId);
         return tab;
     }
@@ -346,11 +359,11 @@ class SearchTabItem extends SidePanelTabItem {
      * @return
      */
     private static native String getLangSwitchingTemplate()  /*-{
-    return  [
-    '<tpl for=".">',
-    '<div class="x-combo-list-item"><img src="{image}"/> {displayName}</div>',
-    '</tpl>'
-    ].join("");
-  }-*/;
+        return  [
+            '<tpl for=".">',
+            '<div class="x-combo-list-item"><img src="{image}"/> {displayName}</div>',
+            '</tpl>'
+        ].join("");
+    }-*/;
 
 }

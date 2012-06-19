@@ -1341,4 +1341,19 @@
         <property name="titleKey" value="label.selectorTab.filesimages"/>
         <property name="icon" value="files-manager-1616"/>
     </bean>
+
+    <bean id="Toolbar.Item.WebdavUrlCopy" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WebdavUrlCopyActionItem">
+                <property name="allowedNodeTypes">
+                    <list>
+                        <value>jnt:folder</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.webdav.url.get"/>
+        <property name="icon" value="copy"/>
+    </bean>
+
 </beans>

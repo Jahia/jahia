@@ -27,6 +27,7 @@
         <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/modules/assets/css/jquery.Jcrop.css"/>
         <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.min.js'/>"></script>
         <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.Jcrop.min.js'/>"></script>
+        <script type="text/javascript" src="<c:url value='/modules/assets/javascript/clippy/jquery.clippy.min.js'/>"></script>
     </c:if>
 </head>
 <body onload="window.focus()">

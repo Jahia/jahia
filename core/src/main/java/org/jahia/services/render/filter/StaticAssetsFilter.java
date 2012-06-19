@@ -257,6 +257,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 }
                 javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.min.js", null);
                 javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.Jcrop.js", null);
+                javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/clippy/jquery.clippy.min.js", null);
 
                 if (bodyElementList.size() > 0) {
                     Element bodyElement = bodyElementList.get(bodyElementList.size() - 1);

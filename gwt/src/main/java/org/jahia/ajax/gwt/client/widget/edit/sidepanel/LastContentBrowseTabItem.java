@@ -52,9 +52,11 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -65,7 +67,9 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -154,7 +158,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
                 if (evt.getSelectedItem() != null) {
                     JahiaContentManagementService.App.getInstance().getRenderedContent(
                             evt.getSelectedItem().getPath(), null, editLinker.getLocale(),
-                            "default", "preview", null, true, config.getName(),
+                            "default", "preview", null, true, "editmode",
                             editLinker.getActiveChannelIdentifier(), new BaseAsyncCallback<GWTRenderResult>() {
     
                                 public void onSuccess(GWTRenderResult gwtRenderResult) {
@@ -169,7 +173,29 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
                 }
             }
         });
-
+        grid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent baseEvent) {
+                final GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) (((GridEvent) baseEvent).getModel());
+                if (gwtJahiaNode != null && editLinker != null) {
+                    if (ModuleHelper.getNodeType(gwtJahiaNode.getNodeTypes().get(0)) == null) {
+                        JahiaContentManagementService.App.getInstance().getNodeType(gwtJahiaNode.getNodeTypes().get(0), new AsyncCallback<GWTJahiaNodeType>() {
+                            public void onFailure(Throwable caught) {
+                                // Do nothing
+                            }
+                            public void onSuccess(GWTJahiaNodeType result) {
+                                if (!Boolean.FALSE.equals(result.get("canUseComponentForEdit"))) {
+                                    EngineLoader.showEditEngine(editLinker, gwtJahiaNode);
+                                }
+                            }
+                        });
+                    } else {
+                        if (!Boolean.FALSE.equals(ModuleHelper.getNodeType(gwtJahiaNode.getNodeTypes().get(0)).get("canUseComponentForEdit"))) {
+                            EngineLoader.showEditEngine(editLinker, gwtJahiaNode);
+                        }
+                    }
+                }
+            }
+        });
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);
         tab.add(contentContainer, contentVBoxData);
@@ -200,7 +226,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         contentStore.setFiresEvents(true);
         JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
         async.searchSQL(search, limit,
-                        JCRClientUtils.CONTENT_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.ICON,"jcr:lastModified"),false, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                        JCRClientUtils.CONTENT_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.ICON,"jcr:lastModified",GWTJahiaNode.PERMISSIONS),false, new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
                         contentStore.add(gwtJahiaNodes);
                         contentContainer.layout(true);

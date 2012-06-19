@@ -52,6 +52,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -138,10 +139,23 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
 
         grid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent baseEvent) {
-                GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) (((GridEvent) baseEvent).getModel());
+                final GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) (((GridEvent) baseEvent).getModel());
                 if (gwtJahiaNode != null && editLinker != null) {
-                    if (!Boolean.FALSE.equals(ModuleHelper.getNodeType(gwtJahiaNode.getNodeTypes().get(0)).get("canUseComponentForEdit"))) {
-                        EngineLoader.showEditEngine(editLinker, gwtJahiaNode);
+                    if (ModuleHelper.getNodeType(gwtJahiaNode.getNodeTypes().get(0)) == null) {
+                        JahiaContentManagementService.App.getInstance().getNodeType(gwtJahiaNode.getNodeTypes().get(0), new AsyncCallback<GWTJahiaNodeType>() {
+                            public void onFailure(Throwable caught) {
+                                // Do nothing
+                            }
+                            public void onSuccess(GWTJahiaNodeType result) {
+                                if (!Boolean.FALSE.equals(result.get("canUseComponentForEdit"))) {
+                                    EngineLoader.showEditEngine(editLinker, gwtJahiaNode);
+                                }
+                            }
+                        });
+                    } else {
+                        if (!Boolean.FALSE.equals(ModuleHelper.getNodeType(gwtJahiaNode.getNodeTypes().get(0)).get("canUseComponentForEdit"))) {
+                            EngineLoader.showEditEngine(editLinker, gwtJahiaNode);
+                        }
                     }
                 }
             }

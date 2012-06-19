@@ -163,6 +163,7 @@
                         <ref bean="Toolbar.Item.Crop"/>
                         <ref bean="Toolbar.Item.Resize"/>
                         <ref bean="Toolbar.Item.Rotate"/>
+                        <ref bean="Toolbar.Item.WebdavUrlCopy"/>
                         <ref bean="Toolbar.Item.Publish"/>
                         <ref bean="Toolbar.Item.PublishAll"/>
                         <ref bean="Toolbar.Item.Unpublish"/>
@@ -805,6 +806,7 @@
                         <ref bean="Toolbar.Item.Unzip"/>
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
+                        <ref bean="Toolbar.Item.WebdavUrlCopy"/>
                         <ref bean="Toolbar.Item.Publish"/>
                         <ref bean="Toolbar.Item.PublishAll"/>
                         <ref bean="Toolbar.Item.Unpublish"/>

@@ -460,7 +460,7 @@
                     </property>
                     <property name="requiredPermission" value="filesAndImagesSelector"/>
                 </bean>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+                <!--<bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="portlets"/>
                     <property name="icon" value="tab-portlets"/>
                     <property name="tabItem">
@@ -516,7 +516,7 @@
                         </bean>
                     </property>
                     <property name="requiredPermission" value="portletsSelector"/>
-                </bean>
+                </bean>-->
                 <ref bean="sidePanelTab.search"/>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="categories"/>

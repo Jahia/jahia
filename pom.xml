@@ -697,7 +697,7 @@
         <jahia.package.version>${project.version}</jahia.package.version>
         <jahia.project.structure.version>2</jahia.project.structure.version>
 
-        <jahia.deployers.version>2.2</jahia.deployers.version>
+        <jahia.deployers.version>2.3</jahia.deployers.version>
 
         <jahia.war.classifier />
 
@@ -742,7 +742,7 @@
         <eclipse.plugin.version>2.8</eclipse.plugin.version>
 
         <!-- Jahia Maven plugin version and default settings -->
-        <jahia.plugin.version>2.70</jahia.plugin.version>
+        <jahia.plugin.version>2.71</jahia.plugin.version>
         <!-- common settings -->
         <jahia.configure.useDataStore>true</jahia.configure.useDataStore>
 		<jahia.configure.storeFilesInDB>false</jahia.configure.storeFilesInDB>

@@ -49,9 +49,7 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -77,11 +75,9 @@ import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
+import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Search tab item for the side panel for performing simple queries in the content repository.
@@ -101,7 +97,10 @@ class SearchTabItem extends SidePanelTabItem {
     private transient ComboBox<GWTJahiaNodeType> defPicker;
     protected transient PagingLoader<PagingLoadResult<GWTJahiaNode>> loader;
     protected transient Grid<GWTJahiaNode> grid;
-
+    private transient CalendarField startDateField;
+    private transient CalendarField endDateField;
+    private transient ComboBox<ModelData> timesField;
+    private transient RadioGroup dateTypeField;
     private String gxtTabId = "JahiaGxtSearchTab";
 
     public TabItem create(GWTSidePanelTab config) {
@@ -158,7 +157,69 @@ class SearchTabItem extends SidePanelTabItem {
 
         defPicker = createNodeSelector();
         searchForm.add(defPicker);
+        Radio radio = new Radio();
+        radio.setBoxLabel(Messages.get("label.modification","modification"));
+        radio.setValueAttribute("1");
+        radio.setValue(true);
+        Radio radio2 = new Radio();
+        radio2.setBoxLabel(Messages.get("label.creation","creation"));
+        radio2.setValueAttribute("2");
+        Radio radio3 = new Radio();
+        radio3.setBoxLabel(Messages.get("label.publication","publication"));
+        radio3.setValueAttribute("3");
 
+        dateTypeField = new RadioGroup();
+        dateTypeField.setOrientation(Style.Orientation.VERTICAL);
+        dateTypeField.setFieldLabel(Messages.get("label.dateType","According date of"));
+        dateTypeField.add(radio);
+        dateTypeField.add(radio2);
+        dateTypeField.add(radio3);
+        searchForm.add(dateTypeField);
+
+        startDateField = new CalendarField("dd.MM.yyyy", false, false, null, false, null) {
+            @Override
+            protected void onClick(ComponentEvent ce) {
+                timesField.clearSelections();
+                super.onClick(ce);
+            }
+        };
+        startDateField.setFieldLabel(Messages.get("label.startDate","Start Date"));
+
+        endDateField = new CalendarField("dd.MM.yyyy", false, false, null, false, null) {
+            @Override
+            protected void onClick(ComponentEvent ce) {
+                timesField.clearSelections();
+                super.onClick(ce);
+            }
+        };
+        endDateField.setFieldLabel(Messages.get("label.endDate","End Date"));
+        searchForm.add(startDateField);
+        searchForm.add(endDateField);
+        String[] timesValues = {"1day,1","1week,7","2weeks,14","1month,30","3months,90","6months,180","1year,365"};
+        ListStore<ModelData> times = new ListStore<ModelData>();
+        for (String timesValue : timesValues) {
+            String[] value = timesValue.split(",");
+            ModelData d = new BaseModelData();
+            d.set("key",value[1]);
+            d.set("title",Messages.get("label." + value[0], value[0]));
+            times.add(d);
+        }
+
+        timesField = new ComboBox<ModelData>(){
+
+            @Override
+            protected void onClick(ComponentEvent ce) {
+                startDateField.clear();
+                endDateField.clear();
+                this.clear();
+                super.onClick(ce);
+            }
+        };
+        timesField.setDisplayField("title");
+        timesField.setValueField("key");
+        timesField.setStore(times);
+        timesField.setFieldLabel(Messages.get("label.timeRange", "Time range"));
+        searchForm.add(timesField);
         searchForm.addButton(ok);
 //        searchForm.addButton(drag);
 
@@ -188,7 +249,7 @@ class SearchTabItem extends SidePanelTabItem {
 
         List<GWTColumn> columnNames = new ArrayList<GWTColumn>();
         columnNames.add(new GWTColumn("icon",Messages.get("label.icon", ""),40));
-        columnNames.add(new GWTColumn("displayName",Messages.get("label.name", "Name"),200));
+        columnNames.add(new GWTColumn("displayName",Messages.get("label.name", "Name"),240));
         final NodeColumnConfigList columnConfigList = new NodeColumnConfigList(columnNames);
         columnConfigList.init();
 
@@ -289,8 +350,6 @@ class SearchTabItem extends SidePanelTabItem {
         combo.setTypeAhead(true);
         combo.setTriggerAction(ComboBox.TriggerAction.ALL);
         combo.setForceSelection(true);
-        ArrayList<String> list = new ArrayList<String>();
-        list.add("nt:base");
         JahiaContentManagementService.App.getInstance().getContentTypes(Arrays.asList("jmix:editorialContent", "jnt:portlet"), true, false, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
             public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
                 for (GWTJahiaNodeType key : result.keySet()) {
@@ -336,13 +395,44 @@ class SearchTabItem extends SidePanelTabItem {
         gwtJahiaSearchQuery.setInContents(true);
         gwtJahiaSearchQuery.setInTags(true);
         gwtJahiaSearchQuery.setOriginSiteUuid(JahiaGWTParameters.getSiteUUID());
-        gwtJahiaSearchQuery.setPages(pagePickerField.getValue());
+        gwtJahiaSearchQuery.setPages(pagePickerField.getValue().size() >0 ? pagePickerField.getValue(): Arrays.asList(editLinker.getConfig().getSiteNode()));
         gwtJahiaSearchQuery.setLanguage(langPickerField.getValue());
+        if ((endDateField != null && endDateField.getValue() != null) ||
+                (startDateField != null && startDateField.getValue() != null) ||
+                (timesField != null && timesField.getValue() !=  null)) {
+            Date startDate  = startDateField.getValue();
+            Date endDate = null;
+
+            if (timesField.getValue() !=  null) {
+                gwtJahiaSearchQuery.setTimeInDays((String) timesField.getValue().get("key"));
+                endDate = new Date();
+            }
+
+            if (endDate == null) {
+                endDate = endDateField.getValue();
+            }
+            switch (Integer.parseInt(dateTypeField.getValue().getValueAttribute())) {
+                case 1 :
+                    gwtJahiaSearchQuery.setStartEditionDate(startDate);
+                    gwtJahiaSearchQuery.setEndEditionDate(endDate);
+                    break;
+                case 2 :
+                    gwtJahiaSearchQuery.setStartCreationDate(startDate);
+                    gwtJahiaSearchQuery.setEndCreationDate(endDate);
+                    break;
+                case 3 :
+                    gwtJahiaSearchQuery.setStartPublicationDate(startDate);
+                    gwtJahiaSearchQuery.setEndPublicationDate(endDate);
+                    break;
+            }
+        }
         List<String> list = new ArrayList<String>();
         if (defPicker.getValue() != null) {
             list.add(defPicker.getValue().getName());
-            gwtJahiaSearchQuery.setNodeTypes(list);
+        } else {
+            list.add("jmix:editorialContent");
         }
+        gwtJahiaSearchQuery.setNodeTypes(list);
         return gwtJahiaSearchQuery;
     }
 

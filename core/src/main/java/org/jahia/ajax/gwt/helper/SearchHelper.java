@@ -410,7 +410,64 @@ public class SearchHelper {
             fields.setKeywords(gwtQuery.isInMetadatas());
             fields.setTags(gwtQuery.isInTags());
         }
-        
+
+        Date startDate = null;
+        SearchCriteria.DateValue creationDate = new SearchCriteria.DateValue();
+        creationDate.setType(SearchCriteria.DateValue.Type.RANGE);
+        SearchCriteria.DateValue lastModifiedDate = new SearchCriteria.DateValue();
+        lastModifiedDate.setType(SearchCriteria.DateValue.Type.RANGE);
+        SearchCriteria.DateValue lastPublished = criteria.getProperties().get("jmix:lastPublished").get("j:lastPublished").getDateValue();
+        criteria.getProperties().get("jmix:lastPublished").get("j:lastPublished").setType(SearchCriteria.NodeProperty.Type.DATE);
+        criteria.getProperties().get("jmix:lastPublished").get("j:lastPublished").setName("j:lastPublished");
+        lastPublished.setType(SearchCriteria.DateValue.Type.RANGE);
+
+        if (gwtQuery.getTimeInDays() != null) {
+            // compute startDate
+            int timeInDays = Integer.parseInt(gwtQuery.getTimeInDays());
+            Calendar cal = Calendar.getInstance();
+            if (timeInDays < 30) {
+                cal.add(Calendar.DATE,-timeInDays);
+            } else if (timeInDays < 365) {
+                cal.add(Calendar.MONTH, -(timeInDays / 30));
+            } else {
+                cal.add(Calendar.YEAR, -(timeInDays / 365));
+            }
+            startDate = cal.getTime();
+        }
+
+        if (gwtQuery.getEndLastModifiedDate() != null) {
+            lastModifiedDate.setToAsDate(gwtQuery.getEndLastModifiedDate());
+            if (startDate != null) {
+                lastModifiedDate.setFromAsDate(startDate);
+                criteria.setLastModified(lastModifiedDate);
+            }
+        } else if (gwtQuery.getEndCreatedDate() != null) {
+            creationDate.setToAsDate(gwtQuery.getEndCreatedDate());
+            if (startDate != null) {
+                creationDate.setFromAsDate(startDate);
+                criteria.setCreated(creationDate);
+            }
+        } else if (gwtQuery.getEndPublishedDate() != null) {
+            lastPublished.setToAsDate(gwtQuery.getEndPublishedDate());
+            if (startDate != null) {
+                lastPublished.setFromAsDate(startDate);
+            }
+        }
+
+        if (gwtQuery.getStartCreatedDate() != null) {
+            creationDate.setFromAsDate(gwtQuery.getStartCreatedDate());
+            criteria.setCreated(creationDate);
+        }
+
+        if (gwtQuery.getStartLastModifiedDate() != null ) {
+            lastModifiedDate.setFromAsDate(gwtQuery.getStartLastModifiedDate());
+            criteria.setLastModified(lastModifiedDate);
+        }
+
+        if (gwtQuery.getStartPublishedDate() != null) {
+            lastPublished.setFromAsDate(gwtQuery.getStartPublishedDate());
+        }
+
         if (gwtQuery.getOriginSiteUuid() != null) {
             String siteKey = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
                 public String doInJCR(JCRSessionWrapper session) throws RepositoryException {

@@ -93,6 +93,7 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private boolean displaySearchInTag = true;
     private boolean displaySearchInFile = true;
     private boolean displaySearchInContent = true;
+    private boolean displaySearchInDateMeta = true;
     private boolean searchInFile = true;
     private boolean searchInContent = true;
     private boolean searchInCurrentSiteOnly = false;
@@ -396,5 +397,13 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     public void setAllowRootNodeEditing(boolean allowRootNodeEditing) {
         this.allowRootNodeEditing = allowRootNodeEditing;
+    }
+
+    public boolean isDisplaySearchInDateMeta() {
+        return displaySearchInDateMeta;
+    }
+
+    public void setDisplaySearchInDateMeta(boolean displaySearchInDateMeta) {
+        this.displaySearchInDateMeta = displaySearchInDateMeta;
     }
 }

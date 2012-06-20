@@ -46,6 +46,7 @@ import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
@@ -65,7 +66,7 @@ public class ContentViews extends TopRightComponent {
     private ThumbView thumbView;
     private ThumbView detailedThumbView;
 
-    private LayoutContainer m_component;
+    private ContentPanel m_component;
     private AbstractView current;
 
     private GWTManagerConfiguration configuration;
@@ -75,7 +76,7 @@ public class ContentViews extends TopRightComponent {
         tableView = new TableView(config);
         thumbView = new ThumbView(config, false);
         detailedThumbView = new ThumbView(config, true);
-        m_component = new LayoutContainer(new FitLayout());
+        m_component = new ContentPanel(new FitLayout());
 //        m_component.setHeaderVisible(false);
         m_component.setBorders(false);
 //        m_component.setBodyBorder(false);
@@ -90,14 +91,19 @@ public class ContentViews extends TopRightComponent {
         } else {
             current = tableView;
         }
+        m_component.setBottomComponent(getToolBar());
+        getToolBar().disable();
         m_component.add(current.getComponent());
-
         m_component.addListener(Events.ContextMenu, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
                 getLinker().getSelectionContext().refresh(LinkerSelectionContext.BOTH);
             }
         });
 
+    }
+
+    public void setBottomComponent (Component bottomComponent) {
+        m_component.setBottomComponent(bottomComponent);
     }
 
     public void switchToListView() {

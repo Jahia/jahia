@@ -175,6 +175,7 @@
         <property name="displaySearchInContent" value="false"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="searchInContent" value="false"/>
         <property name="searchInFile" value="true"/>
         <!-- accordion panels-->
@@ -322,6 +323,7 @@
         <property name="enableFileDoubleClick" value="false"/>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="searchInContent" value="true"/>
         <property name="searchInFile" value="true"/>
@@ -444,6 +446,7 @@
         </property>
         <property name="enableFileDoubleClick" value="false"/>
         <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInContent" value="false"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
@@ -555,6 +558,7 @@
         <property name="expandRoot" value="true"/>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="false"/>
         <property name="searchInContent" value="false"/>
@@ -630,6 +634,7 @@
         <property name="enableFileDoubleClick" value="false"/>
         <property name="expandRoot" value="true"/>
         <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInContent" value="false"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
@@ -811,6 +816,7 @@
         </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="true"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInFile" value="true"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="true"/>
@@ -973,6 +979,7 @@
         <property name="displaySearchInContent" value="true"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="searchInContent" value="true"/>
         <property name="searchInFile" value="false"/>
         <!-- accordion -->
@@ -1129,6 +1136,7 @@
         <property name="displaySearchInContent" value="false"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="searchInContent" value="true"/>
         <property name="searchInFile" value="false"/>
         <property name="defaultView" value="list"/>
@@ -1210,6 +1218,7 @@
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="true"/>
         <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
         <property name="displaySearchInTag" value="false"/>
         <property name="searchInContent" value="true"/>
         <property name="searchBasePath" value="/"/>

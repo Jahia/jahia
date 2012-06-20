@@ -291,11 +291,12 @@ class SearchTabItem extends SidePanelTabItem {
         combo.setForceSelection(true);
         ArrayList<String> list = new ArrayList<String>();
         list.add("nt:base");
-        JahiaContentManagementService.App.getInstance().getContentTypes(Arrays.asList("jmix:editorialContent"), true, false, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+        JahiaContentManagementService.App.getInstance().getContentTypes(Arrays.asList("jmix:editorialContent", "jnt:portlet"), true, false, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
             public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
                 for (GWTJahiaNodeType key : result.keySet()) {
                     combo.getStore().add(result.get(key));
                 }
+                combo.getStore().sort("label", Style.SortDir.ASC);
             }
 
             public void onApplicationFailure(Throwable caught) {

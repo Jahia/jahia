@@ -23,7 +23,7 @@
         </c:if>
     </c:if>
 </c:forEach>
-<c:set var="upperNode" value="${jcr:findDisplayableNode(parent, renderContext)}"/>
+<c:set var="upperNode" value="${currentNode.properties['displayLinktoParent'].boolean?jcr:findDisplayableNode(parent, renderContext):''}"/>
 
 <ul class="sibling-navigation-list">
     <c:if test="${not empty previousNode}">

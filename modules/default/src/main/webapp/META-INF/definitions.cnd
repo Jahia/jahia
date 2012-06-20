@@ -236,3 +236,4 @@
 [jnt:toggleMobileDisplay] > jnt:content, jmix:siteComponent, jmix:studioOnly
 
 [jnt:siblingNavigation] > jnt:content, jmix:siteComponent
+- displayLinktoParent (boolean) indexed=no

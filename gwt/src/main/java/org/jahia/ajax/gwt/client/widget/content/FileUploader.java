@@ -141,7 +141,7 @@ public class FileUploader extends Window {
     public FileUploader(final Linker linker, final GWTJahiaNode location) {
         super();
         setHeading(Messages.get("uploadFile.label"));
-        setSize(500, 250);
+        setSize(500, 500);
         setResizable(false);
 
         ButtonBar buttons = new ButtonBar();

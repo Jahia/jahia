@@ -611,6 +611,7 @@
     </bean>
 
 <<<<<<< .working
+<<<<<<< .working
     <bean id="editoriallinkpicker" parent="abstractmanager">
         <property name="nodeTypes">
             <list>
@@ -673,6 +674,67 @@
         <property name="allowsMultipleSelection" value="false"/>
 =======
     <bean id="editoriallinkpicker" parent="editorialpicker">
+=======
+    <bean id="editoriallinkpicker" parent="abstractmanager">
+        <property name="nodeTypes">
+            <list>
+                <value>jnt:page</value>
+                <value>jmix:editorialContent</value>
+                <value>jnt:contentFolder</value>
+                <value>jnt:contentList</value>
+                <value>nt:folder</value>
+            </list>
+        </property>
+
+        <property name="folderTypes">
+            <list>
+                <value>jnt:page</value>
+                <value>jnt:virtualsite</value>
+                <value>jnt:contentList</value>
+                <value>jnt:contentFolder</value>
+                <value>nt:folder</value>
+            </list>
+        </property>
+        <!-- table columns-->
+        <property name="treeColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>displayName</value>
+            </list>
+        </property>
+
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.ItemsGroup.NodeTypeFiltering"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="true"/>
+        <property name="searchInContent" value="true"/>
+        <property name="searchInFile" value="true"/>   
+        <property name="allowsMultipleSelection" value="false"/>
+>>>>>>> .merge-right.r42039
 >>>>>>> .merge-right.r41779
         <property name="showOnlyNodesWithTemplates" value="true"/>
     </bean>

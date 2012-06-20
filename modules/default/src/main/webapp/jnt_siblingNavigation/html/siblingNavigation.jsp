@@ -27,12 +27,12 @@
 
 <ul class="sibling-navigation-list">
     <c:if test="${not empty previousNode}">
-        <li><a class="previousNode" href="<c:url value='${url.base}${previousNode.path}.html'/>"><span><fmt:message key="siblings.previous"/></span></a></li>
+        <li><a class="previousNode" title="${previousNode.displayableName}" href="<c:url value='${url.base}${previousNode.path}.html'/>"><span><fmt:message key="siblings.previous"/></span></a></li>
     </c:if>
     <c:if test="${not empty upperNode}">
-        <li><a class="upperNode" href="<c:url value='${url.base}${upperNode.path}.html'/>"><span><fmt:message key="siblings.up"/></span></a></li>
+        <li><a class="upperNode" title="${upperNode.displayableName}" href="<c:url value='${url.base}${upperNode.path}.html'/>"><span><fmt:message key="siblings.up"/></span></a></li>
     </c:if>
     <c:if test="${not empty nextNode}">
-        <li><a class="nextNode" href="<c:url value='${url.base}${nextNode.path}.html'/>"><span><fmt:message key="siblings.next"/></span></a></li>
+        <li><a class="nextNode" title="${nextNode.displayableName}" href="<c:url value='${url.base}${nextNode.path}.html'/>"><span><fmt:message key="siblings.next"/></span></a></li>
     </c:if>
 </ul>

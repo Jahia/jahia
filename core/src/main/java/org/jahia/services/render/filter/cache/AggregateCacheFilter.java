@@ -374,7 +374,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         } else {
                             if (isGuest) {
                                 LinkedList<String> userKeysLinkedList = userKeys.get();
-                                if (userKeysLinkedList != null) {
+                                if (userKeysLinkedList != null && userKeysLinkedList.size() > 0) {
                                     final String mainresourcekey = userKeysLinkedList.getLast();
                                     if (newDependencies.add(mainresourcekey)) {
                                         dependenciesCache.put(new Element(path, newDependencies));
@@ -396,7 +396,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     newDependencies.addAll(dependencies);
                     if(isGuest) {
                         LinkedList<String> userKeysLinkedList = userKeys.get();
-                        if(userKeysLinkedList!=null) {
+                        if (userKeysLinkedList != null && userKeysLinkedList.size() > 0) {
                             final String mainresourcekey = userKeysLinkedList.getLast();
                             if(newDependencies.add(mainresourcekey)){
                                 dependenciesCache.put(new Element(regexp, newDependencies));
@@ -872,7 +872,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public void handleError(RenderContext renderContext, Resource resource, RenderChain chain, Exception e) {
         super.handleError(renderContext, resource, chain, e);
         LinkedList<String> userKeysLinkedList = userKeys.get();
-        if (userKeysLinkedList != null) {
+        if (userKeysLinkedList != null && userKeysLinkedList.size() > 0) {
             String perUserKey = userKeysLinkedList.get(0);
 
             final Cache cache = cacheProvider.getCache();
@@ -883,7 +883,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain chain) {
         LinkedList<String> userKeysLinkedList = userKeys.get();
-        if (userKeysLinkedList != null && userKeysLinkedList.size()>0) {
+        if (userKeysLinkedList != null && userKeysLinkedList.size() > 0) {
 
             String perUserKey = userKeysLinkedList.remove(0);
             if (perUserKey.equals(acquiredSemaphore.get())) {

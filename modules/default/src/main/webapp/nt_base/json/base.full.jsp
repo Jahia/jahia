@@ -50,6 +50,15 @@
     <json:array name="supertypes" items="${currentNode.primaryNodeType.supertypes}" var="supertype">
         ${supertype.name}
     </json:array>
+    <json:property  name="parentPath" value="${currentNode.parent.path}" />
+    <json:property name="parentPrimaryNodeType" value="${currentNode.parent.primaryNodeType.name}" />
+    <json:array name="parentMixinTypes" items="${currentNode.parent.mixinNodeTypes}" var="parentMixinType">
+        ${parentMixinType.name}
+    </json:array>
+    <json:array name="parentSupertypes" items="${currentNode.parent.primaryNodeType.supertypes}" var="parentSupertype">
+        ${parentSupertype.name}
+    </json:array>
+
     <json:property name="depthLimit" value="${depthLimit}" />
     <c:if test="${jcr:isNodeType(currentNode, 'mix:title')}">
     <jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>

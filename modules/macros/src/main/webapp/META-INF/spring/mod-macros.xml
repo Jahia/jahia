@@ -6,7 +6,7 @@
         <property name="priority" value="1" />
         <property name="description" value="Render filter that searches for known macros in the generated HTML output and evaluates them"/>
         <property name="applyOnConfigurations" value="page" />
-        <property name="applyOnTemplateTypes" value="html" />
+        <property name="applyOnTemplateTypes" value="html,html-.+" />
         <property name="macrosRegexp"><value>##([a-zA-Z0-9_]*)(\(([^"#]*)(\s*,\s*[^"#]*)*\))?##</value></property>
         <property name="macroLookupPath" value="/modules/**/WEB-INF/macros/**/{macro}.*"/>
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
@@ -15,7 +15,7 @@
         <property name="priority" value="90" />
         <property name="description" value="Render filter that searches for known macros in a module generated HTML output and evaluates them"/>
         <property name="skipOnConfigurations" value="page,gwt" />
-        <property name="applyOnTemplateTypes" value="html" />
+        <property name="applyOnTemplateTypes" value="html,html-.+" />
         <property name="macrosRegexp"><value>##([a-zA-Z0-9_]*)(\(([^"#]*)(\s*,\s*[^"#]*)*\))?##</value></property>
         <property name="macroLookupPath" value="/modules/**/WEB-INF/modules-macros/**/{macro}.*"/>
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>

@@ -612,6 +612,7 @@
 
 <<<<<<< .working
 <<<<<<< .working
+<<<<<<< .working
     <bean id="editoriallinkpicker" parent="abstractmanager">
         <property name="nodeTypes">
             <list>
@@ -672,6 +673,9 @@
         <property name="searchInContent" value="true"/>
         <property name="searchInFile" value="true"/>   
         <property name="allowsMultipleSelection" value="false"/>
+=======
+    <bean id="editoriallinkpicker" parent="editorialpicker">
+>>>>>>> .merge-right.r42059
 =======
     <bean id="editoriallinkpicker" parent="editorialpicker">
 =======

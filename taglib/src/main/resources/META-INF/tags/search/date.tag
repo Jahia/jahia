@@ -53,13 +53,13 @@
     </select><div ${value != 'range' ? 'style="display:none"' : ''} class="dateRange" id="range-${rangeId}">
     <c:set var="valueParamName" value="${attributes.name}.from"/>
     <fmt:message key="searchForm.date.from"/>:&nbsp;
-    <input type="text" name="${valueParamName}" id="${fn:replace(valueParamName, '.', '_')}" value="${functions:default(param[valueParamName], from)}"/>
+    <input type="text" name="${valueParamName}" id="${fn:replace(valueParamName, '.', '_')}" value="${functions:default(fn:escapeXml(param[valueParamName]), from)}"/>
     <uiComponents:dateSelector fieldId="${fn:replace(valueParamName, '.', '_')}">
         {dateFormat: 'dd.mm.yy', showButtonPanel: true, showOn:'focus'}
     </uiComponents:dateSelector>
     <c:set var="valueParamName" value="${attributes.name}.to"/>
     <fmt:message key="searchForm.date.to"/>:&nbsp;
-    <input type="text" name="${valueParamName}" id="${fn:replace(valueParamName, '.', '_')}" value="${functions:default(param[valueParamName], to)}"/>
+    <input type="text" name="${valueParamName}" id="${fn:replace(valueParamName, '.', '_')}" value="${functions:default(fn:escapeXml(param[valueParamName]), to)}"/>
     <uiComponents:dateSelector fieldId="${fn:replace(valueParamName, '.', '_')}">
         {dateFormat: 'dd.mm.yy', showButtonPanel: true, showOn:'focus'}
     </uiComponents:dateSelector>

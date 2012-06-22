@@ -1657,7 +1657,7 @@
         <dependency>
             <groupId>com.phloc</groupId>
             <artifactId>phloc-css</artifactId>
-            <version>2.7.2-jahia</version>
+            <version>3.0.0</version>
             <classifier>jdk5</classifier>
         </dependency>
         <!--Hibernate dependencies-->

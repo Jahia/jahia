@@ -53,7 +53,7 @@ public class CSSChannelFilter implements Filter {
                         filteredOutRules.add(mediaRule);
                     } else {
                         for (CSSMediaQuery mediaQuery : mediaRule.getAllMediaQueries()) {
-                            mediaQuery.getExpressions().clear();
+                            mediaQuery.getMediaExpressions().clear();
                         }
                     }
                 }
@@ -91,7 +91,7 @@ public class CSSChannelFilter implements Filter {
 
     private boolean evalMediaRule(Channel channel, List<CSSMediaQuery> mediaQueries) {
         for (CSSMediaQuery mediaQuery : mediaQueries) {
-            for (CSSMediaExpr mediaExpr : mediaQuery.getExpressions()) {
+            for (CSSMediaExpression mediaExpr : mediaQuery.getMediaExpressions()) {
                 if (!evalFeature(mediaExpr, channel)) {
                     return false;
                 }
@@ -100,7 +100,7 @@ public class CSSChannelFilter implements Filter {
         return true;
     }
 
-    private boolean evalFeature(CSSMediaExpr mediaExpr, Channel channel) {
+    private boolean evalFeature(CSSMediaExpression mediaExpr, Channel channel) {
         Modifier modifier = Modifier.EQUALS;
         String feature = mediaExpr.getFeature().toLowerCase();
         if (feature.startsWith("max-")) {
@@ -112,13 +112,25 @@ public class CSSChannelFilter implements Filter {
         }
 
         if (feature.equals("width")) {
-            return evalLength(modifier, channel.getCapability("resolution_width"), mediaExpr.getValue());
+            List<CSSExpressionMemberTermSimple> allSimpleMembers = mediaExpr.getValue().getAllSimpleMembers();
+            if (allSimpleMembers != null && !allSimpleMembers.isEmpty()) {
+                return evalLength(modifier, channel.getCapability("resolution_width"), allSimpleMembers.get(0).getValue());
+            }
         } else if (feature.equals("height")) {
-            return evalLength(modifier, channel.getCapability("resolution_height"), mediaExpr.getValue());
+            List<CSSExpressionMemberTermSimple> allSimpleMembers = mediaExpr.getValue().getAllSimpleMembers();
+            if (allSimpleMembers != null && !allSimpleMembers.isEmpty()) {
+                return evalLength(modifier, channel.getCapability("resolution_height"), allSimpleMembers.get(0).getValue());
+            }
         } else if (feature.equals("device-width")) {
-            return evalLength(modifier, channel.getCapability("resolution_width"), mediaExpr.getValue());
+            List<CSSExpressionMemberTermSimple> allSimpleMembers = mediaExpr.getValue().getAllSimpleMembers();
+            if (allSimpleMembers != null && !allSimpleMembers.isEmpty()) {
+                return evalLength(modifier, channel.getCapability("resolution_width"), allSimpleMembers.get(0).getValue());
+            }
         } else if (feature.equals("device-height")) {
-            return evalLength(modifier, channel.getCapability("resolution_height"), mediaExpr.getValue());
+            List<CSSExpressionMemberTermSimple> allSimpleMembers = mediaExpr.getValue().getAllSimpleMembers();
+            if (allSimpleMembers != null && !allSimpleMembers.isEmpty()) {
+                return evalLength(modifier, channel.getCapability("resolution_height"), allSimpleMembers.get(0).getValue());
+            }
         } else if (feature.equals("orientation")) {
 
         } else if (feature.equals("aspect-ratio")) {

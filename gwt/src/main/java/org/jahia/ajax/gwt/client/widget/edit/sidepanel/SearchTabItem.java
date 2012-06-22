@@ -105,8 +105,6 @@ class SearchTabItem extends SidePanelTabItem {
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
-        VBoxLayout l = new VBoxLayout();
-        l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         tab.setLayout(new FitLayout());
         final FormPanel searchForm = new FormPanel();
         searchForm.setHeaderVisible(false);
@@ -395,7 +393,7 @@ class SearchTabItem extends SidePanelTabItem {
         gwtJahiaSearchQuery.setInContents(true);
         gwtJahiaSearchQuery.setInTags(true);
         gwtJahiaSearchQuery.setOriginSiteUuid(JahiaGWTParameters.getSiteUUID());
-        gwtJahiaSearchQuery.setPages(pagePickerField.getValue().size() >0 ? pagePickerField.getValue(): Arrays.asList(editLinker.getConfig().getSiteNode()));
+        gwtJahiaSearchQuery.setPages(pagePickerField.getValue().size() >0 ? pagePickerField.getValue(): Arrays.asList(JahiaGWTParameters.getSiteNode()));
         gwtJahiaSearchQuery.setLanguage(langPickerField.getValue());
         if ((endDateField != null && endDateField.getValue() != null) ||
                 (startDateField != null && startDateField.getValue() != null) ||

@@ -290,7 +290,7 @@ public class ContentTabItem extends PropertiesTabItem {
 
 
         if (selectedNode != null) {
-            String preview = selectedNode.getPreview();
+            String preview = selectedNode.getReferencedNode() != null ? selectedNode.getReferencedNode().getPreview() : selectedNode.getPreview();
             if (preview != null) {
                 g.setWidget(0, 0, new Image(URL.appendTimestamp(preview)));
             }

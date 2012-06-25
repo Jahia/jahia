@@ -430,11 +430,6 @@
  extends = jnt:page, jnt:template
  - j:theme (weakreference,choicelist[nodes='$currentSite/templates/files/themes;jnt:folder'])
 
-[jmix:channelExclusion] mixin
- extends = jnt:content
- itemtype = layout
- - j:channelExclusions (string,choicelist[channels]) multiple
-
 //---------------------------------------------------------
 // Virtual sites
 //---------------------------------------------------------

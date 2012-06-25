@@ -606,13 +606,6 @@
                     </property>
                     <property name="requiredPermission" value="latestSelector"/>
                 </bean>-->
-                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-                    <property name="key" value="channel"/>
-                    <property name="icon" value="tab-channel"/>
-                    <property name="tabItem">
-                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ChannelsTabItem"/>
-                    </property>
-                </bean>
             </list>
         </property>
 

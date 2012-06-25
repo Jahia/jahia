@@ -85,12 +85,6 @@
         <property name="channelService" ref="ChannelService" />
 	</bean>
 
-    <bean class="org.jahia.services.channels.filters.ChannelExclusionFilter">
-        <property name="priority" value="7" />
-        <property name="description" value="Exclude a module from render if it is excluded for the channel"/>
-        <property name="applyOnConfigurations" value="module,wrappedcontent" />
-    </bean>
-
     <bean class="org.jahia.services.channels.filters.ChannelPreviewFilter">
         <property name="description" value="Adds channel device image decoration"/>
         <property name="channelService" ref="ChannelService" />

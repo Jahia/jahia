@@ -21,14 +21,6 @@
         </property>
     </bean>
 
-    <!-- global channel switcher -->
-    <bean id="Toolbar.ItemsGroup.ChannelSwitcher" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ChannelDisplayActionItem"/>
-        </property>
-        <property name="titleKey" value="label.channels"/>
-    </bean>
-
     <bean id="Toolbar.Item.WorkInProgressAdmin" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="icon" value="workInProgress"/>
         <property name="titleKey" value="label.backgroundJobs"/>

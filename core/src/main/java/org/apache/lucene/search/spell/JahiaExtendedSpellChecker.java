@@ -1,26 +1,17 @@
 package org.apache.lucene.search.spell;
 
-import java.io.IOException;
-import java.util.Iterator;
-
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Hits;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.*;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.apache.lucene.search.spell.SpellChecker;
-import org.apache.lucene.search.spell.StringDistance;
-import org.apache.lucene.search.spell.SuggestWord;
-import org.apache.lucene.search.spell.SuggestWordQueue;
 import org.apache.lucene.store.Directory;
+
+import java.io.IOException;
+import java.util.Iterator;
 
 public class JahiaExtendedSpellChecker extends SpellChecker {
 
@@ -146,13 +137,15 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
             }
         }
 
+        int maxHits = 10 * numSug;
+
         // System.out.println("Q: " + query);
         IndexSearcher usedSearcher = searcher;
-        Hits hits = null;
+        ScoreDoc[] hits = null;
         boolean retry = true;
         while (retry) {
             try {
-                hits = usedSearcher.search(query);
+                hits = usedSearcher.search(query, maxHits).scoreDocs;
             } catch (IOException e) {
                 if (retry && usedSearcher != searcher) {
                     usedSearcher = searcher;
@@ -167,11 +160,11 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
         SuggestWordQueue sugQueue = new SuggestWordQueue(numSug);
 
         // go thru more than 'maxr' matches in case the distance filter triggers
-        int stop = Math.min(hits.length(), 10 * numSug);
+        int stop = Math.min(hits.length, 10 * numSug);
         SuggestWord sugWord = new SuggestWord();
         for (int i = 0; i < stop; i++) {
 
-            sugWord.string = hits.doc(i).get(F_WORD + (language != null ? "-" + language : "")); // get
+            sugWord.string = usedSearcher.doc(hits[i].doc).get(F_WORD + (language != null ? "-" + language : "")); // get
             // orig
             // word
 
@@ -196,7 +189,7 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
                     continue;
                 }
             }
-            sugQueue.insert(sugWord);
+            sugQueue.insertWithOverflow(sugWord);
             if (sugQueue.size() == numSug) {
                 // if queue full, maintain the minScore score
                 min = ((SuggestWord) sugQueue.top()).score;
@@ -291,7 +284,7 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
     public void setSpellIndex(Directory spellIndex) throws IOException {
         this.spellIndex = spellIndex;
         if (!IndexReader.indexExists(spellIndex)) {
-            IndexWriter writer = new IndexWriter(spellIndex, null, true);
+            IndexWriter writer = new IndexWriter(spellIndex, null, true, IndexWriter.MaxFieldLength.UNLIMITED);
             writer.close();
         }
         // close the old searcher, if there was one
@@ -314,7 +307,7 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
      * @throws IOException
      */
     public void clearIndex() throws IOException {
-        IndexWriter writer = new IndexWriter(spellIndex, null, true);
+        IndexWriter writer = new IndexWriter(spellIndex, null, true, IndexWriter.MaxFieldLength.UNLIMITED);
         writer.close();
 
         reopenSearcher();
@@ -331,7 +324,7 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
         BooleanQuery query = new BooleanQuery();
         add(query, F_WORD + (langCode != null ? "-" + langCode : ""), word, BooleanClause.Occur.MUST);
         add(query, F_SITE, site, BooleanClause.Occur.MUST);
-        return searcher.search(query).length() > 0;
+        return searcher.search(query,1).scoreDocs.length > 0;
     }
 
     /**
@@ -347,7 +340,7 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
      */
     public void indexDictionary(Dictionary dict, int mergeFactor, int ramMB, String site, String langCode)
             throws IOException {
-        IndexWriter writer = new IndexWriter(spellIndex, true, new WhitespaceAnalyzer());
+        IndexWriter writer = new IndexWriter(spellIndex, new WhitespaceAnalyzer(), IndexWriter.MaxFieldLength.UNLIMITED);
         writer.setMergeFactor(mergeFactor);
         writer.setRAMBufferSizeMB(ramMB);
 

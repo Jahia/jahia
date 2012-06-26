@@ -427,7 +427,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
      *            If <code>true</code> the string may show up in an excerpt.
      */
     @Override
-    protected void addStringValue(Document doc, String fieldName, Object internalValue,
+    protected void addStringValue(Document doc, String fieldName, String internalValue,
             boolean tokenized, boolean includeInNodeIndex, float boost, boolean useInExcerpt) {
 
         ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
@@ -591,17 +591,14 @@ public class JahiaNodeIndexer extends NodeIndexer {
      */
     protected Field createFulltextField(String fieldName, String value, boolean store) {
         if (store) {
-            // store field compressed if greater than 16k
-            Field.Store stored;
-            if (value.length() > 0x4000) {
-                stored = Field.Store.COMPRESS;
-            } else {
-                stored = Field.Store.YES;
-            }
-            return new Field(fieldName, value, stored, Field.Index.ANALYZED, Field.TermVector.NO);
+            // We would be able to store the field compressed or not depending
+            // on a criterion but then we could not determine later is this field
+            // has been compressed or not, so we choose to store it uncompressed
+            return new Field(fieldName, false, value, Field.Store.YES,
+                    Field.Index.ANALYZED, Field.TermVector.NO);
         } else {
-            return new Field(fieldName, value, Field.Store.NO, Field.Index.ANALYZED,
-                    Field.TermVector.NO);
+            return new Field(fieldName, false, value,
+                    Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO);
         }
     }
 
@@ -614,7 +611,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
     }
 
     @Override
-    protected void addCalendarValue(Document doc, String fieldName, Object internalValue) {
+    protected void addCalendarValue(Document doc, String fieldName, Calendar internalValue) {
         super.addCalendarValue(doc, fieldName, internalValue);
         Calendar value = (Calendar) internalValue;
         ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
@@ -633,25 +630,25 @@ public class JahiaNodeIndexer extends NodeIndexer {
     }
 
     @Override
-    protected void addDoubleValue(Document doc, String fieldName, Object internalValue) {
+    protected void addDoubleValue(Document doc, String fieldName, double internalValue) {
         super.addDoubleValue(doc, fieldName, internalValue);
         ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
         if (definition != null && definition.isFacetable()) {
-            addFacetValue(doc, fieldName, internalValue.toString());
+            addFacetValue(doc, fieldName, DoubleField.doubleToString(internalValue));
         }                        
     }
 
     @Override
-    protected void addLongValue(Document doc, String fieldName, Object internalValue) {
+    protected void addLongValue(Document doc, String fieldName, long internalValue) {
         super.addLongValue(doc, fieldName, internalValue);
         ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
         if (definition != null && definition.isFacetable()) {
-            addFacetValue(doc, fieldName, internalValue.toString());
+            addFacetValue(doc, fieldName, LongField.longToString(internalValue));
         }                                
     }
 
     @Override
-    protected void addReferenceValue(Document doc, String fieldName, Object internalValue,
+    protected void addReferenceValue(Document doc, String fieldName, NodeId internalValue,
             boolean weak) {
         super.addReferenceValue(doc, fieldName, internalValue, weak);
         ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
@@ -665,7 +662,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
     }
 
     @Override
-    protected void addNameValue(Document doc, String fieldName, Object internalValue) {
+    protected void addNameValue(Document doc, String fieldName, Name internalValue) {
         super.addNameValue(doc, fieldName, internalValue);
         ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
         if (definition != null && definition.isFacetable()) {

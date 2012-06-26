@@ -53,13 +53,14 @@ import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
 import org.apache.lucene.analysis.snowball.SnowballFilter;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.util.Version;
 
 /**
  * Filters {@link StandardTokenizer} with {@link StandardFilter}, {@link
  * LowerCaseFilter}, {@link StopFilter}, {@link SnowballFilter} for English and {@link ISOLatin1AccentFilter}.
  */
 public class EnglishSnowballAnalyzer extends Analyzer {
-    private SnowballAnalyzer snowballAnalyzer = new SnowballAnalyzer("English", StopAnalyzer.ENGLISH_STOP_WORDS);
+    private SnowballAnalyzer snowballAnalyzer = new SnowballAnalyzer(Version.LUCENE_30 ,"English", StopAnalyzer.ENGLISH_STOP_WORDS_SET);
 
     public EnglishSnowballAnalyzer() {
         super();

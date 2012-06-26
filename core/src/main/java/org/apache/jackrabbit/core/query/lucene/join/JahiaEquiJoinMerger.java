@@ -39,22 +39,16 @@
  */
 package org.apache.jackrabbit.core.query.lucene.join;
 
-import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.apache.jackrabbit.commons.query.qom.OperandEvaluator;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Row;
-import javax.jcr.query.qom.Constraint;
-import javax.jcr.query.qom.EquiJoinCondition;
+import javax.jcr.query.qom.*;
 import javax.jcr.query.qom.Join;
-import javax.jcr.query.qom.Literal;
-import javax.jcr.query.qom.PropertyValue;
-import javax.jcr.query.qom.QueryObjectModelFactory;
+import java.util.*;
+
+import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO;
 
 public class JahiaEquiJoinMerger extends EquiJoinMerger {
 
@@ -87,13 +81,13 @@ public class JahiaEquiJoinMerger extends EquiJoinMerger {
     }
     
     @Override
-    public List<Constraint> getRightJoinConstraints(List<Row> leftRows)
+    public List<Constraint> getRightJoinConstraints(Collection<Row> leftRows)
             throws RepositoryException {
         return isIncludeTranslationNode() ? getRightJoinConstraintsWithTranslation(leftRows)
                 : super.getRightJoinConstraints(leftRows);
     }
     
-    public List<Constraint> getRightJoinConstraintsWithTranslation(List<Row> leftRows)
+    public List<Constraint> getRightJoinConstraintsWithTranslation(Collection<Row> leftRows)
             throws RepositoryException {
         Map<String, Literal> literals = new HashMap<String, Literal>();
         for (Row leftRow : leftRows) {

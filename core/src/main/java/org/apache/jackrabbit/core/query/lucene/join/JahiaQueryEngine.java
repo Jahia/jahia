@@ -41,10 +41,7 @@
 package org.apache.jackrabbit.core.query.lucene.join;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -76,6 +73,7 @@ import org.apache.jackrabbit.core.query.FacetedQueryResult;
 import org.apache.jackrabbit.core.query.JahiaSimpleQueryResult;
 import org.apache.jackrabbit.core.query.lucene.FacetRow;
 import org.apache.jackrabbit.core.query.lucene.LuceneQueryFactory;
+import org.apache.lucene.search.Sort;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 
@@ -84,6 +82,9 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
  *  - add facet handling in execute()
  */
 public class JahiaQueryEngine extends QueryEngine {
+
+    private static final boolean NATIVE_SORT = Boolean.valueOf(System
+            .getProperty(NATIVE_SORT_SYSTEM_PROPERTY, "false"));
 
 
     public JahiaQueryEngine(Session session, LuceneQueryFactory lqf, Map<String, Value> variables)
@@ -107,22 +108,32 @@ public class JahiaQueryEngine extends QueryEngine {
         String[] columnNames =
             columnMap.keySet().toArray(new String[columnMap.size()]);
 
+        Sort sort = new Sort();
+        if (NATIVE_SORT) {
+            sort = new Sort(createSortFields(orderings, session));
+        }
+
+        // if true it means that the LuceneQueryFactory should just let the
+        // QueryEngine take care of sorting and applying offset and limit
+        // constraints
+        boolean externalSort = !NATIVE_SORT;
+
         try {
-            final List<Row> rowsList = lqf.execute(columnMap, selector, constraint);
+            final List<Row> rowsList = lqf.execute(columnMap, selector, constraint, sort, externalSort, offset, limit);
             // Added by jahia
             QueryResult result;
             if (rowsList.size() > 0 && rowsList.get(0) instanceof FacetRow) {
                 FacetRow facets = (FacetRow) rowsList.remove(0);
                 RowIterator rows = new RowIteratorAdapter(rowsList);
                 result = new FacetedQueryResult(columnNames, selectorNames, rows, facets);
-                QueryResult r = sort(result, orderings, offset, limit);
+                QueryResult r = sort(result, orderings, evaluator, offset, limit);
                 if (r != result) {
                     result = new FacetedQueryResult(columnNames, selectorNames, r.getRows(), facets);
                 }
             } else {
                 RowIterator rows = new RowIteratorAdapter(rowsList);
                 result = new JahiaSimpleQueryResult(columnNames, selectorNames, rows);
-                QueryResult r = sort(result, orderings, offset, limit);
+                QueryResult r = sort(result, orderings, evaluator, offset, limit);
                 if (r != result) {
                     result = new JahiaSimpleQueryResult(columnNames, selectorNames, r.getRows());
                 }
@@ -136,7 +147,7 @@ public class JahiaQueryEngine extends QueryEngine {
     }
 
     @Override
-    protected QueryResult execute(Column[] columns, Join join, Constraint constraint, Ordering[] orderings, long offset, long limit) throws RepositoryException {
+    protected QueryResult execute(Column[] columns, Join join, Constraint constraint, Ordering[] orderings, long offset, long limit, int printIndentation) throws RepositoryException {
         QueryResult result = isEquiJoinWithUuid(join, constraint) ? executeEquiJoin(
                 columns, join, constraint, orderings, offset, limit) : super
                 .execute(columns, join, constraint, orderings, offset, limit);
@@ -202,10 +213,10 @@ public class JahiaQueryEngine extends QueryEngine {
                 (EquiJoinCondition) join.getJoinCondition());
         ConstraintSplitter splitter = new ConstraintSplitter(
                 constraint, qomFactory,
-                merger.getLeftSelectors(), merger.getRightSelectors());
+                merger.getLeftSelectors(), merger.getRightSelectors(), join);
 
         Source left = join.getLeft();
-        Constraint leftConstraint = splitter.getLeftConstraint();
+        Constraint leftConstraint = splitter.getConstraintSplitInfo().getLeftConstraint();
         QueryResult leftResult =
             execute(null, left, leftConstraint, null, 0, -1);
         List<Row> leftRows = new ArrayList<Row>();
@@ -213,7 +224,7 @@ public class JahiaQueryEngine extends QueryEngine {
             leftRows.add(row);
         }
 
-        if (hasLanguageConstraint(splitter.getRightConstraint())) {
+        if (hasLanguageConstraint(splitter.getConstraintSplitInfo().getRightConstraint())) {
             merger.setIncludeTranslationNode(true);
         }
         
@@ -221,11 +232,14 @@ public class JahiaQueryEngine extends QueryEngine {
         Source right = join.getRight();
         List<Constraint> rightConstraints =
             merger.getRightJoinConstraints(leftRows);
+        Comparator<Row> rightCo = new RowPathComparator(
+                merger.getRightSelectors());
+
         if (rightConstraints.size() < 500) {
             Constraint rightConstraint = Constraints.and(
                     qomFactory,
                     Constraints.or(qomFactory, rightConstraints),
-                    splitter.getRightConstraint());
+                    splitter.getConstraintSplitInfo().getRightConstraint());
             rightRows =
                 execute(null, right, rightConstraint, null, 0, -1).getRows();
         } else {
@@ -235,7 +249,7 @@ public class JahiaQueryEngine extends QueryEngine {
                         qomFactory,
                         Constraints.or(qomFactory, rightConstraints.subList(
                                 i, Math.min(i + 500, rightConstraints.size()))),
-                        splitter.getRightConstraint());
+                        splitter.getConstraintSplitInfo().getRightConstraint());
                 QueryResult rigthResult =
                     execute(null, right, rightConstraint, null, 0, -1);
                 for (Row row : JcrUtils.getRows(rigthResult)) {
@@ -246,8 +260,8 @@ public class JahiaQueryEngine extends QueryEngine {
         }
 
         QueryResult result =
-            merger.merge(new RowIteratorAdapter(leftRows), rightRows);
-        return sort(result, orderings, offset, limit);
+            merger.merge(new RowIteratorAdapter(leftRows), rightRows, null, rightCo);
+        return sort(result, orderings, evaluator, offset, limit);
     }
 
     @Override

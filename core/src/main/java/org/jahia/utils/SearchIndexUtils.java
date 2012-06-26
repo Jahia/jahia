@@ -66,7 +66,7 @@ public final class SearchIndexUtils {
     public static boolean checkIndex(File indexDir, StringBuilder out) throws IOException {
         StringOutputStream os = new StringOutputStream();
         PrintStream infoStream = new PrintStream(os);
-        CheckIndex checkIndex = new CheckIndex(FSDirectory.getDirectory(indexDir));
+        CheckIndex checkIndex = new CheckIndex(FSDirectory.open(indexDir));
         checkIndex.setInfoStream(infoStream);
 
         Status status = checkIndex.checkIndex();

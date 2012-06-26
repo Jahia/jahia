@@ -41,6 +41,7 @@
 package org.apache.jackrabbit.core.security;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.api.security.authorization.PrivilegeManager;
 import org.apache.jackrabbit.core.HierarchyManager;
 import org.apache.jackrabbit.core.RepositoryContext;
 import org.apache.jackrabbit.core.config.WorkspaceConfig;
@@ -51,6 +52,7 @@ import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.spi.commons.conversion.DefaultNamePathResolver;
 import org.apache.jackrabbit.spi.commons.conversion.NamePathResolver;
 import org.apache.jackrabbit.spi.commons.conversion.PathResolver;
+import org.apache.jackrabbit.spi.commons.name.PathFactoryImpl;
 import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
 import org.apache.jackrabbit.spi.commons.namespace.SessionNamespaceResolver;
 import org.jahia.services.sites.JahiaSitesBaseService;
@@ -281,32 +283,45 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
 
-    @Override
-    public Privilege privilegeFromName(String privilegeName) throws AccessControlException, RepositoryException {
-        checkInitialized();
+//    @Override
+//    public Privilege privilegeFromName(String privilegeName) throws AccessControlException, RepositoryException {
+//        checkInitialized();
+//
+//        return privilegeRegistry.getPrivilege(privilegeName, workspaceName);
+//    }
+//
+//    @Override
+//    public Privilege[] getSupportedPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
+//        checkInitialized();
+//        checkValidNodePath(absPath);
+//
+//        // return all known privileges everywhere.
+//        return privilegeRegistry.getRegisteredPrivileges();
+//    }
+//
 
-        return privilegeRegistry.getPrivilege(privilegeName, workspaceName);
+    @Override
+    protected PrivilegeManager getPrivilegeManager() throws RepositoryException {
+        return new PrivilegeManager() {
+            public Privilege[] getRegisteredPrivileges() throws RepositoryException {
+                return privilegeRegistry.getRegisteredPrivileges();
+            }
+
+            public Privilege getPrivilege(String privilegeName) throws AccessControlException, RepositoryException {
+                return privilegeRegistry.getPrivilege(privilegeName, workspaceName);
+            }
+
+            public Privilege registerPrivilege(String privilegeName, boolean isAbstract, String[] declaredAggregateNames) throws AccessDeniedException, NamespaceException, RepositoryException {
+                return null;
+            }
+        };
     }
 
-    @Override
-    public Privilege[] getSupportedPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
-        checkInitialized();
-        checkValidNodePath(absPath);
-
-        // return all known privileges everywhere.
-        return privilegeRegistry.getRegisteredPrivileges();
+    public void checkRepositoryPermission(int permissions) throws AccessDeniedException, RepositoryException {
+        if (!isGranted(PathFactoryImpl.getInstance().getRootPath(), permissions)) {
+            throw new AccessDeniedException("Access denied");
+        }
     }
-
-
-    /**
-     * @see AbstractAccessControlManager#getPrivilegeRegistry()
-     */
-    @Override
-    protected PrivilegeRegistry getPrivilegeRegistry() throws RepositoryException {
-        // Do not use jackrabbit privileges registry
-        return null;
-    }
-
 
     /**
      * @see AbstractAccessControlManager#checkValidNodePath(String)

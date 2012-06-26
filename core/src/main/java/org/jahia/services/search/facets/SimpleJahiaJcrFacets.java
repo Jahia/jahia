@@ -41,10 +41,7 @@
 package org.jahia.services.search.facets;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.query.lucene.FieldNames;
-import org.apache.jackrabbit.core.query.lucene.JahiaNodeIndexer;
-import org.apache.jackrabbit.core.query.lucene.NamePathResolverImpl;
-import org.apache.jackrabbit.core.query.lucene.SearchIndex;
+import org.apache.jackrabbit.core.query.lucene.*;
 import org.apache.jackrabbit.spi.commons.conversion.NamePathResolver;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.lucene.analysis.Analyzer;
@@ -84,7 +81,6 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -195,7 +191,7 @@ public class SimpleJahiaJcrFacets {
                 QueryParser qp = new JahiaQueryParser(FieldNames.FULLTEXT, new KeywordAnalyzer());
                 qp.setLowercaseExpandedTerms(false);
                 Query qobj = qp.parse(q);
-                long count = OpenBitSet.intersectionCount(getDocIdSetForHits(searcher.search(qobj), ""),
+                long count = OpenBitSet.intersectionCount(getDocIdSetForHits(searcher.search(qobj, Integer.MAX_VALUE).scoreDocs, ""),
                         docs);
                 if (count >= mincount) {
                     res.add(q, count);
@@ -312,17 +308,17 @@ public class SimpleJahiaJcrFacets {
             throws IOException {
         Query query = null;
         if (StringUtils.isEmpty(locale)) {
-            query = new ConstantScoreRangeQuery(fieldName, null, null, false, false);
+            query = new RangeQuery(null, null, false, null);
         } else {
             BooleanQuery booleanQuery = new BooleanQuery();
-            booleanQuery.add(new ConstantScoreRangeQuery(fieldName, null, null, false, false),
+            booleanQuery.add(new RangeQuery(null, null, false, null),
                     BooleanClause.Occur.MUST);
             booleanQuery.add(
                     new TermQuery(new Term(JahiaNodeIndexer.TRANSLATION_LANGUAGE, locale)),
                     BooleanClause.Occur.MUST);
             query = booleanQuery;
         }
-        OpenBitSet hasVal = getDocIdSetForHits(searcher.search(query), locale);
+        OpenBitSet hasVal = getDocIdSetForHits(searcher.search(query, Integer.MAX_VALUE).scoreDocs, locale);
         return (int) OpenBitSet.andNotCount(docs, hasVal);
     }
 
@@ -391,8 +387,9 @@ public class SimpleJahiaJcrFacets {
             final int[] counts = new int[nTerms];
 
             DocIdSetIterator iter = docs.iterator();
-            while (iter.next()) {
-                int term = termNum[iter.doc()];
+            int doc;
+            while ((doc = iter.nextDoc()) != DocIdSetIterator.NO_MORE_DOCS) {
+                int term = termNum[doc];
                 int arrIdx = term - startTermIndex;
                 if (arrIdx >= 0 && arrIdx < nTerms)
                     counts[arrIdx]++;
@@ -514,7 +511,7 @@ public class SimpleJahiaJcrFacets {
                     if (df >= minDfFilterCache) {
                         // use the filter cache
                         c = (int) OpenBitSet.intersectionCount(getDocIdSetForHits(searcher
-                                .search(new TermQuery(t)), locale), docs);
+                                .search(new TermQuery(t), Integer.MAX_VALUE).scoreDocs, locale), docs);
                     } else {
                         // iterate over TermDocs to calculate the intersection
                         td.seek(te);
@@ -679,7 +676,7 @@ public class SimpleJahiaJcrFacets {
                                 JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY);
                     }
                     final String highI = JahiaQueryParser.DATE_TYPE.toInternal(high);
-                    Query rangeQuery = getRangeQuery(fieldNameInIndex, lowI, highI, true, true);
+                    Query rangeQuery = getRangeQuery(fieldNameInIndex, lowI, highI, true);
                     int count = rangeCount(rangeQuery);
                     if (count >= mincount) {
                         resInner.add(label + PROPNAME_INDEX_SEPARATOR + rangeQuery.toString(),
@@ -716,8 +713,8 @@ public class SimpleJahiaJcrFacets {
                     boolean all = others.contains(FacetDateOther.ALL);
 
                     if (all || others.contains(FacetDateOther.BEFORE)) {
-                        Query rangeQuery = getRangeQuery(fieldNameInIndex, null, startI, false,
-                                false);
+                        Query rangeQuery = getRangeQuery(fieldNameInIndex, null, startI, false
+                        );
                         int count = rangeCount(rangeQuery);
                         if (count >= mincount) {
                             resInner.add(FacetDateOther.BEFORE.toString()
@@ -725,7 +722,7 @@ public class SimpleJahiaJcrFacets {
                         }
                     }
                     if (all || others.contains(FacetDateOther.AFTER)) {
-                        Query rangeQuery = getRangeQuery(fieldNameInIndex, endI, null, false, false);
+                        Query rangeQuery = getRangeQuery(fieldNameInIndex, endI, null, false);
                         int count = rangeCount(rangeQuery);
                         if (count >= mincount) {
                             resInner.add(FacetDateOther.AFTER.toString() + PROPNAME_INDEX_SEPARATOR
@@ -733,7 +730,7 @@ public class SimpleJahiaJcrFacets {
                         }
                     }
                     if (all || others.contains(FacetDateOther.BETWEEN)) {
-                        Query rangeQuery = getRangeQuery(fieldNameInIndex, startI, endI, true, true);
+                        Query rangeQuery = getRangeQuery(fieldNameInIndex, startI, endI, true);
                         int count = rangeCount(rangeQuery);
                         if (count >= mincount) {
                             resInner.add(FacetDateOther.BETWEEN.toString()
@@ -750,15 +747,14 @@ public class SimpleJahiaJcrFacets {
     /**
      * Macro for getting the numDocs of a ConstantScoreRangeQuery over docs
      * 
-     * @see ConstantScoreRangeQuery
      */
     protected int rangeCount(Query rangeQuery) throws IOException {
-        return (int) OpenBitSet.intersectionCount(getDocIdSetForHits(searcher.search(rangeQuery), null),
+        return (int) OpenBitSet.intersectionCount(getDocIdSetForHits(searcher.search(rangeQuery, Integer.MAX_VALUE).scoreDocs, null),
                 docs);
     }
 
-    protected Query getRangeQuery(String field, String low, String high, boolean iLow, boolean iHigh) {
-        return new ConstantScoreRangeQuery(field, low, high, iLow, iHigh);
+    protected Query getRangeQuery(String field, String low, String high, boolean inclusive) {
+        return new RangeQuery(new Term(field,low), new Term(field,high), inclusive, null);
     }
 
     /**
@@ -790,22 +786,21 @@ public class SimpleJahiaJcrFacets {
         }
     }
 
-    private OpenBitSet getDocIdSetForHits(Hits hits, String locale) {
+    private OpenBitSet getDocIdSetForHits(ScoreDoc[] hits, String locale) {
         OpenBitSet docIds = null;
         try {
             BitSet bitset = new BitSet();
             int docId;
-            for (Iterator<Hit> it = hits.iterator(); it.hasNext();) {
+            for (ScoreDoc hit : hits) {
                 if (locale == null) {
-                    docId = it.next().getId();
+                    docId = hit.doc;
                 } else {
-                    Hit hit = it.next();
-                    Document doc = hit.getDocument();
+                    Document doc = searcher.doc(hit.doc);
                     docId = getMainDocIdForTranslations(doc, locale);
                     if (docId == -1) {
-                        docId = hit.getId();
+                        docId = hit.doc;
                     } else {
-                        bitset.set(hit.getId());                        
+                        bitset.set(hit.doc);
                     }
                 }
                 bitset.set(docId);

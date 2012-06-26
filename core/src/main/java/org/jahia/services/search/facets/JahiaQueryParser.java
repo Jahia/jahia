@@ -45,6 +45,7 @@ import org.apache.lucene.queryParser.CharStream;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.QueryParserTokenManager;
+import org.apache.lucene.util.Version;
 import org.apache.solr.schema.DateField;
 
 /**
@@ -67,7 +68,7 @@ public class JahiaQueryParser extends QueryParser {
     }
 
     public JahiaQueryParser(String f, Analyzer a) {
-        super(f, a);
+        super(Version.LUCENE_30, f, a);
     }
 
     @Override

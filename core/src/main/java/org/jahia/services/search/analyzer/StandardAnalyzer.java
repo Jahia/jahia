@@ -50,13 +50,14 @@ import org.apache.lucene.analysis.StopFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.util.Version;
 
 /**
  * Filters {@link StandardTokenizer} with {@link StandardFilter}, {@link LowerCaseFilter}, {@link StopFilter} and {@link ISOLatin1AccentFilter}.
  * 
  */
 public class StandardAnalyzer extends Analyzer {
-    private org.apache.lucene.analysis.standard.StandardAnalyzer luceneStdAnalyzer = new org.apache.lucene.analysis.standard.StandardAnalyzer();
+    private org.apache.lucene.analysis.standard.StandardAnalyzer luceneStdAnalyzer = new org.apache.lucene.analysis.standard.StandardAnalyzer(Version.LUCENE_30);
 
     public StandardAnalyzer() {
         super();

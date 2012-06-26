@@ -45,6 +45,7 @@ import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.ExecutableQuery;
 import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
 import org.apache.jackrabbit.core.query.lucene.constraint.NoDuplicatesConstraint;
+import org.apache.jackrabbit.core.query.lucene.hits.AbstractHitCollector;
 import org.apache.jackrabbit.core.session.SessionContext;
 import org.apache.jackrabbit.core.state.*;
 import org.apache.jackrabbit.spi.Name;
@@ -131,7 +132,7 @@ public class JahiaSearchIndex extends SearchIndex {
                     TermQuery termQuery = new TermQuery(new Term(JahiaNodeIndexer.FACET_HIERARCHY, nodeId.toString()));
                     query.add(new BooleanClause(termQuery, BooleanClause.Occur.SHOULD));
                 }
-                searcher.search(query, new HitCollector() {
+                searcher.search(query, new AbstractHitCollector() {
                     public void collect(int doc, float score) {
                         try {
                             String uuid = reader.document(doc).get("_:UUID");
@@ -335,7 +336,7 @@ public class JahiaSearchIndex extends SearchIndex {
             try {
                 Query q = new TermQuery(new Term(
                         FieldNames.WEAK_REFS, id.toString()));
-                searcher.search(q, new HitCollector() {
+                searcher.search(q, new AbstractHitCollector() {
                     public void collect(int doc, float score) {
                         docs.add(doc);
                     }

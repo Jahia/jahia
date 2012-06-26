@@ -49,6 +49,9 @@ import org.apache.jackrabbit.spi.commons.query.PathQueryNode;
 import org.apache.jackrabbit.spi.commons.query.QueryRootNode;
 import org.apache.jackrabbit.spi.commons.query.RelationQueryNode;
 import org.apache.jackrabbit.spi.commons.query.TraversingQueryNodeVisitor;
+import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
+import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
+import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.slf4j.Logger;
 import org.apache.lucene.search.spell.JahiaExtendedSpellChecker;
 import org.apache.lucene.search.spell.LuceneDictionary;
@@ -285,7 +288,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
         InternalSpellChecker(SearchIndex handler) throws IOException {
             this.handler = handler;
             String path = handler.getPath() + File.separatorChar + "spellchecker";
-            this.spellIndexDirectory = FSDirectory.getDirectory(path, new NativeFSLockFactory(path));
+            this.spellIndexDirectory = FSDirectory.open(new File(path), new NativeFSLockFactory(path));
             if (IndexReader.indexExists(spellIndexDirectory)) {
                 this.lastRefresh = System.currentTimeMillis();
             }
@@ -316,7 +319,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                 for (int i = suggestions.length - 1; i >= 0; i--) {
                     Token t = (Token) tokens.get(i);
                     // only replace if word actually changed
-                    if (!t.termText().equalsIgnoreCase(suggestions[i])) {
+                    if (!t.term().equalsIgnoreCase(suggestions[i])) {
                         sb.replace(t.startOffset(), t.endOffset(), suggestions[i]);
                     }
                 }
@@ -359,21 +362,23 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
         private void tokenize(String statement, List<String> words, List<Token> tokens) throws IOException {
             TokenStream ts = handler.getTextAnalyzer().tokenStream(FieldNames.FULLTEXT, new StringReader(statement));
             try {
-                Token t;
-                while ((t = ts.next()) != null) {
-                    String origWord = statement.substring(t.startOffset(), t.endOffset());
-                    if (t.getPositionIncrement() > 0) {
-                        words.add(t.termText());
-                        tokens.add(t);
+                OffsetAttribute offsetAttribute = ts.getAttribute(OffsetAttribute.class);
+                TermAttribute termAttribute = ts.getAttribute(TermAttribute.class);
+                PositionIncrementAttribute position = ts.getAttribute(PositionIncrementAttribute.class);
+                while (ts.incrementToken()) {
+                    String origWord = statement.substring(offsetAttribute.startOffset(), offsetAttribute.endOffset());
+                    if (position.getPositionIncrement() > 0) {
+                        words.add(termAttribute.term());
+                        tokens.add(new Token(termAttribute.term(), offsetAttribute.startOffset(), offsetAttribute.endOffset()));
                     } else {
                         // very simple implementation: use termText with length
                         // closer to original word
                         Token current = (Token) tokens.get(tokens.size() - 1);
-                        if (Math.abs(origWord.length() - current.termText().length()) > Math.abs(origWord.length()
-                                - t.termText().length())) {
+                        if (Math.abs(origWord.length() - current.term().length()) > Math.abs(origWord.length()
+                                - termAttribute.term().length())) {
                             // replace current token and word
-                            words.set(words.size() - 1, t.termText());
-                            tokens.set(tokens.size() - 1, t);
+                            words.set(words.size() - 1, termAttribute.term());
+                            tokens.set(tokens.size() - 1, new Token(termAttribute.term(), offsetAttribute.startOffset(), offsetAttribute.endOffset()));
                         }
                     }
                 }

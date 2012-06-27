@@ -343,10 +343,11 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
                 // The following binding is necessary for JavaScript, which
                 // doesn't offer a console by default.
                 bindings.put("out", new PrintWriter(scriptContext.getWriter()));
-                scriptEngine.eval(scriptContent, bindings);
+                scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+                scriptEngine.eval(scriptContent, scriptContext);
                 StringWriter writer = (StringWriter) scriptContext.getWriter();
                 String body = writer.toString();
-
+ 
                 sendMessage(fromMail, toMail, ccList, bcclist, subject, null, body);
             } finally {
                 IOUtils.closeQuietly(scriptContent);

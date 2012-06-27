@@ -41,6 +41,7 @@
 package org.jahia.services.render.filter;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -48,6 +49,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.scripting.Script;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.RepositoryException;
@@ -97,7 +99,7 @@ public class TemplateAttributesFilter extends AbstractFilter {
         }
         Script script = (Script) request.getAttribute("script");
         chain.pushAttribute(context.getRequest(), Config.FMT_LOCALIZATION_CONTEXT + ".request", new LocalizationContext(
-                new JahiaResourceBundle(locale, script.getView().getModule().getName()),
+                new JahiaResourceBundle(locale, script.getView().getModule().getName(), context.getSite().getTemplatePackageName()),
                 locale));
         return null;
     }

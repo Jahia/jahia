@@ -58,6 +58,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -74,6 +75,7 @@ public class JahiaResourceBundle extends ResourceBundle {
     private final String basename;
     private final Locale locale;
     private final JahiaTemplatesPackage templatesPackage;
+    private final JahiaTemplatesPackage siteTemplatesPackage;
     public static final String JAHIA_INTERNAL_RESOURCES = "JahiaInternalResources";
     private static final String MISSING_RESOURCE = "???";
     private static final Pattern RB_MACRO = Pattern.compile("##resourceBundle\\((.*)\\)##");
@@ -105,26 +107,37 @@ public class JahiaResourceBundle extends ResourceBundle {
     }
     
     public JahiaResourceBundle(Locale locale, String templatesPackageName) {
-        this(null, locale, templatesPackageName, null);
+        this(null, locale, templatesPackageName, null, null);
+    }
+
+    public JahiaResourceBundle(Locale locale, String templatesPackageName, String siteTemplatesPackageName) {
+        this(null, locale, templatesPackageName, null, siteTemplatesPackageName);
     }
 
     public JahiaResourceBundle(String basename, Locale locale) {
-        this(basename, locale, null, null);
+        this(basename, locale, null, null, null);
     }
 
     public JahiaResourceBundle(Locale locale, String templatesPackageName, ClassLoader classLoader) {
-        this(null, locale, templatesPackageName, classLoader);
+        this(null, locale, templatesPackageName, classLoader, null);
     }
 
     public JahiaResourceBundle(String basename, Locale locale, String templatesPackageName) {
-        this(basename, locale, templatesPackageName, null);
+        this(basename, locale, templatesPackageName, null, null);
     }
 
     public JahiaResourceBundle(String basename, Locale locale, String templatesPackageName, ClassLoader classLoader) {
+        this(basename, locale, templatesPackageName, classLoader, null);
+    }
+
+    public JahiaResourceBundle(String basename, Locale locale, String templatesPackageName, ClassLoader classLoader, String siteTemplatesPackageName) {
         this.basename = basename;
         this.locale = locale;
-        this.templatesPackage = templatesPackageName != null ? ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
+        JahiaTemplateManagerService jahiaTemplateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+        this.templatesPackage = templatesPackageName != null ? jahiaTemplateManagerService.getTemplatePackage(
                 templatesPackageName) : null;
+        this.siteTemplatesPackage = siteTemplatesPackageName != null && !siteTemplatesPackageName.equals(templatesPackageName) ? jahiaTemplateManagerService.getTemplatePackage(
+                siteTemplatesPackageName) : null;
     }
 
     @Override
@@ -143,6 +156,12 @@ public class JahiaResourceBundle extends ResourceBundle {
         }
         if (o == null && templatesPackage != null) {
             final List<String> stringList = templatesPackage.getResourceBundleHierarchy();
+            if (siteTemplatesPackage != null) {
+                String templateSet = siteTemplatesPackage.getResourceBundleHierarchy().get(0);
+                if (!stringList.contains(templateSet)) {
+                    stringList.add(0, templateSet);
+                }
+            }
             for (String bundleToLookup : stringList) {
                 if (basename != null && basename.equals(bundleToLookup)) {
                     // we did the lookup in this bundle already

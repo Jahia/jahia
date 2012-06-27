@@ -56,10 +56,7 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.*;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
@@ -98,10 +95,14 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
     /**
      * Override LuceneQueryFactory.execute()
      */
-    public List<Row> execute(
-            Map<String, PropertyValue> columns, Selector selector,
-            final Constraint constraint) throws RepositoryException, IOException {
+    public List<Row> execute(Map<String, PropertyValue> columns,
+            Selector selector, Constraint constraint, Sort sort,
+            boolean externalSort, long offsetIn, long limitIn)
+            throws RepositoryException, IOException {
         final IndexReader reader = index.getIndexReader(true);
+        final int offset = offsetIn < 0 ? 0 : (int) offsetIn;
+        final int limit = limitIn < 0 ? Integer.MAX_VALUE : (int) limitIn;
+
         try {
             JackrabbitIndexSearcher searcher = new JackrabbitIndexSearcher(
                     session, reader, index.getContext().getItemStateManager());
@@ -130,7 +131,10 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             // End
 
             List<Row> rows = new ArrayList<Row>();
-            QueryHits hits = searcher.evaluate(qp.mainQuery);
+            QueryHits hits = searcher.evaluate(qp.mainQuery, sort, offset+limit);
+            int currentNode = 0;
+            int addedNodes = 0;
+
             ScoreNode node = hits.nextScoreNode();
             Map<String, Boolean> checkedAcls = new HashMap<String, Boolean>();
             
@@ -199,7 +203,21 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                         provider.getNodeWrapper(objectNode,
                                                 jcrSession), node.getScore());
                                 if (filter.evaluate(row)) {
-                                    rows.add(row);
+                                    if (externalSort) {
+                                        rows.add(row);
+                                    } else {
+                                        // apply limit and offset rules locally
+                                        if (currentNode >= offset
+                                                && currentNode - offset < limit) {
+                                            rows.add(row);
+                                            addedNodes++;
+                                        }
+                                        currentNode++;
+                                        // end the loop when going over the limit
+                                        if (addedNodes == limit) {
+                                            break;
+                                        }
+                                    }
                                     if (hasFacets) {
                                         nodes.add(node); // <-- Added by jahia
                                     }

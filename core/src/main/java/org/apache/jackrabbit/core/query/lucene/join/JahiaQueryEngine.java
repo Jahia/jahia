@@ -95,9 +95,10 @@ public class JahiaQueryEngine extends QueryEngine {
     /**
      * Override QueryEngine.execute()
      */
+    @Override
     protected QueryResult execute(
             Column[] columns, Selector selector, Constraint constraint,
-            Ordering[] orderings, long offset, long limit)
+            Ordering[] orderings, long offset, long limit, int printIndentation)
             throws RepositoryException {
         Map<String, NodeType> selectorMap = getSelectorNames(selector);
         String[] selectorNames =
@@ -150,7 +151,7 @@ public class JahiaQueryEngine extends QueryEngine {
     protected QueryResult execute(Column[] columns, Join join, Constraint constraint, Ordering[] orderings, long offset, long limit, int printIndentation) throws RepositoryException {
         QueryResult result = isEquiJoinWithUuid(join, constraint) ? executeEquiJoin(
                 columns, join, constraint, orderings, offset, limit) : super
-                .execute(columns, join, constraint, orderings, offset, limit);
+                .execute(columns, join, constraint, orderings, offset, limit, printIndentation);
         if (!(result instanceof JahiaSimpleQueryResult)) {
             result = new JahiaSimpleQueryResult(result.getColumnNames(), result.getSelectorNames(),
                     result.getRows());

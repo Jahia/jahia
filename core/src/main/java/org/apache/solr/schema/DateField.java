@@ -18,12 +18,27 @@
 package org.apache.solr.schema;
 
 import org.apache.solr.common.SolrException;
+import org.apache.solr.common.util.DateUtil;
 import org.apache.lucene.document.Fieldable;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.TermRangeQuery;
+import org.apache.solr.request.SolrQueryRequest;
+import org.apache.solr.response.TextResponseWriter;
+import org.apache.solr.response.XMLWriter;
+import org.apache.solr.search.QParser;
+import org.apache.solr.search.function.DocValues;
+import org.apache.solr.search.function.FieldCacheSource;
+import org.apache.solr.search.function.StringIndexDocValues;
+import org.apache.solr.search.function.ValueSource;
 import org.apache.solr.util.DateMathParser;
   
 import java.util.Date;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.Locale;
+import java.io.IOException;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
@@ -94,7 +109,7 @@ import java.text.FieldPosition;
  * @see <a href="http://www.w3.org/TR/xmlschema-2/#dateTime">XML schema part 2</a>
  *
  */
-public class DateField {
+public class DateField extends FieldType {
 
   public static TimeZone UTC = TimeZone.getTimeZone("UTC");
 
@@ -203,21 +218,17 @@ public class DateField {
     }
   }
 
-//  public SortField getSortField(SchemaField field,boolean reverse) {
-//    return getStringSort(field,reverse);
-//  }
-//
-//  public ValueSource getValueSource(SchemaField field) {
-//    return new OrdFieldSource(field.name);
-//  }
-//
-//  public void write(XMLWriter xmlWriter, String name, Fieldable f) throws IOException {
-//    xmlWriter.writeDate(name, toExternal(f));
-//  }
-//
-//  public void write(TextResponseWriter writer, String name, Fieldable f) throws IOException {
-//    writer.writeDate(name, toExternal(f));
-//  }
+  public SortField getSortField(SchemaField field,boolean reverse) {
+    return getStringSort(field,reverse);
+  }
+
+  public void write(XMLWriter xmlWriter, String name, Fieldable f) throws IOException {
+    xmlWriter.writeDate(name, toExternal(f));
+  }
+
+  public void write(TextResponseWriter writer, String name, Fieldable f) throws IOException {
+    writer.writeDate(name, toExternal(f));
+  }
 
   /**
    * Returns a formatter that can be use by the current thread if needed to
@@ -240,6 +251,13 @@ public class DateField {
   }
 
   /**
+   * Return the standard human readable form of the date
+   */
+  public String toExternal(Date d) {
+    return fmtThreadLocal.get().format(d) + 'Z';  
+  }  
+
+  /**
    * Thread safe method that can be used by subclasses to parse a Date
    * that is already in the internal representation
    */
@@ -247,6 +265,61 @@ public class DateField {
      return fmtThreadLocal.get().parse(s);
    }
   
+   /** Parse a date string in the standard format, or any supported by DateUtil.parseDate */
+   public Date parseDateLenient(String s, SolrQueryRequest req) throws ParseException {
+     // request could define timezone in the future
+     try {
+       return fmtThreadLocal.get().parse(s);
+     } catch (Exception e) {
+       return DateUtil.parseDate(s);
+     }
+   }
+
+  /**
+   * Parses a String which may be a date
+   * followed by an optional math expression.
+   * @param now an optional fixed date to use as "NOW" in the DateMathParser
+   * @param val the string to parse
+   */
+  public Date parseMathLenient(Date now, String val, SolrQueryRequest req) {
+    String math = null;
+    final DateMathParser p = new DateMathParser(MATH_TZ, MATH_LOCALE);
+
+    if (null != now) p.setNow(now);
+
+    if (val.startsWith(NOW)) {
+      math = val.substring(NOW.length());
+    } else {
+      final int zz = val.indexOf(Z);
+      if (0 < zz) {
+        math = val.substring(zz+1);
+        try {
+          // p.setNow(toObject(val.substring(0,zz)));
+          p.setNow(parseDateLenient(val.substring(0,zz+1), req));
+        } catch (ParseException e) {
+          throw new SolrException( SolrException.ErrorCode.BAD_REQUEST,
+                                   "Invalid Date in Date Math String:'"
+                                   +val+'\'',e);
+        }
+      } else {
+        throw new SolrException( SolrException.ErrorCode.BAD_REQUEST,
+                                 "Invalid Date String:'" +val+'\'');
+      }
+    }
+
+    if (null == math || math.equals("")) {
+      return p.getNow();
+    }
+
+    try {
+      return p.parseMath(math);
+    } catch (ParseException e) {
+      throw new SolrException( SolrException.ErrorCode.BAD_REQUEST,
+                               "Invalid Date Math String:'" +val+'\'',e);
+    }
+  }
+
+   
   /**
    * Thread safe DateFormat that can <b>format</b> in the canonical
    * ISO8601 date format, not including the trailing "Z" (since it is
@@ -315,10 +388,6 @@ public class DateField {
         new DecimalFormatSymbols(CANONICAL_LOCALE));
       return c;
     }
-
-    public NumberFormat getMillisFormat() {
-        return millisFormat;
-    }
   }
   
   private static class ThreadLocalDateFormat extends ThreadLocal<DateFormat> {
@@ -332,4 +401,87 @@ public class DateField {
     }
   }
   
+  public ValueSource getValueSource(SchemaField field, QParser parser) {
+      field.checkFieldCacheSource(parser);
+      return new DateFieldSource(field.getName(), field.getType());
+    }
+
+    /** DateField specific range query */
+    public Query getRangeQuery(QParser parser, SchemaField sf, Date part1, Date part2, boolean minInclusive, boolean maxInclusive) {
+      return new TermRangeQuery(
+              sf.getName(),
+              part1 == null ? null : toInternal(part1),
+              part2 == null ? null : toInternal(part2),
+              minInclusive, maxInclusive);
+    }
 }
+
+class DateFieldSource extends FieldCacheSource {
+    // NOTE: this is bad for serialization... but we currently need the fieldType for toInternal()
+    FieldType ft;
+
+    public DateFieldSource(String name, FieldType ft) {
+      super(name);
+      this.ft = ft;
+    }
+
+    @Override
+    public String description() {
+      return "date(" + field + ')';
+    }
+
+    @Override
+    public DocValues getValues(Map context, IndexReader reader) throws IOException {
+      return new StringIndexDocValues(this, reader, field) {
+        @Override
+        protected String toTerm(String readableValue) {
+          // needed for frange queries to work properly
+          return ft.toInternal(readableValue);
+        }
+
+        @Override
+        public float floatVal(int doc) {
+          return (float)intVal(doc);
+        }
+
+        @Override
+        public int intVal(int doc) {
+          int ord=order[doc];
+          return ord;
+        }
+
+        @Override
+        public long longVal(int doc) {
+          return (long)intVal(doc);
+        }
+
+        @Override
+        public double doubleVal(int doc) {
+          return (double)intVal(doc);
+        }
+
+        @Override
+        public String strVal(int doc) {
+          int ord=order[doc];
+          return ft.indexedToReadable(lookup[ord]);
+        }
+
+        @Override
+        public String toString(int doc) {
+          return description() + '=' + intVal(doc);
+        }
+      };
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      return o instanceof DateFieldSource
+              && super.equals(o);
+    }
+
+    private static int hcode = DateFieldSource.class.hashCode();
+    @Override
+    public int hashCode() {
+      return hcode + super.hashCode();
+    };
+  }

@@ -46,7 +46,12 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.QueryParserTokenManager;
 import org.apache.lucene.util.Version;
+import org.apache.solr.schema.BinaryField;
+import org.apache.solr.schema.BoolField;
 import org.apache.solr.schema.DateField;
+import org.apache.solr.schema.DoubleField;
+import org.apache.solr.schema.LongField;
+import org.apache.solr.schema.StrField;
 
 /**
  * Extension of the Lucene QueryParser used by Jahia's query facets, which for range queries tries
@@ -56,8 +61,12 @@ import org.apache.solr.schema.DateField;
  * @author Benjamin
  */
 public class JahiaQueryParser extends QueryParser {
-
+    public static final BinaryField BINARY_TYPE = new BinaryField();    
+    public static final BoolField BOOLEAN_TYPE = new BoolField();    
     public static final DateField DATE_TYPE = new DateField();    
+    public static final DoubleField DOUBLE_TYPE = new DoubleField();
+    public static final LongField LONG_TYPE = new LongField();
+    public static final StrField STRING_TYPE = new StrField();
     
     public JahiaQueryParser(CharStream stream) {
         super(stream);

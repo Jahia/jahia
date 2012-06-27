@@ -99,9 +99,9 @@
     </properties>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH</url>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/trunk</url>
     </scm>
     <developers>
         <developer>

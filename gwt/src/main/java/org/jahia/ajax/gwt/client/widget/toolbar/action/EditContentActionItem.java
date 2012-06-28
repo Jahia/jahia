@@ -40,12 +40,19 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 
@@ -59,10 +66,19 @@ public class EditContentActionItem extends BaseActionItem {
     
     private boolean allowRootNodeEditing;
     private boolean useMainNode = false;
+    private String path = null;
 
     public void onComponentSelection() {
         GWTJahiaNode singleSelection;
-        if (useMainNode) {
+        if (path != null) {
+            String replacedPath = URL.replacePlaceholders(path, linker.getSelectionContext().getSingleSelection());
+            JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList(replacedPath), null, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                public void onSuccess(List<GWTJahiaNode> result) {
+                    EngineLoader.showEditEngine(linker, result.get(0));
+                }
+            });
+            return;
+        } else if (useMainNode) {
             singleSelection = linker.getSelectionContext().getMainNode();
         }   else {
             singleSelection = linker.getSelectionContext().getSingleSelection();
@@ -91,5 +107,9 @@ public class EditContentActionItem extends BaseActionItem {
 
     public void setUseMainNode(boolean useMainNode) {
         this.useMainNode = useMainNode;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }

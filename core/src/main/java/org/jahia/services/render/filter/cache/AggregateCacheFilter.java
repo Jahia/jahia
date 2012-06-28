@@ -351,7 +351,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 if(isGuest && expiration==0l) {
                     guestnotCacheablePages.add(renderContext.getMainResource().getNode().getPath());
                 }
-                if(isGuest && renderContext.getMainResource() == resource) {
+                if(isGuest && renderContext.getMainResource() == resource && renderContext.getRequest().getAttribute("org.jahia.cache.guestExpiration") != null) {
                     if(expiration!=-1l) {
                         expiration = Math.min((Long)renderContext.getRequest().getAttribute("org.jahia.cache.guestExpiration"),expiration);
                     }

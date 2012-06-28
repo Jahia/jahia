@@ -45,6 +45,7 @@ import org.apache.jackrabbit.core.query.lucene.FieldNames;
 import org.apache.jackrabbit.core.query.lucene.JahiaNodeIndexer;
 import org.apache.jackrabbit.core.query.lucene.NamePathResolverImpl;
 import org.apache.jackrabbit.core.query.lucene.SearchIndex;
+import org.apache.jackrabbit.core.query.lucene.hits.AbstractHitCollector;
 import org.apache.jackrabbit.spi.commons.conversion.NamePathResolver;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.lucene.analysis.Analyzer;
@@ -53,7 +54,6 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.document.FieldSelectorResult;
-import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.index.IndexReader;
@@ -78,22 +78,17 @@ import org.apache.solr.common.util.StrUtils;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.handler.component.ResponseBuilder;
 import org.apache.solr.request.SimpleFacets;
-import org.apache.solr.request.SolrQueryRequest;
-import org.apache.solr.request.UnInvertedField;
 import org.apache.solr.schema.BoolField;
 import org.apache.solr.schema.DateField;
 import org.apache.solr.schema.FieldType;
-import org.apache.solr.schema.IndexSchema;
 import org.apache.solr.schema.SchemaField;
 import org.apache.solr.schema.SortableDoubleField;
 import org.apache.solr.schema.SortableFloatField;
 import org.apache.solr.schema.SortableIntField;
 import org.apache.solr.schema.SortableLongField;
 import org.apache.solr.schema.TrieField;
-import org.apache.solr.search.DocSet;
 import org.apache.solr.search.QParser;
 import org.apache.solr.search.QueryParsing;
-import org.apache.solr.search.QueryUtils;
 import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.util.DateMathParser;
 import org.jahia.exceptions.JahiaException;
@@ -113,7 +108,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -150,7 +144,7 @@ public class SimpleJahiaJcrFacets {
 
     protected ResponseBuilder rb;
 
-    protected SimpleOrderedMap facetResponse;
+    protected SimpleOrderedMap<Object> facetResponse;
 
     public final Date NOW = new Date();
 
@@ -279,9 +273,9 @@ public class SimpleJahiaJcrFacets {
     }
     
     public void addException(String msg, Exception e) {
-        List exceptions = (List)facetResponse.get("exception");
+        List<String> exceptions = (List<String>)facetResponse.get("exception");
         if (exceptions == null) {
-          exceptions = new ArrayList();
+          exceptions = new ArrayList<String>();
           facetResponse.add("exception", exceptions);
         }
 
@@ -486,10 +480,10 @@ public class SimpleJahiaJcrFacets {
         return values;
     }
     
-    private NamedList getListedTermCounts(String field, ExtendedPropertyDefinition epd, String fieldNameInIndex, String locale, String termList) throws IOException {
+    private NamedList<Object> getListedTermCounts(String field, ExtendedPropertyDefinition epd, String fieldNameInIndex, String locale, String termList) throws IOException {
         FieldType ft = getType(epd);
         List<String> terms = StrUtils.splitSmart(termList, ",", true);
-        NamedList res = new NamedList();
+        NamedList<Object> res = new NamedList<Object>();
         Term t = new Term(field);
         for (String term : terms) {
           String internal = ft.toInternal(term);
@@ -821,7 +815,7 @@ public class SimpleJahiaJcrFacets {
    * @deprecated Use getFacetRangeCounts which is more generalized
    */
   @Deprecated
-  public void getFacetDateCounts(String dateFacet, NamedList resOuter)
+  public void getFacetDateCounts(String dateFacet, NamedList<Object> resOuter)
       throws IOException, ParseException, RepositoryException, JahiaException {  
       
       parseParams(FacetParams.FACET_DATE, dateFacet);
@@ -923,7 +917,7 @@ public class SimpleJahiaJcrFacets {
                   
               Query rangeQuery = JahiaQueryParser.DATE_TYPE.getRangeQuery(null, sf, low,high,includeLower,includeUpper);
               int count = rangeCount(rangeQuery);
-              if (count >= mincount) {
+              if (count >= minCount) {
 // TODO: Can we use just label here ?                  
                   resInner.add(label + PROPNAME_INDEX_SEPARATOR + rangeQuery.toString(),
                           count);
@@ -961,7 +955,7 @@ public class SimpleJahiaJcrFacets {
                                   (! (include.contains(FacetRangeInclude.LOWER) ||
                                       include.contains(FacetRangeInclude.EDGE)))));
                   int count = rangeCount(rangeQuery);
-                  if (count >= mincount) {
+                  if (count >= minCount) {
                       resInner.add(FacetDateOther.BEFORE.toString()
                               + PROPNAME_INDEX_SEPARATOR + rangeQuery.toString(), count);
                   }
@@ -974,7 +968,7 @@ public class SimpleJahiaJcrFacets {
                                     .contains(FacetRangeInclude.UPPER) || include
                                     .contains(FacetRangeInclude.EDGE)))), false);
                   int count = rangeCount(rangeQuery);
-                  if (count >= mincount) {
+                  if (count >= minCount) {
                       resInner.add(FacetDateOther.AFTER.toString() + PROPNAME_INDEX_SEPARATOR
                               + rangeQuery.toString(), count);
                   }
@@ -986,7 +980,7 @@ public class SimpleJahiaJcrFacets {
                               (include.contains(FacetRangeInclude.UPPER) ||
                                   include.contains(FacetRangeInclude.EDGE)));
                   int count = rangeCount(rangeQuery);
-                  if (count >= mincount) {
+                  if (count >= minCount) {
                       resInner.add(FacetDateOther.BETWEEN.toString()
                               + PROPNAME_INDEX_SEPARATOR + rangeQuery.toString(), count);
                   }
@@ -1003,8 +997,8 @@ public class SimpleJahiaJcrFacets {
    * @see FacetParams#FACET_RANGE
    */
 
-  public NamedList getFacetRangeCounts() {
-    final NamedList resOuter = new SimpleOrderedMap();
+  public NamedList<Object> getFacetRangeCounts() {
+    final NamedList<Object> resOuter = new SimpleOrderedMap<Object>();
     final String[] fields = params.getParams(FacetParams.FACET_RANGE);
 
     if (null == fields || 0 == fields.length) return resOuter;
@@ -1022,7 +1016,7 @@ public class SimpleJahiaJcrFacets {
     return resOuter;
   }
 
-  void getFacetRangeCounts(String facetRange, NamedList resOuter)
+  void getFacetRangeCounts(String facetRange, NamedList<Object> resOuter)
       throws IOException, ParseException, RepositoryException {
 
     parseParams(FacetParams.FACET_RANGE, facetRange);
@@ -1035,7 +1029,7 @@ public class SimpleJahiaJcrFacets {
     SchemaField sf = new SchemaField(fieldNameInIndex, getType(epd));
     final FieldType ft = sf.getType();
 
-    RangeEndpointCalculator calc = null;
+    RangeEndpointCalculator<?> calc = null;
 
     if (ft instanceof TrieField) {
       final TrieField trie = (TrieField)ft;
@@ -1077,13 +1071,13 @@ public class SimpleJahiaJcrFacets {
     resOuter.add(key, getFacetRangeCounts(sf, calc));
   }
 
-  private <T extends Comparable<T>> NamedList getFacetRangeCounts
+  private <T extends Comparable<T>> NamedList<Object> getFacetRangeCounts
     (final SchemaField sf, 
      final RangeEndpointCalculator<T> calc) throws IOException {
     
     final String f = sf.getName();
-    final NamedList res = new SimpleOrderedMap();
-    final NamedList counts = new NamedList();
+    final NamedList<Object> res = new SimpleOrderedMap<Object>();
+    final NamedList<Object> counts = new NamedList<Object>();
     res.add("counts", counts);
 
     final T start = calc.getValue(required.getFieldParam(f,FacetParams.FACET_RANGE_START));
@@ -1415,22 +1409,9 @@ public class SimpleJahiaJcrFacets {
         OpenBitSet docIds = null;
         try {
             final BitSet bitset = new BitSet();
-            searcher.search(query, new Collector() {
-                protected int base = 0;
-                protected Scorer scorer = null;
-                
+            searcher.search(query, new AbstractHitCollector() {
                 @Override
-                public void setNextReader(IndexReader reader, int docBase) throws IOException {
-                    base = docBase;
-                }
-                
-                @Override
-                public void setScorer(Scorer scorer) throws IOException {
-                    this.scorer = scorer;
-                }
-                
-                @Override
-                public void collect(int docId) {
+                public void collect(int docId, float scorer) {
                     if (locale != null) {
                         try {
                             int docMainDocId = getMainDocIdForTranslations(searcher.getIndexReader().document(docId, TRANSLATION_FIELDS), locale);
@@ -1458,6 +1439,8 @@ public class SimpleJahiaJcrFacets {
     }
     
     public static final FieldSelector TRANSLATION_FIELDS = new FieldSelector() {
+        private static final long serialVersionUID = -1570508136556374240L;
+
         /**
          * Accepts {@link FieldNames#UUID} and {@link FieldNames#PARENT}.
          *
@@ -1584,22 +1567,9 @@ public class SimpleJahiaJcrFacets {
 //        if (answer!=null) return answer;
 //      }
         final BitSet bitset = new BitSet();
-        searcher.search(q, new Collector() {
-            protected int base = 0;
-            protected Scorer scorer = null;
-            
+        searcher.search(q, new AbstractHitCollector() {
             @Override
-            public void setNextReader(IndexReader reader, int docBase) throws IOException {
-                base = docBase;
-            }
-            
-            @Override
-            public void setScorer(Scorer scorer) throws IOException {
-                this.scorer = scorer;
-            }
-            
-            @Override
-            public void collect(int docId) {
+            public void collect(int docId, float scorer) {
                 if (locale != null) {
                     try {
                         int docMainDocId = getMainDocIdForTranslations(searcher.getIndexReader().document(docId, TRANSLATION_FIELDS), locale);

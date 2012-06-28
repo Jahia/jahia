@@ -107,7 +107,7 @@ public class CacheFilterTest {
             String templatesFolder = "/sites/"+site.getSiteKey() + "/templates";
             InputStream importStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("imports/importTemplatesForCacheTest.xml");
             session.importXML(templatesFolder + "/base", importStream,
-                    ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
+                    ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
             importStream.close();
             session.save();   
             

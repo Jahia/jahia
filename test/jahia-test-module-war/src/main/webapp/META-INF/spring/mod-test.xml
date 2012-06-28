@@ -50,15 +50,16 @@
                 <value>org.jahia.services.render.filter.EmailObfuscatorFilterTest</value>
                 <value>org.jahia.services.render.filter.URLFilterTest</value>
                 <value>org.jahia.services.render.filter.cache.CacheFilterTest</value>
+                <value>org.jahia.services.render.filter.channels.ChannelResolutionAndExclusionTest</value>                
                 <value>org.jahia.services.search.SimpleSearchTest</value>
                 <value>org.jahia.services.seo.urlrewrite.UrlRewriteTest</value>
                 <value>org.jahia.services.tags.TaggingTest</value>
+                <value>org.jahia.services.templates.JahiaTemplateManagerServiceTest</value>                
                 <value>org.jahia.services.usermanager.JahiaGroupManagerServiceTest</value>
                 <value>org.jahia.services.versioning.VersioningTest</value>
                 <value>org.jahia.services.visibility.VisibilityServiceTest</value>
                 <value>org.jahia.services.workflow.StateSequenceTest</value>
                 <value>org.jahia.services.workflow.WorkflowServiceTest</value>
-                <value>org.jahia.services.templates.JahiaTemplateManagerServiceTest</value>
             </list>
         </property>
 
@@ -353,6 +354,8 @@
                 <value>testGetUUID(org.apache.jackrabbit.test.api.version.VersionTest)</value>
                 <value>testInitialNodePredecessors(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value>
                 <value>testInitialNodePredecessorsJcr2(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value></list>
+                
+                <value>testPublishUnpublishPageWithContent(org.jahia.services.publication.PublicationTest)</value>                
         </property>
 
     </bean>

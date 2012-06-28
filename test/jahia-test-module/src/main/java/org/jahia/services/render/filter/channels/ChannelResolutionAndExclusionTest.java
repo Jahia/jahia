@@ -78,7 +78,7 @@ public class ChannelResolutionAndExclusionTest {
                     .getCurrentUserSession();
             InputStream importStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("imports/importChannelsTest.xml");
             session.importXML(SITECONTENT_ROOT_NODE, importStream,
-                    ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
+                    ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
             importStream.close();
             session.save();
             JCRNodeWrapper siteNode = session.getNode(SITECONTENT_ROOT_NODE);

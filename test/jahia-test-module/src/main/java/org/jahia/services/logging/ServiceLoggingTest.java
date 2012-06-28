@@ -123,7 +123,7 @@ public class ServiceLoggingTest {
                         .getQueryManager()
                         .createQuery(
                                 "select * from [jnt:tag] " + "where ischildnode([/sites/"
-                                        + TESTSITE_NAME + "/tags]) and name() like '" + tagPrefix
+                                        + TESTSITE_NAME + "/tags]) and localname() like '" + tagPrefix
                                         + "%'", Query.JCR_SQL2).execute().getNodes();
                 while (nodeIterator.hasNext()) {
                     Node node = nodeIterator.nextNode();

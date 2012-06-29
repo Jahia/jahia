@@ -29,8 +29,9 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
         type.value.eachWithIndex { css, i ->
           condition = css.value.get("condition");
           if (condition != null) println("<!--["+condition+"]>");
+          rel = css.value.get("rel");
           media = css.value.get("media");
-          println "<link id=\"staticAssetCSS${i}\" rel=\"stylesheet\" href=\"${css.key}\" media=\"${media!=null?media:"screen"}\" type=\"text/css\"/>";
+          println "<link id=\"staticAssetCSS${i}\" rel=\"${rel!=null?rel:"stylesheet"}\" href=\"${css.key}\" media=\"${media!=null?media:"screen"}\" type=\"text/css\"/>";
           if (condition != null) println("<![endif]-->");
         }
         break;

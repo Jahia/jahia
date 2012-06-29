@@ -213,6 +213,14 @@
         </attribute>
         <attribute>
             <description>
+                For css resource type, this attribute specify the relationship type of the link
+            </description>
+            <name>rel</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
             	For css resource type, this attribute specify the media on which the css will be applied
             </description>
             <name>media</name>

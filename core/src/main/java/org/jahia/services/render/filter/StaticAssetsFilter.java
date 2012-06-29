@@ -176,6 +176,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         for (StartTag esiResourceTag : esiResourceTags) {
             String type = esiResourceTag.getAttributeValue("type");
             String path = esiResourceTag.getAttributeValue("path");
+            String rel = esiResourceTag.getAttributeValue("rel");
             String media = esiResourceTag.getAttributeValue("media");
             String condition = esiResourceTag.getAttributeValue("condition");
             path = URLDecoder.decode(path, "UTF-8");
@@ -187,6 +188,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             // Manage Options
             if (title != null && !"".equals(title.trim())) {
                 optionsMap.put("title", title);
+            }
+            if (rel != null && !"".equals(rel.trim())) {
+                optionsMap.put("rel", rel);
             }
             if (media != null && !"".equals(media.trim())) {
                 optionsMap.put("media", media);

@@ -5,8 +5,9 @@
 renderContext.request.getAttribute("staticAssets").css.eachWithIndex { resource, i ->
     condition = resource.value.get("condition");
     if (condition != null) println("<!--["+condition+"]>");
+    rel = resource.value.get("rel");
     media = resource.value.get("media");
-    println "<link id=\"staticAssetCSS${i}\" rel=\"stylesheet\" href=\"${resource.key}\" media=\"${media!=null?media:"screen"}\" type=\"text/css\"/>";
+    println "<link id=\"staticAssetCSS${i}\" rel=\"${rel!=null?rel:"stylesheet"}\" href=\"${resource.key}\" media=\"${media!=null?media:"screen"}\" type=\"text/css\"/>";
     if (condition != null) println("<![endif]-->");
 }
 if (renderContext.request.getParameter("includeJavascripts")) {

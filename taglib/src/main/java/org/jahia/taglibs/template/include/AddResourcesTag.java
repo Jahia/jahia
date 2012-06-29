@@ -74,6 +74,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
     private String resources;
     private String title;
     private String key;
+    private String rel;
     private String media;
     private String condition;
     private String var;
@@ -192,6 +193,10 @@ public class AddResourcesTag extends AbstractJahiaTag {
         this.insert = insert;
     }
 
+    public void setRel(String rel) {
+        this.rel = rel;
+    }
+
     public void setMedia(String media) {
         this.media = media;
     }
@@ -217,6 +222,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
         resources = null;
         type = null;
         title = null;
+        rel = null;
         media = null;
         condition = null;
         super.resetState();
@@ -237,6 +243,9 @@ public class AddResourcesTag extends AbstractJahiaTag {
             logger.error(e.getMessage(), e);
         }
         builder.append(" insert=\"").append(insert).append("\"");
+        if (rel != null) {
+            builder.append(" rel=\"").append(rel).append("\"");
+        }
         if (media != null) {
             builder.append(" media=\"").append(media).append("\"");
         }

@@ -353,9 +353,10 @@
                 <value>testBaseVersionAfterCheckinJcr2(org.apache.jackrabbit.test.api.version.CheckinTest)</value>
                 <value>testGetUUID(org.apache.jackrabbit.test.api.version.VersionTest)</value>
                 <value>testInitialNodePredecessors(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value>
-                <value>testInitialNodePredecessorsJcr2(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value></list>
+                <value>testInitialNodePredecessorsJcr2(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value>
                 
-                <value>testPublishUnpublishPageWithContent(org.jahia.services.publication.PublicationTest)</value>                
+                <value>testPublishUnpublishPageWithContent(org.jahia.services.publication.PublicationTest)</value>
+            </list>   
         </property>
 
     </bean>

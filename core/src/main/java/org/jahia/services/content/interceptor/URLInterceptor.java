@@ -156,7 +156,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
             if(locale==null) {
                 // This might happen under publication
                 if(node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
-                    name += "_" + node.getProperty("jcr:language").getString();
+                    return originalValue;
                 }
             } else {
                 name += "_" + locale;

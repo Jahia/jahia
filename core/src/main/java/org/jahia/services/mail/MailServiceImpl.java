@@ -300,8 +300,14 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
             throws RepositoryException, ScriptException {
         // Resolve template :
         ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(StringUtils.substringAfterLast(template, "."));
-        ScriptContext scriptContext = new SimpleScriptContext();
-        String templateRealPath = TemplateUtils.lookupTemplate(templatePackageName, template);
+        ScriptContext scriptContext = new SimpleScriptContext();    	
+    	
+    	//try if it is multilingual
+    	String languageMailConfTemplate = template.replaceAll(".vm", "_" + locale.toString() + ".vm");
+        String templateRealPath = TemplateUtils.lookupTemplate(templatePackageName, languageMailConfTemplate);
+    	if(templateRealPath == null) {
+          templateRealPath = TemplateUtils.lookupTemplate(templatePackageName, template);
+    	}  
         InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(
                 templateRealPath);
         if (scriptInputStream != null) {

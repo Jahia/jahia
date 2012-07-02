@@ -59,6 +59,7 @@ public class CKEditor extends Component {
     private String instanceId;
     private CKEditorConfig config;
     private boolean isLoaded;
+    private boolean isDetached = false;
 	private CKEditorField field;
     private boolean focus=false;
 
@@ -104,7 +105,18 @@ public class CKEditor extends Component {
     @Override
     protected void onDetach() {
         destroyEditor();
+        isDetached = true;
         super.onDetach();
+    }
+
+    @Override
+    protected void onAttach() {
+        // added to a gwt panel, not rendered
+        if (isDetached) {
+            initEditor();
+            isDetached = false;
+        }
+        super.onAttach();
     }
 
     /**

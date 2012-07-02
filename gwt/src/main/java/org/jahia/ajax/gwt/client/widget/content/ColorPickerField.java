@@ -42,8 +42,8 @@ public class ColorPickerField extends AdapterField {
         colorMenu.getColorPalette().addListener(Events.Select, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
                 String v = ((ColorPalette) be.getComponent()).getValue();
-                text.setText(v);
-                setValue(v);
+                text.setText("#" + v);
+                setValue("#" + v);
             }
         });
         colorButton.setMenu(colorMenu);

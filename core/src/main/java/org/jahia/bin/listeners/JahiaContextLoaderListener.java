@@ -137,7 +137,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         if (System.getProperty("jahia.license") == null) {
             System.setProperty("jahia.license", "");
         }
-        Jahia.initContextData(servletContext);
+
         writePID(servletContext);
 
         try {

@@ -252,9 +252,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 	        staticServletConfig = aConfig;
 	        final ServletContext context = aConfig.getServletContext();
 	
-	        if (jahiaContextPath == null) {
-	            initContextData(getServletContext());
-	        }
 	        verifyJavaVersion(aConfig.getInitParameter(INIT_PARAM_SUPPORTED_JDK_VERSIONS));
 	
 	        jahiaEtcFilesPath = context.getRealPath("/WEB-INF/etc");
@@ -376,6 +373,9 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     }
 
     public static String getContextPath () {
+        if (jahiaContextPath == null) {
+            initContextData();
+        }
         return jahiaContextPath;
     }
 
@@ -546,28 +546,16 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         return staticServletConfig;
     }
 
-    public static void initContextData(ServletContext servletContext) {
-
+    public static void initContextData() {
         String ctxPath = ""; // assume ROOT context by default
-        InputStream is = servletContext.getResourceAsStream(SettingsBean.JAHIA_PROPERTIES_FILE_PATH);
-        if (is != null) {
-            Properties settings = new Properties();
-            try {
-                settings.load(is);
-            } catch (Exception e) {
-                logger.warn("Unable to read " + SettingsBean.JAHIA_PROPERTIES_FILE_PATH + " resource", e);
-            } finally {
-                IOUtils.closeQuietly(is);
-            }
-            ctxPath = (String) settings.get("jahia.contextPath");
-            if (ctxPath == null || ctxPath.length() > 0 && !ctxPath.startsWith("/")) {
-                logger.error("Invalid value for the jahia.contextPath in the "
-                        + SettingsBean.JAHIA_PROPERTIES_FILE_PATH + " resource. Unable to initialize Web application.");
-                throw new IllegalArgumentException("Invalid value for the jahia.contextPath in the "
-                        + SettingsBean.JAHIA_PROPERTIES_FILE_PATH + " resource. Unable to initialize Web application.");
-            }
-
+        ctxPath = SettingsBean.getInstance().getPropertiesFile().getProperty("jahia.contextPath");
+        if (ctxPath == null || ctxPath.length() > 0 && !ctxPath.startsWith("/")) {
+            logger.error("Invalid value for the jahia.contextPath in the "
+                    + SettingsBean.JAHIA_PROPERTIES_FILE_PATH + " resource. Unable to initialize Web application.");
+            throw new IllegalArgumentException("Invalid value for the jahia.contextPath in the "
+                    + SettingsBean.JAHIA_PROPERTIES_FILE_PATH + " resource. Unable to initialize Web application.");
         }
+
         Jahia.jahiaContextPath = ctxPath.equals("/") ? "" : ctxPath;
     }
 

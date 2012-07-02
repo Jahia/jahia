@@ -230,6 +230,15 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                             session.checkout(next);
                             next.remove();
                         }
+
+                        PropertyIterator pi = node.getWeakReferences("j:member");
+                        while (pi.hasNext()) {
+                            JCRPropertyWrapper propertyWrapper  = (JCRPropertyWrapper) pi.next();
+                            propertyWrapper.getParent().remove();
+                        }
+
+                        JCRGroupManagerProvider.getInstance().flushCache();
+
                         session.checkout(node.getParent());
                         session.checkout(node);
                         node.remove();

@@ -150,13 +150,14 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
      */
     public Value beforeSetValue(final JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         String content = originalValue.getString();
-
+        // if the node is a translated node, then take the parent to have the references
+        JCRNodeWrapper nodeWithReferences = node.isNodeType(Constants.JAHIANT_TRANSLATION)?node.getParent():node;
         if (definition.isInternationalized()) {
             Locale locale = node.getSession().getLocale();
             if(locale==null) {
                 // This might happen under publication
                 if(node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
-                    return originalValue;
+                    name += "_" + node.getProperty("jcr:language").getString();
                 }
             } else {
                 name += "_" + locale;
@@ -169,8 +170,8 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
             logger.debug("Intercept setValue for "+node.getPath()+"/"+name);
         }
 
-        if (node.isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
-            NodeIterator ni = node.getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
+        if (nodeWithReferences.isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
+            NodeIterator ni = nodeWithReferences.getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
                 if (name.equals(ref.getProperty("j:fieldName").getString())) {
@@ -204,13 +205,13 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
         }
 
         if (!newRefs.equals(refs)) {
-            if (!newRefs.isEmpty() && !node.isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
-                node.addMixin(JAHIAMIX_REFERENCES_IN_FIELD);
+            if (!newRefs.isEmpty() && !nodeWithReferences.isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
+                nodeWithReferences.addMixin(JAHIAMIX_REFERENCES_IN_FIELD);
             }
             if (logger.isDebugEnabled()) {
                 logger.debug("New references : "+newRefs);
             }
-            NodeIterator ni = node.getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
+            NodeIterator ni = nodeWithReferences.getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
                 if (name.equals(ref.getProperty("j:fieldName").getString()) && !newRefs.containsKey(ref.getProperty("j:reference").getString())) {
@@ -220,7 +221,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
 
             for (Map.Entry<String,Long> entry : newRefs.entrySet()) {
                 if (!refs.containsKey(entry.getKey())) {
-                    JCRNodeWrapper ref = node.addNode("j:referenceInField_"+name+"_"+entry.getValue(), "jnt:referenceInField");
+                    JCRNodeWrapper ref = nodeWithReferences.addNode("j:referenceInField_" + name + "_" + entry.getValue(), "jnt:referenceInField");
                     ref.setProperty("j:fieldName",name);
                     ref.setProperty("j:reference", entry.getKey());
                 }

@@ -1266,11 +1266,29 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         logger.info("...template deployment done.");
     }
 
-    public GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType) throws GWTJahiaServiceException {
+    public GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType, String sources, String scmUri, String scmType) throws GWTJahiaServiceException {
         try {
-            return contentManager.createTemplateSet(key, baseSet, siteType, retrieveCurrentSession());
+            return contentManager.createTemplateSet(key, baseSet, siteType, sources, scmUri, scmType, retrieveCurrentSession());
         } catch (Exception e) {
             logger.error("", e);
+            throw new GWTJahiaServiceException(e.toString());
+        }
+    }
+
+    public void saveModule(String moduleName, String message) throws GWTJahiaServiceException {
+        try {
+            contentManager.saveModule(moduleName, message, retrieveCurrentSession());
+        } catch (RepositoryException e) {
+            logger.error("Cannot synchronize module into sources", e);
+            throw new GWTJahiaServiceException(e.toString());
+        }
+    }
+
+    public void updateModule(String moduleName) throws GWTJahiaServiceException {
+        try {
+            contentManager.updateModule(moduleName, retrieveCurrentSession());
+        } catch (RepositoryException e) {
+            logger.error("Cannot update module", e);
             throw new GWTJahiaServiceException(e.toString());
         }
     }

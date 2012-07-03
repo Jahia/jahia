@@ -40,22 +40,10 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import static org.jahia.api.Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.importexport.ImportExportBaseService;
-import org.jahia.services.importexport.ImportExportService;
-import org.jahia.services.importexport.validation.*;
-import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.data.GWTJahiaContentHistoryEntry;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
@@ -66,40 +54,46 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.api.Constants;
+import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.history.ContentHistoryService;
 import org.jahia.services.history.HistoryEntry;
+import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.importexport.ImportJob;
+import org.jahia.services.importexport.validation.*;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.templates.SourceControlManagement;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityService;
-import org.jahia.settings.SettingsBean;
-import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.query.Query;
 import javax.jcr.security.Privilege;
-
 import java.io.*;
 import java.text.MessageFormat;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+
+import static org.jahia.api.Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT;
 
 /**
  * @author rfelden
  * @version 20 juin 2008 - 12:49:42
  */
 public class ContentManagerHelper {
-
-    private static final String MODULE_SKELETONS = "WEB-INF/etc/repository/${type}.xml,WEB-INF/etc/repository/${type}-*.xml,modules/**/META-INF/${type}-skeleton.xml,modules/**/META-INF/${type}-skeleton-*.xml";
 
 // ------------------------------ FIELDS ------------------------------
 
@@ -1117,42 +1111,28 @@ public class ContentManagerHelper {
         }
     }
 
-    public GWTJahiaNode createTemplateSet(String key, String baseSet,final String siteType, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public GWTJahiaNode createTemplateSet(String key, String baseSet, final String siteType, String sources, String scmURI, String scmType, JCRSessionWrapper session) throws GWTJahiaServiceException {
         String shortName = JCRContentUtils.generateNodeName(key, 50);
-        if (baseSet == null) {
+        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+        if (key == null && scmURI != null) {
             try {
-                JCRNodeWrapper node = session.getNode("/templateSets");
-                shortName = JCRContentUtils.findAvailableNodeName(node, shortName);
-                JCRNodeWrapper templateSet = node.addNode(shortName, "jnt:virtualsite");
-                session.save();
-                templateSet.setProperty("j:siteType", siteType);
-                templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
-                templateSet.setProperty("j:title", key);
-                session.save();
-                final String s = shortName;
-                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<Object>>() {
-                    public List<Object> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        String skeletons = MODULE_SKELETONS.replace("${type}", siteType);
-                        HashMap<String, String> replacements = new HashMap<String, String>();
-                        replacements.put("SITEKEY_PLACEHOLDER", s);
-                        try {
-                            JCRContentUtils.importSkeletons(skeletons, "/templateSets", session, replacements);
-                            session.save();
-                        }
-                        catch (IOException e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                        return null;
-                    }
-                });
-//                if (isTemplatesSet) {
-//                    templateSet.getNode("templates/base").setProperty("j:view", shortName);
-//                }
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName, siteType, JahiaTemplateManagerService.MODULE_TYPE_TEMPLATES_SET.equals(siteType));
-                session.getNode("/templateSets/"+shortName).addNode("j:versionInfo","jnt:versionInfo").setProperty("j:version","1.0");
-                session.save();
-                return navigation.getGWTJahiaNode(templateSet, GWTJahiaNode.DEFAULT_SITE_FIELDS);
-            } catch (RepositoryException e) {
+                JCRNodeWrapper node = templateManagerService.checkoutModule(sources != null ? new File(sources) : null, scmURI, scmType, session);
+                return navigation.getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_SITE_FIELDS);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        } else if (key == null && sources != null) {
+            try {
+                JCRNodeWrapper node = templateManagerService.installFromSources(new File(sources), session);
+                return navigation.getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_SITE_FIELDS);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        } else if (baseSet == null) {
+            try {
+                JCRNodeWrapper node = templateManagerService.createModule(shortName, siteType, sources != null ? new File(sources) : null, scmURI, scmType, session);
+                return navigation.getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_SITE_FIELDS);
+            } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
         } else {
@@ -1175,7 +1155,7 @@ public class ContentManagerHelper {
                     }
                 }
                 session.save();
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().duplicateModule(shortName, s, baseSet);
+                templateManagerService.duplicateModule(shortName, s, baseSet);
                 if (!session.getNode("/templateSets/"+shortName).hasNode("j:versionInfo")) {
                     session.getNode("/templateSets/"+shortName).addNode("j:versionInfo","jnt:versionInfo");
                 }
@@ -1191,17 +1171,73 @@ public class ContentManagerHelper {
         return null;
     }
 
+    private File getSource(String moduleName, JCRSessionWrapper session) throws RepositoryException  {
+        String sources;
+        JCRNodeWrapper n = session.getNode("/templateSets/"+moduleName);
+        if (!n.hasNode("j:versionInfo")) {
+            return null;
+        }
+        JCRNodeWrapper vi = n.getNode("j:versionInfo");
+        if (!vi.hasProperty("j:sourcesFolder")) {
+            return null;
+        }
+        return new File(vi.getProperty("j:sourcesFolder").getString());
+    }
+
+    public void updateModule(String moduleName, JCRSessionWrapper session) throws RepositoryException {
+        File sources = getSource(moduleName, session);
+        if (sources != null && !sources.exists()) {
+            return;
+        }
+
+        SourceControlManagement scm = null;
+        try {
+            scm = SourceControlManagement.getSourceControlManagement(sources);
+            scm.update();
+//            ServicesRegistry.getInstance().getJahiaTemplateManagerService().saveModule(moduleName, sources);
+
+//            ServicesRegistry.getInstance().getJahiaTemplateManagerService().installModule(moduleName, sources);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveModule(String moduleName, String message, JCRSessionWrapper session) throws RepositoryException {
+        SourceControlManagement scm = null;
+        File sources = getSource(moduleName, session);
+        try {
+            scm = SourceControlManagement.getSourceControlManagement(sources);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (scm != null) {
+            try {
+                scm.update();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        ServicesRegistry.getInstance().getJahiaTemplateManagerService().saveModule(moduleName, sources);
+
+        if (scm != null) {
+            scm.commit(message);
+        }
+
+        if (scm != null) {
+            try {
+                scm.update();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
     public GWTJahiaNode generateWar(String moduleName, JCRSessionWrapper session) {
         try {
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(moduleName);
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateImportFile(moduleName);
-
-            File f = File.createTempFile("templateSet", ".war");
-            File templateDir = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName);
-
-            ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(f)));
-            zip(templateDir, templateDir, zos);
-            zos.close();
+            File f = ServicesRegistry.getInstance().getJahiaTemplateManagerService().generateWar(moduleName, session);
 
             JCRNodeWrapper privateFolder = session.getNode(session.getUser().getLocalPath() + "/files/private");
 
@@ -1232,28 +1268,6 @@ public class ContentManagerHelper {
         }
 
         return null;
-    }
-
-    private void zip(File dir, File rootDir, ZipOutputStream zos) throws IOException {
-        File[] files = dir.listFiles();
-        for (File file : files) {
-            if (file.isFile()) {
-                ZipEntry ze = new ZipEntry(Patterns.BACKSLASH.matcher(file.getPath().substring(rootDir.getPath().length() + 1)).replaceAll("/"));
-                zos.putNextEntry(ze);
-                final InputStream input = new BufferedInputStream(new FileInputStream(file));
-                try {
-                    IOUtils.copy(input, zos);
-                } finally {
-                    IOUtils.closeQuietly(input);
-                }
-            }
-
-            if (file.isDirectory()) {
-                ZipEntry ze = new ZipEntry(Patterns.BACKSLASH.matcher(file.getPath().substring(rootDir.getPath().length() + 1)).replaceAll("/") + "/");
-                zos.putNextEntry(ze);
-                zip(file, rootDir, zos);
-            }
-        }
     }
 
     public List<GWTJahiaContentHistoryEntry> getContentHistory(JCRSessionWrapper session, String nodeIdentifier, int offset, int limit) throws RepositoryException {

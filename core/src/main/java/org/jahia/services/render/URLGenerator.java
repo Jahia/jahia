@@ -239,8 +239,9 @@ public class URLGenerator {
     }
 
     public String getCurrentModule() {
-        return getTemplatesPath() + "/" + ((Script) context.getRequest().getAttribute(
-                "script")).getView().getModule().getRootFolder();
+        View view = ((Script) context.getRequest().getAttribute(
+                "script")).getView();
+        return getTemplatesPath() + "/" + view.getModule().getRootFolder() + "/" + view.getModuleVersion();
     }
 
     public String getCurrent() {

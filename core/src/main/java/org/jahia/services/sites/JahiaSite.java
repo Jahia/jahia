@@ -50,6 +50,7 @@
 
 package org.jahia.services.sites;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -252,7 +253,11 @@ public class JahiaSite implements Serializable {
     }
 
     public List<String> getInstalledModules() {
-        return installedModules;
+        List<String> l = new ArrayList<String>();
+        for (String installedModule : installedModules) {
+            l.add(StringUtils.substringBefore(installedModule,":"));
+        }
+        return l;
     }
 
 

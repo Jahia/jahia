@@ -69,7 +69,8 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
     private String fileExtension;
     private String key;
     private JahiaTemplatesPackage ownerPackage;
-    private String displayName;    
+    private String moduleVersion;
+    private String displayName;
     private Properties properties;
     private Properties defaultProperties;
     public static String THUMBNAIL = "image";
@@ -80,10 +81,11 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
         propCache.clear();
     }
 
-    public FileSystemView(String path, String key, JahiaTemplatesPackage ownerPackage, String displayName) {
+    public FileSystemView(String path, String key, JahiaTemplatesPackage ownerPackage, String version, String displayName) {
         this.path = path;
         this.key = key;
         this.ownerPackage = ownerPackage;
+        this.moduleVersion = version;
         this.displayName = displayName;
         int lastDotPos = path.lastIndexOf(".");
         if (lastDotPos > 0) {
@@ -143,6 +145,10 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
 
     public JahiaTemplatesPackage getModule() {
         return ownerPackage;
+    }
+
+    public String getModuleVersion() {
+        return moduleVersion;
     }
 
     public String getDisplayName() {

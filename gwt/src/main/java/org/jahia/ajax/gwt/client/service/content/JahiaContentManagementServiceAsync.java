@@ -256,7 +256,11 @@ public interface JahiaContentManagementServiceAsync {
 
     void deployTemplates(String templatesPath, String sitePath, AsyncCallback asyncCallback);
 
-    void createTemplateSet(String key, String baseSet, String siteType, AsyncCallback<GWTJahiaNode> asyncCallback);
+    void createTemplateSet(String key, String baseSet, String siteType, String sources, String scmUri, String scmType, AsyncCallback<GWTJahiaNode> asyncCallback);
+
+    void saveModule(String moduleName, String message, AsyncCallback asyncCallback);
+
+    void updateModule(String moduleName, AsyncCallback asyncCallback);
 
     void generateWar(String moduleName, AsyncCallback<GWTJahiaNode> asyncCallback);
 

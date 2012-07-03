@@ -461,6 +461,8 @@
 [jnt:versionInfo] > nt:base
  - j:version
  - j:deployementDate (date)
+ - j:sourcesFolder (string)
+ - j:scmUrl (string)
 
 //---------------------------------------------------------
 // Imports

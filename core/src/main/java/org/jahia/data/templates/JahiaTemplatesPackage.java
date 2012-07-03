@@ -130,8 +130,10 @@ public class JahiaTemplatesPackage {
 
     private long buildNumber;
 
-    private Version version;
+    private Version lastVersion;
     private String autoDeployOnSite;
+
+    private List<String> versions = new LinkedList<String>();
 
     /**
      * Return the template name
@@ -500,12 +502,20 @@ public class JahiaTemplatesPackage {
         this.buildNumber = buildNumber;
     }
 
-    public Version getVersion() {
-        return version;
+    public Version getLastVersion() {
+        return lastVersion;
     }
 
-    public void setVersion(Version version) {
-        this.version = version;
+    public void setLastVersion(Version lastVersion) {
+        this.lastVersion = lastVersion;
+    }
+
+    public List<String> getVersions() {
+        return versions;
+    }
+
+    public void setVersions(List<String> versions) {
+        this.versions = versions;
     }
 
     public String getModuleType() {

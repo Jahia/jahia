@@ -43,6 +43,7 @@ package org.jahia.services.content.decorator;
 import static org.jahia.services.sites.SitesSettings.*;
 
 import org.apache.commons.collections.set.UnmodifiableSet;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -312,7 +313,7 @@ public class JCRSiteNode extends JCRNodeDecorator {
                 logger.error("Cannot get site property",e);
             }
         }
-        return templateFolder;
+        return StringUtils.substringBefore(templateFolder,":");
     }
 
     public List<String> getInstalledModules() {
@@ -322,7 +323,23 @@ public class JCRSiteNode extends JCRNodeDecorator {
                 Value[] v = getProperty("j:installedModules").getValues();
                 for (int i = 0; i < v.length; i++) {
                     Value value = v[i];
-                    modules.add(value.getString());
+                    modules.add(StringUtils.substringBefore(value.getString(),":"));
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property", e);
+        }
+        return modules;
+    }
+
+    public Map<String,String> getInstalledModulesWithVersions() {
+        Map<String,String> modules = new LinkedHashMap<String, String>();
+        try {
+            if (hasProperty("j:installedModules")) {
+                Value[] v = getProperty("j:installedModules").getValues();
+                for (int i = 0; i < v.length; i++) {
+                    Value value = v[i];
+                    modules.put(StringUtils.substringBefore(value.getString(),":"), StringUtils.substringAfter(value.getString(),":"));
                 }
             }
         } catch (RepositoryException e) {

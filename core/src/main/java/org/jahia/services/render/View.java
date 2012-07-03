@@ -55,6 +55,8 @@ public interface View {
 
     JahiaTemplatesPackage getModule();
 
+    String getModuleVersion();
+
     String getDisplayName();
 
     String getFileExtension();

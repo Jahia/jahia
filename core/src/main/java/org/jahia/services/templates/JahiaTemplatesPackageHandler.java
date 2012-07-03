@@ -65,6 +65,7 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -165,11 +166,11 @@ final class JahiaTemplatesPackageHandler {
         if (templatePackage.getResourceBundleName() == null) {
             // check if there is a resource bundle file in the resources folder
             String rbName = templatePackage.getName().replace(' ', '_');
-            if (new File(file, "resources/" + rbName + ".properties").exists()) {
+            if (new File(file, templatePackage.getLastVersion() + "/resources/" + rbName + ".properties").exists()) {
                 templatePackage.setResourceBundleName("resources." + rbName);
             } else {
                 rbName = Patterns.SPACE.matcher(templatePackage.getName()).replaceAll("");
-                if (new File(file, "resources/" + rbName + ".properties")
+                if (new File(file, templatePackage.getLastVersion() + "/resources/" + rbName + ".properties")
                         .exists()) {
                     templatePackage
                             .setResourceBundleName("resources." + rbName);
@@ -269,8 +270,16 @@ final class JahiaTemplatesPackageHandler {
                 templatePackage.setRootFolder(rootFolder);
                 templatePackage.setModuleType(moduleType);
                 if (implementationVersionStr != null) {
-                    templatePackage.setVersion(new Version(implementationVersionStr));
+                    templatePackage.setLastVersion(new Version(implementationVersionStr));
                 }
+                File[] l = file.listFiles();
+                List<String> versions = new ArrayList<String>();
+                for (File file1 : l) {
+                    if (file1.isDirectory() && !file1.getName().equals("WEB-INF") && !file1.getName().equals("META-INF")) {
+                        versions.add(file1.getName());
+                    }
+                }
+                templatePackage.setVersions(versions);
             }
         } catch (IOException ioe) {
             logger

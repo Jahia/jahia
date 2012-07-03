@@ -685,19 +685,12 @@ public final class JCRContentUtils {
     }
 
     public static String getIconsFolder(final ExtendedNodeType primaryNodeType) throws RepositoryException {
-        String folder = primaryNodeType.getSystemId();
-        if (folder.startsWith("system-")) {
-            folder = "assets/icons/";
-        } else {
-            final JahiaTemplatesPackage aPackage =
-                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(folder);
-            if (aPackage != null && !aPackage.isDefault()) {
-                folder = aPackage.getRootFolder() + "/icons/";
-            } else {
-                folder = "assets/icons/";
-            }
+        String systemId = primaryNodeType.getSystemId();
+        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(systemId);
+        if (aPackage == null || systemId.startsWith("system-")) {
+            aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("assets");
         }
-        return folder;
+        return aPackage.getRootFolder() + "/" + aPackage.getLastVersion() + "/icons/";
     }
 
     public static JCRContentUtils getInstance() {

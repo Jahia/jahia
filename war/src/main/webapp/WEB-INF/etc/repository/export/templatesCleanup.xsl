@@ -19,6 +19,7 @@
             <xsl:when test="name()='j:siteId'"/>
             <xsl:when test="name()='j:published'"/>
             <xsl:when test="name()='j:checkinDate'"/>
+            <xsl:when test="name()='j:originWS'"/>
             <xsl:otherwise>
                 <xsl:copy/>
             </xsl:otherwise>

@@ -40,11 +40,16 @@
 
 package org.jahia.services.templates;
 
+import difflib.DiffUtils;
+import difflib.Patch;
+import difflib.myers.Equalizer;
+import difflib.myers.MyersDiff;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.maven.cli.MavenCli;
 import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
@@ -52,6 +57,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -66,6 +72,8 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.Patterns;
+import org.jahia.utils.Version;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 import org.jdom.JDOMException;
@@ -75,6 +83,7 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.ApplicationListener;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.google.common.collect.ImmutableSet;
@@ -84,11 +93,16 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Template and template set deployment and management service.
@@ -433,9 +447,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 try {
                     JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
                         public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            for (JahiaTemplatesPackage aPackage : packages) {
-                                deployModuleToAllSites("/templateSets/" + aPackage.getRootFolder(), true, session);
-                            }
+//                            for (JahiaTemplatesPackage aPackage : packages) {
+//                                deployModuleToAllSites("/templateSets/" + aPackage.getRootFolder(), true, session);
+//                            }
                             return null;
                         }
                     });
@@ -451,44 +465,271 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    public void createModule(String moduleName, String moduleType, boolean isTemplatesSet) {
-        File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), moduleName);
-        if (tmplRootFolder.exists()) {
-            return;
+    public JCRNodeWrapper createModule(String moduleName, String moduleType, File sources, String scmURI, String scmType, JCRSessionWrapper session) throws IOException, RepositoryException {
+        if (sources == null) {
+            sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources");
+            sources.mkdirs();
         }
-        if (!tmplRootFolder.exists()) {
-            logger.info("Start creating new template package '" + moduleName + "'");
 
-            tmplRootFolder.mkdirs();
+        String finalFolderName = null;
 
-            new File(tmplRootFolder, "META-INF").mkdirs();
-            new File(tmplRootFolder, "WEB-INF").mkdirs();
-            new File(tmplRootFolder, "resources").mkdirs();
-            new File(tmplRootFolder, "css").mkdirs();
-            if (isTemplatesSet) {
-                new File(tmplRootFolder, "jnt_template/html").mkdirs();
-                File defaultTpl = new File(settingsBean.getJahiaTemplatesDiskPath() + "/default/jnt_template/html/template.jsp");
-                if (defaultTpl.exists()) {
-                    File out = new File(tmplRootFolder, "jnt_template/html/template." + moduleName + ".jsp");
-                    InputStream source = null;
-                    OutputStream target = null;
+        if (!sources.exists()) {
+            finalFolderName = sources.getName();
+            sources = sources.getParentFile();
+            sources.mkdirs();
+        }
+
+        MavenCli cli = new MavenCli();
+
+        if (moduleType.equals("jahiapp")) {
+            moduleType = "app";
+        }
+
+        String[] archetypeParams = {"archetype:generate",
+                "-DarchetypeCatalog=http://maven.jahia.org/maven2/archetype-catalog.xml", //"file:///Users/toto/Downloads/archetype-catalog.xml",
+                "-DarchetypeGroupId=org.jahia.archetypes",
+                "-DarchetypeArtifactId=jahia-"+moduleType+"-archetype",
+                "-DmoduleName="+moduleName,
+                "-DartifactId="+moduleName,
+                "-DjahiaPackageVersion=" + Constants.JAHIA_PROJECT_VERSION,
+                "-DinteractiveMode=false"};
+
+        int ret = cli.doMain(archetypeParams, sources.getPath(),
+                System.out, System.err);
+
+        File path = new File(sources, moduleName);
+        if (finalFolderName != null && !path.getName().equals(finalFolderName)) {
+            try {
+                File newPath = new File(sources, finalFolderName);
+                FileUtils.moveDirectory(path, newPath);
+                path = newPath;
+            } catch (IOException e) {
+                logger.error("Cannot rename folder", e);
+            }
+        }
+
+        try {
+            SourceControlManagement scm = SourceControlManagement.createNewRepository(path, scmType, scmURI);
+            scm.setModifiedFile(Arrays.asList(path));
+            scm.commit("Initial commit");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        installModule(moduleName, path);
+
+        JCRNodeWrapper node = session.getNode("/templateSets/" + moduleName);
+        node.getNode("j:versionInfo").setProperty("j:sourcesFolder", path.getPath());
+        session.save();
+
+        return node;
+    }
+
+    public JCRNodeWrapper checkoutModule(File sources, String scmURI, String scmType, JCRSessionWrapper session) throws IOException, RepositoryException {
+        if (sources == null) {
+            sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources");
+            sources.mkdirs();
+        }
+
+        String finalFolderName = null;
+
+        if (!sources.exists()) {
+            finalFolderName = sources.getName();
+            sources = sources.getParentFile();
+            sources.mkdirs();
+        }
+
+
+        try {
+            SourceControlManagement scm = SourceControlManagement.checkoutRepository(sources, scmType, scmURI);
+            File path = scm.getRootFolder();
+
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(new File(path, "pom.xml"));
+            String moduleName = document.getDocumentElement().getElementsByTagName("artifactId").item(0).getTextContent();
+            if (finalFolderName != null) {
+                try {
+                    File newPath = new File(sources, finalFolderName);
+                    FileUtils.moveDirectory(path, newPath);
+                    path = newPath;
+                } catch (IOException e) {
+                    logger.error("Cannot rename folder", e);
+                }
+            }
+
+            installModule(moduleName, path);
+
+            JCRNodeWrapper node = session.getNode("/templateSets/" + moduleName);
+            node.getNode("j:versionInfo").setProperty("j:sourcesFolder", path.getPath());
+            session.save();
+
+            return node;
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        return null;
+    }
+
+    public JCRNodeWrapper installFromSources(File sources, JCRSessionWrapper session) throws IOException, RepositoryException {
+        if (!sources.exists()) {
+            return null;
+        }
+
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(new File(sources, "pom.xml"));
+            String moduleName = document.getDocumentElement().getElementsByTagName("artifactId").item(0).getTextContent();
+            installModule(moduleName, sources);
+
+            JCRNodeWrapper node = session.getNode("/templateSets/" + moduleName);
+            node.getNode("j:versionInfo").setProperty("j:sourcesFolder", sources.getPath());
+            session.save();
+
+            return node;
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        return null;
+    }
+
+    public void installModule(final String moduleName, File sources) {
+        File warFile = compileModule(moduleName, sources);
+        try {
+            FileUtils.copyFile(warFile, new File(settingsBean.getJahiaSharedTemplatesDiskPath(), warFile.getName()));
+            templatePackageDeployer.getTemplatesWatcher().run();
+        } catch (IOException e) {
+            logger.error("Cannot deploy module",e);
+        }
+    }
+
+    public File compileModule(final String moduleName, File sources) {
+        MavenCli cli = new MavenCli();
+        int ret;
+        String[] installParams = {"clean","install"};
+        ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
+        return new File(sources.getPath() + "/target/").listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.startsWith(moduleName) && name.endsWith(".war");
+            }
+        })[0];
+    }
+
+    public List<File> saveModule(String moduleName, File sources) throws RepositoryException {
+        List<File> modifiedFiles = new ArrayList<File>();
+
+        File sourcesImportFolder = new File(sources, "src/main/import");
+
+        regenerateImportFile(moduleName);
+        File f = new File(new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName), "META-INF/import.zip");
+        ZipInputStream zis = null;
+        try {
+            zis = new ZipInputStream(new FileInputStream(f));
+            ZipEntry zipentry;
+            while ((zipentry = zis.getNextEntry()) != null) {
+                if (!zipentry.isDirectory()) {
                     try {
-                        source = new BufferedInputStream(new FileInputStream(defaultTpl));
-                        target = new BufferedOutputStream(new FileOutputStream(out));
-                        IOUtils.copy(source, target);
+                        File sourceFile = new File(sourcesImportFolder, zipentry.getName());
+                        List<String> newFile = IOUtils.readLines(zis, "UTF-8");
+                        List<String> original = FileUtils.readLines(sourceFile);
+                        if (sourceFile.exists() && !isBinary(newFile)) {
+                            Patch patch = DiffUtils.diff(original, newFile, new MyersDiff(new Equalizer() {
+                                public boolean equals(Object o, Object o1) {
+                                    String s1 = (String) o;
+                                    String s2 = (String) o1;
+                                    return s1.trim().equals(s2.trim());
+                                }
+                            }));
+                            if (!patch.getDeltas().isEmpty()) {
+                                original = (List<String>) patch.applyTo(original);
+                                FileUtils.writeLines(sourceFile, "UTF-8", original, "\n");
+                                modifiedFiles.add(sourceFile);
+                            }
+                        } else if (!newFile.equals(original)) {
+                            sourceFile.getParentFile().mkdirs();
+                            FileOutputStream output = new FileOutputStream(sourceFile);
+                            IOUtils.copy(zis, output);
+                            output.close();
+                            modifiedFiles.add(sourceFile);
+                        }
                     } catch (IOException e) {
-                        logger.error(e.getMessage(), e);
-                    } finally {
-                        IOUtils.closeQuietly(source);
-                        IOUtils.closeQuietly(target);
+                        e.printStackTrace();
                     }
                 }
             }
-            createManifest(moduleName, tmplRootFolder, moduleType, "1.0", Arrays.asList("default"));
-            templatePackageRegistry.register(templatePackageDeployer.getPackage(tmplRootFolder));
-            logger.info("Package '" + moduleName + "' successfully created");
+
+            SourceControlManagement scm = SourceControlManagement.getSourceControlManagement(sources);
+            if (scm != null) {
+                scm.setModifiedFile(modifiedFiles);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (zis != null) {
+                IOUtils.closeQuietly(zis);
+            }
+        }
+        return modifiedFiles;
+    }
+
+    private boolean isBinary(List<String> text) {
+        for (String s : text) {
+            if (s.contains("\u0000")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public File generateWar(String moduleName, JCRSessionWrapper session) throws RepositoryException, IOException {
+        JCRNodeWrapper n = session.getNode("/templateSets/"+moduleName);
+        if (n.hasNode("j:versionInfo")) {
+            JCRNodeWrapper vi = n.getNode("j:versionInfo");
+            if (vi.hasProperty("j:sourcesFolder")) {
+                String sources = vi.getProperty("j:sourcesFolder").getString();
+                return compileModule(moduleName, new File(sources));
+            }
+        }
+
+        // Old way
+        ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(moduleName);
+        ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateImportFile(moduleName);
+
+        File f = File.createTempFile("templateSet", ".war");
+        File templateDir = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName);
+
+        ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(f)));
+        zip(templateDir, templateDir, zos);
+        zos.close();
+        return f;
+    }
+
+    private void zip(File dir, File rootDir, ZipOutputStream zos) throws IOException {
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            if (file.isFile()) {
+                ZipEntry ze = new ZipEntry(Patterns.BACKSLASH.matcher(file.getPath().substring(rootDir.getPath().length() + 1)).replaceAll("/"));
+                zos.putNextEntry(ze);
+                final InputStream input = new BufferedInputStream(new FileInputStream(file));
+                try {
+                    IOUtils.copy(input, zos);
+                } finally {
+                    IOUtils.closeQuietly(input);
+                }
+            }
+
+            if (file.isDirectory()) {
+                ZipEntry ze = new ZipEntry(Patterns.BACKSLASH.matcher(file.getPath().substring(rootDir.getPath().length() + 1)).replaceAll("/") + "/");
+                zos.putNextEntry(ze);
+                zip(file, rootDir, zos);
+            }
         }
     }
+
+
 
     public void duplicateModule(String moduleName, String moduleType, final String sourceModule) {
         final File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), moduleName);
@@ -740,18 +981,34 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     private boolean addDependencyValue(JCRNodeWrapper originalNode, JCRNodeWrapper destinationNode, String propertyName) throws RepositoryException {
+        Version v = templatePackageRegistry.lookupByFileName(originalNode.getName()).getLastVersion();
+        String newStringValue = originalNode.getName() + ":" + v;
+        Value newValue = originalNode.getSession().getValueFactory().createValue(newStringValue);
         if (destinationNode.hasProperty(propertyName)) {
             JCRPropertyWrapper installedModules = destinationNode.getProperty(propertyName);
+            List<Value> newValues = new ArrayList<Value>();
             Value[] values = installedModules.getValues();
             for (Value value : values) {
-                if (value.getString().equals(originalNode.getName())) {
+                String stringValue = value.getString();
+                if (stringValue.equals(newStringValue)) {
                     return true;
                 }
+                if (!stringValue.startsWith(originalNode.getName() + ":")) {
+                    newValues.add(value);
+                } else {
+                    newValues.add(newValue);
+                }
             }
+
+            if (!newValues.contains(newValue)) {
+                newValues.add(newValue);
+            }
+
             destinationNode.checkout();
-            installedModules.addValue(originalNode.getName());
+
+            installedModules.setValue(newValues.toArray(new Value[newValues.size()]));
         } else {
-            destinationNode.setProperty(propertyName, new String[] {originalNode.getName()});
+            destinationNode.setProperty(propertyName, new String[] {newStringValue});
         }
         return false;
     }

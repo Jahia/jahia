@@ -40,41 +40,37 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
-import com.google.gwt.user.client.Window;
+import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.TextArea;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 /**
  * Action item to create a new templates set
  */
-public class DuplicateTemplatesSetActionItem extends BaseActionItem {
-    @Override public void onComponentSelection() {
-        String name = Window.prompt(Messages.get("newPackageName.label"), "New package name");
-        if (name != null) {
-            linker.loading("Duplicating template set...");
-            JahiaContentManagementService.App.getInstance().createTemplateSet(name, JahiaGWTParameters.getSiteKey(), null, null, null, null, new BaseAsyncCallback<GWTJahiaNode>() {
-                public void onSuccess(GWTJahiaNode result) {
-                    linker.loaded();
-                    Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Templates set successfully created"));
-                    JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
-                    JahiaGWTParameters.setSite(result, linker);
-                    if (((EditLinker) linker).getSidePanel() != null) {
-                        ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
-                    }
-                    ((EditLinker) linker).onMainSelection(result.getPath(), null, null);
-                    SiteSwitcherActionItem.refreshAllSitesList(linker);
-                }
+public class UpdateModuleActionItem extends BaseActionItem {
 
-                public void onApplicationFailure(Throwable caught) {
-                    linker.loaded();
-                    Info.display(Messages.get("label.error", "Error"), Messages.get("message.templateSetCreationFailed", "Templates set creation failed"));
-                }
-            });
-        }
+    @Override public void onComponentSelection() {
+        linker.loading("Updating module...");
+        JahiaContentManagementService.App.getInstance().updateModule(JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback() {
+            public void onSuccess(Object result) {
+                linker.loaded();
+                Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Module saved"));
+            }
+
+            public void onApplicationFailure(Throwable caught) {
+                linker.loaded();
+                Info.display(Messages.get("label.error", "Error"), Messages.get("message.templateSetCreationFailed", "Module save failed"));
+            }
+        });
     }
 }

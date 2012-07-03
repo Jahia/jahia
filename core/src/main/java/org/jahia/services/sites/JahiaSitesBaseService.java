@@ -457,7 +457,11 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
             if (getSiteByKey(site.getSiteKey()) == null) {
                 final String siteKey1 = site.getSiteKey();
                 final String templatePackage = site.getTemplatePackageName();
-                site.setInstalledModules(new ArrayList<String>(Collections.singleton(templatePackage)));
+
+                final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                        .getTemplatePackageByFileName(templatePackage);
+
+                site.setInstalledModules(new ArrayList<String>(Collections.singleton(templatePackage + ":" + aPackage.getLastVersion())));
 
                 final Set<String> languages = site.getLanguages();
                 final Set<String> inactiveLiveLanguages = site.getInactiveLiveLanguages();
@@ -514,7 +518,8 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                 siteNode.setProperty(SitesSettings.MANDATORY_LANGUAGES, mandatoryLanguages.toArray(new String[mandatoryLanguages
                                         .size()]));
                                 siteNode.setProperty("j:templatesSet", templatePackage);
-                                siteNode.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(templatePackage)} );
+
+                                siteNode.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(templatePackage + ":" + aPackage.getLastVersion())} );
 
                                 Set<String> modules = new LinkedHashSet<String>(
                                         2 + (modulesToDeploy != null ? modulesToDeploy.length : 0));

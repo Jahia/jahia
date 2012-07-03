@@ -51,7 +51,10 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
+import java.util.zip.CRC32;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
+import java.util.zip.ZipInputStream;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
@@ -93,6 +96,7 @@ import org.springframework.web.context.ServletContextAware;
 class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPublisherAware {
 
     private Map<String, Long> timestamps = new HashMap<String, Long>();
+    private TemplatesWatcher templatesWatcher;
 
     class TemplatesWatcher extends TimerTask {
         private File sharedTemplatesFolder;
@@ -112,7 +116,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 logger.debug("Monitoring {} for changes", pkgFile.toString());
                 timestamps.put(pkgFile.getPath(), pkgFile.lastModified());
             }
-            
+
             if (settingsBean.isDevelopmentMode()) {
                 // list first level folders under /modules
                 for (File deployedFolder : deployedTemplatesFolder.listFiles((FileFilter) FileFilterUtils.directoryFileFilter())) {
@@ -144,7 +148,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         }
 
         @Override
-        public void run() {
+        public synchronized void run() {
             boolean reloadSpringContext = false;
             boolean changed = false;
 
@@ -159,10 +163,10 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                         File folder = deployPackage(file);
                         if (folder != null) {
                             remaining.add(folder);
+                            reloadSpringContext = true;
+                            changed = true;
                         }
                         timestamps.put(file.getPath(), file.lastModified());
-                    reloadSpringContext = true;
-                    changed = true;
                     } catch (ZipException e) {
                         logger.warn("Cannot deploy module : "+file.getName()+", will try again later");
                     } catch (Exception e) {
@@ -287,6 +291,10 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
 
     private ApplicationEventPublisher applicationEventPublisher;
 
+    public TemplatesWatcher getTemplatesWatcher() {
+        return templatesWatcher;
+    }
+
     private boolean isValidPackage(JahiaTemplatesPackage pkg) {
         if (StringUtils.isEmpty(pkg.getName())) {
             logger.warn("Template package name '" + pkg.getName() + "' is not valid. Setting it to 'templates'.");
@@ -359,10 +367,10 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         for (int i = 0; i < warFiles.length; i++) {
             File templateWar = warFiles[i];
             try {
-            deployPackage(templateWar);
+                deployPackage(templateWar);
             } catch (Exception e) {
                 logger.error("Cannot deploy module : "+templateWar.getName(),e);
-        }
+            }
         }
 
         logger.info("...finished scanning shared modules directory.");
@@ -410,10 +418,64 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         }
     }
 
+    private class ChecksumFileFilter implements IOFileFilter {
+
+        private File sourceDir;
+        private File destDir;
+
+        public ChecksumFileFilter(File sourceDir, File destDir) {
+            this.sourceDir = sourceDir;
+            this.destDir = destDir;
+        }
+
+        public boolean accept(File file) {
+            String sourceDirAbsPath = sourceDir.getAbsolutePath() + File.separator;
+            if (file.getAbsolutePath().startsWith(sourceDirAbsPath)) {
+                String fileRelativePath = file.getAbsolutePath().substring(sourceDirAbsPath.length());
+                String fileDestPath = destDir.getAbsolutePath() + File.separator + fileRelativePath;
+                try {
+                    File destFile = new File(fileDestPath);
+                    if (!destFile.exists()) {
+                        return true;
+                    }
+                    return FileUtils.checksum(file, new CRC32()).getValue() != FileUtils.checksum(destFile, new CRC32()).getValue();
+                } catch (IOException e) {
+                    logger.error("Cannot compare CRC32 for file "+file.getName(),e);
+                }
+            }
+            return false;
+        }
+
+        public boolean accept(File dir, String name) {
+            return accept(new File(dir,name));
+        }
+    }
+
+    private class EmptyJarFilter implements IOFileFilter {
+
+        public boolean accept(File file) {
+            try {
+                ZipInputStream zis = new ZipInputStream(new FileInputStream(file));
+                ZipEntry ze;
+                while ((ze = zis.getNextEntry()) != null) {
+                    if (ze.getName().endsWith(".class")) {
+                        return true;
+                    }
+                }
+            } catch (IOException e) {
+            }
+            return false;
+        }
+
+        public boolean accept(File dir, String name) {
+            return accept(new File(dir,name));
+        }
+    }
+
     private File deployPackage(File templateWar) throws IOException {
         String packageName = null;
         String rootFolder = null;
-        String implementationVersionStr = null;
+        String implementationVersionStr = "SNAPSHOT";
         String depends = null;
         Calendar packageTimestamp = Calendar.getInstance();
         // TODO there are still some bugs in the generated paths, we must fix the list, maybe exclude directories ?
@@ -443,28 +505,44 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             rootFolder = StringUtils.substringBeforeLast(templateWar.getName(), ".");
         }
 
+        String replacedImplementationVersionStr = implementationVersionStr.replace(".","-");
+//        if (implementationVersionStr.contains("SNAPSHOT")) {
+//            replacedImplementationVersionStr = replacedImplementationVersionStr.replace("SNAPSHOT", Long.toString(templateWar.lastModified()));
+//        }
+
         File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), rootFolder);
-        if (tmplRootFolder.exists()) {
-            if (FileUtils.isFileNewer(templateWar, tmplRootFolder)) {
+        File versionFolder = new File(tmplRootFolder, replacedImplementationVersionStr);
+        if (versionFolder.exists()) {
+            if (FileUtils.isFileNewer(templateWar, versionFolder)) {
                 logger.debug("Older version of the module package '" + packageName + "' already deployed. Deleting it.");
                 try {
-                    FileUtils.deleteDirectory(tmplRootFolder);
+                    FileUtils.deleteDirectory(versionFolder);
                 } catch (IOException e) {
-                    logger.error("Unable to delete the module directory " + tmplRootFolder
+                    logger.error("Unable to delete the module directory " + versionFolder
                             + ". Skipping deployment.", e);
                 }
             }
         }
-        if (!tmplRootFolder.exists()) {
-            logger.info("Start deploying new module package '" + packageName + "' version=" + implementationVersionStr );
+        if (!versionFolder.exists()) {
+            logger.info("Start deploying new module package '" + packageName + "' version=" + replacedImplementationVersionStr );
 
             tmplRootFolder.mkdirs();
+            versionFolder.mkdirs();
 
             JahiaArchiveFileHandler archiveFileHandler = null;
             try {
-                archiveFileHandler = new JahiaArchiveFileHandler(templateWar.getPath(), servletContext.getRealPath("/"));
-                Map<String,String> unzippedFiles = archiveFileHandler.unzip(tmplRootFolder.getAbsolutePath(), TEMPLATE_FILTER);
+                archiveFileHandler = new JahiaArchiveFileHandler(templateWar.getPath());
+                Map<String,String> unzippedFiles = archiveFileHandler.unzip(versionFolder.getAbsolutePath(), TEMPLATE_FILTER);
                 deployedFiles.putAll(unzippedFiles);
+
+                File manifest = new File(versionFolder, "META-INF/MANIFEST.MF");
+                if (manifest.exists()) {
+                    String content = FileUtils.readFileToString(manifest,"UTF-8");
+                    content = content.replace(implementationVersionStr, replacedImplementationVersionStr);
+                    FileUtils.writeStringToFile(manifest,content,"UTF-8");
+                } else {
+                    //todo createManifest
+                }
             } catch (Exception e) {
                 logger.error("Cannot unzip file: " + templateWar, e);
                 return null;
@@ -474,55 +552,80 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 }
             }
 
-            // deploy classes
+            List<File > changed = new ArrayList<File>();
+
+            // check classes
             try {
-                File classesFolder = new File(tmplRootFolder, "WEB-INF/classes");
+                File classesFolder = new File(versionFolder, "WEB-INF/classes");
                 if (classesFolder.exists()) {
                     if (classesFolder.list().length > 0) {
                         logger.info("Deploying classes for module " + packageName);
-                        TracingFileFilter tracingFileFilter = new TracingFileFilter(classesFolder, new File(settingsBean.getClassDiskPath()), tmplRootFolder, servletContext.getRealPath("/"));
-                        FileUtils.copyDirectory(classesFolder, new File(settingsBean.getClassDiskPath()), tracingFileFilter);
-                        deployedFiles.putAll(tracingFileFilter.getCopiedFiles());
+                        ChecksumFileFilter tracingFileFilter = new ChecksumFileFilter(classesFolder, new File(settingsBean.getClassDiskPath()));
+                        changed.addAll(FileUtils.listFiles(classesFolder, tracingFileFilter, null));
                     }
-                    FileUtils.deleteDirectory(new File(tmplRootFolder, "WEB-INF/classes"));
+                    FileUtils.deleteDirectory(new File(versionFolder, "WEB-INF/classes"));
                 }
             } catch (IOException e) {
                 logger.error("Cannot deploy classes for module " + packageName, e);
             }
 
-            // deploy JARs
+            // check JARs
             try {
-                File libFolder = new File(tmplRootFolder, "WEB-INF/lib");
+                File libFolder = new File(versionFolder, "WEB-INF/lib");
                 if (libFolder.exists()) {
                     if (libFolder.list().length > 0) {
                         logger.info("Deploying JARs for module " + packageName);
-                        TracingFileFilter tracingFileFilter = new TracingFileFilter(libFolder, new File(servletContext.getRealPath("/WEB-INF/lib")), tmplRootFolder, servletContext.getRealPath("/"));
-                        FileUtils.copyDirectory(libFolder, new File(servletContext.getRealPath("/WEB-INF/lib")), tracingFileFilter);
-                        deployedFiles.putAll(tracingFileFilter.getCopiedFiles());
+                        ChecksumFileFilter tracingFileFilter = new ChecksumFileFilter(libFolder, new File(servletContext.getRealPath("/WEB-INF/lib")));
+                        EmptyJarFilter emptyJarFilter = new EmptyJarFilter();
+                        changed.addAll(FileUtils.listFiles(libFolder, new AndFileFilter(tracingFileFilter, emptyJarFilter), null));
                     }
-                    FileUtils.deleteDirectory(new File(tmplRootFolder, "WEB-INF/lib"));
+                    FileUtils.deleteDirectory(new File(versionFolder, "WEB-INF/lib"));
                 }
             } catch (IOException e) {
                 logger.error("Cannot deploy libs for module " + packageName, e);
             }
 
-            // delete WEB-INF if it is empty
-            File webInfFolder = new File(tmplRootFolder, "WEB-INF");
-            if (webInfFolder.exists() && webInfFolder.list().length == 0) {
-                webInfFolder.delete();
+            if (!changed.isEmpty()) {
+                logger.warn("Changes in classes detected, won't deploy module until restart : "+changed);
+                FileUtils.deleteDirectory(versionFolder);
+                return null;
             }
 
-            File metaInfFolder = new File(tmplRootFolder, "META-INF");
+
+            // delete WEB-INF if it is empty
+            File webInfFolder = new File(versionFolder, "WEB-INF");
+            if (webInfFolder.exists()) {
+                if (webInfFolder.list().length == 0) {
+                    webInfFolder.delete();
+                } else {
+                    File dest = new File(tmplRootFolder, "WEB-INF");
+                    if (dest.exists()) {
+                        dest.delete();
+                    }
+                    webInfFolder.renameTo(dest);
+                }
+            }
+
+            File metaInfFolder = new File(versionFolder, "META-INF");
+            if (metaInfFolder.exists()) {
+                File dest = new File(tmplRootFolder, "META-INF");
+                if (dest.exists()) {
+                    FileUtils.deleteDirectory(dest);
+                }
+                metaInfFolder.renameTo(dest);
+            }
+
+            metaInfFolder = new File(tmplRootFolder, "META-INF");
             if (!metaInfFolder.exists()) {
                 metaInfFolder.mkdirs();
             }
             long lastModified = metaInfFolder.lastModified();
             createDeploymentXMLFile(new File(metaInfFolder, "deployed.xml"), deployedFiles,
-                    templateWar, packageName, depends, rootFolder, implementationVersionStr, packageTimestamp);
+                    templateWar, packageName, depends, rootFolder, replacedImplementationVersionStr, packageTimestamp);
             metaInfFolder.setLastModified(lastModified);
 
             unzippedPackages.add(tmplRootFolder.getName());
-            tmplRootFolder.setLastModified(templateWar.lastModified());
+            versionFolder.setLastModified(templateWar.lastModified());
         }
         return tmplRootFolder;
     }
@@ -736,13 +839,13 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         }
         if (v.hasProperty("j:version")) {
             String s = v.getProperty("j:version").getString();
-            if (!s.equals(pack.getVersion().toString())) {
-                v.setProperty("j:version", pack.getVersion().toString());
+            if (!s.equals(pack.getLastVersion().toString())) {
+                v.setProperty("j:version", pack.getLastVersion().toString());
                 modified = true;
             }
         } else {
-            if (pack.getVersion() != null) {
-                v.setProperty("j:version", pack.getVersion().toString());
+            if (pack.getLastVersion() != null) {
+                v.setProperty("j:version", pack.getLastVersion().toString());
                 modified = true;
             } else {
                 logger.warn("no version set for Package : " + pack.getFileName());
@@ -795,9 +898,30 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     private Map<String, JahiaTemplatesPackage> getOrderedPackages(LinkedHashSet<JahiaTemplatesPackage> remaining) {
         LinkedHashMap<String, JahiaTemplatesPackage> toDeploy = new LinkedHashMap<String, JahiaTemplatesPackage>();
         Set<String> folderNames = new HashSet<String>();
+
+        LinkedHashSet<JahiaTemplatesPackage> newRemaining = new LinkedHashSet<JahiaTemplatesPackage>();
+        for (JahiaTemplatesPackage pack : remaining) {
+            if (pack.getFileName().equals("assets")) {
+                toDeploy.put(pack.getName(), pack);
+                folderNames.add(pack.getRootFolder());
+            }  else {
+                newRemaining.add(pack);
+            }
+        }
+        remaining = newRemaining;
+        newRemaining = new LinkedHashSet<JahiaTemplatesPackage>();
+        for (JahiaTemplatesPackage pack : remaining) {
+            if (pack.getFileName().equals("default")) {
+                toDeploy.put(pack.getName(), pack);
+                folderNames.add(pack.getRootFolder());
+            } else {
+                newRemaining.add(pack);
+            }
+        }
         boolean systemTemplatesDeployed = templatePackageRegistry.containsFileName("templates-system");
+        remaining = newRemaining;
         while (!remaining.isEmpty()) {
-            LinkedHashSet<JahiaTemplatesPackage> newRemaining = new LinkedHashSet<JahiaTemplatesPackage>();
+            newRemaining = new LinkedHashSet<JahiaTemplatesPackage>();
             for (JahiaTemplatesPackage pack : remaining) {
                 Set<String> allDeployed = new HashSet<String>(templatePackageRegistry.getPackageNames());
                 allDeployed.addAll(templatePackageRegistry.getPackageFileNames());
@@ -873,7 +997,8 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
 
         stopWatchdog();
         watchdog = new Timer(true);
-        watchdog.schedule(new TemplatesWatcher(new File(settingsBean.getJahiaSharedTemplatesDiskPath()), new File(settingsBean.getJahiaTemplatesDiskPath())),
+        templatesWatcher = new TemplatesWatcher(new File(settingsBean.getJahiaSharedTemplatesDiskPath()), new File(settingsBean.getJahiaTemplatesDiskPath()));
+        watchdog.schedule(templatesWatcher,
                 interval, interval);
     }
 

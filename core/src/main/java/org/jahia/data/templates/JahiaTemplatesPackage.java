@@ -506,6 +506,10 @@ public class JahiaTemplatesPackage {
         return lastVersion;
     }
 
+    public String getLastVersionFolder() {
+        return lastVersion.toString().replace('.','-');
+    }
+
     public void setLastVersion(Version lastVersion) {
         this.lastVersion = lastVersion;
     }

@@ -524,7 +524,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             }
         }
         if (!versionFolder.exists()) {
-            logger.info("Start deploying new module package '" + packageName + "' version=" + replacedImplementationVersionStr );
+            logger.info("Start deploying new module package '" + packageName + "' version=" + implementationVersionStr );
 
             tmplRootFolder.mkdirs();
             versionFolder.mkdirs();
@@ -537,9 +537,9 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
 
                 File manifest = new File(versionFolder, "META-INF/MANIFEST.MF");
                 if (manifest.exists()) {
-                    String content = FileUtils.readFileToString(manifest,"UTF-8");
-                    content = content.replace(implementationVersionStr, replacedImplementationVersionStr);
-                    FileUtils.writeStringToFile(manifest,content,"UTF-8");
+//                    String content = FileUtils.readFileToString(manifest,"UTF-8");
+//                    content = content.replace(implementationVersionStr, replacedImplementationVersionStr);
+//                    FileUtils.writeStringToFile(manifest,content,"UTF-8");
                 } else {
                     //todo createManifest
                 }

@@ -690,7 +690,7 @@ public final class JCRContentUtils {
         if (aPackage == null || systemId.startsWith("system-")) {
             aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("assets");
         }
-        return aPackage.getRootFolder() + "/" + aPackage.getLastVersion() + "/icons/";
+        return aPackage.getRootFolder() + "/" + aPackage.getLastVersionFolder() + "/icons/";
     }
 
     public static JCRContentUtils getInstance() {

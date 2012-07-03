@@ -49,7 +49,6 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.Patterns;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
@@ -100,7 +99,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
         return super.doEndTag();
     }
 
-    protected boolean addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage, boolean checkDependencies, String version) {
+    protected boolean addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage, boolean checkDependencies, String versionFolder) {
         if (logger.isDebugEnabled()) {
             logger.debug("Package : " + aPackage.getName() + " type : " + type + " resources : " + resources);
         }
@@ -121,15 +120,15 @@ public class AddResourcesTag extends AbstractJahiaTag {
 
         String[] strings = Patterns.COMMA.split(resources);
 
-        if (StringUtils.isEmpty(version)) {
-            version = aPackage.getLastVersion().toString();
+        if (StringUtils.isEmpty(versionFolder)) {
+            versionFolder = aPackage.getLastVersionFolder();
         }
 
         List<String> lookupPaths = new LinkedList<String>();
-        lookupPaths.add(aPackage.getRootFolderPath() + "/" + version + "/" + type + "/");
+        lookupPaths.add(aPackage.getRootFolderPath() + "/" + versionFolder + "/" + type + "/");
         if (checkDependencies) {
             for (JahiaTemplatesPackage pack : aPackage.getDependencies()) {
-                lookupPaths.add(pack.getRootFolderPath() + "/" + pack.getLastVersion() + "/"+ type + "/");
+                lookupPaths.add(pack.getRootFolderPath() + "/" + pack.getLastVersionFolder() + "/"+ type + "/");
             }
         }
         StringBuilder builder = new StringBuilder();

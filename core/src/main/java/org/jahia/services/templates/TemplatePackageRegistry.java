@@ -478,7 +478,7 @@ class TemplatePackageRegistry {
         for (JahiaTemplatesPackage sourcePack : registry.values()) {
             sourcePack.getResourceBundleHierarchy().clear();
             if (sourcePack.getResourceBundleName() != null) {
-                sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + sourcePack.getRootFolder() + "." + sourcePack.getLastVersion() + "." + sourcePack.getResourceBundleName());
+                sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + sourcePack.getRootFolder() + "." + sourcePack.getLastVersionFolder() + "." + sourcePack.getResourceBundleName());
             }
             for (String s : sourcePack.getDepends()) {
                 JahiaTemplatesPackage dependency = lookup(s);
@@ -486,11 +486,11 @@ class TemplatePackageRegistry {
                     dependency = lookupByFileName(s);
                 }
                 if (!dependency.isDefault() && dependency.getResourceBundleName() != null) {
-                    sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + dependency.getRootFolder() + "." + dependency.getLastVersion() + "." + dependency.getResourceBundleName());
+                    sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + dependency.getRootFolder() + "." + dependency.getLastVersionFolder() + "." + dependency.getResourceBundleName());
                 }
             }
             if (!sourcePack.isDefault() && registry.containsKey("Default Jahia Templates")) {
-            	sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + "default."+registry.get("Default Jahia Templates").getLastVersion()+".resources.DefaultJahiaTemplates");
+            	sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + "default."+registry.get("Default Jahia Templates").getLastVersionFolder()+".resources.DefaultJahiaTemplates");
             	sourcePack.getResourceBundleHierarchy().add("JahiaTypesResources");
                 sourcePack.getResourceBundleHierarchy().add("JahiaInternalResources");
             } else {

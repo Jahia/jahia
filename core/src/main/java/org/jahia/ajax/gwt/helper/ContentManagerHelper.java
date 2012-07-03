@@ -1112,7 +1112,6 @@ public class ContentManagerHelper {
     }
 
     public GWTJahiaNode createTemplateSet(String key, String baseSet, final String siteType, String sources, String scmURI, String scmType, JCRSessionWrapper session) throws GWTJahiaServiceException {
-        String shortName = JCRContentUtils.generateNodeName(key, 50);
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         if (key == null && scmURI != null) {
             try {
@@ -1129,6 +1128,7 @@ public class ContentManagerHelper {
                 logger.error(e.getMessage(), e);
             }
         } else if (baseSet == null) {
+            String shortName = JCRContentUtils.generateNodeName(key, 50);
             try {
                 JCRNodeWrapper node = templateManagerService.createModule(shortName, siteType, sources != null ? new File(sources) : null, scmURI, scmType, session);
                 return navigation.getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_SITE_FIELDS);
@@ -1136,6 +1136,7 @@ public class ContentManagerHelper {
                 logger.error(e.getMessage(), e);
             }
         } else {
+            String shortName = JCRContentUtils.generateNodeName(key, 50);
             try {
                 JCRNodeWrapper node = session.getNode("/templateSets");
                 shortName = JCRContentUtils.findAvailableNodeName(node, shortName);
@@ -1211,13 +1212,13 @@ public class ContentManagerHelper {
             e.printStackTrace();
         }
 
-        if (scm != null) {
-            try {
-                scm.update();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+//        if (scm != null) {
+//            try {
+//                scm.update();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         ServicesRegistry.getInstance().getJahiaTemplateManagerService().saveModule(moduleName, sources);
 
@@ -1225,14 +1226,13 @@ public class ContentManagerHelper {
             scm.commit(message);
         }
 
-        if (scm != null) {
-            try {
-                scm.update();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
+//        if (scm != null) {
+//            try {
+//                scm.update();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     public GWTJahiaNode generateWar(String moduleName, JCRSessionWrapper session) {
@@ -1253,7 +1253,7 @@ public class ContentManagerHelper {
             }
             InputStream is = new BufferedInputStream(new FileInputStream(f));
             try {
-                JCRNodeWrapper res = parent.uploadFile(moduleName + ".war", is, "application/x-zip");
+                JCRNodeWrapper res = parent.uploadFile(f.getName(), is, "application/x-zip");
                 session.save();
 
                 return navigation.getGWTJahiaNode(res);

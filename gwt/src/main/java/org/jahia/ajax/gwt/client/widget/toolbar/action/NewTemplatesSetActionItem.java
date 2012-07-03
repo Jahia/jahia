@@ -96,13 +96,13 @@ public class NewTemplatesSetActionItem extends BaseActionItem {
         final RadioGroup scmType = new RadioGroup("scmType");
         scmType.setFieldLabel(Messages.get("label.scmType", "SCM type"));
         Radio git = new Radio();
-        git.setFieldLabel(Messages.get("label.git", "GIT"));
+        git.setBoxLabel(Messages.get("label.git", "GIT"));
         git.setValue(true);
         git.setValueAttribute("git");
         scmType.add(git);
 
         Radio svn = new Radio();
-        svn.setFieldLabel(Messages.get("label.svn", "SVN"));
+        svn.setBoxLabel(Messages.get("label.svn", "SVN"));
         svn.setValueAttribute("svn");
         scmType.add(svn);
         form.add(scmType);
@@ -111,18 +111,6 @@ public class NewTemplatesSetActionItem extends BaseActionItem {
         uri.setName("uri");
         uri.setFieldLabel(Messages.get("label.uri", "URI"));
         form.add(uri);
-
-        sources.addListener(Events.Change, new Listener<FieldEvent>() {
-            public void handleEvent(FieldEvent be) {
-                if (sources.getValue().length() > 0) {
-                    scmType.setEnabled(true);
-                    uri.setEnabled(true);
-                } else {
-                    scmType.setEnabled(false);
-                    uri.setEnabled(false);
-                }
-            }
-        });
 
         Button btnSubmit = new Button(Messages.get("label.save", "Save"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {

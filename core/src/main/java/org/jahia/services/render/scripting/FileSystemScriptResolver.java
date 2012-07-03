@@ -276,12 +276,12 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
             for (JahiaTemplatesPackage aPackage : packages) {
                 String packageName = aPackage.getRootFolder();
                 if (installedModules == null) {
-                    getViewsSet(type, views, templateType, packageName + "/" + aPackage.getLastVersion(), aPackage, aPackage.getLastVersion().toString());
+                    getViewsSet(type, views, templateType, packageName + "/" + aPackage.getLastVersionFolder(), aPackage, aPackage.getLastVersionFolder());
                 } else if (installedModules.containsKey(packageName)) {
 
-                    getViewsSet(type, views, templateType, packageName + "/" + (StringUtils.isEmpty(installedModules.get(packageName)) ? aPackage.getLastVersion() : installedModules.get(packageName)), aPackage, installedModules.get(packageName));
+                    getViewsSet(type, views, templateType, packageName + "/" + (StringUtils.isEmpty(installedModules.get(packageName)) ? aPackage.getLastVersionFolder() : installedModules.get(packageName).replace('.','-')), aPackage, installedModules.get(packageName) != null ? installedModules.get(packageName).replace('.','-') : null);
                 } else if (site.getPath().startsWith("/sites/")) {
-                    getViewsSet(type, views, templateType, packageName + "/" + aPackage.getLastVersion(), aPackage, aPackage.getLastVersion().toString());
+                    getViewsSet(type, views, templateType, packageName + "/" + aPackage.getLastVersionFolder(), aPackage, aPackage.getLastVersionFolder());
                 }
 
                 for (String v : aPackage.getVersions()) {

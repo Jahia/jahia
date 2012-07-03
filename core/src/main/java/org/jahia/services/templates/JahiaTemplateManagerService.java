@@ -51,6 +51,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.cli.MavenCli;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.io.SAXReader;
 import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
@@ -84,10 +87,9 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.ApplicationListener;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import com.google.common.collect.ImmutableSet;
+import org.xml.sax.SAXException;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
@@ -527,35 +529,33 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public JCRNodeWrapper checkoutModule(File sources, String scmURI, String scmType, JCRSessionWrapper session) throws IOException, RepositoryException {
+        String tempName = null;
+
         if (sources == null) {
-            sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources");
-            sources.mkdirs();
+            tempName = UUID.randomUUID().toString();
+            sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources", tempName);
         }
 
-        String finalFolderName = null;
-
-        if (!sources.exists()) {
-            finalFolderName = sources.getName();
-            sources = sources.getParentFile();
-            sources.mkdirs();
+        if (sources.exists()) {
+            return null;
         }
 
+        sources.getParentFile().mkdirs();
 
         try {
             SourceControlManagement scm = SourceControlManagement.checkoutRepository(sources, scmType, scmURI);
             File path = scm.getRootFolder();
 
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(new File(path, "pom.xml"));
-            String moduleName = document.getDocumentElement().getElementsByTagName("artifactId").item(0).getTextContent();
-            if (finalFolderName != null) {
-                try {
-                    File newPath = new File(sources, finalFolderName);
+            SAXReader reader = new SAXReader();
+            Document document = reader.read(new File(path, "pom.xml"));
+            org.dom4j.Node n = (org.dom4j.Node) document.getRootElement().elementIterator("artifactId").next();
+            String moduleName = n.getText();
+
+            if (tempName != null) {
+                File newPath = new File(sources.getParentFile(), moduleName);
+                if (!newPath.exists()) {
                     FileUtils.moveDirectory(path, newPath);
                     path = newPath;
-                } catch (IOException e) {
-                    logger.error("Cannot rename folder", e);
                 }
             }
 
@@ -579,10 +579,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(new File(sources, "pom.xml"));
-            String moduleName = document.getDocumentElement().getElementsByTagName("artifactId").item(0).getTextContent();
+            SAXReader reader = new SAXReader();
+            Document document = reader.read(new File(sources, "pom.xml"));
+            org.dom4j.Node n = (org.dom4j.Node) document.getRootElement().elementIterator("artifactId").next();
+            String moduleName = n.getText();
+
             installModule(moduleName, sources);
 
             JCRNodeWrapper node = session.getNode("/templateSets/" + moduleName);
@@ -603,20 +604,57 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             FileUtils.copyFile(warFile, new File(settingsBean.getJahiaSharedTemplatesDiskPath(), warFile.getName()));
             templatePackageDeployer.getTemplatesWatcher().run();
         } catch (IOException e) {
-            logger.error("Cannot deploy module",e);
+            logger.error("Cannot deploy module", e);
         }
     }
 
     public File compileModule(final String moduleName, File sources) {
         MavenCli cli = new MavenCli();
-        int ret;
-        String[] installParams = {"clean","install"};
-        ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
-        return new File(sources.getPath() + "/target/").listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.startsWith(moduleName) && name.endsWith(".war");
-            }
-        })[0];
+
+        try {
+            SAXReader reader = new SAXReader();
+            Document document = reader.read(new File(sources, "pom.xml"));
+            org.dom4j.Node n = (org.dom4j.Node) document.getRootElement().elementIterator("version").next();
+            String version = n.getText();
+
+            int ret;
+            String[] installParams = {"clean","install"};
+            ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
+
+            return new File(sources.getPath() + "/target/" + moduleName + "-" + version + ".war");
+        } catch (DocumentException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return null;
+    }
+
+    public File releaseModule(final String moduleName, File sources) {
+        MavenCli cli = new MavenCli();
+
+        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName);
+
+        String lastVersion = pack.getLastVersion().toString();
+        if (lastVersion.endsWith("-SNAPSHOT")) {
+            final String releaseVersion = StringUtils.substringBefore(lastVersion,"-SNAPSHOT");
+            String tag = moduleName + "-" + releaseVersion;
+            String nextVersion = StringUtils.substringBeforeLast(releaseVersion, ".") + "." + (Integer.parseInt(StringUtils.substringAfterLast(releaseVersion, ".")) + 1) + "-SNAPSHOT";
+
+            int ret;
+            String MAVEN_HOME = System.getenv().get("MAVEN_HOME") != null ? System.getenv().get("MAVEN_HOME") : "/usr/share/maven";
+
+            String[] installParams = {"release:prepare", "release:perform",
+                    "-Dmaven.home=" + MAVEN_HOME,
+                    "-Dtag="+tag,
+                    "-DreleaseVersion="+releaseVersion,
+                    "-DdevelopmentVersion="+nextVersion,
+                    "-Dgoals=install",
+                    "--batch-mode"
+            };
+            ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
+
+            return new File(sources.getPath() + "/target/checkout/target/" + moduleName + "-" + releaseVersion + ".war");
+        }
+        return null;
     }
 
     public List<File> saveModule(String moduleName, File sources) throws RepositoryException {
@@ -660,7 +698,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         File sourcesWebappFolder = new File(sources, "src/main/webapp");
 
         JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName);
-        File root = new File(new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName), pack.getLastVersion().toString());
+        File root = new File(new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName), pack.getLastVersionFolder());
 
         try {
             saveFolder(root, sourcesWebappFolder, root, modifiedFiles);
@@ -734,7 +772,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             JCRNodeWrapper vi = n.getNode("j:versionInfo");
             if (vi.hasProperty("j:sourcesFolder")) {
                 String sources = vi.getProperty("j:sourcesFolder").getString();
-                return compileModule(moduleName, new File(sources));
+                return releaseModule(moduleName, new File(sources));
             }
         }
 

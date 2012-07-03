@@ -171,17 +171,20 @@ public class EditModeDNDListener extends DNDListener {
                 ContentTypeWindow.createContent(editLinker, nodeName, referenceType, props, targetNode, true, false);
             } else if (SIMPLEMODULE_TYPE.equals(sourceType)) {
                 // Item move
-                GWTJahiaNode selectedNode = sourceNodes.get(0);
+                List<String> paths = new ArrayList<String>();
+                for (GWTJahiaNode n :sourceNodes) {
+                    paths.add(n.getPath());
+                }
 
                 status.setData(OPERATION_CALLED, "true");
                 if ("*".equals(name)) {
-                    service.moveAtEnd(selectedNode.getPath(), parentPath, callback);
+                    service.moveAtEnd(paths, parentPath, callback);
                 } else {
                     if (!targetPath.startsWith("/")) {
                         // path is not absolute, let's build it.
-                        service.move(selectedNode.getPath(), parentPath + "/" + targetPath, callback);
+                        service.move(paths, parentPath + "/" + targetPath, callback);
                     } else {
-                        service.move(selectedNode.getPath(), targetPath, callback);
+                        service.move(paths, targetPath, callback);
                     }
                 }
             } else if (CREATE_CONTENT_SOURCE_TYPE.equals(sourceType)) {
@@ -235,7 +238,11 @@ public class EditModeDNDListener extends DNDListener {
                 // Item move
 
                 status.setData(OPERATION_CALLED, "true");
-                service.moveOnTopOf(sourceNodes.get(0).getPath(), targetPath, callback);
+                List<String> paths = new ArrayList<String>();
+                for (GWTJahiaNode n :sourceNodes) {
+                    paths.add(n.getPath());
+                }
+                service.moveOnTopOf(paths, targetPath, callback);
             } else if (CREATE_CONTENT_SOURCE_TYPE.equals(sourceType)) {
                 // Item creation
                 status.setData(OPERATION_CALLED, "true");
@@ -269,6 +276,10 @@ public class EditModeDNDListener extends DNDListener {
             if (PAGETREE_TYPE.equals(sourceType)) {
                 status.setData(OPERATION_CALLED, "true");
                 final GWTJahiaNode source = ((List<GWTJahiaNode>) sourceNodes).get(0);
+                List<String> paths = new ArrayList<String>();
+                for (GWTJahiaNode n :sourceNodes) {
+                    paths.add(n.getPath());
+                }
                 final GWTJahiaNode parent = status.getData(TARGET_PARENT);
                 final int type = (Integer) status.getData(TYPE);
                 callback = new BaseAsyncCallback() {
@@ -290,15 +301,15 @@ public class EditModeDNDListener extends DNDListener {
                 };
 
                 if (status.<Object>getData("type").equals(-1)) {
-                    service.moveAtEnd(source.getPath(), targetPath, callback);
+                    service.moveAtEnd(paths, targetPath, callback);
                 } else if (status.<Object>getData("type").equals(0)) {
-                    service.moveOnTopOf(source.getPath(), targetPath, callback);
+                    service.moveOnTopOf(paths, targetPath, callback);
                 } else if (status.<Object>getData("type").equals(1)) {
                     GWTJahiaNode node = status.getData(TARGET_NEXT_NODE);
                     if (node == null) {
-                        service.moveAtEnd(source.getPath(), parent.getPath(), callback);
+                        service.moveAtEnd(paths, parent.getPath(), callback);
                     } else {
-                        service.moveOnTopOf(source.getPath(), node.getPath(), callback);
+                        service.moveOnTopOf(paths, node.getPath(), callback);
                     }
                 }
             }

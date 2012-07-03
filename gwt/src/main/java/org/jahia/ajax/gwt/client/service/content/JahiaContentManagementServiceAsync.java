@@ -156,11 +156,11 @@ public interface JahiaContentManagementServiceAsync {
 
     void rename(String path, String newName, AsyncCallback<String> async);
 
-    void move(String sourcePath, String targetPath, AsyncCallback asyncCallback);
+    void move(List<String> sourcePaths, String targetPath, AsyncCallback asyncCallback);
 
-    void moveAtEnd(String sourcePath, String targetPath, AsyncCallback asyncCallback);
+    void moveAtEnd(List<String> sourcePaths, String targetPath, AsyncCallback asyncCallback);
 
-    void moveOnTopOf(String sourcePath, String targetPath, AsyncCallback asyncCallback);
+    void moveOnTopOf(List<String> sourcePaths, String targetPath, AsyncCallback asyncCallback);
 
     void createDefaultUsersGroupACE(List<String> permissions, boolean grand, AsyncCallback<GWTJahiaNodeACE> async);
 

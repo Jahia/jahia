@@ -120,7 +120,10 @@ public class SimpleModule extends Module {
                 public void handleEvent(ComponentEvent ce) {
                     if (selectable) {
                         Log.info("click" + path + " : " + scriptInfo);
-                        mainModule.getEditLinker().onModuleSelection(SimpleModule.this);
+                        mainModule.setCtrlActive(ce.isControlKey());
+                        if ((ce.isRightClick() && mainModule.getSelections().size() == 0) || !ce.isRightClick()) {
+                            mainModule.getEditLinker().onModuleSelection(SimpleModule.this);
+                        }
                     }
                 }
             };

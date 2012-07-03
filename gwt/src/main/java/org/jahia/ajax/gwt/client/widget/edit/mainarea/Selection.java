@@ -45,6 +45,8 @@ import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.ui.RootPanel;
 
+import java.util.List;
+
 /**
  * User: toto
  * Date: Sep 3, 2009
@@ -52,38 +54,28 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class Selection extends LayoutContainer {
 
-    private static Selection instance;
-
     private MainModule mainModule;
+    private Module module;
 
     private BoxComponent top;
     private BoxComponent bottom;
     private BoxComponent left;
     private BoxComponent right;
 
-    public static Selection getInstance() {
-        if (instance == null) {
-            instance = new Selection();
-        }
-        return instance;
-    }
-
     private LayoutContainer currentContainer;
 
-    private Selection() {
+    public Selection(Module m) {
         setBorders(true);
 
         top = new LayoutContainer();
         bottom = new LayoutContainer();
         left = new LayoutContainer();
         right = new LayoutContainer();
+        module = m;
+        mainModule = m!=null?m.getMainModule():null;
     }
 
-    public void setMainModule(MainModule m) {
-        this.mainModule = m;
-    }
-
-    public void select(Module module) {
+    public void select() {
         this.currentContainer = module.getContainer();
         if (module instanceof ListModule) {
             top.setStyleName("selection-top-list");

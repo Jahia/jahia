@@ -867,25 +867,32 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return contentManager.rename(path, newName, retrieveCurrentSession(), getUILocale());
     }
 
-    public void move(String sourcePath, String targetPath) throws GWTJahiaServiceException {
+    public void move(List<String> sourcePaths, String targetPath) throws GWTJahiaServiceException {
         try {
-            contentManager.move(sourcePath, targetPath, retrieveCurrentSession());
+            for (String sourcePath : sourcePaths) {
+                contentManager.move(sourcePath, targetPath, retrieveCurrentSession());
+            }
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
-    public void moveAtEnd(String sourcePath, String targetPath) throws GWTJahiaServiceException {
+    public void moveAtEnd(List<String> sourcePaths, String targetPath) throws GWTJahiaServiceException {
         try {
-            contentManager.moveAtEnd(sourcePath, targetPath, retrieveCurrentSession());
+            for (String sourcePath : sourcePaths) {
+                contentManager.moveAtEnd(sourcePath, targetPath, retrieveCurrentSession());
+            }
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
-    public void moveOnTopOf(String sourcePath, String targetPath) throws GWTJahiaServiceException {
+    public void moveOnTopOf(List<String> sourcePaths, String targetPath) throws GWTJahiaServiceException {
         try {
-            contentManager.moveOnTopOf(sourcePath, targetPath, retrieveCurrentSession());
+            // Reorder List
+            for (String sourcePath : sourcePaths)  {
+                contentManager.moveOnTopOf(sourcePath, targetPath, retrieveCurrentSession());
+            }
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }

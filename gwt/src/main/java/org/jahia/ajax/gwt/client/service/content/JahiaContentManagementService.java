@@ -165,11 +165,11 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public String rename(String path, String newName) throws GWTJahiaServiceException;
 
-    public void move(String sourcePath, String targetPath) throws GWTJahiaServiceException;
+    public void move(List<String> sourcePaths, String targetPath) throws GWTJahiaServiceException;
 
-    public void moveAtEnd(String sourcePath, String targetPath) throws GWTJahiaServiceException;
+    public void moveAtEnd(List<String> sourcePaths, String targetPath) throws GWTJahiaServiceException;
 
-    public void moveOnTopOf(String sourcePath, String targetPath) throws GWTJahiaServiceException;
+    public void moveOnTopOf(List<String> sourcePaths, String targetPath) throws GWTJahiaServiceException;
 
     public GWTJahiaNodeACE createDefaultUsersGroupACE(List<String> permissions, boolean grand) throws GWTJahiaServiceException;
 

@@ -257,18 +257,20 @@ public class TableView extends AbstractView {
                 };
 
                 final List<GWTJahiaNode> gwtJahiaNodes = (List<GWTJahiaNode>) dndEvent.getData();
-                final GWTJahiaNode source = gwtJahiaNodes.get(0);
-
+                List<String> sources = new ArrayList<String>();
+                for (GWTJahiaNode n :gwtJahiaNodes) {
+                    sources.add(n.getPath());
+                }
                 if (activeItem != null) {
                     final GWTJahiaNode target = (GWTJahiaNode) activeItem;
                     if (before) {
-                        JahiaContentManagementService.App.getInstance().moveOnTopOf(source.getPath(), target.getPath(), callback);
+                        JahiaContentManagementService.App.getInstance().moveOnTopOf(sources, target.getPath(), callback);
                     } else {
-                        JahiaContentManagementService.App.getInstance().moveAtEnd(source.getPath(), target.getPath(), callback);
+                        JahiaContentManagementService.App.getInstance().moveAtEnd(sources, target.getPath(), callback);
                     }
                 } else {
                     final GWTJahiaNode target = root;
-                    JahiaContentManagementService.App.getInstance().moveAtEnd(source.getPath(), target.getPath(), callback);
+                    JahiaContentManagementService.App.getInstance().moveAtEnd(sources, target.getPath(), callback);
                 }
             }
         }

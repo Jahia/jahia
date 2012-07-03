@@ -52,11 +52,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
+ *
  * User: toto
  * Date: Aug 21, 2009
  * Time: 4:16:42 PM
- * 
+ *
  */
 public class SimpleModuleDragSource extends EditModeDragSource {
 
@@ -86,29 +86,30 @@ public class SimpleModuleDragSource extends EditModeDragSource {
 
     @Override
     protected void onDragStart(DNDEvent e) {
-        if (module.isDraggable()) {
-            super.onDragStart(e);
-            if (PermissionsUtils.isPermitted("jcr:removeNode", module.getNode()) && !module.getNode().isLocked()) {
-                e.setCancelled(false);
-                e.setData(this);
-                e.setOperation(DND.Operation.COPY);
-                if (getStatusText() == null) {
-                    e.getStatus().update(DOM.clone(module.getHtml().getElement(), true));
+        List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
+        for (Module m : getModule().getMainModule().getSelections().keySet()) {
+            if (m.isDraggable()) {
+                super.onDragStart(e);
+                if (PermissionsUtils.isPermitted("jcr:removeNode", m.getNode()) && !m.getNode().isLocked()) {
+                    e.setCancelled(false);
+                    e.setData(this);
+                    e.setOperation(DND.Operation.COPY);
+                    if (getStatusText() == null) {
+                        e.getStatus().update(DOM.clone(m.getHtml().getElement(), true));
 
-                    e.getStatus().setData("element", module.getHtml().getElement());
-                    DOM.setStyleAttribute(module.getHtml().getElement(), "display", "none");
+                        e.getStatus().setData("element", m.getHtml().getElement());
+                        DOM.setStyleAttribute(m.getHtml().getElement(), "display", "none");
 
+                    }
+                } else {
+                    e.setCancelled(true);
                 }
-            } else {
-                e.setCancelled(true);
+                module.getMainModule().getSelections().get(m).hide();
+                e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
+                e.getStatus().setData(EditModeDNDListener.SOURCE_MODULE, m);
+                l.add(m.getNode());
+                e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);
             }
-
-            Selection.getInstance().hide();
-            e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
-            e.getStatus().setData(EditModeDNDListener.SOURCE_MODULE, module);
-            List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
-            l.add(getModule().getNode());
-            e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);
         }
     }
 

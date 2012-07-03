@@ -96,6 +96,8 @@ public class MainModule extends Module {
 
     private InfoLayers infoLayers = new InfoLayers();
     private Map<String, Boolean> activeLayers = new HashMap<String, Boolean>();
+    private boolean ctrlActive = false;
+    private Map<Module,Selection> selections = new HashMap<Module, Selection>();
 
     Map<Element, Module> m;
     protected LayoutContainer scrollContainer;
@@ -133,10 +135,14 @@ public class MainModule extends Module {
         add(center,new BorderLayoutData(Style.LayoutRegion.CENTER));
 
         Hover.getInstance().setMainModule(this);
-        Selection.getInstance().setMainModule(this);
 
         module = this;
         exportStaticMethod();
+    }
+
+
+    public Map<Module, Selection> getSelections() {
+        return selections;
     }
 
     public void initWithLinker(EditLinker linker) {
@@ -168,6 +174,7 @@ public class MainModule extends Module {
 
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
+                ctrlActive = ce.isControlKey();
                 makeSelected();
             }
         };
@@ -301,7 +308,10 @@ public class MainModule extends Module {
                             head.setText(Messages.get("label.page", "Page") + ": " + path);
                         }
                         nodeTypes = result.getNodeTypes();
-                        Selection.getInstance().hide();
+                        for (Selection s : selections.values()) {
+                            s.hide();
+                        }
+                        selections.clear();
                         Hover.getInstance().removeAll();
                         infoLayers.removeAll();
 
@@ -535,13 +545,23 @@ public class MainModule extends Module {
         //scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
         //scrollContainer.setWidth(getWidth());
         if (editLinker.getSelectedModule() != null) {
-            Selection.getInstance().hide();
-            Selection.getInstance().show();
+            for (Selection s : selections.values()) {
+                s.hide();
+                s.show();
+            }
         }
     }
 
     public LayoutContainer getContainer() {
         return scrollContainer;
+    }
+
+    public boolean isCtrlActive() {
+        return ctrlActive;
+    }
+
+    public void setCtrlActive(boolean ctrlActive) {
+        this.ctrlActive = ctrlActive;
     }
 
     public void parse() {
@@ -614,10 +634,16 @@ public class MainModule extends Module {
     }
 
     public void handleNewModuleSelection(Module selectedModule) {
-        Selection l = Selection.getInstance();
-        l.hide();
+        Selection l = new Selection(selectedModule);
+        if (! ctrlActive || selectedModule == null) {
+            for(Selection s : selections.values()) {
+                s.hide();
+            }
+            selections.clear();
+        }
         if (selectedModule != null && !(selectedModule instanceof MainModule)) {
-            l.select(selectedModule);
+            selections.put(selectedModule,l);
+            l.select();
             l.show();
         }
         if (head != null) {

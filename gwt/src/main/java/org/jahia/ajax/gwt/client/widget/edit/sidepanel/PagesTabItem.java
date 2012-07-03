@@ -273,8 +273,10 @@ public class PagesTabItem extends SidePanelTabItem {
         @Override
         protected void onDragStart(DNDEvent e) {
             super.onDragStart(e);
-            Selection.getInstance().hide();
-
+            for (Selection s : editLinker.getMainModule().getSelections().values()) {
+                s.hide();
+            }
+            editLinker.getMainModule().getSelections().clear();
             List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
             final GWTJahiaNode node = PagesTabItem.this.pageTree.getSelectionModel().getSelectedItem();
             if (node.getInheritedNodeTypes().contains("jmix:navMenuItem") && PermissionsUtils.isPermitted("jcr:removeNode", node) && !node.isLocked()) {

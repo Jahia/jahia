@@ -258,6 +258,9 @@ public class EditLinker implements Linker {
     public void syncSelectionContext(int context) {
         selectionContext.setMainNode(getMainModule().getNode());
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+        if (mainModule.isCtrlActive()) {
+            nodes.addAll(selectionContext.getSelectedNodes());
+        }
         if (getSelectedModule() != null && getSelectedModule().getNode() != null && !(getSelectedModule() instanceof MainModule)) {
             nodes.add(getSelectedModule().getNode());
         }

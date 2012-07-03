@@ -183,6 +183,10 @@ public class LinkerSelectionContext {
         return mainNode;
     }
 
+    public List<GWTJahiaNode> getSelectedNodes() {
+        return selectedNodes;
+    }
+
     public GWTJahiaNode getSingleSelection() {
         return singleSelection;
     }

@@ -352,7 +352,7 @@ public class DocumentViewExporter {
         }
 
         if (stack.isEmpty()) {
-            for (Iterator<String> iterator = prefixes.keySet().iterator(); iterator.hasNext();) {
+            for (Iterator<String> iterator = (new TreeSet<String>(prefixes.keySet())).iterator(); iterator.hasNext();) {
                 String prefix = iterator.next();
                 String uri = prefixes.get(prefix);
                 atts.addAttribute(NS_URI, prefix, "xmlns:" + prefix, CDATA, uri);

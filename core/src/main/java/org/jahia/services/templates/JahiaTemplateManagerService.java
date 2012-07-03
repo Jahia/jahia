@@ -42,6 +42,7 @@ package org.jahia.services.templates;
 
 import difflib.DiffUtils;
 import difflib.Patch;
+import difflib.PatchFailedException;
 import difflib.myers.Equalizer;
 import difflib.myers.MyersDiff;
 import org.apache.commons.collections.Transformer;
@@ -621,8 +622,15 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public List<File> saveModule(String moduleName, File sources) throws RepositoryException {
         List<File> modifiedFiles = new ArrayList<File>();
 
-        File sourcesImportFolder = new File(sources, "src/main/import");
+        SourceControlManagement scm = null;
+        try {
+            scm = SourceControlManagement.getSourceControlManagement(sources);
+        } catch (Exception e) {
+            logger.error("Cannot get SCM",e);
+        }
 
+        // Handle import
+        File sourcesImportFolder = new File(sources, "src/main/import");
         regenerateImportFile(moduleName);
         File f = new File(new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName), "META-INF/import.zip");
         ZipInputStream zis = null;
@@ -633,46 +641,82 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 if (!zipentry.isDirectory()) {
                     try {
                         File sourceFile = new File(sourcesImportFolder, zipentry.getName());
-                        List<String> newFile = IOUtils.readLines(zis, "UTF-8");
-                        List<String> original = FileUtils.readLines(sourceFile);
-                        if (sourceFile.exists() && !isBinary(newFile)) {
-                            Patch patch = DiffUtils.diff(original, newFile, new MyersDiff(new Equalizer() {
-                                public boolean equals(Object o, Object o1) {
-                                    String s1 = (String) o;
-                                    String s2 = (String) o1;
-                                    return s1.trim().equals(s2.trim());
-                                }
-                            }));
-                            if (!patch.getDeltas().isEmpty()) {
-                                original = (List<String>) patch.applyTo(original);
-                                FileUtils.writeLines(sourceFile, "UTF-8", original, "\n");
-                                modifiedFiles.add(sourceFile);
-                            }
-                        } else if (!newFile.equals(original)) {
-                            sourceFile.getParentFile().mkdirs();
-                            FileOutputStream output = new FileOutputStream(sourceFile);
-                            IOUtils.copy(zis, output);
-                            output.close();
-                            modifiedFiles.add(sourceFile);
-                        }
+                        saveFile(zis, sourceFile, modifiedFiles);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
 
-            SourceControlManagement scm = SourceControlManagement.getSourceControlManagement(sources);
-            if (scm != null) {
-                scm.setModifiedFile(modifiedFiles);
-            }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Cannot patch import file", e);
         } finally {
             if (zis != null) {
                 IOUtils.closeQuietly(zis);
             }
         }
+
+        // Handle webapp files
+        File sourcesWebappFolder = new File(sources, "src/main/webapp");
+
+        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName);
+        File root = new File(new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName), pack.getLastVersion().toString());
+
+        try {
+            saveFolder(root, sourcesWebappFolder, root, modifiedFiles);
+        } catch (Exception e) {
+            logger.error("Cannot patch sources",e);
+        }
+
+        if (scm != null) {
+            scm.setModifiedFile(modifiedFiles);
+        }
         return modifiedFiles;
+    }
+
+    private void saveFolder(File sourceRoot, File targetRoot, File currentSource, List<File> modifiedFiles) throws IOException, PatchFailedException {
+        FileInputStream  fileInputStream = null;
+        try {
+            for (File sourceFile : currentSource.listFiles()) {
+                if (sourceFile.isDirectory()) {
+                    saveFolder(sourceRoot, targetRoot, sourceFile, modifiedFiles);
+                } else {
+                    fileInputStream = new FileInputStream(sourceFile);
+                    File targetFile = new File(targetRoot, sourceFile.getPath().substring(sourceRoot.getPath().length()+1));
+                    saveFile(fileInputStream, targetFile, modifiedFiles);
+                    IOUtils.closeQuietly(fileInputStream);
+                }
+            }
+        } finally {
+            if (fileInputStream != null) {
+                IOUtils.closeQuietly(fileInputStream);
+            }
+        }
+    }
+
+    private void saveFile(InputStream source, File target, List<File> modifiedFiles) throws IOException, PatchFailedException {
+        List<String> newFile = IOUtils.readLines(source, "UTF-8");
+        List<String> original = FileUtils.readLines(target);
+        if (target.exists() && !isBinary(newFile)) {
+            Patch patch = DiffUtils.diff(original, newFile, new MyersDiff(new Equalizer() {
+                public boolean equals(Object o, Object o1) {
+                    String s1 = (String) o;
+                    String s2 = (String) o1;
+                    return s1.trim().equals(s2.trim());
+                }
+            }));
+            if (!patch.getDeltas().isEmpty()) {
+                original = (List<String>) patch.applyTo(original);
+                FileUtils.writeLines(target, "UTF-8", original, "\n");
+                modifiedFiles.add(target);
+            }
+        } else if (!newFile.equals(original)) {
+            target.getParentFile().mkdirs();
+            FileOutputStream output = new FileOutputStream(target);
+            IOUtils.copy(source, output);
+            output.close();
+            modifiedFiles.add(target);
+        }
     }
 
     private boolean isBinary(List<String> text) {

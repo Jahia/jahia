@@ -813,7 +813,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     private boolean saveFile(InputStream source, File target) throws IOException, PatchFailedException {
-        List<String> sourceContent = IOUtils.readLines(source, "UTF-8");
         if (!target.exists()) {
             target.getParentFile().mkdirs();
             FileOutputStream output = new FileOutputStream(target);
@@ -822,7 +821,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             return true;
         } else {
             List<String> targetContent = FileUtils.readLines(target);
-            if (!isBinary(sourceContent)) {
+            if (!isBinary(targetContent)) {
+                List<String> sourceContent = IOUtils.readLines(source, "UTF-8");
                 Patch patch = DiffUtils.diff(targetContent, sourceContent, new MyersDiff(new Equalizer() {
                     public boolean equals(Object o, Object o1) {
                         String s1 = (String) o;
@@ -835,12 +835,15 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     FileUtils.writeLines(target, "UTF-8", targetContent, "\n");
                     return true;
                 }
-            } else if (!sourceContent.equals(targetContent)) {
-                target.getParentFile().mkdirs();
-                FileOutputStream output = new FileOutputStream(target);
-                IOUtils.copy(source, output);
-                output.close();
-                return true;
+            } else {
+                byte[] sourceArray = IOUtils.toByteArray(source);
+                byte[] targetArray = IOUtils.toByteArray(new FileInputStream(target));
+                if (!Arrays.equals(sourceArray, targetArray)) {
+                    FileOutputStream output = new FileOutputStream(target);
+                    IOUtils.write(sourceArray, output);
+                    output.close();
+                    return true;
+                }
             }
         }
         return false;

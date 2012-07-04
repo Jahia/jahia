@@ -67,7 +67,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
-import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
@@ -98,7 +97,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     private static String pid = "";
 
     private static boolean contextInitialized = false;
-    private static Map jahiaContextListenersConfiguration;
+    private static Map<String, Object> jahiaContextListenersConfiguration;
 
     @SuppressWarnings("unchecked")
     private static Map<ServletRequest, Long> requestTimes = Collections.synchronizedMap(new LRUMap(1000));
@@ -116,12 +115,11 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         } else {
             return false;
         }
-        if (interceptorActivated == null) {
-            return false;
-        }
+
         return interceptorActivated.booleanValue();
     }
 
+    @SuppressWarnings("unchecked")
     public void contextInitialized(ServletContextEvent event) {
         startupTime = System.currentTimeMillis();
         startupWithTrust(Jahia.getBuildNumber());
@@ -154,7 +152,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             ApplicationsManagerServiceImpl.getInstance().registerListeners();
             Config.set(servletContext, Config.FMT_FALLBACK_LOCALE, (SettingsBean.getInstance().getDefaultLanguageCode() != null) ? SettingsBean
                     .getInstance().getDefaultLanguageCode() : Locale.ENGLISH.getLanguage());
-            jahiaContextListenersConfiguration = (Map) ContextLoader.getCurrentWebApplicationContext().getBean("jahiaContextListenersConfiguration");
+            jahiaContextListenersConfiguration = (Map<String, Object>) ContextLoader.getCurrentWebApplicationContext().getBean("jahiaContextListenersConfiguration");
             if (isEventInterceptorActivated("interceptServletContextListenerEvents")) {
                 SpringContextSingleton.getInstance().getModuleContext().publishEvent(new ServletContextInitializedEvent(event.getServletContext()));
             }
@@ -208,25 +206,18 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         }
         removePID(servletContext);
         try {
-            if (event.getServletContext().getResource(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null) {
-                try {
-                    if (ContextLoader.getCurrentWebApplicationContext() != null
-                            && ContextLoader.getCurrentWebApplicationContext().getBean(
-                                    "TemplatePackageApplicationContextLoader") != null) {
-                        ((TemplatePackageApplicationContextLoader) ContextLoader
-                                .getCurrentWebApplicationContext().getBean(
-                                        "TemplatePackageApplicationContextLoader")).stop();
-                    }
-                } catch (Exception e) {
-                    logger.error(
-                            "Error shutting down Jahia modules Spring application context. Cause: "
-                                    + e.getMessage(), e);
-                }
-                super.contextDestroyed(event);
+            if (ContextLoader.getCurrentWebApplicationContext() != null
+                    && ContextLoader.getCurrentWebApplicationContext().getBean(
+                            "TemplatePackageApplicationContextLoader") != null) {
+                ((TemplatePackageApplicationContextLoader) ContextLoader
+                        .getCurrentWebApplicationContext().getBean(
+                                "TemplatePackageApplicationContextLoader")).stop();
             }
-        } catch (MalformedURLException e) {
-            logger.error(e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("Error shutting down Jahia modules Spring application context. Cause: "
+                    + e.getMessage(), e);
         }
+        super.contextDestroyed(event);
     }
 
     /**
@@ -424,6 +415,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public class HttpSessionCreatedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = -7421486835176013728L;
+        
         public HttpSessionCreatedEvent(HttpSession session) {
             super(session);
         }
@@ -434,6 +427,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public class HttpSessionDestroyedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = -1387944667725619591L;
+        
         public HttpSessionDestroyedEvent(HttpSession session) {
             super(session);
         }
@@ -443,6 +438,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public class ServletRequestDestroyedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 7596456549896361175L;
+        
         public ServletRequestDestroyedEvent(ServletRequest servletRequest) {
             super(servletRequest);
         }
@@ -453,6 +450,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public class ServletRequestInitializedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 5822992792782543993L;
+        
         public ServletRequestInitializedEvent(ServletRequest servletRequest) {
             super(servletRequest);
         }
@@ -462,6 +461,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public class HttpSessionWillPassivateEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 6886011344567163295L;
+        
         public HttpSessionWillPassivateEvent(HttpSession session) {
             super(session);
         }
@@ -471,6 +472,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public class HttpSessionDidActivateEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 5814761122135408014L;
+        
         public HttpSessionDidActivateEvent(HttpSession session) {
             super(session);
         }
@@ -480,6 +483,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public class HttpSessionAttributeAddedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 7316259699549761735L;
+
         public HttpSessionAttributeAddedEvent(HttpSessionBindingEvent httpSessionBindingEvent) {
             super(httpSessionBindingEvent);
         }
@@ -490,6 +495,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public class HttpSessionAttributeRemovedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 876708448117102271L;
         public HttpSessionAttributeRemovedEvent(HttpSessionBindingEvent httpSessionBindingEvent) {
             super(httpSessionBindingEvent);
         }
@@ -499,6 +505,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public class HttpSessionAttributeReplacedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 8128290080471455221L;
         public HttpSessionAttributeReplacedEvent(HttpSessionBindingEvent httpSessionBindingEvent) {
             super(httpSessionBindingEvent);
         }
@@ -508,6 +515,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public class HttpSessionValueBoundEvent extends ApplicationEvent {
+        private static final long serialVersionUID = -3415824235349946403L;
         public HttpSessionValueBoundEvent(HttpSessionBindingEvent httpSessionBindingEvent) {
             super(httpSessionBindingEvent);
         }
@@ -517,6 +525,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public class HttpSessionValueUnboundEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 8453994121930169941L;
         public HttpSessionValueUnboundEvent(HttpSessionBindingEvent httpSessionBindingEvent) {
             super(httpSessionBindingEvent);
         }
@@ -526,6 +535,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public class ServletContextAttributeAddedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 3430737803878399224L;
+
         public ServletContextAttributeAddedEvent(ServletContextAttributeEvent servletContextAttributeEvent) {
             super(servletContextAttributeEvent);
         }
@@ -536,6 +547,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public class ServletContextAttributeRemovedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = -3543715780914938235L;
         public ServletContextAttributeRemovedEvent(ServletContextAttributeEvent servletContextAttributeEvent) {
             super(servletContextAttributeEvent);
         }
@@ -545,6 +557,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public class ServletContextAttributeReplacedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 5729697513603811739L;
         public ServletContextAttributeReplacedEvent(ServletContextAttributeEvent servletContextAttributeEvent) {
             super(servletContextAttributeEvent);
         }
@@ -554,6 +567,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public class ServletRequestAttributeAddedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 3317475270634384739L;
         public ServletRequestAttributeAddedEvent(ServletRequestAttributeEvent servletRequestAttributeEvent) {
             super(servletRequestAttributeEvent);
         }
@@ -563,24 +577,21 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     private class ServletRequestAttributeRemovedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 4181992489489417634L;
         public ServletRequestAttributeRemovedEvent(ServletRequestAttributeEvent servletRequestAttributeEvent) {
             super(servletRequestAttributeEvent);
-        }
-        public ServletRequestAttributeEvent getServletRequestAttributeEvent() {
-            return (ServletRequestAttributeEvent) super.getSource();
         }
     }
 
     private class ServletRequestAttributeReplacedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 1785714293103597626L;
         public ServletRequestAttributeReplacedEvent(ServletRequestAttributeEvent servletRequestAttributeEvent) {
             super(servletRequestAttributeEvent);
-        }
-        public ServletRequestAttributeEvent getServletRequestAttributeEvent() {
-            return (ServletRequestAttributeEvent) super.getSource();
         }
     }
 
     public class ServletContextInitializedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 7380625349896182566L;
         public ServletContextInitializedEvent(ServletContext servletContext) {
             super(servletContext);
         }
@@ -590,11 +601,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     private class ServletContextDestroyedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = -2099082546094025673L;
         public ServletContextDestroyedEvent(ServletContext servletContext) {
             super(servletContext);
-        }
-        public ServletContext getServletContext() {
-            return (ServletContext) super.getSource();
         }
     }
 }

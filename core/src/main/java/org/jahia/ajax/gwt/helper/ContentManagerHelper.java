@@ -1191,19 +1191,20 @@ public class ContentManagerHelper {
             return;
         }
 
-        SourceControlManagement scm = null;
         try {
-            scm = SourceControlManagement.getSourceControlManagement(sources);
-            scm.update();
-//            ServicesRegistry.getInstance().getJahiaTemplateManagerService().saveModule(moduleName, sources);
+            SourceControlManagement scm = SourceControlManagement.getSourceControlManagement(sources);
 
-//            ServicesRegistry.getInstance().getJahiaTemplateManagerService().installModule(moduleName, sources);
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().saveModule(moduleName, sources);
+
+            scm.update();
+
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().installModule(moduleName, sources);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void saveModule(String moduleName, String message, JCRSessionWrapper session) throws RepositoryException {
+    public void saveAndCommitModule(String moduleName, String message, JCRSessionWrapper session) throws RepositoryException {
         SourceControlManagement scm = null;
         File sources = getSource(moduleName, session);
         try {
@@ -1212,18 +1213,22 @@ public class ContentManagerHelper {
             e.printStackTrace();
         }
 
-//        if (scm != null) {
-//            try {
-//                scm.update();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
+        if (scm != null) {
+            try {
+                scm.update();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         ServicesRegistry.getInstance().getJahiaTemplateManagerService().saveModule(moduleName, sources);
 
         if (scm != null) {
-            scm.commit(message);
+            try {
+                scm.commit(message);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
 //        if (scm != null) {
@@ -1237,8 +1242,11 @@ public class ContentManagerHelper {
 
     public GWTJahiaNode generateWar(String moduleName, JCRSessionWrapper session) {
         try {
-            File f = ServicesRegistry.getInstance().getJahiaTemplateManagerService().generateWar(moduleName, session);
-
+            JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+            File f = templateManagerService.generateWar(moduleName, session);
+            if (f == null) {
+                return null;
+            }
             JCRNodeWrapper privateFolder = session.getNode(session.getUser().getLocalPath() + "/files/private");
 
             if (!privateFolder.hasNode("templates-sets")) {

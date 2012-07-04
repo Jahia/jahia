@@ -66,7 +66,11 @@ public class GitSourceControlManagement extends SourceControlManagement {
         return git.getRepository().getWorkTree();
     }
 
-    public void setModifiedFile(List<File> files) {
+    public void setModifiedFile(List<File> files) throws Exception {
+        if (files.isEmpty()) {
+            return;
+        }
+
         AddCommand add = git.add();
         String rootPath = git.getRepository().getWorkTree().getPath();
 
@@ -77,47 +81,23 @@ public class GitSourceControlManagement extends SourceControlManagement {
                 add.addFilepattern(file.getPath().substring(rootPath.length()+ 1));
             }
         }
-        try {
-            add.call();
-        } catch (GitAPIException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+
+        add.call();
     }
 
-    public void update() {
-        try {
-//            RevCommit r = git.stashCreate().call();
-            FetchResult fr = git.fetch()
-                    .setRemote("origin")
-                    .setRefSpecs(new RefSpec("+refs/heads/*:refs/remotes/origin/*"))
-                    .call();
-            MergeCommand merge = git.merge();
-            merge.include(fr.getAdvertisedRef("refs/heads/master"));
-            MergeResult mr = merge.call();
-
-            System.out.println("--- conflicts = " + mr.getConflicts());
-            for (ObjectId id : mr.getMergedCommits()) {
-                System.out.println("merged : "+id);
-            }
-//            if (r != null) {
-//                git.stashApply().call();
-//            }
-        } catch (GitAPIException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+    public void update() throws Exception {
+        Runtime.getRuntime().exec("git stash", null, getRootFolder()).waitFor();
+        Runtime.getRuntime().exec("git pull", null, getRootFolder()).waitFor();
+        Runtime.getRuntime().exec("git stash pop", null, getRootFolder()).waitFor();
     }
 
-    public void commit(String message) {
-        try {
-            RevCommit commit = git.commit()
-                    .setAll(true)
-                    .setMessage(message)
-                    .call();
+    public void commit(String message) throws Exception {
+        RevCommit commit = git.commit()
+                .setAll(true)
+                .setMessage(message)
+                .call();
 
-            Iterable<PushResult> push = git.push()
-                    .call();
-        } catch (GitAPIException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        Iterable<PushResult> push = git.push()
+                .call();
     }
 }

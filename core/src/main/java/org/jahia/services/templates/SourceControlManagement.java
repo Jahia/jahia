@@ -21,10 +21,10 @@ public abstract class SourceControlManagement {
 
         if (new File(workingDir, ".git").exists()) {
             scm = new GitSourceControlManagement();
-//        } else if (new File(workingDir, ".svn").exists()) {
-
+        } else if (new File(workingDir, ".svn").exists()) {
+            scm = new SvnSourceControlManagement();
         } else {
-            throw new Exception("Unknown repository type");
+            return null;
         }
 
         scm.initWithWorkingDirectory(workingDir);
@@ -63,11 +63,11 @@ public abstract class SourceControlManagement {
 
     protected abstract void initFromURI(File workingDirectory, String uri) throws Exception;
 
-    public abstract File getRootFolder();
+    public abstract File getRootFolder() throws Exception;
 
-    public abstract void setModifiedFile(List<File> files);
+    public abstract void setModifiedFile(List<File> files) throws Exception;
 
-    public abstract void update() ;
+    public abstract void update() throws Exception;
 
-    public abstract void commit(String message) ;
+    public abstract void commit(String message) throws Exception;
 }

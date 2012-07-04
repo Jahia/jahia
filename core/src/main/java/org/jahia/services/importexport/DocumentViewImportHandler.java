@@ -43,6 +43,7 @@ package org.jahia.services.importexport;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
@@ -378,6 +379,18 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         if (contentFound) {
                             if (child.isFile()) {
                                 String mime = atts.getValue(Constants.JCR_MIMETYPE);
+                                if (mime == null) {
+                                    if (logger.isWarnEnabled()) {
+                                        if (JahiaContextLoaderListener.getServletContext() != null) {
+                                            mime = JahiaContextLoaderListener.getServletContext().getMimeType(decodedQName != null ? decodedQName.toLowerCase() : decodedQName);
+                                        }
+                                        if (mime != null) {
+                                            logger.warn("Legacy or invalid import detected for node "+path+", mime type cannot be resolved from file node, it should come from jcr:content node. Resolved mime type using servlet context instead="+mime+".");
+                                        } else {
+                                            logger.warn("Legacy or invalid import detected for node "+path+", mime type cannot be resolved from file node, it should come from jcr:content node. Tried resolving mime type using servlet context but it isn't registered!");
+                                        }
+                                    }
+                                }
                                 child.getFileContent().uploadFile(zis, mime);
                                 zis.close();
                             } else {

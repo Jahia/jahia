@@ -52,37 +52,6 @@
     <properties>
         <singleModuleName>org.jahia.ajax.gwt.module.edit.Edit</singleModuleName>
     </properties>
-    <pluginRepositories>
-        <pluginRepository>
-         <id>CodehausSnapshots</id>
-         <url>http://snapshots.repository.codehaus.org/</url>
-         <snapshots>
-           <enabled>true</enabled>
-         </snapshots>
-         <releases>
-           <enabled>false</enabled>
-         </releases>
-        </pluginRepository>
-    </pluginRepositories>
-    <repositories>
-        <repository>
-        	<id>jboss-public</id>
-        	<url>http://repository.jboss.org/nexus/content/groups/public-jboss</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        	<snapshots>
-        		<enabled>false</enabled>
-        	</snapshots>
-        </repository>
-        <repository>
-            <id>gwt-maven-google</id>
-            <url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <profiles>
         <profile>

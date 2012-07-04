@@ -50,20 +50,6 @@
     <name>Jahia Static Assets</name>
     <packaging>war</packaging>
     <description>Jahia template module that includes common CSS and JavaScript resources and also supports Content Delivery Network.</description>
-    <repositories>
-        <repository>
-            <id>jahiaRepository</id>
-            <name>Jahia's Maven Repository</name>
-            <url>http://maven.jahia.org/maven2</url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>jahiaRepository</id>
-            <name>Jahia's Maven Repository</name>
-            <url>http://maven.jahia.org/maven2</url>
-        </pluginRepository>
-    </pluginRepositories>
     <profiles>
         <profile>
             <id>eclipse-integration</id>

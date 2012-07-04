@@ -49,27 +49,6 @@
     <name>Jahia GWT projects</name>
     <packaging>jar</packaging>
 
-    <repositories>
-        <repository>
-            <id>gwt-maven</id>
-            <url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo</url>
-        </repository>
-        <repository>
-            <id>jboss-maven2</id>
-            <url>http://repository.jboss.com/maven2</url>
-        </repository>
-        <repository>
-            <id>jboss-public</id>
-            <url>http://repository.jboss.org/nexus/content/groups/public-jboss</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>com.google.gwt</groupId>

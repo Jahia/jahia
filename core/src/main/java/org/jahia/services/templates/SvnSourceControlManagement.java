@@ -15,17 +15,19 @@ public class SvnSourceControlManagement extends SourceControlManagement {
 
     @Override
     protected void initWithEmptyFolder(File workingDirectory, String url) throws Exception {
-        //To change body of implemented methods use File | Settings | File Templates.
+        this.workingDirectory = workingDirectory;
+        svnClientManager = SVNClientManager.newInstance();
     }
 
     @Override
     protected void initWithWorkingDirectory(File workingDirectory) throws Exception {
         this.workingDirectory = workingDirectory;
+        svnClientManager = SVNClientManager.newInstance();
     }
 
     @Override
     protected void initFromURI(File workingDirectory, String uri) throws Exception {
-        //To change body of implemented methods use File | Settings | File Templates.
+        svnClientManager = SVNClientManager.newInstance();
     }
 
     @Override
@@ -35,8 +37,11 @@ public class SvnSourceControlManagement extends SourceControlManagement {
 
     @Override
     public void setModifiedFile(List<File> files) {
+        if (files.isEmpty()) {
+            return;
+        }
         try {
-            svnClientManager.getWCClient().doAdd(files.toArray(new File[0]), true, true, true, SVNDepth.INFINITY, true, false, true);
+            svnClientManager.getWCClient().doAdd(files.toArray(new File[0]), true, false, true, SVNDepth.INFINITY, true, false, true);
         } catch (SVNException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

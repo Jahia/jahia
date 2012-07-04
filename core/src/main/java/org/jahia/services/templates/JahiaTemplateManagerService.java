@@ -555,7 +555,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
             SAXReader reader = new SAXReader();
             Document document = reader.read(new File(path, "pom.xml"));
-            org.dom4j.Node n = (org.dom4j.Node) document.getRootElement().elementIterator("artifactId").next();
+            Element n = (Element) document.getRootElement().elementIterator("artifactId").next();
             String moduleName = n.getText();
 
             if (tempName != null) {
@@ -590,7 +590,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         try {
             SAXReader reader = new SAXReader();
             Document document = reader.read(new File(sources, "pom.xml"));
-            org.dom4j.Node n = (org.dom4j.Node) document.getRootElement().elementIterator("artifactId").next();
+            Element n = (Element) document.getRootElement().elementIterator("artifactId").next();
             String moduleName = n.getText();
 
             installModule(moduleName, sources);
@@ -623,7 +623,15 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         try {
             SAXReader reader = new SAXReader();
             Document document = reader.read(new File(sources, "pom.xml"));
-            org.dom4j.Node n = (org.dom4j.Node) document.getRootElement().elementIterator("version").next();
+            Element n;
+            if (document.getRootElement().elementIterator("version").hasNext()) {
+                n = (Element) document.getRootElement().elementIterator("version").next();
+            } else if (document.getRootElement().elementIterator("parent").hasNext()) {
+                n = (Element) document.getRootElement().elementIterator("parent").next();
+                n = (Element) n.elementIterator("version").next();
+            } else {
+                return null;
+            }
             String version = n.getText();
 
             int ret;
@@ -643,7 +651,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         try {
             SAXReader reader = new SAXReader();
             Document document = reader.read(new File(sources, "pom.xml"));
-            org.dom4j.Node n = (org.dom4j.Node) document.getRootElement().elementIterator("version").next();
+            Element n = (Element) document.getRootElement().elementIterator("version").next();
             String lastVersion = n.getText();
 
 //            String lastVersion = pack.getLastVersion().toString();
@@ -805,27 +813,35 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     private boolean saveFile(InputStream source, File target) throws IOException, PatchFailedException {
-        List<String> newFile = IOUtils.readLines(source, "UTF-8");
-        List<String> original = FileUtils.readLines(target);
-        if (target.exists() && !isBinary(newFile)) {
-            Patch patch = DiffUtils.diff(original, newFile, new MyersDiff(new Equalizer() {
-                public boolean equals(Object o, Object o1) {
-                    String s1 = (String) o;
-                    String s2 = (String) o1;
-                    return s1.trim().equals(s2.trim());
-                }
-            }));
-            if (!patch.getDeltas().isEmpty()) {
-                original = (List<String>) patch.applyTo(original);
-                FileUtils.writeLines(target, "UTF-8", original, "\n");
-                return true;
-            }
-        } else if (!newFile.equals(original)) {
+        List<String> sourceContent = IOUtils.readLines(source, "UTF-8");
+        if (!target.exists()) {
             target.getParentFile().mkdirs();
             FileOutputStream output = new FileOutputStream(target);
             IOUtils.copy(source, output);
             output.close();
             return true;
+        } else {
+            List<String> targetContent = FileUtils.readLines(target);
+            if (!isBinary(sourceContent)) {
+                Patch patch = DiffUtils.diff(targetContent, sourceContent, new MyersDiff(new Equalizer() {
+                    public boolean equals(Object o, Object o1) {
+                        String s1 = (String) o;
+                        String s2 = (String) o1;
+                        return s1.trim().equals(s2.trim());
+                    }
+                }));
+                if (!patch.getDeltas().isEmpty()) {
+                    targetContent = (List<String>) patch.applyTo(targetContent);
+                    FileUtils.writeLines(target, "UTF-8", targetContent, "\n");
+                    return true;
+                }
+            } else if (!sourceContent.equals(targetContent)) {
+                target.getParentFile().mkdirs();
+                FileOutputStream output = new FileOutputStream(target);
+                IOUtils.copy(source, output);
+                output.close();
+                return true;
+            }
         }
         return false;
     }

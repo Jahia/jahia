@@ -143,7 +143,6 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     private View resolveView(Resource resource, List<ExtendedNodeType> nodeTypeList, ArrayList<String> searchedLocations, RenderContext renderContext) {
         String template = resource.getResolvedTemplate();
             for (ExtendedNodeType st : nodeTypeList) {
-<<<<<<< .working
                 try {
                     SortedSet<View> s = getViewsSet(st, resource.getNode().getResolveSite());
                     for (View view : s) {
@@ -153,13 +152,6 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                     }
                 } catch (RepositoryException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-=======
-                Set<JahiaTemplatesPackage> sortedPackages = templateManagerService.getAvailableTemplatePackagesForModule(
-                        JCRContentUtils.replaceColon(st.getAlias()));
-                View res = resolveView(resource, template, st, sortedPackages, searchedLocations, renderContext);
-                if (res != null) {
-                    return res;
->>>>>>> .merge-right.r42160
                 }
 //
 //                Set<JahiaTemplatesPackage> sortedPackages = templateManagerService.getAvailableTemplatePackagesForModule(
@@ -188,18 +180,13 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                 for (String templateTypeMapping : templateTypeMappings) {
                     templatePath = getTemplatePath(resource.getTemplateType() + "-" + templateTypeMapping, template, st, currentTemplatePath, searchedLocations);
                     if (templatePath != null) {
-                        return new FileSystemView(templatePath, template, aPackage, template);
+                        return new FileSystemView(templatePath, template, aPackage, template, null);
                     }
                 }
             }
             templatePath = getTemplatePath(resource.getTemplateType(), template, st, currentTemplatePath, searchedLocations);
             if (templatePath != null) {
-<<<<<<< .working
-                View resolvedTemplate = new FileSystemView(templatePath, template, aPackage, template, null);
-                return resolvedTemplate;
-=======
-                return new FileSystemView(templatePath, template, aPackage, template);
->>>>>>> .merge-right.r42160
+                return new FileSystemView(templatePath, template, aPackage, template,null);
             }
         }
         return null;

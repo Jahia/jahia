@@ -97,7 +97,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                     renderContext.getRequest().setAttribute("wrappedResource", resource);
                     Resource wrapperResource = new Resource(templateNode,
                             resource.getTemplateType(), template.view, Resource.CONFIGURATION_WRAPPER);
-                    if (service.hasView(templateNode, template.getView())) {
+                    if (service.hasView(templateNode, template.getView(), resource.getTemplateType())) {
 
                         Integer currentLevel =
                                 (Integer) renderContext.getRequest().getAttribute("org.jahia.modules.level");

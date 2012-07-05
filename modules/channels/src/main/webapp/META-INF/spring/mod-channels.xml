@@ -9,8 +9,27 @@
         <property name="channelService" ref="ChannelService"/>
         <property name="channelList">
             <list>
-                <bean class="org.jahia.services.channels.Channel">
-                    <constructor-arg index="0" value="apple_iphone_ver1"/>
+                <bean class="org.jahia.services.channels.Channel" id="generic_mobile">
+                    <property name="identifier" value="generic_mobile"/>
+                    <property name="fallBack" value="generic"/>
+                    <property name="visible" value="false"/>
+                    <property name="capabilities">
+                        <map>
+                            <entry key="display-name" value="Generic Mobile"/>
+                            <entry key="template-type-mapping" value="mobile"/>
+                            <entry key="device-image" value="/modules/channels/images/devices/iphone-small.png"/>
+                            <entry key="decorator-images"
+                                   value="/modules/channels/images/devices/iphone-portrait.png,/modules/channels/images/devices/iphone-landscape.png"/>
+                            <entry key="decorator-image-sizes" value="388x738,734x383"/>
+                            <entry key="decorator-screen-positions" value="35x216,124x115"/>
+                            <entry key="resolution_width" value="90"/>
+                            <entry key="resolution_height" value="40"/>
+                        </map>
+                    </property>
+                </bean>
+                <bean class="org.jahia.services.channels.Channel" id="apple_iphone_ver1">
+                    <property name="identifier" value="apple_iphone_ver1"/>
+                    <property name="fallBack" value="generic_mobile"/>
                     <property name="capabilities">
                         <map>
                             <entry key="display-name" value="iPhone"/>
@@ -29,8 +48,8 @@
                         </map>
                     </property>
                 </bean>
-                <bean class="org.jahia.services.channels.Channel">
-                    <constructor-arg index="0" value="apple_ipad_ver1"/>
+                <bean class="org.jahia.services.channels.Channel" id="apple_ipad_ver1">
+                    <property name="identifier" value="apple_ipad_ver1"/>
                     <property name="capabilities">
                         <map>
                             <entry key="template-type-mapping" value="ipad"/>
@@ -49,8 +68,9 @@
                         </map>
                     </property>
                 </bean>
-                <bean class="org.jahia.services.channels.Channel">
-                    <constructor-arg index="0" value="generic_android"/>
+                <bean class="org.jahia.services.channels.Channel" id="generic_android">
+                    <property name="identifier"  value="generic_android"/>
+                    <property name="fallBack" value="generic_mobile"/>
                     <property name="capabilities">
                         <map>
                             <entry key="template-type-mapping" value="android"/>
@@ -69,8 +89,9 @@
                         </map>
                     </property>
                 </bean>
-                <bean class="org.jahia.services.channels.Channel">
-                    <constructor-arg index="0" value="blackberry9530_ver1"/>
+                <bean class="org.jahia.services.channels.Channel" id="blackberry9530_ver1">
+                    <property name="identifier"  value="blackberry9530_ver1"/>
+                    <property name="fallBack" value="generic_mobile"/>
                     <property name="capabilities">
                         <map>
                             <entry key="template-type-mapping" value="bbstorm"/>
@@ -89,8 +110,9 @@
                         </map>
                     </property>
                 </bean>
-                <bean class="org.jahia.services.channels.Channel">
-                    <constructor-arg index="0" value="amazon_kindle_fire_ver1"/>
+                <bean class="org.jahia.services.channels.Channel" id="amazon_kindle_fire_ver1">
+                    <property name="identifier" value="amazon_kindle_fire_ver1"/>
+                    <property name="fallBack" value="generic_mobile"/>
                     <property name="capabilities">
                         <map>
                             <entry key="template-type-mapping" value="kindlefire"/>

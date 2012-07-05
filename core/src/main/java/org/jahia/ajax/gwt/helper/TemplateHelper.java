@@ -42,9 +42,7 @@ package org.jahia.ajax.gwt.helper;
 
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.bin.Edit;
 import org.jahia.bin.Render;
-import org.jahia.bin.Studio;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
@@ -280,7 +278,7 @@ public class TemplateHelper {
 //                set.addAll(getTemplatesSet(c));
 //            }
 //        } else {
-        set = renderService.getViewsSet(nt, node.getResolveSite());
+        set = renderService.getViewsSet(nt, node.getResolveSite(), "html");
 //        }
         for (View view : set) {
             final String key = view.getKey();

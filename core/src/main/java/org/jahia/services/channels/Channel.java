@@ -1,5 +1,7 @@
 package org.jahia.services.channels;
 
+import org.springframework.beans.factory.InitializingBean;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,11 +15,12 @@ public class Channel implements Serializable {
     public static final String GENERIC_CHANNEL = "generic";
 
     private String identifier;
+    private String fallBack;
+    private boolean visible = true;
 
     Map<String,String> capabilities = new HashMap<String,String>();
 
-    public Channel(String identifier) {
-        this.identifier = identifier;
+    public Channel() {
     }
 
     public String getIdentifier() {
@@ -42,6 +45,22 @@ public class Channel implements Serializable {
 
     public String getCapability(String capabilityName) {
         return capabilities.get(capabilityName);
+    }
+
+    public String getFallBack() {
+        return fallBack;
+    }
+
+    public void setFallBack(String fallBack) {
+        this.fallBack = fallBack;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public boolean isGeneric() {

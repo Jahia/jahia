@@ -45,6 +45,8 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.CacheProvider;
+import org.jahia.services.channels.Channel;
+import org.jahia.services.channels.ChannelService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -124,12 +126,18 @@ public class RenderService {
 
     private JahiaTemplateManagerService templateManagerService;
 
+    private ChannelService channelService;
+
     private Collection<ScriptResolver> scriptResolvers;
 
     private List<RenderFilter> filters = new LinkedList<RenderFilter>();
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
         this.templateManagerService = templateManagerService;
+    }
+
+    public void setChannelService(ChannelService channelService) {
+        this.channelService = channelService;
     }
 
     public void setScriptResolvers(Collection<ScriptResolver> scriptResolvers) {
@@ -185,13 +193,13 @@ public class RenderService {
     }
 
 
-    public boolean hasView(JCRNodeWrapper node, String key) {
+    public boolean hasView(JCRNodeWrapper node, String key, String templateType) {
         try {
-            if (hasView(node.getPrimaryNodeType(), key, node.getResolveSite())) {
+            if (hasView(node.getPrimaryNodeType(), key, node.getResolveSite(), templateType)) {
                 return true;
             }
             for (ExtendedNodeType type : node.getMixinNodeTypes()) {
-                if (hasView(type, key, node.getResolveSite())) {
+                if (hasView(type, key, node.getResolveSite(), templateType)) {
                     return true;
                 }
             }
@@ -201,9 +209,9 @@ public class RenderService {
         return false;
     }
 
-    public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site) {
+    public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site, String templateType) {
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            if (scriptResolver.hasView(nt, key, site)) {
+            if (scriptResolver.hasView(nt, key, site, templateType)) {
                 return true;
             }
         }
@@ -219,10 +227,10 @@ public class RenderService {
         return new RenderChain(filters, templateManagerService.getRenderFilters());
     }
 
-    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site) {
+    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType) {
         SortedSet<View> set = new TreeSet<View>();
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            set.addAll(scriptResolver.getViewsSet(nt, site));
+            set.addAll(scriptResolver.getViewsSet(nt, site, templateType));
         }
         return set;
     }
@@ -354,6 +362,28 @@ public class RenderService {
     private CacheImplementation<String,Template> templatesCache;
 
     private DefaultCacheKeyGenerator cacheKeyGenerator;
+
+/*    private String resolveTemplateType(Resource resource , Channel channel) {
+        boolean doFallBack = false;
+        String r = resource.getTemplateType();
+        if (!channel.hasCapabilityValue("template-type-mapping")) {
+            doFallBack = true;
+        }
+        if (channel.hasCapabilityValue("template-type-mapping") && hasView(resource.getNode(), resource.getTemplate(), resource.getTemplateType())) {
+            if (!resource.getTemplateType().contains("-")) {
+                String baseType = resource.getTemplateType();
+                r = baseType+"-" + channel.getCapability("template-type-mapping");
+
+            }
+        } else {
+            doFallBack = true;
+        }
+
+        if (doFallBack && channel.getFallBack() != null && !channel.getFallBack().equals("root")) {
+            resolveTemplateType(resource, channelService.getChannel(channel.getFallBack()));
+        }
+        return r;
+    }*/
 
     private org.jahia.services.render.Template addTemplates(Resource resource, RenderContext renderContext,
                                                             JCRNodeWrapper templateNode) throws RepositoryException {

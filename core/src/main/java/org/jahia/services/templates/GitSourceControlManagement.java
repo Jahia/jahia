@@ -1,19 +1,10 @@
 package org.jahia.services.templates;
 
-import org.eclipse.jgit.api.*;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.lib.StoredConfig;
-import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.transport.FetchResult;
-import org.eclipse.jgit.transport.PushResult;
-import org.eclipse.jgit.transport.RefSpec;
+import org.apache.poi.util.SystemOutLogger;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,45 +16,52 @@ import java.util.List;
  */
 public class GitSourceControlManagement extends SourceControlManagement {
 
-    private Git git;
+    private File rootFolder;
+
+    private void executeCommand(List<String> cmdList) {
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder(cmdList);
+            processBuilder.directory(rootFolder);
+            processBuilder.redirectErrorStream(true);
+            Process process = processBuilder.start();
+            int code = process.waitFor();
+            System.out.println("Return with code " + code);
+            InputStream is = process.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 
     public GitSourceControlManagement() {
     }
 
     protected void initWithEmptyFolder(File workingDirectory, String url) throws Exception {
-        git = Git.init()
-                .setBare(false)
-                .setDirectory(workingDirectory)
-                .call();
-
-        StoredConfig config = git.getRepository().getConfig();
-        config.setString("remote", "origin", "url", url);
-        config.setString("remote", "origin", "fetch", "+refs/heads/*:refs/remotes/origin/*");
-        config.setString("branch", "master", "merge", "refs/heads/master");
-        config.setString("branch", "master", "remote", "origin");
-        config.setString("branch", "master", "rebase", "true");
-        config.save();
+        this.rootFolder = workingDirectory;
+        executeCommand(Arrays.asList("git", "init"));
+        executeCommand(Arrays.asList("git", "add", "."));
+        executeCommand(Arrays.asList("git", "commit", "-a", "-m", "First commit"));
+        executeCommand(Arrays.asList("git", "remote", "add", "origin", url));
+        executeCommand(Arrays.asList("git", "push", "-u", "origin", "master"));
     }
 
     protected void initWithWorkingDirectory(File workingDirectory) throws IOException {
-        FileRepositoryBuilder builder = new FileRepositoryBuilder();
-        Repository repository = builder.setWorkTree(workingDirectory)
-                .setup()
-                .readEnvironment() // scan environment GIT_* variables
-                .build();
-        git = new Git(repository);
+        this.rootFolder = workingDirectory;
     }
 
     protected void initFromURI(File workingDirectory, String uri) throws Exception {
-        git = Git.cloneRepository()
-                .setURI(uri)
-                .setDirectory(workingDirectory)
-                .call();
+        this.rootFolder = workingDirectory;
+        executeCommand(Arrays.asList("git", "clone", uri));
     }
 
     @Override
     public File getRootFolder() {
-        return git.getRepository().getWorkTree();
+        return rootFolder;
     }
 
     public void setModifiedFile(List<File> files) throws Exception {
@@ -71,33 +69,28 @@ public class GitSourceControlManagement extends SourceControlManagement {
             return;
         }
 
-        AddCommand add = git.add();
-        String rootPath = git.getRepository().getWorkTree().getPath();
-
+        String rootPath = rootFolder.getPath();
+        List<String> cmdList = new ArrayList<String>();
+        cmdList.add("git");
+        cmdList.add("add");
         for (File file : files) {
             if (file.getPath().equals(rootPath)) {
-                add.addFilepattern(".");
+                cmdList.add(".");
             } else {
-                add.addFilepattern(file.getPath().substring(rootPath.length()+ 1));
+                cmdList.add(file.getPath().substring(rootPath.length() + 1));
             }
         }
-
-        add.call();
+        executeCommand(cmdList);
     }
 
-    public void update() throws Exception {
-        Runtime.getRuntime().exec("git stash", null, getRootFolder()).waitFor();
-        Runtime.getRuntime().exec("git pull", null, getRootFolder()).waitFor();
-        Runtime.getRuntime().exec("git stash pop", null, getRootFolder()).waitFor();
+    public void update() {
+        executeCommand(Arrays.asList("git", "stash"));
+        executeCommand(Arrays.asList("git", "pull", "--rebase"));
+        executeCommand(Arrays.asList("git", "stash", "pop"));
     }
 
-    public void commit(String message) throws Exception {
-        RevCommit commit = git.commit()
-                .setAll(true)
-                .setMessage(message)
-                .call();
-
-        Iterable<PushResult> push = git.push()
-                .call();
+    public void commit(String message) {
+        executeCommand(Arrays.asList("git", "commit", "-a", "-m", message));
+        executeCommand(Arrays.asList("git", "push"));
     }
 }

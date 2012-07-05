@@ -1231,13 +1231,6 @@ public class ContentManagerHelper {
             }
         }
 
-//        if (scm != null) {
-//            try {
-//                scm.update();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
     public GWTJahiaNode generateWar(String moduleName, JCRSessionWrapper session) {

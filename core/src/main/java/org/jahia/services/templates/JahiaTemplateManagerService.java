@@ -519,8 +519,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             setSCMConfigInPom(path, scmURI, scmType);
             try {
                 SourceControlManagement scm = SourceControlManagement.createNewRepository(path, scmType, scmURI);
-                scm.setModifiedFile(Arrays.asList(path));
-                scm.commit("Initial commit");
             } catch (Exception e) {
                 e.printStackTrace();
             }

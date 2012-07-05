@@ -1,17 +1,6 @@
 package org.jahia.services.templates;
 
-import org.eclipse.jgit.api.AddCommand;
-import org.eclipse.jgit.api.CommitCommand;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.PushCommand;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.lib.StoredConfig;
-import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 public abstract class SourceControlManagement {

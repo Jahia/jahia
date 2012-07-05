@@ -69,7 +69,6 @@ public class ChannelResolutionFilter extends AbstractFilter {
         Cookie[] cookies = context.getRequest().getCookies();
 
         if (context.getChannel() != null) {
-            setChannel(context,resource,context.getChannel());
             return null;
         }
 
@@ -79,7 +78,7 @@ public class ChannelResolutionFilter extends AbstractFilter {
                     // we quickly validate that the channel is allowed and recognized, since this is a value coming from the client.
                     Channel resolvedChannel = channelService.getChannel(cookie.getValue());
                     if (resolvedChannel != null) {
-                        setChannel(context, resource, resolvedChannel);
+                        context.setChannel(resolvedChannel);
                         return null;
                     }
                 }
@@ -90,33 +89,20 @@ public class ChannelResolutionFilter extends AbstractFilter {
             String activeChannel = context.getRequest().getParameter(ACTIVE_CHANNEL_QUERY_PARAMETER);
             Channel resolvedChannel = channelService.getChannel(activeChannel);
             if (resolvedChannel != null) {
-                setChannel(context, resource, resolvedChannel);
-                return null;
+                context.setChannel(resolvedChannel);
             } else {
                 context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));
             }
         }
 
-        if (!resource.getTemplateType().contains("-")) {
+        if (context.getChannel() == null) {
             Channel resolvedChannel = channelService.resolveChannel(context.getRequest());
             if (resolvedChannel != null) {
-                setChannel(context, resource, resolvedChannel);
+                context.setChannel(resolvedChannel);
             } else {
                 context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));
             }
         }
         return null;
     }
-
-    private void setChannel(RenderContext context, Resource resource, Channel newChannel) throws AccessDeniedException {
-        context.setChannel(newChannel);
-        if (!newChannel.hasCapabilityValue("template-type-mapping")) {
-            return;
-        }
-        if (!resource.getTemplateType().contains("-")) {
-            String baseType = resource.getTemplateType();
-            resource.setTemplateType(baseType+"-"+newChannel.getCapability("template-type-mapping"));
-        }
-    }
-
 }

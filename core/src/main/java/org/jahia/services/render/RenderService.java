@@ -184,7 +184,7 @@ public class RenderService {
      */
     public Script resolveScript(Resource resource, RenderContext context) throws RepositoryException, TemplateNotFoundException {
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            Script s = scriptResolver.resolveScript(resource);
+            Script s = scriptResolver.resolveScript(resource, context);
             if (s != null) {
                 return s;
             }

@@ -17,7 +17,7 @@
         <rich-text j:lastPublished="2012-06-21T14:42:01.892+02:00" j:lastPublishedBy="root" j:originWS="default" j:published="true" jcr:created="2012-06-21T14:40:38.538+02:00" jcr:createdBy="root" jcr:lastModified="2012-06-21T14:40:38.554+02:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:bigText">
             <j:translation_en j:lastPublished="2012-06-21T14:42:01.892+02:00" j:lastPublishedBy="root" j:published="true" jcr:language="en" jcr:lastModified="2012-06-21T14:40:38.578+02:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:translation" text="&lt;p&gt;&#xA; Bla bla bla bla&lt;/p&gt;&#xA;" />
         </rich-text>
-        <rich-text-1 j:channelExclusions="apple_ipad_ver1" j:lastPublished="2012-06-21T14:42:01.892+02:00" j:lastPublishedBy="root" j:originWS="default" j:published="true" jcr:created="2012-06-21T14:41:10.602+02:00" jcr:createdBy="root" jcr:lastModified="2012-06-21T14:41:10.619+02:00" jcr:lastModifiedBy="root" jcr:mixinTypes="jmix:channelExclusion" jcr:primaryType="jnt:bigText">
+        <rich-text-1 j:channelSelection="apple_ipad_ver1" j:lastPublished="2012-06-21T14:42:01.892+02:00" j:lastPublishedBy="root" j:originWS="default" j:published="true" jcr:created="2012-06-21T14:41:10.602+02:00" jcr:createdBy="root" jcr:lastModified="2012-06-21T14:41:10.619+02:00" jcr:lastModifiedBy="root" jcr:mixinTypes="jmix:channelSelection" jcr:primaryType="jnt:bigText">
             <j:translation_en j:lastPublished="2012-06-21T14:42:01.892+02:00" j:lastPublishedBy="root" j:published="true" jcr:language="en" jcr:lastModified="2012-06-21T14:41:10.645+02:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:translation" text="&lt;p&gt;&#xA; This text shouldn&amp;#39;t appear on an iPad.&lt;/p&gt;&#xA;" />
         </rich-text-1>
     </maincontent>

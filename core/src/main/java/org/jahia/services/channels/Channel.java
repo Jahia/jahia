@@ -15,7 +15,7 @@ public class Channel implements Serializable {
     public static final String GENERIC_CHANNEL = "generic";
 
     private String identifier;
-    private String fallBack;
+    private String fallBack = "root";
     private boolean visible = true;
 
     Map<String,String> capabilities = new HashMap<String,String>();

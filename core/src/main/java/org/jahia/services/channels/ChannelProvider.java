@@ -17,4 +17,8 @@ public interface ChannelProvider {
 
     public List<String> getAllChannels();
 
+    public String getFallBack(String identifier);
+
+    public boolean isVisible(String identifier);
+
 }

@@ -23,11 +23,16 @@ public class ChannelService {
         if (result != null) {
             return result;
         }
-        result = new Channel(identifier);
+        result = new Channel();
+        result.setIdentifier(identifier);
         for (ChannelProvider provider : channelProviders) {
             Map<String, String> channelCapabilities = provider.getChannelCapabilities(identifier);
             if (channelCapabilities != null) {
                 result.getCapabilities().putAll(channelCapabilities);
+            }
+            if (provider.getAllChannels().contains(identifier)) {
+                result.setFallBack(provider.getFallBack(identifier));
+                result.setVisible(provider.isVisible(identifier));
             }
         }
         channelMap.put(identifier, result);
@@ -54,9 +59,10 @@ public class ChannelService {
     }
 
     public void addProvider(ChannelProvider provider) {
-        if (!channelProviders.contains(provider)) {
-            channelProviders.add(provider);
+        if (channelProviders.contains(provider)) {
+            channelProviders.remove(provider);
         }
+        channelProviders.add(provider);
         Collections.sort(channelProviders, new Comparator<ChannelProvider>() {
             public int compare(ChannelProvider o1, ChannelProvider o2) {
                 int i = o1.getPriority() - o2.getPriority();

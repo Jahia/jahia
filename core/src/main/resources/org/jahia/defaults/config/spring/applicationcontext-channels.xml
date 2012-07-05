@@ -6,13 +6,14 @@
 
     <bean id="ChannelService" class="org.jahia.services.channels.ChannelService" factory-method="getInstance"/>
 
-    <bean id="UserAgentChannelProvider" class="org.jahia.services.channels.providers.UserAgentChannelProvider">
+    <bean id="GenericUserAgentChannelProvider" class="org.jahia.services.channels.providers.UserAgentChannelProvider">
         <property name="priority" value="-99"/>
         <property name="channelService" ref="ChannelService"/>
         <property name="channelList">
             <list>
                 <bean class="org.jahia.services.channels.Channel">
-                    <constructor-arg index="0" value="generic"/>
+                    <property name="identifier" value="generic"/>
+                    <property name="fallBack" value="root"/>
                     <property name="capabilities">
                         <map>
                             <entry key="display-name" value="Generic"/>

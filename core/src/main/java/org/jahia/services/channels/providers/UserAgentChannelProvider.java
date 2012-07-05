@@ -3,6 +3,7 @@ package org.jahia.services.channels.providers;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelProvider;
 import org.jahia.services.channels.ChannelService;
+import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,11 +14,12 @@ import java.util.regex.Pattern;
 /**
  * A basic channel provider configured through Spring files
  */
-public class UserAgentChannelProvider implements ChannelProvider, InitializingBean {
+public class UserAgentChannelProvider implements ChannelProvider, InitializingBean, BeanNameAware {
 
     public static final String USER_AGENT_HEADER_NAME = "user-agent";
 
     private int priority;
+    private String beanName;
 
     private Map<String,Channel> channels = new HashMap<String,Channel>();
     private Map<Pattern,Channel> userAgentChannels = new HashMap<Pattern,Channel>();
@@ -79,4 +81,28 @@ public class UserAgentChannelProvider implements ChannelProvider, InitializingBe
         return Collections.unmodifiableList(new ArrayList<String>(channels.keySet()));
     }
 
+    public void setBeanName(String name) {
+        this.beanName = name;
+    }
+
+    public String getBeanName() {
+        return beanName;
+    }
+
+    public String getFallBack(String identifier) {
+        return channels.get(identifier).getFallBack();
+    }
+
+    public boolean isVisible(String identifier) {
+        return channels.get(identifier).isVisible();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        if (!(obj instanceof UserAgentChannelProvider)) return false;
+        return ((UserAgentChannelProvider) obj).getBeanName().equals(beanName);    //To change body of overridden methods use File | Settings | File Templates.
+    }
 }

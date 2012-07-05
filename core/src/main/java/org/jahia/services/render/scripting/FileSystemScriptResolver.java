@@ -230,12 +230,17 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     }
 
     public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site) {
-        SortedSet<View> t = null;
+        return hasView(nt,key,site,"html");
+    }
+
+    public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site, String templateType) {
+        SortedSet<View> t;
         String cacheKey = nt.getName() + (site != null ? site.getSiteKey() : "");
-        if (viewSetCache.containsKey(cacheKey)) {
+        viewSetCache.clear();
+         if (viewSetCache.containsKey(cacheKey)) {
             t = viewSetCache.get(cacheKey);
         } else {
-            t = getViewsSet(nt, site);
+            t = getViewsSet(nt, site, templateType);
             viewSetCache.put(cacheKey, t);
         }
         for (View view : t) {
@@ -247,12 +252,14 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     }
 
     public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site) {
+        return getViewsSet(nt,site,"html");
+    }
+
+    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType) {
         Map<String, View> views = new HashMap<String, View>();
 
         List<ExtendedNodeType> nodeTypeList = new ArrayList<ExtendedNodeType>(Arrays.asList(nt.getSupertypes()));
         nodeTypeList.add(nt);
-
-        String templateType = "html";
 
         Collections.reverse(nodeTypeList);
 

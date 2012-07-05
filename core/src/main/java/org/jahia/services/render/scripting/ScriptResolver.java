@@ -60,7 +60,14 @@ import java.util.SortedSet;
 public interface ScriptResolver {
     public Script resolveScript(Resource resource) throws TemplateNotFoundException;
 
+    @Deprecated
     public boolean hasView(ExtendedNodeType nt, String viewName, JCRSiteNode site);
 
+    @Deprecated
     public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site);
+
+    public boolean hasView(ExtendedNodeType nt, String viewName, JCRSiteNode site, String templateType);
+
+    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType);
+
 }

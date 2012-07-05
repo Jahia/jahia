@@ -8,7 +8,8 @@
 
 	<bean id="RenderService" class="org.jahia.services.render.RenderService" factory-method="getInstance">
 		<property name="templateManagerService" ref="JahiaTemplateManagerService" />
-		<property name="scriptResolvers">
+        <property name="channelService" ref="ChannelService" />
+        <property name="scriptResolvers">
 			<list>
 				<bean class="org.jahia.services.render.scripting.FileSystemScriptResolver">
 					<property name="scriptExtensionsOrdering">
@@ -83,6 +84,7 @@
 		<property name="priority" value="6" />
         <property name="description" value="Set channel depending of the user agent"/>
         <property name="channelService" ref="ChannelService" />
+        <property name="renderService" ref="RenderService"/>
 	</bean>
 
     <bean class="org.jahia.services.channels.filters.ChannelPreviewFilter">
@@ -90,7 +92,7 @@
         <property name="channelService" ref="ChannelService" />
         <property name="priority" value="2"/>
         <property name="applyOnTemplateTypes" value="html,html-.+" />
-        <property name="applyOnModes" value="preview" />
+        <property name="skipOnModes" value="live,edit,studio" />
         <property name="applyOnConfigurations" value="page"/>
     </bean>
 

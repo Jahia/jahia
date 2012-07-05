@@ -1,6 +1,8 @@
 package org.jahia.services.templates;
 
-import org.apache.poi.util.SystemOutLogger;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -16,6 +18,8 @@ import java.util.List;
  */
 public class GitSourceControlManagement extends SourceControlManagement {
 
+    private static Logger logger = LoggerFactory.getLogger(GitSourceControlManagement.class);
+
     private File rootFolder;
 
     private void executeCommand(List<String> cmdList) {
@@ -25,16 +29,18 @@ public class GitSourceControlManagement extends SourceControlManagement {
             processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
             int code = process.waitFor();
-            System.out.println("Return with code " + code);
-            InputStream is = process.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Return with code " + code);
+                InputStream is = process.getInputStream();
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
+                String line;
+                while ((line = br.readLine()) != null) {
+                    logger.debug(line);
+                }
             }
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error("Failed to execute command " + StringUtils.join(cmdList, ' '), e);
         }
     }
 
@@ -55,8 +61,9 @@ public class GitSourceControlManagement extends SourceControlManagement {
     }
 
     protected void initFromURI(File workingDirectory, String uri) throws Exception {
+        this.rootFolder = workingDirectory.getParentFile();
+        executeCommand(Arrays.asList("git", "clone", uri, workingDirectory.getName()));
         this.rootFolder = workingDirectory;
-        executeCommand(Arrays.asList("git", "clone", uri));
     }
 
     @Override

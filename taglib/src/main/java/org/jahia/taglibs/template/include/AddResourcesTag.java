@@ -55,6 +55,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.List;
@@ -124,11 +125,11 @@ public class AddResourcesTag extends AbstractJahiaTag {
             versionFolder = aPackage.getLastVersionFolder();
         }
 
-        List<String> lookupPaths = new LinkedList<String>();
-        lookupPaths.add(aPackage.getRootFolderPath() + "/" + versionFolder + "/" + type + "/");
+        Map<JahiaTemplatesPackage, String> packages = new LinkedHashMap<JahiaTemplatesPackage, String>();
+        packages.put(aPackage, versionFolder);
         if (checkDependencies) {
             for (JahiaTemplatesPackage pack : aPackage.getDependencies()) {
-                lookupPaths.add(pack.getRootFolderPath() + "/" + pack.getLastVersionFolder() + "/"+ type + "/");
+                packages.put(pack, pack.getLastVersionFolder());
             }
         }
         StringBuilder builder = new StringBuilder();
@@ -146,17 +147,18 @@ public class AddResourcesTag extends AbstractJahiaTag {
                 }
                 resource = mapping.containsKey(resource) ? mapping.get(resource) : resource;
             } else {
-                for (String lookupPath : lookupPaths) {
-                    String path = lookupPath + resource;
-                    String pathWithContext = renderContext.getRequest().getContextPath() + path;
+                for (JahiaTemplatesPackage pack : packages.keySet()) {
+                    String path = pack.getRootFolderPath() + "/" + type + "/" + resource;
+                    String pathWithVersion = pack.getRootFolderPath() + "/" + packages.get(pack) +"/" +type + "/" + resource;
+                    String pathWithContext = renderContext.getRequest().getContextPath() + pathWithVersion;
                     try {
-                        if (pageContext.getServletContext().getResource(path) != null) {
+                        if (pageContext.getServletContext().getResource(pathWithVersion) != null) {
                             // we found it
 
                             // apply mapping
                             if (mapping.containsKey(path)) {
                                 for (String mappedResource : mapping.get(path).split(" ")) {
-                                    path = mappedResource;
+                                    path = mappedResource.replace(pack.getRootFolderPath(), pack.getRootFolderPath()+"/"+packages.get(pack));
                                     pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ? renderContext.getRequest().getContextPath() + path : path;
                                     writeResourceTag(type, pathWithContext, resource);
                                 }

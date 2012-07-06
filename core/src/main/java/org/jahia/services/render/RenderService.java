@@ -107,6 +107,9 @@ public class RenderService {
     private static final Logger logger = LoggerFactory.getLogger(RenderService.class);
 
     private void addFilter(RenderFilter renderFilter) {
+        if (filters.contains(renderFilter)) {
+            filters.remove(renderFilter);
+        }
         filters.add(renderFilter);
     }
 

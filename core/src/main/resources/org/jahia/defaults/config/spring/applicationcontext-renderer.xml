@@ -53,6 +53,7 @@
 		<property name="htmlExternalizationService" ref="HtmlExternalizationService" />
 	</bean>
 	<bean class="org.jahia.services.render.filter.StaticAssetsFilter">
+        <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
 		<property name="priority" value="0" />
         <property name="description" value="Render filter that 'injects' the static assets into the HEAD section of the rendered HTML document."/>
 		<property name="applyOnConfigurations" value="page,gwt" />
@@ -229,7 +230,10 @@
         </property>
         <property name="javaScripts">
             <list>
-                <value>/modules/assets/javascript/ckeditor/ckeditor.js</value>
+                <!--
+                todo: do not use hardcoded module version
+                -->
+                <value>/modules/assets/6-7-0-0-SNAPSHOT/javascript/ckeditor/ckeditor.js</value>
             </list>
         </property>
         <property name="detectCustomCKEditorConfig" value="${detectCustomCKEditorConfig:true}"/>

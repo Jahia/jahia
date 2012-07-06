@@ -59,6 +59,7 @@ import org.jahia.services.render.AssetsMapFactory;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.WebUtils;
@@ -145,6 +146,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     }
 
     private static Logger logger = LoggerFactory.getLogger(StaticAssetsFilter.class);
+    private JahiaTemplateManagerService templateManagerService;
 
     private String ajaxResolvedTemplate;
 
@@ -159,7 +161,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private boolean aggregateAndCompress;
     private List<String> excludesFromAggregateAndCompress = new ArrayList<String>();
-    
+
+    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
+        this.templateManagerService = templateManagerService;
+    }
+
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
@@ -259,9 +265,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 if (javascript == null) {
                     assets.put("javascript", (javascript = new HashMap<String, Map<String, String>>()));
                 }
-                javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.min.js", null);
-                javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.Jcrop.js", null);
-                javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/clippy/jquery.clippy.min.js", null);
+                String assetsFolder = templateManagerService.getTemplatePackage("Jahia Static Assets").getLastVersionFolder();
+                javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/" + assetsFolder + "/javascript/jquery.min.js", null);
+                javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/" + assetsFolder + "/javascript/jquery.Jcrop.js", null);
+                javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/" + assetsFolder + "/javascript/clippy/jquery.clippy.min.js", null);
 
                 if (bodyElementList.size() > 0) {
                     Element bodyElement = bodyElementList.get(bodyElementList.size() - 1);

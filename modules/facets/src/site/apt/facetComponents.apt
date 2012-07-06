@@ -17,12 +17,18 @@ Facet module and components
   Release the mouse button (no drag&drop) and move the mouse pointer (should display a chain icon) to the <<Maincontent area>> and click 
   on the area. Now you should see the message <<facets - Linked to: maincontent>> in the component. Notice that when you drop the component in
   edit mode, the component will show that it is automatically bound to "main resource". But in order to make the facet component work, it should
-  not be bound to the main resource, but to the resulting list component, so you need to change the automatic bonding. 
+  not be bound to the main resource, but to the resulting list or query component, so you need to change the automatic bonding. 
   
 [./images/facets/linkfacets.png] Link (bind) facets component to mainarea, which will display the list  
   
-  Now let's create a facet on the news date. For that we first need to make the property facetable. Modify the definition of <<<jnt:news>>> 
-  and add the attribute <<<facetable>>> to the date property. 
+  If you want to bind the facet component to a custom component (not based on the standard nodetypes: <<<jnt:list>>>, <<<jnt:query>>> or <<<jnt:contentRetrieval>>>), you
+  will have to provide a view called <<<\<nodetype\>.hidden.load.jsp>>> (as example you can check the <<<list.hidden.load.jsp>>> and the <<<query.hidden.load.jsp>>> on the default module). 
+  This view should define a query object with the base query to retrieve the displayed list. The query should not be run in that view, but just placed into the 
+  <<<${moduleMap.listQuery}>>> attribute. If you use ordering and result size limit, then you need to check if <<<${currentResource.moduleParams.queryLoadAllUnsorted == 'true'}>>>
+  and under that condition rather set the limit to -1 and skip the sort definition.
+  
+  After the bonding is established, now let's create a facet on the news date. For that we first need to make the property facetable. Modify the definition of 
+  <<<jnt:news>>> and add the attribute <<<facetable>>> to the date property. 
   
 +----------------------------------------
 [jnt:news] > jnt:content, mix:title, jmix:editorialContent, jmix:structuredContent

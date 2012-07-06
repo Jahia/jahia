@@ -126,7 +126,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
         }
 
         Map<JahiaTemplatesPackage, String> packages = new LinkedHashMap<JahiaTemplatesPackage, String>();
-        packages.put(aPackage, versionFolder);
+        packages.put(aPackage, aPackage.getLastVersionFolder());
         if (checkDependencies) {
             for (JahiaTemplatesPackage pack : aPackage.getDependencies()) {
                 packages.put(pack, pack.getLastVersionFolder());

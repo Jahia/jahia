@@ -69,8 +69,8 @@ public interface ScriptResolver {
 
     public Script resolveScript(Resource resource, RenderContext renderContext) throws TemplateNotFoundException;
 
-    public boolean hasView(ExtendedNodeType nt, String viewName, JCRSiteNode site, String templateType);
+    public boolean hasView(ExtendedNodeType nt, String viewName, JCRSiteNode site,  String templateType, RenderContext renderContext);
 
-    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType);
+    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType, RenderContext renderContext);
 
 }

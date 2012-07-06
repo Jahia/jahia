@@ -45,7 +45,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.CacheProvider;
-import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -193,13 +192,13 @@ public class RenderService {
     }
 
 
-    public boolean hasView(JCRNodeWrapper node, String key, String templateType) {
+    public boolean hasView(JCRNodeWrapper node, String key, String templateType, RenderContext renderContext) {
         try {
-            if (hasView(node.getPrimaryNodeType(), key, node.getResolveSite(), templateType)) {
+            if (hasView(node.getPrimaryNodeType(), key, node.getResolveSite(), templateType, renderContext)) {
                 return true;
             }
             for (ExtendedNodeType type : node.getMixinNodeTypes()) {
-                if (hasView(type, key, node.getResolveSite(), templateType)) {
+                if (hasView(type, key, node.getResolveSite(), templateType, renderContext)) {
                     return true;
                 }
             }
@@ -209,9 +208,9 @@ public class RenderService {
         return false;
     }
 
-    public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site, String templateType) {
+    public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site, String templateType, RenderContext renderContext) {
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            if (scriptResolver.hasView(nt, key, site, templateType)) {
+            if (scriptResolver.hasView(nt, key, site, templateType, renderContext)) {
                 return true;
             }
         }
@@ -227,10 +226,10 @@ public class RenderService {
         return new RenderChain(filters, templateManagerService.getRenderFilters());
     }
 
-    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType) {
+    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType, RenderContext renderContext) {
         SortedSet<View> set = new TreeSet<View>();
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            set.addAll(scriptResolver.getViewsSet(nt, site, templateType));
+            set.addAll(scriptResolver.getViewsSet(nt, site, templateType, renderContext));
         }
         return set;
     }

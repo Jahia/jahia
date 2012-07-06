@@ -40,9 +40,12 @@
 
 package org.jahia.taglibs.template.include;
 
+import org.apache.camel.NoSuchBeanException;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.render.filter.AbstractFilter;
 import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.bin.Studio;
@@ -324,17 +327,14 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     }
 
     private boolean isExcluded(RenderContext renderContext, Resource resource) throws RepositoryException {
-        if (resource.getNode().isNodeType("jmix:channelExclusion")) {
-            // we have a mixin applied, let's test if we must exclude it from the current channel.
-            Property channelExclusionProperty = resource.getNode().getProperty("j:channelExclusions");
-            Value[] channelExclusionValues = channelExclusionProperty.getValues();
-            Channel currentChannel = renderContext.getChannel();
-            for (Value channelExclusionValue : channelExclusionValues) {
-                if (channelExclusionValue.getString() != null &&
-                        channelExclusionValue.getString().equals(currentChannel.getIdentifier())) {
-                    return true;
-                }
+        try {
+            AbstractFilter filter = (AbstractFilter) SpringContextSingleton.getInstance().getModuleContext().getBean("ChannelExclusionFilter");
+            try {
+                return filter.prepare(renderContext, resource, null) != null;
+            } catch (Exception e) {
+                logger.error("Cannot evaluate exclude filter");
             }
+        } catch (NoSuchBeanException e) {
         }
         return false;
     }

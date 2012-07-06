@@ -315,7 +315,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
                     if (renderContext.getRequest().getParameter("channel") != null) {
                         Map<String,Map<String,String>> css  = assets.get("css");
-                        Map<String,Map<String,String>> cssWithParam  = new HashMap<String, Map<String, String>>();
+                        Map<String,Map<String,String>> cssWithParam  = new LinkedHashMap<String, Map<String, String>>();
                         for (Map.Entry<String, Map<String, String>> entry : css.entrySet()) {
                             String k = entry.getKey() + "?channel="+renderContext.getRequest().getParameter("channel");
                             cssWithParam.put(k, entry.getValue());

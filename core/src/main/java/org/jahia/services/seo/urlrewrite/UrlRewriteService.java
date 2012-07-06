@@ -248,7 +248,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         request.setAttribute("package-version", null);
         if (request.getRequestURI().startsWith("/modules/")) {
             String moduleName = StringUtils.substringBefore(request.getRequestURI().substring("/modules/".length()), "/");
-            String version = StringUtils.substringBefore(request.getRequestURI().substring("/modules/".length() + moduleName.length() + 1), "/");
+            String version = StringUtils.substringBefore(StringUtils.substringAfter(request.getRequestURI(),"/modules/"+moduleName+"/"), "/");
             Pattern p = Pattern.compile("[0-9].*");
             if (!p.matcher(version).matches()) {
                 JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName);

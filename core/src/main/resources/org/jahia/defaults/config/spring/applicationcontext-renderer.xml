@@ -230,10 +230,7 @@
         </property>
         <property name="javaScripts">
             <list>
-                <!--
-                todo: do not use hardcoded module version
-                -->
-                <value>/modules/assets/6-7-0-0-SNAPSHOT/javascript/ckeditor/ckeditor.js</value>
+                <value>/modules/assets/javascript/ckeditor/ckeditor.js</value>
             </list>
         </property>
         <property name="detectCustomCKEditorConfig" value="${detectCustomCKEditorConfig:true}"/>

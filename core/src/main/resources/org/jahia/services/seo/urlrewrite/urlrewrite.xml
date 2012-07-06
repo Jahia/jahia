@@ -45,15 +45,10 @@
     <!-- end of GWT resources-->
     
     <rule>
-        <note>Assets javascripts</note>
-        <from>^/modules/assets/css/(.*)$</from>
-        <to last="true">/modules/assets/%{attribute:assets-version}/css/$1</to>
-    </rule>
-
-    <rule>
-        <note>Assets css</note>
-        <from>^/modules/assets/javascript/(.*)$</from>
-        <to last="true">/modules/assets/%{attribute:assets-version}/javascript/$1</to>
+        <note>Module version</note>
+        <condition type="attribute" name="package-version" operator="notequal">^$</condition>
+        <from>^/modules/([^/]+)/(.*)$</from>
+        <to last="true">/modules/$1/%{attribute:package-version}/$2</to>
     </rule>
 
     <!-- Jahia tools -->

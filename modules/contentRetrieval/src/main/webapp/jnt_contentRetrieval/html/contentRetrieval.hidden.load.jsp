@@ -33,7 +33,7 @@
 </c:if>
 
 <%-- Define the query, depending on the selected criteria --%>
-<query:definition var="listQuery" limit="${nbOfResult.long}">
+<query:definition var="listQuery" limit="${currentResource.moduleParams.queryLoadAllUnsorted == 'true' ? -1 : nbOfResult.long}">
     <query:selector nodeTypeName="${type.string}"/>
     <query:descendantNode path="${not empty startNode and not empty startNode.node ? startNode.node.path : renderContext.site.path}"/>
     <query:or>
@@ -43,7 +43,9 @@
             </c:if>
         </c:forEach>
     </query:or>
-    <query:sortBy propertyName="${criteria.string}" order="${sortDirection.string}"/>
+    <c:if test="${not currentResource.moduleParams.queryLoadAllUnsorted == 'true'}">
+        <query:sortBy propertyName="${criteria.string}" order="${sortDirection.string}"/>
+    </c:if>
 </query:definition>
 
 <%-- Debug message --%>

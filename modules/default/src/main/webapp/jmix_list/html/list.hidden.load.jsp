@@ -6,7 +6,7 @@
 <c:set var="facetParamVarName" value="N-${currentNode.name}"/>
 <%-- list mode --%>
 <c:choose>
-    <c:when test="${not empty param[facetParamVarName]}">
+    <c:when test="${not empty param[facetParamVarName] or currentResource.moduleParams.queryLoadAllUnsorted == 'true'}">
         <query:definition var="listQuery" >
             <query:selector nodeTypeName="nt:base"/>
             <c:set var="descendantNode" value="${fn:substringAfter(currentNode.realNode.path,'/sites/')}"/>

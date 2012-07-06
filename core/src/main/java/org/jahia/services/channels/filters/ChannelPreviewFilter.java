@@ -97,8 +97,8 @@ public class ChannelPreviewFilter extends AbstractFilter {
 
             String start = "<div style=\"width:" + imageSize[0] + "px; height:" + imageSize[1] + "px;";
             start += " background-image:url(" + imageUrl + "); background-repeat:no-repeat;\">\n";
-            start += "<div style=\"position:absolute; left:" + position[0] + "px; top:" + position[1] + "px;";
-            start += " width:" + dimension[0] + "px; height:" + dimension[1] + "px; overflow:scroll;\">" +
+            start += "<div style=\"position:absolute; left:" + (Integer.parseInt(position[0])+8) + "px; top:" + (Integer.parseInt(position[1])+7) + "px;";
+            start += " width:" +  (Integer.parseInt(dimension[0])+15) + "px; height:" + dimension[1] + "px; overflow:hidden;\">" +
                     "<div>\n" +
                     "<iframe height=\"" + dimension[1] +"\" width=\"" + dimension[0] +"\" src=\""+ (renderContext.getURLGenerator().getCurrent() + "?channel="+channel.getIdentifier()+"&noembed=true") +"\"" +
                     " frameborder=\"0\" />\n" +

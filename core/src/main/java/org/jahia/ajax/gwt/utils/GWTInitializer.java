@@ -212,6 +212,7 @@ public class GWTInitializer {
             return;
         }
         String templateSetFolder = ctx.getSite().getTemplateFolder();
+        templateSetFolder += "/" + ctx.getSite().getInstalledModulesWithVersions().get(ctx.getSite().getTemplateFolder()).replace('.','-');
         if (getConfig().exists(templateSetFolder, "/javascript/ckeditor_config.js")) {
             buf.append("<script id=\"jahia-ckeditor-config-js\" type=\"text/javascript\" src=\"")
                     .append(request.getContextPath()).append("/modules/").append(templateSetFolder)

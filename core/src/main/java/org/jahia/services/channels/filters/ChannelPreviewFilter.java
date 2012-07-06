@@ -64,7 +64,7 @@ public class ChannelPreviewFilter extends AbstractFilter {
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
-        if (StringUtils.isEmpty(renderContext.getRequest().getParameter(ChannelResolutionFilter.ACTIVE_CHANNEL_QUERY_PARAMETER))) {
+        if (StringUtils.isEmpty(renderContext.getRequest().getParameter(ChannelResolutionFilter.ACTIVE_CHANNEL_QUERY_PARAMETER)) || renderContext.getRequest().getParameter("noembed") != null) {
             return previousOut;
         }
 
@@ -98,9 +98,14 @@ public class ChannelPreviewFilter extends AbstractFilter {
             String start = "<div style=\"width:" + imageSize[0] + "px; height:" + imageSize[1] + "px;";
             start += " background-image:url(" + imageUrl + "); background-repeat:no-repeat;\">\n";
             start += "<div style=\"position:absolute; left:" + position[0] + "px; top:" + position[1] + "px;";
-            start += " width:" + dimension[0] + "px; height:" + dimension[1] + "px; overflow:scroll;\">\n";
-            out.insert(out.indexOf(">", out.indexOf("<body")) + 1, start);
-            out.insert(out.indexOf("</body>"), "</div>\n</div>\n");
+            start += " width:" + dimension[0] + "px; height:" + dimension[1] + "px; overflow:scroll;\">" +
+                    "<div>\n" +
+                    "<iframe height=\"" + dimension[1] +"\" width=\"" + dimension[0] +"\" src=\""+ (renderContext.getURLGenerator().getCurrent() + "?channel="+channel.getIdentifier()+"&noembed=true") +"\"" +
+                    " frameborder=\"0\" />\n" +
+                    "</div>\n";
+            return start;
+//            out.insert(out.indexOf(">", out.indexOf("<body")) + 1, start);
+//            out.insert(out.indexOf("</body>"), "</div>\n</div>\n");
         }
         return out.toString();
     }

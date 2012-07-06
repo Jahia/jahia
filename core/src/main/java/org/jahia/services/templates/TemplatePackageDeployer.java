@@ -429,6 +429,9 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         }
 
         public boolean accept(File file) {
+            if (file.isDirectory()) {
+                return true;
+            }
             String sourceDirAbsPath = sourceDir.getAbsolutePath() + File.separator;
             if (file.getAbsolutePath().startsWith(sourceDirAbsPath)) {
                 String fileRelativePath = file.getAbsolutePath().substring(sourceDirAbsPath.length());

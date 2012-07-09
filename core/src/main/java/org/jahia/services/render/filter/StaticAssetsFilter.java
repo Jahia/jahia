@@ -61,6 +61,7 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.WebUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -377,13 +378,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             ServletContext context = JahiaContextLoaderListener.getServletContext();
 
             List<String> pathsToAggregate = new ArrayList<String>();
-            Vector<InputStream> files = new Vector<InputStream>();
             for (; i < entries.size(); i++) {
                 Map.Entry<String, Map<String, String>> entry = entries.get(i);
                 File file = new File(context.getRealPath(entry.getKey()));
-                if (file.exists() && entry.getValue().isEmpty() && !excludesFromAggregateAndCompress.contains(entry.getKey())) {
+                if (entry.getValue().isEmpty() && !excludesFromAggregateAndCompress.contains(entry.getKey()) && file.exists()) {
                     pathsToAggregate.add(entry.getKey());
-                    files.add(new FileInputStream(file));
                     long lastModified = file.lastModified();
                     if (filesDates < lastModified) {
                         filesDates = lastModified;
@@ -406,7 +405,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     List<String> minifiedPaths = new ArrayList<String>();
                     for (String path : pathsToAggregate) {
                         File f = new File(context.getRealPath(path));
-                        String minifiedPath = "/resources/" + path.replace('/','_') + ".min." + type;
+                        String minifiedPath = "/resources/" + Patterns.SLASH.matcher(path).replaceAll("_") + ".min." + type;
                         File minifiedFile = new File(context.getRealPath(minifiedPath));
                         if (!minifiedFile.exists() || minifiedFile.lastModified() < f.lastModified()) {
                             Reader reader = new InputStreamReader(new FileInputStream(f), "UTF-8");
@@ -460,7 +459,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                 BufferedReader br = new BufferedReader(reader);
                                 String s = null;
                                 while ((s = br.readLine()) != null) {
-                                    bw.write(s+"\n");
+                                    bw.write(s);
+                                    bw.write("\n");
                                 }
                                 IOUtils.closeQuietly(bw);
                                 IOUtils.closeQuietly(br);
@@ -472,34 +472,39 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     }
 
                     try {
-                        OutputStream outMerged = new FileOutputStream(minifiedAggregatedRealPath);
-                        for (String minifiedFile : minifiedPaths) {
-                            if (type.equals("js")) {
-                                outMerged.write(("//"+minifiedFile+"\n").getBytes());
-                            }
-                            InputStream is = new FileInputStream(context.getRealPath(minifiedFile));
-                            if (type.equals("css")) {
-                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                IOUtils.copy(is, stream);
+                        OutputStream outMerged = new BufferedOutputStream(new FileOutputStream(minifiedAggregatedRealPath));
+                        try { 
+                            for (String minifiedFile : minifiedPaths) {
+                                if (type.equals("js")) {
+                                    outMerged.write("//".getBytes());
+                                    outMerged.write(minifiedFile.getBytes());
+                                    outMerged.write("\n".getBytes());
+                                }
+                                InputStream is = new FileInputStream(context.getRealPath(minifiedFile));
+                                if (type.equals("css")) {
+                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                    IOUtils.copy(is, stream);
+                                    IOUtils.closeQuietly(is);
+                                    String s = stream.toString("UTF-8");
+    
+                                    String url = StringUtils.substringBeforeLast(pathsToAggregate.get(minifiedPaths.indexOf(minifiedFile)), "/");
+                                    s = URL_PATTERN_1.matcher(s).replaceAll("url(");
+                                    s = URL_PATTERN_2.matcher(s).replaceAll("url(\".." + url + "/");
+                                    s = URL_PATTERN_3.matcher(s).replaceAll("url('.." + url + "/");
+                                    s = URL_PATTERN_4.matcher(s).replaceAll("url(.." + url + "/$1");
+                                    is = new ByteArrayInputStream(s.getBytes("UTF-8"));
+                                }
+                                IOUtils.copy(is, outMerged);
+                                if (type.equals("js")) {
+                                    outMerged.write(";\n".getBytes());
+                                }
                                 IOUtils.closeQuietly(is);
-                                String s = stream.toString("UTF-8");
-
-                                String url = StringUtils.substringBeforeLast(pathsToAggregate.get(minifiedPaths.indexOf(minifiedFile)), "/");
-                                s = URL_PATTERN_1.matcher(s).replaceAll("url(");
-                                s = URL_PATTERN_2.matcher(s).replaceAll("url(\".." + url + "/");
-                                s = URL_PATTERN_3.matcher(s).replaceAll("url('.." + url + "/");
-                                s = URL_PATTERN_4.matcher(s).replaceAll("url(.." + url + "/$1");
-                                is = new ByteArrayInputStream(s.getBytes("UTF-8"));
                             }
-                            IOUtils.copy(is, outMerged);
-                            if (type.equals("js")) {
-                                outMerged.write(";\n".getBytes());
-                            }
-                            IOUtils.closeQuietly(is);
+                        } finally {
+                            IOUtils.closeQuietly(outMerged);
                         }
-                        IOUtils.closeQuietly(outMerged);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
                     }
                 }
 

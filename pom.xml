@@ -43,7 +43,7 @@
         <lucene.version>3.0.3</lucene.version>
         <jbpm.version>4.4</jbpm.version>
         <hibernate.version>3.3.2.GA</hibernate.version>
-        <apache.tika.version>0.9</apache.tika.version>
+        <apache.tika.version>1.1</apache.tika.version>
         <camel.version>2.4.0</camel.version>
         <gwt.version>2.2.0</gwt.version>
         <ant.version>1.8.2</ant.version>

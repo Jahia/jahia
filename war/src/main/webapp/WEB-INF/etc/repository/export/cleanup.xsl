@@ -34,8 +34,18 @@
         </xsl:choose>
     </xsl:template>
     <xsl:template match="node()">
-        <xsl:copy>
-            <xsl:apply-templates select="child::node()|@*"/>
-        </xsl:copy>
+        <xsl:element name="{name()}" namespace="{namespace-uri()}">
+            <xsl:variable name="vtheElem" select="."/>
+
+            <xsl:for-each select="namespace::*">
+                <xsl:variable name="vPrefix" select="name()"/>
+
+                <xsl:if test="$vtheElem/descendant::*[namespace-uri()=current() and substring-before(name(),':') = $vPrefix or @*[substring-before(name(),':') = $vPrefix]]">
+                    <xsl:copy/>
+                </xsl:if>
+            </xsl:for-each>
+            <xsl:apply-templates select="node()|@*"/>
+        </xsl:element>
     </xsl:template>
+
 </xsl:stylesheet>

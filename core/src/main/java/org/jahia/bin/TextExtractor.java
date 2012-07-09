@@ -66,9 +66,7 @@ import org.springframework.web.servlet.view.InternalResourceView;
  */
 public class TextExtractor extends JahiaController {
 
-	private static final long serialVersionUID = 7741046486853963555L;
-
-	private static Logger logger = org.slf4j.LoggerFactory.getLogger(TextExtractor.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TextExtractor.class);
 
     private SettingsBean settingsBean;
 
@@ -107,7 +105,7 @@ public class TextExtractor extends JahiaController {
             stream = inputFile.getInputStream();
             Metadata metadata = new Metadata();
             metadata.set(Metadata.CONTENT_TYPE, inputFile.getContentType());
-            metadata.set(Metadata.RESOURCE_NAME_KEY, inputFile.getFieldName());
+            metadata.set(Metadata.RESOURCE_NAME_KEY, inputFile.getName());
 
             long startTime = System.currentTimeMillis();
             

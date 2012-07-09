@@ -33,7 +33,7 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    <xsl:template match="node()">
+    <xsl:template match="*">
         <xsl:element name="{name()}" namespace="{namespace-uri()}">
             <xsl:variable name="vtheElem" select="."/>
 

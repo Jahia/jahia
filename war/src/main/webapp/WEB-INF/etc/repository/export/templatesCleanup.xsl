@@ -25,7 +25,7 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    <xsl:template match="node()">
+    <xsl:template match="*">
         <xsl:choose>
             <xsl:when test="@jcr:primaryType='jnt:permission'"/>
             <xsl:when test="@jcr:primaryType='jnt:roles'"/>

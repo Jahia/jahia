@@ -117,6 +117,10 @@
                             </property>
                         </bean>
 
+                        <ref bean="Toolbar.Item.Lock"/>
+
+                        <ref bean="Toolbar.Item.Unlock"/>
+
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem"/>

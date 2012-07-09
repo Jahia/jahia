@@ -256,7 +256,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 }
 
                 try {
-                    boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext, resource.getNode()) && !isExcluded(renderContext, resource);
+                    boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext, resource.getNode()) && !isExcluded(renderContext, resource) && checkStudioLock(renderContext);
 
                     pageContext.getRequest().setAttribute("editableModule", canEdit);
                     if (canEdit) {
@@ -439,6 +439,20 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return Resource.CONFIGURATION_MODULE;
     }
 
+    protected boolean checkStudioLock(RenderContext renderContext) {
+        if ("studiomode".equals(renderContext.getEditModeConfigName())) {
+            try {
+                if (renderContext.getMainResource().getNode().getLockInfos().get(null) == null ||
+                        !renderContext.getMainResource().getNode().getLockInfos().get(null).contains(renderContext.getUser().getUsername()+":user")) {
+                    return false;
+                }
+            } catch (RepositoryException e) {
+
+            }
+        }
+        return true;
+    }
+
     protected boolean canEdit(RenderContext renderContext) {
         return renderContext.isEditMode() && editable &&
                 !Boolean.TRUE.equals(renderContext.getRequest().getAttribute("inWrapper")) &&
@@ -599,7 +613,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         }
 
 
-        if (canEdit(renderContext) && contributeAccess(renderContext, currentResource.getNode())) {
+        if (canEdit(renderContext) && checkStudioLock(renderContext) && contributeAccess(renderContext, currentResource.getNode())) {
             if (currentResource.getNode().hasPermission("jcr:addChildNodes")) {
                 List<String> contributeTypes = contributeTypes(renderContext, currentResource.getNode());
                 if (contributeTypes != null) {

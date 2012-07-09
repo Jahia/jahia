@@ -20,6 +20,10 @@
             <xsl:when test="name()='j:published'"/>
             <xsl:when test="name()='j:checkinDate'"/>
             <xsl:when test="name()='j:originWS'"/>
+            <xsl:when test="name()='jcr:lockOwner'"/>
+            <xsl:when test="name()='jcr:lockIsDeep'"/>
+            <xsl:when test="name()='j:locktoken'"/>
+            <xsl:when test="name()='j:lockTypes'"/>
             <xsl:otherwise>
                 <xsl:copy/>
             </xsl:otherwise>

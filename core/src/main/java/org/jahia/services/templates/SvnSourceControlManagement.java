@@ -46,7 +46,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
 
     @Override
     public void update() {
-        executeCommand(Arrays.asList("svn", "pull"));
+        executeCommand(Arrays.asList("svn", "update"));
     }
 
     @Override

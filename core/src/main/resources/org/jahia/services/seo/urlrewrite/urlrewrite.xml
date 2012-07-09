@@ -6,9 +6,17 @@
 
     <!-- Block direct access -->
     <rule enabled="true">
+        <name>Allow access</name>
+        <note>Allow access to the some resources</note>
+        <condition type="attribute" name="javax.servlet.forward.request_uri" operator="equal">^$</condition>
+        <from>^/modules/.*/FlexPaper\.properties$</from>
+        <set type="request" name="jahiaResourceAccessGranted">yes</set>
+    </rule>
+    <rule enabled="true">
         <name>Block direct access</name>
         <note>Restricts direct access to the resources</note>
         <condition type="attribute" name="javax.servlet.forward.request_uri" operator="equal">^$</condition>
+        <condition type="attribute" name="jahiaResourceAccessGranted" operator="equal">^$</condition>
         <from>^/(LICENSE|modules/.*/META-INF/.*|modules/.*/WEB-INF/.*|modules/.*/mails/.*|modules/.*\.cnd|modules/.*\.drl|modules/.*\.dsl|modules/.*\.properties)$</from>
         <set type="status">404</set>
         <set type="request" name="UrlRewriteFilter.sendError">404</set>

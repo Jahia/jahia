@@ -474,17 +474,19 @@ class TemplatePackageRegistry {
             }
         }
 
+        // handle dependencies
+        for (JahiaTemplatesPackage pack : registry.values()) {
+            pack.getDependencies().clear();
+            computeDependencies(pack.getDependencies(), pack);
+        }
+
         // handle resource bundles
         for (JahiaTemplatesPackage sourcePack : registry.values()) {
             sourcePack.getResourceBundleHierarchy().clear();
             if (sourcePack.getResourceBundleName() != null) {
                 sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + sourcePack.getRootFolder() + "." + sourcePack.getLastVersionFolder() + "." + sourcePack.getResourceBundleName());
             }
-            for (String s : sourcePack.getDepends()) {
-                JahiaTemplatesPackage dependency = lookup(s);
-                if (dependency == null) {
-                    dependency = lookupByFileName(s);
-                }
+            for (JahiaTemplatesPackage dependency : sourcePack.getDependencies()) {
                 if (!dependency.isDefault() && dependency.getResourceBundleName() != null) {
                     sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + dependency.getRootFolder() + "." + dependency.getLastVersionFolder() + "." + dependency.getResourceBundleName());
                 }
@@ -498,12 +500,6 @@ class TemplatePackageRegistry {
                 sourcePack.getResourceBundleHierarchy().add("JahiaInternalResources");
             }
         }
-        
-        // handle dependencies
-        for (JahiaTemplatesPackage pack : registry.values()) {
-            pack.getDependencies().clear();
-            computeDependencies(pack.getDependencies(), pack);
-        }        
         
         File[] files = rootFolder.listFiles();
         for (File file : files) {

@@ -54,6 +54,7 @@ import org.apache.maven.cli.MavenCli;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
+import org.dom4j.XPath;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
@@ -114,17 +115,17 @@ import java.util.zip.ZipOutputStream;
  * @author Sergiy Shyrkov
  */
 public class JahiaTemplateManagerService extends JahiaService implements ApplicationEventPublisherAware, ApplicationListener<ApplicationEvent> {
-    
+
     public static final String MODULE_TYPE_JAHIAPP = "jahiapp";
 
     public static final String MODULE_TYPE_MODULE = "module";
-    
+
     public static final String MODULE_TYPE_PROFILE_MODULE = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_PROFILE_MODULE;
-    
+
     public static final String MODULE_TYPE_SYSTEM = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_SYSTEM;
-    
+
     public static final String MODULE_TYPE_TEMPLATES_SET = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_TEMPLATES_SET;
-    
+
     private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/templateSets/[^/]*/templates/(.*)");
 
     /**
@@ -351,7 +352,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * Returns the lookup map for template packages by the JCR node name.
-     * 
+     *
      * @return the lookup map for template packages by the JCR node name
      */
     @SuppressWarnings("unchecked")
@@ -443,7 +444,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 templatePackageDeployer.initializeMissingModuleNodes();
                 // perform initial imports if any
                 final List<JahiaTemplatesPackage> packages = templatePackageDeployer.performInitialImport();
-            
+
                 // do register components
                 componentRegistry.registerComponents();
 
@@ -727,7 +728,33 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    public List<File> saveModule(String moduleName, File sources) throws RepositoryException {
+    private void setDependenciesInPom(File sources, List<String> dependencies) {
+        try {
+            SAXReader reader = new SAXReader();
+            File pom = new File(sources, "pom.xml");
+            Document document = reader.read(pom);
+            Element root = document.getRootElement();
+            // todo : try to use xpath or a better way to get depends node
+            root = (Element) root.elements("build").get(0);
+            root = (Element) root.elements("plugins").get(0);
+            root = (Element) root.elements("plugin").get(0);
+            root = (Element) root.elements("configuration").get(0);
+            root = (Element) root.elements("archive").get(0);
+            root = (Element) root.elements("manifestEntries").get(0);
+            root = (Element) root.elements("depends").get(0);
+            root.setText(StringUtils.join(dependencies, ","));
+            File modifiedPom = new File(sources, "pom-modified.xml");
+            XMLWriter writer = new XMLWriter(new FileWriter(modifiedPom), OutputFormat.createPrettyPrint());
+            writer.write(document);
+            writer.close();
+            saveFile(new FileInputStream(modifiedPom), pom);
+            modifiedPom.delete();
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    public List<File> saveModule(String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException {
         List<File> modifiedFiles = new ArrayList<File>();
 
         SourceControlManagement scm = null;
@@ -739,7 +766,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         // Handle import
         File sourcesImportFolder = new File(sources, "src/main/import");
-        regenerateImportFile(moduleName);
+
+        regenerateManifest(moduleName, session);
+
+        JCRNodeWrapper node = session.getNode("/templateSets/" + moduleName);
+        List<String> dependencies = getDependencies(node);
+        setDependenciesInPom(sources, dependencies);
+
+        regenerateImportFile(moduleName, session);
         File f = new File(new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName), "META-INF/import.zip");
         ZipInputStream zis = null;
         try {
@@ -862,7 +896,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             JCRNodeWrapper vi = n.getNode("j:versionInfo");
             if (vi.hasProperty("j:sourcesFolder")) {
                 File sources = new File(vi.getProperty("j:sourcesFolder").getString());
-                saveModule(moduleName, sources);
+                saveModule(moduleName, sources, session);
 
                 SourceControlManagement scm = null;
                 try {
@@ -877,8 +911,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         // Old way
-        ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(moduleName);
-        ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateImportFile(moduleName);
+        ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(moduleName, session);
+        ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateImportFile(moduleName, session);
 
         File f = File.createTempFile("templateSet", ".war");
         File templateDir = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName);
@@ -980,78 +1014,64 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    public void regenerateManifest(final String moduleName) throws RepositoryException  {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                File tmplRootFolder = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName);
+    public void regenerateManifest(final String moduleName, JCRSessionWrapper session) throws RepositoryException  {
+        File tmplRootFolder = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName);
 
-//                try {
-//                    File manifestFile = new File(tmplRootFolder, "META-INF/MANIFEST.MF");
-//                    BufferedReader reader = new BufferedReader(new FileReader(manifestFile));
-//                } catch (IOException e) {
-//                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//                }
+        JCRNodeWrapper node = session.getNode("/templateSets/" + moduleName);
+        List<String> dependencies = getDependencies(node);
+        String version = "1.0";
+        if (node.hasNode("j:versionInfo")) {
+            version = node.getNode("j:versionInfo").getProperty("j:version").getString();
+        }
 
-                JCRNodeWrapper node = session.getNode("/templateSets/" + moduleName);
-                List<String> dependencies = new ArrayList<String>();
-                if (node.hasProperty("j:dependencies")) {
-                    Value[] deps = node.getProperty("j:dependencies").getValues();
-                    for (Value dep : deps) {
-                        dependencies.add(dep.getString());
-                    }
-                }
-                String version = "1.0";
-                if (node.hasNode("j:versionInfo")) {
-                    version = node.getNode("j:versionInfo").getProperty("j:version").getString();
-                }
-
-                createManifest(moduleName, tmplRootFolder, node.getProperty("j:siteType").getString(),
-                        version,
-                        dependencies);
-
-                return null;
-            }
-        });
-
+        createManifest(moduleName, tmplRootFolder, node.getProperty("j:siteType").getString(),
+                version,
+                dependencies);
 
     }
 
-    public void regenerateImportFile(final String moduleName) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                try {
-                    File xmlImportFile = new File(new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName), "META-INF/import.xml");
-                    if (xmlImportFile.exists()) {
-                        xmlImportFile.delete();
-                    }
-                    File importFile = new File(new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName), "META-INF/import.zip");
-                    if (importFile.exists()) {
-                        importFile.delete();
-                    }
-                    Map<String, Object> params = new HashMap<String, Object>();
-                    params.put(ImportExportService.XSL_PATH, SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/export/templatesCleanup.xsl");
-                    synchronized (templatePackageDeployer.getTemplatesWatcher()) {
-                        templatePackageDeployer.setTimestamp(importFile.getPath(), Long.MAX_VALUE);
-
-                        ImportExportBaseService
-                                .getInstance().exportZip(session.getNode("/templateSets/" + moduleName), session.getRootNode(),
-                                new FileOutputStream(importFile), params);
-
-
-                        templatePackageDeployer.setTimestamp(importFile.getPath(), importFile.lastModified());
-                    }
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                } catch (SAXException e) {
-                    logger.error(e.getMessage(), e);
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                } catch (JDOMException e) {
-                    logger.error(e.getMessage(), e);
-                }
-                return null;
+    private List<String> getDependencies(JCRNodeWrapper node) throws RepositoryException {
+        List<String> dependencies = new ArrayList<String>();
+        if (node.hasProperty("j:dependencies")) {
+            Value[] deps = node.getProperty("j:dependencies").getValues();
+            for (Value dep : deps) {
+                dependencies.add(dep.getString());
             }
-        });
+        }
+        return dependencies;
+    }
+
+    public void regenerateImportFile(final String moduleName, JCRSessionWrapper session) throws RepositoryException {
+        try {
+            File xmlImportFile = new File(new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName), "META-INF/import.xml");
+            if (xmlImportFile.exists()) {
+                xmlImportFile.delete();
+            }
+            File importFile = new File(new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName), "META-INF/import.zip");
+            if (importFile.exists()) {
+                importFile.delete();
+            }
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put(ImportExportService.XSL_PATH, SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/export/templatesCleanup.xsl");
+            synchronized (templatePackageDeployer.getTemplatesWatcher()) {
+                templatePackageDeployer.setTimestamp(importFile.getPath(), Long.MAX_VALUE);
+
+                ImportExportBaseService
+                        .getInstance().exportZip(session.getNode("/templateSets/" + moduleName), session.getRootNode(),
+                        new FileOutputStream(importFile), params);
+
+
+                templatePackageDeployer.setTimestamp(importFile.getPath(), importFile.lastModified());
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        } catch (SAXException e) {
+            logger.error(e.getMessage(), e);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        } catch (JDOMException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     public void regenerateManifestFile(final String moduleName) throws RepositoryException {
@@ -1432,7 +1452,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * Checks if the specified template is available either in the requested template set or in one of the deployed modules.
-     * 
+     *
      * @param templatePath
      *            the path of the template to be checked
      * @param templateSetName
@@ -1445,7 +1465,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * Checks if the specified template is available either in one of the requested template sets or modules.
-     * 
+     *
      * @param templatePath
      *            the path of the template to be checked
      * @param templateSetNames
@@ -1558,7 +1578,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * Returns a set of existing template sets that are available for site creation.
-     * 
+     *
      * @return a set of existing template sets that are available for site creation
      */
     public Set<String> getTemplateSetNames() {

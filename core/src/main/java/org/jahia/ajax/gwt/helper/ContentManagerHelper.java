@@ -1194,7 +1194,7 @@ public class ContentManagerHelper {
         try {
             SourceControlManagement scm = SourceControlManagement.getSourceControlManagement(sources);
 
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().saveModule(moduleName, sources);
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().saveModule(moduleName, sources, session);
 
             scm.update();
 
@@ -1221,7 +1221,7 @@ public class ContentManagerHelper {
             }
         }
 
-        ServicesRegistry.getInstance().getJahiaTemplateManagerService().saveModule(moduleName, sources);
+        ServicesRegistry.getInstance().getJahiaTemplateManagerService().saveModule(moduleName, sources, session);
 
         if (scm != null) {
             try {

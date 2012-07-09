@@ -148,6 +148,14 @@ rule "Create permission for template"
         Create a permission in /permissions/templates named "template-" + node.getName()
 end
 
+rule "Create dependency on module"
+    when
+        A property j:dependencies has been set on a node
+			- the node has the type jnt:virtualsite
+    then
+        Update dependencies for module
+end
+
 rule "Flush group cache"
     when
         A node is deleted

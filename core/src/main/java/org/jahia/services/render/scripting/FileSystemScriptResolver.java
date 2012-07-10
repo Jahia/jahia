@@ -273,7 +273,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         if (f.exists()) {
             File[] files = f.listFiles();
             for (File file : files) {
-                if (!file.isDirectory()) {
+                if (!file.isDirectory() && scriptExtensionsOrdering.contains(StringUtils.substringAfterLast(file.getName(),"."))) {
                     String filename = file.getName();
                     String pref = nt.getName().contains(":") ? StringUtils.substringAfter(nt.getName(),":") : nt.getName();
                     if (filename.startsWith(pref+".")) {

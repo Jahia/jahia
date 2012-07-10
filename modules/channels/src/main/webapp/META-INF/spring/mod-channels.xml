@@ -50,6 +50,7 @@
                 </bean>
                 <bean class="org.jahia.services.channels.Channel" id="apple_ipad_ver1">
                     <property name="identifier" value="apple_ipad_ver1"/>
+                    <property name="fallBack" value="generic"/>
                     <property name="capabilities">
                         <map>
                             <entry key="template-type-mapping" value="ipad"/>

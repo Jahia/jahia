@@ -42,7 +42,6 @@ package org.jahia.bin;
 
 import org.jahia.params.ProcessingContextFactory;
 import org.jahia.params.ProcessingContext;
-import org.jahia.params.BasicSessionState;
 import org.jahia.params.ParamBean;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
@@ -63,6 +62,7 @@ import org.springframework.web.servlet.mvc.Controller;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -73,6 +73,7 @@ import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -87,17 +88,11 @@ import junit.framework.TestSuite;
 @SuppressWarnings("serial")
 public class TestServlet extends HttpServlet implements Controller, ServletContextAware {
     
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(TestServlet.class);
+    private transient static Logger logger = LoggerFactory.getLogger(TestServlet.class);
     
     private ServletContext servletContext;
     
     protected void handleGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
-
-//    should be protected in production
-//        if (System.getProperty("org.jahia.selftest") == null) {
-//            httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//            return;
-//        }
 
         final ProcessingContextFactory pcf = (ProcessingContextFactory) SpringContextSingleton.
                 getInstance().getContext().getBean(ProcessingContextFactory.class.getName());
@@ -124,7 +119,7 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
 
         try {
             String pathInfo = StringUtils.substringAfter(httpServletRequest.getPathInfo(), "/test");
-            if (StringUtils.isNotEmpty(pathInfo)) {
+            if (StringUtils.isNotEmpty(pathInfo) && !pathInfo.contains("*")) {
                 final Set<String> ignoreTests = getIgnoreTests();
                 // Execute one test
                 String className = pathInfo.substring(pathInfo.lastIndexOf('/')+1);
@@ -157,6 +152,9 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
                     logger.error("Error executing test", e);
                 }
             } else {
+                Pattern testNamePattern = StringUtils.isNotEmpty(pathInfo) ? Pattern
+                        .compile(pathInfo.length() > 1 && pathInfo.startsWith("/") ? pathInfo
+                                .substring(1) : pathInfo) : null;
                 WebApplicationContext webApplicationContext = (WebApplicationContext) servletContext.getAttribute(WebApplicationContext.class.getName() + ".jahiaModules");
                 Map<String,TestBean> testBeans = webApplicationContext.getBeansOfType(TestBean.class);
 
@@ -166,13 +164,15 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
                 SortedSet<TestBean> s = new TreeSet<TestBean>(testBeans.values());
                 for (TestBean testBean : s) {
                     for (String o : testBean.getTestCases()) {
-                        tests.add(o);
+                        if (testNamePattern == null || testNamePattern.matcher(o).matches()) {
+                            tests.add(o);
+                        }
                     }
                 }
 
                 for (String c : tests) {
-					pw.println(c);
-				}
+                    pw.println(c);
+                }
             }
         } finally {
             try {

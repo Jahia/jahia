@@ -44,6 +44,7 @@ package org.jahia.services.content.impl.vfs;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.io.IOUtils;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.Name;
@@ -58,7 +59,6 @@ import javax.jcr.nodetype.*;
 import javax.jcr.version.VersionException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
-import javax.activation.MimetypesFileTypeMap;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -92,47 +92,42 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     }
 
     public void orderBefore(String s, String s1) throws UnsupportedRepositoryOperationException, VersionException, ConstraintViolationException, ItemNotFoundException, LockException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public Property setProperty(String s, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public Property setProperty(String s, Value value, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public Property setProperty(String s, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public Property setProperty(String s, Value[] values, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public Property setProperty(String s, String[] strings) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public Property setProperty(String s, String[] strings, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public Property setProperty(String s, String s1) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (s.equals(Constants.JCR_MIMETYPE)) {
-//            try {
-//                content.setAttribute();
-//            } catch (FileSystemException e) {
-//                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//            }
             return null;
         }
         throw new ConstraintViolationException("Unknown type");
     }
 
     public Property setProperty(String s, String s1, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public Property setProperty(String s, InputStream inputStream) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -152,15 +147,15 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     }
 
     public Property setProperty(String s, boolean b) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public Property setProperty(String s, double v) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public Property setProperty(String s, long l) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public Property setProperty(String s, Calendar calendar) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -176,7 +171,7 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     }
 
     public Property setProperty(String s, Node node) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public Node getNode(String s) throws PathNotFoundException, RepositoryException {
@@ -229,7 +224,7 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
                 throw new RepositoryException("Error while retrieving file's content type", e);
             }
             if (s1 == null) {
-                s1 = MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType("."+content.getFile().getName().getExtension());
+                s1 = JCRContentUtils.getMimeType(content.getFile().getName().getBaseName());
             }
             Value value = valueFactory.createValue(s1);
             return new VFSPropertyImpl(new Name(s, "", ""), this, session, value) {
@@ -237,7 +232,7 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
                     try {
                         String s1 = content.getContentInfo().getContentType();
                         if (s1 == null) {
-                            return MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType("."+content.getFile().getName().getExtension());
+                            return JCRContentUtils.getMimeType(content.getFile().getName().getBaseName());
                         }
                         return s1;
                     } catch (FileSystemException e) {
@@ -255,11 +250,11 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
 
             };
         }
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public PropertyIterator getProperties() throws RepositoryException {
-        List l = new ArrayList(2);
+        List<Property> l = new ArrayList<Property>(2);
         l.add(getProperty(Constants.JCR_DATA));
         l.add(getProperty(Constants.JCR_MIMETYPE));
 
@@ -267,7 +262,7 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     }
 
     public PropertyIterator getProperties(String s) throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public Item getPrimaryItem() throws ItemNotFoundException, RepositoryException {
@@ -299,7 +294,7 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     }
 
     public boolean hasProperties() throws RepositoryException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;  
     }
 
     public NodeType getPrimaryNodeType() throws RepositoryException {
@@ -307,7 +302,7 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     }
 
     public NodeType[] getMixinNodeTypes() throws RepositoryException {
-        return new NodeType[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return new NodeType[0];  
     }
 
     public boolean isNodeType(String s) throws RepositoryException {
@@ -426,15 +421,15 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     }
 
     public Property setProperty(String name, BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public NodeIterator getNodes(String[] nameGlobs) throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public PropertyIterator getProperties(String[] strings) throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public String getIdentifier() throws RepositoryException {
@@ -447,39 +442,39 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     }
 
     public PropertyIterator getReferences(String name) throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public PropertyIterator getWeakReferences() throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public PropertyIterator getWeakReferences(String name) throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public void setPrimaryType(String nodeTypeName) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public NodeIterator getSharedSet() throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  
     }
 
     public void removeSharedSet() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void removeShare() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void followLifecycleTransition(String transition) throws UnsupportedRepositoryOperationException, InvalidLifecycleTransitionException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public String[] getAllowedLifecycleTransistions() throws UnsupportedRepositoryOperationException, RepositoryException {
-        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return new String[0];  
     }
 
     class DataPropertyImpl extends VFSPropertyImpl {
@@ -492,7 +487,7 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
             try {
                 return content.getInputStream();
             } catch (FileSystemException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();  
             }
             throw new RepositoryException();
         }

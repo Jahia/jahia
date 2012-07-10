@@ -28,6 +28,7 @@
                 <value>org.jahia.services.categories.CategoryTest</value>
                 <value>org.jahia.services.content.AutoSplittingTest</value>
                 <value>org.jahia.services.content.ContentTest</value>
+                <value>org.jahia.services.content.CrawlingPageVisitorTest</value>
                 <value>org.jahia.services.content.MarkForDeletionTest</value>
                 <value>org.jahia.services.content.MultiLanguageTest</value>
                 <value>org.jahia.services.content.ReferencesTest</value>

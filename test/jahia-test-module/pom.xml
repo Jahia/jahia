@@ -236,6 +236,18 @@
             <version>2.4</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Nutch and its dependencies -->
+        <dependency>
+            <groupId>org.apache.nutch</groupId>
+            <artifactId>nutch</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.mahout.hadoop</groupId>
+            <artifactId>hadoop-core</artifactId>
+            <version>0.19.1</version>
+        </dependency>
+        <!-- End of Nutch and its dependencies -->
     </dependencies>
     <build>
         <plugins>

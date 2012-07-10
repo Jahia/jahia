@@ -100,7 +100,7 @@
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
-            <version>1.3</version>
+            <version>1.4</version>
         </dependency>
         <dependency>
             <groupId>commons-digester</groupId>
@@ -162,7 +162,7 @@
         <dependency>
             <groupId>commons-pool</groupId>
             <artifactId>commons-pool</artifactId>
-            <version>1.5.7</version>
+            <version>1.6</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

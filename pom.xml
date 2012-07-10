@@ -50,8 +50,8 @@
         <slf4j.version>1.6.4</slf4j.version>
 
         <driver.derby.version>10.9.1.0</driver.derby.version>
-        <driver.mysql.version>5.1.19</driver.mysql.version>
-        <driver.postgresql.version>9.1-901.jdbc3</driver.postgresql.version>
+        <driver.mysql.version>5.1.21</driver.mysql.version>
+        <driver.postgresql.version>9.1-902.jdbc4</driver.postgresql.version>
 
         <!-- Meta information -->
         <jahia.manifest.vendor.name>Jahia Solutions Group SA</jahia.manifest.vendor.name>

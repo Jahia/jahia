@@ -1,3 +1,4 @@
+<<<<<<< .working
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -661,3 +662,691 @@
         </plugins>
     </reporting>
 </project>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jahia-root</artifactId>
+    <name>Jahia Project Root</name>
+    <groupId>org.jahia.server</groupId>
+    <version>6.6.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <inceptionYear>2004</inceptionYear>
+    <!--
+   <licenses>
+       <license>
+         <name>GNU General Public License</name>
+         <url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt</url>
+         <distribution>repo</distribution>
+         <comments>Jahia Community Edition is licensed under the terms of the GNU General Public License v2</comments>
+       </license>
+   </licenses>
+    -->
+    <organization>
+        <name>Jahia Solutions Group SA</name>
+        <url>http://www.jahia.com</url>
+    </organization>
+    <!--logo>/images/jahia.gif</logo-->
+    <description>Jahia Base Package</description>
+    <url>http://www.jahia.com</url>
+    <properties>
+        <!-- general encoding -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <jahia.package.version>${project.version}</jahia.package.version>
+        <jahia.project.structure.version>2</jahia.project.structure.version>
+
+        <jahia.deployers.version>2.5</jahia.deployers.version>
+
+        <jahia.war.classifier />
+
+        <pluto.version>2.0.2</pluto.version>
+        <spring.version>3.0.5.RELEASE</spring.version>
+        <jackrabbit.version>2.2.4-rev1068882-patch8</jackrabbit.version>
+        <lucene.version>2.4.1</lucene.version>
+        <jbpm.version>4.4</jbpm.version>
+        <hibernate.version>3.3.2.GA</hibernate.version>
+        <apache.tika.version>0.9</apache.tika.version>
+        <camel.version>2.4.0</camel.version>
+        <gwt.version>2.2.0</gwt.version>
+        <ant.version>1.8.2</ant.version>
+
+        <driver.derby.version>10.9.1.0</driver.derby.version>
+        <driver.mysql.version>5.1.19</driver.mysql.version>
+        <driver.postgresql.version>9.1-901.jdbc3</driver.postgresql.version>
+
+        <!-- Meta information -->
+        <jahia.manifest.vendor.name>Jahia Solutions Group SA</jahia.manifest.vendor.name>
+        <jahia.manifest.vendor.id>org.jahia</jahia.manifest.vendor.id>
+        <jahia.manifest.vendor.url>http://www.jahia.com</jahia.manifest.vendor.url>
+        <jahia.manifest.vendor.email>info@jahia.com</jahia.manifest.vendor.email>
+        <jahia.svn.base.url>https://devtools.jahia.com/svn/jahia/trunk</jahia.svn.base.url>
+
+        <license.plugin.version>1.8.0</license.plugin.version>
+        <javadoc.plugin.version>2.8</javadoc.plugin.version>
+        <assembly.plugin.version>2.2</assembly.plugin.version>
+        <maven3.site.plugin.version>3.0</maven3.site.plugin.version>
+        <site.plugin.version>2.2</site.plugin.version>
+        <war.plugin.version>2.2</war.plugin.version>
+        <enforcer.plugin.version>1.0</enforcer.plugin.version>
+        <compiler.plugin.version>2.3.2</compiler.plugin.version>
+        <buildnumber.plugin.version>1.0</buildnumber.plugin.version>
+        <source.plugin.version>2.1.2</source.plugin.version>
+        <release.plugin.version>2.2.1.jahia1</release.plugin.version>
+        <project.info.reports.plugin.version>2.2</project.info.reports.plugin.version>
+        <jxr.plugin.version>2.2</jxr.plugin.version>
+        <antrun.plugin.version>1.6</antrun.plugin.version>
+        <jar.plugin.version>2.3.1</jar.plugin.version>
+        <surefire.plugin.version>2.7.2</surefire.plugin.version>
+        <eclipse.plugin.version>2.8</eclipse.plugin.version>
+
+        <!-- Jahia Maven plugin version and default settings -->
+        <jahia.plugin.version>2.76</jahia.plugin.version>
+        <!-- common settings -->
+        <jahia.configure.useDataStore>true</jahia.configure.useDataStore>
+		<jahia.configure.storeFilesInDB>false</jahia.configure.storeFilesInDB>
+		<jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
+        <jahia.deploy.processingServer>true</jahia.deploy.processingServer>
+        <jahia.deploy.war.dirName>ROOT</jahia.deploy.war.dirName>
+        <jahia.deploy.war.contextPath />
+        <jahia.test.url>http://localhost:8080/cms</jahia.test.url>
+        <!-- DBMS -->
+        <jahia.configure.databaseType>derby_embedded</jahia.configure.databaseType>
+        <jahia.configure.databaseUrl>jdbc:derby:directory:jahia;create=true</jahia.configure.databaseUrl>
+        <jahia.configure.databaseUsername />
+        <jahia.configure.databasePassword />
+        <!-- Application server -->
+        <jahia.deploy.targetServerType>tomcat</jahia.deploy.targetServerType>
+        <jahia.deploy.targetServerVersion>6</jahia.deploy.targetServerVersion>
+        <!-- end of Jahia Maven plugin default settings -->
+    </properties>
+
+    <scm>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH</url>
+    </scm>
+    <developers>
+        <developer>
+            <name>Anna Afshar</name>
+            <email>anna.afshar@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Benjamin Papež</name>
+            <email>benjamin.papez@jahia.com</email>
+            <organization>Jahia Solutions GmbH</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Cédric Mailleux</name>
+            <email>cedric.mailleux@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Charles Flond</name>
+            <email>charles.flond@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Clément Egger</name>
+            <email>clement.egger@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Damien Saulnier</name>
+            <email>damien.saulnier@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>David Griffon</name>
+            <email>david.griffon@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Fabrice Cantegrel</name>
+            <email>fabrice.cantegrel@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Islam El-Sayed</name>
+            <organization>Crédit Agricole (Suisse) SA</organization>
+            <organizationUrl>http://www.ca-suisse.com/</organizationUrl>
+        </developer>
+        <developer>
+        	<name>Kevan Jahanshahi</name>
+            <email>kevan.jahanshahi@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Khaled Tlili</name>
+        </developer>
+        <developer>
+            <name>Khue Nguyen</name>
+        </developer>
+        <developer>
+            <name>Philippe Vollenweider</name>
+            <email>philippe.vollenweider@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Régis Mora</name>
+            <email>regis.mora@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Romain Felden</name>
+            <organization>ELCA Informatique SA</organization>
+            <organizationUrl>http://www.elca.ch/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Serge Huber</name>
+            <email>serge.huber@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Sergiy Shyrkov</name>
+            <email>sergiy.shyrkov@jahia.com</email>
+            <organization>Jahia Solutions GmbH</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
+        	<name>Sophia Batata</name>
+            <email>sophia.batata@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Stéphanie Rouaud</name>
+            <email>stephanie.rouaud@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Thomas Draier</name>
+            <email>thomas.draier@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Xavier Lawrence</name>
+            <organization>ELCA Informatique SA</organization>
+            <organizationUrl>http://www.elca.ch/</organizationUrl>
+        </developer>
+    </developers>
+    <issueManagement>
+        <system>Jira</system>
+        <url>http://jira.jahia.org/</url>
+    </issueManagement>
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>jahiaRepository</id>
+            <name>Jahia's Maven Repository</name>
+            <url>http://maven.jahia.org/maven2</url>
+        </repository>
+        <repository>
+            <id>jahia-public</id>
+            <name>Jahia Public Repository</name>
+            <url>https://devtools.jahia.com/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>jahiaRepository</id>
+            <name>Jahia's Maven Repository</name>
+            <url>http://maven.jahia.org/maven2</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>jahia-public</id>
+            <name>Jahia Public Repository</name>
+            <url>https://devtools.jahia.com/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <profiles>
+        <profile>
+            <id>docsite</id>
+            <activation>
+                <property>
+                    <name>documentation</name>
+                </property>
+            </activation>
+            <modules>
+                <module>gwt</module>
+                <module>modules</module>
+                <module>war</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>nodocsite</id>
+            <activation>
+                <property>
+                    <name>!documentation</name>
+                </property>
+            </activation>
+            <modules>
+                <module>public-api</module>
+                <module>taglib</module>
+                <module>core</module>
+                <module>gwt</module>
+                <module>modules</module>
+                <module>war</module>
+                <module>test</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>license</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.mycila.maven-license-plugin</groupId>
+                        <artifactId>maven-license-plugin</artifactId>
+                        <version>${license.plugin.version}</version>
+                        <configuration>
+                            <basedir>${basedir}</basedir>
+                            <header>header.txt</header>
+                            <quiet>false</quiet>
+                            <failIfMissing>true</failIfMissing>
+                            <aggregate>true</aggregate>
+                            <includes>
+                                <include>src/**/*.java</include>
+                                <include>pom.xml</include>
+                                <!--
+                                <include>src/**/*.tag</include>
+                                <include>src/**/*.jsp</include>
+                                <include>src/**/*.jspf</include>
+                                <include>src/**/*.inc</include>
+                                <include>src/main/webapp/WEB-INF/web.xml</include>
+                                 -->
+                            </includes>
+                            <excludes>
+                                <exclude>src/main/java/compressionFilters/**</exclude>
+                                <exclude>src/main/java/name/fraser/**</exclude>
+                                <exclude>src/main/java/org/apache/**</exclude>
+                                <exclude>src/main/java/EDU/oswego/**</exclude>
+                            </excludes>
+                            <useDefaultExcludes>true</useDefaultExcludes>
+                            <mapping>
+                                <tag>DYNASCRIPT_STYLE</tag>
+                                <inc>DYNASCRIPT_STYLE</inc>
+                                <jspf>DYNASCRIPT_STYLE</jspf>
+                            </mapping>
+                            <useDefaultMapping>true</useDefaultMapping>
+                            <properties>
+                                <year>2011</year>
+                            </properties>
+                            <encoding>UTF-8</encoding>
+                            <headerDefinitions>
+                                <headerDefinition>style.xml</headerDefinition>
+                            </headerDefinitions>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>format</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>do-attach-javadocs</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${javadoc.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <configuration>
+                                    <detectOfflineLinks>false</detectOfflineLinks>
+                                    <minmemory>128m</minmemory>
+                                    <maxmemory>1g</maxmemory>
+                                    <failOnError>false</failOnError>
+                                    <javadocExecutable>${env.JAVA_6_HOME}/bin/javadoc</javadocExecutable>
+                                    <quiet>true</quiet>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>aggregate-javadocs</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${javadoc.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>aggregate-javadocs</id>
+                                <goals>
+                                    <goal>aggregate-jar</goal>
+                                </goals>
+                                <configuration>
+                                    <attach>false</attach>
+                                    <finalName>${project.artifactId}-${project.version}-aggregate</finalName>
+                                    <detectOfflineLinks>false</detectOfflineLinks>
+                                    <minmemory>128m</minmemory>
+                                    <maxmemory>1g</maxmemory>
+                                    <failOnError>false</failOnError>
+                                    <javadocExecutable>${env.JAVA_6_HOME}/bin/javadoc</javadocExecutable>
+                                    <quiet>true</quiet>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>maven-3</id>
+            <activation>
+                <file>
+                <!--  This employs that the basedir expression is only recognized by Maven 3.x (see MNG-2363) -->
+                    <exists>${basedir}</exists>
+                </file>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-site-plugin</artifactId>
+                            <version>${maven3.site.plugin.version}</version>
+                            <configuration>
+                                <relativizeDecorationLinks>true</relativizeDecorationLinks>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-descriptor</id>
+                                <goals>
+                                    <goal>attach-descriptor</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+
+
+    <distributionManagement>
+        <repository>
+            <id>jahiaRepository</id>
+            <url>scpexe://maven.jahia.org/var/www/vhosts/maven.jahia.org/html/maven2</url>
+        </repository>
+        <site>
+            <id>jahia.website</id>
+            <url>file://${jahia.site.path}</url>
+        </site>
+    </distributionManagement>
+
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${assembly.plugin.version}</version>
+                </plugin>            
+                <plugin>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${site.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${war.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jahia.server</groupId>
+                    <artifactId>maven-jahia-plugin</artifactId>
+                    <version>${jahia.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-antrun-plugin</artifactId>
+                                        <versionRange>[1.6,)</versionRange>
+                                        <goals>
+                                            <goal>run</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.jahia.server</groupId>
+                                        <artifactId>maven-jahia-plugin</artifactId>
+                                        <versionRange>[2.56,)</versionRange>
+                                        <goals>
+                                            <goal>native2ascii</goal>
+                                            <goal>copy-templates</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.codehaus.mojo</groupId>
+                                        <artifactId>gwt-maven-plugin</artifactId>
+                                        <versionRange>[2.2.0,)</versionRange>
+                                        <goals>
+                                            <goal>compile</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.samaxes.maven</groupId>
+                                        <artifactId>maven-minify-plugin</artifactId>
+                                        <versionRange>[1.3.5,)</versionRange>
+                                        <goals>
+                                            <goal>minify</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${enforcer.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>2.1</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>1.5</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${compiler.plugin.version}</version> 
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                    <verbose>true</verbose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${source.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>${buildnumber.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                    <useLastCommittedRevision>true</useLastCommittedRevision>
+                    <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                    <revisionOnScmFailure>00000</revisionOnScmFailure>
+                    <!-- seems this doesn't work well yet, but maybe in a new future ?
+                   <providerImplementations>
+                     <svn>javasvn</svn>
+                   </providerImplementations>
+                    -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${release.plugin.version}</version>
+                <configuration>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <goals>deploy</goals>
+                    <preparationGoals>clean install</preparationGoals>
+                    <releaseProfiles>do-attach-javadocs,aggregate-javadocs</releaseProfiles>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>${project.info.reports.plugin.version}</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>project-team</report>
+                            <report>mailing-list</report>
+                            <report>cim</report>
+                            <report>issue-tracking</report>
+                            <report>license</report>
+                            <report>scm</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+</project>
+>>>>>>> .merge-right.r42207

@@ -381,9 +381,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                                 String mime = atts.getValue(Constants.JCR_MIMETYPE);
                                 if (mime == null) {
                                     if (logger.isWarnEnabled()) {
-                                        if (JahiaContextLoaderListener.getServletContext() != null) {
-                                            mime = JahiaContextLoaderListener.getServletContext().getMimeType(decodedQName != null ? decodedQName.toLowerCase() : decodedQName);
-                                        }
+                                        mime = JCRContentUtils.getMimeType(decodedQName);
                                         if (mime != null) {
                                             logger.warn("Legacy or invalid import detected for node "+path+", mime type cannot be resolved from file node, it should come from jcr:content node. Resolved mime type using servlet context instead="+mime+".");
                                         } else {

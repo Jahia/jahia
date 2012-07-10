@@ -491,8 +491,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                 JCRNodeWrapper wrapper = null;
                                 try {
                                     is = itemEntry.getValue().getInputStream();
-                                    wrapper = targetDirectory.uploadFile(name, is, itemEntry
-                                            .getValue().getContentType());
+                                    wrapper = targetDirectory.uploadFile(name, is, JCRContentUtils
+                                            .getMimeType(name, itemEntry.getValue()
+                                                    .getContentType()));
                                 } finally {
                                     IOUtils.closeQuietly(is);
                                 }

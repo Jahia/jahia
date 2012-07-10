@@ -152,8 +152,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     public static String detectImportContentType(GWTFileManagerUploadServlet.Item item) {
         String contentType = item.getContentType();
         if (!KNOWN_IMPORT_CONTENT_TYPES.contains(contentType)) {
-            contentType = Jahia.getStaticServletConfig().getServletContext()
-                    .getMimeType(item.getOriginalFileName() != null ? item.getOriginalFileName().toLowerCase() : item.getOriginalFileName());
+            contentType = JCRContentUtils.getMimeType(item.getOriginalFileName());
             if (!KNOWN_IMPORT_CONTENT_TYPES.contains(contentType)) {
                 if (StringUtils.endsWithIgnoreCase(item.getOriginalFileName(), ".xml")) {
                     contentType = "application/xml";
@@ -222,9 +221,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                     try {
                                         InputStream is = new BufferedInputStream(new FileInputStream(file));
                                         try {
-                                            dest.uploadFile(file.getName(), is,
-                                                    JahiaContextLoaderListener.getServletContext().getMimeType(
-                                                            file.getName() != null ? file.getName().toLowerCase() : file.getName()));
+                                            dest.uploadFile(file.getName(), is, JCRContentUtils.getMimeType(file.getName()));
                                         } finally {
                                             IOUtils.closeQuietly(is);
                                         }
@@ -779,8 +776,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                             if (!zipentry.isDirectory()) {
                                 try {
                                     String filename = name.substring(name.lastIndexOf('/') + 1);
-                                    String contentType = JahiaContextLoaderListener.getServletContext().getMimeType(filename != null ? filename.toLowerCase() : filename);
-                                    ensureFile(session, name, zis, contentType, site);
+                                    ensureFile(session, name, zis, JCRContentUtils.getMimeType(filename), site);
                                 } catch (Exception e) {
                                     logger.error("Cannot upload file " + zipentry.getName(), e);
                                 }

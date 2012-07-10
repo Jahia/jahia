@@ -288,7 +288,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                 if (versioningAvailable) {
                     locationFolder.getSession().getWorkspace().getVersionManager().checkout(locationFolder.getPath());
                 }
-                JCRNodeWrapper node = locationFolder.uploadFile(filename, is, item.getContentType());
+                JCRNodeWrapper node = locationFolder.uploadFile(filename, is, JCRContentUtils.getMimeType(filename, item.getContentType()));
                 node.save();
                 // Handle potential move of the node after save
                 node = node.getSession().getNodeByIdentifier(node.getIdentifier());

@@ -1089,7 +1089,7 @@ public class ContentManagerHelper {
                     InputStream is = null;
                     try {
                         is = item.getStream();
-                        parent.uploadFile(newName, is, item.getContentType());
+                        parent.uploadFile(newName, is, JCRContentUtils.getMimeType(newName, item.getContentType()));
                     } catch (FileNotFoundException e) {
                         logger.error(e.getMessage(), e);
                     } finally {

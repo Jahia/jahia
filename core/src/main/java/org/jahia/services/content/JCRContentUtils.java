@@ -81,6 +81,7 @@ import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
+import javax.servlet.ServletContext;
 
 import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.commons.io.IOUtils;
@@ -114,6 +115,7 @@ import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
+import org.springframework.web.context.ServletContextAware;
 
 import com.google.common.collect.ImmutableSet;
 import com.ibm.icu.text.Normalizer;
@@ -123,7 +125,7 @@ import com.ibm.icu.text.Normalizer;
  * 
  * @author Sergiy Shyrkov
  */
-public final class JCRContentUtils {
+public final class JCRContentUtils implements ServletContextAware {
     
     public static final Pattern COLON_PATTERN = Patterns.COLON;
     
@@ -1408,6 +1410,8 @@ public final class JCRContentUtils {
     private Set<String> unsupportedMarkForDeletionNodeTypes = Collections.emptySet();
     
     private Pattern handleFallbackLocaleForPath;
+
+    private ServletContext servletContext;
     
     /**
      * Initializes an instance of this class.
@@ -1617,5 +1621,38 @@ public final class JCRContentUtils {
         }
 
         return found;
+    }
+    
+    /**
+     * Detects the mime-type for the specified file name, based on its extension (uses mime types, configured in the web.xml deployment
+     * descriptor).
+     * 
+     * @param fileName
+     *            the name of the file to detect mime type for
+     * @return the mime-type for the specified file name, based on its extension (uses mime types, configured in the web.xml deployment
+     *         descriptor)
+     */
+    public static String getMimeType(String fileName) {
+        return fileName != null ? getInstance().servletContext.getMimeType(fileName.toLowerCase())
+                : null;
+    }
+
+    /**
+     * Detects the mime-type for the specified file name, based on its extension (uses mime types, configured in the web.xml deployment
+     * descriptor). If the type cannot be detected, the provided fallback mime type is returned.
+     * 
+     * @param fileName
+     *            the name of the file to detect mime type for
+     * @param fallbackMimeType
+     *            the fallback mime-type to use if the type cannot be detected
+     * @return the mime-type for the specified file name, based on its extension (uses mime types, configured in the web.xml deployment
+     *         descriptor). If the type cannot be detected, the provided fallback mime type is returned.
+     */
+    public static String getMimeType(String fileName, String fallbackMimeType) {
+        return StringUtils.defaultIfEmpty(getMimeType(fileName), fallbackMimeType);
+    }
+
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
     }
 }

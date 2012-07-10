@@ -160,7 +160,7 @@ public class DefaultPostAction extends Action {
                     final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
                     for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
                         newNode.uploadFile(itemEntry.getValue().getName(), itemEntry.getValue().getInputStream(),
-                                itemEntry.getValue().getContentType());
+                                JCRContentUtils.getMimeType(itemEntry.getValue().getName(), itemEntry.getValue().getContentType()));
                     }
                 }
 

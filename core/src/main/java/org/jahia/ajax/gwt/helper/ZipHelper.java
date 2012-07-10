@@ -43,11 +43,9 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.spi.commons.conversion.MalformedPathException;
-import org.apache.jackrabbit.util.Text;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -213,8 +211,7 @@ public class ZipHelper {
                             }
                         }
                     } else {
-                        String contentType = JahiaContextLoaderListener.getServletContext().getMimeType(filename != null ? filename.toLowerCase() : filename);
-                        target.uploadFile(filename, zis, contentType);
+                        target.uploadFile(filename, zis, JCRContentUtils.getMimeType(filename));
                     }
                     result = true;
                 } /*catch (IOException e) {

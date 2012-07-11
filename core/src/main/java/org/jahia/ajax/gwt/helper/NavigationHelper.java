@@ -223,12 +223,16 @@ public class NavigationHelper {
             boolean matchNodeType = matchesNodeType(childNode, nodeTypes);
             if (logger.isDebugEnabled()) {
                 logger.debug("----------");
-                for (String s : nodeTypes) {
-                    logger.debug(
+                if(nodeTypes != null) {
+                	for (String s : nodeTypes) {
+                		logger.debug(
                             "Node " + childNode.getPath() + " match with " + s + "? " + childNode.isNodeType(s) + "[" +
                                     matchNodeType + "]");
+                	}
+                }else{
+                	logger.debug("Node " + childNode.getPath() + " has no Nodetypes!");
                 }
-                logger.debug("----------");
+                logger.debug("----------"); 
             }
             boolean mimeTypeFilter = matchesMimeTypeFilters(childNode, mimeTypes);
             boolean nameFilter = matchesFilters(childNode.getName(), nameFilters);

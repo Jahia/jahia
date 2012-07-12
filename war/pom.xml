@@ -783,7 +783,7 @@
                     </webResources>
                     <archive>
                         <manifest>
-                            <addClasspath>true</addClasspath>
+                            <addClasspath>false</addClasspath>
                             <!--classpathPrefix>lib/</classpathPrefix-->
                             <!--addExtensions>true</addExtensions-->
                         </manifest>

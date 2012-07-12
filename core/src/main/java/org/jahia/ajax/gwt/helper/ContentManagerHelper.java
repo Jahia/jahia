@@ -1134,7 +1134,7 @@ public class ContentManagerHelper {
             String shortName = JCRContentUtils.generateNodeName(key, 50);
             try {
                 JCRNodeWrapper node = templateManagerService.createModule(shortName, siteType, sources != null ? new File(sources) : null, scmURI, scmType, session);
-                return navigation.getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_SITE_FIELDS);
+                return node != null ? navigation.getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_SITE_FIELDS) : null;
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }

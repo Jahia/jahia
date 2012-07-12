@@ -166,8 +166,6 @@ public class EditLinker implements Linker {
         this.mainPath = mainPath;
         this.template = template;
         this.param = param;
-
-        handleNewMainSelection();
     }
 
     public void refresh(int flag) {

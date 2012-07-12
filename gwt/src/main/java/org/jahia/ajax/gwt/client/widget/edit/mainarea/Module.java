@@ -250,4 +250,8 @@ public abstract class Module extends LayoutContainer {
     public String getScriptInfo() {
         return scriptInfo;
     }
+
+    public Element getInnerElement() {
+        return html.getElement();
+    }
 }

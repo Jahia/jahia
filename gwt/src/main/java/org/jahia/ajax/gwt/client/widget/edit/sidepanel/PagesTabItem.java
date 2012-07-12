@@ -66,6 +66,7 @@ import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeTreeGridDragSource;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Selection;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
@@ -138,7 +139,7 @@ public class PagesTabItem extends SidePanelTabItem {
                         !node.getInheritedNodeTypes().contains("jmix:link") &&
                          PermissionsUtils.isPermitted("editModeAccess", node)
                         ) {
-                    editLinker.onMainSelection(node.getPath(), null, null);
+                    MainModule.staticGoTo(node.getPath(), null);
                 }
             }
         });

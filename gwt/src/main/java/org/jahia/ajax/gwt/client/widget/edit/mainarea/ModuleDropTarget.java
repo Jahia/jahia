@@ -46,6 +46,7 @@ import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.dnd.Insert;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.util.Rectangle;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -90,14 +91,11 @@ public class ModuleDropTarget extends DropTarget {
     }
 
     private void showInsert(DNDEvent event, Element row, boolean before) {
-//            Element toDrag = event.getStatus().getData("element");
-//            if (toDrag != null) {
-//                Element parent = DOM.getParent(row);
-//                parent.insertBefore(toDrag, row);
-//            }
         if (PermissionsUtils.isPermitted("jcr:addChildNodes", module.getParentModule().getNode()) && !module.getParentModule().getNode().isLocked()) {
             Insert insert = Insert.get();
             insert.setVisible(true);
+            // Set insert relative to main content
+            MainModule.getInstance().getInnerElement().appendChild(insert.getElement());
             Rectangle rect = El.fly(row).getBounds();
             int y = !before ? (rect.y + rect.height - 4) : rect.y - 2;
             insert.el().setBounds(rect.x, y, rect.width, 20);

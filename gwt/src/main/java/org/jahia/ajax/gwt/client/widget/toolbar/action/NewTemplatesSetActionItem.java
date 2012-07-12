@@ -43,20 +43,17 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.form.CalendarField;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 /**
  * Action item to create a new templates set
@@ -125,7 +122,7 @@ public class NewTemplatesSetActionItem extends BaseActionItem {
                         if (((EditLinker) linker).getSidePanel() != null) {
                             ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
                         }
-                        ((EditLinker) linker).onMainSelection(result.getPath(), null, null);
+                        MainModule.staticGoTo(result.getPath(), null);
                         SiteSwitcherActionItem.refreshAllSitesList(linker);
                     }
 

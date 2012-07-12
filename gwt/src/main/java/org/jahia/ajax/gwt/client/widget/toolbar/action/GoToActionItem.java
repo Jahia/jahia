@@ -42,6 +42,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 /**
  * User: jahia
@@ -68,7 +69,7 @@ public class GoToActionItem extends BaseActionItem {
     @Override
     public void onComponentSelection() {
         if (linker instanceof EditLinker) {
-            ((EditLinker)linker).onMainSelection(URL.replacePlaceholders(path, linker.getSelectionContext().getSingleSelection()), template, param);
+            MainModule.staticGoTo(URL.replacePlaceholders(path, linker.getSelectionContext().getSingleSelection()), template);
         }
     }
 

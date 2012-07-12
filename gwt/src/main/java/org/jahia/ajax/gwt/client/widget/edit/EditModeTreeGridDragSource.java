@@ -45,7 +45,10 @@ import com.extjs.gxt.ui.client.dnd.TreeGridDragSource;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.DragEvent;
 import com.extjs.gxt.ui.client.event.DragListener;
+import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.google.gwt.core.client.GWT;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 /**
  * 
@@ -66,6 +69,17 @@ public class EditModeTreeGridDragSource extends TreeGridDragSource {
                 e.setStatus(statusProxy);
 
                 onDragEnd(e);
+            }
+
+            @Override
+            public void dragMove(DragEvent de) {
+                GWT.log("drag to  : " + de.getX());
+                if (MainModule.getInstance().isInframe()) {
+                    Point position = MainModule.getInstance().getContainer().getPosition(false);
+                    de.setX(de.getX() + position.x);
+                    de.setY(de.getY() + position.y);
+                    GWT.log("drag changed to  : " + de.getX());
+                }
             }
         };
         draggable.addDragListener(listener);

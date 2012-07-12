@@ -41,9 +41,14 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.dnd.DragSource;
+import com.extjs.gxt.ui.client.dnd.MyDNDManager;
 import com.extjs.gxt.ui.client.dnd.StatusProxy;
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Event;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 /**
  * 
@@ -65,9 +70,20 @@ public class EditModeDragSource extends DragSource {
 
                 onDragEnd(e);
             }
+
+            @Override
+            public void dragMove(DragEvent de) {
+                GWT.log("drag to  : "+ de.getX());
+                if (MainModule.getInstance().isInframe()) {
+                    Point position = MainModule.getInstance().getContainer().getPosition(false);
+                    de.setX(de.getX() + position.x);
+                    de.setY(de.getY() + position.y);
+                    GWT.log("drag changed to  : " + de.getX());
+                }
+            }
         };
         draggable.addDragListener(listener);
-
+        draggable.setConstrainClient(false);
     }
 
     @Override

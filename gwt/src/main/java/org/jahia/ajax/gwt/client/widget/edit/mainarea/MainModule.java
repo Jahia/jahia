@@ -40,37 +40,32 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
-import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.http.client.URL;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import com.google.gwt.user.client.*;
+import com.google.gwt.user.client.EventListener;
+import com.google.gwt.user.client.ui.*;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
@@ -97,11 +92,12 @@ public class MainModule extends Module {
     private InfoLayers infoLayers = new InfoLayers();
     private Map<String, Boolean> activeLayers = new HashMap<String, Boolean>();
     private boolean ctrlActive = false;
-    private Map<Module,Selection> selections = new HashMap<Module, Selection>();
+    private Map<Module, Selection> selections = new HashMap<Module, Selection>();
 
     Map<Element, Module> m;
     protected LayoutContainer scrollContainer;
     protected LayoutContainer center;
+    protected EditFrame frame;
 
     public MainModule(final String html, final String path, final String template, String nodeTypes, GWTEditConfiguration config) {
         super("main", path, template, nodeTypes, new BorderLayout());
@@ -125,14 +121,44 @@ public class MainModule extends Module {
             add(c, new BorderLayoutData(Style.LayoutRegion.NORTH, 32));
         }
 
-        scrollContainer = new LayoutContainer(new FlowLayout());
+        frame = new EditFrame();
+        frame.setWidth("100%");
+        frame.setHeight("100%");
+        frame.addStyleName("x-noshim");
+        frame.sinkEvents(Event.ONLOAD /*+ Event.ONCLICK + Event.ONCONTEXTMENU + Event.ONMOUSEOVER + Event.ONMOUSEOUT*/);
+
+
+        scrollContainer = new LayoutContainer(new FlowLayout()) {
+            @Override
+            protected void onRightClick(ComponentEvent ce) {
+                if (contextMenu != null && fireEvent(Events.ContextMenu, ce)) {
+                    Point position = MainModule.getInstance().getContainer().getPosition(false);
+                    final int x = ce.getClientX() + position.x;
+                    final int y = ce.getClientY() + position.y;
+                    ce.stopEvent();
+                    DeferredCommand.addCommand(new Command() {
+                        public void execute() {
+                            onShowContextMenu(x, y);
+                        }
+                    });
+                }
+            }
+        };
         scrollContainer.addStyleName("gwt-body-edit");
-        scrollContainer.setStyleAttribute("position","relative");
+        scrollContainer.setStyleAttribute("position", "relative");
+        scrollContainer.addListener(Events.OnClick, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+                if (contextMenu != null && contextMenu.isVisible()) {
+                    contextMenu.hide();
+                }
+            }
+        });
+        scrollContainer.add(frame);
 
         center = new LayoutContainer(new FitLayout());
         center.setScrollMode(Style.Scroll.NONE);
 
-        add(center,new BorderLayoutData(Style.LayoutRegion.CENTER));
+        add(center, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
         Hover.getInstance().setMainModule(this);
 
@@ -140,6 +166,11 @@ public class MainModule extends Module {
         exportStaticMethod();
     }
 
+    boolean inframe = false;
+
+    public boolean isInframe() {
+        return inframe;
+    }
 
     public Map<Module, Selection> getSelections() {
         return selections;
@@ -149,7 +180,6 @@ public class MainModule extends Module {
         this.editLinker = linker;
 
 
-
         if (head != null) {
             for (GWTJahiaToolbarItem item : config.getMainModuleToolbar().getGwtToolbarItems()) {
                 ((ToolbarHeader) head).addItem(linker, item);
@@ -157,20 +187,19 @@ public class MainModule extends Module {
 
             head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
                 public void componentSelected(IconButtonEvent event) {
-                    mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
                     refresh(EditLinker.REFRESH_MAIN);
                 }
             }));
         }
 
         if ("".equals(Window.Location.getHash())) {
-            display(originalHtml);
+            goToUrl(getUrl(path, template), true);
         } else {
-            String hash = Window.Location.getHash();
-            goToHashMarker(hash);
+            String hash = URL.decode(Window.Location.getHash());
+            goToUrl(hash.substring(1), true);
         }
 
-        scrollContainer.sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT);
+//        scrollContainer.sinkEvents();
 
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
@@ -214,7 +243,7 @@ public class MainModule extends Module {
         int activeChannelVariantIndex = 0;
 
         if (activeChannel == null || "default".equals(activeChannel.getValue())) {
-            scrollContainer.setPosition(0,0);
+            scrollContainer.setPosition(0, 0);
             center.setLayout(new FitLayout());
             center.setScrollMode(Style.Scroll.NONE);
             center.add(scrollContainer);
@@ -238,7 +267,7 @@ public class MainModule extends Module {
 
             int[] usableResolution = getUsableDeviceResolution(activeChannel, activeChannelVariantIndex);
             scrollContainer.setSize(usableResolution[0], usableResolution[1]);
-            scrollContainer.setScrollMode(Style.Scroll.AUTO);
+            scrollContainer.setScrollMode(Style.Scroll.NONE);
 
             int[] screenPosition = null;
             screenPosition = activeChannel.getVariantDecoratorScreenPosition(activeChannelVariantIndex);
@@ -294,211 +323,42 @@ public class MainModule extends Module {
 
     public void refresh(int flag) {
         if ((flag & Linker.REFRESH_MAIN) != 0) {
-            refresh(path, template, (flag & Linker.REFRESH_MAIN_IMAGES) != 0);
+            goToUrl(getUrl(path, template), (flag & Linker.REFRESH_MAIN_IMAGES) != 0);
         }
     }
 
-    private void refresh(final String previousPath, final String previousTemplate, final boolean forceImageRefresh) {
-        JahiaContentManagementService.App.getInstance()
-                .getRenderedContent(path, null, editLinker.getLocale(), template, "gwt", moduleParams, true,
-                        config.getName(), editLinker.getActiveChannelIdentifier(), new BaseAsyncCallback<GWTRenderResult>() {
-                    public void onSuccess(GWTRenderResult result) {
-                        int i = scrollContainer.getVScrollPosition();
-                        if (head != null) {
-                            head.setText(Messages.get("label.page", "Page") + ": " + path);
-                        }
-                        nodeTypes = result.getNodeTypes();
-                        for (Selection s : selections.values()) {
-                            s.hide();
-                        }
-                        selections.clear();
-                        Hover.getInstance().removeAll();
-                        infoLayers.removeAll();
-
-                        display(result.getResult(), forceImageRefresh);
-
-                        scrollContainer.setVScrollPosition(i);
-                        List<String> list = new ArrayList<String>(1);
-                        list.add(path);
-                        editLinker.getMainModule().unmask();
-                        editLinker.onModuleSelection(MainModule.this);
-                        switchStaticAssets(result.getStaticAssets());
-                    }
-
-                    @Override
-                    public void onApplicationFailure(Throwable caught) {
-                        if (!previousPath.equals(path)) {
-                            path = previousPath;
-                            template = previousTemplate;
-                            editLinker.onMainSelection(previousPath, previousTemplate, null);
-                        }
-                        editLinker.getMainModule().unmask();
-                    }
-                });
-
+    private void goToUrl(final String url, final boolean forceImageRefresh) {
+        mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
+        layoutChannel();
+        frame.setForceImageRefresh(forceImageRefresh);
+        frame.setUrl(url);
+        center.layout(true);
     }
 
-    private Map<String, Integer> maxValues = new HashMap<String, Integer>();
-
-    private void switchStaticAssets(Map<String, List<String>> assets) {
-        switchStaticAssets(assets, "css", "link", "href");
-        switchStaticAssets(assets, "javascript", "script", "src");
+    private String getUrl(String path, String template) {
+        String baseUrl = JahiaGWTParameters.getBaseUrl();
+        baseUrl = baseUrl.substring(0, baseUrl.indexOf("/"+JahiaGWTParameters.getWorkspace()+"/"));
+        baseUrl += "frame/" + JahiaGWTParameters.getWorkspace();
+        baseUrl += "/" + (editLinker.getLocale() == null ? JahiaGWTParameters.getLanguage() : editLinker.getLocale());
+        return JahiaGWTParameters.getContextPath() + baseUrl + path + (template != null ? ("." + template) : "") + ".html";
     }
 
-    private void switchStaticAssets(Map<String, List<String>> assets, String fileType, String tagName, String tagAttribute) {
-        List oldValues = new ArrayList();
-        getAssets(tagName, tagAttribute, oldValues);
-        Element head = (Element) getHead();
-        List<String> newValues = assets.get(fileType);
-
-        Integer maxValue = oldValues.size() + 1;
-
-        if (!maxValues.containsKey(fileType)) {
-            maxValues.put(fileType, maxValue);
-        } else {
-            maxValue = maxValues.get(fileType);
+    @Override
+    public Element getInnerElement() {
+        if (frame != null) {
+            IFrameElement iframe = IFrameElement.as(frame.getElement());
+            com.google.gwt.dom.client.Element body = iframe.getContentDocument().getElementsByTagName("body").getItem(0);
+            return (Element) body;
         }
-
-        int j = 0;
-
-        Element oldElement = null;
-        Element lastElement = null;
-        String oldValue = null;
-
-        for (; newValues != null && (!newValues.isEmpty() || j < oldValues.size()); j++) {
-            while (j < oldValues.size()) {
-                oldElement = (Element) oldValues.get(j);
-                oldValue = DOM.getElementAttribute(oldElement, tagAttribute);
-                if (!newValues.contains(oldValue)) {
-                    // Remove current element as it is not supposed to stay
-                    head.removeChild(oldElement);
-                    j++;
-                } else {
-                    lastElement = oldElement;
-                    break;
-                }
-            }
-            if (j < oldValues.size()) {
-                if (!newValues.isEmpty()) {
-                    String newValue = newValues.remove(0);
-                    if (newValue.equals(oldValue)) {
-                        // Elements are equal, don't change
-                    } else {
-                        Element newElem = createAsset(fileType, (maxValue++), newValue);
-                        if (newElem != null) {
-                            head.insertBefore(newElem, oldElement);
-                        }
-                        // Stay on current element for next comparison
-                        j--;
-                    }
-                } else {
-                    head.removeChild(oldElement);
-                }
-            } else {
-                if (newValues.size() > 0) {
-                    Element newElem = createAsset(fileType, j, newValues.remove(0));
-                    if (newElem != null) {
-                        if (lastElement != null) {
-                            head.insertAfter(newElem, lastElement);
-                            lastElement = newElem;
-                        } else {
-                            head.appendChild(newElem);
-                        }
-                    }
-                }
-            }
-        }
-        maxValues.put(fileType, maxValue);
+        return super.getInnerElement();    //To change body of overridden methods use File | Settings | File Templates.
     }
-
-    private Element createAsset(String filetype, int j, String newValue) {
-        Element newElem = null;
-        if (filetype.equals("javascript")) {
-            newElem = DOM.createElement("script");
-            newElem.setAttribute("id", "staticAsset" + filetype + j);
-            newElem.setAttribute("type", "text/javascript");
-            newElem.setAttribute("src", newValue);
-        } else if (filetype.equals("css")) { //if filename is an external CSS file
-            newElem = DOM.createElement("link");
-            newElem.setAttribute("id", "staticAsset" + filetype + j);
-            newElem.setAttribute("rel", "stylesheet");
-            newElem.setAttribute("type", "text/css");
-            newElem.setAttribute("href", newValue);
-        }
-
-        return newElem;
-    }
-
-    private native int getAssets(String tagname, String attrname, List results) /*-{
-        var links = $doc.getElementsByTagName(tagname);
-        if (links != null) {
-            for (var i = 0; i < links.length; i++) {
-                if (links[i] && links[i].getAttribute("id") != null && links[i].getAttribute("id").indexOf("staticAsset") == 0) {
-                    results.@java.util.List::add(Ljava/lang/Object;)(links[i])
-                }
-            }
-
-            return links.length;
-        } else {
-            return 0;
-        }
-
-    }-*/;
-
-    private native Object getHead() /*-{
-        return $doc.getElementsByTagName("head")[0];
-    }-*/;
-
-    public static native void evalScripts(Element element) /*-{
-        var scripts = element.getElementsByTagName("script");
-
-        for (i = 0; i < scripts.length; i++) {
-            // if src, eval it, otherwise eval the body
-            if (!scripts[i].hasAttribute("src")) {
-                var src = scripts[i].getAttribute("src");
-                var script = $doc.createElement('script');
-                script.setAttribute("src", src);
-                $doc.getElementsByTagName('body')[0].appendChild(script);
-            } else {
-                $wnd.eval(scripts[i].innerHTML);
-            }
-        }
-    }-*/;
 
     public static native void setDocumentTitle(String title) /*-{
         $doc.title = title;
     }-*/;
 
-    private void display(String result) {
-        display(result, false);
-    }
-
-    private void display(String result, boolean forceImageReload) {
-
-        layoutChannel();
-
-        scrollContainer.removeAll();
-        scrollContainer.setScrollMode(Style.Scroll.AUTO);
-        html = new HTML(result);
-        if (forceImageReload) {
-            refreshImages(html);
-        }
-        scrollContainer.add(html);
-        ModuleHelper.tranformLinks(html);
-        ModuleHelper.initAllModules(this, html);
-        ModuleHelper.buildTree(this);
-        long start = System.currentTimeMillis();
-        parse();
-        Log.info("Parse : " + (System.currentTimeMillis() - start));
-        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-            public void execute() {
-                layout();
-            }
-        });
-    }
-
-    private void refreshImages(HTML html) {
-        NodeList<com.google.gwt.dom.client.Element> elementsByTagName = html.getElement()
+    private void refreshImages(Element element) {
+        NodeList<com.google.gwt.dom.client.Element> elementsByTagName = element
                 .getElementsByTagName("img");
         if (elementsByTagName == null) {
             return;
@@ -572,35 +432,32 @@ public class MainModule extends Module {
         return "main";
     }
 
-    public static void staticGoTo(String path, String template, String param) {
-        module.editLinker.onMainSelection(path, template, param);
+    public static void staticGoTo(String path, String template) {
+        module.goTo(path, template);
     }
 
-    private static void setUrlMarker(String path, String template, String param) {
+    public void goTo(String path, String template) {
+        goToUrl(getUrl(path, template), false);
+    }
+
+    private static void setHashMarker(String path) {
         String currentHref = Window.Location.getHref();
+        if (currentHref.endsWith(path)) {
+            return;
+        }
+        path = path.substring(path.indexOf(JahiaGWTParameters.getContextPath() + JahiaGWTParameters.getServletPath()));
         if (currentHref.indexOf("#") > 0) {
             currentHref = currentHref.substring(0, currentHref.indexOf("#"));
         }
-        Window.Location.assign(currentHref + "#" + path + ":" + (template == null ? "" : template) + ":" + (param == null ? "" : param));
-    }
-
-    private void goToHashMarker(String hash) {
-        int index = hash.indexOf(":");
-        String url = hash.substring(1, index);
-        int index2 = hash.indexOf(":", index + 1);
-        String template = hash.substring(index + 1, index2);
-        String param = hash.substring(index2 + 1);
-        staticGoTo(url, template, param);
+        Window.Location.assign(currentHref + "#" + URL.encode(path));
     }
 
     public void switchLanguage(GWTJahiaLanguage language) {
-        mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
         editLinker.setLocale(language);
         editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
     }
 
     public void switchChannel(GWTJahiaChannel channel, String variant) {
-        mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
         editLinker.setActiveChannelVariant(variant);
         editLinker.setActiveChannel(channel);
         editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_CHANNELS);
@@ -608,11 +465,7 @@ public class MainModule extends Module {
 
     public void setNode(GWTJahiaNode node) {
         this.node = node;
-//        if (node.getNodeTypes().contains("jnt:page") || node.getInheritedNodeTypes().contains("jnt:page")) {
-//            editManager.getEditLinker().getCreatePageButton().setEnabled(true);
-//        }
         if (node.isShared()) {
-//            this.setStyleAttribute("background","rgb(210,50,50) url("+ JahiaGWTParameters.getContextPath()+"/css/images/andromeda/rayure.png)");
             this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"),
                     Messages.get("info_sharednode", "This is a shared node")));
         }
@@ -635,14 +488,14 @@ public class MainModule extends Module {
 
     public void handleNewModuleSelection(Module selectedModule) {
         Selection l = new Selection(selectedModule);
-        if (! ctrlActive || selectedModule == null) {
-            for(Selection s : selections.values()) {
+        if (!ctrlActive || selectedModule == null) {
+            for (Selection s : selections.values()) {
                 s.hide();
             }
             selections.clear();
         }
         if (selectedModule != null && !(selectedModule instanceof MainModule)) {
-            selections.put(selectedModule,l);
+            selections.put(selectedModule, l);
             l.select();
             l.show();
         }
@@ -673,18 +526,15 @@ public class MainModule extends Module {
             return;
         }
 
-        String previousPath = this.path;
-        String previousTemplate = this.template;
-
         this.path = path;
         this.template = template;
 
         moduleParams = params;
 
-        module.mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
-        setUrlMarker(path, template, param);
-        module.refresh(previousPath, previousTemplate, false);
-
+//        String url = getCurrentUrl();
+//        if (!frame.getCurrentFrameUrl().endsWith(url)) {
+//            goToUrl(url, false);
+//        }
     }
 
     public void setInfoLayer(String key, boolean value) {
@@ -824,13 +674,90 @@ public class MainModule extends Module {
         return false;
     }
 
+    public static MainModule getInstance() {
+        return module;
+    }
+
     public static native void exportStaticMethod() /*-{
         $wnd.goTo = function (path, template, params) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::staticGoTo(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(path, template, params);
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::staticGoTo(Ljava/lang/String;Ljava/lang/String;)(path, template);
         }
     }-*/;
 
     public InfoLayers getInfoLayers() {
         return infoLayers;
+    }
+
+    private class EditFrame extends Frame {
+        private String url = null;
+        private boolean forceImageRefresh = false;
+
+        private EditFrame() {
+        }
+
+        public void onBrowserEvent(Event event) {
+            if (event.getTypeInt() == Event.ONLOAD) {
+                IFrameElement iframe = IFrameElement.as(frame.getElement());
+                Document contentDocument = iframe.getContentDocument();
+                Element body = (Element) contentDocument.getElementsByTagName("body").getItem(0);
+
+                setHashMarker(getCurrentFrameUrl());
+                if (forceImageRefresh) {
+                    refreshImages(body);
+                }
+                ModuleHelper.initAllModules(MainModule.this, body);
+                ModuleHelper.buildTree(MainModule.this);
+                parse();
+                editLinker.getMainModule().unmask();
+                layout();
+                DOM.sinkEvents(body, Event.ONMOUSEMOVE + Event.ONMOUSEUP + Event.ONCONTEXTMENU + Event.ONCLICK/*+ Event.ONMOUSEDOWN*/);
+                DOM.setEventListener(body, new EventListener() {
+                    public void onBrowserEvent(Event event) {
+                        if (event.getTypeInt() == Event.ONMOUSEMOVE || event.getTypeInt() == Event.ONMOUSEUP) {
+                            inframe = true;
+                            Event.fireNativePreviewEvent(event);
+                            inframe = false;
+                        } else {
+                            GWT.log("event:" + event.getTypeInt());
+                            scrollContainer.onBrowserEvent(event);
+                        }
+                    }
+                });
+            }
+        }
+
+        private String getCurrentFrameUrl() {
+            return getFrameUrl(IFrameElement.as(frame.getElement()));
+        }
+
+        @Override
+        public void setUrl(String url) {
+            if (isAttached()) {
+                this.url = url;
+                super.setUrl(url);
+            } else {
+                this.url = url;
+            }
+        }
+
+        public void setForceImageRefresh(boolean forceImageRefresh) {
+            this.forceImageRefresh = forceImageRefresh;
+        }
+
+        @Override
+        protected void onAttach() {
+            super.onAttach();
+            IFrameElement iframe = IFrameElement.as(frame.getElement());
+            iframe.setAttribute("frameborder","0");
+            if (url != null) {
+                super.setUrl(url);
+            }
+        }
+
+        public final native String getFrameUrl(IFrameElement iFrameElement) /*-{
+           // This is known to work on all modern browsers.
+           return iFrameElement.contentWindow.location.href;
+         }-*/;
+
     }
 }

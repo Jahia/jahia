@@ -59,6 +59,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 import java.util.*;
 
@@ -212,9 +213,9 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                     ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
                 }
                 if (root.get(0).startsWith("/templateSets")) {
-                    ((EditLinker) linker).onMainSelection(jahiaNode.getPath(), null, null);
+                    MainModule.staticGoTo(jahiaNode.getPath(), null);
                 } else {
-                    ((EditLinker) linker).onMainSelection((String) jahiaNode.get(GWTJahiaNode.HOMEPAGE_PATH), null, null);
+                    MainModule.staticGoTo((String) jahiaNode.get(GWTJahiaNode.HOMEPAGE_PATH), null);
                 }
             }
         });

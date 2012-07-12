@@ -61,6 +61,7 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.AreaModule;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleDropTarget;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.PagesTabItem;
 
@@ -292,7 +293,7 @@ public class EditModeDNDListener extends DNDListener {
                             replacedPath = selectedPath.replace(source.getPath(), parent.getPath() + "/" + source.getName());
                         }
                         if (!replacedPath.equals(selectedPath)) {
-                            editLinker.onMainSelection(replacedPath, null, null);
+                            MainModule.staticGoTo(replacedPath, null);
                             editLinker.refresh(Linker.REFRESH_PAGES);
                         } else if (e.getDropTarget() instanceof PagesTabItem.PageTreeGridDropTarget) {
                             ((PagesTabItem.PageTreeGridDropTarget) e.getDropTarget()).getCallback().onSuccess(result);

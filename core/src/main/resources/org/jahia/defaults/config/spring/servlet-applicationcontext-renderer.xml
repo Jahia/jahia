@@ -45,6 +45,13 @@
                         <property name="workspace" value="default"/>
                     </bean>
                 </entry>
+                <entry key="/editframe/**">
+                    <bean name="org.jahia.bin.Edit" parent="abstractRender" class="org.jahia.bin.Edit">
+                        <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
+                        <property name="editConfiguration" ref="editmode"/>
+                        <property name="workspace" value="default"/>
+                    </bean>
+                </entry>
                 <entry key="/contribute/**">
                     <bean name="org.jahia.bin.Contribute" parent="abstractRender" class="org.jahia.bin.Edit">
                         <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
@@ -52,7 +59,21 @@
                         <property name="workspace" value="default"/>
                     </bean>
                 </entry>
+                <entry key="/contributeframe/**">
+                    <bean name="org.jahia.bin.Contribute" parent="abstractRender" class="org.jahia.bin.Edit">
+                        <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
+                        <property name="editConfiguration" ref="contributemode"/>
+                        <property name="workspace" value="default"/>
+                    </bean>
+                </entry>
                 <entry key="/studio/**">
+                    <bean name="org.jahia.bin.Studio" parent="abstractRender" class="org.jahia.bin.Studio">
+                        <property name="sessionExpiryTime" value="60" />
+                        <property name="requiredPermission" value="studioModeAccess"/>
+                        <property name="workspace" value="default"/>
+                    </bean>
+                </entry>
+                <entry key="/studioframe/**">
                     <bean name="org.jahia.bin.Studio" parent="abstractRender" class="org.jahia.bin.Studio">
                         <property name="sessionExpiryTime" value="60" />
                         <property name="requiredPermission" value="studioModeAccess"/>

@@ -207,17 +207,13 @@ public class Hover {
         }
 
         public void setPosition(int x, int y, int w, int h) {
-            Point position = mainModule.getContainer().getPosition(false);
-            int offy = position.y - mainModule.getContainer().getVScrollPosition();
-            int offx = position.x - mainModule.getContainer().getHScrollPosition();
-
-            top.setPosition(x - offx, y - offy);
+            top.setPosition(x , y );
             top.setSize(w, 0);
-            bottom.setPosition(x - offx, y + h - offy);
+            bottom.setPosition(x , y + h );
             bottom.setSize(w, 0);
-            left.setPosition(x - offx, y - offy);
+            left.setPosition(x , y );
             left.setSize(0, h);
-            right.setPosition(x + w - offx, y - offy);
+            right.setPosition(x + w , y );
             right.setSize(0, h);
         }
 
@@ -228,19 +224,19 @@ public class Hover {
             hidden = false;
 
             RootPanel.get().add(top);
-            mainModule.getContainer().el().appendChild(top.getElement());
+            mainModule.getInnerElement().appendChild(top.getElement());
             top.el().makePositionable(true);
 
             RootPanel.get().add(left);
-            mainModule.getContainer().el().appendChild(left.getElement());
+            mainModule.getInnerElement().appendChild(left.getElement());
             left.el().makePositionable(true);
 
             RootPanel.get().add(right);
-            mainModule.getContainer().el().appendChild(right.getElement());
+            mainModule.getInnerElement().appendChild(right.getElement());
             right.el().makePositionable(true);
 
             RootPanel.get().add(bottom);
-            mainModule.getContainer().el().appendChild(bottom.getElement());
+            mainModule.getInnerElement().appendChild(bottom.getElement());
             bottom.el().makePositionable(true);
 
             onShow();

@@ -719,6 +719,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     Resource resource;
 
                     resource = urlResolver.getResource();
+                    if (req.getParameter("gwt") != null) {
+                        resource.setContextConfiguration(Resource.CONFIGURATION_GWT);
+                    }
                     renderContext.setMainResource(resource);
 
                     JCRSiteNode site = resource.getNode().getResolveSite();

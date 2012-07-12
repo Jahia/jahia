@@ -150,6 +150,9 @@ public class RenderContext {
 
     public String getMode() {
         String mode = StringUtils.substringAfterLast(getServletPath(), "/");
+        if (mode.endsWith("frame")) {
+            mode = StringUtils.substringBefore(mode,"frame");
+        }
         if ("render".equals(mode)) {
             if (workspace.equals("live")) {
                 return "live";

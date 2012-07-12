@@ -54,7 +54,6 @@ import org.apache.maven.cli.MavenCli;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
-import org.dom4j.XPath;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
@@ -166,6 +165,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private ApplicationEventPublisher applicationEventPublisher;
 
     private ComponentRegistry componentRegistry;
+
+    public static final String VERSIONS_FOLDER_NAME = "versions";
 
     public void setSiteService(JahiaSitesService siteService) {
         this.siteService = siteService;
@@ -443,7 +444,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 // initialize modules (migration case)
                 templatePackageDeployer.initializeMissingModuleNodes();
                 // perform initial imports if any
-                final List<JahiaTemplatesPackage> packages = templatePackageDeployer.performInitialImport();
+                templatePackageDeployer.performInitialImport();
 
                 // do register components
                 componentRegistry.registerComponents();
@@ -519,9 +520,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         if (scmURI != null) {
             setSCMConfigInPom(path, scmURI, scmType);
             try {
-                SourceControlManagement scm = SourceControlManagement.createNewRepository(path, scmType, scmURI);
+                SourceControlManagement.createNewRepository(path, scmType, scmURI);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
 
@@ -575,7 +576,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
             return node;
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);  
         }
 
         return null;
@@ -600,7 +601,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
             return node;
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);  
         }
 
         return null;
@@ -633,13 +634,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
             String version = n.getText();
 
-            int ret;
             String[] installParams = {"clean","install"};
-            ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
+            cli.doMain(installParams, sources.getPath(), System.out, System.err);
 
             return new File(sources.getPath() + "/target/" + moduleName + "-" + version + ".war");
         } catch (DocumentException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);  
         }
         return null;
     }
@@ -696,11 +696,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 return generatedWar;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return null;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private void setSCMConfigInPom(File sources, String scmURI, String scmType) {
         try {
             SAXReader reader = new SAXReader();
@@ -724,7 +725,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             saveFile(new FileInputStream(modifiedPom), pom);
             modifiedPom.delete();
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);  
         }
     }
 
@@ -750,7 +751,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             saveFile(new FileInputStream(modifiedPom), pom);
             modifiedPom.delete();
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);  
         }
     }
 
@@ -787,7 +788,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                             modifiedFiles.add(sourceFile);
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
                     }
                 }
             }
@@ -803,8 +804,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         // Handle webapp files
         File sourcesWebappFolder = new File(sources, "src/main/webapp");
 
-        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName);
-        File root = new File(new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName), pack.getLastVersionFolder());
+        File root = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName);
 
         try {
             saveFolder(root, sourcesWebappFolder, root, modifiedFiles);
@@ -816,7 +816,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             try {
                 scm.setModifiedFile(modifiedFiles);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
         return modifiedFiles;
@@ -844,6 +844,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
+    @SuppressWarnings("unchecked")
     private boolean saveFile(InputStream source, File target) throws IOException, PatchFailedException {
         if (!target.exists()) {
             target.getParentFile().mkdirs();
@@ -1074,12 +1075,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    public void regenerateManifestFile(final String moduleName) throws RepositoryException {
-        File manifestFile = new File(new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName), "META-INF/MANIFEST.MF");
-
-    }
-
-
     public void deployModule(final String modulePath, final String sitePath, String username)
             throws RepositoryException {
         JCRTemplate.getInstance()
@@ -1207,7 +1202,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 newValues.add(newValue);
             }
 
-            destinationNode.checkout();
+            destinationNode.getSession().checkout(destinationNode);
 
             installedModules.setValue(newValues.toArray(new Value[newValues.size()]));
         } else {
@@ -1349,7 +1344,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 rootTemplatePath = rootTemplatePath.substring(1);
             }
             templatesDestinationNode = templatesDestinationNode.getNode(rootTemplatePath);
-            templatesDestinationNode.checkout();
+            templatesDestinationNode.getSession().checkout(templatesDestinationNode);
         }
 
         while (ni.hasNext()) {

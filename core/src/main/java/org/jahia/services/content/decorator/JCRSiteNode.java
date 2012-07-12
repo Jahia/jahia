@@ -89,6 +89,8 @@ public class JCRSiteNode extends JCRNodeDecorator {
     
     private String serverName;
 
+    private Map<String,String> modules;
+
     public JCRSiteNode(JCRNodeWrapper node) {
         super(node);
     }
@@ -333,17 +335,19 @@ public class JCRSiteNode extends JCRNodeDecorator {
     }
 
     public Map<String,String> getInstalledModulesWithVersions() {
-        Map<String,String> modules = new LinkedHashMap<String, String>();
-        try {
-            if (hasProperty("j:installedModules")) {
-                Value[] v = getProperty("j:installedModules").getValues();
-                for (int i = 0; i < v.length; i++) {
-                    Value value = v[i];
-                    modules.put(StringUtils.substringBefore(value.getString(),":"), StringUtils.substringAfter(value.getString(),":"));
+        if (modules == null) {
+            modules = new LinkedHashMap<String, String>();
+            try {
+                if (hasProperty("j:installedModules")) {
+                    Value[] v = getProperty("j:installedModules").getValues();
+                    for (int i = 0; i < v.length; i++) {
+                        Value value = v[i];
+                        modules.put(StringUtils.substringBefore(value.getString(),":"), StringUtils.substringAfter(value.getString(),":"));
+                    }
                 }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get site property", e);
             }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property", e);
         }
         return modules;
     }

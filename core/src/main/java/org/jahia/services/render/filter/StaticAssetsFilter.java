@@ -266,10 +266,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 if (javascript == null) {
                     assets.put("javascript", (javascript = new HashMap<String, Map<String, String>>()));
                 }
-                String assetsFolder = templateManagerService.getTemplatePackage("Jahia Static Assets").getLastVersionFolder();
-                javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/" + assetsFolder + "/javascript/jquery.min.js", null);
-                javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/" + assetsFolder + "/javascript/jquery.Jcrop.js", null);
-                javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/" + assetsFolder + "/javascript/clippy/jquery.clippy.min.js", null);
+                String ctx = renderContext.getRequest().getContextPath();
+                boolean nonEmptyCtx = ctx.length() > 0;
+                javascript.put(nonEmptyCtx ? ctx + "/modules/assets/javascript/jquery.min.js" : "/modules/assets/javascript/jquery.min.js", null);
+                javascript.put(nonEmptyCtx ? ctx + "/modules/assets/javascript/jquery.Jcrop.js" : "/modules/assets/javascript/jquery.Jcrop.js", null);
+                javascript.put(nonEmptyCtx ? ctx + "/modules/assets/javascript/clippy/jquery.clippy.min.js" : "/modules/assets/javascript/clippy/jquery.clippy.min.js", null);
 
                 if (bodyElementList.size() > 0) {
                     Element bodyElement = bodyElementList.get(bodyElementList.size() - 1);

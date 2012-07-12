@@ -43,7 +43,6 @@ package org.jahia.services.seo.urlrewrite;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.regex.Pattern;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
@@ -52,9 +51,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
@@ -245,18 +242,6 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     public boolean prepareInbound(final HttpServletRequest request, HttpServletResponse response) {
         resetState(request);
-        request.setAttribute("package-version", null);
-        if (request.getRequestURI().startsWith("/modules/")) {
-            String moduleName = StringUtils.substringBefore(request.getRequestURI().substring("/modules/".length()), "/");
-            String version = StringUtils.substringBefore(StringUtils.substringAfter(request.getRequestURI(),"/modules/"+moduleName+"/"), "/");
-            Pattern p = Pattern.compile("[0-9].*");
-            if (!p.matcher(version).matches()) {
-                JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName);
-                if (pack != null) {
-                    request.setAttribute("package-version", pack.getLastVersionFolder());
-                }
-            }
-        }
 
         String input = request.getRequestURI();
         if (request.getContextPath().length() > 0) {

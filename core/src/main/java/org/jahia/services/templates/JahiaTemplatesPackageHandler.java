@@ -165,15 +165,13 @@ final class JahiaTemplatesPackageHandler {
 
         if (templatePackage.getResourceBundleName() == null) {
             // check if there is a resource bundle file in the resources folder
-            String rbName = templatePackage.getName().replace(' ', '_');
-            if (new File(file, templatePackage.getLastVersionFolder() + "/resources/" + rbName + ".properties").exists()) {
+            String rbName = Patterns.SPACE.matcher(templatePackage.getName()).replaceAll("");
+            if (new File(file, "/resources/" + rbName + ".properties").exists()) {
                 templatePackage.setResourceBundleName("resources." + rbName);
             } else {
-                rbName = Patterns.SPACE.matcher(templatePackage.getName()).replaceAll("");
-                if (new File(file, templatePackage.getLastVersionFolder() + "/resources/" + rbName + ".properties")
-                        .exists()) {
-                    templatePackage
-                            .setResourceBundleName("resources." + rbName);
+                rbName = Patterns.SPACE.matcher(templatePackage.getName()).replaceAll("_");
+                if (new File(file, "/resources/" + rbName + ".properties").exists()) {
+                    templatePackage.setResourceBundleName("resources." + rbName);
                 }
             }
         }

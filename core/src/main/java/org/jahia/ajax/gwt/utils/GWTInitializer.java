@@ -40,10 +40,11 @@
 
 package org.jahia.ajax.gwt.utils;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
-import org.drools.util.StringUtils;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -58,6 +59,7 @@ import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.RepositoryException;
@@ -212,7 +214,11 @@ public class GWTInitializer {
             return;
         }
         String templateSetFolder = ctx.getSite().getTemplateFolder();
-        templateSetFolder += "/" + ctx.getSite().getInstalledModulesWithVersions().get(ctx.getSite().getTemplateFolder()).replace('.','-');
+        String version = ctx.getSite().getInstalledModulesWithVersions().get(templateSetFolder);
+        if (StringUtils.isNotEmpty(version)) {
+            templateSetFolder += "/" + JahiaTemplateManagerService.VERSIONS_FOLDER_NAME + "/"
+                    + Patterns.DOT.matcher(version).replaceAll("-");
+        }
         if (getConfig().exists(templateSetFolder, "/javascript/ckeditor_config.js")) {
             buf.append("<script id=\"jahia-ckeditor-config-js\" type=\"text/javascript\" src=\"")
                     .append(request.getContextPath()).append("/modules/").append(templateSetFolder)

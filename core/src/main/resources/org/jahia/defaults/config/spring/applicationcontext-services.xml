@@ -141,6 +141,11 @@
                 <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
                 <property name="importExportService" ref="ImportExportService"/>
                 <property name="contextLoader" ref="TemplatePackageApplicationContextLoader"/>
+                <property name="deploymentHelper">
+                    <bean class="org.jahia.services.templates.DeploymentHelper">
+                        <property name="settingsBean" ref="settingsBean"/>
+                    </bean>
+                </property>
             </bean>
         </property>
         <property name="siteService" ref="JahiaSitesService"/>

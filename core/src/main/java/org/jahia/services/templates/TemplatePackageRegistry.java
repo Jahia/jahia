@@ -484,15 +484,15 @@ class TemplatePackageRegistry {
         for (JahiaTemplatesPackage sourcePack : registry.values()) {
             sourcePack.getResourceBundleHierarchy().clear();
             if (sourcePack.getResourceBundleName() != null) {
-                sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + sourcePack.getRootFolder() + "." + sourcePack.getLastVersionFolder() + "." + sourcePack.getResourceBundleName());
+                sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + sourcePack.getRootFolder() + "." + sourcePack.getResourceBundleName());
             }
             for (JahiaTemplatesPackage dependency : sourcePack.getDependencies()) {
                 if (!dependency.isDefault() && dependency.getResourceBundleName() != null) {
-                    sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + dependency.getRootFolder() + "." + dependency.getLastVersionFolder() + "." + dependency.getResourceBundleName());
+                    sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + dependency.getRootFolder() + "." + dependency.getResourceBundleName());
                 }
             }
             if (!sourcePack.isDefault() && registry.containsKey("Default Jahia Templates")) {
-            	sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + "default."+registry.get("Default Jahia Templates").getLastVersionFolder()+".resources.DefaultJahiaTemplates");
+            	sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + "default.resources.DefaultJahiaTemplates");
             	sourcePack.getResourceBundleHierarchy().add("JahiaTypesResources");
                 sourcePack.getResourceBundleHierarchy().add("JahiaInternalResources");
             } else {
@@ -503,19 +503,13 @@ class TemplatePackageRegistry {
         
         File[] files = rootFolder.listFiles();
         for (File file : files) {
-            if (file.isDirectory()) {
-                for (File file2 : file.listFiles()) {
-                    if (file2.isDirectory()) {
-                        String key = file2.getName();
-                        if (!packagesPerModule.containsKey(key)) {
-                            packagesPerModule.put(key, new TreeSet<JahiaTemplatesPackage>(TEMPLATE_PACKAGE_COMPARATOR));
-                        }
-                        packagesPerModule.get(key).remove(templatePackage);
-                        packagesPerModule.get(key).add(templatePackage);
-//                        if (!packagesPerModule.get(key).contains(templatePackage)) {
-//                        }
-                    }
+            if (file.isDirectory() && file.getName().contains("_")) {
+                String key = file.getName();
+                if (!packagesPerModule.containsKey(key)) {
+                    packagesPerModule.put(key, new TreeSet<JahiaTemplatesPackage>(TEMPLATE_PACKAGE_COMPARATOR));
                 }
+                packagesPerModule.get(key).remove(templatePackage);
+                packagesPerModule.get(key).add(templatePackage);
             }
         }
         logger.info("Registered "+templatePackage.getName() + " version=" + templatePackage.getLastVersion());

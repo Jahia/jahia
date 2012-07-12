@@ -49,6 +49,7 @@ import org.jahia.params.valves.LoginConfig;
 import org.jahia.params.valves.LogoutConfig;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.scripting.Script;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Url;
@@ -241,7 +242,12 @@ public class URLGenerator {
     public String getCurrentModule() {
         View view = ((Script) context.getRequest().getAttribute(
                 "script")).getView();
-        return getTemplatesPath() + "/" + view.getModule().getRootFolder() + "/" + view.getModuleVersion();
+        return getTemplatesPath()
+                + "/"
+                + view.getModule().getRootFolder()
+                + (view.getModuleVersion() != null ? "/"
+                        + JahiaTemplateManagerService.VERSIONS_FOLDER_NAME + "/"
+                        + view.getModuleVersion() : StringUtils.EMPTY);
     }
 
     public String getCurrent() {

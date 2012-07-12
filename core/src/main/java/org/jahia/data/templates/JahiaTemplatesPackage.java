@@ -51,6 +51,7 @@ package org.jahia.data.templates;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.Version;
 
 import java.io.File;
@@ -131,6 +132,7 @@ public class JahiaTemplatesPackage {
     private long buildNumber;
 
     private Version lastVersion;
+    private String lastVersionFolder;
     private String autoDeployOnSite;
 
     private List<String> versions = new LinkedList<String>();
@@ -507,11 +509,15 @@ public class JahiaTemplatesPackage {
     }
 
     public String getLastVersionFolder() {
-        return lastVersion.toString().replace('.','-');
+        if (lastVersionFolder == null) {
+            lastVersionFolder = Patterns.DOT.matcher(lastVersion.toString()).replaceAll("-");
+        }
+        return lastVersionFolder;
     }
 
     public void setLastVersion(Version lastVersion) {
         this.lastVersion = lastVersion;
+        lastVersionFolder = null;
     }
 
     public List<String> getVersions() {

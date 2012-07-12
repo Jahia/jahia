@@ -48,7 +48,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.services.templates.TemplateUtils;
 import org.slf4j.Logger;
 
-import java.io.File;
 import java.util.Properties;
 import java.util.Map;
 import java.util.HashMap;
@@ -85,7 +84,7 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
         this.path = path;
         this.key = key;
         this.ownerPackage = ownerPackage;
-        this.moduleVersion = version;
+        this.moduleVersion = StringUtils.defaultIfEmpty(version, null);
         this.displayName = displayName;
         int lastDotPos = path.lastIndexOf(".");
         if (lastDotPos > 0) {

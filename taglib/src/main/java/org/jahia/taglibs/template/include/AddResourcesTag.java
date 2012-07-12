@@ -43,9 +43,11 @@ package org.jahia.taglibs.template.include;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.Patterns;
 
@@ -56,20 +58,18 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.List;
 
 /**
  * Add some resources to the head tag of the HTML.
  *
  * @author rincevent
  * @since JAHIA 6.5
- *        Created : 27 oct. 2009
+ * Created : 27 oct. 2009
  */
 public class AddResourcesTag extends AbstractJahiaTag {
     private static final long serialVersionUID = -552052631291168495L;
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AddResourcesTag.class);
+    private transient static Logger logger = LoggerFactory.getLogger(AddResourcesTag.class);
     private boolean insert;
     private String type;
     private String resources;
@@ -121,15 +121,11 @@ public class AddResourcesTag extends AbstractJahiaTag {
 
         String[] strings = Patterns.COMMA.split(resources);
 
-        if (StringUtils.isEmpty(versionFolder)) {
-            versionFolder = aPackage.getLastVersionFolder();
-        }
-
         Map<JahiaTemplatesPackage, String> packages = new LinkedHashMap<JahiaTemplatesPackage, String>();
-        packages.put(aPackage, aPackage.getLastVersionFolder());
+        packages.put(aPackage, StringUtils.isNotEmpty(versionFolder) ? JahiaTemplateManagerService.VERSIONS_FOLDER_NAME + "/" + versionFolder : StringUtils.EMPTY);
         if (checkDependencies) {
             for (JahiaTemplatesPackage pack : aPackage.getDependencies()) {
-                packages.put(pack, pack.getLastVersionFolder());
+                packages.put(pack, StringUtils.EMPTY);
             }
         }
         StringBuilder builder = new StringBuilder();
@@ -149,8 +145,10 @@ public class AddResourcesTag extends AbstractJahiaTag {
             } else {
                 for (JahiaTemplatesPackage pack : packages.keySet()) {
                     String path = pack.getRootFolderPath() + "/" + type + "/" + resource;
-                    String pathWithVersion = pack.getRootFolderPath() + "/" + packages.get(pack) +"/" +type + "/" + resource;
-                    String pathWithContext = renderContext.getRequest().getContextPath() + pathWithVersion;
+                    String version = packages.get(pack);
+                    String pathWithVersion = pack.getRootFolderPath() + "/"
+                            + (version.isEmpty() ? StringUtils.EMPTY : "/" + version) + type + "/" + resource;
+                    String pathWithContext = renderContext.getRequest().getContextPath().isEmpty() ? pathWithVersion : renderContext.getRequest().getContextPath() + pathWithVersion;
                     try {
                         if (pageContext.getServletContext().getResource(pathWithVersion) != null) {
                             // we found it
@@ -232,6 +230,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
         rel = null;
         media = null;
         condition = null;
+        var = null;
         super.resetState();
     }
 
@@ -263,19 +262,6 @@ public class AddResourcesTag extends AbstractJahiaTag {
         builder.append(" title=\"").append(title != null ? title : "").append("\"");
         builder.append(" key=\"").append(key != null ? key : "").append("\"");
         builder.append(" />\n");
-//        builder.append("<!-- cache:resource type=\"");
-//        builder.append(type != null ? type : "").append("\"");
-//        try {
-//            builder.append(" path=\"").append(URLEncoder.encode(path != null ? path : "", "UTF-8")).append("\"");
-//        } catch (UnsupportedEncodingException e) {
-//            logger.error(e.getMessage(), e);
-//        }
-//        builder.append(" insert=\"").append(insert).append("\"");
-//        builder.append(" resource=\"").append(resource != null ? resource : "").append("\"");
-//        builder.append(" title=\"").append(title != null ? title : "").append("\"");
-//        builder.append(" key=\"").append(key != null ? key : "").append("\"");
-//        builder.append(" -->\n");
-//        builder.append("\n<!-- /cache:resource -->\n");
         try {
             pageContext.getOut().print(builder.toString());
         } catch (IOException e) {

@@ -688,11 +688,10 @@ public final class JCRContentUtils implements ServletContextAware {
 
     public static String getIconsFolder(final ExtendedNodeType primaryNodeType) throws RepositoryException {
         String systemId = primaryNodeType.getSystemId();
-        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(systemId);
-        if (aPackage == null || systemId.startsWith("system-")) {
-            aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("assets");
-        }
-        return aPackage.getRootFolder() + "/" + aPackage.getLastVersionFolder() + "/icons/";
+        JahiaTemplatesPackage aPackage = !systemId.startsWith("system-") ? ServicesRegistry
+                .getInstance().getJahiaTemplateManagerService().getTemplatePackage(systemId) : null;
+
+        return aPackage != null ? aPackage.getRootFolder() + "/icons/" : "assets/icons/";
     }
 
     public static JCRContentUtils getInstance() {

@@ -75,6 +75,7 @@ public class Version implements Comparable<Version> {
     private List<Integer> orderedVersionNumbers = new ArrayList<Integer>();
     private int betaNumber = -1;
     private int releaseCandidateNumber = -1;
+    private String version;
     private String updateMarker;
     private List<String> qualifiers = new ArrayList<String>();
 
@@ -174,32 +175,35 @@ public class Version implements Comparable<Version> {
      * @return a lower case String representing the version
      */
     public String toString() {
-        StringBuffer result = new StringBuffer();
-        for (int i=0; i < orderedVersionNumbers.size(); i++) {
-            Integer curVersionNumber = (Integer) orderedVersionNumbers.get(i);
-            result.append(curVersionNumber.intValue());
-            if (i < (orderedVersionNumbers.size() -1) ) {
-                result.append(".");
+        if (version == null) {
+            StringBuilder result = new StringBuilder();
+            for (int i=0; i < orderedVersionNumbers.size(); i++) {
+                Integer curVersionNumber = (Integer) orderedVersionNumbers.get(i);
+                result.append(curVersionNumber.intValue());
+                if (i < (orderedVersionNumbers.size() -1) ) {
+                    result.append(".");
+                }
             }
-        }
-        if (betaNumber != -1) {
-            result.append("b");
-            result.append(betaNumber);
-        } else if (releaseCandidateNumber != -1) {
-            result.append("rc");
-            result.append(releaseCandidateNumber);
-        }
-        if (updateMarker != null) {
-            result.append("_");
-            result.append(updateMarker);
-        }
-        if (qualifiers.size() > 0) {
-            for (String qualifier : qualifiers) {
-                result.append("-");
-                result.append(qualifier);
+            if (betaNumber != -1) {
+                result.append("b");
+                result.append(betaNumber);
+            } else if (releaseCandidateNumber != -1) {
+                result.append("rc");
+                result.append(releaseCandidateNumber);
             }
+            if (updateMarker != null) {
+                result.append("_");
+                result.append(updateMarker);
+            }
+            if (qualifiers.size() > 0) {
+                for (String qualifier : qualifiers) {
+                    result.append("-");
+                    result.append(qualifier);
+                }
+            }
+            version = result.toString();
         }
-        return result.toString();
+        return version;
     }
 
     /**

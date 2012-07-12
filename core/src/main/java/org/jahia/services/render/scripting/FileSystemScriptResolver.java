@@ -53,6 +53,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDeployedOnSiteEvent;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.Patterns;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
@@ -84,7 +85,6 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     private static final String PHP_EXTENSION = "php";
     private List<String> scriptExtensionsOrdering;
 
-    private static Map<String, Boolean> resourcesCache = new ConcurrentHashMap<String, Boolean>();
     private static Map<String, SortedSet<View>> viewSetCache = new ConcurrentHashMap<String, SortedSet<View>>();
     
     private JahiaTemplateManagerService templateManagerService;
@@ -185,7 +185,6 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site, String templateType, RenderContext renderContext) {
         SortedSet<View> t;
         String cacheKey = nt.getName() + (site != null ? site.getSiteKey() : "");
-        viewSetCache.clear();
          if (viewSetCache.containsKey(cacheKey)) {
             t = viewSetCache.get(cacheKey);
         } else {
@@ -217,10 +216,14 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
             installedModules = site.getInstalledModulesWithVersions();
             List<String> keys = new ArrayList<String>(installedModules.keySet());
             for (int i = 0; i < keys.size(); i++) {
-                JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(keys.get(i));
+                String key = keys.get(i);
+                JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(key);
+                if (installedModules.get(key) != null && aPackage.getLastVersion().toString().equals(installedModules.get(key))) {
+                    installedModules.put(key, null);
+                }
                 for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
                     if (!installedModules.containsKey(depend.getRootFolder())) {
-                        installedModules.put(depend.getRootFolder(),depend.getLastVersion().toString());
+                        installedModules.put(depend.getRootFolder(), null);
                         keys.add(depend.getRootFolder());
                     }
                 }
@@ -232,16 +235,12 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
             for (JahiaTemplatesPackage aPackage : packages) {
                 String packageName = aPackage.getRootFolder();
                 if (installedModules == null) {
-                    getViewsSet(type, views, templateType, renderContext, packageName + "/" + aPackage.getLastVersionFolder(), aPackage, aPackage.getLastVersionFolder());
+                    getViewsSet(type, views, templateType, renderContext, packageName, aPackage, null);
                 } else if (installedModules.containsKey(packageName)) {
-
-                    getViewsSet(type, views, templateType, renderContext, packageName + "/" + (StringUtils.isEmpty(installedModules.get(packageName)) ? aPackage.getLastVersionFolder() : installedModules.get(packageName).replace('.','-')), aPackage, installedModules.get(packageName) != null ? installedModules.get(packageName).replace('.','-') : null);
+                    String version = StringUtils.isEmpty(installedModules.get(packageName)) ? null : Patterns.DOT.matcher(installedModules.get(packageName)).replaceAll("-");
+                    getViewsSet(type, views, templateType, renderContext, packageName + (version == null ? "" : "/" + JahiaTemplateManagerService.VERSIONS_FOLDER_NAME + "/" + version), aPackage, version);
                 } else if (site.getPath().startsWith("/sites/")) {
-                    getViewsSet(type, views, templateType, renderContext, packageName + "/" + aPackage.getLastVersionFolder(), aPackage, aPackage.getLastVersionFolder());
-                }
-
-                for (String v : aPackage.getVersions()) {
-
+                    getViewsSet(type, views, templateType, renderContext, packageName, aPackage, null);
                 }
             }
             getViewsSet(type, views, templateType, renderContext, "default", null, null);
@@ -294,7 +293,6 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
 
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof TemplatePackageRedeployedEvent || event instanceof ModuleDeployedOnSiteEvent) {
-            resourcesCache.clear();
             viewSetCache.clear();
             FileSystemView.clearPropertiesCache();
         }

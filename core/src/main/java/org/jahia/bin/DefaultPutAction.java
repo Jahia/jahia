@@ -115,10 +115,11 @@ public class DefaultPutAction extends Action {
                     }
                 }
             }
+
+            session.save();
         } catch (ConstraintViolationException e) {
             return ActionResult.BAD_REQUEST;
         }
-        session.save();
         if (req.getParameter(Render.AUTO_CHECKIN) != null && req.getParameter(Render.AUTO_CHECKIN).length() > 0) {
             session.getWorkspace().getVersionManager().checkpoint(node.getPath());
         }

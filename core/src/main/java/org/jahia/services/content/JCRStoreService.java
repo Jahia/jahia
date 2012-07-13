@@ -273,6 +273,18 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         }
     }
 
+    public void addDecorator(String nodeType, String decoratorClass) {
+        if (decorators == null) {
+            decorators = new HashMap<String, String>();
+        }
+        decorators.put(nodeType, decoratorClass);
+        try {
+            decoratorCreators.put(nodeType, Class.forName(decoratorClass).getConstructor(JCRNodeWrapper.class));
+        } catch (Exception e) {
+            logger.error("Unable to instanciate decorator: " + decoratorClass, e);
+        }
+    }
+
     public void setInterceptors(List<PropertyInterceptor> interceptors) {
         this.interceptors.addAll(interceptors);
         interceptorChain = null;

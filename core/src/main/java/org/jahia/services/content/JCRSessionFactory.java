@@ -47,6 +47,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.jcr.*;
@@ -87,6 +88,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private ThreadLocal<JahiaUser> currentAliasedUser = new ThreadLocal<JahiaUser>();
     private ThreadLocal<String> currentServletPath = new ThreadLocal<String>();
     private ThreadLocal<Calendar> currentPreviewDate = new ThreadLocal<Calendar>();
+    private LocalValidatorFactoryBean validatorFactoryBean;
 
     private JCRSessionFactory() {
     }
@@ -445,5 +447,13 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     public Calendar getCurrentPreviewDate() {
         return currentPreviewDate.get();
+    }
+
+    public LocalValidatorFactoryBean getValidatorFactoryBean() {
+        return validatorFactoryBean;
+    }
+
+    public void setValidatorFactoryBean(LocalValidatorFactoryBean validatorFactoryBean) {
+        this.validatorFactoryBean = validatorFactoryBean;
     }
 }

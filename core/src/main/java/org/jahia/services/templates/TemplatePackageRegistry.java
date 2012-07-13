@@ -40,20 +40,18 @@
 
 package org.jahia.services.templates;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.nodetypes.renderer.ChoiceListRendererService;
-import org.jahia.services.content.nodetypes.renderer.ModuleChoiceListRenderer;
-import org.jahia.services.visibility.VisibilityConditionRule;
-import org.jahia.services.visibility.VisibilityService;
-import org.jahia.services.workflow.WorkflowService;
-import org.jahia.services.workflow.WorklowTypeRegistration;
-import org.slf4j.Logger;
 import org.apache.commons.collections.map.CaseInsensitiveMap;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.Action;
+import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRNodeDecoratorDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer;
+import org.jahia.services.content.nodetypes.renderer.ChoiceListRendererService;
+import org.jahia.services.content.nodetypes.renderer.ModuleChoiceListRenderer;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.content.rules.ModuleGlobalObject;
 import org.jahia.services.content.rules.RulesListener;
@@ -61,9 +59,12 @@ import org.jahia.services.render.RenderService;
 import org.jahia.services.render.StaticAssetMapping;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.render.filter.RenderServiceAware;
+import org.jahia.services.visibility.VisibilityConditionRule;
+import org.jahia.services.visibility.VisibilityService;
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.WorklowTypeRegistration;
 import org.jahia.settings.SettingsBean;
-import org.jahia.bin.errors.ErrorHandler;
-import org.jahia.bin.Action;
+import org.slf4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
@@ -107,7 +108,9 @@ class TemplatePackageRegistry {
         private VisibilityService visibilityService;
 
         private Map<String, String> staticAssetMapping;
-        
+
+        private JCRStoreService jcrStoreService;
+
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
             if (bean instanceof RenderServiceAware) {
                 ((RenderServiceAware) bean).setRenderService(renderService);
@@ -212,6 +215,17 @@ class TemplatePackageRegistry {
                 }
                 visibilityService.addCondition(conditionRule.getAssociatedNodeType(),conditionRule);
             }
+
+            if (bean instanceof JCRNodeDecoratorDefinition) {
+                JCRNodeDecoratorDefinition jcrNodeDecoratorDefinition = (JCRNodeDecoratorDefinition) bean;
+                Map<String, String> decorators = jcrNodeDecoratorDefinition.getDecorators();
+                if (decorators != null) {
+                    for (Map.Entry<String, String> decorator : decorators.entrySet()) {
+                        jcrStoreService.addDecorator(decorator.getKey(), decorator.getValue());
+                    }
+                }
+            }
+
             return bean;
         }
 
@@ -252,6 +266,11 @@ class TemplatePackageRegistry {
         public void setRenderService(RenderService renderService) {
             this.renderService = renderService;
         }
+
+        public void setJcrStoreService(JCRStoreService jcrStoreService) {
+            this.jcrStoreService = jcrStoreService;
+        }
+
     }
 
     private Map<String, JahiaTemplatesPackage> registry = new TreeMap<String, JahiaTemplatesPackage>();

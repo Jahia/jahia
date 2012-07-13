@@ -18,6 +18,7 @@
         <property name="staticAssetMapping" ref="org.jahia.services.render.StaticAssetMappingRegistry"/>
         <property name="workflowService" ref="workflowService"/>
         <property name="visibilityService" ref="visibilityService"/>
+        <property name="jcrStoreService" ref="JCRStoreService"/>
 	</bean>
     
     <bean class="org.jahia.params.valves.AuthPipelineInitializer">

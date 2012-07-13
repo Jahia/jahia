@@ -479,6 +479,10 @@ public class MainModule extends Module {
 
         setDocumentTitle(Messages.get("label." + config.getName().substring(0, config.getName().length() - 4), config.getName()) + " - " + node.getDisplayName());
 
+        if (head != null) {
+            ((ToolbarHeader) head).handleNewMainNodeLoaded(node);
+        }
+
         editLinker.handleNewMainNodeLoaded();
     }
 
@@ -527,6 +531,9 @@ public class MainModule extends Module {
         }
 
         this.path = path;
+        if (head != null) {
+            head.setText(Messages.get("label.page", "Page") + ": " + path);
+        }
         this.template = template;
 
         moduleParams = params;

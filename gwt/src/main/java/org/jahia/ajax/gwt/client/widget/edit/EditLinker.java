@@ -189,6 +189,8 @@ public class EditLinker implements Linker {
     public void handleNewMainSelection() {
         syncSelectionContext(LinkerSelectionContext.BOTH);
         mainModule.handleNewMainSelection(mainPath,template, param);
+        mainModule.handleNewModuleSelection(null);
+        toolbar.handleNewLinkerSelection();
         if (sidePanel != null) {
             sidePanel.handleNewMainSelection(mainPath);
         }

@@ -194,7 +194,7 @@ public class ModuleHelper {
                                 }
 
                                 m.getEditLinker().onMainSelection(fmainPath, fmainTemplate, null);
-                                m.getEditLinker().handleNewModuleSelection();
+                                m.getEditLinker().handleNewMainSelection();
                                 m.refreshInfoLayer();
                             }
 

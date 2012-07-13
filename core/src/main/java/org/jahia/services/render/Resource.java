@@ -244,6 +244,10 @@ public class Resource {
         return resourceNodeType;
     }
 
+    public void setContextConfiguration(String contextConfiguration) {
+        this.contextConfiguration = contextConfiguration;
+    }
+
     public void setResourceNodeType(ExtendedNodeType resourceNodeType) {
         this.resourceNodeType = resourceNodeType;
     }

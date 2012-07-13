@@ -40,8 +40,6 @@
 
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import com.extjs.gxt.ui.client.dnd.MyDNDManager;
-import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.event.DragListener;

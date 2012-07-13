@@ -103,7 +103,7 @@ public class SearchHelper {
     public List<GWTJahiaNode> search(String searchString, int limit, JCRSiteNode site, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             Query q = createQuery(formatQuery(searchString), currentUserSession);
-            return navigation.executeQuery(q, null,null,null, Arrays.asList(site.getSiteKey()));
+            return navigation.executeQuery(q, null,null,null, (site != null ? Arrays.asList(site.getSiteKey()): null));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -154,7 +154,7 @@ public class SearchHelper {
     public List<GWTJahiaNode> search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, JCRSiteNode site, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             Query q = createQuery(formatQuery(searchString), currentUserSession);
-            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters, Arrays.asList(site.getSiteKey()));
+            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters, (site != null ? Arrays.asList(site.getSiteKey()): null));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -179,7 +179,7 @@ public class SearchHelper {
         try {
             Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(searchString,Query.JCR_SQL2);
             q.setLimit(limit);
-            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters,fields, Arrays.asList(site.getSiteKey()), false);
+            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters,fields, (site != null ? Arrays.asList(site.getSiteKey()): null), false);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

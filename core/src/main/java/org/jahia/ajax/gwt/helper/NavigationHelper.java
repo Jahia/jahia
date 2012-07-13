@@ -229,8 +229,6 @@ public class NavigationHelper {
                             "Node " + childNode.getPath() + " match with " + s + "? " + childNode.isNodeType(s) + "[" +
                                     matchNodeType + "]");
                 	}
-                }else{
-                	logger.debug("Node " + childNode.getPath() + " has no Nodetypes!");
                 }
                 logger.debug("----------"); 
             }

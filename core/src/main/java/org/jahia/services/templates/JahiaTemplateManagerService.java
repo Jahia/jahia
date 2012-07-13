@@ -49,6 +49,8 @@ import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.NameFileFilter;
+import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.cli.MavenCli;
 import org.dom4j.Document;
@@ -690,7 +692,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 } else {
                     generatedWar = null;
                 }
-
+                compileModule(moduleName, sources);
                 installModule(moduleName, sources);
 
                 return generatedWar;
@@ -825,7 +827,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private void saveFolder(File sourceRoot, File targetRoot, File currentSource, List<File> modifiedFiles) throws IOException, PatchFailedException {
         FileInputStream  fileInputStream = null;
         try {
-            for (File sourceFile : currentSource.listFiles()) {
+            FileFilter filter = new NotFileFilter(new NameFileFilter(new String[]{"versions", "import.zip", "MANIFEST.MF", "deployed.xml"}));
+            for (File sourceFile : currentSource.listFiles(filter)) {
                 if (sourceFile.isDirectory()) {
                     if (sourceFile.getName().equals(VERSIONS_FOLDER_NAME)) {
                         continue;

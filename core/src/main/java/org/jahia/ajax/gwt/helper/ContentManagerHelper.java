@@ -1190,7 +1190,7 @@ public class ContentManagerHelper {
 
     public void updateModule(String moduleName, JCRSessionWrapper session) throws RepositoryException {
         File sources = getSource(moduleName, session);
-        if (sources != null && !sources.exists()) {
+        if (sources == null || !sources.exists()) {
             return;
         }
 

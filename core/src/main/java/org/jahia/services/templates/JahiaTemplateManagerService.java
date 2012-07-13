@@ -827,8 +827,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         try {
             for (File sourceFile : currentSource.listFiles()) {
                 if (sourceFile.isDirectory()) {
+                    if (sourceFile.getName().equals(VERSIONS_FOLDER_NAME)) {
+                        continue;
+                    }
                     saveFolder(sourceRoot, targetRoot, sourceFile, modifiedFiles);
                 } else {
+                    if (sourceFile.getName().equals("import.zip") || sourceFile.getName().equals("MANIFEST.MF") || sourceFile.getName().equals("deployed.xml")) {
+                        continue;
+                    }
                     fileInputStream = new FileInputStream(sourceFile);
                     File targetFile = new File(targetRoot, sourceFile.getPath().substring(sourceRoot.getPath().length()+1));
                     if (saveFile(fileInputStream, targetFile)) {

@@ -1,27 +1,64 @@
+/**
+ * This file is part of Jahia, next-generation open source CMS:
+ * Jahia's next-generation, open source CMS stems from a widely acknowledged vision
+ * of enterprise application convergence - web, search, document, social and portal -
+ * unified by the simplicity of web content management.
+ *
+ * For more information, please visit http://www.jahia.com.
+ *
+ * Copyright (C) 2002-2012 Jahia Solutions Group SA. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ *
+ * Commercial and Supported Versions of the program (dual licensing):
+ * alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms and conditions contained in a separate
+ * written agreement between you and Jahia Solutions Group SA.
+ *
+ * If you are unsure which license is appropriate for your use,
+ * please contact the sales department at sales@jahia.com.
+ */
+
 package org.jahia.services.templates;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
- * Created with IntelliJ IDEA.
  * User: toto
- * Date: 7/2/12
- * Time: 2:17 PM
- * To change this template use File | Settings | File Templates.
  */
 public class GitSourceControlManagement extends SourceControlManagement {
 
     protected void initWithEmptyFolder(File workingDirectory, String url) throws Exception {
         this.rootFolder = workingDirectory;
-        executeCommand(Arrays.asList("git", "init"));
-        executeCommand(Arrays.asList("git", "add", "."));
-        executeCommand(Arrays.asList("git", "commit", "-a", "-m", "First commit"));
-        executeCommand(Arrays.asList("git", "remote", "add", "origin", url));
-        executeCommand(Arrays.asList("git", "push", "-u", "origin", "master"));
+        executeCommand("git", "init");
+        executeCommand("git", "add .");
+        executeCommand("git", "commit -a -m \"First commit\"");
+        executeCommand("git", "remote add origin " + url);
+        executeCommand("git", "push -u origin master");
     }
 
     protected void initWithWorkingDirectory(File workingDirectory) throws IOException {
@@ -30,7 +67,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     protected void initFromURI(File workingDirectory, String uri) throws Exception {
         this.rootFolder = workingDirectory.getParentFile();
-        executeCommand(Arrays.asList("git", "clone", uri, workingDirectory.getName()));
+        executeCommand("git", "clone " + uri + " " + workingDirectory.getName());
         this.rootFolder = workingDirectory;
     }
 
@@ -45,27 +82,26 @@ public class GitSourceControlManagement extends SourceControlManagement {
         }
 
         String rootPath = rootFolder.getPath();
-        List<String> cmdList = new ArrayList<String>();
-        cmdList.add("git");
-        cmdList.add("add");
+        List<String> args = new ArrayList<String>();
+        args.add("add");
         for (File file : files) {
             if (file.getPath().equals(rootPath)) {
-                cmdList.add(".");
+                args.add(".");
             } else {
-                cmdList.add(file.getPath().substring(rootPath.length() + 1));
+                args.add(file.getPath().substring(rootPath.length() + 1));
             }
         }
-        executeCommand(cmdList);
+        executeCommand("git", StringUtils.join(args, ' '));
     }
 
     public void update() {
-        executeCommand(Arrays.asList("git", "stash"));
-        executeCommand(Arrays.asList("git", "pull", "--rebase"));
-        executeCommand(Arrays.asList("git", "stash", "pop"));
+        executeCommand("git", "stash");
+        executeCommand("git", "pull --rebase");
+        executeCommand("git", "stash pop");
     }
 
     public void commit(String message) {
-        executeCommand(Arrays.asList("git", "commit", "-a", "-m", message));
-        executeCommand(Arrays.asList("git", "push"));
+        executeCommand("git", "commit -a -m \"" + message + "\"");
+        executeCommand("git", "push");
     }
 }

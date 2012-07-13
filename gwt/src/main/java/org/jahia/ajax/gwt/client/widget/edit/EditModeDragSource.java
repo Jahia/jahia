@@ -41,7 +41,6 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.dnd.DragSource;
-import com.extjs.gxt.ui.client.dnd.MyDNDManager;
 import com.extjs.gxt.ui.client.dnd.StatusProxy;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.util.Point;

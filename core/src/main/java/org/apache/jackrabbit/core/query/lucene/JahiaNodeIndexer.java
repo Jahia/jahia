@@ -621,6 +621,11 @@ public class JahiaNodeIndexer extends NodeIndexer {
     }    
     
     @Override
+    protected void addBinaryValue(Document doc, String fieldName, InternalValue internalValue) {
+        // we disable the binary indexing by Jackrabbit
+    }
+    
+    @Override
     protected void addBooleanValue(Document doc, String fieldName, Object internalValue) {
         super.addBooleanValue(doc, fieldName, internalValue);
         ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));

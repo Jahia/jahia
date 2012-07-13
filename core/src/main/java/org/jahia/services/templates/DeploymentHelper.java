@@ -239,7 +239,7 @@ class DeploymentHelper implements ServletContextAware {
             }
         }
         if (!versionFolder.exists()) {
-            logger.info("Start deploying module package '{}' version {}", implementationVersionStr, packageName);
+            logger.info("Start deploying module package '{}' version {}", packageName, implementationVersionStr);
             
             tmplRootFolder.mkdirs();
 

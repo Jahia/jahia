@@ -133,7 +133,7 @@ public class PlaceholderModule extends Module {
         if (nodeTypesArray != null) {
             List filter = null;
             if (nodeTypes != null && nodeTypes.length()>0) {
-                filter = Arrays.asList(nodeTypes);
+                filter = Arrays.asList(nodeTypes.split(" "));
             }
             for (final String s : nodeTypesArray) {
                 if (filter != null && !filter.contains(s)) {

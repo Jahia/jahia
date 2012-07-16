@@ -19,7 +19,7 @@
     <body>
     <%
         System.out.println(request.getParameter("key"));
-        Element elem = ModuleCacheProvider.getInstance().getCache().get(request.getParameter("key"));
+        Element elem = ModuleCacheProvider.getInstance().getCache().getQuiet(request.getParameter("key"));
         Object obj = elem != null ? ((CacheEntry) elem.getValue()).getObject() : null;
     %><%= obj %>
     </body>
@@ -84,7 +84,6 @@
             ((DefaultCacheKeyGenerator) cacheProvider.getKeyGenerator()).flushUsersGroupsKey();
         }
         List keys = depCache.getKeys();
-        Collections.sort(keys);
         pageContext.setAttribute("keys", keys);
         pageContext.setAttribute("cache", cache);
     %>

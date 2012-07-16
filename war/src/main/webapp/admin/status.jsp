@@ -16,7 +16,6 @@
 <%@ page import="org.hibernate.stat.EntityStatistics" %>
 <%@ page import="org.springframework.orm.hibernate3.support.HibernateDaoSupport" %>
 <%@ page import="org.hibernate.SessionFactory" %>
-<%@page import="org.jahia.services.cache.CacheHelper"%>
 <%@page import="org.jahia.services.cache.ehcache.EhCacheProvider"%>
 <%@page import="net.sf.ehcache.CacheManager"%>
 <%@ page import="org.jahia.bin.errors.ErrorFileDumper" %>
@@ -163,7 +162,6 @@
                 <input type="submit" name="flushOutputCaches" value="<fmt:message key='org.jahia.admin.status.ManageStatus.flushOutputCaches.label'/>">
             </td>
         </tr>
-        <% if (CacheHelper.canFlushHibernateCaches()) { %>
         <tr class="evenLine">
             <td width="100%">
                 <strong><fmt:message key="org.jahia.admin.status.ManageStatus.flushHibernateCaches.label"/>:</strong><br>
@@ -172,7 +170,6 @@
                 <input type="submit" name="flushHibernateCaches" value="<fmt:message key='org.jahia.admin.status.ManageStatus.flushHibernateCaches.label'/>">
             </td>
         </tr>
-        <% } %>
         <tr class="evenLine">
             <td width="100%">
                 <strong><fmt:message key="org.jahia.admin.status.ManageStatus.flushAllCaches.label"/>:</strong><br>
@@ -306,7 +303,7 @@
 		                    <c:when test="${cacheEfficiency > 0 && cacheEfficiency < 30}">
 		                        <c:set var="effColour" value="red"/>
 		                    </c:when>
-		                    <c:when test="$c >= 30 && cacheEfficiency < 70}">
+		                    <c:when test="${cacheEfficiency >= 30 && cacheEfficiency < 70}">
 		                        <c:set var="effColour" value="blue"/>
 		                    </c:when>
 		                    <c:when test="${cacheEfficiency >= 70}">

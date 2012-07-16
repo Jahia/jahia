@@ -40,17 +40,11 @@
 
 package org.jahia.services.cache;
 
-import java.lang.management.ManagementFactory;
 import java.util.Iterator;
-
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.management.sampled.SampledEhcacheMBeans;
 
-import org.hibernate.SessionFactory;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
@@ -65,24 +59,6 @@ import org.slf4j.LoggerFactory;
 public final class CacheHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(CacheHelper.class);
-
-    /**
-     * Returns <code>true</code> if the an MBean instance is registered for the Hibernate Ehcache Manager.
-     * 
-     * @return <code>true</code> if the an MBean instance is registered for the Hibernate Ehcache Manager
-     */
-    public static boolean canFlushHibernateCaches() {
-        try {
-            MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-            ObjectName cacheManagerObjectName = SampledEhcacheMBeans.getCacheManagerObjectName(
-                    null, "org.jahia.hibernate.ehcachemanager");
-            return mBeanServer.isRegistered(cacheManagerObjectName);
-        } catch (Exception e) {
-            logger.warn("Unable to flush an instance of the Hibernate Ehcache manager MBean", e);
-        }
-
-        return false;
-    }
 
     /**
      * Flushes all back-end and front-end Jahia caches, including Hibernate second level cache, Ehcaches etc. on the current cluster node
@@ -100,8 +76,9 @@ public final class CacheHelper {
      *            if set to true the flush is propagated to other cluster nodes
      */
     public static void flushAllCaches(boolean propagateInCluster) {
-        logger.info("Flushing all caches");
-        CacheManager ehcacheManager = getEhcacheManager();
+        logger.info("Flushing all caches{}",
+                propagateInCluster ? " also propagating it to all cluster members" : "");
+
         CacheService cacheService = ServicesRegistry.getInstance().getCacheService();
 
         // legacy caches
@@ -116,18 +93,17 @@ public final class CacheHelper {
         }
 
         // Ehcaches
-        for (String cacheName : ehcacheManager.getCacheNames()) {
-            Cache cache = ehcacheManager.getCache(cacheName);
-            if (cache != null) {
-                // flush
-                cache.removeAll(!propagateInCluster);
-                // reset statistics
-                cache.clearStatistics();
+        for (CacheManager mgr : CacheManager.ALL_CACHE_MANAGERS) {
+            for (String cacheName : mgr.getCacheNames()) {
+                Cache cache = mgr.getCache(cacheName);
+                if (cache != null) {
+                    // flush
+                    cache.removeAll(!propagateInCluster);
+                    // reset statistics
+                    cache.clearStatistics();
+                }
             }
         }
-
-        // Hiberante caches
-        flushHibernateCaches();
 
         logger.info("...done flushing all caches.");
     }
@@ -152,7 +128,7 @@ public final class CacheHelper {
      */
     public static void flushEhcacheByName(String cacheName, boolean propagateInCluster) {
         logger.info("Flushing {}", cacheName);
-        CacheManager ehcacheManager = getEhcacheManager();
+        CacheManager ehcacheManager = getJahiaCacheManager();
         Cache cache = ehcacheManager.getCache(cacheName);
         if (cache != null) {
             // flush
@@ -169,24 +145,57 @@ public final class CacheHelper {
      * Flushes Hibernate second level cache and propagates the flush to all cluster nodes.
      */
     public static void flushHibernateCaches() {
-        logger.info("Flushing Hibernate second level caches");
-        try {
-            MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-            ObjectName cacheManagerObjectName = SampledEhcacheMBeans.getCacheManagerObjectName(
-                    null, "org.jahia.hibernate.ehcachemanager");
-            if (mBeanServer.isRegistered(cacheManagerObjectName)) {
-                mBeanServer.invoke(cacheManagerObjectName, "clearAll", new Object[] {},
-                        new String[] {});
-                ((SessionFactory) SpringContextSingleton.getBean("sessionFactory")).getStatistics()
-                        .clear();
-                logger.info("...done flushing Hibernate second level caches");
-            } else {
-                logger.warn("Hibernate Ehcache manager MBean is not registered under the name {}",
-                        cacheManagerObjectName);
-            }
-        } catch (Exception e) {
-            logger.warn("Unable to flush an instance of the Hibernate Ehcache manager MBean", e);
+        flushHibernateCaches(false);
+    }
+
+    /**
+     * Flushes Hibernate second level cache and propagates the flush to all cluster nodes.
+     * 
+     * @param propagateInCluster
+     *            if set to true the flush is propagated to other cluster nodes
+     */
+    public static void flushHibernateCaches(boolean propagateInCluster) {
+        logger.info("Flushing Hibernate second level caches{}",
+                propagateInCluster ? " also propagating it to all cluster members" : "");
+        CacheManager ehcacheManager = getHibernateCacheManager();
+        if (ehcacheManager == null) {
+            return;
         }
+        for (String cacheName : ehcacheManager.getCacheNames()) {
+            Cache cache = ehcacheManager.getCache(cacheName);
+            if (cache != null) {
+                // flush
+                cache.removeAll(!propagateInCluster);
+                // reset statistics
+                cache.clearStatistics();
+            }
+        }
+        logger.info("...done flushing Hibernate caches");
+    }
+
+    /**
+     * Flushes the caches of the specified cache manager.
+     * 
+     * @param cacheManagerName the cache manager name to flush caches for
+     * @param propagateInCluster
+     *            if set to true the flush is propagated to other cluster nodes
+     */
+    public static void flushCachesForManager(String cacheManagerName, boolean propagateInCluster) {
+        logger.info("Flushing caches for the cache manager '{}' {}", cacheManagerName, propagateInCluster ? " also propagating it to all cluster members" : "");
+        CacheManager ehcacheManager = getCacheManager(cacheManagerName);
+        if (ehcacheManager == null) {
+            return;
+        }
+        for (String cacheName : ehcacheManager.getCacheNames()) {
+            Cache cache = ehcacheManager.getCache(cacheName);
+            if (cache != null) {
+                // flush
+                cache.removeAll(!propagateInCluster);
+                // reset statistics
+                cache.clearStatistics();
+            }
+        }
+        logger.info("...done flushing caches for manager {}", cacheManagerName);
     }
 
     /**
@@ -204,8 +213,9 @@ public final class CacheHelper {
      *            if set to true the flush is propagated to other cluster nodes
      */
     public static void flushOutputCaches(boolean propagateInCluster) {
-        logger.info("Flushing HTML output caches");
-        CacheManager ehcacheManager = getEhcacheManager();
+        logger.info("Flushing HTML output caches{}",
+                propagateInCluster ? " also propagating it to all cluster members" : "");
+        CacheManager ehcacheManager = getJahiaCacheManager();
         for (String cacheName : ehcacheManager.getCacheNames()) {
             if (!cacheName.startsWith("HTML")) {
                 continue;
@@ -221,7 +231,20 @@ public final class CacheHelper {
         }
     }
 
-    private static CacheManager getEhcacheManager() {
+    private static CacheManager getHibernateCacheManager() {
+        return getCacheManager("org.jahia.hibernate.ehcachemanager");
+    }
+
+    public static CacheManager getCacheManager(String name) {
+        for (CacheManager mgr : CacheManager.ALL_CACHE_MANAGERS) {
+            if (name.equals(mgr.getName())) {
+                return mgr;
+            }
+        }
+        return null;
+    }
+
+    private static CacheManager getJahiaCacheManager() {
         return ((EhCacheProvider) SpringContextSingleton.getBean("ehCacheProvider"))
                 .getCacheManager();
     }

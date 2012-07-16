@@ -67,7 +67,7 @@
 		                    <Specification-Title>${project.name}</Specification-Title>
 		                    <Specification-Version>${project.version}</Specification-Version>
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
-                            <depends>Jahia Static Assets</depends>
+                            <depends>Default Jahia Templates</depends>
                             <package-name>${project.name}</package-name>
                             <root-folder>${project.artifactId}</root-folder>
                             <module-type>module</module-type>

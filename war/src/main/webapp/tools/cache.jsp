@@ -27,7 +27,10 @@
             $('.configLink').fancybox({
                         'hideOnContentClick': false,
                         'titleShow' : false,
-                        'transitionOut' : 'none'
+                        'transitionOut' : 'none',
+                        'autoDimensions' : false,
+                        'width' : 800,
+                        'height' : 600
                     });
         });
     </script>

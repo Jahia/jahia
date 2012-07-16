@@ -340,7 +340,7 @@ public class MainModule extends Module {
         baseUrl = baseUrl.substring(0, baseUrl.indexOf("/"+JahiaGWTParameters.getWorkspace()+"/"));
         baseUrl += "frame/" + JahiaGWTParameters.getWorkspace();
         baseUrl += "/" + (editLinker.getLocale() == null ? JahiaGWTParameters.getLanguage() : editLinker.getLocale());
-        return JahiaGWTParameters.getContextPath() + baseUrl + path + (template != null ? ("." + template) : "") + ".html";
+        return baseUrl + path + (template != null ? ("." + template) : "") + ".html";
     }
 
     @Override

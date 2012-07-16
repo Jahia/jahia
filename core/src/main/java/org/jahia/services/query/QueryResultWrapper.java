@@ -62,6 +62,7 @@ import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
 import org.apache.jackrabbit.core.query.FacetedQueryResult;
 import org.apache.jackrabbit.value.StringValue;
 import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.RangeFacet;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
@@ -261,6 +262,11 @@ public class QueryResultWrapper implements QueryResult {
         return result instanceof FacetedQueryResult ? ((FacetedQueryResult) result).getFacetDates()
                 : null;
     }
+    
+    public List<RangeFacet> getRangeFacets() {
+        return result instanceof FacetedQueryResult ? ((FacetedQueryResult) result).getRangeFacets()
+                : null;
+    }    
 
     /**
      * get
@@ -278,6 +284,11 @@ public class QueryResultWrapper implements QueryResult {
         return result instanceof FacetedQueryResult ? ((FacetedQueryResult) result).getFacetDate(name)
                 : null;
     }
+    
+    public RangeFacet getRangeFacet(String name) {
+        return result instanceof FacetedQueryResult ? ((FacetedQueryResult) result).getRangeFacet(name)
+                : null;
+    }    
 
     public Map<String, Long> getFacetQuery() {
         return result instanceof FacetedQueryResult ? ((FacetedQueryResult) result).getFacetQuery()

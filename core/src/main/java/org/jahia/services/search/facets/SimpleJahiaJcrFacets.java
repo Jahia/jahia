@@ -177,6 +177,7 @@ public class SimpleJahiaJcrFacets {
         this.session = session;
     }
 
+    @SuppressWarnings("unused")
     void parseParams(String type, String param) throws ParseException, IOException {
 // TODO: Should we activate that and how ? - we have no request object in backend        
 //        localParams = QueryParsing.getLocalParams(param, req.getParams());
@@ -203,7 +204,7 @@ public class SimpleJahiaJcrFacets {
         if (excludeStr == null) return;
 // TODO: Should we activate that and how ? - we have no request object in backend
 //        Map tagMap = (Map)req.getContext().get("tags");
-        Map tagMap = null;
+        Map<String, Object> tagMap = null;
         if (tagMap != null && rb != null) {
           List<String> excludeTagList = StrUtils.splitSmart(excludeStr,',');
 
@@ -212,7 +213,7 @@ public class SimpleJahiaJcrFacets {
             Object olst = tagMap.get(excludeTag);
             // tagMap has entries of List<String,List<QParser>>, but subject to change in the future
             if (!(olst instanceof Collection)) continue;
-            for (Object o : (Collection)olst) {
+            for (Object o : (Collection<?>)olst) {
               if (!(o instanceof QParser)) continue;
               QParser qp = (QParser)o;
               excludeSet.put(qp.getQuery(), Boolean.TRUE);
@@ -1068,14 +1069,13 @@ public class SimpleJahiaJcrFacets {
               "Unable to range facet on field:" + sf);
     }
 
-    resOuter.add(key, getFacetRangeCounts(sf, calc));
+    resOuter.add(key, getFacetRangeCounts(sf, f, calc));
   }
 
   private <T extends Comparable<T>> NamedList<Object> getFacetRangeCounts
-    (final SchemaField sf, 
+    (final SchemaField sf, final String f,
      final RangeEndpointCalculator<T> calc) throws IOException {
     
-    final String f = sf.getName();
     final NamedList<Object> res = new SimpleOrderedMap<Object>();
     final NamedList<Object> counts = new NamedList<Object>();
     res.add("counts", counts);
@@ -1128,10 +1128,11 @@ public class SimpleJahiaJcrFacets {
       final String lowS = calc.formatValue(low);
       final String highS = calc.formatValue(high);
 
-      final int count = rangeCount(sf, lowS, highS,
-                                   includeLower,includeUpper);
+      Query rangeQ = sf.getType().getRangeQuery(null, sf, lowS, highS,
+              includeLower,includeUpper);      
+      final int count = rangeCount(rangeQ);
       if (count >= minCount) {
-        counts.add(lowS, count);
+        counts.add(lowS + PROPNAME_INDEX_SEPARATOR + rangeQ.toString(), count);
       }
       
       low = high;
@@ -1162,31 +1163,37 @@ public class SimpleJahiaJcrFacets {
 
         if (all || others.contains(FacetRangeOther.BEFORE)) {
           // include upper bound if "outer" or if first gap doesn't already include it
-          res.add(FacetRangeOther.BEFORE.toString(),
-                  rangeCount(sf,null,startS,
-                             false,
-                             (include.contains(FacetRangeInclude.OUTER) ||
-                              (! (include.contains(FacetRangeInclude.LOWER) ||
-                                  include.contains(FacetRangeInclude.EDGE))))));
-          
+            Query rangeQ = sf.getType().getRangeQuery(null,sf,null,startS,
+                    false,
+                    (include.contains(FacetRangeInclude.OUTER) ||
+                     (! (include.contains(FacetRangeInclude.LOWER) ||
+                         include.contains(FacetRangeInclude.EDGE)))));
+            int count = rangeCount(rangeQ);            
+            res.add(FacetRangeOther.BEFORE.toString(), count);
+            counts.add(FacetRangeOther.BEFORE.toString() + PROPNAME_INDEX_SEPARATOR + rangeQ.toString(),
+                  count);
         }
         if (all || others.contains(FacetRangeOther.AFTER)) {
           // include lower bound if "outer" or if last gap doesn't already include it
-          res.add(FacetRangeOther.AFTER.toString(),
-                  rangeCount(sf,endS,null,
-                             (include.contains(FacetRangeInclude.OUTER) ||
-                              (! (include.contains(FacetRangeInclude.UPPER) ||
-                                  include.contains(FacetRangeInclude.EDGE)))),  
-                             false));
+            Query rangeQ = sf.getType().getRangeQuery(null, sf,endS,null,
+                    (include.contains(FacetRangeInclude.OUTER) ||
+                            (! (include.contains(FacetRangeInclude.UPPER) ||
+                                include.contains(FacetRangeInclude.EDGE)))),  
+                           false);
+            int count = rangeCount(rangeQ);            
+            res.add(FacetRangeOther.AFTER.toString(), count);
+            counts.add(FacetRangeOther.AFTER.toString() + PROPNAME_INDEX_SEPARATOR + rangeQ.toString(), count);
         }
         if (all || others.contains(FacetRangeOther.BETWEEN)) {
-         res.add(FacetRangeOther.BETWEEN.toString(),
-                 rangeCount(sf,startS,endS,
-                            (include.contains(FacetRangeInclude.LOWER) ||
-                             include.contains(FacetRangeInclude.EDGE)),
-                            (include.contains(FacetRangeInclude.UPPER) ||
-                             include.contains(FacetRangeInclude.EDGE))));
-         
+            Query rangeQ = sf.getType().getRangeQuery(null, sf,startS,endS,
+                    (include.contains(FacetRangeInclude.LOWER) ||
+                            include.contains(FacetRangeInclude.EDGE)),
+                           (include.contains(FacetRangeInclude.UPPER) ||
+                            include.contains(FacetRangeInclude.EDGE)));
+            int count = rangeCount(rangeQ);
+            res.add(FacetRangeOther.BETWEEN.toString(), count);
+            counts.add(FacetRangeOther.BETWEEN.toString() + PROPNAME_INDEX_SEPARATOR + rangeQ.toString(),
+                 count);
         }
       }
     }

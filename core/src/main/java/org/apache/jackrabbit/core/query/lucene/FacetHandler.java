@@ -51,6 +51,7 @@ import org.apache.lucene.util.DocIdBitSet;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.lucene.util.OpenBitSetDISI;
 import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.RangeFacet;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.params.FacetParams;
 import org.apache.solr.common.params.SolrParams;
@@ -100,7 +101,7 @@ public class FacetHandler {
     private List<FacetField> _facetFields = null;
     private List<FacetField> _limitingFacets = null;
     private List<FacetField> _facetDates = null;
-
+    private List<RangeFacet> _facetRanges = null;
 
     /**
      * Component context of the current session
@@ -175,15 +176,24 @@ public class FacetHandler {
                                 propertyName, "&)") >= 0 ? StringUtils.indexOfAny(propertyName,
                                 "&)") : propertyName.length()) + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter;
                     } else if (!StringUtils.isEmpty(propertyName = StringUtils.substringAfter(facetOptions, FacetParams.FACET_DATE + "=")) ||
-                            !StringUtils.isEmpty(propertyName = StringUtils.substringAfter(facetOptions, "date="))) {
+                            !StringUtils.isEmpty(propertyName = StringUtils.substringAfter(facetOptions, "date=")) ||
+                            !StringUtils.isEmpty(propertyName = StringUtils.substringAfter(facetOptions, FacetParams.FACET_RANGE + "=")) ||
+                            !StringUtils.isEmpty(propertyName = StringUtils.substringAfter(facetOptions, "range="))) {
                         propertyName = StringUtils.substring(propertyName, 0, StringUtils.indexOfAny(
                                 propertyName, "&)") >= 0 ? StringUtils.indexOfAny(propertyName,
                                 "&)") : propertyName.length()) + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter;
                     } else if (!StringUtils.contains(facetOptions, FacetParams.FACET_QUERY)) {
                         propertyName = column.getValue().getPropertyName() + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter;
-                        parameters.add((facetOptions.indexOf("&date.") >= 0 || facetOptions
-                                .indexOf("facet.date.") >= 0) ? FacetParams.FACET_DATE
-                                : FacetParams.FACET_FIELD, propertyName);
+                        if (facetOptions.indexOf("&date.") >= 0
+                                || facetOptions.indexOf("facet.date.") >= 0) {
+                            parameters.add(FacetParams.FACET_DATE, propertyName);
+                        } else if (facetOptions.indexOf("&range.") >= 0
+                                || facetOptions.indexOf("facet.range.") >= 0) {
+                            parameters.add(FacetParams.FACET_RANGE, propertyName);
+                        } else {
+                            parameters.add(FacetParams.FACET_FIELD,
+                                    propertyName);
+                        }
                     }
 
                     String nodeType = null;
@@ -222,7 +232,9 @@ public class FacetHandler {
                                 }
                             }
                             parameters.add(facetOption, value);
-                        } else if (facetOption.equals(FacetParams.FACET_FIELD) || facetOption.equals(FacetParams.FACET_DATE)) {
+                        } else if (facetOption.equals(FacetParams.FACET_FIELD)
+                                || facetOption.equals(FacetParams.FACET_DATE)
+                                || facetOption.equals(FacetParams.FACET_RANGE)) {
                             parameters.add(facetOption, propertyName);
                         } else {
                             parameters.add(FIELD_SPECIFIC_PREFIX + propertyName + "."
@@ -377,6 +389,72 @@ public class FacetHandler {
                 _facetDates.add(f);
             }
         }
+        
+        // Parse range facets
+        NamedList<NamedList<Object>> rf = (NamedList<NamedList<Object>>) info.get("facet_ranges");
+        if (rf != null) {
+            // System.out.println(df);
+            _facetRanges = new ArrayList<RangeFacet>(rf.size());
+            for (Map.Entry<String, NamedList<Object>> facet : rf) {
+                NamedList<Object> values = facet.getValue();
+                Object rawGap = values.get("gap");
+                
+                RangeFacet rangeFacet;
+                if (rawGap instanceof Number) {
+                  Number gap = (Number) rawGap;
+                  Number start = (Number) values.get("start");
+                  Number end = (Number) values.get("end");
+
+                  Number before = (Number) values.get("before");
+                  Number after = (Number) values.get("after");
+
+                  rangeFacet = new RangeFacet.Numeric(StringUtils.substringBeforeLast(facet.getKey(),
+                          SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR), start, end, gap, before, after);
+                } else {
+                  String gap = (String) rawGap;
+                  Date start = (Date) values.get("start");
+                  Date end = (Date) values.get("end");
+
+                  Number before = (Number) values.get("before");
+                  Number after = (Number) values.get("after");
+
+                  rangeFacet = new RangeFacet.Date(StringUtils.substringBeforeLast(facet.getKey(),
+                          SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR), start, end, gap, before, after);
+                }                
+                
+                NamedList<Integer> counts = (NamedList<Integer>) values.get("counts");
+                for (Map.Entry<String, Integer> entry : counts)   {
+                    try {
+                        String key = StringUtils.substringBeforeLast(entry.getKey(),
+                                SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR);
+                        String query = StringUtils.substringAfterLast(entry.getKey(),
+                                SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR);
+
+                        rangeFacet.addCount(key, entry.getValue());
+
+                        if (!StringUtils.isEmpty(query)) {
+                            String rangePrefix = null;
+                            if (query.contains(RANGEFROM_EXCLUSIVE_PREFIX)) {
+                                rangePrefix = RANGEFROM_EXCLUSIVE_PREFIX;
+                            } else if (query.contains(RANGEFROM_INCLUSIVE_PREFIX)) {
+                                rangePrefix = RANGEFROM_INCLUSIVE_PREFIX;
+                            }
+                            if (!StringUtils.isEmpty(rangePrefix)) {
+                                ((RangeFacet.Count)rangeFacet.getCounts().get(rangeFacet.getCounts().size() - 1)).setFilterQuery(
+                                        ClientUtils.escapeQueryChars(StringUtils.substringBefore(
+                                                query, rangePrefix))
+                                                + rangePrefix
+                                                + StringUtils.substringAfter(query, rangePrefix));
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+                        // Ignore for non-number responses which are already handled above
+                    }
+                }
+
+                _facetRanges.add(rangeFacet);
+            }
+        }        
     }
 
     private OpenBitSet transformToDocIdSet(List<ScoreNode> scoreNodeArrays, IndexReader reader, Set<Integer> selectorIndexes) {
@@ -405,6 +483,7 @@ public class FacetHandler {
         row.setFacetFields(_facetFields);
         row.setLimitingFacets(_limitingFacets);
         row.setFacetDates(_facetDates);
+        row.setRangeFacets(_facetRanges);        
         row.setFacetQuery(_facetQuery);
         return row;
     }

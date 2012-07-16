@@ -61,8 +61,8 @@
             </c:if>
 
             <c:choose>
-                <c:when test="${jcr:isNodeType(facet, 'jnt:fieldFacet') or jcr:isNodeType(facet, 'jnt:dateFacet')}">
-                    <c:if test="${jcr:isNodeType(facet, 'jnt:dateFacet')}">
+                <c:when test="${jcr:isNodeType(facet, 'jnt:fieldFacet') or jcr:isNodeType(facet, 'jnt:dateFacet') or jcr:isNodeType(facet, 'jnt:rangeFacet')}">
+                    <c:if test="${jcr:isNodeType(facet, 'jnt:dateFacet') or jcr:isNodeType(facet, 'jnt:rangeFacet')}">
                         <jcr:nodeProperty node="${facet}" name="labelFormat" var="currentFacetValueFormat"/>
                         <c:if test="${not empty currentFacetValueFormat.string}">
                             <c:set target="${facetValueFormats}" property="${facetPropertyName}"
@@ -72,7 +72,17 @@
                     <c:if test="${not empty currentField and not facet:isFacetApplied(facetPropertyName, activeFacetsVars[activeFacetMapVarName], facetNodeType.propertyDefinitionsAsMap[facetPropertyName])}">
                         <c:set var="facetQuery"
                                value="nodetype=${facetNodeTypeName}&key=${facetPropertyName}${minCountParam}"/>
-                        <c:set var="facetPrefix" value="${jcr:isNodeType(facet, 'jnt:dateFacet') ? 'date.' : ''}"/>
+                        <c:choose>
+                            <c:when test="${jcr:isNodeType(facet, 'jnt:dateFacet')}">
+                                <c:set var="paramPrefix" value="date."/>
+                            </c:when>
+                            <c:when test="${jcr:isNodeType(facet, 'jnt:rangeFacet')}">
+                                <c:set var="paramPrefix" value="range."/>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="paramPrefix" value=""/>
+                            </c:otherwise>                            
+                        </c:choose>  
                         <c:forEach items="${facet.primaryNodeType.declaredPropertyDefinitions}"
                                    var="propertyDefinition">
                             <jcr:nodeProperty node="${facet}" name="${propertyDefinition.name}" var="facetPropValue"/>
@@ -97,36 +107,10 @@
                     </c:if>
                 </c:when>
                 <c:otherwise>
-                    <c:choose>
-                        <c:when test="${jcr:isNodeType(facet, 'jnt:rangeFacet')}">
-                            <jcr:nodeProperty node="${facet}" name="start" var="start"/>
-                            <jcr:nodeProperty node="${facet}" name="end" var="end"/>
-                            <jcr:nodeProperty node="${facet}" name="include" var="include"/>
-                            <c:set var="includeLower" value="false"/>
-                            <c:set var="includeUpper" value="false"/>
-                            <c:forEach items="${include}" var="includeItem">
-                                <c:choose>
-                                    <c:when test="${'lower' == includeItem.string}">
-                                        <c:set var="includeLower" value="true"/>
-                                    </c:when>
-                                    <c:when test="${'upper' == includeItem.string}">
-                                        <c:set var="includeUpper" value="true"/>
-                                    </c:when>
-                                    <c:when test="${'all' == includeItem.string}">
-                                        <c:set var="includeLower" value="true"/>
-                                        <c:set var="includeUpper" value="true"/>
-                                    </c:when>
-                                </c:choose>
-                            </c:forEach>
-                            <c:set var="closeBrace">}</c:set>
-                            <c:set var="currentFacetQuery"
-                                   value="${includeLower == 'true' ? '[' : '{'}${start.string} TO ${end.string}${includeUpper == 'true' ? ']' : closeBrace}"/>
-                        </c:when>
-                        <c:when test="${jcr:isNodeType(facet, 'jnt:queryFacet')}">
-                            <jcr:nodeProperty node="${facet}" name="query" var="currentFacetQuery"/>
-                            <c:set var="currentFacetQuery" value="${currentFacetQuery.string}"/>
-                        </c:when>
-                    </c:choose>
+                    <c:if test="${jcr:isNodeType(facet, 'jnt:queryFacet')}">
+                        <jcr:nodeProperty node="${facet}" name="query" var="currentFacetQuery"/>
+                        <c:set var="currentFacetQuery" value="${currentFacetQuery.string}"/>
+                    </c:if>
                     <jcr:nodeProperty node="${facet}" name="valueLabel" var="currentFacetValueLabel"/>
                     <c:if test="${not empty currentFacetValueLabel.string and not empty currentFacetQuery}">
                         <c:set target="${facetValueLabels}" property="${currentFacetQuery}"

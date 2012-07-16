@@ -42,6 +42,7 @@ package org.apache.jackrabbit.core.query;
 
 import org.apache.jackrabbit.core.query.lucene.FacetRow;
 import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.RangeFacet;
 
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.RowIterator;
@@ -69,7 +70,7 @@ public class FacetedQueryResult extends JahiaSimpleQueryResult implements QueryR
     public List<FacetField> getFacetFields() {
         return facetRow.getFacetFields();
     }
-
+    
     public List<FacetField> getLimitingFacets() {
         return facetRow.getLimitingFacets();
     }
@@ -77,6 +78,10 @@ public class FacetedQueryResult extends JahiaSimpleQueryResult implements QueryR
     public List<FacetField> getFacetDates() {
         return facetRow.getFacetDates();
     }
+    
+    public List<RangeFacet> getRangeFacets() {
+        return facetRow.getRangeFacets();
+    }        
 
     public FacetField getFacetField(String name) {
         return facetRow.getFacetField(name);
@@ -85,4 +90,8 @@ public class FacetedQueryResult extends JahiaSimpleQueryResult implements QueryR
     public FacetField getFacetDate(String name) {
         return facetRow.getFacetDate(name);
     }
+    
+    public RangeFacet getRangeFacet(String name) {
+        return facetRow.getRangeFacet(name);
+    }    
 }

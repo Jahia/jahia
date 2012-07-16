@@ -41,6 +41,7 @@
 package org.apache.jackrabbit.core.query.lucene;
 
 import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.RangeFacet;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
@@ -58,6 +59,7 @@ public class FacetRow implements Row {
     private List<FacetField> facetFields = null;
     private List<FacetField> limitingFacets = null;
     private List<FacetField> facetDates = null;
+    private List<RangeFacet> rangeFacets = null;    
 
     public FacetRow() {
     }
@@ -93,6 +95,14 @@ public class FacetRow implements Row {
     public void setFacetDates(List<FacetField> facetDates) {
         this.facetDates = facetDates;
     }
+    
+    public List<RangeFacet> getRangeFacets() {
+        return rangeFacets;
+    }    
+    
+    public void setRangeFacets(List<RangeFacet> rangeFacets) {
+        this.rangeFacets = rangeFacets;
+    }    
 
     /**
      * get
@@ -118,6 +128,15 @@ public class FacetRow implements Row {
                 return f;
         return null;
     }
+    
+    public RangeFacet getRangeFacet(String name) {
+        if (rangeFacets == null)
+            return null;
+        for (RangeFacet f : rangeFacets)
+            if (f.getName().equals(name))
+                return f;
+        return null;
+    }    
 
     public Value[] getValues() throws RepositoryException {
         return new Value[0];

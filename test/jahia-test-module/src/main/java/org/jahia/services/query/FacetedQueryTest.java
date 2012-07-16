@@ -43,6 +43,7 @@ package org.jahia.services.query;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.RangeFacet;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -167,7 +168,7 @@ public class FacetedQueryTest {
         }                
 
         // test facet options : sort=false  - lexicographic order
-        res = doQuery(session, "eventsType", "rep:facet(facet.mincount=1&sort=false)");
+        res = doQuery(session, "eventsType", "rep:facet(facet.mincount=1&sort=index)");
         field = res.getFacetField("eventsType");
         assertNotNull("Facet field is null",field);
         assertNotNull("Facet values are null",field.getValues());
@@ -229,8 +230,93 @@ public class FacetedQueryTest {
         for (FacetField.Count count : field.getValues()) {
             QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery());
             checkResultSize(resCheck, (int) count.getCount());
-        }        
+        }
+        
+        res = doQuery(session, "startDate", "rep:facet(facet.mincount=1&date.start=2000-01-10T00:00:00Z&date.end=2000-01-31T00:00:00Z&date.gap=+7DAYS&date.include=lower&date.include=upper&date.include=edge&date.other=all)");
+        field = res.getFacetDate("startDate");
+
+        assertEquals("Query did not return correct number of facets", 6, field.getValues().size());
+        
+        counts = field.getValues().iterator();
+
+        checkFacet(counts.next(), "2000-01-10T00:00:00Z", 4);
+        checkFacet(counts.next(), "2000-01-17T00:00:00Z", 2);
+        checkFacet(counts.next(), "2000-01-24T00:00:00Z", 2);
+        checkFacet(counts.next(), "before", 4);
+        checkFacet(counts.next(), "after", 15);
+        checkFacet(counts.next(), "between", 8);
+        
+        for (FacetField.Count count : field.getValues()) {
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery());
+            checkResultSize(resCheck, (int) count.getCount());
+        }
     }
+    
+    @Test    
+    public void testRangeFacets() throws Exception {
+
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
+
+        RangeFacet field;
+        QueryResultWrapper res;
+
+        // test date facets
+        res = doQuery(session, "startDate", "rep:facet(range.start=2000-01-01T00:00:00Z&range.end=2002-01-01T00:00:00Z&range.gap=+1MONTH&range.include=lower&range.include=upper&range.include=edge)");
+        field = res.getRangeFacet("startDate");
+
+        assertEquals("Query did not return correct number of facets", 24, field.getCounts().size());
+        
+        res = doQuery(session, "startDate", "rep:facet(facet.mincount=1&range.start=2000-01-01T00:00:00Z&range.end=2002-01-01T00:00:00Z&range.gap=+1MONTH&range.include=lower&range.include=upper&range.include=edge)");
+        field = res.getRangeFacet("startDate");
+
+        assertEquals("Query did not return correct number of facets", 2, field.getCounts().size());
+        
+        Iterator<RangeFacet.Count> counts = field.getCounts().iterator();
+
+        checkFacet(counts.next(), "2000-01-01T00:00:00Z", 14);
+        checkFacet(counts.next(), "2000-02-01T00:00:00Z", 13);
+        
+        for (Iterator<RangeFacet.Count> it = field.getCounts().iterator(); it.hasNext();) {
+            RangeFacet.Count count = it.next();
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery());
+            checkResultSize(resCheck, (int) count.getCount());
+        }
+
+        res = doQuery(session, "startDate", "rep:facet(facet.mincount=1&range.start=2000-01-01T00:00:00Z&range.end=2002-01-01T00:00:00Z&range.gap=+1YEAR&range.include=lower&range.include=upper&range.include=edge)");
+        field = res.getRangeFacet("startDate");
+
+        assertEquals("Query did not return correct number of facets", 1, field.getCounts().size());
+        counts = field.getCounts().iterator();
+
+        checkFacet(counts.next(), "2000-01-01T00:00:00Z", 27);
+        
+        for (Iterator<RangeFacet.Count> it = field.getCounts().iterator(); it.hasNext();) {
+            RangeFacet.Count count = it.next();
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery());
+            checkResultSize(resCheck, (int) count.getCount());
+        }
+        
+        res = doQuery(session, "startDate", "rep:facet(facet.mincount=1&range.start=2000-01-10T00:00:00Z&range.end=2000-01-31T00:00:00Z&range.gap=+7DAYS&range.include=lower&range.include=upper&range.include=edge&range.other=all)");
+        field = res.getRangeFacet("startDate");
+
+        assertEquals("Query did not return correct number of facets", 6, field.getCounts().size());
+        
+        counts = field.getCounts().iterator();
+
+        checkFacet(counts.next(), "2000-01-10T00:00:00Z", 4);
+        checkFacet(counts.next(), "2000-01-17T00:00:00Z", 2);
+        checkFacet(counts.next(), "2000-01-24T00:00:00Z", 2);
+        checkFacet(counts.next(), "before", 4);
+        checkFacet(counts.next(), "after", 15);
+        checkFacet(counts.next(), "between", 8);        
+        
+        for (Iterator<RangeFacet.Count> it = field.getCounts().iterator(); it.hasNext();) {
+            RangeFacet.Count count = it.next();
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery());
+            checkResultSize(resCheck, (int) count.getCount());
+        }        
+    }    
     
     @Test
     public void testI18NFacets() throws Exception {
@@ -512,6 +598,11 @@ public class FacetedQueryTest {
         assertEquals("Facet are not correctly ordered or has incorrect name", name, c.getName());
         assertEquals("Facet count is incorrect", count, c.getCount());
     }
+    
+    private void checkFacet(RangeFacet.Count c, final String name, final int count) {
+        assertEquals("Facet are not correctly ordered or has incorrect name", name, c.getValue());
+        assertEquals("Facet count is incorrect", count, c.getCount());
+    }    
 
     private static void createEvent(JCRNodeWrapper node, final String eventType, String location, Calendar calendar,
                              JCRNodeWrapper category, int i)

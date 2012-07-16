@@ -15,7 +15,7 @@ orderable
 - labelRenderer (string) indexed=no
 
 [jnt:fieldFacet] > jnt:facet
-- sort (string, choicelist[resourceBundle]) indexed=no < true,false 
+- sort (string, choicelist[resourceBundle]) indexed=no < count,index 
 - prefix (string) indexed=no
 - limit (long) = 100 indexed=no
 - offset (long) = 0 indexed=no
@@ -31,6 +31,7 @@ orderable
 - gap (string) mandatory indexed=no
 - hardend (boolean) = false indexed=no
 - other (string, choicelist[resourceBundle]) multiple indexed=no < before,after,between,none,all
+- include (string, choicelist[resourceBundle]) multiple indexed=no < lower,upper,edge,outer,all
 - labelFormat (string) indexed=no
 
 [jnt:queryFacet] > jnt:facet
@@ -40,5 +41,9 @@ orderable
 [jnt:rangeFacet] > jnt:facet
 - start (string) mandatory indexed=no
 - end (string) mandatory indexed=no
-- include (string, choicelist[resourceBundle]) = all multiple indexed=no < lower,upper,all
+- gap (string) mandatory indexed=no
+- hardend (boolean) = false indexed=no
+- other (string, choicelist[resourceBundle]) multiple indexed=no < before,after,between,none,all
+- include (string, choicelist[resourceBundle]) multiple indexed=no < lower,upper,edge,outer,all
+- labelFormat (string) indexed=no
 - valueLabel (string) i18n indexed=no

@@ -389,9 +389,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 // Second get ehcache jgroups configuration for jahia
                 System.setProperty("cluster.tcp.ehcache.jahia.nodes.ip_address",getString("cluster.tcp.ehcache.jahia.nodes.ip_address"));
                 System.setProperty("cluster.tcp.ehcache.jahia.port",getString("cluster.tcp.ehcache.jahia.port"));
+                System.setProperty("cluster.tcp.ehcache.jahia.file",getString("cluster.tcp.ehcache.jahia.file"));
                 // Second get ehcache jgroups configuration for hibernate
                 System.setProperty("cluster.tcp.ehcache.hibernate.nodes.ip_address",getString("cluster.tcp.ehcache.hibernate.nodes.ip_address"));
                 System.setProperty("cluster.tcp.ehcache.hibernate.port",getString("cluster.tcp.ehcache.hibernate.port"));
+                System.setProperty("cluster.tcp.ehcache.hibernate.file",getString("cluster.tcp.ehcache.hibernate.file"));
             }
             System.setProperty("jahia.jackrabbit.consistencyCheck", String.valueOf(getBoolean("jahia.jackrabbit.consistencyCheck", false)));
             System.setProperty("jahia.jackrabbit.consistencyFix", String.valueOf(getBoolean("jahia.jackrabbit.consistencyFix", false)));

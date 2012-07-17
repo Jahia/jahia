@@ -40,10 +40,13 @@
 
 package org.jahia.services.render.scripting;
 
+<<<<<<< .working
 import org.apache.commons.lang.StringUtils;
+=======
+import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
+>>>>>>> .merge-right.r42269
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.services.channels.Channel;
-import org.jahia.services.channels.ChannelService;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -60,6 +63,11 @@ import org.springframework.context.ApplicationListener;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.File;
+<<<<<<< .working
+=======
+import java.io.FilenameFilter;
+import java.net.MalformedURLException;
+>>>>>>> .merge-right.r42269
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -98,32 +106,24 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     }
 
     protected View resolveView(Resource resource, ArrayList<String> searchedLocations, RenderContext renderContext) throws RepositoryException {
-        if (resource.getResourceNodeType() != null) {
-            ExtendedNodeType nt = resource.getResourceNodeType();
-            List<ExtendedNodeType> nodeTypeList = getNodeTypeList(nt);
-            return resolveView(resource, nodeTypeList, searchedLocations, renderContext);
-        }
-
         ExtendedNodeType nt = resource.getNode().getPrimaryNodeType();
         List<ExtendedNodeType> nodeTypeList = getNodeTypeList(nt);
         for (ExtendedNodeType type : resource.getNode().getMixinNodeTypes()) {
             nodeTypeList.addAll(0,Arrays.asList(type.getSupertypes()));
             nodeTypeList.add(0,type);
         }
-        
+
+        if (resource.getResourceNodeType() != null) {
+            ExtendedNodeType rnt = resource.getResourceNodeType();
+            nodeTypeList.addAll(0,getNodeTypeList(rnt));
+        }
+
 
         View res = resolveView(resource, nodeTypeList, searchedLocations, renderContext);
         if (res != null) {
             return res;
         }
 
-        List<ExtendedNodeType> mixinNodeTypes = Arrays.asList(resource.getNode().getMixinNodeTypes());
-        if (mixinNodeTypes.size() > 0) {
-            res = resolveView(resource, mixinNodeTypes, searchedLocations, renderContext);
-            if (res != null) {
-                return res;
-            }
-        }
         return null;
     }
 
@@ -140,6 +140,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
 
     private View resolveView(Resource resource, List<ExtendedNodeType> nodeTypeList, ArrayList<String> searchedLocations, RenderContext renderContext) {
         String template = resource.getResolvedTemplate();
+<<<<<<< .working
             for (ExtendedNodeType st : nodeTypeList) {
                 try {
                     SortedSet<View> s = getViewsSet(st, resource.getNode().getResolveSite(), resource.getTemplateType(), renderContext);
@@ -152,6 +153,18 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
             }
+=======
+        try {
+            SortedSet<View> s = getViewsSet(nodeTypeList, resource.getNode().getResolveSite(), resource.getTemplateType());
+            for (View view : s) {
+                if (view.getKey().equals(template)) {
+                    return view;
+                }
+            }
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
+>>>>>>> .merge-right.r42269
         return null;
     }
 
@@ -204,12 +217,16 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     }
 
     public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType, RenderContext renderContext) {
+        try {
+            return getViewsSet(getNodeTypeList(nt), site, templateType);
+        } catch (NoSuchNodeTypeException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private SortedSet<View> getViewsSet(List<ExtendedNodeType> nodeTypeList, JCRSiteNode site, String templateType) {
         Map<String, View> views = new HashMap<String, View>();
-
-        List<ExtendedNodeType> nodeTypeList = new ArrayList<ExtendedNodeType>(Arrays.asList(nt.getSupertypes()));
-        nodeTypeList.add(nt);
-
-        Collections.reverse(nodeTypeList);
 
         Map<String,String> installedModules = null;
         if (site != null) {
@@ -270,7 +287,17 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
 
         File f = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath() + "/" + path);
         if (f.exists()) {
-            File[] files = f.listFiles();
+            SortedSet<File> files = new TreeSet<File>(new Comparator<File>() {
+                public int compare(File o1, File o2) {
+                    int i = scriptExtensionsOrdering.indexOf(StringUtils.substringAfterLast(o1.getName(), ".")) - scriptExtensionsOrdering.indexOf(StringUtils.substringAfterLast(o2.getName(), "."));
+                    return i != 0 ? i : 1;
+                }
+            });
+            files.addAll(Arrays.asList(f.listFiles(new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return scriptExtensionsOrdering.contains(StringUtils.substringAfterLast(name, "."));
+                }
+            })));
             for (File file : files) {
                 if (!file.isDirectory() && scriptExtensionsOrdering.contains(StringUtils.substringAfterLast(file.getName(),"."))) {
                     String filename = file.getName();

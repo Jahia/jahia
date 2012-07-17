@@ -132,10 +132,9 @@
 &nbsp;&nbsp;
 </c:if>
 </p>
-<h2>Status</h2>
 <% pageContext.setAttribute("cacheManagers", CacheManager.ALL_CACHE_MANAGERS); %>
 <c:forEach items="${cacheManagers}" var="manager" varStatus="managerStatus">
-<h3>Cache Manager: ${manager.name}
+<h2>Cache Manager: ${manager.name}
 <c:if test="${showConfig}">
 &nbsp;
 <a class="configLink" title="Cache configuration details" href="#managerconfig-${managerStatus.index}"><img src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16" height="16" alt="?" title="Cache configuration details"/></a>
@@ -146,7 +145,7 @@
     </div>
 </div>
 </c:if>
-</h3>
+</h2>
 <c:if test="${showActions}">
 <a href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager.name}'); return false;" title="Flushes all caches of this manager">${flushIcon}Flush caches for this manager</a>
 <c:if test="${clusterActivated}">

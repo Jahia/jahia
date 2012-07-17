@@ -84,8 +84,18 @@ public class JahiaQueryParser extends QueryParser {
     protected org.apache.lucene.search.Query getRangeQuery(String field, String part1,
             String part2, boolean inclusive) throws ParseException {
         try {
-          part1 = DATE_TYPE.toInternal(part1);  
-          part2 = DATE_TYPE.toInternal(part2);          
+            if ("*".equals(part1)) {
+                part1 = null;
+            } else {
+                part1 = DATE_TYPE.toInternal(part1);                
+            } 
+        } catch (Exception e) { }
+        try {
+            if ("*".equals(part2)) {
+                part2 = null;
+            } else {
+               part2 = DATE_TYPE.toInternal(part2);
+            }
         } catch (Exception e) { }
 
         return super.getRangeQuery(field, part1, part2, inclusive);

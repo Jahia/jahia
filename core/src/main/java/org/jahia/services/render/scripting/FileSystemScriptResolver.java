@@ -40,13 +40,10 @@
 
 package org.jahia.services.render.scripting;
 
-<<<<<<< .working
 import org.apache.commons.lang.StringUtils;
-=======
-import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
->>>>>>> .merge-right.r42269
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.channels.Channel;
+import org.jahia.services.channels.ChannelService;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -63,11 +60,7 @@ import org.springframework.context.ApplicationListener;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.File;
-<<<<<<< .working
-=======
 import java.io.FilenameFilter;
-import java.net.MalformedURLException;
->>>>>>> .merge-right.r42269
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -105,7 +98,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         this.scriptExtensionsOrdering = scriptExtensionsOrdering;
     }
 
-    protected View resolveView(Resource resource, ArrayList<String> searchedLocations, RenderContext renderContext) throws RepositoryException {
+    protected View resolveView(Resource resource, RenderContext renderContext) throws RepositoryException {
         ExtendedNodeType nt = resource.getNode().getPrimaryNodeType();
         List<ExtendedNodeType> nodeTypeList = getNodeTypeList(nt);
         for (ExtendedNodeType type : resource.getNode().getMixinNodeTypes()) {
@@ -119,7 +112,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         }
 
 
-        View res = resolveView(resource, nodeTypeList, searchedLocations, renderContext);
+        View res = resolveView(resource, nodeTypeList, renderContext);
         if (res != null) {
             return res;
         }
@@ -138,24 +131,10 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         return nodeTypeList;
     }
 
-    private View resolveView(Resource resource, List<ExtendedNodeType> nodeTypeList, ArrayList<String> searchedLocations, RenderContext renderContext) {
+    private View resolveView(Resource resource, List<ExtendedNodeType> nodeTypeList, RenderContext renderContext) {
         String template = resource.getResolvedTemplate();
-<<<<<<< .working
-            for (ExtendedNodeType st : nodeTypeList) {
-                try {
-                    SortedSet<View> s = getViewsSet(st, resource.getNode().getResolveSite(), resource.getTemplateType(), renderContext);
-                    for (View view : s) {
-                        if (view.getKey().equals(template)) {
-                            return view;
-                        }
-                    }
-                } catch (RepositoryException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-            }
-=======
         try {
-            SortedSet<View> s = getViewsSet(nodeTypeList, resource.getNode().getResolveSite(), resource.getTemplateType());
+            SortedSet<View> s = getViewsSet(nodeTypeList, resource.getNode().getResolveSite(), resource.getTemplateType(), renderContext);
             for (View view : s) {
                 if (view.getKey().equals(template)) {
                     return view;
@@ -164,7 +143,6 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         } catch (RepositoryException e) {
             e.printStackTrace();
         }
->>>>>>> .merge-right.r42269
         return null;
     }
 
@@ -175,7 +153,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     public Script resolveScript(Resource resource, RenderContext renderContext) throws TemplateNotFoundException {
         try {
             ArrayList<String> searchLocations = new ArrayList<String>();
-            View resolvedTemplate = resolveView(resource, searchLocations, renderContext);
+            View resolvedTemplate = resolveView(resource, renderContext);
             if (resolvedTemplate == null) {
                 throw new TemplateNotFoundException("Unable to find the template for resource " + resource + " by looking in " + searchLocations);
             }
@@ -218,14 +196,14 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
 
     public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType, RenderContext renderContext) {
         try {
-            return getViewsSet(getNodeTypeList(nt), site, templateType);
+            return getViewsSet(getNodeTypeList(nt), site, templateType, renderContext);
         } catch (NoSuchNodeTypeException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    private SortedSet<View> getViewsSet(List<ExtendedNodeType> nodeTypeList, JCRSiteNode site, String templateType) {
+    private SortedSet<View> getViewsSet(List<ExtendedNodeType> nodeTypeList, JCRSiteNode site, String templateType, RenderContext renderContext) {
         Map<String, View> views = new HashMap<String, View>();
 
         Map<String,String> installedModules = null;

@@ -1618,6 +1618,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
+    public void updateDependencies(JahiaTemplatesPackage pack, List<String> depends) {
+        pack.getDepends().clear();
+        pack.getDepends().addAll(depends);
+        templatePackageRegistry.computeDependencies(pack);
+    }
+
     public void setComponentRegistry(ComponentRegistry componentRegistry) {
         this.componentRegistry = componentRegistry;
     }

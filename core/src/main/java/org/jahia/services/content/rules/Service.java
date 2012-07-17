@@ -715,17 +715,12 @@ public class Service extends JahiaService {
         JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName());
         if (pack != null) {
             Value[] dependencies = node.getNode().getProperty("j:dependencies").getValues();
-            pack.getDepends().clear();
-            pack.getDependencies().clear();
+            List<String> depends = new ArrayList<String>();
             for (Value dependency : dependencies) {
-                JahiaTemplatesPackage dependencyPack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(dependency.getString());
-                if (dependencyPack != null) {
-                    pack.getDepends().add(dependencyPack.getFileName());
-                    pack.getDependencies().add(dependencyPack);
-                }
+                depends.add(dependency.getString());
             }
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().updateDependencies(pack, depends);
         }
-
     }
 
     public void updatePrivileges(NodeFact node) throws RepositoryException {

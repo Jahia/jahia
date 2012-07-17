@@ -495,8 +495,7 @@ class TemplatePackageRegistry {
 
         // handle dependencies
         for (JahiaTemplatesPackage pack : registry.values()) {
-            pack.getDependencies().clear();
-            computeDependencies(pack.getDependencies(), pack);
+            computeDependencies(pack);
         }
 
         // handle resource bundles
@@ -576,6 +575,11 @@ class TemplatePackageRegistry {
 
     public Map<String, BackgroundAction> getBackgroundActions() {
         return backgroundActions;
+    }
+
+    public void computeDependencies(JahiaTemplatesPackage pack) {
+        pack.getDependencies().clear();
+        computeDependencies(pack.getDependencies(), pack);
     }
 
     private void computeDependencies(Set<JahiaTemplatesPackage> dependencies,  JahiaTemplatesPackage pack) {

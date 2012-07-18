@@ -1,0 +1,6 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+// from 02-jahia-nodetypes.cnd
+// [jmix:siteSetting] > jmix:setting mixin
+//

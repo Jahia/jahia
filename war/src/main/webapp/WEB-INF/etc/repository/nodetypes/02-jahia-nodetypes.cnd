@@ -236,6 +236,20 @@
 - constantValue (string)
 
 //---------------------------------------------------------
+// Settings
+//---------------------------------------------------------
+
+
+[jnt:settingsFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, mix:title
++ * (jnt:page)
+
+[jmix:setting] mixin
+- redirect (string)
+
+[jmix:siteSetting] > jmix:setting mixin
+[jmix:serverSetting] > jmix:setting mixin
+
+//---------------------------------------------------------
 // Preferences
 //---------------------------------------------------------
 

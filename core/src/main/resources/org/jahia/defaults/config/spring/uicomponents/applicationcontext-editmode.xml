@@ -561,6 +561,7 @@
                     </bean>
                   </property>
                 </bean>
+                <ref bean="sidePanelTab.settings"/>
                 <!--<bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="lastContent"/>
                     <property name="icon" value="tab-lastcontent"/>
@@ -634,6 +635,20 @@
 
 
     <!-- side tabs-->
+
+    <bean id="sidePanelTab.settings" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+        <property name="key" value="settings"/>
+        <property name="icon" value="settings"/>
+        <property name="tabItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsTabItem">
+                <property name="serverSettingMixin" value="jmix:serverSetting"/>
+                <property name="siteSettingMixin" value="jmix:siteSetting"/>
+                <property name="folderTypes" value="jmix:setting"/>
+                <property name="paths" value="$site/settings"/>
+            </bean>
+        </property>
+        <property name="requiredPermission" value="administrationAccess"/>
+    </bean>
 
     <bean id="sidePanelTab.search" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="search"/>

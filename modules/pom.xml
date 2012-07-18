@@ -177,6 +177,7 @@
                 <module>assets</module>
                 <module>channels</module>
                 <module>default</module>
+                <module>defaultSiteSettings</module>
                 <module>facets</module>
                 <module>grid</module>
                 <module>macros</module>
@@ -199,6 +200,7 @@
                 <module>channels</module>
                 <module>contentRetrieval</module>
                 <module>default</module>
+                <module>defaultSiteSettings</module>
                 <module>facets</module>
                 <module>grid</module>
                 <module>macros</module>

@@ -61,7 +61,7 @@
             <input type="hidden" name="templatesSet" value="${currentNode.properties['defaultTemplatesSet'].node.name}">
         </c:if>
         <div>
-            <input type="button" class="button"
+            <input type="button" class="button" id="createSite_button"
                    value="${currentNode.properties['buttonLabel'].string}" tabindex="28"
                    onclick="createSite()" ${disabled}/>
         </div>

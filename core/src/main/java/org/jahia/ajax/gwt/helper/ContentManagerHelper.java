@@ -140,22 +140,21 @@ public class ContentManagerHelper {
                     new StringBuilder(parentNode.getPath()).append(" - ACCESS DENIED").toString());
         }
         JCRNodeWrapper childNode = null;
-        if (!parentNode.isFile() && parentNode.hasPermission("jcr:addChildNodes") && !parentNode.isLocked()) {
-            try {
-                if (!parentNode.isCheckedOut()) {
-                    parentNode.getSession().getWorkspace().getVersionManager().checkout(parentNode.getPath());
-                }
-                childNode = parentNode.addNode(name, nodeType);
-                if (mixin != null) {
-                    for (String m : mixin) {
-                        childNode.addMixin(m);
-                    }
-                }
-                properties.setProperties(childNode, props);
-            } catch (Exception e) {
-                logger.error("Exception", e);
-                throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.cannot.get.node",uiLocale)+ e.getMessage());
+        try {
+            if (!parentNode.isCheckedOut()) {
+                parentNode.getSession().getWorkspace().getVersionManager().checkout(parentNode.getPath());
             }
+            childNode = parentNode.addNode(name, nodeType);
+            if (mixin != null) {
+                for (String m : mixin) {
+                    childNode.addMixin(m);
+                }
+            }
+            properties.setProperties(childNode, props);
+        } catch (Exception e) {
+            logger.error("Exception", e);
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource(
+                    "label.gwt.error.cannot.get.node", uiLocale) + e.getMessage());
         }
         if (childNode == null) {
             throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed", uiLocale));

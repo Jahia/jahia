@@ -9,12 +9,12 @@
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 <script type="text/javascript">
     $(document).ready(function () {
-        $("a#openPopup-${currentNode.identifier}").fancybox();
+        $("a#openPopup-${currentNode.name}").fancybox();
     });
 </script>
 <c:if test="${not renderContext.editMode}">
 <div style="display:none">
-    <div id="popup-${currentNode.identifier}" class="${currentNode.properties['popupClass'].string}">
+    <div id="popup-${currentNode.name}" class="${currentNode.properties['popupClass'].string}">
 </c:if>
         <c:forEach items="${jcr:getChildrenOfType(currentNode,'jmix:droppableContent')}" var="child">
             <template:module node="${child}"/>
@@ -26,5 +26,5 @@
     </div>
 </div>
 </c:if>
-<a class="${currentNode.properties['buttonClass'].string}" id="openPopup-${currentNode.identifier}"
-href="#popup-${currentNode.identifier}">${currentNode.properties['buttonLabel'].string}</a>
+<a class="${currentNode.properties['buttonClass'].string}" id="openPopup-${currentNode.name}"
+href="#popup-${currentNode.name}">${currentNode.properties['buttonLabel'].string}</a>

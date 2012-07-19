@@ -110,6 +110,11 @@
                 <value>rep:root</value>
             </set>
         </property>
+        <property name="noLanguageValidityCheckTypes">
+            <set>
+                <value>jnt:file</value>
+            </set>
+        </property>        
         <property name="listeners">
             <map>
                 <entry key="default">

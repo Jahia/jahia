@@ -99,6 +99,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     private Map<String,ExternalProvider> externalProviders = new HashMap<String, ExternalProvider>();
     private List<PropertyInterceptor> interceptors = new LinkedList<PropertyInterceptor>();
     private Set<String> noValidityCheckTypes = new HashSet<String>();
+    private Set<String> noLanguageValidityCheckTypes = new HashSet<String>();
     
     private Map<String,List<DefaultEventListener>> listeners;
 
@@ -329,5 +330,14 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
 
     public void setNoValidityCheckTypes(Set<String> noValidityCheckTypes) {
         this.noValidityCheckTypes = noValidityCheckTypes;
+    }
+
+    public Set<String> getNoLanguageValidityCheckTypes() {
+        return noLanguageValidityCheckTypes;
+    }
+
+    public void setNoLanguageValidityCheckTypes(
+            Set<String> noLanguageValidityCheckTypes) {
+        this.noLanguageValidityCheckTypes = noLanguageValidityCheckTypes;
     }
 }

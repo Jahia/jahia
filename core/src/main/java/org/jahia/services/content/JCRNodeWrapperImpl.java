@@ -3573,7 +3573,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     if (locales.size() == 0) {
                         return true;
                     }
-                    if (!locales.contains(locale)) {
+                    // BACKLOG-3125 - perhaps getNoLanguageValidityCheckTypes().contains needs to be applied more generally in this method
+                    if (!JCRStoreService.getInstance()
+                            .getNoLanguageValidityCheckTypes()
+                            .contains(getPrimaryNodeTypeName())
+                            && !locales.contains(locale) && hasI18N(locale)) {
                         return false;
                     }
                     for (String mandatoryLanguage : mandatoryLanguages) {

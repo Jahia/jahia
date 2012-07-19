@@ -281,7 +281,7 @@
             </plugin>
             <plugin>
                 <groupId>org.jahia.server</groupId>
-                <artifactId>maven-jahia-plugin</artifactId>
+                <artifactId>jahia-maven-plugin</artifactId>
                 <executions>
                     <execution>
                         <id>native2ascii</id>

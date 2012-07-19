@@ -762,7 +762,7 @@
 
             <plugin>
                 <groupId>org.jahia.server</groupId>
-                <artifactId>maven-jahia-plugin</artifactId>
+                <artifactId>jahia-maven-plugin</artifactId>
                 <executions>
                     <execution>
                         <id>copy-templates</id>

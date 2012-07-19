@@ -33,7 +33,7 @@
         <jahia.package.version>${project.version}</jahia.package.version>
         <jahia.project.structure.version>2</jahia.project.structure.version>
 
-        <jahia.deployers.version>2.5</jahia.deployers.version>
+        <jahia.deployers.version>2.7-SNAPSHOT</jahia.deployers.version>
 
         <jahia.war.classifier />
 
@@ -79,7 +79,7 @@
         <eclipse.plugin.version>2.8</eclipse.plugin.version>
 
         <!-- Jahia Maven plugin version and default settings -->
-        <jahia.plugin.version>2.76</jahia.plugin.version>
+        <jahia.plugin.version>3.0-SNAPSHOT</jahia.plugin.version>
         <!-- common settings -->
         <jahia.configure.useDataStore>true</jahia.configure.useDataStore>
 		<jahia.configure.storeFilesInDB>false</jahia.configure.storeFilesInDB>
@@ -254,6 +254,7 @@
             </releases>
             <snapshots>
                 <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
@@ -478,7 +479,7 @@
                 </plugin>
                 <plugin>
                     <groupId>org.jahia.server</groupId>
-                    <artifactId>maven-jahia-plugin</artifactId>
+                    <artifactId>jahia-maven-plugin</artifactId>
                     <version>${jahia.plugin.version}</version>
                 </plugin>
                 <plugin>
@@ -509,7 +510,7 @@
                                 <pluginExecution>
                                     <pluginExecutionFilter>
                                         <groupId>org.jahia.server</groupId>
-                                        <artifactId>maven-jahia-plugin</artifactId>
+                                        <artifactId>jahia-maven-plugin</artifactId>
                                         <versionRange>[2.56,)</versionRange>
                                         <goals>
                                             <goal>native2ascii</goal>

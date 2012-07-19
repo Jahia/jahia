@@ -381,19 +381,17 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             	System.setProperty("cluster.node.serverId", getString("cluster.node.serverId", "jahiaServer1"));
             }
             if(clusterActivated) {
-                // First expose tcp ip binding address
-                String tcpIpBinding = getString("cluster.tcp.start.ip_address");
-                String numInitialMembers = getString("cluster.tcp.num_initial_members");
-                System.setProperty("cluster.tcp.start.ip_address",tcpIpBinding);
-                System.setProperty("cluster.tcp.num_initial_members",numInitialMembers);
-                // Second get ehcache jgroups configuration for jahia
-                System.setProperty("cluster.tcp.ehcache.jahia.nodes.ip_address",getString("cluster.tcp.ehcache.jahia.nodes.ip_address"));
-                System.setProperty("cluster.tcp.ehcache.jahia.port",getString("cluster.tcp.ehcache.jahia.port"));
-                System.setProperty("cluster.tcp.ehcache.jahia.file",getString("cluster.tcp.ehcache.jahia.file"));
-                // Second get ehcache jgroups configuration for hibernate
-                System.setProperty("cluster.tcp.ehcache.hibernate.nodes.ip_address",getString("cluster.tcp.ehcache.hibernate.nodes.ip_address"));
-                System.setProperty("cluster.tcp.ehcache.hibernate.port",getString("cluster.tcp.ehcache.hibernate.port"));
-                System.setProperty("cluster.tcp.ehcache.hibernate.file",getString("cluster.tcp.ehcache.hibernate.file"));
+                // First expose tcp ip binding address: use also cluster.tcp.start.ip_address for backward compatibility with Jahia 6.6
+                String bindAddress = getString("cluster.tcp.bindAddress", getString("cluster.tcp.start.ip_address", null));
+                if (StringUtils.isNotEmpty(bindAddress)) {
+                    System.setProperty("cluster.tcp.bindAddress", bindAddress);
+                }
+                // Expose binding port: use also cluster.tcp.ehcache.jahia.port for backward compatibility with Jahia 6.6
+                String bindPort = getString("cluster.tcp.bindPort", getString("cluster.tcp.ehcache.jahia.port", null));
+                if (StringUtils.isNotEmpty(bindPort)) {
+                    System.setProperty("cluster.tcp.bindPort", bindPort);
+                }
+                System.setProperty("cluster.tcp.configFile", getString("cluster.tcp.configFile", "tcp-nio.xml"));
             }
             System.setProperty("jahia.jackrabbit.consistencyCheck", String.valueOf(getBoolean("jahia.jackrabbit.consistencyCheck", false)));
             System.setProperty("jahia.jackrabbit.consistencyFix", String.valueOf(getBoolean("jahia.jackrabbit.consistencyFix", false)));

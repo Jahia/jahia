@@ -111,6 +111,10 @@
         <priority value="error"/>
     </category>
 
+    <category name="org.jgroups.protocols.pbcast.GMS">
+        <priority value="debug"/>
+    </category>
+
     <category name="org.springframework">
         <priority value="error"/>
     </category>

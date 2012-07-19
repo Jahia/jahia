@@ -121,7 +121,7 @@
 
     create table JBPM4_DEPLOYMENT (
         DBID_ bigint not null,
-        NAME_ clob(255),
+        NAME_ clob,
         TIMESTAMP_ bigint,
         STATE_ varchar(255),
         primary key (DBID_)
@@ -190,7 +190,7 @@
         HTASKIDX_ integer,
         HVAR_ bigint,
         HVARIDX_ integer,
-        MESSAGE_ clob(255),
+        MESSAGE_ clob,
         OLD_STR_ varchar(255),
         NEW_STR_ varchar(255),
         OLD_INT_ integer,
@@ -284,7 +284,7 @@
         ISEXCLUSIVE_ smallint,
         LOCKOWNER_ varchar(255),
         LOCKEXPTIME_ timestamp,
-        EXCEPTION_ clob(255),
+        EXCEPTION_ clob,
         RETRIES_ integer,
         PROCESSINSTANCE_ bigint,
         EXECUTION_ bigint,
@@ -300,7 +300,7 @@
         DBVERSION_ integer not null,
         BLOB_VALUE_ blob,
         DEPLOYMENT_ bigint,
-        NAME_ clob(255),
+        NAME_ clob,
         primary key (DBID_)
     );
 
@@ -336,7 +336,7 @@
         CLASS_ char(1) not null,
         DBVERSION_ integer not null,
         NAME_ varchar(255),
-        DESCR_ clob(255),
+        DESCR_ clob,
         STATE_ varchar(255),
         SUSPHISTSTATE_ varchar(255),
         ASSIGNEE_ varchar(255),
@@ -372,7 +372,7 @@
         CLASSNAME_ varchar(255),
         LONG_VALUE_ bigint,
         STRING_VALUE_ varchar(255),
-        TEXT_VALUE_ clob(255),
+        TEXT_VALUE_ clob,
         EXESYS_ bigint,
         primary key (DBID_)
     );

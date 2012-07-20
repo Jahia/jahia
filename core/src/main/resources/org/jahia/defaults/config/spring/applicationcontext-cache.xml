@@ -94,7 +94,7 @@ when we flush this entry we will flush the whole cache
         <property name="cacheProvider" ref="ModuleCacheProvider"/>
     </bean>
     
-    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" depends-on="sessionFactory">
+    <bean id="HibernateEhcacheManagerMBeanRegistrator" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" depends-on="sessionFactory">
         <property name="staticMethod" value="org.jahia.services.cache.CacheHelper.registerMBeans"/>
         <property name="arguments">
             <list>

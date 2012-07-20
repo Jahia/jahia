@@ -40,7 +40,6 @@
 
 package org.jahia.services.cache.ehcache;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.services.cache.CacheProvider;
 import org.jahia.services.cache.CacheService;
@@ -51,8 +50,6 @@ import org.jahia.exceptions.JahiaInitializationException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.management.ManagementService;
 
-import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
 import java.lang.management.ManagementFactory;
 
 /**
@@ -76,11 +73,11 @@ public class EhCacheProvider implements CacheProvider {
         if (initialized) {
             return;
         }
-   		cacheManager = CacheManager.create(getClass().getResource(configurationResource));
-    	if (jmxActivated) {
-	        MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-	        ManagementService.registerMBeans(cacheManager, mBeanServer, true, true, true, true, true);
-    	}
+        cacheManager = CacheManager.create(getClass().getResource(configurationResource));
+        if (jmxActivated) {
+            ManagementService.registerMBeans(cacheManager,
+                    ManagementFactory.getPlatformMBeanServer(), true, true, true, true, true);
+        }
         initialized = true;
     }
 

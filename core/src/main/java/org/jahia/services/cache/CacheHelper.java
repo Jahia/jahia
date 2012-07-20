@@ -40,10 +40,12 @@
 
 package org.jahia.services.cache;
 
+import java.lang.management.ManagementFactory;
 import java.util.Iterator;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.management.ManagementService;
 
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -235,9 +237,9 @@ public final class CacheHelper {
         return getCacheManager("org.jahia.hibernate.ehcachemanager");
     }
 
-    public static CacheManager getCacheManager(String name) {
+    public static CacheManager getCacheManager(String cacheManagerName) {
         for (CacheManager mgr : CacheManager.ALL_CACHE_MANAGERS) {
-            if (name.equals(mgr.getName())) {
+            if (cacheManagerName.equals(mgr.getName())) {
                 return mgr;
             }
         }
@@ -249,4 +251,13 @@ public final class CacheHelper {
                 .getCacheManager();
     }
 
+    public static void registerMBeans(String cacheManagerName) {
+        CacheManager mgr = getCacheManager(cacheManagerName);
+        if (mgr == null) {
+            logger.warn("Cannot find Ehcache manager for name {}. Skip registering managed beans in JMX", cacheManagerName);
+            return;
+        }
+        ManagementService.registerMBeans(mgr, ManagementFactory.getPlatformMBeanServer(), true,
+                true, true, true, true);
+    }
 }

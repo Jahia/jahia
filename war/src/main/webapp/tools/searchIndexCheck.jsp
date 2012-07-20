@@ -27,9 +27,9 @@ File indexRoot = new File(SettingsBean.getInstance().getRepositoryHome(), reques
         <span style="color: ${ok ? 'green' : 'red'}">${ok ? 'OK' : '<strong>Problem</strong>'}</span>
         </td>
         <td>
-        <a class="detailsLink" title="Show details" href="#details<%=count%>"><img src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16" height="16" alt="?" title="Show details"/></a>
+        <a class="detailsLink" title="Show details" href="#details-${param.indexId}-<%=count%>"><img src="<c:url value='/css/images/andromeda/icons/help.png'/>" width="16" height="16" alt="?" title="Show details"/></a>
         <div style="display: none;">
-            <div id="details<%=count%>">
+            <div id="details-${param.indexId}-<%=count%>">
                 <h3>Index <%= folder.getPath() %></h3>
                 <pre>${result}</pre>
             </div>

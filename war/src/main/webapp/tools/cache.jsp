@@ -9,9 +9,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
-<c:set var="showActions" value="${functions:default(param.showActions, 'false')}"/>
-<c:set var="showBytes" value="${functions:default(param.showBytes, 'false')}"/>
-<c:set var="showConfig" value="${functions:default(param.showConfig, 'false')}"/>
+<c:set var="showActions" value="${functions:default(fn:escapeXml(param.showActions), 'false')}"/>
+<c:set var="showBytes" value="${functions:default(fn:escapeXml(param.showBytes), 'false')}"/>
+<c:set var="showConfig" value="${functions:default(fn:escapeXml(param.showConfig), 'false')}"/>
 <% pageContext.setAttribute("clusterActivated", Boolean.getBoolean("cluster.activated")); %>
 <c:set var="flushIcon"><img src="<c:url value='/icons/showTrashboard.png'/>" height="16" width="16" alt=" " align="top"/></c:set>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -19,9 +19,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="tools.css" type="text/css" />
     <c:if test="${showConfig}">
-    <link type="text/css" href="resources/jquery.fancybox-1.3.4.css" rel="stylesheet"/>
-    <script type="text/javascript" src="resources/jquery.min.js"></script>
-    <script type="text/javascript" src="resources/jquery.fancybox-1.3.4.js"></script>
+    <link type="text/css" href="<c:url value='/modules/assets/css/jquery.fancybox.css'/>" rel="stylesheet"/>
+    <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.min.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.fancybox.pack.js'/>"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $('.configLink').fancybox({

@@ -13,9 +13,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="tools.css" type="text/css" />
     <title>Search Engine Manager</title>
-    <link type="text/css" href="resources/jquery.fancybox-1.3.4.css" rel="stylesheet"/>
-    <script type="text/javascript" src="resources/jquery.min.js"></script>
-    <script type="text/javascript" src="resources/jquery.fancybox-1.3.4.js"></script>
+    <link type="text/css" href="<c:url value='/modules/assets/css/jquery.fancybox.css'/>" rel="stylesheet"/>
+    <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.min.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.fancybox.pack.js'/>"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $('.detailsLink').fancybox({
@@ -53,12 +53,15 @@
             <p style="color: blue">Start checking indexes for repository home <%= SettingsBean.getInstance().getRepositoryHome() %> (<%= org.jahia.utils.FileUtils.humanReadableByteCount(FileUtils.sizeOfDirectory(SettingsBean.getInstance().getRepositoryHome())) %>)</p>
             <jsp:include page="searchIndexCheck.jsp">
                 <jsp:param name="indexPath" value="index"/>
+                <jsp:param name="indexId" value="versions"/>
             </jsp:include>
             <jsp:include page="searchIndexCheck.jsp">
                 <jsp:param name="indexPath" value="workspaces/default/index"/>
+                <jsp:param name="indexId" value="default-workspace"/>
             </jsp:include>
             <jsp:include page="searchIndexCheck.jsp">
                 <jsp:param name="indexPath" value="workspaces/live/index"/>
+                <jsp:param name="indexId" value="live-workspace"/>
             </jsp:include>
             <%  pageContext.setAttribute("took", Long.valueOf(System.currentTimeMillis() - actionTime)); %>
             <p style="color: blue">...done in ${took} ms</p>

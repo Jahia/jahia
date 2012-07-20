@@ -29,9 +29,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>JCR Query Tool</title>
 <link rel="stylesheet" href="tools.css" type="text/css" />
-<link type="text/css" href="resources/jquery.fancybox-1.3.4.css" rel="stylesheet"/>
-<script type="text/javascript" src="resources/jquery.min.js"></script>
-<script type="text/javascript" src="resources/jquery.fancybox-1.3.4.js"></script>
+<link type="text/css" href="<c:url value='/modules/assets/css/jquery.fancybox.css'/>" rel="stylesheet"/>
+<script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.min.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.fancybox.pack.js'/>"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         $('#helpLink').fancybox({

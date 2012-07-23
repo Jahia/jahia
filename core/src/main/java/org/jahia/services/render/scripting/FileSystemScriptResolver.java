@@ -43,6 +43,8 @@ package org.jahia.services.render.scripting;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.channels.Channel;
+import org.jahia.services.channels.ChannelService;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -139,7 +141,21 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
             if ((JahiaSitesBaseService.SYSTEM_SITE_KEY).equals(site.getName())) {
                 site = renderContext.getMainResource().getNode().getResolveSite();
             }
-            SortedSet<View> s = getViewsSet(nodeTypeList, site, resource.getTemplateType());
+            List<String> templateTypeMappings = new ArrayList<String>();
+            SortedSet<View> s = new TreeSet<View>();
+            if (renderContext != null) {
+                Channel channel = renderContext.getChannel();
+                while (!channel.getFallBack().equals("root")) {
+                    if (channel.getCapability("template-type-mapping") != null) {
+                        templateTypeMappings.add(channel.getCapability("template-type-mapping"));
+                    }
+                    channel = ChannelService.getInstance().getChannel(channel.getFallBack());
+                }
+                for (String templateTypeMapping : templateTypeMappings) {
+                    s.addAll(getViewsSet(nodeTypeList, site, resource.getTemplateType() + "-" + templateTypeMapping));
+                }
+            }
+            s.addAll(getViewsSet(nodeTypeList, site, resource.getTemplateType()));
             for (View view : s) {
                 if (view.getKey().equals(template)) {
                     return view;
@@ -181,7 +197,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site, String templateType) {
         SortedSet<View> t;
         String cacheKey = nt.getName() + (site != null ? site.getSiteKey() : "");
-        viewSetCache.clear();
+        //viewSetCache.clear();
          if (viewSetCache.containsKey(cacheKey)) {
             t = viewSetCache.get(cacheKey);
         } else {

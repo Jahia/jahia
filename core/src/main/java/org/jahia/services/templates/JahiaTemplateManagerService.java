@@ -1050,6 +1050,58 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
         return dependencies;
     }
+    
+    public List<JahiaTemplatesPackage> getInstalledModulesForSite(String siteKey,
+            boolean includeTemplateSet, boolean includeDirectDependencies,
+            boolean includeTransitiveDependencies) throws JahiaException {
+        JahiaSite site = siteService.getSiteByKey(siteKey);
+        if (site == null) {
+            throw new JahiaException("Site cannot be found for key " + siteKey,
+                    "Site cannot be found for key " + siteKey, JahiaException.SITE_NOT_FOUND,
+                    JahiaException.ERROR_SEVERITY);
+        }
+
+        List<String> installedModules = site.getInstalledModules();
+        if (!includeTemplateSet) {
+            if (installedModules.size() > 1) {
+                installedModules = installedModules.subList(1, installedModules.size());
+                Collections.sort(installedModules);
+            } else {
+                installedModules = Collections.emptyList();
+            }
+        }
+
+        Set<String> modules = new TreeSet<String>();
+
+        if (includeDirectDependencies) {
+            modules.addAll(installedModules);
+        }
+
+        if (includeTransitiveDependencies) {
+            for (String m : installedModules) {
+                JahiaTemplatesPackage pkg = getTemplatePackageByNodeName(m);
+                pkg = pkg != null ? pkg : getTemplatePackage(m);
+                if (pkg != null) {
+                    for (JahiaTemplatesPackage deps : pkg.getDependencies()) {
+                        if (!installedModules.contains(deps.getRootFolder())) {
+                            modules.add(deps.getRootFolder());
+                        }
+                    }
+                }
+            }
+        }
+
+        List<JahiaTemplatesPackage> packages = new LinkedList<JahiaTemplatesPackage>();
+        for (String m : modules) {
+            JahiaTemplatesPackage pkg = getTemplatePackageByNodeName(m);
+            pkg = pkg != null ? pkg : getTemplatePackage(m);
+            if (pkg != null) {
+                packages.add(pkg);
+            }
+        }
+
+        return packages.isEmpty() ? Collections.<JahiaTemplatesPackage> emptyList() : packages;
+    }
 
     public void regenerateImportFile(final String moduleName, JCRSessionWrapper session) throws RepositoryException {
         try {

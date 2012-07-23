@@ -278,6 +278,9 @@ final class JahiaTemplatesPackageHandler {
                     }
                 }
                 templatePackage.setVersions(versions);
+                
+                String provider = (String) manifest.getMainAttributes().get(new Attributes.Name("Implementation-Vendor"));
+                templatePackage.setProvider(StringUtils.defaultIfBlank(provider, "Jahia Solutions Group SA"));
             }
         } catch (IOException ioe) {
             logger

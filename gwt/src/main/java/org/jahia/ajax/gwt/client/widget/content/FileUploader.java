@@ -55,7 +55,6 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -240,15 +239,7 @@ public class FileUploader extends Window {
         form.addListener(Events.Submit, new Listener<FormEvent>() {
             public void handleEvent(FormEvent formEvent) {
                 bar.reset();
-                String filename = p.getUpload().getFilename();
-                int beginIndex = filename.lastIndexOf("/");
-                if(beginIndex>0)
-                filename = filename.substring(beginIndex);
-                beginIndex = filename.lastIndexOf("\\");
-                if(beginIndex>0)
-                filename = filename.substring(beginIndex+1).replaceAll("\\\\","");
-                linker.setSelectPathAfterDataUpdate(Arrays.asList(location.getPath() + "/" + filename));
-
+                String selectFileAfterDataUpdate = null;
                 String result = formEvent.getResultHtml();
            
                 removeAll();
@@ -259,7 +250,9 @@ public class FileUploader extends Window {
                 for (int i = 0; i < results.length; i++) {
                     String s = new HTML(results[i]).getText();
                     if (s.startsWith("OK:")) {
-
+                        if (selectFileAfterDataUpdate == null) {
+                            selectFileAfterDataUpdate = s.substring("OK: ".length()); 
+                        }
                     } else if (s.startsWith("EXISTS:")) {
                         int i1 = s.indexOf(' ');
                         int i2 = s.indexOf(' ', i1 + 1);
@@ -300,6 +293,9 @@ public class FileUploader extends Window {
 
                     layout();
                 } else {
+                    if (selectFileAfterDataUpdate != null) {
+                        linker.setSelectPathAfterDataUpdate(Arrays.asList(location.getPath() + "/" + selectFileAfterDataUpdate));
+                    }
                     endUpload(unzip, linker);
                 }
             }

@@ -147,13 +147,14 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
             for (String filename : uploads.keySet()) {
                 final FileItem item = uploads.get(filename);
                 try {
-                    final int i = writeToDisk(user, item, location, filename);
+                    StringBuilder name = new StringBuilder(filename);
+                    final int i = writeToDisk(user, item, location, name);
                     switch (i) {
                         case OK:
                             if (unzip && filename.toLowerCase().endsWith(".zip")) {
-                                pathsToUnzip.add(new StringBuilder(location).append("/").append(filename).toString());
+                                pathsToUnzip.add(new StringBuilder(location).append("/").append(name.toString()).toString());
                             }
-                            printWriter.write("OK: " + filename + "\n");
+                            printWriter.write("OK: " + name.toString() + "\n");
                             break;
                         case EXISTS:
                             File f = File.createTempFile("upload", null);
@@ -251,7 +252,8 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
         return name;
     }
 
-    private int writeToDisk(JahiaUser user, FileItem item, String location, String filename) throws IOException {
+    private int writeToDisk(JahiaUser user, FileItem item, String location, StringBuilder name) throws IOException {
+        String filename = name.toString();
         if (logger.isDebugEnabled()) {
             logger.debug("item : " + item);
             logger.debug("destination : " + location);
@@ -290,6 +292,10 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                 }
                 JCRNodeWrapper node = locationFolder.uploadFile(filename, is, JCRContentUtils.getMimeType(filename, item.getContentType()));
                 node.save();
+                if (!node.getName().equals(filename)) {
+                    name.delete(0, name.length());
+                    name.append(node.getName());
+                }
                 // Handle potential move of the node after save
                 node = node.getSession().getNodeByIdentifier(node.getIdentifier());
                 if (node.getProvider().isVersioningAvailable()) {

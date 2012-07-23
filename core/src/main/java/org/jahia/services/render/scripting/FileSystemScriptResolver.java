@@ -145,7 +145,21 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
             if ((JahiaSitesBaseService.SYSTEM_SITE_KEY).equals(site.getName())) {
                 site = renderContext.getMainResource().getNode().getResolveSite();
             }
-            SortedSet<View> s = getViewsSet(nodeTypeList, site, resource.getTemplateType());
+            List<String> templateTypeMappings = new ArrayList<String>();
+            SortedSet<View> s = new TreeSet<View>();
+            if (renderContext != null) {
+                Channel channel = renderContext.getChannel();
+                while (!channel.getFallBack().equals("root")) {
+                    if (channel.getCapability("template-type-mapping") != null) {
+                        templateTypeMappings.add(channel.getCapability("template-type-mapping"));
+                    }
+                    channel = ChannelService.getInstance().getChannel(channel.getFallBack());
+                }
+                for (String templateTypeMapping : templateTypeMappings) {
+                    s.addAll(getViewsSet(nodeTypeList, site, resource.getTemplateType() + "-" + templateTypeMapping));
+                }
+            }
+            s.addAll(getViewsSet(nodeTypeList, site, resource.getTemplateType()));
 >>>>>>> .merge-right.r42301
 >>>>>>> .merge-right.r42299
             for (View view : s) {
@@ -191,10 +205,14 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         String cacheKey = nt.getName() + (site != null ? site.getSiteKey() : "");
 <<<<<<< .working
 <<<<<<< .working
+<<<<<<< .working
 =======
         //viewSetCache.clear();
 =======
         viewSetCache.clear();
+=======
+        //viewSetCache.clear();
+>>>>>>> .merge-right.r42303
 >>>>>>> .merge-right.r42301
 >>>>>>> .merge-right.r42299
          if (viewSetCache.containsKey(cacheKey)) {

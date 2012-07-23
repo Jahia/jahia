@@ -134,7 +134,11 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     private View resolveView(Resource resource, List<ExtendedNodeType> nodeTypeList, RenderContext renderContext) {
         String template = resource.getResolvedTemplate();
         try {
+<<<<<<< .working
             SortedSet<View> s = getViewsSet(nodeTypeList, resource.getNode().getResolveSite(), resource.getTemplateType(), renderContext);
+=======
+            SortedSet<View> s = getViewsSet(nodeTypeList, renderContext.getMainResource().getNode().getResolveSite(), resource.getTemplateType());
+>>>>>>> .merge-right.r42299
             for (View view : s) {
                 if (view.getKey().equals(template)) {
                     return view;
@@ -176,6 +180,10 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site, String templateType, RenderContext renderContext) {
         SortedSet<View> t;
         String cacheKey = nt.getName() + (site != null ? site.getSiteKey() : "");
+<<<<<<< .working
+=======
+        //viewSetCache.clear();
+>>>>>>> .merge-right.r42299
          if (viewSetCache.containsKey(cacheKey)) {
             t = viewSetCache.get(cacheKey);
         } else {

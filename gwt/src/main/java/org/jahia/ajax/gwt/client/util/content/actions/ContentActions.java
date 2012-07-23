@@ -44,6 +44,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -161,7 +162,7 @@ public class ContentActions {
         if (selection != null && selection.isFile()) {
             linker.loading(Messages.get("statusbar.downloading.label"));
             if (url != null) {
-                HTML link = new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + url + "\" target=\"_new\">" + selection.getName() + "</a>");
+                HTML link = new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + url + "\" target=\"_new\">" + SafeHtmlUtils.htmlEscape(selection.getName()) + "</a>");
                 final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
                 dl.setModal(true);
                 dl.setHeading(Messages.get("label.download"));

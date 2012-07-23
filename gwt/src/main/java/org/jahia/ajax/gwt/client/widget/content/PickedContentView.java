@@ -50,6 +50,8 @@ import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -122,13 +124,14 @@ public class PickedContentView extends BottomRightComponent {
         column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
 
+                String nameEscaped = SafeHtmlUtils.htmlEscape(gwtJahiaNode.getName());
                 String html = "<div class=\"details\"> \n" +
                         "      <b> Name:</b> \n" +
-                        "      <span>" + gwtJahiaNode.getName() + "</span>\n" +
+                        "      <span>" + nameEscaped + "</span>\n" +
                         "      <b>Alt:</b> \n" +
-                        "      <span>" + gwtJahiaNode.getName() + "</span>\n" +
+                        "      <span>" + nameEscaped + "</span>\n" +
                         "      <br/> <b>Path:</b> \n" +
-                        "      <span>" + gwtJahiaNode.getPath() + "</span></div> \n" +
+                        "      <span>" + SafeHtmlUtils.htmlEscape(gwtJahiaNode.getPath()) + "</span></div> \n" +
                         "      </div>";
                 return html;
             }

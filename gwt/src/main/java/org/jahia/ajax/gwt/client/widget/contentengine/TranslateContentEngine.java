@@ -120,7 +120,7 @@ public class TranslateContentEngine extends Window {
         setResizable(true);
         setModal(true);
         setMaximizable(true);
-        setHeading(Messages.get("label.translate", "Translate") + " " + node.getName());
+        setHeading(Messages.get("label.translate", "Translate") + ": " + node.getName());
         LayoutContainer panel = new LayoutContainer();
         panel.setLayout(new BorderLayout());
 

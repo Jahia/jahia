@@ -48,6 +48,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
+import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDeployedOnSiteEvent;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
@@ -134,7 +135,11 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     private View resolveView(Resource resource, List<ExtendedNodeType> nodeTypeList, ArrayList<String> searchedLocations, RenderContext renderContext) {
         String template = resource.getResolvedTemplate();
         try {
-            SortedSet<View> s = getViewsSet(nodeTypeList, renderContext.getMainResource().getNode().getResolveSite(), resource.getTemplateType());
+            JCRSiteNode site = resource.getNode().getResolveSite();
+            if ((JahiaSitesBaseService.SYSTEM_SITE_KEY).equals(site.getName())) {
+                site = renderContext.getMainResource().getNode().getResolveSite();
+            }
+            SortedSet<View> s = getViewsSet(nodeTypeList, site, resource.getTemplateType());
             for (View view : s) {
                 if (view.getKey().equals(template)) {
                     return view;
@@ -176,7 +181,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site, String templateType) {
         SortedSet<View> t;
         String cacheKey = nt.getName() + (site != null ? site.getSiteKey() : "");
-        //viewSetCache.clear();
+        viewSetCache.clear();
          if (viewSetCache.containsKey(cacheKey)) {
             t = viewSetCache.get(cacheKey);
         } else {

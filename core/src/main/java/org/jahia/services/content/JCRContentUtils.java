@@ -320,7 +320,7 @@ public final class JCRContentUtils implements ServletContextAware {
                 buffer.append('%');
                 buffer.append(Character.toUpperCase(Character.forDigit(ch / 16, 16)));
                 buffer.append(Character.toUpperCase(Character.forDigit(ch % 16, 16)));
-            } else if (ch == '/' ||  ch == '\\' || ch == '\t' || ch == '\r' || ch == '\n') {
+            } else if (ch == '/' ||  ch == '\\' || Character.isWhitespace(ch)) {
                 if (buffer.length() > 0) {
                     buffer.append(' ');
                 }

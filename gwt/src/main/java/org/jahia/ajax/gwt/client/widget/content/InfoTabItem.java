@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -87,11 +88,11 @@ public class InfoTabItem extends EditEngineTabItem {
                 }
                 String name = selectedNode.getName();
                 if (name != null) {
-                    flowPanel.add(new HTML("<b>" + Messages.get("label.name") + ":</b> " + name));
+                    flowPanel.add(new HTML("<b>" + Messages.get("label.name") + ":</b> " + SafeHtmlUtils.htmlEscape(name)));
                 }
                 String path = selectedNode.getPath();
                 if (path != null) {
-                    flowPanel.add(new HTML("<b>" + Messages.get("label.path") + ":</b> " + path));
+                    flowPanel.add(new HTML("<b>" + Messages.get("label.path") + ":</b> " + SafeHtmlUtils.htmlEscape(path)));
                 }
                 String id = selectedNode.getUUID();
                 if (id != null) {

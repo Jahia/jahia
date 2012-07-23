@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.event.*;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.DOM;
 import com.allen_sauer.gwt.log.client.Log;
@@ -73,7 +74,7 @@ public class ImagePopup extends Window {
 
         //setLayout(new FitLayout()) ;
         final HTML img = new HTML("<img src=\"" + URL.appendTimestamp(n.getUrl()) + "\" width=\"" + w +
-                "\" height=\"" + h + "\" alt=\"" + n.getName() + "\" />") ;
+                "\" height=\"" + h + "\" alt=\"" + SafeHtmlUtils.htmlEscape(n.getName()) + "\" />") ;
         img.setSize(String.valueOf(w) + "px", String.valueOf(h) + "px");
 
         setSize(w + 18, h + 34);

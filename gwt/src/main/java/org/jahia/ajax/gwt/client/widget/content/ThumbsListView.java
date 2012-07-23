@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -87,7 +88,7 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
         } else {
             model.set("markedForDeletion", "false" );
         }
-        model.set("shortName",  Format.ellipse(model.getName(), 14));
+        model.set("shortName",  SafeHtmlUtils.htmlEscape(Format.ellipse(model.getName(), 14)));
         model.set("nameLabel", Messages.get("label.name", "Name"));
         model.set("titleLabel", Messages.get("label.title", "Title"));
         model.set("authorLabel", Messages.get("versioning_author", "Author"));
@@ -95,9 +96,9 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
         String width = model.get("j:width");
         if (width != null) {
             if (Integer.parseInt(width) < 80) {
-                model.set("nodeImg", "<img src=\"" + URL.appendTimestamp(model.getUrl()) + "\" title=\"" + model.getName() + "\">");
+                model.set("nodeImg", "<img src=\"" + URL.appendTimestamp(model.getUrl()) + "\" title=\"" + SafeHtmlUtils.htmlEscape(model.getName()) + "\">");
             } else {
-                model.set("nodeImg", "<img src=\"" + URL.appendTimestamp(model.getPreview()) + "\" title=\"" + model.getName() + "\">");
+                model.set("nodeImg", "<img src=\"" + URL.appendTimestamp(model.getPreview()) + "\" title=\"" + SafeHtmlUtils.htmlEscape(model.getName()) + "\">");
             }
             if (detailed) {
                 model.set("widthHTML", "<div><b>" + Messages.get("width.label", "Width") + " </b>" + model.get("j:width") + " px</div>");
@@ -106,13 +107,13 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
                 model.set("widthAndHeightHTML", model.get("j:width") + " x " + model.get("j:height"));
             }
         } else if (model.getPreview() != null) {
-            model.set("nodeImg", "<img src=\"" + URL.appendTimestamp(model.getPreview()) + "\" title=\"" + model.getName() + "\">");
+            model.set("nodeImg", "<img src=\"" + URL.appendTimestamp(model.getPreview()) + "\" title=\"" + SafeHtmlUtils.htmlEscape(model.getName()) + "\">");
         } else {
             model.set("nodeImg", ContentModelIconProvider.getInstance().getIcon(model, true).getHTML());
         }
 
         if (model.getTags() != null && model.getTags().length() > 0) {
-            model.set("tagsHTML", "<div><b>" + model.get("tagsLabel") + ": </b>" + model.getTags() + "</div>");
+            model.set("tagsHTML", "<div><b>" + model.get("tagsLabel") + ": </b>" + SafeHtmlUtils.htmlEscape(model.getTags()) + "</div>");
         }
         return model;
     }

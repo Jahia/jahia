@@ -53,26 +53,18 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.TextArea;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
-import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.definition.LangPropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
-import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
-import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,7 +120,7 @@ public class TranslateContentEngine extends Window {
         setResizable(true);
         setModal(true);
         setMaximizable(true);
-        setHeading(Messages.get("cm_translate " + node.getName(), "Translate " + node.getName()));
+        setHeading(Messages.get("label.translate", "Translate") + " " + node.getName());
         LayoutContainer panel = new LayoutContainer();
         panel.setLayout(new BorderLayout());
 

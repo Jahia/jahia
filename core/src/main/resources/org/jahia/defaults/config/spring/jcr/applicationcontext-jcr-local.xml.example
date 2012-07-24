@@ -7,7 +7,7 @@
     <bean id="Local-VFSStoreProvider" class="org.jahia.services.content.impl.vfs.VFSContentStoreProvider" parent="AbstractJCRStoreProvider">
         <property name="key" value="local"/>
         <property name="root" value="file:///"/>
-        <property name="rmibind" value="local"/>
+        <!--property name="rmibind" value="local"/-->
         <property name="mountPoint" value="/localFs"/>
     </bean>
 

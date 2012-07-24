@@ -171,13 +171,13 @@
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
-            <artifactId>commons-vfs</artifactId>
-            <version>1.0</version>
+            <artifactId>commons-vfs2</artifactId>
+            <version>2.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
-            <artifactId>commons-vfs-sandbox</artifactId>
-            <version>1.0</version>
+            <artifactId>commons-vfs2-sandbox</artifactId>
+            <version>2.0</version>
         </dependency>
 
         <!-- Dependency from jakarta-slide-webdavlib-2.2pre1-SLIDE-386476-SNAPSHOT.jar not present in maven 2 repository-->

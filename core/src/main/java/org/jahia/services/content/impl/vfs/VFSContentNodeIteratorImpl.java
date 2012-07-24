@@ -40,7 +40,7 @@
 
 package org.jahia.services.content.impl.vfs;
 
-import org.apache.commons.vfs.FileContent;
+import org.apache.commons.vfs2.FileContent;
 import org.jahia.services.content.RangeIteratorImpl;
 
 import javax.jcr.NodeIterator;

@@ -40,8 +40,8 @@
 
 package org.jahia.services.content.impl.vfs;
 
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 

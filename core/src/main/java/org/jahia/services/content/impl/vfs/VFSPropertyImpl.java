@@ -40,7 +40,7 @@
 
 package org.jahia.services.content.impl.vfs;
 
-import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs2.FileObject;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.Name;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;

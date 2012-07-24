@@ -41,8 +41,8 @@
 package org.jahia.services.content.impl.vfs;
 
 
-import org.apache.commons.vfs.FileContent;
-import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs2.FileContent;
+import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.io.IOUtils;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;

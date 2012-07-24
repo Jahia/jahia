@@ -147,15 +147,13 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                 Channel channel = renderContext.getChannel();
                 while (!channel.getFallBack().equals("root")) {
                     if (channel.getCapability("template-type-mapping") != null) {
-                        templateTypeMappings.add(channel.getCapability("template-type-mapping"));
+                        templateTypeMappings.add(resource.getTemplateType() + "-" + channel.getCapability("template-type-mapping"));
                     }
                     channel = ChannelService.getInstance().getChannel(channel.getFallBack());
                 }
-                for (String templateTypeMapping : templateTypeMappings) {
-                    s.addAll(getViewsSet(nodeTypeList, site, resource.getTemplateType() + "-" + templateTypeMapping));
-                }
             }
-            s.addAll(getViewsSet(nodeTypeList, site, resource.getTemplateType()));
+            templateTypeMappings.add(resource.getTemplateType());
+            s = getViewsSet(nodeTypeList, site, templateTypeMappings);
             for (View view : s) {
                 if (view.getKey().equals(template)) {
                     return view;
@@ -218,14 +216,14 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
 
     public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType) {
         try {
-            return getViewsSet(getNodeTypeList(nt), site, templateType);
+            return getViewsSet(getNodeTypeList(nt), site, Arrays.asList(templateType));
         } catch (NoSuchNodeTypeException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    private SortedSet<View> getViewsSet(List<ExtendedNodeType> nodeTypeList, JCRSiteNode site, String templateType) {
+    private SortedSet<View> getViewsSet(List<ExtendedNodeType> nodeTypeList, JCRSiteNode site, List<String> templateTypes) {
         Map<String, View> views = new HashMap<String, View>();
 
         List<String> installedModules = null;
@@ -245,10 +243,14 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
             Set<JahiaTemplatesPackage> packages = templateManagerService.getAvailableTemplatePackagesForModule(JCRContentUtils.replaceColon(type.getName()));
             for (JahiaTemplatesPackage aPackage : packages) {
                 if (installedModules == null || installedModules.contains(aPackage.getRootFolder())) {
-                    getViewsSet(type, views, templateType, aPackage.getRootFolder(), aPackage);
+                    for (String templateType : templateTypes) {
+                        getViewsSet(type, views, templateType, aPackage.getRootFolder(), aPackage);
+                    }
                 }
             }
-            getViewsSet(type, views, templateType, "default", null);
+            for (String templateType : templateTypes) {
+                getViewsSet(type, views, templateType, "default", null);
+            }
         }
         return new TreeSet<View>(views.values());
     }

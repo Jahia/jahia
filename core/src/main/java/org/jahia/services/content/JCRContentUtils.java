@@ -1593,6 +1593,17 @@ public final class JCRContentUtils implements ServletContextAware {
         }
         return reversed;
     }
+    
+    /**
+     * Encode a string to be used in a JCR SQL2 query by "escaping" the single quotes.
+     * 
+     * @param s
+     *            the string to be encoded
+     * @return encoded string to be used in a JCR SQL2 query
+     */
+    public static String sqlEncode(String s) {
+        return s != null && s.contains("'") ? Patterns.SINGLE_QUOTE.matcher(s).replaceAll("''") : s;
+    }
 
     /**
      * Returns the first parent of the specified node, which has the ACL inheritance broken. If not found, null<code>null</code> is

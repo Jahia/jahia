@@ -1,6 +1,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -36,10 +37,18 @@
             <c:otherwise>
                 <script type="text/javascript">
                     <c:if test="${empty currentNode.properties['mode'].string}">
-                    $('#item-${currentNode.identifier}').load('<c:url value="${url.base}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}&includeJavascripts=true"/>');
+                    <c:url value="${url.base}${currentNode.path}.html.ajax" var="theUrl">
+                    	<c:param name="mainResource" value="${renderContext.mainResource.path}"/>
+                    	<c:param name="includeJavascripts" value="true"/>
+                    </c:url>
+                    $('#item-${currentNode.identifier}').load("${functions:escapeJavaScript(theUrl)}");
                     </c:if>
                     <c:if test="${not empty currentNode.properties['mode'].string}">
-                    $('#item-${currentNode.identifier}').load('<c:url value="/cms/${currentNode.properties['mode'].string}/${currentResource.locale}${currentNode.path}.html.ajax?mainResource=${renderContext.mainResource.path}&includeJavascripts=true"/>');
+                    <c:url value="/cms/${currentNode.properties['mode'].string}/${currentResource.locale}${currentNode.path}.html.ajax" var="theUrl">
+                    	<c:param name="mainResource" value="${renderContext.mainResource.path}"/>
+                    	<c:param name="includeJavascripts" value="true"/>
+                    </c:url>
+                    $('#item-${currentNode.identifier}').load("${functions:escapeJavaScript(theUrl)}");
                     </c:if>
                 </script>
             </c:otherwise>

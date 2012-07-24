@@ -306,6 +306,82 @@ class ZipInputStream extends InflaterInputStream implements ZipConstants {
      */
     private String getUTF8String(byte[] b, int off, int len) {
         try {
+            return getUTF8StringStandard(b, off, len);
+        } catch (IllegalArgumentException e) {
+            return getUTF8StringOurs(b, off, len);
+        }
+    }
+
+    /*
+     * Fetches a UTF8-encoded String from the specified byte array.
+     */
+    private static String getUTF8StringStandard(byte[] b, int off, int len) {
+        // First, count the number of characters in the sequence
+        int count = 0;
+        int max = off + len;
+        int i = off;
+        while (i < max) {
+            int c = b[i++] & 0xff;
+            switch (c >> 4) {
+            case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+                // 0xxxxxxx
+                count++;
+                break;
+            case 12: case 13:
+                // 110xxxxx 10xxxxxx
+                if ((int)(b[i++] & 0xc0) != 0x80) {
+                    throw new IllegalArgumentException();
+                }
+                count++;
+                break;
+            case 14:
+                // 1110xxxx 10xxxxxx 10xxxxxx
+                if (((int)(b[i++] & 0xc0) != 0x80) ||
+                    ((int)(b[i++] & 0xc0) != 0x80)) {
+                    throw new IllegalArgumentException();
+                }
+                count++;
+                break;
+            default:
+                // 10xxxxxx, 1111xxxx
+                throw new IllegalArgumentException();
+            }
+        }
+        if (i != max) {
+            throw new IllegalArgumentException();
+        }
+        // Now decode the characters...
+        char[] cs = new char[count];
+        i = 0;
+        while (off < max) {
+            int c = b[off++] & 0xff;
+            switch (c >> 4) {
+            case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+                // 0xxxxxxx
+                cs[i++] = (char)c;
+                break;
+            case 12: case 13:
+                // 110xxxxx 10xxxxxx
+                cs[i++] = (char)(((c & 0x1f) << 6) | (b[off++] & 0x3f));
+                break;
+            case 14:
+                // 1110xxxx 10xxxxxx 10xxxxxx
+                int t = (b[off++] & 0x3f) << 6;
+                cs[i++] = (char)(((c & 0x0f) << 12) | t | (b[off++] & 0x3f));
+                break;
+            default:
+                // 10xxxxxx, 1111xxxx
+                throw new IllegalArgumentException();
+            }
+        }
+        return new String(cs, 0, count);
+    }
+
+    /*
+     * Fetches a UTF8-encoded String from the specified byte array.
+     */
+    private String getUTF8StringOurs(byte[] b, int off, int len) {
+        try {
             if (!utfFailed) {
                 String r = new String(b,off,len,"UTF-8");
                 byte[] b2 = r.getBytes("UTF-8");

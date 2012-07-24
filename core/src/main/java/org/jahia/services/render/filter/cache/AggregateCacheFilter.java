@@ -372,6 +372,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                             newDependencies.add("ALL");
                             dependenciesCache.put(new Element(path, newDependencies));
                         } else {
+                            if (newDependencies.add(perUserKey)) {
+                                dependenciesCache.put(new Element(path, newDependencies));
+                            }
                             if (isGuest) {
                                 LinkedList<String> userKeysLinkedList = userKeys.get();
                                 if (userKeysLinkedList != null && userKeysLinkedList.size() > 0) {
@@ -380,9 +383,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                                         dependenciesCache.put(new Element(path, newDependencies));
                                     }
                                 }
-                            } else if (newDependencies.add(perUserKey)) {
-                                dependenciesCache.put(new Element(path, newDependencies));
-                            }
+                            } 
                         }
                     }
                 }
@@ -394,17 +395,17 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     Set<String> dependencies = element1 != null ? (Set<String>) element1.getValue() : Collections.<String> emptySet();
                     Set<String> newDependencies = new LinkedHashSet<String>(dependencies.size() + 1);
                     newDependencies.addAll(dependencies);
+                    if (newDependencies.add(perUserKey)) {
+                        regexpDependenciesCache.put(new Element(regexp, newDependencies));
+                    }                    
                     if(isGuest) {
                         LinkedList<String> userKeysLinkedList = userKeys.get();
                         if (userKeysLinkedList != null && userKeysLinkedList.size() > 0) {
                             final String mainresourcekey = userKeysLinkedList.getLast();
                             if(newDependencies.add(mainresourcekey)){
-                                dependenciesCache.put(new Element(regexp, newDependencies));
+                                regexpDependenciesCache.put(new Element(regexp, newDependencies));
                             }
                         }
-                    }
-                    else if (newDependencies.add(perUserKey)) {
-                        regexpDependenciesCache.put(new Element(regexp, newDependencies));
                     }
                 }
                 resource.getRegexpDependencies().clear();

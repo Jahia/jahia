@@ -8,7 +8,6 @@
 
 	<bean id="RenderService" class="org.jahia.services.render.RenderService" factory-method="getInstance">
 		<property name="templateManagerService" ref="JahiaTemplateManagerService" />
-        <property name="channelService" ref="ChannelService" />
         <property name="scriptResolvers">
 			<list>
 				<bean class="org.jahia.services.render.scripting.FileSystemScriptResolver">

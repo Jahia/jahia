@@ -45,7 +45,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.CacheProvider;
-import org.jahia.services.channels.ChannelService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -128,18 +127,12 @@ public class RenderService {
 
     private JahiaTemplateManagerService templateManagerService;
 
-    private ChannelService channelService;
-
     private Collection<ScriptResolver> scriptResolvers;
 
     private List<RenderFilter> filters = new LinkedList<RenderFilter>();
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
         this.templateManagerService = templateManagerService;
-    }
-
-    public void setChannelService(ChannelService channelService) {
-        this.channelService = channelService;
     }
 
     public void setScriptResolvers(Collection<ScriptResolver> scriptResolvers) {
@@ -213,7 +206,7 @@ public class RenderService {
 
     public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site, String templateType, RenderContext renderContext) {
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            if (scriptResolver.hasView(nt, key, site, templateType, renderContext)) {
+            if (scriptResolver.hasView(nt, key, site, templateType)) {
                 return true;
             }
         }
@@ -232,7 +225,7 @@ public class RenderService {
     public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType, RenderContext renderContext) {
         SortedSet<View> set = new TreeSet<View>();
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            set.addAll(scriptResolver.getViewsSet(nt, site, templateType, renderContext));
+            set.addAll(scriptResolver.getViewsSet(nt, site, templateType));
         }
         return set;
     }

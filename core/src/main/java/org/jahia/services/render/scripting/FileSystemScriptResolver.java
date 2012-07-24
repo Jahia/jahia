@@ -151,15 +151,13 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                 Channel channel = renderContext.getChannel();
                 while (!channel.getFallBack().equals("root")) {
                     if (channel.getCapability("template-type-mapping") != null) {
-                        templateTypeMappings.add(channel.getCapability("template-type-mapping"));
+                        templateTypeMappings.add(resource.getTemplateType() + "-" + channel.getCapability("template-type-mapping"));
                     }
                     channel = ChannelService.getInstance().getChannel(channel.getFallBack());
                 }
-                for (String templateTypeMapping : templateTypeMappings) {
-                    s.addAll(getViewsSet(nodeTypeList, site, resource.getTemplateType() + "-" + templateTypeMapping));
-                }
             }
-            s.addAll(getViewsSet(nodeTypeList, site, resource.getTemplateType()));
+            templateTypeMappings.add(resource.getTemplateType());
+            s = getViewsSet(nodeTypeList, site, templateTypeMappings);
 >>>>>>> .merge-right.r42301
 >>>>>>> .merge-right.r42299
             for (View view : s) {
@@ -235,14 +233,22 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
 
     public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType, RenderContext renderContext) {
         try {
+<<<<<<< .working
             return getViewsSet(getNodeTypeList(nt), site, templateType, renderContext);
+=======
+            return getViewsSet(getNodeTypeList(nt), site, Arrays.asList(templateType));
+>>>>>>> .merge-right.r42318
         } catch (NoSuchNodeTypeException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+<<<<<<< .working
     private SortedSet<View> getViewsSet(List<ExtendedNodeType> nodeTypeList, JCRSiteNode site, String templateType, RenderContext renderContext) {
+=======
+    private SortedSet<View> getViewsSet(List<ExtendedNodeType> nodeTypeList, JCRSiteNode site, List<String> templateTypes) {
+>>>>>>> .merge-right.r42318
         Map<String, View> views = new HashMap<String, View>();
 
         Map<String,String> installedModules = null;
@@ -267,6 +273,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         for (ExtendedNodeType type : nodeTypeList) {
             Set<JahiaTemplatesPackage> packages = templateManagerService.getAvailableTemplatePackagesForModule(JCRContentUtils.replaceColon(type.getName()));
             for (JahiaTemplatesPackage aPackage : packages) {
+<<<<<<< .working
                 String packageName = aPackage.getRootFolder();
                 if (installedModules == null) {
                     getViewsSet(type, views, templateType, renderContext, packageName, aPackage, null);
@@ -275,9 +282,21 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                     getViewsSet(type, views, templateType, renderContext, packageName + (version == null ? "" : "/" + JahiaTemplateManagerService.VERSIONS_FOLDER_NAME + "/" + version), aPackage, version);
                 } else if (site.getPath().startsWith("/sites/")) {
                     getViewsSet(type, views, templateType, renderContext, packageName, aPackage, null);
+=======
+                if (installedModules == null || installedModules.contains(aPackage.getRootFolder())) {
+                    for (String templateType : templateTypes) {
+                        getViewsSet(type, views, templateType, aPackage.getRootFolder(), aPackage);
+                    }
+>>>>>>> .merge-right.r42318
                 }
             }
+<<<<<<< .working
             getViewsSet(type, views, templateType, renderContext, "default", null, null);
+=======
+            for (String templateType : templateTypes) {
+                getViewsSet(type, views, templateType, "default", null);
+            }
+>>>>>>> .merge-right.r42318
         }
         return new TreeSet<View>(views.values());
     }

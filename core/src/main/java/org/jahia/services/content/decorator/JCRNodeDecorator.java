@@ -769,6 +769,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     public String getDisplayableName() {
         return node.getDisplayableName();
     }
+    
+    public String getUnescapedName() {
+        return node.getUnescapedName();
+    }
 
     public AccessControlManager getAccessControlManager() throws RepositoryException {
         return node.getAccessControlManager();

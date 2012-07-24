@@ -152,6 +152,8 @@ public abstract class Action {
             nodeName = JCRContentUtils.findAvailableNodeName(node, nodeName);
         } else if (isNodeNameToBeNormalized) {
             nodeName = JCRContentUtils.generateNodeName(nodeName, 255);
+        } else {
+            nodeName = JCRContentUtils.escapeLocalNodeName(nodeName);
         }
         if(forceCreation) {
             nodeName = JCRContentUtils.findAvailableNodeName(node, nodeName);

@@ -99,7 +99,7 @@ public class DefaultPostAction extends Action {
             if (StringUtils.isNotBlank(subPath) && !"*".equals(subPath) && !subPath.equals(lastPath)) {
                 realPath.append("/").append(subPath);
                 try {
-                    session.getNode(realPath.toString());
+                    session.getNode(JCRContentUtils.escapeNodePath(realPath.toString()));
                     startPath = "";
 
                 } catch (PathNotFoundException e) {
@@ -117,7 +117,7 @@ public class DefaultPostAction extends Action {
                 realPath.append("/").append(subPath);
                 if (realPath.toString().contains(startPath)) {
                     try {
-                        node = session.getNode(realPath.toString());
+                        node = session.getNode(JCRContentUtils.escapeNodePath(realPath.toString()));
                     } catch (PathNotFoundException e) {
                         if (node != null) {
                             if (!node.isCheckedOut()) {

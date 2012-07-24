@@ -1390,14 +1390,15 @@ public final class JCRContentUtils implements ServletContextAware {
     }
 
     /**
-     * Decode an encoded JCR local name encoded with the encodeJCRLocalName method
-     * Note : this implementation is not yet complete as it does not handle the XML
-     * restrictions yet, only the JCR ones.
+     * Decode an encoded JCR local name encoded with the {@link #escapeLocalNodeName(String)} method
+     * 
      * @param encodedLocalName
-     * @return
+     *            the node name to unescape
+     * @return the unescaped name
      */
     public static String unescapeLocalNodeName(final String encodedLocalName) {
-        return Text.unescapeIllegalJcrChars(encodedLocalName);
+        return encodedLocalName != null && encodedLocalName.indexOf('%') != -1 ? Text
+                .unescapeIllegalJcrChars(encodedLocalName) : encodedLocalName;
     }
 
     private Map<String, String> fileExtensionIcons;
@@ -1490,6 +1491,7 @@ public final class JCRContentUtils implements ServletContextAware {
                 .compile(handleFallbackLocaleForPath) : null;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static List<Map<String, Object>> getRolesForNode(JCRNodeWrapper node, boolean includeInherited, boolean expandGroups, String roles, int limit,
                                                             boolean latestFirst) {
         List<Map<String, Object>> results = new LinkedList<Map<String, Object>>();

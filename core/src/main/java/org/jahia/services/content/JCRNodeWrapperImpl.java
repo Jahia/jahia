@@ -939,7 +939,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 String mp = provider.getMountPoint();
                 return mp.substring(mp.lastIndexOf('/') + 1);
             } else {
-                return objectNode.getName(); //JCRContentUtils.decodeInternalName(name);
+                return objectNode.getName();
             }
         } catch (RepositoryException e) {
             logger.error("Repository error", e);
@@ -3786,7 +3786,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 title = null;
             }
         }
-        return title != null ? (session.getWorkspace().getName().equals(Constants.EDIT_WORKSPACE) && title.contains("##resourceBundle(") ? interpolateResourceBunlde(title) : title) : getName();
+        return title != null ? (session.getWorkspace().getName().equals(Constants.EDIT_WORKSPACE) && title.contains("##resourceBundle(") ? interpolateResourceBunlde(title) : title) : getUnescapedName();
+    }
+    
+    public String getUnescapedName() {
+        String name = getName();
+        return name != null ? JCRContentUtils.unescapeLocalNodeName(name) : null;
     }
 
     private String interpolateResourceBunlde(String title) {

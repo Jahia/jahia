@@ -818,6 +818,13 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale) throws RepositoryException;
 
     String getDisplayableName();
+    
+    /**
+     * Returns an unescaped node local name for displaying.
+     * 
+     * @return an unescaped node local name
+     */
+    String getUnescapedName();
 
     AccessControlManager getAccessControlManager() throws RepositoryException;
 

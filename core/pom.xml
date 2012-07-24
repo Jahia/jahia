@@ -351,7 +351,20 @@
             <artifactId>phloc-css</artifactId>
             <version>3.0.0</version>
             <classifier>jdk5</classifier>
+            <exclusions>
+                <exclusion>
+                    <artifactId>phloc-commons</artifactId>
+                    <groupId>com.phloc</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.phloc</groupId>
+            <artifactId>phloc-commons</artifactId>
+            <version>3.6.0</version>
+            <classifier>jdk5</classifier>
+        </dependency>
+        
         <!--Hibernate dependencies-->
         <dependency>
             <groupId>org.hibernate</groupId>

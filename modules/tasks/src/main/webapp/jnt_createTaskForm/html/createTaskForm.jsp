@@ -2,6 +2,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
@@ -102,7 +103,7 @@
                 <input type="hidden" name="jcrParentType" value="jnt:tasks">
                 <input type="hidden" name="type" value="${taskType}"/>
                 <input type="hidden" name="jcrRedirectTo"
-                       value="<c:url value='${url.base}${renderContext.mainResource.node.path}.${renderContext.mainResource.template}'/>">
+                       value="<c:url value='${url.base}${functions:escapePath(renderContext.mainResource.node.path)}.${renderContext.mainResource.template}'/>">
 
                 <p>
                     <label for="task_title">

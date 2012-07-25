@@ -231,9 +231,11 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
             installedModules = site.getInstalledModules();
             for (int i = 0; i < installedModules.size(); i++) {
                 JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(installedModules.get(i));
-                for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                    if (!installedModules.contains(depend.getRootFolder())) {
-                        installedModules.add(depend.getRootFolder());
+                if (aPackage != null) {
+                    for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
+                        if (!installedModules.contains(depend.getRootFolder())) {
+                            installedModules.add(depend.getRootFolder());
+                        }
                     }
                 }
             }

@@ -20,7 +20,7 @@
 
 <c:set var="boundComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <div class="contentinfos">
-    <h3><fmt:message key="contentInformation"/></h3>
+    <h3><fmt:message key="label.displayMetadata.metadata"/></h3>
     <jcr:nodeProperty node="${boundComponent}" name="j:defaultCategory" var="assignedCategories"/>
     <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ', ')}"/>
     <jsp:useBean id="filteredCategories" class="java.util.LinkedHashMap"/>

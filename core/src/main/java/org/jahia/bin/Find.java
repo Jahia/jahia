@@ -392,10 +392,10 @@ public class Find extends BaseFindController {
             if (removeDuplicatePropertyValues) {
                 alreadyIncludedPropertyValues = new HashMap<String, String>();
             }
+            int resultCount = 0;
             if (serializeRows) {
                 logger.debug("Serializing rows into JSON result structure...");
                 RowIterator rows = result.getRows();
-                int resultCount = 0;
                 while (rows.hasNext()) {
                     Row row = rows.nextRow();
                     JSONObject serializedRow = serializeRow(row, columns, depth, escape, alreadyIncludedIdentifiers, propertyMatchRegexp, alreadyIncludedPropertyValues);
@@ -404,11 +404,9 @@ public class Find extends BaseFindController {
                         resultCount++;
                     }
                 }
-                logger.debug("Found " + resultCount + " results.");
             } else {
                 logger.debug("Serializing nodes into JSON result structure...");
                 NodeIterator nodes = result.getNodes();
-                int resultCount = 0;
                 while (nodes.hasNext()) {
                     Node nextNode = nodes.nextNode();
                     JSONObject serializedNode = serializeNode(nextNode, depth, escape, propertyMatchRegexp, alreadyIncludedPropertyValues);
@@ -417,8 +415,8 @@ public class Find extends BaseFindController {
                         resultCount++;
                     }
                 }
-                logger.debug("Found " + resultCount + " results.");
             }
+            logger.debug("Found {} results.", resultCount);
             results.write(response.getWriter());
         } catch (JSONException e) {
             throw new RenderException(e);

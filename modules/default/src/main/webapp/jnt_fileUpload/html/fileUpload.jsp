@@ -17,7 +17,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="jquery.fileupload.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.fileupload.js,jquery.fileupload-ui.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.fileupload-with-ui.min.js"/>
 <fmt:message key="label.dropHere.ie" var="i18nDropHereIE"/>
 <template:addResources type="inlinejavascript">
 <script type="text/javascript">

@@ -79,9 +79,9 @@
         $("#createTaskForm").submit(function() {
             var datePicked = $("\#${currentNode.name}-dueDate").val().replace(/^\s+|\s+$/g, '').replace(" ", "T");
             $("#dueDate_hidden").val(datePicked);
+            $("#submit_task").attr('disabled', 'disabled');
             return true;
         })
-
     });
 </script>
 <c:set var="title">${currentNode.properties['jcr:title'].string}</c:set>

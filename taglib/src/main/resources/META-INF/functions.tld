@@ -73,6 +73,17 @@
 
     <function>
         <description>
+            Does a URL encoding of the <code>path</code>. The characters that don't need encoding are those defined 'unreserved' in section 2.3
+            of the 'URI generic syntax' RFC 2396. Not the entire path string is escaped, but every individual part (i.e. the slashes are not
+            escaped).         
+        </description>
+        <name>escapePath</name>
+        <function-class>org.jahia.utils.WebUtils</function-class>
+        <function-signature>java.lang.String escapePath(java.lang.String)</function-signature>
+    </function>
+
+    <function>
+        <description>
             Escapes the characters in a String using JavaScript String rules.
             Escapes any values it finds into their JavaScript String form.
             Deals correctly with quotes and control-chars (tab, backslash, cr, ff, etc.)         

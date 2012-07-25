@@ -48,6 +48,7 @@ import java.net.URLDecoder;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.jackrabbit.util.Text;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.settings.SettingsBean;
 
@@ -58,6 +59,23 @@ import org.jahia.settings.SettingsBean;
  */
 public final class WebUtils {
 
+    
+    /**
+     * Does a URL encoding of the <code>path</code>. The characters that don't need encoding are those defined 'unreserved' in section 2.3
+     * of the 'URI generic syntax' RFC 2396. Not the entire path string is escaped, but every individual part (i.e. the slashes are not
+     * escaped).
+     * 
+     * @param path
+     *            the path to encode
+     * @return the escaped path
+     * @throws NullPointerException
+     *             if <code>path</code> is <code>null</code>.
+     * @see Text#escapePath(String)
+     */
+    public static String escapePath(String path) {
+        return path != null ? Text.escapePath(path) : null;
+    }
+    
     /**
      * Loads the content of the specified servlet context resource as text.
      * 
@@ -121,6 +139,7 @@ public final class WebUtils {
             throw new IllegalArgumentException(e);
         }
     }
+
 
     /**
      * Initializes an instance of this class.

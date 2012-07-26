@@ -517,6 +517,7 @@
       </list>
     </property>
 
+<<<<<<< .working
     <!-- table columns-->
     <property name="tableColumns">
       <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
@@ -526,6 +527,23 @@
       </list>
     </property>
   </bean>
+=======
+        <!-- table columns-->
+        <property name="treeColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>displayName</value>
+            </list>
+        </property>        
+        
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon,40,empty</value>
+                <value>displayName,*,label.name</value>
+                <value>publicationInfo,40</value>
+            </list>
+        </property>
+    </bean>
+>>>>>>> .merge-right.r42353
 
   <!-- Editorial content picker -->
   <bean id="editorialpicker" parent="abstractmanager">

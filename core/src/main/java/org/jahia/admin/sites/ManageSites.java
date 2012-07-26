@@ -1928,11 +1928,15 @@ public class ManageSites extends AbstractAdministrationModule {
                                     .validateImportFile(
                                             JCRSessionFactory.getInstance().getCurrentUserSession(),
                                             zis2, "application/xml", installedModules);
-                            logger.info(
-                                    "Import {}/{} validated in {} ms: {}",
-                                    new String[] { filename, z.getName(),
-                                            String.valueOf((System.currentTimeMillis() - timer)),
-                                            validationResults.toString() });
+                            if (!validationResults.isSuccessful()) {
+                                logger.error("Failed Import {}/{} validated in {} ms: {}",
+                                        new String[]{filename, z.getName(), String.valueOf(
+                                                (System.currentTimeMillis() - timer)), validationResults.toString()});
+                            } else {
+                                logger.info("Successful Import {}/{} validated in {} ms: {}",
+                                        new String[]{filename, z.getName(), String.valueOf(
+                                                (System.currentTimeMillis() - timer)), validationResults.toString()});
+                            }
                             if (!validationResults.isSuccessful()) {
                                 if (importInfos.containsKey("validationResult")) {
                                     // merge results

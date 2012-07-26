@@ -224,11 +224,7 @@
                 <code>&lt;query:descendantNode path="${renderContext.mainResource.node.path}"/&gt;</code><br>
                 For site: <br/>
                 <code>&lt;query:descendantNode path="${renderContext.site.path}"/&gt;</code><br>
-                Any instance object of PageBean or SiteBean classes have the method getJCRPath():String
-                for that purpose.</li>
-                <li>3. This path can be obtained through the method : <code>getJCRPath(ProcessingContext context):String</code> on the
-                followin classes : JahiaPage; ContentPage or JahiaSite. This method is not
-                recommanded as it supposes to have some scriplet in your JSPs.</li>
+                </li>
                 </ul>
                 Note that if the Parent Node is a Jahia Page, the JahiaDBFilterCreator will create a search filter
                 instead of a DB filter.</p>

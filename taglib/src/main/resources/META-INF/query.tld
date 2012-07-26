@@ -218,10 +218,12 @@
                 following ways:
                 <ul>
                 <li>1. "/" means returns containers from all virtual sites.</li>
-                <li>2. In the context of a JSP page, Jahia provides a currentPage bean and currentSite bean in request
-                scope so you can directly refer to all pages or site to generate their paths :<br>
-                <code>&lt;query:descendantNode path="${currentPage.path}"/&gt;</code><br>
-                <code>&lt;query:descendantNode path="${currentSite.path}"/&gt;</code><br>
+                <li>2. In the context of a JSP page, Jahia provides a renderContext bean in request
+                scope so you can directly refer resources like page and site paths :<br>
+                For page:<br/>
+                <code>&lt;query:descendantNode path="${renderContext.mainResource.node.path}"/&gt;</code><br>
+                For site: <br/>
+                <code>&lt;query:descendantNode path="${renderContext.site.path}"/&gt;</code><br>
                 Any instance object of PageBean or SiteBean classes have the method getJCRPath():String
                 for that purpose.</li>
                 <li>3. This path can be obtained through the method : <code>getJCRPath(ProcessingContext context):String</code> on the

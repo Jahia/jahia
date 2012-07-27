@@ -60,6 +60,15 @@
         <c:if test="${not currentNode.properties['useTemplatesSet'].boolean}">
             <input type="hidden" name="templatesSet" value="${currentNode.properties['defaultTemplatesSet'].node.name}">
         </c:if>
+
+        <c:if test="${currentNode.properties['mixLanguage'].boolean}">
+            <input type="hidden" name="mixLanguage" value="true">
+        </c:if>
+
+        <c:if test="${currentNode.properties['allowsUnlistedLanguages'].boolean}">
+            <input type="hidden" name="allowsUnlistedLanguages" value="true">
+        </c:if>
+
         <div>
             <input type="button" class="button" id="createSite_button"
                    value="${currentNode.properties['buttonLabel'].string}" tabindex="28"

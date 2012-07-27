@@ -223,6 +223,8 @@
  - useServerName (boolean)
  - useDescription (boolean)
  - useTemplatesSet (boolean)
+ - mixLanguage (boolean)
+ - allowsUnlistedLanguages (boolean)
  - class (string) indexed=no
  - defaultTemplatesSet (weakreference,choicelist[nodes='/templateSets;jnt:virtualsite'])
  - buttonLabel (string) i18n nofulltext

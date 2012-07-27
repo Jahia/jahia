@@ -84,6 +84,8 @@ public class JCRSiteNode extends JCRNodeDecorator {
     
     private Boolean mixLanguagesActive;
 
+    private Boolean allowsUnlistedLanguages;
+
     private String templateFolder;
     
     private String serverName;
@@ -379,6 +381,21 @@ public class JCRSiteNode extends JCRNodeDecorator {
         return mixLanguagesActive;
     }
 
+
+    public boolean isAllowsUnlistedLanguages() {
+        if (allowsUnlistedLanguages == null) {
+            allowsUnlistedLanguages = false;
+            try {
+                if (hasProperty("j:allowsUnlistedLanguages")) {
+                    allowsUnlistedLanguages = getProperty("j:allowsUnlistedLanguages").getBoolean();
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get site property",e);
+            }
+        }
+        return allowsUnlistedLanguages;
+    }
+
     public boolean isWCAGComplianceCheckEnabled() {
         try {
             if (hasProperty(WCAG_COMPLIANCE_CHECKING_ENABLED)) {
@@ -439,9 +456,18 @@ public class JCRSiteNode extends JCRNodeDecorator {
     public void setMixLanguagesActive(boolean mixLanguagesActive) {
         try {
             setProperty(SitesSettings.MIX_LANGUAGES_ACTIVE,mixLanguagesActive);
+            this.mixLanguagesActive = mixLanguagesActive;
         } catch (RepositoryException e) {
             logger.error("Cannot get site property",e);
         }
     }
 
+    public void setAllowsUnlistedLanguages(Boolean allowsUnlistedLanguages) {
+        try {
+            setProperty("j:allowsUnlistedLanguages",allowsUnlistedLanguages);
+            this.allowsUnlistedLanguages = allowsUnlistedLanguages;
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property",e);
+        }
+    }
 }

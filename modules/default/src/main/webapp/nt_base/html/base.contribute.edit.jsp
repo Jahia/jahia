@@ -37,14 +37,14 @@
                        resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
-<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.UILocale}.js"/>
+<template:addResources type="javascript" resources="i18n/contributedefault-${currentResource.locale}.js"/>
 <template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
 
 <utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType"
                       scope="application"/>
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
                       scope="application"/>
-<utility:setBundle basename="JahiaContributeMode" useUILocale="true" templateName="Jahia Contribute Mode"/>
+<utility:setBundle basename="JahiaContributeMode" templateName="Jahia Contribute Mode"/>
 <c:set var="nodeLocked" value="${jcr:isLockedAndCannotBeEdited(currentNode)}"/>
 <c:if test="${empty currentResource.moduleParams.contentType}">
     <c:set var="contentType" value="content"/>
@@ -106,7 +106,7 @@
         <c:if test="${propertyDefinition.name eq 'jcr:title' and propertyDefinition.itemType eq contentType and not fn:contains(displayedFields,scriptPropName)}">
             <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
             <p>
-                <label>${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}:</label>
+                <label>${jcr:labelInNodeType(propertyDefinition,currentResource.locale,type)}:</label>
                 <c:set target="${displayedFields}" value="${scriptPropName}" property="${scriptPropName}" />
             <span jcr:id="${propertyDefinition.name}" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}${scriptPropName}"
@@ -120,7 +120,7 @@
         <c:if test="${!propertyDefinition.multiple and propertyDefinition.itemType eq contentType and not propertyDefinition.hidden and !(propertyDefinition.name eq 'jcr:title') and !(propertyDefinition.name eq '*') and not fn:contains(displayedFields,scriptPropName)}">
             <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
             <p>
-            <label>${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}:</label>
+            <label>${jcr:labelInNodeType(propertyDefinition,currentResource.locale,type)}:</label>
             <c:set target="${displayedFields}" value="${scriptPropName}" property="${scriptPropName}" />
             <c:if test="${readonly}">
                 <c:choose>

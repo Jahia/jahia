@@ -132,6 +132,9 @@ public class JahiaSite implements Serializable {
     private String mDescr;
     
     private Boolean mixLanguagesActive;
+
+    private Boolean allowsUnlistedLanguages = Boolean.FALSE;
+
     /**
      * Server Name www.jahia.org *
      */
@@ -384,6 +387,10 @@ public class JahiaSite implements Serializable {
         return mixLanguagesActive;
     }
 
+    public boolean isAllowsUnlistedLanguages() {
+        return allowsUnlistedLanguages;
+    }
+
     public boolean isWCAGComplianceCheckEnabled() {
         return Boolean.valueOf(getProperty(WCAG_COMPLIANCE_CHECKING_ENABLED, "false"));
     }
@@ -456,6 +463,10 @@ public class JahiaSite implements Serializable {
      */
     public void setMixLanguagesActive(boolean mixLanguagesActive) {
         this.mixLanguagesActive = mixLanguagesActive;
+    }
+
+    public void setAllowsUnlistedLanguages(boolean allowsUnlistedLanguages) {
+        this.allowsUnlistedLanguages = allowsUnlistedLanguages;
     }
 
     /**

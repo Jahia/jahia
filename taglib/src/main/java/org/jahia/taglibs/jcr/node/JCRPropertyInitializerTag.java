@@ -46,14 +46,11 @@ import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
-import org.jahia.services.render.filter.ForceUILocaleFilter;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.Patterns;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-
 import java.util.*;
 
 /**
@@ -122,10 +119,6 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
                             }
                         }
                         if (map.size() > 0) {
-                            Locale locale = (Locale) pageContext.getAttribute(ForceUILocaleFilter.RENDERING_FORCED_LOCALE, PageContext.REQUEST_SCOPE);
-                            if (locale == null) {
-                                locale = getRenderContext().getMainResourceLocale();
-                            }
                             final Map<String, ChoiceListInitializer> initializers = ChoiceListInitializerService.getInstance().getInitializers();
                             List<ChoiceListValue> listValues = null;
                             final HashMap<String, Object> context = new HashMap<String, Object>();
@@ -134,7 +127,7 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
                                 if (initializers.containsKey(entry.getKey())) {
                                     listValues = initializers.get(entry.getKey()).getChoiceListValues(
                                             (ExtendedPropertyDefinition) definition, entry.getValue(), listValues,
-                                            locale, context
+                                            getRenderContext().getMainResourceLocale(), context
                                     );
                                 }
                             }

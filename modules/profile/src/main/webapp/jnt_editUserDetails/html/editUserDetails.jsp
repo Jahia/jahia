@@ -92,6 +92,43 @@
 
     function initEditUserDetails() {
         initEditFields("${currentNode.identifier}", true, ajaxReloadCallback);
+        $(".preferredLanguageEdit${currentNode.identifier}").editable(function (value, settings) {
+            var data;
+            var initData = $(this).attr('init:data');
+            if (initData != null) {
+                data = $.parseJSON(initData);
+            }
+            if (data == null) {
+                data = {};
+            }
+            data['jcrMethodToCall'] = 'put';
+            var submitId = $(this).attr('jcr:id').replace("_", ":");
+            data[submitId] = value;
+            var thisField = this;
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('jcr:url'),
+                data: data,
+                dataType: "json",
+                error:errorOnSave(thisField),
+                traditional: true
+            }).done(function() {
+                        newbaselocation = '${url.base}'.replace(/${currentResource.locale}$/,value);
+                        window.location.assign(window.location.href.replace('${url.base}',newbaselocation));
+                    });
+
+            return eval("values=" + $(this).attr('jcr:options'))[value];
+        }, {
+            type    : 'select',
+            data   : function() {
+                return $(this).attr('jcr:options');
+            },
+            onblur : 'ignore',
+            submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
+            cancel : '<button type="cancel"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
+            tooltip : contributionI18n['edit'],
+            placeholder:contributionI18n['edit']
+        });
         $(".userPicture${currentNode.identifier}").editable('', {
             type : 'ajaxupload',
             onblur : 'ignore',
@@ -112,6 +149,7 @@
                 datas['jcrMethodToCall'] = 'put';
                 var callableUrl = $(original).attr('jcr:url');
                 datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];
+                alert(datas);
                 $.post($(original).attr('jcr:url'), datas, function(result) {
                     ajaxReloadCallback();
                 }, "json");
@@ -297,7 +335,7 @@
         <li>
             <span class="label"><fmt:message key="jnt_user.preferredLanguage"/></span>
             <jcr:nodeProperty node="${user}" name="preferredLanguage" var="prefLang"/><c:set var="prefLocale" value="${functions:toLocale(functions:default(prefLang.string, 'en'))}"/>
-            <span jcr:id="preferredLanguage" class="choicelistEdit${currentNode.identifier}"
+            <span jcr:id="preferredLanguage" class="preferredLanguageEdit${currentNode.identifier}"
                   id="JahiaGxt_userEdit_preferredLanguage"  jcr:url="<c:url value='${url.basePreview}${user.path}'/>" <c:if test="${empty fields['preferredLanguage']}">init:data="<%= getPublicPropertiesData((JCRNodeWrapper)pageContext.getAttribute("user"), "preferredLanguage")%>"</c:if>
                   jcr:options="{<c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status"><c:if test="${status.index > 0}">,</c:if>'${adLocale}':'${functions:escapeJavaScript(functions:displayLocaleNameWith(adLocale, adLocale))}'</c:forEach>}">${functions:displayLocaleNameWith(prefLocale, prefLocale)}</span>
         </li>

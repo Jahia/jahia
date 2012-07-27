@@ -772,7 +772,17 @@
 		            <groupId>log4j</groupId>
 		            <artifactId>log4j</artifactId>
             	</exclusion>
+            	<exclusion>
+            	    <artifactId>pdfbox</artifactId>
+            	    <groupId>org.apache.pdfbox</groupId>
+            	</exclusion>
             </exclusions>
+        </dependency>
+        <!-- Override the pdfbox dependency from tika-parsers to use a newer one -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>1.7.1</version>
         </dependency>
 
         <dependency>

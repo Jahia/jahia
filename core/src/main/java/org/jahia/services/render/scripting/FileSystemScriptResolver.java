@@ -231,21 +231,15 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
             for (int i = 0; i < keys.size(); i++) {
                 String key = keys.get(i);
                 JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(key);
-                if (installedModules.get(key) != null && aPackage.getLastVersion().toString().equals(installedModules.get(key))) {
-                    installedModules.put(key, null);
-                }
-<<<<<<< .working
-                for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                    if (!installedModules.containsKey(depend.getRootFolder())) {
-                        installedModules.put(depend.getRootFolder(), null);
-                        keys.add(depend.getRootFolder());
-=======
                 if (aPackage != null) {
+                    if (installedModules.get(key) != null && aPackage.getLastVersion().toString().equals(installedModules.get(key))) {
+                        installedModules.put(key, null);
+                    }
                     for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                        if (!installedModules.contains(depend.getRootFolder())) {
-                            installedModules.add(depend.getRootFolder());
+                        if (!installedModules.containsKey(depend.getRootFolder())) {
+                            installedModules.put(depend.getRootFolder(), null);
+                            keys.add(depend.getRootFolder());
                         }
->>>>>>> .merge-right.r42350
                     }
                 }
             }

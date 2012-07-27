@@ -3577,7 +3577,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     if (!JCRStoreService.getInstance()
                             .getNoLanguageValidityCheckTypes()
                             .contains(getPrimaryNodeTypeName())
-                            && !locales.contains(locale) && hasI18N(locale)) {
+                            && !locales.contains(locale) && !site.isAllowsUnlistedLanguages() && hasI18N(locale)) {
                         return false;
                     }
                     for (String mandatoryLanguage : mandatoryLanguages) {
@@ -3786,7 +3786,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 title = null;
             }
         }
-        return title != null ? (session.getWorkspace().getName().equals(Constants.EDIT_WORKSPACE) && title.contains("##resourceBundle(") ? interpolateResourceBunlde(title) : title) : getUnescapedName();
+        return title != null ? (session.getWorkspace().getName().equals(Constants.EDIT_WORKSPACE) && title.contains("##resourceBundle(") ? interpolateResourceBundle(title) : title) : getUnescapedName();
     }
     
     public String getUnescapedName() {
@@ -3794,7 +3794,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return name != null ? JCRContentUtils.unescapeLocalNodeName(name) : null;
     }
 
-    private String interpolateResourceBunlde(String title) {
+    private String interpolateResourceBundle(String title) {
         Locale locale = getSession().getLocale();
         JCRSiteNode site = null;
         try {

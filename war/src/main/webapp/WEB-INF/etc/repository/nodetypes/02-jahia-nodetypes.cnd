@@ -467,6 +467,7 @@
  - j:mandatoryLanguages (string) multiple nofulltext protected
  - j:defaultLanguage (string) protected nofulltext
  - j:mixLanguage (boolean) = false protected
+ - j:allowsUnlistedLanguages (boolean) = false protected
  - j:templatesSet (string) protected
  - j:siteType (string) protected hidden
  - j:dependencies (string) protected multiple nofulltext

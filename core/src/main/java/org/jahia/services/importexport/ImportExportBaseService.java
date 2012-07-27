@@ -607,10 +607,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 }
                             }
                         }
-                        sitesService.addSite(JCRSessionFactory.getInstance().getCurrentUser(), infos.getProperty("sitetitle"), infos.getProperty(
+                        JahiaSite site = sitesService.addSite(JCRSessionFactory.getInstance().getCurrentUser(), infos.getProperty("sitetitle"), infos.getProperty(
                                 "siteservername"), infos.getProperty("sitekey"), infos.getProperty(
                                 "description"), locale, tpl, fileImport != null ? "fileImport" : "importRepositoryFile", fileImport, uri, true,
                                 false, infos.getProperty("originatingJahiaRelease"));
+                        importSiteProperties(site, infos);
                     } catch (Exception e) {
                         logger.error("Cannot create site " + infos.get("sitetitle"), e);
                     }
@@ -993,6 +994,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
         Properties p = new Properties();
         p.load(is);
+        importSiteProperties(site, p);
+    }
+
+    private void importSiteProperties(JahiaSite site, Properties p) {
         Set<Object> keys = p.keySet();
         boolean isMultiLang = true;
         final Set<String> languages = new HashSet<String>();
@@ -1049,6 +1054,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 defaultLanguage = value;
             } else if (firstKey.equals("mixLanguage")) {
                 site.setMixLanguagesActive(Boolean.parseBoolean(value));
+            } else if (firstKey.equals("allowsUnlistedLanguages")) {
+                site.setAllowsUnlistedLanguages(Boolean.parseBoolean(value));
             } else if (firstKey.equals("description")) {
                 site.setDescr(value);
             } else if (firstKey.startsWith("defaultSite") && "true".equals(

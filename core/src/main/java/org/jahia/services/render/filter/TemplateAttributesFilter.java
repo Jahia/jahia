@@ -58,7 +58,6 @@ import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -93,16 +92,19 @@ public class TemplateAttributesFilter extends AbstractFilter {
             chain.pushAttribute(request, "moduleMap", new HashMap());
         }
 
-        Locale locale = (Locale) context.getRequest().getAttribute(ForceUILocaleFilter.RENDERING_FORCED_LOCALE);
-        if (locale == null) {
-            locale = resource.getLocale();
-        }
         Script script = (Script) request.getAttribute("script");
         chain.pushAttribute(context.getRequest(), Config.FMT_LOCALIZATION_CONTEXT + ".request", new LocalizationContext(
+<<<<<<< .working
                 new JahiaResourceBundle(locale, script.getView().getModule().getName(), context.getSite().getTemplatePackageName()),
                 locale));
+=======
+                new JahiaResourceBundle(resource.getLocale(), script.getView().getModule().getName()),
+                resource.getLocale()));
+>>>>>>> .merge-right.r42374
         return null;
     }
+
+
 
     private void overrideProperties(JCRNodeWrapper node, Map<String, Object> params, Map<String, Serializable> moduleParams,
                                     ExtendedNodeType mixin) throws RepositoryException {

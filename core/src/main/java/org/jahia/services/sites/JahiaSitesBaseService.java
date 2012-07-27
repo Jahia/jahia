@@ -223,6 +223,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         site.setInstalledModules(installedModules);
 
         site.setMixLanguagesActive(node.getProperty(SitesSettings.MIX_LANGUAGES_ACTIVE).getBoolean());
+        site.setAllowsUnlistedLanguages(node.hasProperty("j:allowsUnlistedLanguages") ? node.getProperty("j:allowsUnlistedLanguages").getBoolean() : Boolean.FALSE);
         site.setDefaultLanguage(node.getProperty(SitesSettings.DEFAULT_LANGUAGE).getString());
         Value[] languages = node.getProperty(SitesSettings.LANGUAGES).getValues();
         Set<String> languagesList = new LinkedHashSet<String>();
@@ -448,6 +449,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         site.setDefaultLanguage(selectedLocale.toString());
         site.setLanguages(new LinkedHashSet<String>(Arrays.asList(selectedLocale.toString())));
         site.setMandatoryLanguages(site.getLanguages());
+        site.setAllowsUnlistedLanguages(false);
         site.setMixLanguagesActive(false);
         // check there is no site with same server name before adding
         boolean importingSystemSite = false;
@@ -777,6 +779,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         if (defaultLanguage != null)
             siteNode.setProperty(SitesSettings.DEFAULT_LANGUAGE, defaultLanguage);
         siteNode.setProperty(SitesSettings.MIX_LANGUAGES_ACTIVE, site.isMixLanguagesActive());
+        siteNode.setProperty("j:allowsUnlistedLanguages", site.isAllowsUnlistedLanguages());
         siteNode.setProperty(SitesSettings.LANGUAGES, site.getLanguages().toArray(
                 new String[site.getLanguages().size()]));
         siteNode.setProperty(SitesSettings.INACTIVE_LANGUAGES, site.getInactiveLanguages().toArray(
@@ -886,6 +889,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                 JahiaSite site = addSite(jahiaUser, systemSiteTitle, systemSiteServername, SYSTEM_SITE_KEY, "", selectedLocale,
                         systemSiteTemplateSetName,null, "noImport", null, null, false, false, null);
                 site.setMixLanguagesActive(true);
+                site.setAllowsUnlistedLanguages(true);
                 site.setLanguages(systemSiteLanguages);
                 updateSite(site);
                 final LinkedHashSet<String> languages = new LinkedHashSet<String>();

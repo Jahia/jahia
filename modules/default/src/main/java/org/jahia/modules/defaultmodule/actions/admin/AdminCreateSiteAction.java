@@ -99,6 +99,12 @@ public class AdminCreateSiteAction extends AdminAction {
                     selectedLocale, getParameter(parameters,"templatesSet"),
                     null,null, null,null, false, null, null);
 
+            if (getParameter(parameters, "mixLanguage", "false").equals("true") || getParameter(parameters, "allowsUnlistedLanguages", "false").equals("true")) {
+                site.setMixLanguagesActive(getParameter(parameters, "mixLanguage", "false").equals("true"));
+                site.setAllowsUnlistedLanguages(getParameter(parameters, "allowsUnlistedLanguages", "false").equals("true"));
+                sitesService.updateSite(site);
+            }
+
             if (site != null) {
                 // set as default site
                 if (defaultSite.booleanValue()) {

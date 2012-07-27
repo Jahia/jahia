@@ -173,16 +173,4 @@
         <property name="name" value="getWorkflowTasks"/>
     </bean>
 
-    <bean class="org.jahia.services.render.filter.ForceUILocaleFilter">
-        <property name="priority" value="0" />
-        <property name="applyOnModes" value="live"/>
-        <property name="applyOnSiteTemplateSets" value="Jahia System Templates"/>
-        <property name="description" value="Forces the usage of the UI (user preferred) locale in the system (user profile) templates."/>
-    </bean>
-
-    <bean class="org.jahia.services.render.filter.ForceUILocaleFilter">
-        <property name="priority" value="0" />
-        <property name="applyOnModes" value="contribute"/>
-        <property name="description" value="Forces the usage of the UI (user preferred) locale in contribute mode."/>
-    </bean>
 </beans>

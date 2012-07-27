@@ -1,0 +1,9 @@
+URL mapping management UI
+
+  URL mappings can be assigned to content nodes in the Content Edit Engine (<SEO> tab) on a per-language basis.
+  In this case it is possible to access same node via different URLs, depending on the current browsing language.
+
+[./images/url-mapping-ui.png]
+
+  Each mapping can be activated or deactivated and one of them can be set as the default one (per language).
+  Using the language switcher in the Edit Engine one can assign URL mappings for other languages. 

@@ -1,0 +1,13 @@
+Jahia Search Engine Optimization (SEO) Module
+
+* {Overview}
+
+  Module is aimed to provide human readable and search engine friendly URL mappings for content items and automate process of their creation.
+
+  * Managing URL mappings
+
+    Brief overview of the {{{./ui.html} URL mapping management UI}} for creating, modifying, removing and activating/deactivating URL mappings for content items.
+
+  * Using rules
+
+    Short {{{./rules.html} summary of business rules}}, provided for automating URL mapping management. 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean class="org.jahia.services.content.rules.ModuleGlobalObject">
+        <property name="globalRulesObject">
+            <map>
+                <entry key="jcrUtils" value-ref="JCRContentUtils"/>
+                <entry key="seoService">
+                    <bean class="org.jahia.modules.seo.rules.SeoService">
+                        <property name="urlService" ref="org.jahia.services.seo.jcr.VanityUrlService"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+</beans>

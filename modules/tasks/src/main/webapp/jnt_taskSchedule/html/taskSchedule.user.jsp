@@ -56,22 +56,19 @@ This resources are needed by the ajax loaded content
                 today
             </li>
             <c:forEach items="${result.nodes}" var="task">
-                <c:choose>
-                    <c:when test="${task.properties['state'].string eq 'finished'}">
-                        <li class="scheduletask finishedTask" date="${task.properties['dueDate'].date.time.time}">
-                <span class="date value"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
-                                                    pattern="dd/MM/yyyy"/></span>
+                <li class="scheduletask ${task.properties['state'].string eq 'finished' ? 'finishedTask' : 'unfinishedTask'}" date="${task.properties['dueDate'].date.time.time}">
+                    <span class="date value"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
+                                                             pattern="dd/MM/yyyy"/></span>
+                    <c:set value="${jcr:findDisplayableNode(task, renderContext)}" var="displayableNode"/>
+                    <c:choose>
+                        <c:when test="${displayableNode.path ne renderContext.mainResource.node.path}">
+                            <span class="value"><a href="${url.base}${displayableNode.path}.html">${task.properties['jcr:title'].string}</a></span>
+                        </c:when>
+                        <c:otherwise>
                             <span class="value">${task.properties['jcr:title'].string}</span>
-                        </li>
-                    </c:when>
-                    <c:otherwise>
-                        <li class="scheduletask unfinishedTask" date="${task.properties['dueDate'].date.time.time}">
-                <span class="date value"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
-                                                    pattern="dd/MM/yyyy"/></span>
-                            <span class="value">${task.properties['jcr:title'].string}</span>
-                        </li>
-                    </c:otherwise>
-                </c:choose>
+                        </c:otherwise>
+                    </c:choose>
+                </li>
             </c:forEach>
             <query:definition var="listQuery"
                               statement="select * from [docmix:docspace]"/>

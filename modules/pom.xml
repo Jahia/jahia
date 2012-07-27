@@ -166,6 +166,7 @@
                 <module>grid</module>
                 <module>macros</module>
                 <module>search</module>
+                <module>seo</module>
                 <module>skins</module>
                 <module>tasks</module>
                 <module>templates-system</module>
@@ -189,6 +190,7 @@
                 <module>macros</module>
                 <module>profile</module>
                 <module>search</module>
+                <module>seo</module>
                 <module>skins</module>
                 <module>tabularList</module>
                 <module>tags</module>

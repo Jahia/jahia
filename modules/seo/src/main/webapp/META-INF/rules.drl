@@ -1,0 +1,37 @@
+###############################################################################
+package org.jahia.modules.seo.rules
+
+#list any import classes here.
+import org.jahia.services.content.rules.*
+import org.jahia.services.content.JCRContentUtils
+import org.slf4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global Logger logger
+global SeoService seoService
+global JCRContentUtils jcrUtils
+###############################################################################
+
+rule "Check uniqueness"
+    when
+        A new node is created
+            - the node has the type jnt:vanityUrl
+    then
+        Check URL mapping uniqueness for node
+end
+
+rule "Add auto-generated URL mapping for news item"
+    when
+        A property jcr:title has been set on a node
+        The node has a parent
+            - the parent has the type jnt:news
+    then
+        Log "Adding URL mapping '" + "/news/" + jcrUtils.generateNodeName(propertyValueAsString, 70) + "' for node " + parent.getPath() + " in language " + node.getProperty("jcr:language").getStringValue()
+        Remove URL mappings for node parent and language node.getProperty("jcr:language").getStringValue()
+        Add URL mapping "/news/" + jcrUtils.generateNodeName(propertyValueAsString, 70) for node parent and language node.getProperty("jcr:language").getStringValue()
+end
+

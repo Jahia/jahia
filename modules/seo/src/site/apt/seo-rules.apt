@@ -1,0 +1,37 @@
+Using rules
+
+  The SEO module provides rule consequences (right-hand-side part of a rule) to manipulate URL mappings for content objects.
+  The following example, included into Jahia News module, shows the usage of these consequences for automatic generation of
+  URL mappings for news items based on their title.
+
++-------------
+###############################################################################
+package org.jahia.modules.seo.rules
+
+#list any import classes here.
+import org.jahia.services.content.rules.*
+import org.jahia.services.content.JCRContentUtils
+import org.slf4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global Logger logger
+global SeoService seoService
+global JCRContentUtils jcrUtils
+###############################################################################
+
+rule "Add generated URL mapping for news item"
+    when
+        A property jcr:title has been set on a node
+        The node has a parent
+            - the parent has the type jnt:news
+    then
+        Remove URL mappings for node parent and language node.getProperty("jcr:language").getStringValue()
+        Add URL mapping "/news/" + jcrUtils.generateNodeName(propertyValueAsString, 70) for node parent and language node.getProperty("jcr:language").getStringValue()
+end
++-------------
+
+  The <Remove URL mappings for node...> action deletes current URL mappings for the language, where as the second action - <Add URL mapping...> assigns a new mapping, generating it from the title value (<propertyValueAsString> in the rule above). 

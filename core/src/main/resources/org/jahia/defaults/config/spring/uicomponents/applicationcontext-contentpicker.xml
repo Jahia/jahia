@@ -517,13 +517,13 @@
             </list>
         </property>
 
-        <!-- table columns-->
         <property name="treeColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>displayName</value>
             </list>
         </property>        
         
+        <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>icon,40,empty</value>

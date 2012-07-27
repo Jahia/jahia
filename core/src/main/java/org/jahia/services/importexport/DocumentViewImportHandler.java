@@ -41,12 +41,20 @@
 package org.jahia.services.importexport;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.nodetype.xml.NodeTypeReader;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRObservationManager;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.render.RenderService;
+import org.jahia.services.render.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -168,7 +176,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         // do a session.save each maxBatch
         if (batchCount > maxBatch) {
             try {
-                session.save();
+                session.save(JCRObservationManager.IMPORT);
                 batchCount = 0;
             } catch (ConstraintViolationException e) {
                 // save on the next node when next node is needed (like content node for files)
@@ -361,6 +369,38 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         if (!isValid) {
                             session.checkout(nodes.peek());
                             try {
+                                if (path.startsWith("/templateSets/")) {
+                                    JCRSiteNode site = nodes.peek().getResolveSite();
+                                    if (site.hasProperty("j:dependencies")) {
+                                        ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(pt);
+                                        if (type.getTemplatePackage() != null) {
+                                            List<String> deps = new ArrayList<String>();
+                                            deps.add(site.getName());
+                                            for (int i = 0; i < deps.size(); i++) {
+                                                JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(deps.get(i));
+                                                for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
+                                                    if (!deps.contains(depend.getRootFolder())) {
+                                                        deps.add(depend.getRootFolder());
+                                                    }
+                                                }
+                                            }
+
+                                            if (!deps.contains(type.getTemplatePackage().getFileName())) {
+                                                logger.error("Missing dependency : " + path + " requires " + type.getTemplatePackage().getFileName());
+                                            }
+                                        }
+                                        if (atts.getValue("j:view") != null) {
+                                            Set<View> views = RenderService.getInstance().getViewsSet(type,site,"html");
+                                            Set<String> viewsAsString = new HashSet<String>();
+                                            for (View view : views) {
+                                                viewsAsString.add(view.getKey());
+                                            }
+                                            if (!viewsAsString.contains(atts.getValue("j:view"))) {
+                                                logger.error("Missing dependency for view : " + path + " requires " + type.getTemplatePackage().getFileName());
+                                            }
+                                        }
+                                    }
+                                }
                                 child = nodes.peek().addNode(decodedQName, pt, uuid, created, createdBy, lastModified, lastModifiedBy);
                             } catch (ConstraintViolationException e) {
                                 if (pathes.size() <= 2 && nodes.peek().getName().equals(decodedQName) && nodes.peek().getPrimaryNodeTypeName().equals(pt)) {

@@ -42,7 +42,7 @@
 
 <ul class="scheduletasks" >
 <li class="scheduletask now" date="${now.time}">
-   Today
+   <fmt:message key="label.today" />
 </li>
 <c:forEach items="${result.nodes}" var="task">
 

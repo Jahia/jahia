@@ -222,7 +222,7 @@ public class RenderService {
         return new RenderChain(filters, templateManagerService.getRenderFilters());
     }
 
-    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType, RenderContext renderContext) {
+    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType) {
         SortedSet<View> set = new TreeSet<View>();
         for (ScriptResolver scriptResolver : scriptResolvers) {
             set.addAll(scriptResolver.getViewsSet(nt, site, templateType));

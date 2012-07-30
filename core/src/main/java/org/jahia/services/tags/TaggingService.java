@@ -256,6 +256,7 @@ public class TaggingService {
         JCRNodeWrapper node = session.getNode(nodePath);
         for (String t : tags) {
             t = t.trim();
+            t = t.toLowerCase();
             if (!"".equals(t)) {
                 JCRNodeWrapper tagNode = getTag(t, siteKey, session);
                 if (tagNode == null && createTagIfNotExists) {

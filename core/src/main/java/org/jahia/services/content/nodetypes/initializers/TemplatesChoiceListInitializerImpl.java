@@ -214,7 +214,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
 
             for (String s : nodeTypeList) {
                 SortedSet<View> viewsSet = RenderService.getInstance().getViewsSet(
-                        NodeTypeRegistry.getInstance().getNodeType(s), site, "html", null);
+                        NodeTypeRegistry.getInstance().getNodeType(s), site, "html");
                 if (!viewsSet.isEmpty()) {
                     if (views.isEmpty()) {
                         views.addAll(viewsSet);

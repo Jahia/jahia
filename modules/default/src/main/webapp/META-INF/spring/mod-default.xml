@@ -165,9 +165,7 @@
         <property name="requiredPermission" value="adminVirtualSites" />
     </bean>
 
-    <bean class="org.jahia.modules.defaultmodule.actions.AddMemberToAcl">
-        <property name="requiredPermission" value="docspace-member-manage"/>
-    </bean>
+    <bean class="org.jahia.modules.defaultmodule.actions.AddMemberToAcl" />
 
     <bean class="org.jahia.modules.defaultmodule.actions.GetWorkflowTasksAction">
         <property name="name" value="getWorkflowTasks"/>

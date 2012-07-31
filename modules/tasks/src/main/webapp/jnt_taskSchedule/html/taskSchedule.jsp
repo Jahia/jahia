@@ -74,7 +74,7 @@
                                 var="endDate"/>
                 <li class="scheduletask unfinishedTask" date="${task.dueDate.time}">
                     <span class="date value">${endDate}</span>
-                    <span class="value">${task.displayName} - ${node.name}</span>
+                    <span class="value"><a href="${link}">${task.displayName} - ${node.name}</a></span>
                 </li>
             </c:if>
         </c:forEach>
@@ -89,7 +89,7 @@
                             var="endDate"/>
             <li class="scheduletask finishedTask" date="${task.endTime.time}">
                 <span class="date value">${endDate}</span>
-                <span class="value">${task.displayName} - ${node.name}</span>
+                <span class="value"><a href="${link}">${task.displayName} - ${node.name}</a></span>
             </li>
         </c:if>
     </c:forEach>

@@ -47,7 +47,7 @@
 <template:addResources type="css" resources="timepicker.css"/>
 <template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
-<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.UILocale}.js"/>
+<template:addResources type="javascript" resources="i18n/contributedefault-${currentResource.locale}.js"/>
 <template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
 <template:addCacheDependency node="${user}"/>
 <jsp:useBean id="now" class="java.util.Date"/>

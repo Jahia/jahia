@@ -148,7 +148,11 @@ public class SearchCriteriaFactory {
                     cause = ((InvocationTargetException) cause)
                             .getTargetException();
                 }
-                logger.warn("Error parsing search parameters", cause);
+                if (logger.isDebugEnabled()) {
+                    logger.warn("Error parsing search parameters", cause);
+                } else {
+                    logger.warn("Error parsing search parameters: " + (cause.getCause() != null ? cause.getCause() : cause));
+                }
             }
 
             if (logger.isDebugEnabled()) {

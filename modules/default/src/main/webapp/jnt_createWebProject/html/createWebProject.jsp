@@ -69,6 +69,10 @@
             <input type="hidden" name="allowsUnlistedLanguages" value="true">
         </c:if>
 
+        <c:if test="${not empty currentNode.properties['forceLanguage'].string}">
+            <input type="hidden" name="language" value="${currentNode.properties['forceLanguage'].string}">
+        </c:if>
+
         <div>
             <input type="button" class="button" id="createSite_button"
                    value="${currentNode.properties['buttonLabel'].string}" tabindex="28"

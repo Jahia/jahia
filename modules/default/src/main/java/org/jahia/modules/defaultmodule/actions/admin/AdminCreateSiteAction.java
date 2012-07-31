@@ -15,6 +15,7 @@ import org.jahia.services.render.URLResolver;
 import org.jahia.services.sites.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Url;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -90,6 +91,10 @@ public class AdminCreateSiteAction extends AdminAction {
 
             Boolean defaultSite = false;
             Locale selectedLocale = resource.getLocale();
+            String lang = getParameter(parameters, "language");
+            if (lang != null) {
+                selectedLocale = LanguageCodeConverters.getLocaleFromCode(lang);
+            }
 
             // get services...
             JahiaUserManagerService jums = ServicesRegistry.getInstance().getJahiaUserManagerService();

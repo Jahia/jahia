@@ -71,7 +71,7 @@
                     <c:if test="${empty currentNode.properties['taskTypes'].string or found}">
 
                     <li>
-                        <a href="<c:url value='${url.base}${task.path}.html'/>>">${fn:escapeXml(task.propertiesAsString['jcr:title'])}</a>
+                        <a href="<c:url value='${url.base}${task.path}.html'/>>">${fn:escapeXml(task.displayName)}</a>
 
                         <c:choose>
                             <c:when test="${task.propertiesAsString.state == 'active'}">

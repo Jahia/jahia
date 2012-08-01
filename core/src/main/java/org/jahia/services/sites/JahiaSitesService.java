@@ -47,6 +47,7 @@ package org.jahia.services.sites;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.JahiaService;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.sites.JahiaSite;
 
@@ -177,6 +178,11 @@ public abstract class JahiaSitesService extends JahiaService {
                                       Locale selectedLocale, String selectTmplSet, String[] modulesToDeploy, String firstImport, File fileImport, String fileImportName,
                                       Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease,
                                       String legacyMappingFilePath, String legacyDefinitionsFilePath) throws JahiaException, IOException;
+
+    public abstract JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
+                                      Locale selectedLocale, String selectTmplSet, String[] modulesToDeploy, String firstImport, File fileImport, String fileImportName,
+                                      Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease,
+                                      String legacyMappingFilePath, String legacyDefinitionsFilePath, JCRSessionWrapper session) throws JahiaException, IOException;
 
 
 

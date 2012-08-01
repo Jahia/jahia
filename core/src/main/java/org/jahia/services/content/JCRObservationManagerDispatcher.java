@@ -111,7 +111,11 @@ public class JCRObservationManagerDispatcher implements SynchronousEventListener
             try {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        JCRObservationManager.consume(fexternal, session, JCRObservationManager.EXTERNAL_SYNC);
+                        List<JCRObservationManager.EventWrapper> eventWrappers = new ArrayList<JCRObservationManager.EventWrapper>();
+                        for (Event event : fexternal) {
+                            eventWrappers.add(JCRObservationManager.getEventWrapper(event,session));
+                        }
+                        JCRObservationManager.consume(eventWrappers, session, JCRObservationManager.EXTERNAL_SYNC);
                         return null;
                     }
                 });

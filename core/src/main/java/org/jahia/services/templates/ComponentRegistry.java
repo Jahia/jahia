@@ -335,26 +335,20 @@ public class ComponentRegistry {
     /**
      * Performs the registration of the components from modules into JCR tree.
      */
-    protected void registerComponents() {
+    protected void registerComponents(JCRSessionWrapper session) {
         long timer = System.currentTimeMillis();
         logger.info("Start registering UI droppable components...");
         int newComponents = 0;
         try {
-            newComponents = JCRTemplate.getInstance().doExecuteWithSystemSession(
-                    new JCRCallback<Integer>() {
-                        public Integer doInJCR(JCRSessionWrapper session)
-                                throws RepositoryException {
-                            int count = 0;
-                            for (JahiaTemplatesPackage pkg : templatePackageRegistry
-                                    .getAvailablePackages()) {
-                                count = count + registerComponents(pkg, session);
-                            }
-                            if (count > 0) {
-                                session.save();
-                            }
-                            return count;
-                        }
-                    });
+            int count = 0;
+            for (JahiaTemplatesPackage pkg : templatePackageRegistry
+                    .getAvailablePackages()) {
+                count = count + registerComponents(pkg, session);
+            }
+            if (count > 0) {
+                session.save();
+            }
+            newComponents = count;
         } catch (Exception e) {
             logger.error("Error registering components. Cause: " + e.getMessage(), e);
         }

@@ -207,12 +207,14 @@ public class LastModifiedListener extends DefaultEventListener {
 
     private boolean addAutoPublish(JCRNodeWrapper n, List<String> autoPublished) throws RepositoryException {
         if (autoPublished != null) {
-            if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType("jmix:autoPublish")) {
-                autoPublished.add(n.getIdentifier());
-                return true;
-            } else if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType(JAHIANT_TRANSLATION) && n.getParent().isNodeType("jmix:autoPublish")) {
-                autoPublished.add(n.getIdentifier());
-                return true;
+            if (!n.getPath().startsWith("/templateSets")) {
+                if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType("jmix:autoPublish")) {
+                    autoPublished.add(n.getIdentifier());
+                    return true;
+                } else if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType(JAHIANT_TRANSLATION) && n.getParent().isNodeType("jmix:autoPublish")) {
+                    autoPublished.add(n.getIdentifier());
+                    return true;
+                }
             }
         }
         return false;

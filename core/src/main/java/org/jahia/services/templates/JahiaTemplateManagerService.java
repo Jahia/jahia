@@ -443,6 +443,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof ContextInitializedEvent) {
             if (SettingsBean.getInstance().isProcessingServer()) {
+<<<<<<< .working
                 // initialize modules (migration case)
                 templatePackageDeployer.initializeMissingModuleNodes();
                 // perform initial imports if any
@@ -452,12 +453,36 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 componentRegistry.registerComponents();
 
 
+=======
+>>>>>>> .merge-right.r42429
                 try {
                     JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
                         public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+<<<<<<< .working
 //                            for (JahiaTemplatesPackage aPackage : packages) {
 //                                deployModuleToAllSites("/templateSets/" + aPackage.getRootFolder(), true, session);
 //                            }
+=======
+                            // initialize modules (migration case)
+                            templatePackageDeployer.initializeMissingModuleNodes();
+
+                            List<JCRNodeWrapper> sitesBeforeImport = new ArrayList<JCRNodeWrapper>();
+                            NodeIterator ni = session.getNode("/sites").getNodes();
+                            while (ni.hasNext()) {
+                                JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+                                sitesBeforeImport.add(next);
+                            }
+
+                            // perform initial imports if any
+                            final List<JahiaTemplatesPackage> packages = templatePackageDeployer.performInitialImport(session);
+            
+                            // do register components
+                            componentRegistry.registerComponents(session);
+
+                            for (JahiaTemplatesPackage aPackage : packages) {
+                                deployModuleToAllSites("/templateSets/" + aPackage.getRootFolder(), true, session,sitesBeforeImport);
+                            }
+>>>>>>> .merge-right.r42429
                             return null;
                         }
                     });
@@ -1203,18 +1228,24 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         JCRTemplate.getInstance()
                 .doExecuteWithSystemSession(username, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        deployModuleToAllSites(modulePath, updateOnly, session);
+                        deployModuleToAllSites(modulePath, updateOnly, session, null);
                         return null;
                     }
                 });
     }
 
-    public void deployModuleToAllSites(String modulePath, boolean updateOnly, JCRSessionWrapper sessionWrapper) throws RepositoryException {
-        JCRNodeWrapper sites = sessionWrapper.getNode("/sites");
+    public void deployModuleToAllSites(String modulePath, boolean updateOnly, JCRSessionWrapper sessionWrapper, List<JCRNodeWrapper> sites) throws RepositoryException {
+        if (sites == null) {
+            sites = new ArrayList<JCRNodeWrapper>();
+            NodeIterator ni = sessionWrapper.getNode("/sites").getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+                sites.add(next);
+            }
+        }
+
         JCRNodeWrapper tpl = sessionWrapper.getNode(modulePath);
-        NodeIterator ni = sites.getNodes();
-        while (ni.hasNext()) {
-            JCRNodeWrapper site = (JCRNodeWrapper) ni.next();
+        for (JCRNodeWrapper site : sites) {
             if (tpl.hasProperty("j:siteType") && MODULE_TYPE_TEMPLATES_SET.equals(tpl.getProperty("j:siteType").getString())) {
                 if (tpl.getName().equals(site.getResolveSite().getTemplateFolder())) {
                     deployModule(modulePath, site.getPath(), sessionWrapper);

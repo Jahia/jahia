@@ -40,13 +40,13 @@
 
 package org.jahia.services.content;
 
-import javax.jcr.InvalidItemStateException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.*;
 import javax.jcr.observation.EventListener;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -76,8 +76,8 @@ public class JCRObservationManager implements ObservationManager {
     private static ThreadLocal<Boolean> eventsDisabled = new ThreadLocal<Boolean>();
     private static ThreadLocal<JCRSessionWrapper> currentSession = new ThreadLocal<JCRSessionWrapper>();
     private static ThreadLocal<Integer> lastOp = new ThreadLocal<Integer>();
-    private static ThreadLocal<Map<JCRSessionWrapper, List<Event>>> events =
-            new ThreadLocal<Map<JCRSessionWrapper, List<Event>>>();
+    private static ThreadLocal<Map<JCRSessionWrapper, List<EventWrapper>>> events =
+            new ThreadLocal<Map<JCRSessionWrapper, List<EventWrapper>>>();
     private static List<EventConsumer> listeners = new ArrayList<EventConsumer>();
 
     private JCRWorkspaceWrapper ws;
@@ -193,19 +193,18 @@ public class JCRObservationManager implements ObservationManager {
     public static void addEvent(Event event) {
         try {
             if (!event.getPath().startsWith("/jcr:system")) {
-                Map<JCRSessionWrapper, List<Event>> map = events.get();
+                Map<JCRSessionWrapper, List<EventWrapper>> map = events.get();
                 if (map == null) {
-                    events.set(new HashMap<JCRSessionWrapper, List<Event>>());
+                    events.set(new HashMap<JCRSessionWrapper, List<EventWrapper>>());
                 }
                 map = events.get();
                 JCRSessionWrapper session = currentSession.get();
                 if (session != null) {
                     if (!map.containsKey(session)) {
-                        map.put(session, new ArrayList<Event>());
+                        map.put(session, new ArrayList<EventWrapper>());
                     }
-                    List<Event> list = map.get(session);
-
-                    list.add(event);
+                    List<EventWrapper> list = map.get(session);
+                    list.add(getEventWrapper(event, session));
                 }
             }
         } catch (RepositoryException e) {
@@ -213,33 +212,48 @@ public class JCRObservationManager implements ObservationManager {
         }
     }
 
+    public static EventWrapper getEventWrapper(Event event, JCRSessionWrapper session) {
+        if (event.getType() != Event.NODE_REMOVED) {
+            JCRNodeWrapper node = null;
+            try {
+                String nodePath = (event.getType() == Event.PROPERTY_REMOVED || event.getType() == Event.PROPERTY_CHANGED || event.getType() == Event.PROPERTY_ADDED ?
+                        StringUtils.substringBeforeLast(event.getPath(), "/")
+                        : event.getPath());
+                node = session.getNode(nodePath);
+
+                return new EventWrapper(event,node.getNodeTypes());
+            } catch (RepositoryException e) {
+                e.printStackTrace();
+                return new EventWrapper(event,null);
+            }
+        } else {
+            return new EventWrapper(event,null);
+        }
+    }
+
     private static void consume(JCRSessionWrapper session, int operationType) throws RepositoryException {
         operationType = lastOp.get();
 
-        Map<JCRSessionWrapper, List<Event>> map = events.get();
+        Map<JCRSessionWrapper, List<EventWrapper>> map = events.get();
         events.set(null);
         currentSession.set(null);
         if (map != null && map.containsKey(session)) {
-            List<Event> list = map.get(session);
+            List<EventWrapper> list = map.get(session);
             consume(list, session, operationType);
         }
     }
 
-    public static void consume(List<Event> list, JCRSessionWrapper session, int operationType) throws RepositoryException {
+    public static void consume(List<EventWrapper> list, JCRSessionWrapper session, int operationType) throws RepositoryException {
         for (EventConsumer consumer : listeners) {
             if (consumer.session.getWorkspace().getName().equals(session.getWorkspace().getName())) {
                 if (!Boolean.TRUE.equals(eventsDisabled.get()) || ((DefaultEventListener) consumer.listener).isAvailableDuringPublish()) {
-                    List<Event> filteredEvents = new ArrayList<Event>();
-                    for (Event event : list) {
+                    List<EventWrapper> filteredEvents = new ArrayList<EventWrapper>();
+                    for (EventWrapper event : list) {
                         if ((consumer.eventTypes & event.getType()) != 0 &&
                                 (consumer.useExternalEvents || operationType != EXTERNAL_SYNC) &&
                                 (consumer.absPath == null || (consumer.isDeep && event.getPath().startsWith(consumer.absPath)) || consumer.isDeep && event.getPath().equals(consumer.absPath)) &&
-                                (consumer.nodeTypeName == null || checkNodeTypeNames(
-                                        (event.getType() == Event.PROPERTY_REMOVED ? 
-                                                StringUtils.substringBeforeLast(event.getPath(), "/")
-                                                : event.getPath()), session,
-                                        consumer.nodeTypeName)) &&
-                                (consumer.uuid == null || checkUuids(event.getPath(), session, consumer.nodeTypeName))) {
+                                (consumer.nodeTypeName == null || checkNodeTypeNames(event.getNodeTypes(), consumer.nodeTypeName)) &&
+                                (consumer.uuid == null || checkUuids(event.getIdentifier(), consumer.nodeTypeName))) {
                             filteredEvents.add(event);
                         }
                     }
@@ -256,43 +270,25 @@ public class JCRObservationManager implements ObservationManager {
         }
     }
 
-    private static boolean checkNodeTypeNames(String path, JCRSessionWrapper s, String[] nodeTypes) throws RepositoryException {
-        if (s.itemExists(path)) {
-            JCRItemWrapper item = s.getItem(path);
-            JCRNodeWrapper node;
-            if (!item.isNode()) {
-                node = item.getParent();
-            } else {
-                node = (JCRNodeWrapper) item;
-            }
-            try {
-                for (int i = 0; i < nodeTypes.length; i++) {
-                    if (node.isNodeType(nodeTypes[i])) {
+    private static boolean checkNodeTypeNames(List<String> nodeTypes, String[] requiredNodeTypes) throws RepositoryException {
+        if (nodeTypes != null) {
+            for (int i = 0; i < requiredNodeTypes.length; i++) {
+                for (String nodeType : nodeTypes) {
+                    if (NodeTypeRegistry.getInstance().getNodeType(nodeType).isNodeType(requiredNodeTypes[i])) {
                         return true;
                     }
                 }
-            } catch (InvalidItemStateException e) {
             }
         }
         return false;
     }
 
-    private static boolean checkUuids(String path, JCRSessionWrapper s, String[] uuids) throws RepositoryException {
-        if (s.itemExists(path)) {
-            JCRItemWrapper item = s.getItem(path);
-            JCRNodeWrapper node;
-            if (!item.isNode()) {
-                node = item.getParent();
-            } else {
-                node = (JCRNodeWrapper) item;
-            }
-            try {
-                for (int i = 0; i < uuids.length; i++) {
-                    if (node.isNodeType("mix:referenceable") && node.getIdentifier().equals(uuids[i])) {
-                        return true;
-                    }
+    private static boolean checkUuids(String identifier, String[] uuids) throws RepositoryException {
+        if (identifier != null) {
+            for (int i = 0; i < uuids.length; i++) {
+                if (identifier.equals(uuids[i])) {
+                    return true;
                 }
-            } catch (InvalidItemStateException e) {
             }
         }
         return false;
@@ -396,6 +392,48 @@ public class JCRObservationManager implements ObservationManager {
 
         public long getDate() throws RepositoryException {
             return event.getDate();
+        }
+    }
+
+    static class EventWrapper implements Event {
+        private Event event;
+        private List<String> nodeTypes;
+
+        EventWrapper(Event event, List<String> nodeTypes) {
+            this.event = event;
+            this.nodeTypes = nodeTypes;
+        }
+
+        public int getType() {
+            return event.getType();
+        }
+
+        public String getPath() throws RepositoryException {
+            return event.getPath();
+        }
+
+        public String getUserID() {
+            return event.getUserID();
+        }
+
+        public String getIdentifier() throws RepositoryException {
+            return event.getIdentifier();
+        }
+
+        public Map getInfo() throws RepositoryException {
+            return event.getInfo();
+        }
+
+        public String getUserData() throws RepositoryException {
+            return event.getUserData();
+        }
+
+        public long getDate() throws RepositoryException {
+            return event.getDate();
+        }
+
+        public List<String> getNodeTypes() {
+            return nodeTypes;
         }
     }
 }

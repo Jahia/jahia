@@ -205,6 +205,8 @@ public interface ImportExportService {
 
     void importSiteZip(File nodeWrapper) throws RepositoryException, IOException, JahiaException;
 
+    void importSiteZip(File nodeWrapper, JCRSessionWrapper session) throws RepositoryException, IOException, JahiaException;
+
     /**
      * Import a full site zip into a newly created site.
      *

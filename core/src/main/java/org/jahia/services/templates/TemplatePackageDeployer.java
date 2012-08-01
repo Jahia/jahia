@@ -362,61 +362,57 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
         logger.info("...finished scanning shared modules directory.");
     }
 
-    private boolean performInitialImport(final JahiaTemplatesPackage pack) {
+    private boolean performInitialImport(final JahiaTemplatesPackage pack, JCRSessionWrapper session) {
         try {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
-                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    initRepository(session, pack);
-                    if (!pack.getInitialImports().isEmpty()) {
-                        logger.info("Starting import for the module package '" + pack.getName() + "' including: "
-                                + pack.getInitialImports());
-                        cleanTemplates(pack.getRootFolder(), session);
-                        for (String imp : pack.getInitialImports()) {
-                            String targetPath = "/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
-                            File importFile = new File(pack.getFilePath(), imp);
-                            logger.info("... importing " + importFile + " into " + targetPath);
+            initRepository(session, pack);
+            if (!pack.getInitialImports().isEmpty()) {
+                logger.info("Starting import for the module package '" + pack.getName() + "' including: "
+                        + pack.getInitialImports());
+                cleanTemplates(pack.getRootFolder(), session);
+                for (String imp : pack.getInitialImports()) {
+                    String targetPath = "/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
+                    File importFile = new File(pack.getFilePath(), imp);
+                    logger.info("... importing " + importFile + " into " + targetPath);
+                    try {
+                        if (imp.toLowerCase().endsWith(".xml")) {
+                            InputStream is = null;
                             try {
-                                if (imp.toLowerCase().endsWith(".xml")) {
-                                    InputStream is = null;
-                                    try {
-                                        is = new BufferedInputStream(new FileInputStream(importFile));
-                                        session.importXML(targetPath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE);
-                                    } finally {
-                                        IOUtils.closeQuietly(is);
-                                    }
-                                } else if (imp.toLowerCase().contains("/importsite")) {
-                                    JCRUser user = null;
-                                    try {
-                                        user = JCRUserManagerProvider.getInstance().lookupRootUser();
-                                        JCRSessionFactory.getInstance().setCurrentUser(user);
-                                        importExportService.importSiteZip(importFile);
-                                    } finally {
-                                        JCRSessionFactory.getInstance().setCurrentUser(user);
-                                    }
-
-                                } else {
-                                    importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session);
-                                }
-
-                                importFile.delete();
-                                session.save(JCRObservationManager.IMPORT);
-                            } catch (Exception e) {
-                                logger.error("Unable to import content for package '" + pack.getName() + "' from file " + imp
-                                        + ". Cause: " + e.getMessage(), e);
+                                is = new BufferedInputStream(new FileInputStream(importFile));
+                                session.importXML(targetPath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE);
+                            } finally {
+                                IOUtils.closeQuietly(is);
                             }
+                        } else if (imp.toLowerCase().contains("/importsite")) {
+                            JCRUser user = null;
+                            try {
+                                user = JCRUserManagerProvider.getInstance().lookupRootUser();
+                                JCRSessionFactory.getInstance().setCurrentUser(user);
+                                importExportService.importSiteZip(importFile,session);
+                            } finally {
+                                JCRSessionFactory.getInstance().setCurrentUser(user);
+                            }
+
+                        } else {
+                            importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session);
                         }
-                        resetModuleAttributes(session, pack);
-                        session.save();
-                        autoDeployModulesToSites(session, pack);
-                        logger.info("... finished initial import for module package '" + pack.getName() + "'.");
-                        return true;
+
+                        importFile.delete();
+                        session.save(JCRObservationManager.IMPORT);
+                    } catch (Exception e) {
+                        logger.error("Unable to import content for package '" + pack.getName() + "' from file " + imp
+                                + ". Cause: " + e.getMessage(), e);
                     }
-                    resetModuleAttributes(session, pack);
-                    session.save();
-                    autoDeployModulesToSites(session, pack);
-                    return false;
                 }
-            });
+                resetModuleAttributes(session, pack);
+                session.save();
+                autoDeployModulesToSites(session, pack);
+                logger.info("... finished initial import for module package '" + pack.getName() + "'.");
+                return true;
+            }
+            resetModuleAttributes(session, pack);
+            session.save();
+            autoDeployModulesToSites(session, pack);
+            return false;
         } catch (RepositoryException e) {
             logger.error("Unable to import content for package '" + pack.getName()
                     + "'. Cause: " + e.getMessage(), e);
@@ -433,7 +429,7 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
                 }
             } else if ("all".equals(pack.getAutoDeployOnSite())) {
                 if(session.nodeExists("/sites/systemsite")) {
-                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployModuleToAllSites("/templateSets/"+pack.getRootFolder(),false,session);
+                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployModuleToAllSites("/templateSets/"+pack.getRootFolder(),false,session, null);
                 }
             }
         }
@@ -539,12 +535,12 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
         return modified;
     }
 
-    public List<JahiaTemplatesPackage> performInitialImport() {
+    public List<JahiaTemplatesPackage> performInitialImport(JCRSessionWrapper session) {
         List<JahiaTemplatesPackage> results = new ArrayList<JahiaTemplatesPackage>();
         if (!initialImports.isEmpty()) {
             while (!initialImports.isEmpty()) {
                 JahiaTemplatesPackage pack = initialImports.remove(0);
-                performInitialImport(pack);
+                performInitialImport(pack, session);
                 results.add(pack);
             }
         }

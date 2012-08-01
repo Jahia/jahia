@@ -365,7 +365,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     }
                 }
                 String header = renderContext.getRequest().getHeader("user-agent");
-                if (!renderContext.isPreviewMode() && !renderContext.isLiveMode() && header != null && header.contains("MSIE")) {
+                // workaround for ie9 in gxt/gwt
+                // renderContext.isEditMode() means that gwt is loaded, for contribute, edit or studio
+                if (renderContext.isEditMode() && header != null && header.contains("MSIE")) {
                     int idx = element.getBegin() + element.toString().indexOf(">");
                     String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=8\">";
                     outputDocument.replace(idx, idx + 1, str);

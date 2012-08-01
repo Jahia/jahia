@@ -65,6 +65,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.zip.ZipEntry;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
 import javax.jcr.*;
@@ -99,12 +100,16 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private int maxBatch = 5000;
     private int batchCount = 0;
 
+    private Locator documentLocator;
     private File archive;
     private NoCloseZipInputStream zis;
     private ZipEntry nextEntry;
     private List<String> fileList = new ArrayList<String>();
     private String baseFilesPath = "/content";
     private Stack<JCRNodeWrapper> nodes = new Stack<JCRNodeWrapper>();
+
+    private JCRSiteNode site;
+    private List<String> dependencies;
 
     private Map<String, String> uuidMapping;
     private Map<String, String> pathMapping;
@@ -156,7 +161,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 placeHoldersMap.put("$user", "u:" + node.getPath().substring(node.getPath().lastIndexOf("/") + 1));
             }
         } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            logger.error(e.getMessage()+ getLocation(), e);
             throw new IOException();
         }
         nodes.add(node);
@@ -369,38 +374,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         if (!isValid) {
                             session.checkout(nodes.peek());
                             try {
-                                if (path.startsWith("/templateSets/")) {
-                                    JCRSiteNode site = nodes.peek().getResolveSite();
-                                    if (site.hasProperty("j:dependencies")) {
-                                        ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(pt);
-                                        if (type.getTemplatePackage() != null) {
-                                            List<String> deps = new ArrayList<String>();
-                                            deps.add(site.getName());
-                                            for (int i = 0; i < deps.size(); i++) {
-                                                JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(deps.get(i));
-                                                for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                                                    if (!deps.contains(depend.getRootFolder())) {
-                                                        deps.add(depend.getRootFolder());
-                                                    }
-                                                }
-                                            }
-
-                                            if (!deps.contains(type.getTemplatePackage().getFileName())) {
-                                                logger.error("Missing dependency : " + path + " requires " + type.getTemplatePackage().getFileName());
-                                            }
-                                        }
-                                        if (atts.getValue("j:view") != null) {
-                                            Set<View> views = RenderService.getInstance().getViewsSet(type,site,"html");
-                                            Set<String> viewsAsString = new HashSet<String>();
-                                            for (View view : views) {
-                                                viewsAsString.add(view.getKey());
-                                            }
-                                            if (!viewsAsString.contains(atts.getValue("j:view"))) {
-                                                logger.error("Missing dependency for view : " + path + " requires " + type.getTemplatePackage().getFileName());
-                                            }
-                                        }
-                                    }
-                                }
+                                checkDependencies(path, pt, atts);
                                 child = nodes.peek().addNode(decodedQName, pt, uuid, created, createdBy, lastModified, lastModifiedBy);
                             } catch (ConstraintViolationException e) {
                                 if (pathes.size() <= 2 && nodes.peek().getName().equals(decodedQName) && nodes.peek().getPrimaryNodeTypeName().equals(pt)) {
@@ -474,10 +448,40 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             }
             error++;
         } catch (RepositoryException re) {
-            logger.error("Cannot import " + pathes.pop(), re);
+            logger.error("Cannot import " + pathes.pop() + getLocation(), re);
             error++;
         } catch (Exception re) {
             throw new SAXException(re);
+        }
+    }
+
+    private void checkDependencies(String path, String pt, Attributes atts) throws RepositoryException {
+        if (path.startsWith("/templateSets/")) {
+            ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(pt);
+
+            JCRSiteNode currentSite = nodes.peek().getResolveSite();
+            if (site == null || !currentSite.getIdentifier().equals(site.getIdentifier())) {
+                dependencies = null;
+                site = currentSite;
+                if (site.hasProperty("j:dependencies")) {
+                    if (type.getTemplatePackage() != null) {
+                        dependencies = new ArrayList<String>();
+                        dependencies.add(site.getName());
+                        for (int i = 0; i < dependencies.size(); i++) {
+                            JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(dependencies.get(i));
+                            for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
+                                if (!dependencies.contains(depend.getRootFolder())) {
+                                    dependencies.add(depend.getRootFolder());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (dependencies != null && !dependencies.contains(type.getTemplatePackage().getFileName())) {
+                logger.error("Missing dependency : " + path + " requires " + type.getTemplatePackage().getFileName() + getLocation());
+            }
         }
     }
 
@@ -540,7 +544,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 ExtendedPropertyDefinition propDef;
                 propDef = child.getApplicablePropertyDefinition(attrName);
                 if (propDef == null) {
-                    logger.error("Couldn't find definition for property " + attrName);
+                    logger.error("Couldn't find definition for property " + attrName + " in " + child.getPrimaryNodeTypeName() + getLocation());
                     continue;
                 }
 
@@ -558,7 +562,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                                     if (!rootPath.equals("/")) {
                                         value = rootPath + value;
                                     }
-                                } 
+                                }
                                 for (Map.Entry<String, String> entry : pathMapping.entrySet()) {
                                     if (value.startsWith(entry.getKey())) {
                                         value = entry.getValue() + StringUtils.substringAfter(value, entry.getKey());
@@ -776,5 +780,16 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
     public void setBaseFilesPath(String baseFilesPath) {
         this.baseFilesPath = baseFilesPath;
+    }
+
+    public String getLocation() {
+        if (documentLocator != null) {
+            return " (line " + documentLocator.getLineNumber() + ", column "+documentLocator.getColumnNumber()+")";
+        }
+        return "";
+    }
+
+    public void setDocumentLocator(Locator documentLocator) {
+        this.documentLocator = documentLocator;
     }
 }

@@ -113,8 +113,7 @@
                 error:errorOnSave(thisField),
                 traditional: true
             }).done(function() {
-                        newbaselocation = '${url.base}'.replace(/${currentResource.locale}$/,value);
-                        window.location.assign(window.location.href.replace('${url.base}',newbaselocation));
+                    window.location.assign(window.location.href.replace(/\/${currentResource.locale}\//,"/"+value+"/"));
                     });
 
             return eval("values=" + $(this).attr('jcr:options'))[value];

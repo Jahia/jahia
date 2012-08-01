@@ -1,6 +1,6 @@
 ﻿contributionI18n = $.extend(contributionI18n,{
     'cancel': 'Annuler',
-    'edit': 'Cliquer pour éditer',
+    'edit': 'Cliquer pour modifier',
     'invalidconstraint': 'Il ya des erreurs de validation! Corrigez les erreurs et sauvegardez à nouveau.',
     'uploaded': 'Le fichier a été déposé. Cliquer sur apercu pour voir le nouveau fichier',
     'wcag.close': 'Fermer',

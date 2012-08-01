@@ -16,7 +16,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript"
-                       resources="jquery.min.js,jquery-ui.min.js"/>
+                       resources="jquery.min.js,jquery-ui.min.js,jquery.validate.js"/>
 <template:addResources type="javascript" resources="jquery.fancybox.js"/>
 <template:addResources type="javascript" resources="jquery.autocomplete.js"/>
 <template:addResources type="css" resources="jquery.autocomplete.css"/>
@@ -76,12 +76,17 @@
                     $('#assignee_hidden').val(item['username'])
                     });
 
-        $("#createTaskForm").submit(function() {
-            var datePicked = $("\#${currentNode.name}-dueDate").val().replace(/^\s+|\s+$/g, '').replace(" ", "T");
-            $("#dueDate_hidden").val(datePicked);
-            $("#submit_task").attr('disabled', 'disabled');
-            return true;
-        })
+        $("#createTaskForm").validate({
+            rules: {
+                'jcr:title': "required"
+            },
+            submitHandler: function(form) {
+                var datePicked = $("\#${currentNode.name}-dueDate").val().replace(/^\s+|\s+$/g, '').replace(" ", "T");
+                $("#dueDate_hidden").val(datePicked);
+                $("#submit_task").attr('disabled', 'disabled');
+                form.submit();
+            }
+        });
     });
 </script>
 <c:set var="title">${currentNode.properties['jcr:title'].string}</c:set>

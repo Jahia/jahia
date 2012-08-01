@@ -806,7 +806,7 @@ public class Service extends JahiaService {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 QueryManager q = session.getWorkspace().getQueryManager();
-                String sql = "select * from [" + nodetype + "] where " + propertyName + " = '" + node.getIdentifier() + "'";
+                String sql = "select * from [" + nodetype + "] where [" + propertyName + "] = '" + node.getIdentifier() + "'";
                 QueryResult qr = q.createQuery(sql, Query.JCR_SQL2).execute();
                 NodeIterator ni = qr.getNodes();
                 while (ni.hasNext()) {

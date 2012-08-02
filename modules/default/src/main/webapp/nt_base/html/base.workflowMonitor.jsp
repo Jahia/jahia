@@ -262,8 +262,7 @@
                     startWorkflow('${workflowDefinition.provider}:${workflowDefinition.key}');
                 }
             </script>
-            <a href="#" onclick="startWorkflow('${workflowDefinition.provider}:${workflowDefinition.key}')">Start
-                workflow</a>
+            <a href="#" onclick="startWorkflow('${workflowDefinition.provider}:${workflowDefinition.key}')"><fmt:message key="label.workflow.startWorkflow"/></a>
         </c:otherwise>
     </c:choose>
 </c:if>

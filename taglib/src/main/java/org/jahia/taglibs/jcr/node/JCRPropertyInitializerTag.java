@@ -40,6 +40,10 @@
 
 package org.jahia.taglibs.jcr.node;
 
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.*;
@@ -135,11 +139,13 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
                                 pageContext.setAttribute(var, listValues);
                             }
                         } else if (definition instanceof ExtendedPropertyDefinition) {
+                            JahiaResourceBundle rb = new JahiaResourceBundle(null, getRenderContext().getMainResourceLocale(), getTemplatePackageName((ExtendedPropertyDefinition) definition));
                             final ExtendedPropertyDefinition propertyDefinition = (ExtendedPropertyDefinition) definition;
                             propertyDefinition.getValueConstraints();
                             List<ChoiceListValue> listValues = new ArrayList<ChoiceListValue>();
                             for (String value : propertyDefinition.getValueConstraints()) {
-                                listValues.add(new ChoiceListValue(value, null, new ValueImpl(value, propertyDefinition.getRequiredType())));
+                                String display = rb.get(definition.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(value), value);
+                                listValues.add(new ChoiceListValue(display, null, new ValueImpl(value, propertyDefinition.getRequiredType())));
                             }
                             pageContext.setAttribute(var, listValues);
                         }
@@ -154,6 +160,18 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
         }
         return EVAL_PAGE;
     }
+
+    private String getTemplatePackageName(ExtendedPropertyDefinition definition) {
+        String systemId = definition.getDeclaringNodeType().getSystemId();
+        if(systemId.equals("system-jahia")) {
+            systemId = "Default Jahia Templates";
+        }
+        final JahiaTemplatesPackage tpkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                .getTemplatePackage(systemId);
+
+        return tpkg != null ? tpkg.getName() : null;
+    }
+
 
     /**
      * Specify the name of the property you want to get value of.

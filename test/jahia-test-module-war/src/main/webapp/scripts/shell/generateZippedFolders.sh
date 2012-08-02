@@ -65,7 +65,7 @@ echo "start generatePath for currentDepth $currentDepth process $f folders gener
 				l=$(( ($RANDOM * (count -1) / 32767) + 1)) 
 				file=`ls $directory | head -$l | tail -1`
 				echo "copy '$directory/$file' to $target$line/$depthName$i" 
-				cp "$directory/$file" "$target$line/$depthName$i/$j$file" 
+				cp "$directory/$file" "$target$line/$depthName$i/$file$j"
 				j=j+1				
 			done
 

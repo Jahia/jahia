@@ -206,7 +206,9 @@
                                         </c:if>
                                         <c:if test="${not empty task.properties['possibleOutcomes']}">
                                             <c:forEach items="${task.properties['possibleOutcomes']}" var="outcome" varStatus="status">
-                                                <li><a class="taskaction taskaction-start" href="javascript:sendNewStatus('${task.identifier}','${task.path}','finished','${outcome.string}')" title="${outcome.string}"><fmt:message bundle="${taskBundle}" key="${fn:replace(task.properties['taskName'].string,' ','.')}.${fn:replace(outcome.string,' ','.')}"/></a></li>
+                                                <fmt:message bundle="${taskBundle}" var="outcomeLabel" key="${fn:replace(task.properties['taskName'].string,' ','.')}.${fn:replace(outcome.string,' ','.')}"/>
+                                                <c:if test="${fn:startsWith(outcomeLabel, '???')}"><fmt:message bundle="${taskBundle}" var="outcomeLabel" key="${fn:replace(task.properties['taskName'].string,' ','.')}.${fn:replace(fn:toLowerCase(outcome.string),' ','.')}"/></c:if>
+                                                <li><a class="taskaction taskaction-start" href="javascript:sendNewStatus('${task.identifier}','${task.path}','finished','${outcome.string}')" title="${outcome.string}">${outcomeLabel}</a></li>
                                             </c:forEach>
                                         </c:if>
                                         <c:if test="${empty task.properties['possibleOutcomes']}">

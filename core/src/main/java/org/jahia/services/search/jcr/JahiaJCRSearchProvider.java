@@ -125,7 +125,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     private static Logger logger = LoggerFactory.getLogger(JahiaJCRSearchProvider.class);
 
     private TaggingService taggingService = null;
-    
+
+    private Set<String> typesToHideFromSearchResults;
+
     /* (non-Javadoc)
      * @see org.jahia.services.search.SearchProvider#search(org.jahia.services.search.SearchCriteria, org.jahia.params.ProcessingContext)
      */
@@ -231,7 +233,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     private boolean isNodeToSkip(JCRNodeWrapper node, SearchCriteria criteria, Set<String> languages) {
         boolean skipNode = false;
         try {
-            if (!languages.isEmpty() 
+            if (typesToHideFromSearchResults.contains(node.getPrimaryNodeTypeName())) {
+                return true;
+            }
+            if (!languages.isEmpty()
                     && (node.isFile() || node.isNodeType(Constants.NT_FOLDER))) {
                 // if just site-search and no file-search, then skip the node unless it is referred
                 // by a node in the wanted language - unreferenced files are skipped
@@ -1103,4 +1108,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         this.taggingService = taggingService;
     }
 
+    public void setTypesToHideFromSearchResults(Set<String> typesToHideFromSearchResults) {
+        this.typesToHideFromSearchResults = typesToHideFromSearchResults;
+    }
 }

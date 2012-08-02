@@ -176,6 +176,12 @@
     <bean id="org.jahia.services.search.jcr.JahiaJCRSearchProvider"
           class="org.jahia.services.search.jcr.JahiaJCRSearchProvider">
         <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
+        <property name="typesToHideFromSearchResults">
+            <set>
+                <value>jnt:acl</value>
+                <value>jnt:ace</value>
+            </set>
+        </property>
     </bean>
 
     <bean id="org.jahia.services.seo.jcr.VanityUrlManager" class="org.jahia.services.seo.jcr.VanityUrlManager"/>

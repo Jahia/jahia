@@ -540,7 +540,7 @@
  + * (jnt:componentFolder)
 
 // @since Jahia 6.6
-[jnt:component] > nt:base, jmix:nodenameInfo, jmix:basemetadata, mix:title
+[jnt:component] > nt:base, jmix:nodenameInfo, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:i18n, jmix:originWS, jmix:description, mix:title
 
 // @since Jahia 6.6
 [jnt:simpleComponent] > jnt:component

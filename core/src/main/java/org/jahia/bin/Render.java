@@ -934,7 +934,14 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         ("json".equals(parameters.get(RETURN_CONTENTTYPE) != null ? parameters.get(RETURN_CONTENTTYPE).get(0) : "") 
                                 || req.getHeader("accept") != null && req.getHeader("accept").contains("application/json"))) {
                     try {
-                        resp.setContentType(parameters.get(RETURN_CONTENTTYPE_OVERRIDE) != null ? parameters.get(RETURN_CONTENTTYPE_OVERRIDE).get(0) : "application/json; charset=UTF-8");
+                        String contentType = parameters.get(RETURN_CONTENTTYPE_OVERRIDE) != null ? StringUtils.defaultIfEmpty(parameters.get(RETURN_CONTENTTYPE_OVERRIDE).get(0), null) : null;
+                        if (contentType == null) {
+                            contentType = "application/json; charset=UTF-8";
+                        } else if (!contentType.toLowerCase().contains("charset")) {
+                            // append the charset
+                            contentType += "; charset=UTF-8";
+                        }
+                        resp.setContentType(contentType);
                         result.getJson().write(resp.getWriter());
                     } catch (JSONException e) {
                         logger.error(e.getMessage(), e);

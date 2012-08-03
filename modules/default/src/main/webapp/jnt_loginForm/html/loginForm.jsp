@@ -23,8 +23,12 @@
     <ui:loginArea class="loginForm">
         <h3 class="loginicon">${fn:escapeXml(currentNode.displayableName)}</h3>
         <ui:isLoginError var="loginResult">
-            <span class="error"><fmt:message bundle="JahiaInternalResources" key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></span>
+            <span class="error"><fmt:message key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></span>
         </ui:isLoginError>
+        <c:if test="${not empty param['loginError']}">
+            <span class="error"><fmt:message key="${param['loginError'] == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></span>
+        </c:if>
+
 
         <p>
             <label class="left" for="username"><fmt:message key="label.username"/></label>

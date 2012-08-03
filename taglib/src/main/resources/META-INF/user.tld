@@ -38,6 +38,13 @@
         </example>
     </function>
     <function>
+        <description>Returns the list of members
+        </description>
+        <name>getMembers</name>
+        <function-class>org.jahia.taglibs.user.User</function-class>
+        <function-signature>java.util.Collection getMembers(java.lang.String,org.jahia.services.render.RenderContext)</function-signature>
+    </function>
+    <function>
         <description>
             Lookup the user by the user key (with provider prefix) or username.
         </description>

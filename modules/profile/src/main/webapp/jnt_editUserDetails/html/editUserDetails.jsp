@@ -148,7 +148,6 @@
                 datas['jcrMethodToCall'] = 'put';
                 var callableUrl = $(original).attr('jcr:url');
                 datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];
-                alert(datas);
                 $.post($(original).attr('jcr:url'), datas, function(result) {
                     ajaxReloadCallback();
                 }, "json");

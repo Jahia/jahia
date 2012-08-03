@@ -109,10 +109,17 @@ public class Login implements Controller {
             }
         } else {
             if (!restMode) {
-                if (request.getParameter("redirect") != null) {
-                    request.setAttribute("javax.servlet.error.request_uri", request.getParameter("redirect"));
+                if (request.getParameter("failureRedirect") != null) {
+                    if ("bad_password".equals(result)) {
+                        result = "unknown_user";
+                    }
+                    response.sendRedirect(request.getParameter("failureRedirect")+"?loginError="+result);
+                } else {
+                    if (request.getParameter("redirect") != null) {
+                        request.setAttribute("javax.servlet.error.request_uri", request.getParameter("redirect"));
+                    }
+                    request.getRequestDispatcher("/errors/error_401.jsp").forward(request, response);
                 }
-                request.getRequestDispatcher("/errors/error_401.jsp").forward(request, response);
             } else {
                 response.getWriter().append("unauthorized");
             }

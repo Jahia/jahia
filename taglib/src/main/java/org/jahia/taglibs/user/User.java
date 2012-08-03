@@ -51,6 +51,7 @@ import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.*;
 
+import java.security.Principal;
 import java.util.*;
 
 /**
@@ -96,6 +97,10 @@ public class User {
         return result;
     }
     
+    public static Collection<Principal> getMembers(String group, RenderContext renderContext) {
+        return ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(group).getMembers();
+    }
+
     private static int retrieveSiteId(RenderContext renderContext) {
         int siteId = 0;
         if (renderContext != null && renderContext.getSite() != null) {

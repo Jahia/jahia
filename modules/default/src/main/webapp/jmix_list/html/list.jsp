@@ -39,7 +39,7 @@
         <c:if test="${moduleMap.editable and renderContext.editMode && !resourceReadOnly}">
             <template:module path="*"/>
         </c:if>
-        <c:if test="${not empty moduleMap.emptyListMessage and renderContext.editMode and isEmpty}">
+        <c:if test="${not empty moduleMap.emptyListMessage and (renderContext.editMode or moduleMap.forceEmptyListMessageDisplay) and isEmpty}">
             ${moduleMap.emptyListMessage}
         </c:if>
         <template:include view="hidden.footer"/>

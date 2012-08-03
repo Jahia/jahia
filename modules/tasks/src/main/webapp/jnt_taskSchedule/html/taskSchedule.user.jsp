@@ -53,7 +53,7 @@ This resources are needed by the ajax loaded content
         <jsp:useBean id="workflowTaskList" class="java.util.LinkedHashMap"/>
         <ul class="scheduletasks">
             <li class="scheduletask now" date="${now.time}">
-                <fmt:message key="label.today" />
+                <fmt:message key="label.upcoming" />
             </li>
             <c:forEach items="${result.nodes}" var="task">
                 <li class="scheduletask ${task.properties['state'].string eq 'finished' ? 'finishedTask' : 'unfinishedTask'}" date="${task.properties['dueDate'].date.time.time}">

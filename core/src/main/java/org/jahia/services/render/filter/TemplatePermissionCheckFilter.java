@@ -114,7 +114,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                         return permissionNames;
                     }
                 });
-                JCRNodeWrapper contextNode = renderContext.getMainResource().getNode();
+                JCRNodeWrapper contextNode = renderContext.getAjaxResource() != null ? renderContext.getAjaxResource().getNode() : renderContext.getMainResource().getNode();
                 try {
                     if (node.hasProperty("j:contextNodePath")) {
                         String contextPath = node.getProperty("j:contextNodePath").getString();

@@ -62,7 +62,7 @@ $(document).ready(function() {
                     handler.formData = {
                         'jcrNodeType':"jnt:file",
                         'jcrReturnContentType':"json",
-                        'jcrReturnContentTypeOverride':$.browser.msie ? 'text/plain' : 'application/json',
+                        'jcrReturnContentTypeOverride':$.browser.msie ? 'text/plain; charset=UTF-8' : 'application/json; charset=UTF-8',
                         'jcrRedirectTo':"<c:url value='${url.base}${renderContext.mainResource.node.path}'/>",
                         'jcrNewNodeOutputFormat':"${renderContext.mainResource.template}.html",
                         'form-token': $('#file_upload${currentNode.identifier} input[name=form-token]').val()

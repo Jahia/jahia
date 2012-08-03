@@ -9,7 +9,7 @@ div.file_upload {
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
   border-radius: 10px;
-  width: 200px;
+  width: 100%;
   height: 30px;
   line-height: 30px;
   background: #043b9d;
@@ -17,7 +17,7 @@ div.file_upload {
 }
 
 div.file_upload_small {
-  width: 200px;
+  width: 100%;
   height: 30px;
   line-height: 30px;
   background: #043b9d;

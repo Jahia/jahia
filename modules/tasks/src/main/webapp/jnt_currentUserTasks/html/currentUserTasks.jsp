@@ -158,8 +158,14 @@
                 <tr class="${status.count % 2 == 0 ? 'odd' : 'even'}">
                     <td headers="Title">
                         <span class="icon-task icon-task-${task.properties['priority'].string}"></span>&nbsp;<span class="opentask" onclick="switchTaskDisplay('${task.identifier}')">${fn:escapeXml(task.displayableName)}</span>
-                        <c:set value="${jcr:findDisplayableNode(task.properties['targetNode'].node, renderContext)}" var="displayableNode"/>
-                        - <span><a href="<c:url value='${url.base}${displayableNode.path}.html'/>">${fn:escapeXml(task.properties["targetNode"].node.displayableName)}</a></span>
+                        <c:if test="${not empty task.properties['targetNode'].node}">
+                            <c:set value="${jcr:findDisplayableNode(task.properties['targetNode'].node, renderContext)}" var="displayableNode"/>
+                            - <span><a href="<c:url value='${url.base}${displayableNode.path}.html'/>">${fn:escapeXml(task.properties["targetNode"].node.displayableName)}</a></span>
+                        </c:if>
+                        <c:set value="${jcr:findDisplayableNode(task, renderContext)}" var="displayableNode"/>
+                        <c:if test="${not jcr:isNodeType(displayableNode, 'jnt:user')}">
+                            - <span><a href="<c:url value='${url.base}${displayableNode.path}.html'/>">${displayableNode.displayableName}</a></span>
+                        </c:if>
                         <div style="display:none;" class="taskdetail" id="taskdetail_${task.identifier}">
                             <p class="task-info-p"><fmt:message key="label.createdBy"/>: ${task.properties['jcr:createdBy'].string}, <fmt:message key="label.createdOn"/> <fmt:formatDate value="${task.properties['jcr:created'].date.time}" dateStyle="long" type="both"/></p>
                             <c:if test="${not empty task.properties['priority']}"><p class="task-priority-p"><fmt:message key="jnt_task.priority"/>: <span class="task-priority task-${task.properties['priority'].string}"><jcr:nodePropertyRenderer node="${task}" name="priority" renderer="resourceBundle"/></span></p></c:if>

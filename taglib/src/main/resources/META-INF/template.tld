@@ -515,6 +515,55 @@
             <type>java.lang.String</type>
         </attribute>
     </tag>
+    <tag>
+        <description>Creates URL with optional query parameters by adding new parameters or taking them from current request.</description>
+        <name>url</name>
+        <tag-class>org.jahia.taglibs.template.UrlTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of the exported scoped variable for the processed url. The type of the scoped variable is String.</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Scope for var.</description>
+            <name>scope</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>URL to be processed.</description>
+            <name>value</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of the context when specifying a relative URL resource that belongs to a foreign context.</description>
+            <name>context</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Comma-separated list of parameter names to exclude from the final search URL. None is excluded by default.</description>
+            <name>excludeParams</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Regular expression to match request parameter names, which should be included also in the new URL.</description>
+            <name>paramIncludeRegex</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>   
+        <attribute>
+            <description>If set to true the parameter from current request will also be used for the query string of the created url. [false]</description>
+            <name>useRequestParams</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>        
+    </tag>
     <tag-file>
     	<name>displayPagination</name>
     	<path>/META-INF/tags/displayPagination.tag</path>
@@ -524,6 +573,5 @@
         <name>theme</name>
         <path>/META-INF/tags/theme.tag</path>
     </tag-file>
-
 
 </taglib>

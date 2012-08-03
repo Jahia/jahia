@@ -31,12 +31,17 @@
         </c:if>
     </c:when>
     <c:otherwise>
+        <c:set var="isEmpty" value="true"/>
         <ul class="${currentNode.properties['j:className'].string}">
             <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
                 <li><template:module node="${subchild}" view="${moduleMap.subNodesView}" editable="${moduleMap.editable}"/></li>
+                <c:set var="isEmpty" value="false"/>
             </c:forEach>
             <c:if test="${moduleMap.editable and renderContext.editMode}">
                 <li><template:module path="*"/></li>
+            </c:if>
+            <c:if test="${not empty moduleMap.emptyListMessage and (renderContext.editMode or moduleMap.forceEmptyListMessageDisplay) and isEmpty}">
+                <li>${moduleMap.emptyListMessage}</li>
             </c:if>
         </ul>
         <template:include view="hidden.footer"/>

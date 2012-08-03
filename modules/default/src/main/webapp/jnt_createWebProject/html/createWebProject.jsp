@@ -29,19 +29,19 @@
         <legend>${fn:escapeXml(currentNode.displayableName)}</legend>
 
         <p><label for="siteTitle"><fmt:message key="label.title"/> (*)</label>
-            <input type="text" name="siteTitle" id="siteTitle" class="inputsize2" value=""tabindex="20"/></p>
+            <input type="text" name="siteTitle" id="siteTitle" class="inputsize2" value="" tabindex="20"/></p>
 
         <p><label for="siteKey"><fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/> (*)</label>
-            <input type="text" name="siteKey" id="siteKey" class="inputsize2" value=""tabindex="20"/></p>
+            <input type="text" name="siteKey" id="siteKey" class="inputsize2" value="" tabindex="20"/></p>
 
         <c:if test="${currentNode.properties['useServerName'].boolean}">
             <p><label for="siteServerName"><fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/> (*)</label>
-                <input type="text" name="siteServerName" id="siteServerName" class="inputsize2" value=""tabindex="20"/></p>
+                <input type="text" name="siteServerName" id="siteServerName" class="inputsize2" value="localhost" tabindex="20"/></p>
         </c:if>
 
         <c:if test="${currentNode.properties['useDescription'].boolean}">
             <p><label for="siteDescr"><fmt:message key="label.description"/></label>
-                <textarea name="siteDescr" id="siteDescr" class="inputsize2" value=""tabindex="20"></textarea></p>
+                <textarea name="siteDescr" id="siteDescr" class="inputsize2" value="" tabindex="20"></textarea></p>
         </c:if>
 
 

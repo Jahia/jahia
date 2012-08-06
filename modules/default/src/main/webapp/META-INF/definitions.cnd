@@ -164,7 +164,7 @@
 
 [jnt:gotoContribute] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
 
-[jnt:gotoAdmin] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
+[jnt:gotoAdmin] > jnt:content, mix:title, jmix:link, jmix:siteComponent, jmix:studioOnly
 - toAdminComponent (string, choicelist[resourceBundle]) = all indexed=no < all,users,groups
 - buttonClass (string) indexed=no
 

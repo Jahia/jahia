@@ -1,6 +1,8 @@
-<%@ page import="javax.naming.InitialContext" %>
-<%@ page import="javax.naming.Context" %>
-<%@ page import="javax.naming.NamingException" %>
+<%@page import="org.jahia.utils.DatabaseUtils.DatabaseType"%>
+<%@page import="org.jahia.utils.DatabaseUtils"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java"
+%><?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page import="javax.sql.DataSource" %>
 <%@ page import="java.util.Set" %>
 <%@ page import="java.util.HashSet" %>
@@ -9,8 +11,6 @@
 <%@ page import="java.util.Random" %>
 <%@ page import="org.apache.jackrabbit.core.id.NodeId" %>
 <%@ page import="java.io.*" %>
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
@@ -35,34 +35,14 @@ nominal or not.
 <%!
     private long readBlob(long bytesRead, Blob currentBlob) throws SQLException, IOException {
         BufferedInputStream blobInputStream = new BufferedInputStream(currentBlob.getBinaryStream());
-        while (blobInputStream.read() != -1) {
-            bytesRead++;
-        }
-        blobInputStream.close();
-        return bytesRead;
-    }
-
-    private Connection getConnection(JspWriter out) {
-        String DATASOURCE_CONTEXT = "java:comp/env/jdbc/jahia";
-
-        Connection result = null;
         try {
-            Context initialContext = new InitialContext();
-            DataSource datasource = (DataSource) initialContext.lookup(DATASOURCE_CONTEXT);
-            if (datasource != null) {
-                result = datasource.getConnection();
-            } else {
-                out.println("Failed to lookup datasource " + DATASOURCE_CONTEXT);
-                return null;
+            while (blobInputStream.read() != -1) {
+                bytesRead++;
             }
-        } catch (NamingException ex) {
-            ex.printStackTrace(new PrintWriter(out));
-        } catch (SQLException ex) {
-            ex.printStackTrace(new PrintWriter(out));
-        } catch (IOException e) {
-            e.printStackTrace(new PrintWriter(out));
+        } finally {
+            blobInputStream.close();
         }
-        return result;
+        return bytesRead;
     }
 
     private static SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd-HHmmss");
@@ -132,11 +112,17 @@ nominal or not.
 
 %>
 <%
-    String readTableName = "jr_default_bundle";
-    String readIdColumn = "NODE_ID";
-    String readBlobColumn = "BUNDLE_DATA";
-    String readAllDataSQL = "SELECT " + readIdColumn + "," + readBlobColumn + " FROM " + readTableName;
-    String readRowSQL = "SELECT " + readBlobColumn + " FROM " + readTableName + " WHERE " + readIdColumn + "=?";
+    DatabaseType dbType = DatabaseUtils.getDatabaseType();
+    boolean keyTypeLongLong = dbType.equals(DatabaseType.derby) || dbType.equals(DatabaseType.postgresql);
+    
+    String readAllDataSQL = "SELECT NODE_ID,BUNDLE_DATA FROM jr_default_bundle";
+    String readRowSQL = "SELECT BUNDLE_DATA FROM jr_default_bundle WHERE NODE_ID=?";
+    
+    if (keyTypeLongLong) {
+        readAllDataSQL = "SELECT NODE_ID_HI,NODE_ID_LO,BUNDLE_DATA FROM jr_default_bundle";
+        readRowSQL = "SELECT BUNDLE_DATA FROM jr_default_bundle WHERE NODE_ID_HI=? AND NODE_ID_LO=?";
+    }
+    
     Set<NodeId> idCollection = new HashSet<NodeId>();
     long nbRandomLoops = 30000;
     long testFileSize = 100 * 1024 * 1024;
@@ -145,13 +131,7 @@ nominal or not.
     Connection conn = null;
 
     try {
-        Context ctx = new InitialContext();
-        if (ctx == null)
-            throw new Exception("Boom - No Context");
-
-        DataSource ds =
-                (DataSource) ctx.lookup(
-                        "java:comp/env/jdbc/jahia");
+        DataSource ds = DatabaseUtils.getDatasource();
 
         long bytesRead = 0;
         long rowsRead = 0;
@@ -161,18 +141,27 @@ nominal or not.
             if (conn != null) {
                 long startTime = System.currentTimeMillis();
                 PreparedStatement stmt = conn.prepareStatement(readAllDataSQL);
-                ResultSet rst = stmt.executeQuery();
-                while (rst.next()) {
-                    byte[] byteId = rst.getBytes(1);
-                    NodeId nodeId = new NodeId(byteId);
-                    idCollection.add(nodeId);
-                    Blob currentBlob = rst.getBlob(2);
-                    long blobLength = currentBlob.length();
-                    bytesRead = readBlob(bytesRead, currentBlob);
-                    rowsRead++;
+                ResultSet rst = null;
+                try {
+                    rst = stmt.executeQuery();
+                    while (rst.next()) {
+                        NodeId nodeId = null;
+                        if (keyTypeLongLong) {
+                            nodeId = new NodeId(rst.getLong("NODE_ID_HI"), rst.getLong("NODE_ID_LO"));
+                        } else {
+                            byte[] byteId = rst.getBytes("NODE_ID");
+                        	nodeId = new NodeId(byteId);
+                        }
+                        idCollection.add(nodeId);
+                        Blob currentBlob = rst.getBlob("BUNDLE_DATA");
+                        long blobLength = currentBlob.length();
+                        bytesRead = readBlob(bytesRead, currentBlob);
+                        rowsRead++;
+                    }
+                } finally {
+                    DatabaseUtils.closeQuietly(rst);
+                    DatabaseUtils.closeQuietly(stmt);
                 }
-                rst.close();
-                stmt.close();
                 long totalTime = System.currentTimeMillis() - startTime;
                 println(out, "Total time to read " + rowsRead + " sequential rows : " + totalTime + "ms" );
                 println(out, "Total bytes read sequentially: " + bytesRead);
@@ -186,16 +175,29 @@ nominal or not.
                 rowsRead = 0;
                 Random randomRow = new Random(System.currentTimeMillis());
                 PreparedStatement randomRowReadStmt = conn.prepareStatement(readRowSQL);
-                startTime = System.currentTimeMillis();
-                for (long i=0; i < nbRandomLoops; i++) {
-                    int rowPos = randomRow.nextInt(idArray.length);
-                    randomRowReadStmt.setBytes(1, idArray[rowPos].getRawBytes());
-                    ResultSet resultSet = randomRowReadStmt.executeQuery();
-                    while (resultSet.next()) {
-                        Blob currentBlob = resultSet.getBlob(1);
-                        bytesRead = readBlob(bytesRead, currentBlob);
-                        rowsRead++;
+                try {
+                    startTime = System.currentTimeMillis();
+                    for (long i=0; i < nbRandomLoops; i++) {
+                        int rowPos = randomRow.nextInt(idArray.length);
+                        if (keyTypeLongLong) {
+                            randomRowReadStmt.setLong(1, idArray[rowPos].getMostSignificantBits());
+                            randomRowReadStmt.setLong(2, idArray[rowPos].getLeastSignificantBits());
+                        } else {
+                            randomRowReadStmt.setBytes(1, idArray[rowPos].getRawBytes());
+                        }
+                        ResultSet resultSet = randomRowReadStmt.executeQuery();
+                        try {
+                            while (resultSet.next()) {
+                                Blob currentBlob = resultSet.getBlob(1);
+                                bytesRead = readBlob(bytesRead, currentBlob);
+                                rowsRead++;
+                            }
+                        } finally {
+                            DatabaseUtils.closeQuietly(resultSet);
+                        }
                     }
+                } finally {
+                    DatabaseUtils.closeQuietly(randomRowReadStmt);
                 }
                 totalTime = System.currentTimeMillis() - startTime;
                 println(out, "Total time to read " + rowsRead + " random rows : " + totalTime + "ms" );
@@ -211,10 +213,7 @@ nominal or not.
     } catch (Exception e) {
         e.printStackTrace();
     } finally {
-        if (conn != null) {
-            conn.close();
-        }
-
+        DatabaseUtils.closeQuietly(conn);
     }
     
     File tempFile = File.createTempFile("benchmark", "tmp");

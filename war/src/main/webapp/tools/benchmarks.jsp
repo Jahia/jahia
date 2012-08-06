@@ -163,10 +163,10 @@ nominal or not.
                     DatabaseUtils.closeQuietly(stmt);
                 }
                 long totalTime = System.currentTimeMillis() - startTime;
-                println(out, "Total time to read " + rowsRead + " sequential rows : " + totalTime + "ms" );
+                println(out, "Total time to read " + rowsRead + " sequential rows : " + totalTime + " ms" );
                 println(out, "Total bytes read sequentially: " + bytesRead);
                 double sequentialReadSpeed = bytesRead / (1024.0 * 1024.0) / (totalTime / 1000.0);
-                println(out, "Sequential read speed = " + sequentialReadSpeed + "MB/sec");
+                println(out, "Sequential read speed = " + sequentialReadSpeed + " MB/sec");
 
                 NodeId[] idArray = idCollection.toArray(new NodeId[idCollection.size()]);
                 println(out, "Now randomly picking rows out of " + idArray.length + "...");
@@ -200,10 +200,10 @@ nominal or not.
                     DatabaseUtils.closeQuietly(randomRowReadStmt);
                 }
                 totalTime = System.currentTimeMillis() - startTime;
-                println(out, "Total time to read " + rowsRead + " random rows : " + totalTime + "ms" );
+                println(out, "Total time to read " + rowsRead + " random rows : " + totalTime + " ms" );
                 println(out, "Total bytes read randomly: " + bytesRead);
                 double randomReadSpeed = bytesRead / (1024.0 * 1024.0) / (totalTime / 1000.0);
-                println(out, "Random read speed = " + randomReadSpeed + "MB/sec");
+                println(out, "Random read speed = " + randomReadSpeed + " MB/sec");
 
                 idCollection.clear();
                 idArray = null;
@@ -231,9 +231,9 @@ nominal or not.
         }
         fileOut.flush();
         long totalTime = System.currentTimeMillis() - startTime;
-        println(out, "Total time to write " + bytesWritten + " bytes : " + totalTime + "ms" );
+        println(out, "Total time to write " + bytesWritten + " bytes : " + totalTime + " ms" );
         double sequentialFileWriteSpeed = bytesWritten / (1024.0 * 1024.0) / (totalTime / 1000.0);
-        println(out, "Sequential file write speed = " + sequentialFileWriteSpeed + "MB/sec");
+        println(out, "Sequential file write speed = " + sequentialFileWriteSpeed + " MB/sec");
     } finally {
         if (fileOut != null) {
             fileOut.close();
@@ -256,9 +256,9 @@ nominal or not.
         }
     }
     long totalTime = System.currentTimeMillis() - startTime;
-    println(out, "Total time to read " + bytesRead + " bytes : " + totalTime + "ms" );
+    println(out, "Total time to read " + bytesRead + " bytes : " + totalTime + " ms" );
     double sequentialFileReadSpeed = bytesRead / (1024.0 * 1024.0) / (totalTime / 1000.0);
-    println(out, "Sequential file read speed = " + sequentialFileReadSpeed + "MB/sec");
+    println(out, "Sequential file read speed = " + sequentialFileReadSpeed + " MB/sec");
 
     tempFile.delete();
 

@@ -21,6 +21,7 @@
         <li><a href="memoryInfo.jsp">Memory information</a></li>
         <li><a href="maintenance.jsp">System maintenance</a></li>
         <li><a href="precompileServlet">JSP pre-compilation</a></li>
+        <li><a href="benchmarks.jsp">System benchmarks</a></li>
     </ul>
 </fieldset>
 <fieldset>

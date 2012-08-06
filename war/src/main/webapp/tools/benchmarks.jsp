@@ -203,6 +203,9 @@ nominal or not.
                 double randomReadSpeed = bytesRead / (1024.0 * 1024.0) / (totalTime / 1000.0);
                 println(out, "Random read speed = " + randomReadSpeed + "MB/sec");
 
+                idCollection.clear();
+                idArray = null;
+
             }
         }
     } catch (Exception e) {
@@ -259,7 +262,6 @@ nominal or not.
     println(out, "Sequential file read speed = " + sequentialFileReadSpeed + "MB/sec");
 
     tempFile.delete();
-
 
 %>
 <h2>Benchmark completed.</h2>

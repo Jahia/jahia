@@ -44,6 +44,7 @@ import org.apache.camel.NoSuchBeanException;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.channels.Channel;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.slf4j.Logger;
@@ -80,6 +81,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     protected String path;
 
     protected JCRNodeWrapper node;
+
+    protected JCRSiteNode contextSite;
 
     protected String nodeName;
 
@@ -165,6 +168,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     public void setVar(String var) {
         this.var = var;
+    }
+
+    public void setContextSite(JCRSiteNode contextSite) {
+        this.contextSite = contextSite;
     }
 
     @Override
@@ -312,6 +319,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             constraints = null;
             var = null;
             buffer = null;
+            contextSite = null;
 
             if (!(this instanceof IncludeTag)) {
                 Integer level =
@@ -556,7 +564,15 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 pageContext.setAttribute("areaNodeTypesRestriction" + level, restriction, PageContext.REQUEST_SCOPE);
             }
 
+            JCRSiteNode previousSite = renderContext.getSite();
+            if (contextSite != null) {
+                renderContext.setSite(contextSite);
+            }
+
             buffer.append(RenderService.getInstance().render(resource, renderContext));
+
+            renderContext.setSite(previousSite);
+
             if (var == null) {
                 pageContext.getOut().print(buffer);
                 buffer.delete(0, buffer.length());

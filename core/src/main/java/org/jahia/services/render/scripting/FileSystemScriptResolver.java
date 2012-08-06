@@ -137,7 +137,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         try {
             JCRSiteNode site = resource.getNode().getResolveSite();
             if ((JahiaSitesBaseService.SYSTEM_SITE_KEY).equals(site.getName())) {
-                site = renderContext.getMainResource().getNode().getResolveSite();
+                site = renderContext.getSite();
             }
             List<String> templateTypeMappings = new ArrayList<String>();
             SortedSet<View> s = new TreeSet<View>();

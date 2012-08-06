@@ -108,7 +108,7 @@
             <p>
                 <label>${jcr:labelInNodeType(propertyDefinition,currentResource.locale,type)}:</label>
                 <c:set target="${displayedFields}" value="${scriptPropName}" property="${scriptPropName}" />
-            <span jcr:id="${propertyDefinition.name}" class="edit${currentNode.identifier}"
+            <span jcr:id="${propertyDefinition.name}" class="inline-editable edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}${scriptPropName}"
                   jcr:url="<c:url value='${url.base}${currentNode.path}'/>">${prop.string}</span>
             </p>
@@ -252,7 +252,7 @@
                     <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
                         <c:set var="dateTimePicker"
                                value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER ? 'dateTimeEdit' : 'dateEdit'}"/>
-                        <div jcr:id="${propertyDefinition.name}" class="${dateTimePicker}${currentNode.identifier}"
+                        <div jcr:id="${propertyDefinition.name}" class="inline-editable ${dateTimePicker}${currentNode.identifier}"
                              id="${dateTimePicker}${currentNode.identifier}${scriptPropName}"
                              jcr:url="<c:url value='${url.base}${currentNode.path}'/>" jcr:value="${prop.string}" jcr:valuems="${not empty prop.date ? prop.date.timeInMillis : ''}">
                             <c:if test="${not empty prop}">
@@ -263,17 +263,17 @@
                     <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
                         <jcr:propertyInitializers var="options" nodeType="${type.name}"
                                                   name="${propertyDefinition.name}"/>
-                        <div jcr:id="${propertyDefinition.name}" class="choicelistEdit${currentNode.identifier}"
+                        <div jcr:id="${propertyDefinition.name}" class="inline-editable choicelistEdit${currentNode.identifier}"
                              jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
                              jcr:options="{<c:forEach items="${options}" varStatus="status" var="option"><c:set var="value" value="${fn:replace(option.displayName,'\\'',' ')}"/><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${value}'<c:if test="${prop.string eq option.value.string}"><c:set var="val" value="${value}"/></c:if></c:forEach>}">${val}</div>
                     </c:when>
                     <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
-                        <div jcr:id="${propertyDefinition.name}" class="ckeditorEdit${currentNode.identifier}"
+                        <div jcr:id="${propertyDefinition.name}" class="inline-editable-block ckeditorEdit${currentNode.identifier}"
                              id="ckeditorEdit${currentNode.identifier}${scriptPropName}${renderContext.mainResource.locale}"
                              jcr:url="<c:url value='${url.base}${currentNode.path}'/>" jcr:ckeditorToolbar="contributeCKEditorToolbar">${prop.string}</div>
                     </c:when>
                     <c:otherwise>
-                        <div jcr:id="${propertyDefinition.name}" class="edit${currentNode.identifier}"
+                        <div jcr:id="${propertyDefinition.name}" class="inline-editable edit${currentNode.identifier}"
                              id="edit${currentNode.identifier}${scriptPropName}"
                              jcr:url="<c:url value='${url.base}${currentNode.path}'/>">${prop.string}</div>
                     </c:otherwise>

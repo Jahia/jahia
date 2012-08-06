@@ -569,6 +569,25 @@
                                         <ignore />
                                     </action>
                                 </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.jahia.server
+                                        </groupId>
+                                        <artifactId>
+                                            jahia-maven-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [3.0-SNAPSHOT,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>native2ascii</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>

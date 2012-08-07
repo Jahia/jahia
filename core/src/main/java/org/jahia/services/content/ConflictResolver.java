@@ -401,7 +401,7 @@ public class ConflictResolver {
                 return false;
             }
             if (o1.getType() == PropertyType.BINARY) {
-                return o1.getBinary().getSize() == o2.getBinary().getSize();
+                return o1.equals(o2);
             } else {
                 return o1.getString().equals(o2.getString());
             }

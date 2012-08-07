@@ -152,7 +152,7 @@ public class TestNewsletterActionItem extends BaseLanguageAwareActionItem {
             String baseURL = org.jahia.ajax.gwt.client.util.URL.getAbsoluteURL(
                                 JahiaGWTParameters.getContextPath() + "/cms/render");
             String localURL = baseURL + "/default/" + JahiaGWTParameters.getLanguage() + gwtJahiaNode.getPath();
-            linker.loading("Executing action ...");
+            linker.loading(Messages.get("label.executing", "Executing action ..."));
             RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, localURL + ".sendAsNewsletter.do");
             try {
                 builder.setHeader("Content-Type", "application/x-www-form-urlencoded");

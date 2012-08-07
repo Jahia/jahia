@@ -2921,6 +2921,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    public List<VersionInfo> getLinearVersionInfos() throws RepositoryException {
+        return ServicesRegistry.getInstance().getJCRVersionService().getLinearVersionInfos(session, this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public JCRStoreProvider getJCRProvider() {
         return provider;
     }

@@ -649,6 +649,15 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     void checkpoint();
 
     /**
+     * Retrieves the list of versions, in all workspaces, ignoring internal version created in the publication process.
+     *
+     * @return a List of VersionInfo objects containing the resolved versions, as well as extra information such as the
+     *         checkinDate if available.
+     * @throws RepositoryException happens if there was a problem retrieving the list of versions.
+     */
+    public List<VersionInfo> getVersionInfos() throws RepositoryException;
+
+    /**
      * Retrieves the list of versions, ignoring internal version created in the publication process. This method should
      * be preferred to the getVersions that actually retrieves ALL versions in all workspaces. This one internally calls
      * the getAllLinearVersions.
@@ -657,7 +666,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *         checkinDate if available.
      * @throws RepositoryException happens if there was a problem retrieving the list of versions.
      */
-    public List<VersionInfo> getVersionInfos() throws RepositoryException;
+    public List<VersionInfo> getLinearVersionInfos() throws RepositoryException;
 
     /**
      * Gets a list of all versions of this node

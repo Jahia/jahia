@@ -63,7 +63,7 @@ import java.util.Map;
 /**
  * Sets a property on a node
  */
-public class SetProperty implements ExternalActivityBehaviour {
+public class SetPropertyActivity implements ExternalActivityBehaviour {
     private static final long serialVersionUID = 1L;
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(Publish.class);
 

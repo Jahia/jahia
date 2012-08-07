@@ -104,11 +104,22 @@ public class JCRVersionService extends JahiaService {
         VersionHistory versionHistory = session.getWorkspace().getVersionManager().getVersionHistory(node.getPath());
 
         VersionIterator versions = versionHistory.getAllVersions();
+        return getVersionsInfos(versionHistory, versions);
+    }
+
+    public List<VersionInfo> getLinearVersionInfos(Session session, JCRNodeWrapper node) throws RepositoryException {
+        VersionHistory versionHistory = session.getWorkspace().getVersionManager().getVersionHistory(node.getPath());
+
+        VersionIterator versions = versionHistory.getAllLinearVersions();
+        return getVersionsInfos(versionHistory, versions);
+    }
+
+    private List<VersionInfo> getVersionsInfos(VersionHistory versionHistory, VersionIterator versions) throws RepositoryException {
         if (versions.hasNext()) {
             versions.nextVersion();
             // the first is the root version, which has no properties, so we will ignore it.
         }
-        Set<VersionInfo> versionList = new TreeSet<VersionInfo>();
+        List<VersionInfo> versionList = new ArrayList<VersionInfo>();
         while (versions.hasNext()) {
             Version v = versions.nextVersion();
             String[] versionLabels = versionHistory.getVersionLabels(v);
@@ -119,7 +130,7 @@ public class JCRVersionService extends JahiaService {
                 }
             }
         }
-        return new ArrayList<VersionInfo>(versionList);
+        return versionList;
     }
 
 

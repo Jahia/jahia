@@ -66,7 +66,6 @@ public class NewTemplatesSetActionItem extends BaseActionItem {
     }
 
     @Override public void onComponentSelection() {
-<<<<<<< .working
         final Window wnd = new Window();
         wnd.setWidth(550);
         wnd.setHeight(300);
@@ -113,7 +112,7 @@ public class NewTemplatesSetActionItem extends BaseActionItem {
         Button btnSubmit = new Button(Messages.get("label.save", "Save"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 wnd.hide();
-                linker.loading("Creating template set...");
+                linker.loading(Messages.get("statusbar.creatingTemplateSet.label"));
                 JahiaContentManagementService.App.getInstance().createTemplateSet(name.getValue(), null, siteType, sources.getValue(), uri.getValue(),"git", new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode result) {
                         linker.loaded();
@@ -125,19 +124,6 @@ public class NewTemplatesSetActionItem extends BaseActionItem {
                         }
                         MainModule.staticGoTo(result.getPath(), null);
                         SiteSwitcherActionItem.refreshAllSitesList(linker);
-=======
-        String name = Window.prompt(Messages.get("newPackageName.label"), "New package name");
-        if (name != null) {
-            linker.loading(Messages.get("statusbar.creatingTemplateSet.label"));
-            JahiaContentManagementService.App.getInstance().createTemplateSet(name, null, siteType, new BaseAsyncCallback<GWTJahiaNode>() {
-                public void onSuccess(GWTJahiaNode result) {
-                    linker.loaded();
-                    Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Templates set successfully created"));
-                    JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
-                    JahiaGWTParameters.setSite(result, linker);
-                    if (((EditLinker) linker).getSidePanel() != null) {
-                        ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
->>>>>>> .merge-right.r42516
                     }
 
                     public void onApplicationFailure(Throwable caught) {

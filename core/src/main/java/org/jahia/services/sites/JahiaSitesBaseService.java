@@ -923,7 +923,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                             uuids.addAll(publicationInfo.getAllUuids());
                         }
                     }
-                    JCRPublicationService.getInstance().publish(uuids, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null);
+                    JCRPublicationService.getInstance().publish(uuids, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, false, null);
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 } finally {

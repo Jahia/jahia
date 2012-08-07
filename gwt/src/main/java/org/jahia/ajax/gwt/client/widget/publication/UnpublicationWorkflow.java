@@ -40,64 +40,37 @@
 
 package org.jahia.ajax.gwt.client.widget.publication;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflow;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem;
-import org.jahia.ajax.gwt.client.widget.workflow.CustomWorkflow;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * User: toto
  * Date: Sep 10, 2010
  * Time: 3:32:00 PM
  */
-public class UnpublicationWorkflow implements CustomWorkflow {
-    private List<GWTJahiaPublicationInfo> publicationInfos;
-
+public class UnpublicationWorkflow extends PublicationWorkflow {
     private static final long serialVersionUID = -4916142720074054130L;
 
     public UnpublicationWorkflow() {
     }
 
     public UnpublicationWorkflow(List<GWTJahiaPublicationInfo> publicationInfos) {
-        this.publicationInfos = publicationInfos;
+        super(publicationInfos);
     }
 
-    public void initStartWorkflowDialog(GWTJahiaWorkflowDefinition workflow, WorkflowActionDialog dialog) {
-        initDialog(dialog);
-
-        dialog.getButtonsBar().remove(dialog.getButtonsBar().getItem(0));
-        Button button = getBypassWorkflowButton(workflow, dialog);
-        if(button!=null) {
-            dialog.getButtonsBar().insert(button, 0);
-        }
-        button = getStartWorkflowButton(workflow, dialog);
-        if (button!=null) {
-            dialog.getButtonsBar().insert(button, 0);
-        }
-    }
-
-    public void initExecuteActionDialog(GWTJahiaWorkflow workflow, WorkflowActionDialog dialog) {
-        initDialog(dialog);
-    }
-
-    private void initDialog(WorkflowActionDialog dialog) {
+    protected void initDialog(WorkflowActionDialog dialog) {
         TabItem tab = new TabItem("Unpublication infos");
         tab.setLayout(new FitLayout());
 
@@ -107,100 +80,26 @@ public class UnpublicationWorkflow implements CustomWorkflow {
         dialog.getTabPanel().add(tab);
     }
 
-    public Button getStartWorkflowButton(final GWTJahiaWorkflowDefinition wf, final WorkflowActionDialog dialog) {
-        final Button button = new Button(Messages.get("label.workflow.start", "Start Workflow") + ": " +
-                                         wf.getDisplayName());
-        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent buttonEvent) {
-                dialog.disableButtons();
-                List<GWTJahiaNodeProperty> nodeProperties = new ArrayList<GWTJahiaNodeProperty>();
-                if (dialog.getPropertiesEditor() != null) {
-                    nodeProperties = dialog.getPropertiesEditor().getProperties();
-                }
-                dialog.getContainer().closeEngine();
-                Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get(
-                        "message.workflow.starting", "Starting unpublication workflow"));
-                final String status = Messages.get("label.workflow.task", "Executing workflow task");
-                WorkInProgressActionItem.setStatus(status);
-
-                final HashMap<String, Object> map = new HashMap<String, Object>();
-                map.put("customWorkflowInfo", UnpublicationWorkflow.this);
-
-                JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(), wf, nodeProperties,
-                        dialog.getComments(), map, new BaseAsyncCallback() {
-                            public void onApplicationFailure(Throwable caught) {
-                                WorkInProgressActionItem.removeStatus(status);
-                                Log.error("Cannot publish", caught);
-                                com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
-                            }
-
-                            public void onSuccess(Object result) {
-                                Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get(
-                                        "message.workflow.started", "Unublication workflow started"));
-                                WorkInProgressActionItem.removeStatus(status);
-                                dialog.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
-                            }
-                        });
+    protected void doPublish(List<GWTJahiaNodeProperty> nodeProperties, final WorkflowActionDialog dialog) {
+        final String status = Messages.get("label.publication.unpublished.task", "Unpublishing content");
+        Info.display(status, status);
+        WorkInProgressActionItem.setStatus(status);
+        final List<String> allUuids = getAllUuids();
+        BaseAsyncCallback callback = new BaseAsyncCallback() {
+            public void onApplicationFailure(Throwable caught) {
+                WorkInProgressActionItem.removeStatus(status);
+                Info.display("Cannot unpublish", "Cannot unpublish");
+                Window.alert("Cannot unpublish " + caught.getMessage());
             }
-        });
-        return button;
-    }
 
-    public Button getBypassWorkflowButton(final GWTJahiaWorkflowDefinition wf, final WorkflowActionDialog dialog) {
-        final Button button = new Button(Messages.get("label.bypassWorkflow", "Bypass workflow"));
-
-        if (PermissionsUtils.isPermitted("publish", dialog.getLinker().getSelectionContext().getSingleSelection())) {
-            button.addSelectionListener(new SelectionListener<ButtonEvent>() {
-
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    dialog.disableButtons();
-                    List<GWTJahiaNodeProperty> nodeProperties = new ArrayList<GWTJahiaNodeProperty>();
-                    if (dialog.getPropertiesEditor() != null) {
-                        nodeProperties = dialog.getPropertiesEditor().getProperties();
-                    }
-                    dialog.getContainer().closeEngine();
-                    final String status = Messages.get("label.publication.unpublished.task", "Unpublishing content");
-                    Info.display(status, status);
-                    WorkInProgressActionItem.setStatus(status);
-                    JahiaContentManagementService.App.getInstance().unpublish(getAllUuids(),
-                            new BaseAsyncCallback() {
-                                public void onApplicationFailure(Throwable caught) {
-                                    WorkInProgressActionItem.removeStatus(status);
-                                    Info.display("Cannot unpublish", "Cannot unpublish");
-                                    com.google.gwt.user.client.Window.alert("Cannot unpublish " + caught.getMessage());
-                                }
-
-                                public void onSuccess(Object result) {
-                                    WorkInProgressActionItem.removeStatus(status);
-                                    Info.display(Messages.get("label.content.unpublished"), Messages.get(
-                                            "label.content.unpublished"));
-                                    dialog.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
-                                }
-                            });
+            public void onSuccess(Object result) {
+                WorkInProgressActionItem.removeStatus(status);
+                if (allUuids.size() < 20) {
+                    dialog.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
                 }
-            });
-            return button;
-        } else {
-            return null;
-        }
-
-    }
-
-    public List<String> getAllUuids() {
-        return getAllUuids(publicationInfos);
-    }
-
-    public static List<String> getAllUuids(List<GWTJahiaPublicationInfo> publicationInfos) {
-        List<String> l = new ArrayList<String>();
-        for (GWTJahiaPublicationInfo info : publicationInfos) {
-            l.add(info.getUuid());
-            if (info.getI18nUuid() != null) {
-                l.add(info.getI18nUuid());
             }
-        }
-        return l;
+        };
+        JahiaContentManagementService.App.getInstance().unpublish(allUuids, callback);
     }
 
     @Override

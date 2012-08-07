@@ -2095,7 +2095,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 JCRNodeWrapper conditionalVisibilityNode = node.getNode(VisibilityService.NODE_NAME);
                 result.set("j:forceMatchAllConditions", conditionalVisibilityNode.getProperty("j:forceMatchAllConditions").getValue().getBoolean());
                 String locale = node.getSession().getLocale().toString();
-                result.set("publicationInfo", publication.getAggregatedPublicationInfosByLanguage(conditionalVisibilityNode.getIdentifier(),
+                result.set("publicationInfo", publication.getAggregatedPublicationInfosByLanguage(conditionalVisibilityNode,
                         Collections.singleton(locale), retrieveCurrentSession()).get(locale));
             } else {
                 result.set("j:forceMatchAllConditions",false);

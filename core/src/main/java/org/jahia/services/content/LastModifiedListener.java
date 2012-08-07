@@ -169,7 +169,7 @@ public class LastModifiedListener extends DefaultEventListener {
 
             if (autoPublishedIds != null && !autoPublishedIds.isEmpty()) {
                 synchronized (this) {
-                    JCRPublicationService.getInstance().publish(autoPublishedIds, "default", "live", null);
+                    JCRPublicationService.getInstance().publish(autoPublishedIds, "default", "live", false, null);
                 }
             }
 

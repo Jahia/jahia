@@ -98,6 +98,7 @@ public class PublishAction extends Action {
             jobDataMap.put(PublicationJob.PUBLICATION_UUIDS, uuidList);
             jobDataMap.put(PublicationJob.SOURCE, Constants.EDIT_WORKSPACE);
             jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
+            jobDataMap.put(PublicationJob.CHECK_PERMISSIONS, true);
 
             ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
 

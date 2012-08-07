@@ -73,12 +73,14 @@ public class PublicationStatusWindow extends LayoutContainer {
     protected Linker linker;
     protected Button noWorkflow;
     protected Button cancel;
+    protected boolean unpublish;
     protected EngineContainer container;
 
-    public PublicationStatusWindow(final Linker linker, final List<String> uuids, final List<GWTJahiaPublicationInfo> infos, final EngineContainer container) {
+    public PublicationStatusWindow(final Linker linker, final List<String> uuids, final List<GWTJahiaPublicationInfo> infos, final EngineContainer container, boolean unpublish) {
         setLayout(new FitLayout());
 
         this.linker = linker;
+        this.unpublish = unpublish;
         setScrollMode(Style.Scroll.NONE);
 
         TableData d = new TableData(Style.HorizontalAlignment.CENTER, Style.VerticalAlignment.MIDDLE);
@@ -96,7 +98,7 @@ public class PublicationStatusWindow extends LayoutContainer {
         ButtonBar bar = new ButtonBar();
         bar.setAlignment(Style.HorizontalAlignment.CENTER);
 
-        if (uuids != null && infos != null && PermissionsUtils.isPermitted("publish", linker.getSelectionContext().getSingleSelection())) {
+        if (uuids != null && infos != null && !infos.isEmpty() && infos.get(0).isAllowedToPublishWithoutWorkflow()) {
             noWorkflow = new Button(Messages.get("label.bypassWorkflow", "Bypass workflow"));
             noWorkflow.addSelectionListener(new ButtonEventSelectionListener(uuids));
             bar.add(noWorkflow);
@@ -122,24 +124,45 @@ public class PublicationStatusWindow extends LayoutContainer {
             }
             cancel.setEnabled(false);
             container.closeEngine();
-            final String status = Messages.get("label.publication.task", "Publishing content");
-            Info.display(status,status);
-            WorkInProgressActionItem.setStatus(status);
-            JahiaContentManagementService.App.getInstance()
-                    .publish(uuids, null, null, new BaseAsyncCallback() {
-                        public void onApplicationFailure(Throwable caught) {
-                            WorkInProgressActionItem.removeStatus(status);
-                            Info.display("Cannot publish", "Cannot publish");
-                            Log.error("Cannot publish", caught);
-                        }
+            if (unpublish) {
+                final String status = Messages.get("label.publication.unpublished.task", "Unpublishing content");
+                Info.display(status,status);
+                WorkInProgressActionItem.setStatus(status);
+                JahiaContentManagementService.App.getInstance()
+                        .unpublish(uuids, new BaseAsyncCallback() {
+                            public void onApplicationFailure(Throwable caught) {
+                                WorkInProgressActionItem.removeStatus(status);
+                                Info.display("Cannot unpublish", "Cannot unpublish");
+                                Log.error("Cannot unpublish", caught);
+                            }
 
-                        public void onSuccess(Object result) {
-                            WorkInProgressActionItem.removeStatus(status);
-                            Info.display(Messages.get("message.content.published"),
-                                    Messages.get("message.content.published"));
-                            linker.refresh(Linker.REFRESH_ALL);
-                        }
-                    });
+                            public void onSuccess(Object result) {
+                                WorkInProgressActionItem.removeStatus(status);
+                                Info.display(Messages.get("label.publication.unpublished"),
+                                        Messages.get("label.publication.unpublished"));
+                                linker.refresh(Linker.REFRESH_ALL);
+                            }
+                        });
+            } else {
+                final String status = Messages.get("label.publication.task", "Publishing content");
+                Info.display(status,status);
+                WorkInProgressActionItem.setStatus(status);
+                JahiaContentManagementService.App.getInstance()
+                        .publish(uuids, null, null, new BaseAsyncCallback() {
+                            public void onApplicationFailure(Throwable caught) {
+                                WorkInProgressActionItem.removeStatus(status);
+                                Info.display("Cannot publish", "Cannot publish");
+                                Log.error("Cannot publish", caught);
+                            }
+
+                            public void onSuccess(Object result) {
+                                WorkInProgressActionItem.removeStatus(status);
+                                Info.display(Messages.get("message.content.published"),
+                                        Messages.get("message.content.published"));
+                                linker.refresh(Linker.REFRESH_ALL);
+                            }
+                        });
+            }
         }
     }
 }

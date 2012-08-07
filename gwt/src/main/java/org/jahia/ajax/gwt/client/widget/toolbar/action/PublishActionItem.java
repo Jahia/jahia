@@ -48,6 +48,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflow;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -71,7 +72,7 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public class PublishActionItem extends BaseActionItem {
-    
+
     /**
      * Returns <code>true</code> if the selected item (single-selection case) is locked by the marked for deletion operation on its parent.
      * In a multi-selection mode, the condition should be fulfilled for all selected items. If at least one of the selected items is not in
@@ -100,6 +101,8 @@ public class PublishActionItem extends BaseActionItem {
         return markedForDeletion;
     }
     
+    protected transient String workflowType = "publish";
+    protected transient boolean checkForUnpublication = false;
     protected transient boolean allSubTree = false;
     protected transient GWTJahiaNode gwtJahiaNode;
 
@@ -111,12 +114,12 @@ public class PublishActionItem extends BaseActionItem {
                 && ctx.getMultipleSelection().size() > 1 && hasPermission(ctx.getSelectionPermissions())) {
             if (!isChildOfMarkedForDeletion(ctx)) {
                 setEnabled(true);
-                updateTitle(Messages.get("label.publish.selected.items"));
+                updateTitle(getGwtToolbarItem().getTitle());
             }
         } else {
             gwtJahiaNode = ctx.getSingleSelection();
             if (gwtJahiaNode != null && gwtJahiaNode.getWorkflowInfo() != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode)) {
-                wf = gwtJahiaNode.getWorkflowInfo().getActiveWorkflows().get(new GWTJahiaWorkflowType("publish"));
+                wf = gwtJahiaNode.getWorkflowInfo().getActiveWorkflows().get(new GWTJahiaWorkflowType(workflowType));
                 if (wf != null) {
                     if (!wf.getAvailableTasks().isEmpty()) {
                         setEnabled(true);
@@ -128,9 +131,13 @@ public class PublishActionItem extends BaseActionItem {
                 } else {
                     wf = null;
                     GWTJahiaPublicationInfo info = gwtJahiaNode.getAggregatedPublicationInfo();
+                    GWTJahiaWorkflowDefinition def = null;
+                    if (gwtJahiaNode.getWorkflowInfo() != null) {
+                        def = gwtJahiaNode.getWorkflowInfo().getPossibleWorkflows().get(new GWTJahiaWorkflowType(workflowType));
+                    }
 
-                    setEnabled(GWTJahiaPublicationInfo.canPublish(gwtJahiaNode, info,
-                            JahiaGWTParameters.getLanguage()));
+                    setEnabled((checkForUnpublication ? info.isUnpublishable() : info.isPublishable()) && (def != null || info.isAllowedToPublishWithoutWorkflow()));
+
                     if(gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
                         updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
                     } else {
@@ -169,7 +176,7 @@ public class PublishActionItem extends BaseActionItem {
                     uuids.add(gwtJahiaNode.getUUID());
                 }
                 linker.loading(Messages.get("label.gettingPublicationInfo", "Getting publication information"));
-                JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, false, new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
+                JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
                             public void onApplicationFailure(Throwable caught) {
                                 linker.loaded();
                                 Window.alert("Cannot get status: " + caught.getMessage());
@@ -177,11 +184,7 @@ public class PublishActionItem extends BaseActionItem {
 
                             public void onSuccess(List<GWTJahiaPublicationInfo> result) {
                                 linker.loaded();
-                                if (result.isEmpty()) {
-                                    MessageBox.info(Messages.get("label.publish", "Publication"), Messages.get("label.publication.nothingToPublish", "Nothing to publish"), null);
-                                } else {
-                                    PublicationWorkflow.create(result, linker);
-                                }
+                                callback(result);
                             }
                         });
             }
@@ -194,6 +197,14 @@ public class PublishActionItem extends BaseActionItem {
             }
             new WorkflowActionDialog(wf, wf.getAvailableTasks().get(0), linker, wf.getCustomWorkflowInfo(), container);
             container.showEngine();
+        }
+    }
+
+    protected void callback(List<GWTJahiaPublicationInfo> result) {
+        if (result.isEmpty()) {
+            MessageBox.info(Messages.get("label.publish", "Publication"), Messages.get("label.publication.nothingToPublish", "Nothing to publish"), null);
+        } else {
+            PublicationWorkflow.create(result, linker, checkForUnpublication);
         }
     }
 }

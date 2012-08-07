@@ -63,6 +63,7 @@ public class PublicationJob extends BackgroundJob {
     public static final String SOURCE = "source";
     public static final String DESTINATION = "destination";
     public static final String LOCK = "lock";
+    public static final String CHECK_PERMISSIONS = "checkPermissions";
 
     public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
         JobDetail jobDetail = jobExecutionContext.getJobDetail();
@@ -72,9 +73,10 @@ public class PublicationJob extends BackgroundJob {
         String source = (String) jobDataMap.get(SOURCE);
         String destination = (String) jobDataMap.get(DESTINATION);
         String lock = (String) jobDataMap.get(LOCK);
+        Boolean checkPermissions = (Boolean) jobDataMap.get(CHECK_PERMISSIONS);
         List<String> comments = (List<String>) jobDataMap.get(PUBLICATION_COMMENTS);
 
-        JCRPublicationService.getInstance().publish(uuids, source, destination, comments);
+        JCRPublicationService.getInstance().publish(uuids, source, destination, checkPermissions, comments);
 
         if (lock != null) {
             JCRPublicationService.getInstance().unlockForPublication(uuids, source, lock);

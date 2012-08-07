@@ -80,7 +80,7 @@ public class Unpublish implements ExternalActivityBehaviour {
                 logger.debug("Launching unpublication of node " + node.getPath() + " at " + (new Date()).toString());
             }
         }
-        JCRPublicationService.getInstance().unpublish(ids, Collections.singleton(locale.toString()));
+        JCRPublicationService.getInstance().unpublish(ids, Collections.singleton(locale.toString()), false);
         sessionFactory.setCurrentUser(currentUser);
         execution.takeDefaultTransition();
     }

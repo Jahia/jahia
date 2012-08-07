@@ -869,6 +869,17 @@ public class JCRPublicationService extends JahiaService {
      * @throws javax.jcr.RepositoryException
      */
     public void unpublish(final List<String> uuids, final Set<String> languages) throws RepositoryException {
+        unpublish(uuids, languages, true);
+    }
+    /**
+     * Unpublish a node from live workspace.
+     * Referenced Node will not be unpublished.
+     *
+     * @param uuids      uuids of the node to unpublish
+     * @param languages
+     * @throws javax.jcr.RepositoryException
+     */
+    public void unpublish(final List<String> uuids, final Set<String> languages, boolean checkPermissions) throws RepositoryException {
         final String username;
         final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
         if (user != null) {
@@ -877,6 +888,18 @@ public class JCRPublicationService extends JahiaService {
             username = null;
         }
         
+        final List<String> checkedUuids = new ArrayList<String>();
+        if (checkPermissions) {
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            for (String uuid : uuids) {
+                if (session.getNodeByIdentifier(uuid).hasPermission("publish")) {
+                    checkedUuids.add(uuid);
+                }
+            }
+        } else {
+            checkedUuids.addAll(uuids);
+        }
+
         final Set<String> ignoredNodes = new HashSet<String>();
         
         JCRTemplate.getInstance().doExecute(true, username, EDIT_WORKSPACE, null, new JCRCallback<Object>() {
@@ -884,8 +907,8 @@ public class JCRPublicationService extends JahiaService {
                 Set<String> translationLanguages = new HashSet<String>();
                 boolean first = true;
                 VersionManager vm = sourceSession.getWorkspace().getVersionManager();
-                List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>(uuids.size()); 
-                for (String uuid : uuids) {
+                List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>(checkedUuids.size());
+                for (String uuid : checkedUuids) {
                     try {
                         JCRNodeWrapper node = sourceSession.getNodeByIdentifier(uuid);
                         if (first && !node.isNodeType(Constants.JAHIAMIX_PUBLICATION)) {

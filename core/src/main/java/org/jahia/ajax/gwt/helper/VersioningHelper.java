@@ -43,11 +43,13 @@ package org.jahia.ajax.gwt.helper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.services.cache.CacheService;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRVersionService;
@@ -171,7 +173,12 @@ public class VersioningHelper implements InitializingBean {
                 InputStream is = null;
                 try {
                     is = item.getStream();
-                    node.getFileContent().uploadFile(is, item.getContentType());
+                    node.getFileContent().uploadFile(
+                            is,
+                            JCRContentUtils.getMimeType(
+                                    StringUtils.isNotEmpty(item.getOriginalFileName()) ? item
+                                            .getOriginalFileName() : node.getName(), item
+                                            .getContentType()));
                 } catch (FileNotFoundException e) {
                     throw new GWTJahiaServiceException(e.getMessage());
                 } finally {

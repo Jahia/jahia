@@ -229,24 +229,43 @@ public class JCRPublicationService extends JahiaService {
 
     public void publish(final List<String> uuids, final String sourceWorkspace,
                         final String destinationWorkspace, final List<String> comments) throws RepositoryException {
+         publish(uuids, sourceWorkspace, destinationWorkspace, true, comments);
+    }
+
+    public void publish(final List<String> uuids, final String sourceWorkspace,
+                        final String destinationWorkspace, boolean checkPermissions, final List<String> comments) throws RepositoryException {
         if (uuids.isEmpty())
             return;
 
         final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
         final String username = user != null ? user.getUsername() : null;
 
-        JCRTemplate.getInstance().doExecute(true, username, sourceWorkspace, null, new JCRCallback<Object>() {
-            public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
-                JCRTemplate.getInstance().doExecute(true, username, destinationWorkspace, new JCRCallback<Object>() {
-                    public Object doInJCR(final JCRSessionWrapper destinationSession) throws RepositoryException {
-                        publish(uuids, sourceSession, destinationSession, comments);
-                        return null;
-                    }
-                });
-
-                return null;
+        final List<String> checkedUuids = new ArrayList<String>();
+        if (checkPermissions) {
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            for (String uuid : uuids) {
+                if (session.getNodeByIdentifier(uuid).hasPermission("publish")) {
+                    checkedUuids.add(uuid);
+                }
             }
-        });
+        } else {
+            checkedUuids.addAll(uuids);
+        }
+
+        if (!checkedUuids.isEmpty()) {
+            JCRTemplate.getInstance().doExecute(true, username, sourceWorkspace, null, new JCRCallback<Object>() {
+                public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
+                    JCRTemplate.getInstance().doExecute(true, username, destinationWorkspace, new JCRCallback<Object>() {
+                        public Object doInJCR(final JCRSessionWrapper destinationSession) throws RepositoryException {
+                            publish(checkedUuids, sourceSession, destinationSession, comments);
+                            return null;
+                        }
+                    });
+
+                    return null;
+                }
+            });
+        }
     }
 
     private void publish(final List<String> uuidsToPublish, JCRSessionWrapper sourceSession,
@@ -1115,13 +1134,6 @@ public class JCRPublicationService extends JahiaService {
     
             info.setStatus(getStatus(node, destinationSession, languages));
             if (info.getStatus() == PublicationInfo.CONFLICT) {
-                if(languages == null || languages.isEmpty()) {
-                    info.setCanPublish(true,"");
-                } else {
-                    for (String language : languages) {
-                        info.setCanPublish(false,language);
-                    }
-                }
                 return info;
             }
             if (node.hasProperty(JAHIA_LOCKTYPES)) {
@@ -1130,16 +1142,6 @@ public class JCRPublicationService extends JahiaService {
                     if (lockType.getString().endsWith(":validation")) {
                         info.setLocked(true);
                     }
-                }
-            }
-    
-            // todo : performance problem on permission check
-    //        info.setCanPublish(stageNode.hasPermission(JCRNodeWrapper.WRITE_LIVE));
-            if(languages == null || languages.isEmpty()) {
-                info.setCanPublish(true,"");
-            } else {
-                for (String language : languages) {
-                    info.setCanPublish(canPublish(node, language),language);
                 }
             }
         }
@@ -1267,36 +1269,6 @@ public class JCRPublicationService extends JahiaService {
         return status;
     }
 
-    private boolean canPublish(JCRNodeWrapper node, String language) {
-        boolean b;
-        b = node.hasPermission("jcr:all_default");
-        if (b) {
-            return b;
-        }
-        b = node.hasPermission("jcr:write_default");
-        if (b) {
-            return b;
-        }
-        b = node.hasPermission("jcr:modifyProperties_default");
-        if (b) {
-            return b;
-        }
-        b = node.hasPermission("jcr:modifyProperties_default_" + language);
-        if (b) {
-            return b;
-        }
-        b = node.hasPermission("jcr:addChildNodes_default");
-        if (b) {
-            return b;
-        }
-        b = node.hasPermission("jcr:removeNode_default");
-        if (b) {
-            return b;
-        }
-        b = node.hasPermission("jcr:removeChildNodes_default");
-        return b;
-    }
-
     private void getReferences(JCRNodeWrapper node, Set<String> languages, boolean includesReferences,
                                boolean includesSubnodes, JCRSessionWrapper sourceSession,
                                JCRSessionWrapper destinationSession, Map<String, PublicationInfoNode> infosMap,
@@ -1322,10 +1294,10 @@ public class JCRPublicationService extends JahiaService {
                                 }
                             } catch (ItemNotFoundException e) {
                                 if (definition.getRequiredType() == PropertyType.REFERENCE) {
-                                    logger.warn("Cannot get reference " + v.getString() + " from node " + node.getPath());
+                                    logger.warn("Cannot get reference " + p.getName() + " = " + v.getString() + " from node " + node.getPath());
                                 } else {
                                     if (logger.isDebugEnabled()) {
-                                        logger.debug("Cannot get weak reference {} from node {}", v.getString(), node.getPath());
+                                        logger.debug("Cannot get reference " + p.getName() + " = " + v.getString() + " from node " + node.getPath());
                                     }
                                 }
 
@@ -1341,7 +1313,13 @@ public class JCRPublicationService extends JahiaService {
                                 info.addReference(new PublicationInfo(n));
                             }
                         } catch (ItemNotFoundException e) {
-                            logger.warn("Cannot get reference " + p.getString());
+                            if (definition.getRequiredType() == PropertyType.REFERENCE) {
+                                logger.warn("Cannot get reference " + p.getName() + " = " +p.getString() + " from node " + node.getPath());
+                            } else{
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug("Cannot get reference " + p.getName() + " = " + p.getString() + " from node " + node.getPath());
+                                }
+                            }
                         }
                     }
                 }

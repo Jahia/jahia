@@ -42,11 +42,11 @@ package org.jahia.ajax.gwt.client.data.publication;
 
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.SerializableBaseModel;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -89,10 +89,9 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
     public GWTJahiaPublicationInfo() {
     }
 
-    public GWTJahiaPublicationInfo(String uuid, int status, boolean canPublish) {
+    public GWTJahiaPublicationInfo(String uuid, int status) {
         setUuid(uuid);
         setStatus(status);
-        setCanPublish(canPublish);
         setLocked(false);
     }
 
@@ -136,12 +135,20 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         set("status", status);
     }
 
-    public Boolean isCanPublish() {
-        return get("canPublish");
+    public Boolean isAllowedToPublishWithoutWorkflow() {
+        return get("isAllowedToPublishWithoutWorkflow");
     }
 
-    public void setCanPublish(Boolean canPublish) {
-        set("canPublish", canPublish);
+    public void setIsAllowedToPublishWithoutWorkflow(Boolean canPublish) {
+        set("isAllowedToPublishWithoutWorkflow", canPublish);
+    }
+
+    public Boolean getIsNonRootMarkedForDeletion() {
+        return get("nonRootMarkedForDeletion");
+    }
+
+    public void setIsNonRootMarkedForDeletion(Boolean canPublish) {
+        set("nonRootMarkedForDeletion", canPublish);
     }
 
     public Boolean isLocked() {
@@ -209,14 +216,17 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         return image;
     }
 
-    public static boolean canPublish(GWTJahiaNode node, GWTJahiaPublicationInfo info, final String language) {
+    public boolean isPublishable() {
+        return  !isLocked() &&
+                getStatus() > GWTJahiaPublicationInfo.PUBLISHED &&
+                getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE &&
+                getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID
+                && !getIsNonRootMarkedForDeletion();
+    }
 
-        return  !info.isLocked() && info.isCanPublish() &&
-                info.getStatus() > GWTJahiaPublicationInfo.PUBLISHED &&
-                info.getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE &&
-                info.getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID
-                && (!node.getNodeTypes().contains("jmix:markedForDeletion")
-                        || node.getNodeTypes().contains("jmix:markedForDeletionRoot"));
+    public boolean isUnpublishable() {
+        return  !isLocked() &&
+                getStatus() == GWTJahiaPublicationInfo.PUBLISHED || getStatus() == GWTJahiaPublicationInfo.MODIFIED;
     }
 
 

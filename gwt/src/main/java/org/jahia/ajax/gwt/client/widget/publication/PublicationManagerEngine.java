@@ -55,8 +55,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Widget;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -163,7 +161,7 @@ public class PublicationManagerEngine extends Window {
         add(m_tree);
         ButtonBar buttonBar = new ButtonBar();
         buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
-        Button button = new Button(Messages.get("label.customWorkflowsMenu", "Start workflow"));
+        Button button = new Button(Messages.get("label.publish", "Publish"));
         buttonBar.add(button);
         setBottomComponent(buttonBar);
 
@@ -216,7 +214,7 @@ public class PublicationManagerEngine extends Window {
                 }
             }
 
-            PublicationWorkflow.create(all, linker);
+            PublicationWorkflow.create(all, linker, false);
             hide();
         }
     }
@@ -305,7 +303,7 @@ public class PublicationManagerEngine extends Window {
                 return info.<Boolean>get("checkboxEnabled").booleanValue();
             }
 
-            boolean b = GWTJahiaPublicationInfo.canPublish(node, info, JahiaGWTParameters.getLanguage());
+            boolean b = info.isPublishable() && (info.getWorkflowDefinition() != null || info.isAllowedToPublishWithoutWorkflow());
             info.set("checkboxEnable", b);
             return b;
         }

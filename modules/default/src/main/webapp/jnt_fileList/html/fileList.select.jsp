@@ -22,16 +22,17 @@
             <c:if test="${jcr:isNodeType(subchild, 'jnt:file')}">
                 <li>
                     <jcr:nodeProperty node="${subchild}" name="jcr:title" var="title"/>
+                    <c:set var="isImage" value="${fn:startsWith(subchild.fileContent.contentType,'image/')}" />
                     <c:choose>
-                        <c:when test="${fn:startsWith(subchild.fileContent.contentType,'image/')}">
-                            <div onclick="return false;" ondblclick="CKEDITOR.instances.editContent.insertHtml('<img src=\'${subchild.url}\'/>')">
+                        <c:when test="${isImage}">
+                            <div>
                                 <img width="100" src="${subchild.url}"  alt="${fn:escapeXml(subchild.name)}" onmousedown="return false;" />
                                     ${fn:escapeXml(not empty title ? title : subchild.name)}
                             </div>
                         </c:when>
                         <c:otherwise>
                             <c:set var="title" value="${fn:escapeXml(not empty title.string ? title.string : subchild.name)}"/>
-                            <div onclick="return false;" ondblclick="CKEDITOR.instances.editContent.insertHtml('<a href=\'${subchild.url}\' title=\'${title}\'>${title}</a>')">
+                            <div>
                                 <span class="icon <%=FileUtils.getFileIcon( ((JCRNodeWrapper) pageContext.findAttribute("subchild")).getName()) %>"></span>
                                 <a href="${subchild.url}" onmousedown="return false;" title="${title}">${title}</a>
                             </div>
@@ -40,43 +41,50 @@
 
                     <c:if test="${jcr:hasPermission(subchild,'jcr:removeNode')}">
                         <template:tokenizedForm>
-                        <form action="<c:url value='${url.base}${subchild.path}'/>" method="post"
-                              id="jahia-blog-item-delete-${subchild.UUID}">
-                            <input type="hidden" name="jcrMethodToCall" value="delete"/>
-                            <button><fmt:message key="label.delete"/></button>
-                            <script type="text/javascript">
-                                <c:url var="urlPath" value="${url.base}${currentNode.path}.html.ajax">
+                            <form action="<c:url value='${url.base}${subchild.path}'/>" method="post"
+                                  id="jahia-blog-item-delete-${subchild.UUID}">
+                                <input type="hidden" name="jcrMethodToCall" value="delete"/>
+                                <button><fmt:message key="label.delete"/></button>
+                                <c:choose>
+                                    <c:when test="${isImage}">
+                                        <span class="span-button" onclick="CKEDITOR.instances.editContent.insertHtml('<img src=\'${subchild.url}\'/>')"><fmt:message key="label.add" /></span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="span-button" onclick="CKEDITOR.instances.editContent.insertHtml('<a href=\'${subchild.url}\' title=\'${title}\'>${title}</a>')"><fmt:message key="label.add" /></span>
+                                    </c:otherwise>
+                                </c:choose>
+                                <script type="text/javascript">
+                                    <c:url var="urlPath" value="${url.base}${currentNode.path}.html.ajax">
                                     <c:param name="targetNodePath" value="${targetNode.path}"/>
-                                </c:url>
-                                $(document).ready(function() {
-                                    // bind 'myForm' and provide a simple callback function
-                                    var options = {
-                                        success: function() {
-                                            $('#fileList${currentNode.identifier}').load('${urlPath}');
-                                            var dataText =CKEDITOR.instances.editContent.getData();
-                                            while ((i = dataText.search('${subchild.url}')) > 0 ) {
-                                                var before = dataText.substring(0,i);
-                                                var after = dataText.substring(i);
-                                                dataText = before.substring(0,before.lastIndexOf('<'));
-                                                if (after.substring(after.indexOf(">")-1,after.indexOf(">")) == "/") {
-                                                    dataText += after.substring(after.indexOf("/>") + 2);
-                                                } else {
-                                                    dataText += after.substring(after.indexOf("/a>") + 3);
+                                    </c:url>
+                                    $(document).ready(function() {
+                                        // bind 'myForm' and provide a simple callback function
+                                        var options = {
+                                            success: function() {
+                                                $('#fileList${currentNode.identifier}').load('${urlPath}');
+                                                var dataText =CKEDITOR.instances.editContent.getData();
+                                                while ((i = dataText.search('${subchild.url}')) > 0 ) {
+                                                    var before = dataText.substring(0,i);
+                                                    var after = dataText.substring(i);
+                                                    dataText = before.substring(0,before.lastIndexOf('<'));
+                                                    if (after.substring(after.indexOf(">")-1,after.indexOf(">")) == "/") {
+                                                        dataText += after.substring(after.indexOf("/>") + 2);
+                                                    } else {
+                                                        dataText += after.substring(after.indexOf("/a>") + 3);
+                                                    }
                                                 }
+                                                CKEDITOR.instances.editContent.setData(dataText);
                                             }
-                                            CKEDITOR.instances.editContent.setData(dataText);
                                         }
-                                    }
-                                    $('#jahia-blog-item-delete-${subchild.UUID}').ajaxForm(options);
-                                });
-                            </script>
-                        </form>
+                                        $('#jahia-blog-item-delete-${subchild.UUID}').ajaxForm(options);
+                                    });
+                                </script>
+                            </form>
                         </template:tokenizedForm>
                     </c:if>
                 </li>
             </c:if>
         </c:forEach>
-        <li><fmt:message key="label.dblClickToAdd"/></li>
     </ul>
 </div>
 <template:addCacheDependency path="${targetNodePath}"/>

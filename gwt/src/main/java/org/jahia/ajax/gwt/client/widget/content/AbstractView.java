@@ -144,7 +144,7 @@ public abstract class AbstractView extends TopRightComponent {
         store = new ListStore<GWTJahiaNode>(loader) {
             protected void onBeforeLoad(LoadEvent e) {
                 if (getLinker() != null) {
-                    getLinker().loading("listing directory content...");
+                    getLinker().loading(Messages.get("statusbar.loadingContent.label"));
                 }
                 super.onBeforeLoad(e);
             }

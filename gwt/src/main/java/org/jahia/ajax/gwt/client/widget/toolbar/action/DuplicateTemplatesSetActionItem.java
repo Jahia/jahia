@@ -57,7 +57,7 @@ public class DuplicateTemplatesSetActionItem extends BaseActionItem {
     @Override public void onComponentSelection() {
         String name = Window.prompt(Messages.get("newPackageName.label"), "New package name");
         if (name != null) {
-            linker.loading("Duplicating template set...");
+            linker.loading(Messages.get("statusbar.duplicatingTemplateSet.label"));
             JahiaContentManagementService.App.getInstance().createTemplateSet(name, JahiaGWTParameters.getSiteKey(), null, null, null, null, new BaseAsyncCallback<GWTJahiaNode>() {
                 public void onSuccess(GWTJahiaNode result) {
                     linker.loaded();

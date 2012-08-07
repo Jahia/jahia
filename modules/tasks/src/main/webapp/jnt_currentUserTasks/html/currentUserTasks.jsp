@@ -219,7 +219,7 @@
                                         </c:if>
                                         <c:if test="${empty task.properties['possibleOutcomes']}">
                                             <c:set var="taskId" value="${task.identifier}"/>
-                                            <li class="taskactions-right"><div class="taskaction-complete"><input class="completeTaskAction" taskPath="<c:url value='${url.base}${currentNode.path}'/>" type="checkbox" id="btnComplete-${taskId}" onchange="sendNewStatus('${taskId}','${task.path}','finished')"/>&nbsp;<label for="btnComplete-${taskId}"><fmt:message key="label.actions.completed"/></label></div></li>
+                                            <li><div class="taskaction-complete"><input class="completeTaskAction" taskPath="<c:url value='${url.base}${currentNode.path}'/>" type="checkbox" id="btnComplete-${taskId}" onchange="sendNewStatus('${taskId}','${task.path}','finished')"/>&nbsp;<label for="btnComplete-${taskId}"><fmt:message key="label.actions.completed"/></label></div></li>
                                         </c:if>
                                         <jcr:node var="taskData" path="${task.path}/taskData"/>
                                         <c:if test="${not empty taskData}">
@@ -230,7 +230,7 @@
                                         </c:if>
                                     </c:when>
                                     <c:when test="${task.properties.state.string == 'finished'}">
-                                        <li class="taskactions-right"><div class="taskaction-complete"><input name="Completed" type="checkbox" disabled="disabled" checked="checked" value="Completed" />&nbsp;<fmt:message key="label.actions.completed"/></div></li>
+                                        <li><div class="taskaction-complete"><input name="Completed" type="checkbox" disabled="disabled" checked="checked" value="Completed" />&nbsp;<fmt:message key="label.actions.completed"/></div></li>
                                     </c:when>
                                     <c:when test="${task.properties.state.string == 'suspended' and task.properties['assigneeUserKey'].string eq user.name}">
                                         <li><a class="taskaction taskaction-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse"><fmt:message key="label.actions.refuse"/></a></li>
@@ -239,7 +239,7 @@
                                     <c:when test="${task.properties.state.string == 'canceled'}">
                                     </c:when>
                                 </c:choose>
-                                <c:if test="${not empty task.properties['dueDate']}"><li class="taskactions-right"><a class="taskaction taskaction-iCalendar" href="<c:url value='${url.base}${task.path}.ics'/>" title="iCalendar"><fmt:message key="label.actions.icalendar"/></a></li></c:if>
+                                <c:if test="${not empty task.properties['dueDate']}"><li><a class="taskaction taskaction-iCalendar" href="<c:url value='${url.base}${task.path}.ics'/>" title="iCalendar"><fmt:message key="label.actions.icalendar"/></a></li></c:if>
                             </ul>
                         </div>
                     </td>

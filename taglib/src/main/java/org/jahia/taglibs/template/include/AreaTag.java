@@ -53,6 +53,7 @@ import org.slf4j.Logger;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,6 +80,8 @@ public class AreaTag extends ModuleTag implements ParamParent {
     private Template templateNode;
 
     private boolean areaAsSubNode;
+
+    private boolean emptyArea;
     
     public void setAreaType(String areaType) {
         this.areaType = areaType;
@@ -165,7 +168,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
         }
         renderContext.getRequest().removeAttribute("skipWrapper");
         renderContext.getRequest().removeAttribute("inArea");
-
+        emptyArea = true;
         try {
             // path is null in main resource display
             Template t = (Template) renderContext.getRequest().getAttribute("previousTemplate");
@@ -192,6 +195,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                                      " saved template = "+templateNode.serialize()+", previousTemplate set to null");
                     }
                     node = node.getNode(path);
+                    emptyArea = false;
                 } catch (RepositoryException e) {
                     if (node != null) {
                         path = node.getPath() + "/" + path;
@@ -245,6 +249,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                                 this.node = null;
                             } else {
                                 found = true;
+                                emptyArea = false;
                                 break;
                             }
                         }
@@ -278,6 +283,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     }
                     try {
                         node = (JCRNodeWrapper) session.getItem(path);
+                        emptyArea = false;
                     } catch (PathNotFoundException e) {
                         missingResource(renderContext, currentResource);
                     }
@@ -286,6 +292,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
             } else {
                 renderContext.getRequest().removeAttribute("skipWrapper");
                 node = mainResource.getNode();
+                emptyArea = false;
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -301,6 +308,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
     @Override public int doEndTag() throws JspException {
         Object o = pageContext.getRequest().getAttribute("inArea");
         try {
+            pageContext.setAttribute("org.jahia.emptyArea",emptyArea, PageContext.PAGE_SCOPE);
             return super.doEndTag();
         } finally {
             pageContext.getRequest().setAttribute("previousTemplate", templateNode);
@@ -311,6 +319,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
             level = null;
             areaAsSubNode = false;
             pageContext.getRequest().setAttribute("inArea", o);
+            emptyArea = true;
 
         }
     }

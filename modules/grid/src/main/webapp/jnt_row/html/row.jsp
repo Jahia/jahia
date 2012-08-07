@@ -79,6 +79,9 @@
     <!--start grid_${col.value}-->
     <div class='grid_${col.value}'>
         <template:area path="${currentNode.name}-${col.key}" areaAsSubNode="true"/>
+        <c:if test="${pageScope['org.jahia.emptyArea']}">
+            &nbsp;&nbsp;
+        </c:if>
         <div class='clear'></div>
     </div>
     <!--stop grid_${col.value}-->

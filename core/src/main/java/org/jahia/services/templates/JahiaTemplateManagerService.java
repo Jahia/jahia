@@ -443,26 +443,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof ContextInitializedEvent) {
             if (SettingsBean.getInstance().isProcessingServer()) {
-<<<<<<< .working
-                // initialize modules (migration case)
-                templatePackageDeployer.initializeMissingModuleNodes();
-                // perform initial imports if any
-                templatePackageDeployer.performInitialImport();
-
-                // do register components
-                componentRegistry.registerComponents();
-
-
-=======
->>>>>>> .merge-right.r42429
                 try {
                     JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
                         public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-<<<<<<< .working
-//                            for (JahiaTemplatesPackage aPackage : packages) {
-//                                deployModuleToAllSites("/templateSets/" + aPackage.getRootFolder(), true, session);
-//                            }
-=======
                             // initialize modules (migration case)
                             templatePackageDeployer.initializeMissingModuleNodes();
 
@@ -475,14 +458,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
                             // perform initial imports if any
                             final List<JahiaTemplatesPackage> packages = templatePackageDeployer.performInitialImport(session);
-            
+
                             // do register components
                             componentRegistry.registerComponents(session);
 
-                            for (JahiaTemplatesPackage aPackage : packages) {
-                                deployModuleToAllSites("/templateSets/" + aPackage.getRootFolder(), true, session,sitesBeforeImport);
-                            }
->>>>>>> .merge-right.r42429
+//                            for (JahiaTemplatesPackage aPackage : packages) {
+//                                deployModuleToAllSites("/templateSets/" + aPackage.getRootFolder(), true, session);
+//                            }
                             return null;
                         }
                     });

@@ -58,7 +58,7 @@ This resources are needed by the ajax loaded content
             </li>
             <c:forEach items="${result.nodes}" var="task">
                 <c:set var="emptyTasks" value="false"/>
-                <li class="scheduletask ${task.properties['state'].string eq 'finished' ? 'finishedTask' : 'unfinishedTask'}" date="${task.properties['dueDate'].date.time.time}">
+                <li class="scheduletask ${task.properties['type'].string} ${task.properties['state'].string eq 'finished' ? 'finishedTask' : 'unfinishedTask'}" date="${task.properties['dueDate'].date.time.time}">
                     <span class="date value"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
                                                              pattern="dd/MM/yyyy"/></span>
                     <c:set value="${jcr:findDisplayableNode(task, renderContext)}" var="displayableNode"/>
@@ -95,7 +95,7 @@ This resources are needed by the ajax loaded content
                                         value="${task.dueDate}"
                                         var="endDate"/>
                         <c:set var="emptyTasks" value="false"/>
-                        <li class="scheduletask unfinishedTask" date="${task.dueDate.time}">
+                        <li class="scheduletask workflowtask unfinishedTask" date="${task.dueDate.time}">
                             <span class="value">${endDate}</span>
                             <span class="value">${task.displayName} - ${node.name}</span>
                             <template:module node="${node}" view="workflowMonitor" editable="false">

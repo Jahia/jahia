@@ -136,6 +136,20 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
+    public static class ModuleDependenciesEvent extends ApplicationEvent {
+        private static final long serialVersionUID = -6693201714720533228L;
+        private String moduleName;
+
+        public ModuleDependenciesEvent(String moduleName, Object source) {
+            super(source);
+            this.moduleName = moduleName;
+        }
+
+        public String getModuleName() {
+            return moduleName;
+        }
+    }
+
     private static Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
 
     private TemplatePackageDeployer templatePackageDeployer;
@@ -544,13 +558,17 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             writer.newLine();
             writer.write("Created-By: Jahia");
             writer.newLine();
-            writer.write("Built-By: " + JCRSessionFactory.getInstance().getCurrentUser().getName());
-            writer.newLine();
+            if (JCRSessionFactory.getInstance().getCurrentUser() != null) {
+                writer.write("Built-By: " + JCRSessionFactory.getInstance().getCurrentUser().getName());
+                writer.newLine();
+            }
 //                writer.write("Build-Jdk: 1.6.0_20");
             writer.write("Implementation-Version: " + version);
             writer.newLine();
-            writer.write("depends: " + StringUtils.substringBetween(depends.toString(), "[", "]"));
-            writer.newLine();
+            if (!depends.isEmpty()) {
+                writer.write("depends: " + StringUtils.substringBetween(depends.toString(), "[", "]"));
+                writer.newLine();
+            }
             writer.write("module-type: " + moduleType);
             writer.newLine();
             writer.write("package-name: " + moduleName);
@@ -1165,6 +1183,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             logger.error("Unable to get template set names. Cause: " + e.getMessage(), e);
             return Collections.emptySet();
         }
+    }
+
+    public void updateDependencies(JahiaTemplatesPackage pack, List<String> depends) {
+        pack.getDepends().clear();
+        pack.getDepends().addAll(depends);
+        templatePackageRegistry.computeDependencies(pack);
+        applicationEventPublisher.publishEvent(new ModuleDependenciesEvent(pack.getFileName(), this));
     }
 
     public void setComponentRegistry(ComponentRegistry componentRegistry) {

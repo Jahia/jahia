@@ -853,8 +853,8 @@ public class ContentDefinitionHelper {
                     GWTJahiaNode node = allNodes.get(i);
                     if (node.getInheritedNodeTypes().contains("jnt:component") || node.get("hasDescendants") != null) {
                         node.getParent().set("hasDescendants", Boolean.TRUE);
-                    } else  if (!node.getInheritedNodeTypes().contains("jnt:component") && node.get("hasDescendants") == null) {
-                        node.getParent().remove(node);
+//                    } else  if (!node.getInheritedNodeTypes().contains("jnt:component") && node.get("hasDescendants") == null) {
+//                        node.getParent().remove(node);
                     }
                 }
                 return new ArrayList(root.getChildren());

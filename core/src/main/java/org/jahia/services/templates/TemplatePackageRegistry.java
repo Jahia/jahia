@@ -564,6 +564,11 @@ class TemplatePackageRegistry {
         return backgroundActions;
     }
 
+    public void computeDependencies(JahiaTemplatesPackage pack) {
+        pack.getDependencies().clear();
+        computeDependencies(pack.getDependencies(), pack);
+    }
+
     private void computeDependencies(Set<JahiaTemplatesPackage> dependencies,  JahiaTemplatesPackage pack) {
         for (String depends : pack.getDepends()) {
             JahiaTemplatesPackage dependentPack = registry.get(depends);

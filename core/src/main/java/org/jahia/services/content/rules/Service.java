@@ -43,6 +43,7 @@ package org.jahia.services.content.rules;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
@@ -708,6 +709,21 @@ public class Service extends JahiaService {
                 return null;
             }
         });
+    }
+
+    public void updateDependencies(AddedNodeFact node) throws RepositoryException {
+        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName());
+        if (pack != null) {
+            Value[] dependencies = node.getNode().getProperty("j:dependencies").getValues();
+            List<String> depends = new ArrayList<String>();
+            for (Value dependency : dependencies) {
+                depends.add(dependency.getString());
+            }
+            if (!depends.equals(pack.getDepends())) {
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().updateDependencies(pack, depends);
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(pack.getFileName());
+            }
+        }
     }
 
     public void updatePrivileges(NodeFact node) throws RepositoryException {

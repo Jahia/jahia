@@ -526,10 +526,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                 siteNode.setProperty(SitesSettings.MANDATORY_LANGUAGES, mandatoryLanguages.toArray(new String[mandatoryLanguages
                                         .size()]));
                                 siteNode.setProperty("j:templatesSet", templatePackage);
-<<<<<<< .working
-=======
-                                siteNode.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(templatePackage)});
->>>>>>> .merge-right.r42429
 
                                 siteNode.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(templatePackage + ":" + aPackage.getLastVersion())} );
 

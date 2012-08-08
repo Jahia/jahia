@@ -51,6 +51,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDependenciesEvent;
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDeployedOnSiteEvent;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.settings.SettingsBean;
@@ -243,7 +244,20 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                     }
                 }
             }
+        } else if (site != null && site.getPath().startsWith("/templateSets/")) {
+            JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(site.getName());
+            if (aPackage != null) {
+                installedModules = new ArrayList<String>();
+                installedModules.add("templates-system");
+                installedModules.add(aPackage.getRootFolder());
+                for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
+                    if (!installedModules.contains(depend.getRootFolder())) {
+                        installedModules.add(depend.getRootFolder());
+                    }
+                }
+            }
         }
+
 
         for (ExtendedNodeType type : nodeTypeList) {
             Set<JahiaTemplatesPackage> packages = templateManagerService.getAvailableTemplatePackagesForModule(JCRContentUtils.replaceColon(type.getName()));
@@ -307,7 +321,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     }
 
     public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof TemplatePackageRedeployedEvent || event instanceof ModuleDeployedOnSiteEvent) {
+        if (event instanceof TemplatePackageRedeployedEvent || event instanceof ModuleDeployedOnSiteEvent || event instanceof ModuleDependenciesEvent) {
             viewSetCache.clear();
             FileSystemView.clearPropertiesCache();
         }

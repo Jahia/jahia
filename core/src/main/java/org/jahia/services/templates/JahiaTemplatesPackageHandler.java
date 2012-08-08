@@ -233,7 +233,7 @@ final class JahiaTemplatesPackageHandler {
                 }
 
                 String depends = (String) manifest.getMainAttributes().get(new Attributes.Name("depends"));
-                if (depends != null) {
+                if (depends != null && !StringUtils.isEmpty(depends.trim())) {
                     String[] dependencies = Patterns.COMMA.split(depends);
                     for (String dependency : dependencies) {
                         templatePackage.setDepends(dependency.trim());

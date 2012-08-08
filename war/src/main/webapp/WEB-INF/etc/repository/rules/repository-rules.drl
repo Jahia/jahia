@@ -148,6 +148,7 @@ rule "Create permission for template"
         Create a permission in /permissions/templates named "template-" + node.getName()
 end
 
+<<<<<<< .working
 rule "Create dependency on module"
     when
         A property j:dependencies has been set on a node
@@ -156,6 +157,17 @@ rule "Create dependency on module"
         Update dependencies for module
 end
 
+=======
+rule "Create dependency on module"
+    when
+        A property j:dependencies has been set on a node
+			- the node has the type jnt:virtualsite
+            - not in operation import
+    then
+        Update dependencies for module
+end
+
+>>>>>>> .merge-right.r42545
 rule "Flush group cache"
     when
         A node is deleted

@@ -464,22 +464,20 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 dependencies = null;
                 site = currentSite;
                 if (site.hasProperty("j:dependencies")) {
-                    if (type.getTemplatePackage() != null) {
-                        dependencies = new ArrayList<String>();
-                        dependencies.add(site.getName());
-                        for (int i = 0; i < dependencies.size(); i++) {
-                            JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(dependencies.get(i));
-                            for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                                if (!dependencies.contains(depend.getRootFolder())) {
-                                    dependencies.add(depend.getRootFolder());
-                                }
+                    dependencies = new ArrayList<String>();
+                    dependencies.add(site.getName());
+                    for (int i = 0; i < dependencies.size(); i++) {
+                        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(dependencies.get(i));
+                        for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
+                            if (!dependencies.contains(depend.getRootFolder())) {
+                                dependencies.add(depend.getRootFolder());
                             }
                         }
                     }
                 }
             }
 
-            if (dependencies != null && !dependencies.contains(type.getTemplatePackage().getFileName())) {
+            if (type.getTemplatePackage() != null && dependencies != null && !dependencies.contains(type.getTemplatePackage().getFileName())) {
                 logger.error("Missing dependency : " + path + " requires " + type.getTemplatePackage().getFileName() + getLocation());
             }
         }

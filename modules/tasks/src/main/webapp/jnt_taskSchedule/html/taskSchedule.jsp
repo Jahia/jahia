@@ -44,8 +44,9 @@
 <li class="scheduletask now" date="${now.time}">
    <fmt:message key="label.upcoming" />
 </li>
+    <c:set var="emptyTasks" value="true"/>
 <c:forEach items="${result.nodes}" var="task">
-
+    <c:set var="emptyTasks" value="false"/>
     <li class="scheduletask ${task.properties['state'].string eq 'finished' ? 'finishedTask' : 'unfinishedTask'}" date="${task.properties['dueDate'].date.time.time}">
         <span class="date value"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
                                                  pattern="dd/MM/yyyy"/></span>
@@ -69,6 +70,7 @@
         <workflow:workflow id="${process.processId}" provider="${process.provider}" var="active"/>
         <c:forEach items="${active.availableActions}" var="task">
             <c:if test="${not empty task.dueDate}">
+                <c:set var="emptyTasks" value="true"/>
                 <fmt:formatDate pattern="dd/MM/yyyy"
                                 value="${task.dueDate}"
                                 var="endDate"/>
@@ -87,6 +89,7 @@
             <fmt:formatDate pattern="dd/MM/yyyy"
                             value="${task.endTime}"
                             var="endDate"/>
+            <c:set var="emptyTasks" value="true"/>
             <li class="scheduletask finishedTask" date="${task.endTime.time}">
                 <span class="date value">${endDate}</span>
                 <span class="value"><a href="${link}">${task.displayName} - ${task.displayOutcome} - ${node.name}</a></span>
@@ -94,6 +97,9 @@
         </c:if>
     </c:forEach>
 </c:forEach>
+    <c:if test="${emptyTasks}">
+        <li class="scheduleTasks"><span class=value><fmt:message key="label.upcoming.no.tasks" /></span></li>
+    </c:if>
 </ul>
 <script>
     $(document).ready(function() {

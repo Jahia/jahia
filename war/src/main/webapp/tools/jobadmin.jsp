@@ -116,7 +116,13 @@ if (Boolean.valueOf((String) pageContext.getAttribute("showCompleted"))) {
     for (String triggerGroup : service.getScheduler().getTriggerGroupNames()) {
         for (String triggerName : service.getScheduler().getTriggerNames(triggerGroup)) {
             Trigger trigger = service.getScheduler().getTrigger(triggerName, triggerGroup);
+            if (trigger == null) {
+                continue;
+            }
             JobDetail job = service.getScheduler().getJobDetail(trigger.getJobName(), trigger.getJobGroup());
+            if (job == null) {
+                continue;
+            }
             jobs.add(new Object[] {job, trigger});
             aliveCount++;
         }

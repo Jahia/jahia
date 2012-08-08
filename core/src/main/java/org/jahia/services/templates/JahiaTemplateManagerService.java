@@ -505,7 +505,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     }
                 }
             }
-            createManifest(moduleName, tmplRootFolder, moduleType, "1.0", Arrays.asList("default"));
+            createManifest(moduleName, moduleName, tmplRootFolder, moduleType, "1.0", Arrays.asList("default"));
             templatePackageRegistry.register(templatePackageDeployer.getPackage(tmplRootFolder));
             logger.info("Package '" + moduleName + "' successfully created");
         }
@@ -542,13 +542,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             new File(tmplRootFolder, "resources").mkdirs();
             new File(tmplRootFolder, "css").mkdirs();
 
-            createManifest(moduleName, tmplRootFolder, moduleType, "1.0", Arrays.asList("default"));
+            createManifest(moduleName, moduleName, tmplRootFolder, moduleType, "1.0", Arrays.asList("default"));
             templatePackageRegistry.register(templatePackageDeployer.getPackage(tmplRootFolder));
             logger.info("Package '" + moduleName + "' successfully created");
         }
     }
 
-    public void createManifest(String moduleName, File tmplRootFolder, String moduleType, String version, List<String> depends) {
+    public void createManifest(String rootFolder, String packageName, File tmplRootFolder, String moduleType, String version, List<String> depends) {
         try {
             File manifest = new File(tmplRootFolder + "/META-INF/MANIFEST.MF");
 
@@ -571,9 +571,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
             writer.write("module-type: " + moduleType);
             writer.newLine();
-            writer.write("package-name: " + moduleName);
+            writer.write("package-name: " + packageName);
             writer.newLine();
-            writer.write("root-folder: " + moduleName);
+            writer.write("root-folder: " + rootFolder);
             writer.newLine();
             writer.close();
             templatePackageDeployer.setTimestamp(manifest.getPath(), manifest.lastModified());
@@ -594,6 +594,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 //                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //                }
 
+                JahiaTemplatesPackage aPackage = templatePackageRegistry.lookupByFileName(moduleName);
+
                 JCRNodeWrapper node = session.getNode("/templateSets/" + moduleName);
                 List<String> dependencies = new ArrayList<String>();
                 if (node.hasProperty("j:dependencies")) {
@@ -607,7 +609,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     version = node.getNode("j:versionInfo").getProperty("j:version").getString();
                 }
 
-                createManifest(moduleName, tmplRootFolder, node.getProperty("j:siteType").getString(),
+                createManifest(moduleName, aPackage.getName(), tmplRootFolder, node.getProperty("j:siteType").getString(),
                         version,
                         dependencies);
 

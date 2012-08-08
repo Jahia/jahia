@@ -6,7 +6,7 @@
 
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <c:set var="wrappedContent" value="${fn:replace(wrappedContent, '<div class=\"clear\"></div>', '')}"/>
-<c:if test="${not renderContext.editMode and not empty fn:trim(wrappedContent)}">
+<c:if test="${renderContext.editMode or not empty fn:trim(wrappedContent)}">
     <c:if test="${not empty title}">
         <div class="clear"></div>
         <h4 class="box8-title box8-title${currentNode.properties['j:style'].string}${!empty currentNode.properties.icon ? ' box8-title-icon' : ''}">

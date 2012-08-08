@@ -970,18 +970,11 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 name = task != null ? task.getName() : "";
             } else {
                 // So nice !
-                List<HistoryActivityInstance> l = new ArrayList<HistoryActivityInstance>();
-                for (String id : executionIds) {
-                    l.addAll(historyService.createHistoryActivityInstanceQuery().processInstanceId(id).list());
-                }
-                for (HistoryActivityInstance activityInstance : l) {
-                    if (activityInstance.getStartTime().equals(jbpmHistoryTask.getCreateTime())
-                            && ((activityInstance.getEndTime() == null && jbpmHistoryTask.getEndTime() == null) || (activityInstance
-                            .getEndTime() != null && activityInstance.getEndTime().equals(jbpmHistoryTask.getEndTime())))) {
-                        name = activityInstance.getActivityName();
-                        break;
-                    }
-                }
+                HistoryActivityInstanceByHistoryTaskQuery q = new HistoryActivityInstanceByHistoryTaskQuery();
+                q.setCommandService(((HistoryServiceImpl) historyService).getCommandService());
+                q.historyTaskId(jbpmHistoryTask.getId());
+                HistoryActivityInstance activityInstance = q.uniqueResult();
+                name = activityInstance.getActivityName();
             }
             historyItems
                     .add(new HistoryWorkflowTask(jbpmHistoryTask.getId(), jbpmHistoryTask.getExecutionId(), name,

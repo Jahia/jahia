@@ -18,11 +18,11 @@
 <template:addResources type="css" resources="tasks.css"/>
 <template:addResources type="javascript" resources="tasks.js"/>
 <c:if test="${empty param['bindedComponent']}">
-<c:set var="bindedComponent"
-       value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent').path}"/>
+    <c:set var="bindedComponent"
+           value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent').path}"/>
 </c:if>
 <c:if test="${not empty param['bindedComponent']}">
-<c:set var="bindedComponent" value="${param['bindedComponent']}"/>
+    <c:set var="bindedComponent" value="${param['bindedComponent']}"/>
 </c:if>
 <c:if test="${currentResource.workspace eq 'live'}">
     <div id="currentUserTasks${currentNode.identifier}">
@@ -32,16 +32,47 @@
     </div>
 </c:if>
 <c:if test="${currentResource.workspace ne 'live'}">
-<c:set value="" var="todayDisplayed" scope="request"/>
+    <c:set value="" var="todayDisplayed" scope="request"/>
 
-<c:if test="${not empty currentNode.properties['filterOnTypes']}">
-    <query:definition var="listQuery"
-                      statement="select * from [jnt:task] as t where isdescendantnode(t,['${functions:sqlencode(bindedComponent)}']) and t.type='${currentNode.properties['filterOnTypes'].string}' order by [jcr:created] desc"/>
+    <c:if test="${not empty currentNode.properties['filterOnTypes']}">
+        <query:definition var="listQuery"
+                          statement="select * from [jnt:task] as t where isdescendantnode(t,['${functions:sqlencode(bindedComponent)}']) and t.type='${currentNode.properties['filterOnTypes'].string}' order by [jcr:created] desc"/>
+    </c:if>
+    <c:if test="${empty currentNode.properties['filterOnTypes']}">
+        <query:definition var="listQuery"
+                          statement="select * from [jnt:task] as t where isdescendantnode(t,['${functions:sqlencode(bindedComponent)}']) order by [jcr:created] desc"/>
+    </c:if>
+    <c:set target="${moduleMap}" property="listQuery" value="${listQuery}"/>
+    <c:set target="${moduleMap}" property="subNodesView" value="taskList"/>
 </c:if>
-<c:if test="${empty currentNode.properties['filterOnTypes']}">
-    <query:definition var="listQuery"
-                      statement="select * from [jnt:task] as t where isdescendantnode(t,['${functions:sqlencode(bindedComponent)}']) order by [jcr:created] desc"/>
-</c:if>
-<c:set target="${moduleMap}" property="listQuery" value="${listQuery}"/>
-<c:set target="${moduleMap}" property="subNodesView" value="taskList" />
-</c:if>
+<script type="text/javascript">
+    function sendNewStatus(uuid, task, state, finalOutcome, reloadurl) {
+        $(".taskaction-complete").addClass("taskaction-disabled");
+        $(".taskaction").addClass("taskaction-disabled");
+        $.post('<c:url value="${url.base}"/>' + task,
+                {"jcrMethodToCall":"put", "state":state, "finalOutcome":finalOutcome, "form-token":document.forms['tokenForm_' +
+                                                                                                                  uuid].elements['form-token'].value},
+                function () {
+                    $('#task_' + uuid).load(reloadurl, null, function () {
+                        $(".taskaction-complete").removeClass("taskaction-disabled");
+                        $(".taskaction").removeClass("taskaction-disabled");
+                    });
+                }, "json");
+    }
+    ;
+    function sendNewAssignee(uuid, task, key, reloadurl) {
+        $(".taskaction-complete").addClass("taskaction-disabled");
+        $(".taskaction").addClass("taskaction-disabled");
+        $.post('<c:url value="${url.base}"/>' + task,
+                {"jcrMethodToCall":"put", "state":"active", "assigneeUserKey":key, "form-token":document.forms['tokenForm_' +
+                                                                                                               uuid].elements['form-token'].value},
+                function () {
+                    $('#task_' + uuid).load(reloadurl, null, function () {
+                        $(".taskaction-complete").removeClass("taskaction-disabled");
+                        $(".taskaction").removeClass("taskaction-disabled");
+                    });
+                }, "json");
+    }
+    ;
+
+</script>

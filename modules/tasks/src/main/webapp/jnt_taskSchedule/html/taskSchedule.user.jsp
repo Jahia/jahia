@@ -51,11 +51,13 @@ This resources are needed by the ajax loaded content
 
         <jsp:useBean id="now" class="java.util.Date"/>
         <jsp:useBean id="workflowTaskList" class="java.util.LinkedHashMap"/>
+        <c:set var="emptyTasks" value="true"/>
         <ul class="scheduletasks">
             <li class="scheduletask now" date="${now.time}">
                 <fmt:message key="label.upcoming" />
             </li>
             <c:forEach items="${result.nodes}" var="task">
+                <c:set var="emptyTasks" value="false"/>
                 <li class="scheduletask ${task.properties['state'].string eq 'finished' ? 'finishedTask' : 'unfinishedTask'}" date="${task.properties['dueDate'].date.time.time}">
                     <span class="date value"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
                                                              pattern="dd/MM/yyyy"/></span>
@@ -92,6 +94,7 @@ This resources are needed by the ajax loaded content
                         <fmt:formatDate pattern="dd/MM/yyyy"
                                         value="${task.dueDate}"
                                         var="endDate"/>
+                        <c:set var="emptyTasks" value="false"/>
                         <li class="scheduletask unfinishedTask" date="${task.dueDate.time}">
                             <span class="value">${endDate}</span>
                             <span class="value">${task.displayName} - ${node.name}</span>
@@ -104,7 +107,9 @@ This resources are needed by the ajax loaded content
                     </c:forEach>
                 </c:if>
             </c:forEach>
-
+            <c:if test="${emptyTasks}">
+                <li class="scheduleTasks"><span class=value><fmt:message key="label.upcoming.no.tasks" /></span></li>
+            </c:if>
 
         </ul>
         <script>

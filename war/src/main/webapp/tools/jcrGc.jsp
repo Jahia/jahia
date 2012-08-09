@@ -15,15 +15,17 @@
 <c:if test="${param.action == 'gc'}">
 <%
 long timer = System.currentTimeMillis();
+int deleted = 0;
 try {
-    JCRContentUtils.callDataStoreGarbageCollector();
+    deleted = JCRContentUtils.callDataStoreGarbageCollector();
 } catch (Exception e) {
 
 } finally {
     pageContext.setAttribute("took", System.currentTimeMillis() - timer);
+    pageContext.setAttribute("deleted", deleted);
 }
 %>
-<p style="color: blue">Successfully executed in <strong>${took}</strong> ms</p>
+<p style="color: blue">Successfully executed in <strong>${took}</strong> ms. <strong>${deleted}</strong> data record(s) deleted.</p>
 </c:if>
 <p>Available actions:</p>
 <ul>

@@ -216,6 +216,11 @@ public class JCRPublicationService extends JahiaService {
 
     public void publishByInfoList(final List<PublicationInfo> publicationInfos, final String sourceWorkspace,
                         final String destinationWorkspace, final List<String> comments) throws RepositoryException {
+        publishByInfoList(publicationInfos, sourceWorkspace, destinationWorkspace, true, comments);
+    }
+
+    public void publishByInfoList(final List<PublicationInfo> publicationInfos, final String sourceWorkspace,
+                                  final String destinationWorkspace, boolean checkPermissions, final List<String> comments) throws RepositoryException {
         LinkedHashSet<String> allIds = new LinkedHashSet<String>();
 
         for (PublicationInfo publicationInfo : publicationInfos) {
@@ -224,7 +229,7 @@ public class JCRPublicationService extends JahiaService {
                 allIds.addAll(subtree.getAllUuids(false, false));
             }
         }
-        publish(new ArrayList<String>(allIds), sourceWorkspace, destinationWorkspace, comments);
+        publish(new ArrayList<String>(allIds), sourceWorkspace, destinationWorkspace, checkPermissions, comments);
     }
 
     public void publish(final List<String> uuids, final String sourceWorkspace,

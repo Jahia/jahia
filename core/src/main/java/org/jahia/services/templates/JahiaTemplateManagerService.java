@@ -1054,7 +1054,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         JahiaTemplatesPackage aPackage = templatePackageRegistry.lookupByFileName(moduleName);
 
-<<<<<<< .working
         JCRNodeWrapper node = session.getNode("/templateSets/" + moduleName);
         List<String> dependencies = getDependencies(node);
         String version = "1.0";
@@ -1074,29 +1073,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             Value[] deps = node.getProperty("j:dependencies").getValues();
             for (Value dep : deps) {
                 dependencies.add(dep.getString());
-=======
-        JCRNodeWrapper node = session.getNode("/templateSets/" + moduleName);
-        List<String> dependencies = new ArrayList<String>();
-        if (node.hasProperty("j:dependencies")) {
-            Value[] deps = node.getProperty("j:dependencies").getValues();
-            for (Value dep : deps) {
-                dependencies.add(dep.getString());
->>>>>>> .merge-right.r42558
             }
-<<<<<<< .working
         }
         return dependencies;
-=======
-        }
-        String version = "1.0";
-        if (node.hasNode("j:versionInfo")) {
-            version = node.getNode("j:versionInfo").getProperty("j:version").getString();
-        }
-
-        createManifest(moduleName, aPackage.getName(), tmplRootFolder, node.getProperty("j:siteType").getString(),
-                version,
-                dependencies);
->>>>>>> .merge-right.r42558
     }
     
     public List<JahiaTemplatesPackage> getInstalledModulesForSite(String siteKey,

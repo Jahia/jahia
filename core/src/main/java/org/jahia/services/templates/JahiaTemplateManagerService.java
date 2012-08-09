@@ -1206,7 +1206,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                                     JCRPublicationService.getInstance().getPublicationInfo(destinationNode.getNode("templates").getIdentifier(), null, true, true, true, session, livesession);
                         }
                     });
-            JCRPublicationService.getInstance().publishByInfoList(tree, "default", "live", null);
+            JCRPublicationService.getInstance().publishByInfoList(tree, "default", "live", false, null);
         }
 
         addDependencyValue(originalNode, destinationNode, "j:installedModules");

@@ -1026,6 +1026,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 manifest = new Manifest(manifestStream);
             }
             Attributes attributes = manifest.getMainAttributes();
+            attributes.put(new Attributes.Name("Manifest-Version"), "1.0");
             attributes.put(new Attributes.Name("Created-By"), "Jahia");
             if (JCRSessionFactory.getInstance().getCurrentUser() != null) {
                 attributes.put(new Attributes.Name("Built-By"), JCRSessionFactory.getInstance().getCurrentUser().getName());

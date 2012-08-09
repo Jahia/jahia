@@ -59,7 +59,7 @@ public class DataStoreGarbageCollectorJob extends BackgroundJob {
     public void executeJahiaJob(JobExecutionContext ctx) throws Exception {
         logger.info("Starting DataStore Garbage Collector...");
         JCRContentUtils.callDataStoreGarbageCollector();
-        logger.info("...done DataStore Garbage Collecttion");
+        logger.info("...done DataStore Garbage Collection");
     }
 
 }

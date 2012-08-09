@@ -134,18 +134,27 @@ public final class JCRContentUtils implements ServletContextAware {
 
     private static final Logger logger = LoggerFactory.getLogger(JCRContentUtils.class);
     
-    public static void callDataStoreGarbageCollector() throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+    /**
+     * Calls the datastore garbage collector and returns the number of data entries deleted.
+     * 
+     * @return the number of data entries deleted
+     * @throws RepositoryException
+     *             in case of an error
+     */
+    public static int callDataStoreGarbageCollector() throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Integer>() {
+            public Integer doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                int deleted = 0;
                 GarbageCollector gc = ((SessionImpl) session.getProviderSession(session
                         .getNode("/").getProvider())).createDataStoreGarbageCollector();
                 try {
                     gc.mark();
-                    gc.sweep();
+                    deleted = gc.sweep();
+                    logger.info("Datastore garbage collector deleted {} data records", deleted);
                 } finally {
                     gc.close();
                 }
-                return null;
+                return deleted;
             }
         });
     }

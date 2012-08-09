@@ -418,8 +418,10 @@ public class JCRVersionService extends JahiaService {
                         String labelWithWs = node.getSession().getWorkspace().getName() + "_" + label;
                         if (!versionHistory.hasVersionLabel(labelWithWs)) {
                             Version version = versionManager.getBaseVersion(node.getPath());
-                            logger.debug("Add version label " + labelWithWs + " on " + node.getPath() + " for version " +
-                                    version.getName());
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Add version label " + labelWithWs + " on " + node.getPath() + " for version " +
+                                        version.getName());
+                            }
                             if (nodeWrapper.isVersioned()) {
                                 versionHistory.addVersionLabel(version.getName(), labelWithWs, true);
                             }
@@ -427,7 +429,6 @@ public class JCRVersionService extends JahiaService {
                         return null;
                     }
                 });
-
     }
 
     public void addVersionLabel(final List<String> allUuids, final String label, final String workspace)
@@ -442,8 +443,10 @@ public class JCRVersionService extends JahiaService {
                         String labelWithWs = workspace + "_" + label;
                         if (!versionHistory.hasVersionLabel(labelWithWs)) {
                             Version version = versionManager.getBaseVersion(nodeWrapper.getPath());
-                            logger.debug("Add version label " + labelWithWs + " on " + nodeWrapper.getPath() + " for version " +
-                                    version.getName());
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Add version label " + labelWithWs + " on " + nodeWrapper.getPath() + " for version " +
+                                        version.getName());
+                            }
                             if (nodeWrapper.isVersioned()) {
                                 versionHistory.addVersionLabel(version.getName(), labelWithWs, true);
                             }

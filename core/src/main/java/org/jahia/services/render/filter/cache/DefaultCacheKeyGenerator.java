@@ -207,10 +207,15 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                     // Todo : Do we need to find another way of getting the urlresolver ?
                     URLResolver urlResolver = (URLResolver) renderContext.getRequest().getAttribute("urlResolver");
                     args.add(urlResolver == null
-                            || urlResolver.getSiteKeyByServerName() == null ? new StringBuilder()
+                            || urlResolver.getSiteKeyByServerName() == null ?
+                            new StringBuilder()
                             .append(renderContext.getSite().getSiteKey())
-                            .append(":").append("virtualhost").toString()
-                            : renderContext.getSite().getSiteKey());
+                            .append(":").append("virtualhost")
+                            .append(":").append(request.getParameter("jsite")).toString()
+                            : new StringBuilder()
+                            .append(renderContext.getSite().getSiteKey())
+                            .append(":").append(request.getParameter("jsite")).toString()
+                    );
                 }
             }
         }

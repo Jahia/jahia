@@ -62,6 +62,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.net.SocketTimeoutException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -136,10 +137,13 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     private View resolveView(Resource resource, List<ExtendedNodeType> nodeTypeList, ArrayList<String> searchedLocations, RenderContext renderContext) {
         String template = resource.getResolvedTemplate();
         try {
-            JCRSiteNode site = resource.getNode().getResolveSite();
-            if ((JahiaSitesBaseService.SYSTEM_SITE_KEY).equals(site.getName())) {
-                site = renderContext.getSite();
+            JCRSiteNode site = renderContext.getSite();
+
+            Template t = (Template) renderContext.getRequest().getAttribute("previousTemplate");
+            if (t != null && t.getNode() != null) {
+                site = site.getSession().getNodeByIdentifier(t.getNode()).getResolveSite();
             }
+
             List<String> templateTypeMappings = new ArrayList<String>();
             SortedSet<View> s = new TreeSet<View>();
             if (renderContext != null) {
@@ -242,7 +246,6 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
             JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(site.getName());
             if (aPackage != null) {
                 installedModules = new ArrayList<String>();
-                installedModules.add("templates-system");
                 installedModules.add(aPackage.getRootFolder());
                 for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
                     if (!installedModules.contains(depend.getRootFolder())) {

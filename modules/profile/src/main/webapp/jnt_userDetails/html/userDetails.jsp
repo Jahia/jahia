@@ -118,18 +118,41 @@
                 key="jnt_user.j_function"/>
         :</span>&nbsp;${fn:escapeXml(fields['j:function'])}</p>
             </c:if>
+            <c:if test="${currentNode.properties['j:address'].boolean and fn:contains(publicPropertiesAsString, 'j:address')}">
+                <p><span class="user-label">
+        <fmt:message
+                key="jnt_user.j_address"/>
+        :</span>&nbsp;${fn:escapeXml(fields['j:address'])}</p>
+            </c:if>
+            <c:if test="${currentNode.properties['j:zipCode'].boolean and fn:contains(publicPropertiesAsString, 'j:zipCode')}">
+                <p><span class="user-label">
+        <fmt:message
+                key="jnt_user.j_zipCode"/>
+        :</span>&nbsp;${fn:escapeXml(fields['j:zipCode'])}</p>
+            </c:if>
+            <c:if test="${currentNode.properties['j:city'].boolean and fn:contains(publicPropertiesAsString, 'j:city')}">
+                <p><span class="user-label">
+        <fmt:message
+                key="jnt_user.j_city"/>
+        :</span>&nbsp;${fn:escapeXml(fields['j:city'])}</p>
+            </c:if>
+            <c:if test="${currentNode.properties['j:country'].boolean and fn:contains(publicPropertiesAsString, 'j:country')}">
+                <p><span class="user-label">
+        <fmt:message
+                key="jnt_user.j_country"/>
+        :</span>&nbsp;${fn:escapeXml(fields['j:country'])}</p>
+            </c:if>
             <c:if test="${currentNode.properties['j:phoneNumber'].boolean and fn:contains(publicPropertiesAsString, 'j:phoneNumber')}">
                 <p><span class="user-label">
         <fmt:message
-
                 key="jnt_user.j_phoneNumber"/>
         :</span>&nbsp;${fn:escapeXml(fields['j:phoneNumber'])}</p>
             </c:if>
-            <c:if test="${currentNode.properties['j:faxNumber'].boolean and fn:contains(publicPropertiesAsString, 'j:faxNumber')}">
+            <c:if test="${currentNode.properties['j:mobileNumber'].boolean and fn:contains(publicPropertiesAsString, 'j:mobileNumber')}">
                 <p><span class="user-label">
         <fmt:message
-                key="jnt_user.j_faxNumber"/>
-        :</span>&nbsp;${fn:escapeXml(fields['j:faxNumber'])}</p>
+                key="jnt_user.j_mobileNumber"/>
+        :</span>&nbsp;${fn:escapeXml(fields['j:mobileNumber'])}</p>
             </c:if>
             <c:if test="${currentNode.properties['j:email'].boolean and fn:contains(publicPropertiesAsString, 'j:email')}">
                 <p><span class="user-label">

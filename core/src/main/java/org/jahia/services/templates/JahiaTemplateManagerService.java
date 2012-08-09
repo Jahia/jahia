@@ -104,6 +104,8 @@ import javax.jcr.query.QueryManager;
 
 import java.io.*;
 import java.util.*;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -1017,33 +1019,30 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void createManifest(String rootFolder, String packageName, File tmplRootFolder, String moduleType, String version, List<String> depends) {
         try {
-            File manifest = new File(tmplRootFolder + "/META-INF/MANIFEST.MF");
-
-
-            BufferedWriter writer = new BufferedWriter(new FileWriter(manifest));
-            writer.write("Manifest-Version: 1.0");
-            writer.newLine();
-            writer.write("Created-By: Jahia");
-            writer.newLine();
+            File manifestFile = new File(tmplRootFolder + "/META-INF/MANIFEST.MF");
+            Manifest manifest = new Manifest();
+            if (manifestFile.exists()) {
+                InputStream manifestStream = new BufferedInputStream(new FileInputStream(manifestFile), 1024);
+                manifest = new Manifest(manifestStream);
+            }
+            Attributes attributes = manifest.getMainAttributes();
+            attributes.put(new Attributes.Name("Created-By"), "Jahia");
             if (JCRSessionFactory.getInstance().getCurrentUser() != null) {
-                writer.write("Built-By: " + JCRSessionFactory.getInstance().getCurrentUser().getName());
-                writer.newLine();
+                attributes.put(new Attributes.Name("Built-By"), JCRSessionFactory.getInstance().getCurrentUser().getName());
             }
-//                writer.write("Build-Jdk: 1.6.0_20");
-            writer.write("Implementation-Version: " + version);
-            writer.newLine();
+            attributes.put(new Attributes.Name("Implementation-Version"), version);
             if (!depends.isEmpty()) {
-                writer.write("depends: " + StringUtils.substringBetween(depends.toString(), "[", "]"));
-                writer.newLine();
+                attributes.put(new Attributes.Name("depends"), StringUtils.substringBetween(depends.toString(), "[", "]"));
             }
-            writer.write("module-type: " + moduleType);
-            writer.newLine();
-            writer.write("package-name: " + packageName);
-            writer.newLine();
-            writer.write("root-folder: " + rootFolder);
-            writer.newLine();
-            writer.close();
-            templatePackageDeployer.setTimestamp(manifest.getPath(), manifest.lastModified());
+            attributes.put(new Attributes.Name("module-type"), moduleType);
+            attributes.put(new Attributes.Name("package-name"), packageName);
+            attributes.put(new Attributes.Name("root-folder"), rootFolder);
+
+            FileOutputStream out = new FileOutputStream(manifestFile);
+            manifest.write(out);
+            out.close();
+
+            templatePackageDeployer.setTimestamp(manifestFile.getPath(), manifestFile.lastModified());
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }

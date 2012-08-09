@@ -247,12 +247,12 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         } else if (site != null && site.getPath().startsWith("/templateSets/")) {
             JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(site.getName());
             if (aPackage != null) {
-                installedModules = new ArrayList<String>();
-                installedModules.add("templates-system");
-                installedModules.add(aPackage.getRootFolder());
+                installedModules = new HashMap<String, String>();
+                installedModules.put("templates-system", null);
+                installedModules.put(aPackage.getRootFolder(), null);
                 for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                    if (!installedModules.contains(depend.getRootFolder())) {
-                        installedModules.add(depend.getRootFolder());
+                    if (!installedModules.containsKey(depend.getRootFolder())) {
+                        installedModules.put(depend.getRootFolder(), null);
                     }
                 }
             }

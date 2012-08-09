@@ -711,20 +711,6 @@ public class Service extends JahiaService {
         });
     }
 
-<<<<<<< .working
-    public void updateDependencies(AddedNodeFact node) throws RepositoryException {
-        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName());
-        if (pack != null) {
-            Value[] dependencies = node.getNode().getProperty("j:dependencies").getValues();
-            List<String> depends = new ArrayList<String>();
-            for (Value dependency : dependencies) {
-                depends.add(dependency.getString());
-            }
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().updateDependencies(pack, depends);
-        }
-    }
-
-=======
     public void updateDependencies(AddedNodeFact node) throws RepositoryException {
         JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getName());
         if (pack != null) {
@@ -735,12 +721,11 @@ public class Service extends JahiaService {
             }
             if (!depends.equals(pack.getDepends())) {
                 ServicesRegistry.getInstance().getJahiaTemplateManagerService().updateDependencies(pack, depends);
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(pack.getFileName());
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(pack.getFileName(), node.getNode().getSession());
             }
         }
     }
 
->>>>>>> .merge-right.r42545
     public void updatePrivileges(NodeFact node) throws RepositoryException {
         final JCRSiteNode site = node.getParent().getNode().getResolveSite();
         String principal = StringUtils.substringAfter(StringUtils.substringAfterLast(node.getPath(), "/"), "_").replaceFirst("_", ":");

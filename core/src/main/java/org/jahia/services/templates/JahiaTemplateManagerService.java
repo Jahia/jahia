@@ -815,7 +815,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     }
                 }
             }
-<<<<<<< .working
 
         } catch (Exception e) {
             logger.error("Cannot patch import file", e);
@@ -823,11 +822,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             if (zis != null) {
                 IOUtils.closeQuietly(zis);
             }
-=======
-            createManifest(moduleName, moduleName, tmplRootFolder, moduleType, "1.0", Arrays.asList("default"));
-            templatePackageRegistry.register(templatePackageDeployer.getPackage(tmplRootFolder));
-            logger.info("Package '" + moduleName + "' successfully created");
->>>>>>> .merge-right.r42549
         }
 
         // Handle webapp files
@@ -1058,6 +1052,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public void regenerateManifest(final String moduleName, JCRSessionWrapper session) throws RepositoryException  {
         File tmplRootFolder = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName);
 
+        JahiaTemplatesPackage aPackage = templatePackageRegistry.lookupByFileName(moduleName);
+
         JCRNodeWrapper node = session.getNode("/templateSets/" + moduleName);
         List<String> dependencies = getDependencies(node);
         String version = "1.0";
@@ -1065,34 +1061,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             version = node.getNode("j:versionInfo").getProperty("j:version").getString();
         }
 
-<<<<<<< .working
-        createManifest(moduleName, tmplRootFolder, node.getProperty("j:siteType").getString(),
+        createManifest(moduleName, aPackage.getName(), tmplRootFolder, node.getProperty("j:siteType").getString(),
                 version,
                 dependencies);
-=======
-                JahiaTemplatesPackage aPackage = templatePackageRegistry.lookupByFileName(moduleName);
 
-                JCRNodeWrapper node = session.getNode("/templateSets/" + moduleName);
-                List<String> dependencies = new ArrayList<String>();
-                if (node.hasProperty("j:dependencies")) {
-                    Value[] deps = node.getProperty("j:dependencies").getValues();
-                    for (Value dep : deps) {
-                        dependencies.add(dep.getString());
-                    }
-                }
-                String version = "1.0";
-                if (node.hasNode("j:versionInfo")) {
-                    version = node.getNode("j:versionInfo").getProperty("j:version").getString();
-                }
->>>>>>> .merge-right.r42549
-
-<<<<<<< .working
     }
-=======
-                createManifest(moduleName, aPackage.getName(), tmplRootFolder, node.getProperty("j:siteType").getString(),
-                        version,
-                        dependencies);
->>>>>>> .merge-right.r42549
 
     private List<String> getDependencies(JCRNodeWrapper node) throws RepositoryException {
         List<String> dependencies = new ArrayList<String>();
@@ -1730,14 +1703,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-<<<<<<< .working
-    public void updateDependencies(JahiaTemplatesPackage pack, List<String> depends) {
-        pack.getDepends().clear();
-        pack.getDepends().addAll(depends);
-        templatePackageRegistry.computeDependencies(pack);
-    }
-
-=======
     public void updateDependencies(JahiaTemplatesPackage pack, List<String> depends) {
         pack.getDepends().clear();
         pack.getDepends().addAll(depends);
@@ -1745,7 +1710,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         applicationEventPublisher.publishEvent(new ModuleDependenciesEvent(pack.getFileName(), this));
     }
 
->>>>>>> .merge-right.r42545
     public void setComponentRegistry(ComponentRegistry componentRegistry) {
         this.componentRegistry = componentRegistry;
     }

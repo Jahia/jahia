@@ -721,7 +721,7 @@ public class Service extends JahiaService {
             }
             if (!depends.equals(pack.getDepends())) {
                 ServicesRegistry.getInstance().getJahiaTemplateManagerService().updateDependencies(pack, depends);
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(pack.getFileName());
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(pack.getFileName(), node.getNode().getSession());
             }
         }
     }

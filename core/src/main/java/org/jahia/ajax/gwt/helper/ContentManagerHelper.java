@@ -1193,7 +1193,7 @@ public class ContentManagerHelper {
 
     public GWTJahiaNode generateWar(String moduleName, JCRSessionWrapper session) {
         try {
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(moduleName);
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(moduleName, session);
             ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateImportFile(moduleName);
 
             File f = File.createTempFile("templateSet", ".war");

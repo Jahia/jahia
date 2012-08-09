@@ -582,42 +582,27 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    public void regenerateManifest(final String moduleName) throws RepositoryException  {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                File tmplRootFolder = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName);
+    public void regenerateManifest(final String moduleName, JCRSessionWrapper session) throws RepositoryException  {
+        File tmplRootFolder = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName);
 
-//                try {
-//                    File manifestFile = new File(tmplRootFolder, "META-INF/MANIFEST.MF");
-//                    BufferedReader reader = new BufferedReader(new FileReader(manifestFile));
-//                } catch (IOException e) {
-//                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//                }
+        JahiaTemplatesPackage aPackage = templatePackageRegistry.lookupByFileName(moduleName);
 
-                JahiaTemplatesPackage aPackage = templatePackageRegistry.lookupByFileName(moduleName);
-
-                JCRNodeWrapper node = session.getNode("/templateSets/" + moduleName);
-                List<String> dependencies = new ArrayList<String>();
-                if (node.hasProperty("j:dependencies")) {
-                    Value[] deps = node.getProperty("j:dependencies").getValues();
-                    for (Value dep : deps) {
-                        dependencies.add(dep.getString());
-                    }
-                }
-                String version = "1.0";
-                if (node.hasNode("j:versionInfo")) {
-                    version = node.getNode("j:versionInfo").getProperty("j:version").getString();
-                }
-
-                createManifest(moduleName, aPackage.getName(), tmplRootFolder, node.getProperty("j:siteType").getString(),
-                        version,
-                        dependencies);
-
-                return null;
+        JCRNodeWrapper node = session.getNode("/templateSets/" + moduleName);
+        List<String> dependencies = new ArrayList<String>();
+        if (node.hasProperty("j:dependencies")) {
+            Value[] deps = node.getProperty("j:dependencies").getValues();
+            for (Value dep : deps) {
+                dependencies.add(dep.getString());
             }
-        });
+        }
+        String version = "1.0";
+        if (node.hasNode("j:versionInfo")) {
+            version = node.getNode("j:versionInfo").getProperty("j:version").getString();
+        }
 
-
+        createManifest(moduleName, aPackage.getName(), tmplRootFolder, node.getProperty("j:siteType").getString(),
+                version,
+                dependencies);
     }
 
     public void regenerateImportFile(final String moduleName) throws RepositoryException {

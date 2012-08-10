@@ -858,7 +858,15 @@ public class ContentManagerHelper {
                             if (g != null) {
                                 ace.setHidden(g.isHidden());
                                 String groupName = PrincipalViewHelper.getDisplayName(g, uiLocale);
+                                ace.setPrincipalKey(g.getGroupKey());
                                 ace.setPrincipalDisplayName(groupName);
+                            }
+                        } else {
+                            JahiaUser u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal());
+                            if (u != null) {
+                                ace.setPrincipalKey(u.getUserKey());
+                                String userName = PrincipalViewHelper.getDisplayName(u, uiLocale);
+                                ace.setPrincipalDisplayName(userName);
                             }
                         }
                         ace.setPermissions(new HashMap<String, Boolean>());

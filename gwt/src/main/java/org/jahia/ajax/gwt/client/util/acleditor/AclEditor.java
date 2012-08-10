@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.client.util.acleditor;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -74,7 +75,6 @@ import java.util.*;
  * Time: 11:24:32 AM
  */
 public class AclEditor {
-
     private GWTJahiaNodeACL acl;
     private Map<String, GWTJahiaNodeACE> aceMap;
     private GWTJahiaNodeACL originalAcl;
@@ -90,6 +90,7 @@ public class AclEditor {
     private boolean displayInheritanceColumn = true;
     private String addUsersLabel = getResource("newUsers.label");
     private String addGroupsLabel = getResource("newGroups.label");
+    private List<AclEditor> rolesEditors;
 
     public AclEditor(GWTJahiaNodeACL acl, String aclContext, Set<String> roles, Set<String> roleGroups) {
         this.originalAcl = acl;
@@ -160,6 +161,15 @@ public class AclEditor {
 
     public ContentPanel renderNewAclPanel() {
         final List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
+
+        if (!rolesEditors.isEmpty()) {
+            if (rolesEditors.get(0).getBreakinheritanceItem().getText().equals(getResource("org.jahia.engines.rights.ManageRights.restoreAllInheritance.label"))) {
+                acl.setBreakAllInheritance(true);
+            } else {
+                acl.setBreakAllInheritance(false);
+            }
+        }
+        rolesEditors.add(this);
 
         // im. representing the principal
         ColumnConfig col = new ColumnConfig("icon", 30);
@@ -330,6 +340,13 @@ public class AclEditor {
                 }
                 setBreakInheritanceLabel();
 
+                if (event.getState() == null || !event.getState().containsKey("restore")) {
+                    event.setState(new HashMap<String, Object>());
+                    event.getState().put("restore", Boolean.TRUE);
+                    for (AclEditor roleEditor : rolesEditors) {
+                        roleEditor.getRestoreButton().fireEvent(Events.Select, event);
+                    }
+                }
             }
         });
 
@@ -426,30 +443,42 @@ public class AclEditor {
         toolBar.add(addUsersToolItem);
 
         breakinheritanceItem = new Button();
-        if (canBreakInheritance) {
-            setBreakInheritanceLabel();
 
-            breakinheritanceItem.setEnabled(!readOnly);
-            breakinheritanceItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                public void componentSelected(ButtonEvent event) {
-                    acl.setBreakAllInheritance(!acl.isBreakAllInheritance());
-                    setDirty();
-                    setBreakInheritanceLabel();
-                    store.removeAll();
-                    items.clear();
-                    List<GWTJahiaNodeACE> list = new ArrayList<GWTJahiaNodeACE>(acl.getAce());
-                    for (GWTJahiaNodeACE ace : list) {
-                        if (!acl.isBreakAllInheritance()) {
-                            if (ace.getPermissions().equals(ace.getInheritedPermissions())) {
-                                ace.setInherited(true);
-                            }
+        setBreakInheritanceLabel();
+
+        breakinheritanceItem.setEnabled(!readOnly);
+        breakinheritanceItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
+                boolean newvalue = !acl.isBreakAllInheritance();
+                if (event.getState() == null || !event.getState().containsKey("newValue")) {
+                    event.setState(new HashMap<String, Object>());
+                    event.getState().put("newValue", newvalue);
+                    for (AclEditor roleEditor : rolesEditors) {
+                        if (breakinheritanceItem != roleEditor.getBreakinheritanceItem()) {
+                            roleEditor.getBreakinheritanceItem().fireEvent(Events.Select, event);
                         }
-                        addTableItem(store, ace, displayedRoles);
                     }
+                } else {
+                    newvalue = (Boolean) event.getState().get("newValue");
                 }
-            });
-            toolBar.add(breakinheritanceItem);
-        }
+                acl.setBreakAllInheritance(newvalue);
+                setDirty();
+                setBreakInheritanceLabel();
+                store.removeAll();
+                items.clear();
+                List<GWTJahiaNodeACE> list = new ArrayList<GWTJahiaNodeACE>(acl.getAce());
+                for (GWTJahiaNodeACE ace : list) {
+                    if (!acl.isBreakAllInheritance()) {
+                        if (ace.getPermissions().equals(ace.getInheritedPermissions())) {
+                            ace.setInherited(true);
+                        }
+                    }
+                    addTableItem(store, ace, displayedRoles);
+                }
+            }
+        });
+        toolBar.add(breakinheritanceItem);
+//        }
         toolBar.add(new FillToolItem());
         toolBar.add(restoreButton);
         panel.setTopComponent(toolBar);
@@ -586,6 +615,10 @@ public class AclEditor {
      */
     public void setDirty() {
         restoreButton.setEnabled(true);
+
+        for (AclEditor roleEditor : rolesEditors) {
+            roleEditor.getRestoreButton().setEnabled(true);
+        }
     }
 
     public List<String> getDisplayedRoles() {
@@ -657,4 +690,15 @@ public class AclEditor {
         return Messages.get(key);
     }
 
+    public Button getBreakinheritanceItem() {
+        return breakinheritanceItem;
+    }
+
+    public RestoreButton getRestoreButton() {
+        return restoreButton;
+    }
+
+    public void setRolesEditors(List<AclEditor> rolesEditors) {
+        this.rolesEditors = rolesEditors;
+    }
 }

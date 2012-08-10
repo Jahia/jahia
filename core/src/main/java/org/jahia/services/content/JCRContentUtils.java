@@ -373,7 +373,7 @@ public final class JCRContentUtils implements ServletContextAware {
             basename = basename.substring(0, dot);
         }
         int und = basename.lastIndexOf('-');
-        if (und > -1 && basename.substring(und + 1).matches("[0-9]+")) {
+        if (und > -1 && Patterns.NUMBERS.matcher(basename.substring(und + 1)).matches()) {
             basename = basename.substring(0, und);
         }
 

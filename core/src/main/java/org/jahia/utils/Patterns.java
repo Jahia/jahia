@@ -65,6 +65,8 @@ public final class Patterns {
     public static final Pattern DOUBLE_QUOTE = Pattern.compile("\"", Pattern.LITERAL);
 
     public static final Pattern EXCLAMATION_MARK = Pattern.compile("!", Pattern.LITERAL);
+    
+    public static final Pattern NUMBERS = Pattern.compile("[0-9]+");
 
     public static final Pattern PERCENT = Pattern.compile("%", Pattern.LITERAL);
 

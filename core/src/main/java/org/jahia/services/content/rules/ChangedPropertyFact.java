@@ -159,7 +159,9 @@ public class ChangedPropertyFact implements Updateable {
                     node.getProperty(name);
                     return;
                 } catch (RepositoryException e) {
-                    logger.debug("Create new property "+name+" on node "+node.getPath());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Create new property "+name+" on node "+node.getPath());
+                    }
                 }
             }
             // deal with versioning. this method is called at restore(...)
@@ -206,7 +208,9 @@ public class ChangedPropertyFact implements Updateable {
                     }
                 }
 
-                logger.debug("Property set" + nodePath + " / " + name);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Property set " + nodePath + " / " + name);
+                }
                 if (property != null) {
                     path = property.getPath();
                 }

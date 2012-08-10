@@ -704,6 +704,32 @@ public class JahiaAdministration extends HttpServlet {
                     isValid = true;
                 } else {
                     logger.debug("Couldn't validate login session for: " + theUser.getUsername());
+                    session.removeAttribute(CLASS_NAME + "accessGranted");
+                    session.removeAttribute(ProcessingContext.SESSION_SITE);
+
+                    // we now need to check if the user is site administrator of any other site, and allow him access
+                    // to the first site we find that he has access to.
+                    Iterator<JahiaSite> siteIterator = ServicesRegistry.getInstance().getJahiaSitesService().getSites();
+                    boolean hasSiteAccess = false;
+                    while (siteIterator.hasNext() && !hasSiteAccess) {
+                        theSite = siteIterator.next();
+                        JahiaGroup siteAdminGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(theSite.getID());
+                        if (hasSitePermission("administrationAccess",theSite.getSiteKey()) ||
+                                hasServerPermission("administrationAccess") || (theGroup!=null && theGroup.isMember(theUser))) {
+                            // check if the user is a super admin or not...
+                            JahiaGroup superAdminGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(SUPERADMIN_SITE_ID);
+                            if (superAdminGroup.isMember(theUser)) {
+                                isSuperAdmin = true;
+                            }
+                            session.setAttribute(CLASS_NAME + "isSuperAdmin", isSuperAdmin);
+                            session.setAttribute(CLASS_NAME + "manageSiteID", theSite.getID());
+                            session.setAttribute(CLASS_NAME + "accessGranted", Boolean.TRUE);
+                            session.setAttribute(CLASS_NAME + "jahiaLoginUsername", theUser.getUsername());
+                            session.setAttribute(ProcessingContext.SESSION_SITE, theSite);
+                            hasSiteAccess = true;
+                            isValid = true;
+                        }
+                    }
                 }
             } else if (theUser.isAdminMember(0)) {
 
@@ -765,7 +791,7 @@ public class JahiaAdministration extends HttpServlet {
             throws JahiaException, IOException, ServletException {
 
         logger.debug("started");
-        JahiaSite site = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
+        JahiaSite site = null;
         JahiaUser user = (JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER);
         
         Locale forcedLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
@@ -775,7 +801,30 @@ public class JahiaAdministration extends HttpServlet {
         }
         
         if (site == null) {
-            site = ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
+
+            // from the start page we build URLs that specify the site using a changesite parameter, so we load
+            // it immediately.
+            String newSiteID = request.getParameter("changesite");
+            if (!StringUtils.isEmpty(newSiteID)) {
+                try {
+                    int siteID = Integer.parseInt(newSiteID.trim());
+                    site = ServicesRegistry.getInstance().getJahiaSitesService().getSite(siteID);
+                    // now we must force the re-evaluation of the access grant otherwise we might grant access
+                    // that we had previously gotten for another site we have access to.
+                    session.removeAttribute(CLASS_NAME + "accessGranted");
+                } catch (NumberFormatException nfe) {
+                    logger.warn("Invalid site ID passed to changesite parameter:" + newSiteID);
+                }
+            }
+
+            if (site == null) {
+                site = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
+            }
+
+            if (site == null) {
+                site = ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
+            }
+
             if (site == null) {
 	            // This can occurs when all sites has been deleted ...
 	            // create a fake site for JSP using taglibs

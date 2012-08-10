@@ -2854,7 +2854,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 }
             });
         } catch (RepositoryException e) {
-            logger.error("Error setting checkpoint", e);
+            logger.error("Error setting checkpoint for node " + getPath(), e);
         }
     }
 

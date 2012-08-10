@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:docmix="http://www.jahia.org/jahia/docspace/mix/1.0" xmlns:docnt="http://www.jahia.org/jahia/docspace/nt/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:commix="http://www.jahia.com/jahia/mix/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
   <sites jcr:primaryType="jnt:virtualsitesFolder">
-    <systemsite changefreq="monthly" j:inactiveLanguages="" j:inactiveLiveLanguages="" j:originWS="default" j:published="true" j:wcagCompliance="true" jcr:mixinTypes="jmix:accessControlled jmix:sitemap" jcr:primaryType="jnt:virtualsite" jcr:uuid="8668a186-f3ff-44d2-91a7-96c0407a86ec" priority="0.5">
+    <systemsite j:inactiveLanguages="" j:inactiveLiveLanguages="" j:originWS="default" j:published="true" j:wcagCompliance="true" jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:virtualsite" jcr:uuid="8668a186-f3ff-44d2-91a7-96c0407a86ec">
       <tags j:originWS="default" j:published="true" jcr:primaryType="jnt:tagList" jcr:uuid="1f451c42-0fc5-404e-83d1-21de3dd75265" />
       <groups j:originWS="default" j:published="true" jcr:primaryType="jnt:groupsFolder" jcr:uuid="cb5fee94-5596-4b20-b7d4-99bff4a5e969">
         <site-administrators j:external="false" j:hidden="false" j:originWS="default" j:published="true" jcr:mixinTypes="jmix:systemNode" jcr:primaryType="jnt:group" jcr:uuid="11ecf8c4-205b-443d-9fa2-728de340fe2e">
@@ -51,10 +51,10 @@
         </contributed>
       </files>
       <portlets j:originWS="default" j:published="true" jcr:primaryType="jnt:portletFolder" jcr:uuid="00e60e86-769a-42da-bb0e-99113c5704f3" />
-      <home changefreq="monthly" j:isHomePage="true" j:originWS="default" j:published="true" j:templateNode="_x0024_currentSite/templates/base/home" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" jcr:uuid="28845de7-13a6-4a82-bf96-f0837cb279a2" priority="0.5">
+      <home j:isHomePage="true" j:originWS="default" j:published="true" j:templateNode="_x0024_currentSite/templates/base/home" jcr:primaryType="jnt:page" jcr:uuid="28845de7-13a6-4a82-bf96-f0837cb279a2">
         <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(home)##" jcr:uuid="c483a9ec-c2a2-4fe8-9467-60faff6e0bcb" />
       </home>
-      <docspace-instance-management changefreq="monthly" j:originWS="default" j:published="true" j:templateNode="_x0024_currentSite/templates/base/vibes-base/docspace-instance-management" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" jcr:uuid="4d0e6866-5e51-4d4d-97d6-7a20b2c6a12a" priority="0.5">
+      <docspace-instance-management j:originWS="default" j:published="true" j:templateNode="_x0024_currentSite/templates/base/vibes-base/docspace-instance-management" jcr:primaryType="jnt:page" jcr:uuid="4d0e6866-5e51-4d4d-97d6-7a20b2c6a12a">
         <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(label.docspace.instance.management,modules.docspace-management.resources.DocspaceInstanceManagement)##" jcr:uuid="e1f20b3f-a1c3-4e3c-a85e-a3a9f43bf891" />
       </docspace-instance-management>
     </systemsite>

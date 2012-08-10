@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:test_templates="http://www.jahia.org/jahia/test_templates/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
   <templateSets jcr:primaryType="jnt:templateSets">
-    <templates-system changefreq="monthly" j:dependencies="default grid skins" j:installedModules="Jahia System Templates" j:originWS="default" j:siteType="templatesSet" j:title="Jahia System Templates" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
+    <templates-system j:dependencies="default grid skins" j:installedModules="Jahia System Templates" j:originWS="default" j:siteType="templatesSet" j:title="Jahia System Templates" j:wcagCompliance="true" jcr:primaryType="jnt:virtualsite">
       <portlets j:originWS="default" jcr:primaryType="jnt:portletFolder"/>
       <files j:originWS="default" jcr:primaryType="jnt:folder"/>
       <contents j:originWS="default" jcr:primaryType="jnt:contentFolder">
@@ -487,7 +487,7 @@
         </base>
       </templates>
       <categories j:originWS="default" jcr:primaryType="jnt:category" jcr:title="Categories"/>
-      <home changefreq="monthly" j:isHomePage="true" j:originWS="default" j:templateNode="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_base_x002f_home" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
+      <home j:isHomePage="true" j:originWS="default" j:templateNode="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_base_x002f_home" jcr:primaryType="jnt:page">
         <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(home)##"/>
       </home>
       <components j:originWS="default" jcr:primaryType="jnt:componentFolder"/>

@@ -42,6 +42,7 @@ package org.jahia.services.image;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.im4java.core.*;
 import org.im4java.process.ArrayListOutputConsumer;
 import org.im4java.process.ProcessStarter;
@@ -71,8 +72,6 @@ public class ImageMagickImageService extends AbstractImageService {
     
     private static final Logger logger = LoggerFactory.getLogger(ImageMagickImageService.class);
     
-    private static final Pattern GEOMETRY_PATTERN = Pattern.compile("[x+]");
-
     private static ImageMagickImageService instance;
 
     private String imageMagickPath;
@@ -101,12 +100,8 @@ public class ImageMagickImageService extends AbstractImageService {
     public Image getImage(JCRNodeWrapper node) throws IOException, RepositoryException {
         Node contentNode = node.getNode(Constants.JCR_CONTENT);
         String fileExtension = FilenameUtils.getExtension(node.getName());
-        if ((fileExtension != null) && (!"".equals(fileExtension))) {
-            fileExtension += "." + fileExtension;
-        } else {
-            fileExtension = null;
-        }
-        File tmp = File.createTempFile("image", fileExtension);
+        File tmp = File.createTempFile("image", StringUtils.isNotEmpty(fileExtension) ? "."
+                + fileExtension : null);
         InputStream is = contentNode.getProperty(Constants.JCR_DATA).getStream();
         OutputStream os = new BufferedOutputStream(new FileOutputStream(tmp));
         try {
@@ -119,6 +114,7 @@ public class ImageMagickImageService extends AbstractImageService {
     }
 
     protected void readDimensions(ImageMagickImage img) {
+        long timer = System.currentTimeMillis();
         try {
             IMOperation op = new IMOperation();
             op.format("%w\n%h");
@@ -141,6 +137,11 @@ public class ImageMagickImageService extends AbstractImageService {
             }
             img.setWidth(-1);
             img.setHeight(-1);
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("Dimensions read for image {} in {} ms: {} x {}", new Object[] {
+                    img.getFile().getPath(), System.currentTimeMillis() - timer, img.getWidth(),
+                    img.getHeight() });
         }
     }
 

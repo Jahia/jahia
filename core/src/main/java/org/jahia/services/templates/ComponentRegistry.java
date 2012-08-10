@@ -53,7 +53,6 @@ import java.util.TreeMap;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeTypeIterator;
-import javax.jcr.query.InvalidQueryException;
 
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -335,14 +334,13 @@ public class ComponentRegistry {
     /**
      * Performs the registration of the components from modules into JCR tree.
      */
-    protected void registerComponents(JCRSessionWrapper session) {
+    protected void registerComponents(List<JahiaTemplatesPackage> packages, JCRSessionWrapper session) {
         long timer = System.currentTimeMillis();
         logger.info("Start registering UI droppable components...");
         int newComponents = 0;
         try {
             int count = 0;
-            for (JahiaTemplatesPackage pkg : templatePackageRegistry
-                    .getAvailablePackages()) {
+            for (JahiaTemplatesPackage pkg : packages) {
                 count = count + registerComponents(pkg, session);
             }
             if (count > 0) {
@@ -368,7 +366,7 @@ public class ComponentRegistry {
      * @param session current JCR session
      * @throws RepositoryException in case of a JCR error
      */
-    private int registerComponents(JahiaTemplatesPackage pkg, JCRSessionWrapper session)
+    public int registerComponents(JahiaTemplatesPackage pkg, JCRSessionWrapper session)
             throws RepositoryException {
         int count = 0;
         JCRNodeWrapper modules = null;
@@ -404,7 +402,7 @@ public class ComponentRegistry {
                     + " Skip registering components for module {}.",
                     modules.getPath() + "/" + pkg.getRootFolder(), pkg.getName());
         }
-
+        session.save();
         return count;
     }
 

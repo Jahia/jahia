@@ -579,7 +579,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     }
 
 
-    private boolean performInitialImport(final JahiaTemplatesPackage pack, JCRSessionWrapper session) {
+    public boolean performInitialImport(final JahiaTemplatesPackage pack, JCRSessionWrapper session) {
         try {
             initRepository(session, pack);
             if (!pack.getInitialImports().isEmpty()) {
@@ -752,16 +752,8 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         return modified;
     }
 
-    public List<JahiaTemplatesPackage> performInitialImport(JCRSessionWrapper session) {
-        List<JahiaTemplatesPackage> results = new ArrayList<JahiaTemplatesPackage>();
-        if (!initialImports.isEmpty()) {
-            while (!initialImports.isEmpty()) {
-                JahiaTemplatesPackage pack = initialImports.remove(0);
-                performInitialImport(pack, session);
-                results.add(pack);
-            }
-        }
-        return results;
+    public List<JahiaTemplatesPackage> getInitialImports() {
+        return initialImports;
     }
 
     private void cleanTemplates(String moduleName, JCRSessionWrapper session) throws RepositoryException {

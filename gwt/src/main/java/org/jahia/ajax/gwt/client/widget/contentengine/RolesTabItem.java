@@ -40,19 +40,18 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -62,12 +61,20 @@ import java.util.Set;
  *
  */
 public class RolesTabItem extends EditEngineTabItem {
+    private static List<AclEditor> rolesEditors = new ArrayList<AclEditor>();
+
     private transient AclEditor rolesEditor;
 
     private Set<String> roles;
     private Set<String> roleGroups;
 
     private boolean canBreakInheritance = false;
+
+    @Override
+    public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
+        rolesEditors.clear();
+        return super.create(engineTab, engine);
+    }
 
     @Override
     public void init(NodeHolder engine, AsyncTabItem tab, String locale) {
@@ -83,6 +90,8 @@ public class RolesTabItem extends EditEngineTabItem {
 
             rolesEditor = new AclEditor(engine.getAcl(), node.getAclContext(), roles, roleGroups);
             rolesEditor.setCanBreakInheritance(canBreakInheritance);
+            rolesEditor.setRolesEditors(rolesEditors);
+
             if (!(node.getProviderKey().equals("default") || node.getProviderKey().equals("jahia"))) {
                 rolesEditor.setReadOnly(true);
             } else {

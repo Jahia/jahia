@@ -61,7 +61,6 @@ import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
@@ -615,7 +614,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 "siteservername"), infos.getProperty("sitekey"), infos.getProperty(
                                 "description"), locale, tpl, null, fileImport != null ? "fileImport" : "importRepositoryFile", fileImport, uri, true,
                                 false, infos.getProperty("originatingJahiaRelease"), null,null, session);
-                        importSiteProperties(site, infos);
+                        importSiteProperties(site, infos, session);
                     } catch (Exception e) {
                         logger.error("Cannot create site " + infos.get("sitetitle"), e);
                     }
@@ -992,16 +991,26 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         handleImport(is, new FilesAclImportHandler(site, mapping, file, fileList));
     }
 
-    private void importSiteProperties(InputStream is, JahiaSite site) throws IOException {
+    private void importSiteProperties(final InputStream is, final JahiaSite site) throws IOException {
         if (site.getSiteKey().equals(JahiaSitesBaseService.SYSTEM_SITE_KEY)) {
             return;
         }
-        Properties p = new Properties();
+        final Properties p = new Properties();
         p.load(is);
-        importSiteProperties(site, p);
+        try {
+            JCRTemplate.getInstance()
+                    .doExecuteWithSystemSession(JCRSessionFactory.getInstance().getCurrentUser().getUsername(), new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            importSiteProperties(site, p, session);
+                            return null;
+                        }
+                    });
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
-    private void importSiteProperties(JahiaSite site, Properties p) {
+    private void importSiteProperties(JahiaSite site, Properties p, JCRSessionWrapper session) {
         Set<Object> keys = p.keySet();
         boolean isMultiLang = true;
         final Set<String> languages = new HashSet<String>();
@@ -1015,7 +1024,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         String templateSet = site.getTemplatePackageName();
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         try {
-            templateManagerService.deployModule("/templateSets/" + templateSet, "/sites/" + site.getSiteKey(), JCRSessionFactory.getInstance().getCurrentUser().getUsername());
+            templateManagerService.deployModule("/templateSets/" + templateSet, "/sites/" + site.getSiteKey(), session);
         } catch (RepositoryException e) {
             logger.error("Cannot deploy module "+templateSet,e);
         }
@@ -1068,7 +1077,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             } else if (firstKey.equals("installedModules")) {
                 if (!site.getInstalledModules().contains(value) && !templateSet.equals(value)) {
                     try {
-                        templateManagerService.deployModule("/templateSets/" + value, "/sites/" + site.getSiteKey(), JCRSessionFactory.getInstance().getCurrentUser().getUsername());
+                        templateManagerService.deployModule("/templateSets/" + value, "/sites/" + site.getSiteKey(), session);
                     } catch (RepositoryException e) {
                         logger.error("Cannot deploy module "+value,e);
                     }

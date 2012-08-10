@@ -541,6 +541,7 @@
 
 // @since Jahia 6.6
 [jnt:component] > nt:base, jmix:nodenameInfo, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:i18n, jmix:originWS, jmix:description, mix:title
+ - j:moduleName (string) hidden nofulltext
 
 // @since Jahia 6.6
 [jnt:simpleComponent] > jnt:component

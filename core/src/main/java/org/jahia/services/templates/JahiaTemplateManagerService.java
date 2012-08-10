@@ -81,8 +81,6 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.Patterns;
-import org.jahia.utils.Version;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 import org.jdom.JDOMException;
@@ -472,15 +470,36 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                                 sitesBeforeImport.add(next);
                             }
 
+<<<<<<< .working
                             // perform initial imports if any
                             final List<JahiaTemplatesPackage> packages = templatePackageDeployer.performInitialImport(session);
 
+=======
+>>>>>>> .merge-right.r42592
                             // do register components
-                            componentRegistry.registerComponents(session);
+                            List<JahiaTemplatesPackage> initialImports = templatePackageDeployer.getInitialImports();
 
+<<<<<<< .working
 //                            for (JahiaTemplatesPackage aPackage : packages) {
 //                                deployModuleToAllSites("/templateSets/" + aPackage.getRootFolder(), true, session);
 //                            }
+=======
+                            // perform initial imports if any
+                            List<JahiaTemplatesPackage> results = new ArrayList<JahiaTemplatesPackage>();
+                            if (!initialImports.isEmpty()) {
+                                while (!initialImports.isEmpty()) {
+                                    JahiaTemplatesPackage pack = initialImports.remove(0);
+                                    templatePackageDeployer.performInitialImport(pack, session);
+                                    componentRegistry.registerComponents(pack, session);
+                                    results.add(pack);
+                                }
+                            }
+                            final List<JahiaTemplatesPackage> packages = results;
+
+                            for (JahiaTemplatesPackage aPackage : packages) {
+                                deployModuleToAllSites("/templateSets/" + aPackage.getRootFolder(), true, session,sitesBeforeImport);
+                            }
+>>>>>>> .merge-right.r42592
                             return null;
                         }
                     });
@@ -1327,7 +1346,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     session.save();
                     newNode = true;
                 }
-
+                if (child.isNodeType("jnt:componentFolder")) {
+                    Query q = session.getWorkspace().getQueryManager().createQuery("select * from['jnt:component'] as c where ['j:moduleName']='"+moduleName+"' and isdescendantnode(c,'"+destinationNode.getPath()+"')", Query.JCR_SQL2);
+                    NodeIterator ni2 = q.execute().getNodes();
+                    while (ni2.hasNext()) {
+                        JCRNodeWrapper i = (JCRNodeWrapper) ni2.next();
+                        i.remove();
+                    }
+                }
                 templatesSynchro(child, node, session, references, newNode, false, true, moduleName, child.isNodeType("jnt:templatesFolder") || child.isNodeType("jnt:componentFolder"));
             }
         }
@@ -1488,6 +1514,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     templatesSynchro(child, node, session, references, currentModule, currentModule, currentModule, moduleName, inTemplatesFolder);
                 } else {
                     templatesSynchro(child, node, session, references, inTemplatesFolder || newNode, doRemove, doChildren && !(isPageNode && !newNode), moduleName, inTemplatesFolder);
+                }
+                if (moduleName != null && node.isNodeType("jnt:component") && !node.hasProperty("j:moduleName")) {
+                    node.setProperty("j:moduleName", moduleName);
                 }
             }
         }

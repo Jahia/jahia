@@ -700,7 +700,7 @@ extends = jnt:content
 
 [jmix:listRestrictions] mixin
  - j:allowedTypes (string, choicelist[componenttypes = 'jmix:droppableContent,jnt:file,jnt:folder']) multiple nofulltext
- - j:numberOfItems (long)
+ - j:numberOfItems (long) < '[0,]'
 
 //---------------------------------------------------------
 // Portlets

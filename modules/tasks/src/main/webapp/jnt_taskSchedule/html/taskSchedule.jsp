@@ -47,7 +47,7 @@
     <c:set var="emptyTasks" value="true"/>
 <c:forEach items="${result.nodes}" var="task">
     <c:set var="emptyTasks" value="false"/>
-    <li class="scheduletask ${task.properties['type'].string} ${task.properties['state'].string eq 'finished' ? 'finishedTask' : 'unfinishedTask'}" date="${task.properties['dueDate'].date.time.time}">
+    <li class="${task.properties['type'].string} scheduletask ${task.properties['state'].string eq 'finished' ? 'finishedTask' : 'unfinishedTask'}" date="${task.properties['dueDate'].date.time.time}">
         <span class="date value"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
                                                  pattern="dd/MM/yyyy"/></span>
         <c:set value="${jcr:findDisplayableNode(task, renderContext)}" var="displayableNode"/>

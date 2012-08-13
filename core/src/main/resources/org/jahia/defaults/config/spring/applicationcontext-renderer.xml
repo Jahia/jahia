@@ -60,7 +60,7 @@
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
         <property name="ajaxTemplate" value="/modules/assets/WEB-INF/scripts/ajaxResources.groovy"/>
         <property name="template" value="/modules/assets/WEB-INF/scripts/resources.groovy"/>
-        <property name="aggregateAndCompress" value="${aggregateAndCompressAssets:true}"/>
+        <property name="aggregateAndCompress" value="${aggregateAndCompressAssets:false}"/>
         <property name="excludesFromAggregateAndCompress">
             <list>
             </list>
@@ -215,17 +215,13 @@
     <bean id="GWTResourceConfig" class="org.jahia.ajax.gwt.utils.GWTResourceConfig">
         <property name="cssStyles">
             <list>
-                <value>/gwt/resources/css/gwt-1.3.min.css</value>
-            </list>
-            <!-- comment out gwt.css and uncomment the following CSS if you are in dev mode and are working on modifying those CSSs
-            <list>
                 <value>/gwt/resources/css/jahia-ext-all.css</value>
                 <value>/gwt/resources/css/xtheme-jahia.css</value>
                 <value>/gwt/resources/css/edit.css</value>
                 <value>/gwt/resources/css/jahia-gwt-engines.css</value>
                 <value>/gwt/resources/css/diff.css</value>
             </list>
-            -->
+
         </property>
         <property name="javaScripts">
             <list>

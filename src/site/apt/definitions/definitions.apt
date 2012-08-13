@@ -46,6 +46,8 @@ itemtype = template
 
         [jmix:hiddenNode]  the node will not appear in managers
 
+        [mix:shareable]  This default type from the JCR specification that allows to define "shareable nodes" is not supported by Jahia and must not be used.
+
 * System, content and files
 
     **Jahia store items using this definitions

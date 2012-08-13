@@ -23,6 +23,7 @@
 <template:addResources type="css" resources="timepicker.css"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 <c:set var="taskType" value="${currentNode.properties['taskType'].string}"/>
+<template:addResources type="css" resources="tasks.css"/>
 
 <c:set var="bindedComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>

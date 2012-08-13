@@ -406,3 +406,15 @@ padding:0;
 .bodywrapper .task-status-finished {
     background-color: #666;
 }
+/******************************************************************************
+*  task style
+******************************************************************************/
+.bodywrapper .docspace {
+    background-color: #fff;
+}
+.bodywrapper .docspace-task-on-file {
+    background-color: #c8e9fe;
+}
+.bodywrapper .workflowtask {
+    background-color: #eaeaea;
+}

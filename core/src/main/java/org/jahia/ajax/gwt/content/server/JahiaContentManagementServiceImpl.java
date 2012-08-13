@@ -2000,8 +2000,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     if (!type.isMixin() && !type.isAbstract()) {
                         JCRNodeWrapper n = nodesForTypes.get(type.getName());
                         if (n != null) {
-                            type.set("canUseComponentForCreate",n.hasPermission("useComponentForCreate"));
-                            type.set("canUseComponentForEdit",n.hasPermission("useComponentForEdit"));
+                            type.set("canUseComponentForCreate",n.hasPermission("useComponent") /*n.hasPermission("useComponentForCreate") */);
+                            type.set("canUseComponentForEdit",Boolean.TRUE /*n.hasPermission("useComponentForEdit") */);
                         } else {
                             type.set("canUseComponentForCreate",false);
                             type.set("canUseComponentForEdit",false);

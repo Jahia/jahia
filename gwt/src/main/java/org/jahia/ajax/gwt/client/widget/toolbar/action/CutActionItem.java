@@ -42,6 +42,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -49,6 +50,7 @@ import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,5 +114,18 @@ public class CutActionItem extends NodeTypeAwareBaseActionItem  {
                 && !lh.getMultipleSelection().get(0).getPath()
                         .equals("/" + lh.getMultipleSelection().get(0).getName())
                 && isNodeTypeAllowed(lh.getMultipleSelection()));
+    }
+
+    @Override
+    protected boolean isNodeTypeAllowed(GWTJahiaNode selectedNode) {
+        GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(selectedNode.getNodeTypes().get(0));
+        if (nodeType != null) {
+            Boolean canUseComponentForCreate = (Boolean) nodeType.get("canUseComponentForCreate");
+            if (canUseComponentForCreate != null && !canUseComponentForCreate) {
+                return false;
+            }
+        }
+
+        return super.isNodeTypeAllowed(selectedNode);
     }
 }

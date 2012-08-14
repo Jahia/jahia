@@ -13,7 +13,11 @@
 <%@ page import="java.sql.*" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
-<%@ page import="org.jahia.utils.DatabaseUtils" %>
+<%@ page import="org.apache.commons.lang.StringUtils" %>
+<%@ page import="org.jahia.settings.SettingsBean" %>
+<%@ page import="org.jahia.services.SpringContextSingleton" %>
+<%@ page import="org.hibernate.*" %>
+<%@ page import="javax.jcr.Session" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
@@ -71,6 +75,50 @@
 
 <h2>Running tests...</h2>
 <%!
+
+    // the following code was copied from DatabaseUtils class since we need to be able to use it with 6.6.0.1 that
+    // didn't include this class.
+
+    private static String dbType;
+
+    public static String getDatabaseType() {
+        if (dbType == null) {
+            dbType = StringUtils.substringBefore(
+                    StringUtils.substringBefore(SettingsBean.getInstance().getPropertiesFile()
+                            .getProperty("db_script").trim(), "."), "_");
+        }
+        return dbType;
+    }
+
+    public static DataSource getDatasource() {
+        return (DataSource) SpringContextSingleton.getBean("dataSource");
+    }
+
+    public static void closeQuietly(Object closable) {
+        if (closable == null) {
+            return;
+        }
+        try {
+            if (closable instanceof Connection) {
+                ((Connection) closable).close();
+            } else if (closable instanceof Statement) {
+                ((Statement) closable).close();
+            } else if (closable instanceof ResultSet) {
+                ((ResultSet) closable).close();
+            } else if (closable instanceof ScrollableResults) {
+                ((ScrollableResults) closable).close();
+            } else if (closable instanceof org.hibernate.Session) {
+                ((org.hibernate.Session) closable).close();
+            } else if (closable instanceof StatelessSession) {
+                ((StatelessSession) closable).close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // end of copied code.
+
     private void runWorkspaceDBTest(JspWriter out, String readAllDataSQL, String readRowSQL, String tableName, long nbRandomLoops, Connection conn, boolean keyTypeLongLong) throws SQLException, IOException {
         Set<NodeId> idCollection = new HashSet<NodeId>();
         out.println("<h4>Table " + tableName + "</h4>");
@@ -96,8 +144,8 @@
                 rowsRead++;
             }
         } finally {
-            DatabaseUtils.closeQuietly(rst);
-            DatabaseUtils.closeQuietly(stmt);
+            closeQuietly(rst);
+            closeQuietly(stmt);
         }
         long totalTime = System.currentTimeMillis() - startTime;
         println(out, "Total time to read " + rowsRead + " sequential rows : " + totalTime + "ms");
@@ -130,11 +178,11 @@
                         rowsRead++;
                     }
                 } finally {
-                    DatabaseUtils.closeQuietly(resultSet);
+                    closeQuietly(resultSet);
                 }
             }
         } finally {
-            DatabaseUtils.closeQuietly(randomRowReadStmt);
+            closeQuietly(randomRowReadStmt);
         }
         totalTime = System.currentTimeMillis() - startTime;
         println(out, "Total time to read " + rowsRead + " random rows : " + totalTime + "ms");
@@ -149,8 +197,9 @@
     private void runDBTest(JspWriter out) throws IOException, SQLException {
         printTestName(out, "Database");
 
-        DatabaseUtils.DatabaseType dbType = DatabaseUtils.getDatabaseType();
-        boolean keyTypeLongLong = dbType.equals(DatabaseUtils.DatabaseType.derby) || dbType.equals(DatabaseUtils.DatabaseType.postgresql);
+        String dbType = getDatabaseType();
+        println(out, "Database type:" + dbType);
+        boolean keyTypeLongLong = dbType.equals("derby") || dbType.equals("postgresql");
 
         String readEditTableName = "jr_default_bundle";
         String readLiveTableName = "jr_live_bundle";
@@ -173,7 +222,7 @@
         Connection conn = null;
 
         try {
-            DataSource ds = DatabaseUtils.getDatasource();
+            DataSource ds = getDatasource();
 
             if (ds != null) {
                 conn = ds.getConnection();
@@ -186,7 +235,7 @@
         } catch (Throwable t) {
             println(out, "Error while accessing database", t, false);
         } finally {
-            DatabaseUtils.closeQuietly(conn);
+            closeQuietly(conn);
         }
     }
 

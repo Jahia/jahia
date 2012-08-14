@@ -1,9 +1,5 @@
 <%@ page import="org.jahia.api.Constants" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
-<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
-<%@ page import="org.jahia.services.content.JCRObservationManager" %>
-<%@ page import="org.jahia.services.content.JCRSessionFactory" %>
-<%@ page import="org.jahia.services.content.JCRSessionWrapper" %>
 <%@ page import="org.jahia.services.usermanager.jcr.JCRUserManagerProvider" %>
 <%@ page import="org.jahia.utils.RequestLoadAverage" %>
 <%@ page import="org.quartz.JobDetail" %>
@@ -19,6 +15,7 @@
 <%@ page import="java.util.Map" %>
 <%@ page import="org.jahia.services.SpringContextSingleton" %>
 <%@ page import="org.jahia.ajax.gwt.helper.CacheHelper" %>
+<%@ page import="org.jahia.services.content.*" %>
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -72,7 +69,7 @@
 <h2>Integrity checks</h2>
 <%!
 
-    private void runJCRTest(JspWriter out, HttpServletRequest request, JspContext pageContext, boolean fix) throws IOException {
+    private void runJCRTest(final JspWriter out, HttpServletRequest request, JspContext pageContext, final boolean fix) throws IOException {
 
         if (running) {
             println(out, "ABORTING: check or fix already running, please wait for it to complete !");
@@ -106,22 +103,30 @@
             printTestName(out, "JCR Integrity Check");
         }
         try {
-            JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
+            // JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
             String[] workspaces = new String[]{"default", "live"};
-            Map<String, Long> results = new HashMap<String, Long>();
+            final Map<String, Long> results = new HashMap<String, Long>();
             results.put("bytesRead", 0L);
             results.put("nodesRead", 0L);
             bytesRead = 0;
             startTime = System.currentTimeMillis();
             for (String workspaceName : workspaces) {
-                JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(workspaceName);
-                JCRNodeWrapper jahiaRootNode = sessionWrapper.getRootNode();
-                Node jcrRootNode = jahiaRootNode.getRealNode();
-                Session jcrSession = jcrRootNode.getSession();
+                JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspaceName, new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper sessionWrapper) throws RepositoryException {
+                        JCRNodeWrapper jahiaRootNode = sessionWrapper.getRootNode();
+                        Node jcrRootNode = jahiaRootNode.getRealNode();
+                        Session jcrSession = jcrRootNode.getSession();
 
-                Workspace workspace = jcrSession.getWorkspace();
-                println(out, "Traversing " + workspace.getName() + " workspace ...");
-                processNode(out, jcrRootNode, results, fix);
+                        Workspace workspace = jcrSession.getWorkspace();
+                        try {
+                            println(out, "Traversing " + workspace.getName() + " workspace ...");
+                            processNode(out, jcrRootNode, results, fix);
+                        } catch (IOException e) {
+                            throw new RepositoryException("IOException while running", e);
+                        }
+                        return null;
+                    }
+                });
             }
             if (fix) {
                 CacheHelper cacheHelper = (CacheHelper) SpringContextSingleton.getInstance().getContext().getBean("CacheHelper");

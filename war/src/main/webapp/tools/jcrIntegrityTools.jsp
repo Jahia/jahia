@@ -17,6 +17,8 @@
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
+<%@ page import="org.jahia.services.SpringContextSingleton" %>
+<%@ page import="org.jahia.ajax.gwt.helper.CacheHelper" %>
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -120,6 +122,15 @@
                 Workspace workspace = jcrSession.getWorkspace();
                 println(out, "Traversing " + workspace.getName() + " workspace ...");
                 processNode(out, jcrRootNode, results, fix);
+            }
+            if (fix) {
+                CacheHelper cacheHelper = (CacheHelper) SpringContextSingleton.getInstance().getContext().getBean("CacheHelper");
+                if (cacheHelper != null) {
+                    println(out, "Flushing all caches...");
+                    cacheHelper.flushAll();
+                } else {
+                    println(out, "Couldn't find cache helper, please flush all caches manually.");
+                }
             }
             bytesRead = results.get("bytesRead");
             long nodesRead = results.get("nodesRead");

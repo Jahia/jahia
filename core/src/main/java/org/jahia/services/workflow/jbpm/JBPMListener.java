@@ -66,6 +66,7 @@ public class JBPMListener implements EventListener {
     }
 
     public void notify(EventListenerExecution execution) throws Exception {
+        @SuppressWarnings("unchecked")
         final List<String> ids = (List<String>) execution.getVariable("nodeIds");
         String workspace = (String) execution.getVariable("workspace");
 

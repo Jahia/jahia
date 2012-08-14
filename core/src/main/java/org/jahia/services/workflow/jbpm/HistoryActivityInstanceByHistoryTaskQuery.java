@@ -40,17 +40,12 @@
 
 package org.jahia.services.workflow.jbpm;
 
-import org.hibernate.Query;
-import org.jbpm.api.history.HistoryProcessInstance;
-import org.jbpm.pvm.internal.history.model.HistoryProcessInstanceImpl;
-import org.jbpm.pvm.internal.history.model.HistoryTaskInstanceImpl;
-import org.jbpm.pvm.internal.history.model.HistoryVariableImpl;
-import org.jbpm.pvm.internal.query.AbstractQuery;
-import org.jbpm.pvm.internal.query.Page;
-import org.jbpm.pvm.internal.util.CollectionUtil;
-
-import java.util.Date;
 import java.util.List;
+
+import org.hibernate.Query;
+import org.jbpm.pvm.internal.history.model.HistoryTaskInstanceImpl;
+import org.jbpm.pvm.internal.query.AbstractQuery;
+import org.jbpm.pvm.internal.util.CollectionUtil;
 
 /**
  * Query history process by variable

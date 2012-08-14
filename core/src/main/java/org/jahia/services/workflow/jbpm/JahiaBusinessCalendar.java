@@ -42,7 +42,7 @@ package org.jahia.services.workflow.jbpm;
 
 import org.jbpm.pvm.internal.cal.BusinessCalendarImpl;
 import org.slf4j.Logger;
-import org.jbpm.pvm.internal.cal.BusinessCalendar;
+import org.slf4j.LoggerFactory;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -59,13 +59,16 @@ import java.util.Date;
  *        Created : 18 juin 2010
  */
 public class JahiaBusinessCalendar extends BusinessCalendarImpl {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaBusinessCalendar.class);
+    private static final long serialVersionUID = -7118843409602429526L;
+    private transient static Logger logger = LoggerFactory.getLogger(JahiaBusinessCalendar.class);
 
     public Date add(Date date, String duration) {
         try {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(Long.valueOf(duration));
-            logger.info("Workflow Variable Date = "+ SimpleDateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.SHORT).format(calendar.getTime()));
+            if (logger.isDebugEnabled()) {
+                logger.debug("Workflow Variable Date = "+ SimpleDateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.SHORT).format(calendar.getTime()));
+            }
             return calendar.getTime();
         } catch (NumberFormatException e) {
             try {

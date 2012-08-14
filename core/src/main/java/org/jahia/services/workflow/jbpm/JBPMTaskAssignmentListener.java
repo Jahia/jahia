@@ -62,7 +62,6 @@ import org.jbpm.api.model.Transition;
 import org.jbpm.api.task.Assignable;
 import org.jbpm.api.task.AssignmentHandler;
 import org.jbpm.pvm.internal.task.TaskImpl;
-import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -78,7 +77,8 @@ import java.util.*;
  *        Created : 4 févr. 2010
  */
 public class JBPMTaskAssignmentListener implements AssignmentHandler {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMTaskAssignmentListener.class);
+
+    private static final long serialVersionUID = 4434614988996316632L;
 
     /**
      * sets the actorId and candidates for the given task.
@@ -112,6 +112,7 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
         if (assignable instanceof TaskImpl && user != null) {
             final Locale locale = (Locale) execution.getVariable("locale");
             JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), null, null, new JCRCallback<Object>() {
+                @SuppressWarnings("unchecked")
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRUser jcrUser;
                     if (user instanceof JCRUser) {

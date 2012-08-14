@@ -50,6 +50,10 @@ import org.jahia.exceptions.JahiaInitializationException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.management.ManagementService;
 
+<<<<<<< .working
+=======
+import javax.management.MBeanServer;
+>>>>>>> .merge-right.r42620
 import java.lang.management.ManagementFactory;
 
 /**

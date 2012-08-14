@@ -45,7 +45,12 @@ import java.util.Iterator;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
+<<<<<<< .working
 import net.sf.ehcache.management.ManagementService;
+=======
+import net.sf.ehcache.management.ManagementService;
+import net.sf.ehcache.management.sampled.SampledEhcacheMBeans;
+>>>>>>> .merge-right.r42620
 
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -251,6 +256,7 @@ public final class CacheHelper {
                 .getCacheManager();
     }
 
+<<<<<<< .working
     public static void registerMBeans(String cacheManagerName) {
         CacheManager mgr = getCacheManager(cacheManagerName);
         if (mgr == null) {
@@ -260,4 +266,24 @@ public final class CacheHelper {
         ManagementService.registerMBeans(mgr, ManagementFactory.getPlatformMBeanServer(), true,
                 true, true, true, true);
     }
+=======
+    public static CacheManager getCacheManager(String cacheManagerName) {
+        for (CacheManager mgr : CacheManager.ALL_CACHE_MANAGERS) {
+            if (cacheManagerName.equals(mgr.getName())) {
+                return mgr;
+            }
+        }
+        return null;
+    }
+    
+    public static void registerMBeans(String cacheManagerName) {
+        CacheManager mgr = getCacheManager(cacheManagerName);
+        if (mgr == null) {
+            logger.warn("Cannot find Ehcache manager for name {}. Skip registering managed beans in JMX", cacheManagerName);
+            return;
+        }
+        ManagementService.registerMBeans(mgr, ManagementFactory.getPlatformMBeanServer(), true,
+                true, true, true, true);
+    }
+>>>>>>> .merge-right.r42620
 }

@@ -110,6 +110,10 @@
  - j:roles (name) mandatory multiple
  - j:protected (boolean) mandatory
 
+[jnt:externalAce] > jnt:ace
+ - j:sourceAce (reference) multiple < jnt:ace
+ - j:externalPermissionsName (name) mandatory
+
 [jnt:acl] > nt:base, jmix:observable
  orderable
  + * (jnt:ace) = jnt:ace
@@ -130,6 +134,11 @@
  - j:privilegedAccess (boolean)
  - j:hidden (boolean) protected hidden
  - j:roleGroup (string,choicelist[resourceBundle]) < 'live-role','edit-role'
+ + * (jnt:externalPermissions)
+
+[jnt:externalPermissions]
+ - j:path (string)
+ - j:permissions (weakreference) protected hidden multiple < jnt:permission
 
 [jnt:roles] > nt:base, mix:versionable, jmix:autoPublish, jmix:observable
  + * (jnt:role)

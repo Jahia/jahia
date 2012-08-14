@@ -324,11 +324,14 @@
                 j:privilegedAccess="true"
                 />
 
-        <web-designer jcr:primaryType="jnt:role" j:nodeTypes="jnt:templateSets" j:roleGroup="edit-role"
-                            j:permissions="/permissions/studioMode
-                            /permissions/managers"
-                            j:privilegedAccess="true"
-                />
+        <web-designer jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite" j:roleGroup="edit-role"
+                      j:privilegedAccess="true">
+            <studio-access  jcr:primaryType="jnt:externalPermissions" j:path="/templateSets"
+                j:permissions="/permissions/editMode
+                        /permissions/studioMode
+                        /permissions/repository-default">
+            </studio-access>
+        </web-designer>
 
         <site-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite" j:roleGroup="edit-role"
                             j:permissions="/permissions/repository-permissions/jcr:all_default

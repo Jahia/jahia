@@ -93,9 +93,9 @@ import java.util.*;
  */
 public class JahiaAccessManager extends AbstractAccessControlManager implements AccessManager, AccessControlManager {
     private static final Logger logger = LoggerFactory.getLogger(JahiaAccessManager.class);
-    
+
     private static final Map<String, Map<String, String>> PRIVILEGE_NAMES = new HashMap<String, Map<String,String>>(2);
-    
+
     /**
      * Subject whose access rights this AccessManager should reflect
      */
@@ -135,7 +135,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         if (workspace ==  null) {
             return privilegeName;
         }
-        
+
         Map<String, String> wsp = PRIVILEGE_NAMES.get(workspace);
         if (wsp == null) {
             wsp = new HashMap<String, String>();
@@ -146,10 +146,10 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             name = privilegeName + "_" + workspace;
             wsp.put(privilegeName, name);
         }
-        
+
         return name;
     }
-    
+
     public static void setDeniedPaths(Collection<String> denied) {
         JahiaAccessManager.deniedPathes.set(denied);
     }
@@ -392,7 +392,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
 
         String absPathStr = absPath.toString();
-        
+
         if (permissions.size() == 1 && absPathStr.equals("{}") && permissions.contains(getPrivilegeName(Privilege.JCR_READ,  workspaceName))) {
             return true;
         }
@@ -601,10 +601,18 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                                 acl.aces.add(ace);
                                 ace.principal = principal;
                                 ace.granted = !aceNode.getProperty("j:aceType").getString().equals("DENY");
-                                Value[] roleValues = aceNode.getProperty("j:roles").getValues();
-                                for (Value role1 : roleValues) {
-                                    String role = role1.getString();
-                                    ace.roles.add(role);
+                                if (aceNode.isNodeType("jnt:externalAce")) {
+                                    Value[] roleValues = aceNode.getProperty("j:roles").getValues();
+                                    for (Value role1 : roleValues) {
+                                        String role = role1.getString();
+                                        ace.roles.add(role + "/" + aceNode.getProperty("j:externalPermissionsName").getString());
+                                    }
+                                } else {
+                                    Value[] roleValues = aceNode.getProperty("j:roles").getValues();
+                                    for (Value role1 : roleValues) {
+                                        String role = role1.getString();
+                                        ace.roles.add(role);
+                                    }
                                 }
                             }
                         }
@@ -861,14 +869,19 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                             if (matchUser(principal, site)) {
                                 boolean granted = ace.getProperty("j:aceType").getString().equals("GRANT");
 
+                                String roleSuffix = "";
+                                if (ace.isNodeType("jnt:externalAce")) {
+                                    roleSuffix = "/"+ace.getProperty("j:externalPermissionsName").getString();
+                                }
+
                                 Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
                                 for (Value r : roles) {
                                     String role = r.getString();
-                                    if (!foundRoles.contains(principal + ":" + role)) {
+                                    if (!foundRoles.contains(principal + ":" + role + roleSuffix)) {
                                         if (granted) {
-                                            grantedRoles.add(role);
+                                            grantedRoles.add(role + roleSuffix);
                                         }
-                                        foundRoles.add(principal + ":" + role);
+                                        foundRoles.add(principal + ":" + role + roleSuffix);
                                     }
                                 }
                             }

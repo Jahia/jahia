@@ -122,6 +122,7 @@
                         <bean class="org.jahia.services.content.NodenameListener"/>
                         <bean class="org.jahia.services.content.DefaultValueListener"/>
                         <bean class="org.jahia.services.content.LastModifiedListener"/>
+                        <bean class="org.jahia.services.content.AclListener"/>
                         <bean class="org.apache.jackrabbit.core.security.PrivilegesListener"/>
                         <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
                             <property name="ruleFiles">
@@ -185,6 +186,7 @@
                         </bean>
                         <bean class="org.jahia.services.content.DefaultValueListener"/>
                         <bean class="org.jahia.services.content.LastModifiedListener"/>
+                        <bean class="org.jahia.services.content.AclListener"/>
                         <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
                             <property name="ruleFiles" value="/repository/rules/repository-live-rules.drl"/>
                             <property name="serverId" value="${cluster.node.serverId}"/>

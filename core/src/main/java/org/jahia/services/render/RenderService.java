@@ -344,11 +344,18 @@ public class RenderService {
         if (parent.isNodeType("jnt:templatesFolder") && parent.hasProperty("j:rootTemplatePath")) {
             String rootTemplatePath = parent.getProperty("j:rootTemplatePath").getString();
             JCRNodeWrapper systemSite = node.getSession().getNode(JCRContentUtils.getSystemSitePath());
-            parent = systemSite.getNode("templates"+ rootTemplatePath);
-            while (!(parent.isNodeType("jnt:templatesFolder"))) {
-                template = new Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
-                        templateName, parent.getIdentifier(), template, parent.getName());
-                parent = parent.getParent();
+            if (parent.hasProperty("j:templateSetContext")) {
+                systemSite = (JCRNodeWrapper) parent.getProperty("j:templateSetContext").getNode();
+            }
+            if (systemSite.hasNode("templates"+ rootTemplatePath)) {
+                parent = systemSite.getNode("templates"+ rootTemplatePath);
+                while (!(parent.isNodeType("jnt:templatesFolder"))) {
+                    template = new Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
+                            templateName, parent.getIdentifier(), template, parent.getName());
+                    parent = parent.getParent();
+                }
+            } else {
+                logger.warn("Cannot find template : " + systemSite + "/templates" + rootTemplatePath);
             }
         }
         return template;

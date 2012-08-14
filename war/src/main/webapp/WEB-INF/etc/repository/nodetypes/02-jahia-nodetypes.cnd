@@ -700,6 +700,7 @@ extends = jnt:content
 
 [jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list, jmix:publication
  - j:rootTemplatePath (string)
+ - j:templateSetContext (weakreference, choicelist[nodes='/templateSets;jnt:virtualsite'])
  + * (jnt:template)
  + * (jnt:contentFolder)
  + * (jnt:folder)

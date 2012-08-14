@@ -69,6 +69,8 @@
                             </property>
                         </bean>
                         <ref bean="Toolbar.Item.Separator"/>
+
+                        <ref bean="Toolbar.Item.PublicationStatus"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.publication"/>
                             <!-- <property name="icon" value="publicationAction"/> -->

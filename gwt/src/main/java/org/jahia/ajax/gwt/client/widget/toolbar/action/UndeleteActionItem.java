@@ -53,6 +53,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
 import java.util.ArrayList;
@@ -121,7 +122,12 @@ public class UndeleteActionItem extends BaseActionItem {
         LinkerSelectionContext lh = linker.getSelectionContext();
         List<GWTJahiaNode> selection = lh.getMultipleSelection();
         boolean canUndelete = false;
-        if (selection != null && selection.size() > 0 && hasPermission(lh.getSelectionPermissions()) && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())) {
+        if (selection != null
+                && selection.size() > 0
+                && hasPermission(lh.getSelectionPermissions())
+                && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
+                && !Boolean.FALSE.equals(ModuleHelper.getNodeType(lh.getSingleSelection().getNodeTypes().get(0)).get("canUseComponentForCreate"))
+                ) {
             canUndelete = true;
             for (GWTJahiaNode gwtJahiaNode : selection) {
                 canUndelete &= gwtJahiaNode.getNodeTypes().contains("jmix:markedForDeletionRoot");

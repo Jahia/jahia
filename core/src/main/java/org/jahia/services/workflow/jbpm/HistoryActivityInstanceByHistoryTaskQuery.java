@@ -53,22 +53,18 @@ import org.jbpm.pvm.internal.util.CollectionUtil;
 public class HistoryActivityInstanceByHistoryTaskQuery extends AbstractQuery {
 
   private static final long serialVersionUID = 1L;
+  
+    private static final String HQL = "select hti from " + HistoryTaskInstanceImpl.class.getName()
+            + " as hti where hti.historyTask.dbid = :taskDbid";
 
   protected String historyTaskId;
 
   public String hql() {
-  	StringBuilder hql = new StringBuilder();
-
-  	hql.append("select hti from ");
-
-    hql.append(HistoryTaskInstanceImpl.class.getName());
-    hql.append(" as hti where hti.historyTask.dbid = :taskDbid ");
-
-    return hql.toString();
+    return HQL;
   }
 
   protected void applyParameters(Query query) {
-      query.setString("taskDbid", historyTaskId);
+      query.setLong("taskDbid", Long.parseLong(historyTaskId));
   }
 
   public List<HistoryTaskInstanceImpl> list() {

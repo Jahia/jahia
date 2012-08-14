@@ -1080,14 +1080,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public void importContent(String parentPath, String fileKey, Boolean asynchronously)
+    public List<GWTJahiaJobDetail> importContent(String parentPath, String fileKey, Boolean replaceContent)
             throws GWTJahiaServiceException {
-        contentManager.importContent(parentPath, fileKey, asynchronously, retrieveCurrentSession(), getUILocale());
-    }
-
-    public void importContent(String parentPath, String fileKey, Boolean asynchronously, Boolean replaceContent)
-            throws GWTJahiaServiceException {
-        contentManager.importContent(parentPath, fileKey, asynchronously, replaceContent, retrieveCurrentSession(), getUILocale());
+        List<GWTJahiaJobDetail> details = schedulerHelper.getActiveJobs(getUILocale());
+        contentManager.importContent(parentPath, fileKey, replaceContent, retrieveCurrentSession(), getUILocale());
+        return details;
     }
 
     public List<GWTJahiaChannel> getChannels() throws GWTJahiaServiceException {

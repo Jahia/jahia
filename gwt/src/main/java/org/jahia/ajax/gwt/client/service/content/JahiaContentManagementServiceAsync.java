@@ -73,81 +73,85 @@ import java.util.Set;
  * @version 5 mai 2008 - 17:23:39
  */
 public interface JahiaContentManagementServiceAsync {
+// -------------------------- OTHER METHODS --------------------------
 
-    void drawPortletInstanceOutput(String windowID, String entryPointIDStr, String pathInfo, String queryString, AsyncCallback<GWTJahiaPortletOutputBean> async);
+    void abortWorkflow(String processId, String provider, AsyncCallback async);
 
-    void getAvailableSites(AsyncCallback<List<GWTJahiaSite>> asyncCallback);
+    void activateVersioning(List<String> path, AsyncCallback async);
 
-    void getManagerConfiguration(String name, AsyncCallback<GWTManagerConfiguration> async);
+    void addCommentToWorkflow(GWTJahiaWorkflow task, String comment,
+                              AsyncCallback<List<GWTJahiaWorkflowComment>> asyncCallback);
 
-    void getEditConfiguration(String path, String name, AsyncCallback<GWTEditConfiguration> async);
+    void assignAndCompleteTask(GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
 
-    public void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean showOnlyNodesWithTemplates, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async) throws GWTJahiaServiceException;
-
-    void getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, AsyncCallback<List<GWTJahiaNode>> async);
-
-    void getNodes(List<String> paths, List<String> fields, AsyncCallback<List<GWTJahiaNode>> async);
-
-    void getNodesAndTypes(List<String> paths, List<String> fields, List<String> types, AsyncCallback<Map<String,List<? extends ModelData>>> async);
-
-    void getTagNode(String tagName, boolean create, AsyncCallback<GWTJahiaNode> async);
-
-    public void saveOpenPathsForRepository(String repositoryType, List<String> paths, AsyncCallback async);
-
-    void search(GWTJahiaSearchQuery search, int limit, int offset, boolean showOnlyNodesWithTemplates, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
-
-    void search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, AsyncCallback<List<GWTJahiaNode>> async);
-
-    void searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean sortOnDisplayName, AsyncCallback<List<GWTJahiaNode>> async);
-
-    void searchPortlets(String match, AsyncCallback<List<GWTJahiaPortletDefinition>> async);
-
-    void getSavedSearch(AsyncCallback<List<GWTJahiaNode>> async);
-
-    void saveSearch(GWTJahiaSearchQuery searchQuery, String path, String name, boolean onTopOf, AsyncCallback asyncCallback);
-
-    void mount(String path, String target, String root, AsyncCallback async);
-
-    void getMountpoints(AsyncCallback<List<GWTJahiaNode>> async);
-
-    void storePasswordForProvider(String providerKey, String username, String password, AsyncCallback async);
-
-    void getStoredPasswordsProviders(AsyncCallback<Map<String, String>> async);
-
-    void setLock(List<String> paths, boolean locked, AsyncCallback async);
-
-    void clearAllLocks(String path, boolean processChildNodes, AsyncCallback async);
-
-    void deletePaths(List<String> paths, AsyncCallback async);
-
-    void markForDeletion(List<String> paths, String comment, AsyncCallback async);
-
-    void undeletePaths(List<String> path, AsyncCallback async);
-
-    void getAbsolutePath(String path, AsyncCallback<String> async);
+    void checkExistence(String path, AsyncCallback async);
 
     void checkWriteable(List<String> paths, AsyncCallback async);
 
-    void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut, AsyncCallback async);
+    void cleanReferences(String path, AsyncCallback callback);
 
-    void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName, AsyncCallback async);
+    void clearAllLocks(String path, boolean processChildNodes, AsyncCallback async);
 
-    void getProperties(String path, String langCode, AsyncCallback<GWTJahiaGetPropertiesResult> async);
+    void closeEditEngine(String nodepath, AsyncCallback async);
 
-    void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, Set<String> removedTypes, AsyncCallback async);
+    void compareAcl(GWTJahiaNodeACL nodeAcl, List<GWTJahiaNode> reference, AsyncCallback<Set<String>> async);
 
-    void savePropertiesAndACL(List<GWTJahiaNode> nodes, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes, AsyncCallback async);
+    void createDefaultUsersGroupACE(List<String> permissions, boolean grand, AsyncCallback<GWTJahiaNodeACE> async);
 
-    void saveNode(GWTJahiaNode node, List<GWTJahiaNode> orderedChilden, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes, AsyncCallback async);
+    void createFolder(String parentPath, String name, AsyncCallback<GWTJahiaNode> async);
+
+    void createGoogleGadgetPortletInstance(String path, String name, String script, AsyncCallback<GWTJahiaNode> async);
 
     void createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, AsyncCallback<GWTJahiaNode> async);
 
     void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, AsyncCallback<GWTJahiaNode> asyncCallback);
 
-    void createFolder(String parentPath, String name, AsyncCallback<GWTJahiaNode> async);
-
     void createPortletInstance(String path, GWTJahiaNewPortletInstance wiz, AsyncCallback<GWTJahiaNode> async);
 
+    void createRSSPortletInstance(String path, String name, String url, AsyncCallback<GWTJahiaNode> async);
+
+    void createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings, AsyncCallback<Boolean> async);
+
+    void createTemplateSet(String key, String baseSet, String siteType, AsyncCallback<GWTJahiaNode> asyncCallback);
+
+    void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace, AsyncCallback async);
+
+    void deleteAllCompletedJobs(AsyncCallback<Integer> async);
+    
+    void deleteJob(String jobName, String groupName, AsyncCallback<Boolean> async);
+
+    void deletePaths(List<String> paths, AsyncCallback async);
+
+    void deployTemplates(String templatesPath, String sitePath, AsyncCallback asyncCallback);
+
+    void drawPortletInstanceOutput(String windowID, String entryPointIDStr, String pathInfo, String queryString, AsyncCallback<GWTJahiaPortletOutputBean> async);
+
+    void flush(String path, AsyncCallback<Void> asyncCallback);
+
+    void flushAll(AsyncCallback<Void> asyncCallback);
+
+    void flushSite(String siteUUID, AsyncCallback<Void> asyncCallback);
+
+    void generateWar(String moduleName, AsyncCallback<GWTJahiaNode> asyncCallback);
+
+    void getAbsolutePath(String path, AsyncCallback<String> async);
+
+    void getAllJobGroupNames(AsyncCallback<List<String>> async);
+
+    void getAvailableSites(AsyncCallback<List<GWTJahiaSite>> asyncCallback);
+
+    void getChannels(AsyncCallback<List<GWTJahiaChannel>> asyncCallback);
+
+    void getContentHistory(String nodeIdentifier, int offset, int limit, AsyncCallback<PagingLoadResult<GWTJahiaContentHistoryEntry>> async);
+
+    void getContentTypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement, AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>> async);
+
+    void getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> fields,
+                               boolean includeSubTypes, boolean includeNonDependentModules, AsyncCallback<List<GWTJahiaNode>> async);
+
+    void getEditConfiguration(String path, String name, AsyncCallback<GWTEditConfiguration> async);
+
+<<<<<<< .working
     void createRSSPortletInstance(String path, String name, String url, AsyncCallback<GWTJahiaNode> async);
 
     void createGoogleGadgetPortletInstance(String path, String name, String script, AsyncCallback<GWTJahiaNode> async);
@@ -172,69 +176,13 @@ public interface JahiaContentManagementServiceAsync {
 
     void unzip(List<String> paths, AsyncCallback async);
 
+=======
+>>>>>>> .merge-right.r42650
     void getExportUrl(String path, AsyncCallback<String> async);
 
-    void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace, AsyncCallback async);
+    void getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues, AsyncCallback<GWTJahiaFieldInitializer> async);
 
-    void resizeImage(String path, String target, int width, int height, boolean forceReplace, AsyncCallback async);
-
-    void rotateImage(String path, String target, boolean clockwise, boolean forceReplace, AsyncCallback async);
-
-    void activateVersioning(List<String> path, AsyncCallback async);
-
-    void getVersions(String path, AsyncCallback<List<GWTJahiaNodeVersion>> async);
-
-    void getVersions(GWTJahiaNode node, int limit, int offset, AsyncCallback<PagingLoadResult<GWTJahiaNodeVersion>> async);
-
-    void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion, boolean allSubTree, AsyncCallback async);
-
-    void uploadedFile(List<String[]> uploadeds, AsyncCallback async);
-
-    void getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, List<String>> contextParams, boolean editMode, String configName, String channelIdentifier, AsyncCallback<GWTRenderResult> async);
-
-    void getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace, String locale, AsyncCallback<String> async);
-
-    void getNodeURLByIdentifier(String servlet, String identifier, Date versionDate, String versionLabel, String workspace, String locale, AsyncCallback<String> async);
-
-    void importContent(String parentPath, String fileKey, Boolean asynchronously, AsyncCallback async);
-
-    void importContent(String parentPath, String fileKey, Boolean asynchronously, Boolean replaceContent, AsyncCallback async);
-
-    void getWorkflowDefinitions(List<String> workflowDefinitionIds, AsyncCallback<Map<String,GWTJahiaWorkflowDefinition>> async);
-
-    void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties, List<String> comments, AsyncCallback async);
-
-    void startWorkflow(List<String> uuids, GWTJahiaWorkflowDefinition def,
-                              List<GWTJahiaNodeProperty> properties, List<String> comments, Map<String, Object> args, AsyncCallback async);
-
-    void abortWorkflow(String processId, String provider, AsyncCallback async);
-
-    void assignAndCompleteTask(GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
-
-    /**
-     * Publish the specified paths.
-     *
-     * @param uuids the list of node uuids to publish
-     * @param async Local implementation of callback to react on return for asynchronous call to publish
-     */
-    void publish(List<String> uuids, List<GWTJahiaNodeProperty> properties, List<String> comments, AsyncCallback async);
-
-    /**
-     * Unpublish the specified path and its subnodes.
-     *
-     * @param uuids the list of node uuids to publish
-     * @param async Local implementation of callback to react on return for asynchronous call to unpublish
-     */
-    void unpublish(List<String> uuids, AsyncCallback async);
-
-    /**
-     * Get the publication status information for a particular path.
-     *
-     * @param uuids uuids to get publication info from
-     * @param checkForUnpublication
-     * @param async Local implementation of callback to react on return for asynchronous call to getPublicationInfo
-     */
-    void getPublicationInfo(List<String> uuids, boolean allSubTree, boolean checkForUnpublication, AsyncCallback<List<GWTJahiaPublicationInfo>> async);
+    void getGWTToolbars(String toolbarGroup, AsyncCallback<GWTJahiaToolbar> async);
 
     /**
      * Get higthligthed
@@ -245,6 +193,55 @@ public interface JahiaContentManagementServiceAsync {
      */
     void getHighlighted(String original, String amendment, AsyncCallback<String> async);
 
+    void getJobs(int offset, int limit, String sortField, String sortDir, List<String> groupNames, AsyncCallback<PagingLoadResult<GWTJahiaJobDetail>> async);
+
+    void getManagerConfiguration(String name, AsyncCallback<GWTManagerConfiguration> async);
+
+    void getMountpoints(AsyncCallback<List<GWTJahiaNode>> async);
+
+    void getNodeType(String names, AsyncCallback<GWTJahiaNodeType> async);
+
+    void getNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
+
+    void getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace, String locale, AsyncCallback<String> async);
+
+    void getNodeURLByIdentifier(String servlet, String identifier, Date versionDate, String versionLabel, String workspace, String locale, AsyncCallback<String> async);
+
+    void getNodes(List<String> paths, List<String> fields, AsyncCallback<List<GWTJahiaNode>> async);
+
+    void getNodesAndTypes(List<String> paths, List<String> fields, List<String> types, AsyncCallback<Map<String,List<? extends ModelData>>> async);
+
+    void getNodesByCategory(GWTJahiaNode category, int offset, int limit, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
+
+    void getNumberOfTasksForUser(AsyncCallback<Integer> asyncCallback);
+
+    void getPollData(Set<String> keys, AsyncCallback<Map<String,Object>> async);
+
+    void getPortalNodes(String targetAreaName, AsyncCallback<List<GWTJahiaNode>> asyncCallback);
+
+    void getProperties(String path, String langCode, AsyncCallback<GWTJahiaGetPropertiesResult> async);
+
+    /**
+     * Get the publication status information for a particular path.
+     *
+     * @param uuids uuids to get publication info from
+     * @param checkForUnpublication
+     * @param async Local implementation of callback to react on return for asynchronous call to getPublicationInfo
+     */
+    void getPublicationInfo(List<String> uuids, boolean allSubTree, boolean checkForUnpublication, AsyncCallback<List<GWTJahiaPublicationInfo>> async);
+
+    void getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, List<String>> contextParams, boolean editMode, String configName, String channelIdentifier, AsyncCallback<GWTRenderResult> async);
+
+    void getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, AsyncCallback<List<GWTJahiaNode>> async);
+
+    void getSavedSearch(AsyncCallback<List<GWTJahiaNode>> async);
+
+    void getStoredPasswordsProviders(AsyncCallback<Map<String, String>> async);
+
+    void getSubNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
+
+    void getTagNode(String tagName, boolean create, AsyncCallback<GWTJahiaNode> async);
+
     /**
      * Retrieves list of URL mapping objects for current node and locale.
      *
@@ -254,28 +251,42 @@ public interface JahiaContentManagementServiceAsync {
      */
     void getUrlMappings(GWTJahiaNode node, String locale, AsyncCallback<List<GWTJahiaUrlMapping>> async);
 
-    void deployTemplates(String templatesPath, String sitePath, AsyncCallback asyncCallback);
+    void getUsages(List<String> paths, AsyncCallback<List<GWTJahiaNodeUsage>> async);
 
+<<<<<<< .working
     void createTemplateSet(String key, String baseSet, String siteType, String sources, String scmUri, String scmType, AsyncCallback<GWTJahiaNode> asyncCallback);
+=======
+    void getVersions(String path, AsyncCallback<List<GWTJahiaNodeVersion>> async);
+>>>>>>> .merge-right.r42650
 
+<<<<<<< .working
     void saveModule(String moduleName, String message, AsyncCallback asyncCallback);
 
     void updateModule(String moduleName, AsyncCallback asyncCallback);
 
     void generateWar(String moduleName, AsyncCallback<GWTJahiaNode> asyncCallback);
+=======
+    void getVersions(GWTJahiaNode node, int limit, int offset, AsyncCallback<PagingLoadResult<GWTJahiaNodeVersion>> async);
+>>>>>>> .merge-right.r42650
 
-    void addCommentToWorkflow(GWTJahiaWorkflow task, String comment,
-                              AsyncCallback<List<GWTJahiaWorkflowComment>> asyncCallback);
+    void getVisibilityInformation(String path, AsyncCallback<ModelData> asyncCallback);
+
+    void getWFFormForNodeAndNodeType(String formResourceName,
+                                     AsyncCallback<GWTJahiaNodeType> asyncCallback);
 
     void getWorkflowComments(GWTJahiaWorkflow workflow, AsyncCallback<List<GWTJahiaWorkflowComment>> async);
+
+    void getWorkflowDefinitions(List<String> workflowDefinitionIds, AsyncCallback<Map<String,GWTJahiaWorkflowDefinition>> async);
+
+    void getWorkflowHistoryForUser(AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> async);
 
     public void getWorkflowHistoryProcesses(String nodeId, String locale, AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> async);
 
     public void getWorkflowHistoryTasks(String provider, String processId, String locale, AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> async);
 
-    void getWorkflowHistoryForUser(AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> async);
+    void getWorkflowRules(String path, AsyncCallback<Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>>> async);
 
-    void isValidSession(AsyncCallback<Integer> async) throws GWTJahiaServiceException;
+    void importContent(String parentPath, String fileKey, Boolean replaceContent, AsyncCallback<List<GWTJahiaJobDetail>> async);
 
     void initializeCreateEngine(String typeName, String parentPath, String targetName, AsyncCallback<GWTJahiaCreateEngineInitBean> async);
 
@@ -285,64 +296,86 @@ public interface JahiaContentManagementServiceAsync {
 
     void initializeEditEngine(List<String> paths, boolean tryToLockNode, AsyncCallback<GWTJahiaEditEngineInitBean> async);
 
-    void closeEditEngine(String nodepath, AsyncCallback async);
+    void isValidSession(AsyncCallback<Integer> async) throws GWTJahiaServiceException;
 
-    void compareAcl(GWTJahiaNodeACL nodeAcl, List<GWTJahiaNode> reference, AsyncCallback<Set<String>> async);
+    public void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean showOnlyNodesWithTemplates, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async) throws GWTJahiaServiceException;
 
-    void getWorkflowRules(String path, AsyncCallback<Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>>> async);
+    void markForDeletion(List<String> paths, String comment, AsyncCallback async);
 
-    void flush(String path, AsyncCallback<Void> asyncCallback);
+    void mount(String path, String target, String root, AsyncCallback async);
 
-    void flushAll(AsyncCallback<Void> asyncCallback);
+    void move(String sourcePath, String targetPath, AsyncCallback asyncCallback);
 
-    void getPollData(Set<String> keys, AsyncCallback<Map<String,Object>> async);
+    void moveAtEnd(String sourcePath, String targetPath, AsyncCallback asyncCallback);
 
-    void getJobs(int offset, int limit, String sortField, String sortDir, List<String> groupNames, AsyncCallback<PagingLoadResult<GWTJahiaJobDetail>> async);
+    void moveOnTopOf(String sourcePath, String targetPath, AsyncCallback asyncCallback);
 
-    void deleteAllCompletedJobs(AsyncCallback<Integer> async);
-    
-    void deleteJob(String jobName, String groupName, AsyncCallback<Boolean> async);
+    void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut, AsyncCallback async);
 
-    void getAllJobGroupNames(AsyncCallback<List<String>> async);
+    void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName, AsyncCallback async);
 
-    void getContentHistory(String nodeIdentifier, int offset, int limit, AsyncCallback<PagingLoadResult<GWTJahiaContentHistoryEntry>> async);
+    /**
+     * Publish the specified paths.
+     *
+     * @param uuids the list of node uuids to publish
+     * @param async Local implementation of callback to react on return for asynchronous call to publish
+     */
+    void publish(List<String> uuids, List<GWTJahiaNodeProperty> properties, List<String> comments, AsyncCallback async);
 
-    void cleanReferences(String path, AsyncCallback callback);
+    void rename(String path, String newName, AsyncCallback<String> async);
 
-    void getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues, AsyncCallback<GWTJahiaFieldInitializer> async);
+    void resizeImage(String path, String target, int width, int height, boolean forceReplace, AsyncCallback async);
 
-    void getPortalNodes(String targetAreaName, AsyncCallback<List<GWTJahiaNode>> asyncCallback);
-
-	void validateWCAG(Map<String, String> richTexts,
-	        AsyncCallback<Map<String, WCAGValidationResult>> asyncCallback);
-
-    void getNumberOfTasksForUser(AsyncCallback<Integer> asyncCallback);
-
-    void getGWTToolbars(String toolbarGroup, AsyncCallback<GWTJahiaToolbar> async);
-
-    void createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings, AsyncCallback<Boolean> async);
+    void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion, boolean allSubTree, AsyncCallback async);
 
     void restoreNodeByIdentifierAndDate(String identifier, Date versionDate, String versionLabel, boolean allSubTree,
                                         AsyncCallback<Void> async);
 
-    void flushSite(String siteUUID, AsyncCallback<Void> asyncCallback);
+    void rotateImage(String path, String target, boolean clockwise, boolean forceReplace, AsyncCallback async);
 
-    void getNodeType(String names, AsyncCallback<GWTJahiaNodeType> async);
+    void saveNode(GWTJahiaNode node, List<GWTJahiaNode> orderedChilden, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes, AsyncCallback async);
 
-    void getNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
+    public void saveOpenPathsForRepository(String repositoryType, List<String> paths, AsyncCallback async);
 
-    void getSubNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
+    void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, Set<String> removedTypes, AsyncCallback async);
 
-    void getContentTypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement, AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>> async);
+    void savePropertiesAndACL(List<GWTJahiaNode> nodes, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes, AsyncCallback async);
 
-    void getContentTypesAsTree(List<String> paths, List<String> nodeTypes, List<String> fields,
-                               boolean includeSubTypes, boolean includeNonDependentModules, AsyncCallback<List<GWTJahiaNode>> async);
+    void saveSearch(GWTJahiaSearchQuery searchQuery, String path, String name, boolean onTopOf, AsyncCallback asyncCallback);
 
-    void getWFFormForNodeAndNodeType(String formResourceName,
-                                     AsyncCallback<GWTJahiaNodeType> asyncCallback);
+    void search(GWTJahiaSearchQuery search, int limit, int offset, boolean showOnlyNodesWithTemplates, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
 
-    void getVisibilityInformation(String path, AsyncCallback<ModelData> asyncCallback);
+    void search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, AsyncCallback<List<GWTJahiaNode>> async);
 
-    void getChannels(AsyncCallback<List<GWTJahiaChannel>> asyncCallback);
+    void searchPortlets(String match, AsyncCallback<List<GWTJahiaPortletDefinition>> async);
 
+    void searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean sortOnDisplayName, AsyncCallback<List<GWTJahiaNode>> async);
+
+    void setLock(List<String> paths, boolean locked, AsyncCallback async);
+
+    void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties, List<String> comments, AsyncCallback async);
+
+    void startWorkflow(List<String> uuids, GWTJahiaWorkflowDefinition def,
+                              List<GWTJahiaNodeProperty> properties, List<String> comments, Map<String, Object> args, AsyncCallback async);
+
+    void storePasswordForProvider(String providerKey, String username, String password, AsyncCallback async);
+
+    void undeletePaths(List<String> path, AsyncCallback async);
+
+    /**
+     * Unpublish the specified path and its subnodes.
+     *
+     * @param uuids the list of node uuids to publish
+     * @param async Local implementation of callback to react on return for asynchronous call to unpublish
+     */
+    void unpublish(List<String> uuids, AsyncCallback async);
+
+    void unzip(List<String> paths, AsyncCallback async);
+
+    void uploadedFile(List<String[]> uploadeds, AsyncCallback async);
+
+	void validateWCAG(Map<String, String> richTexts,
+	        AsyncCallback<Map<String, WCAGValidationResult>> asyncCallback);
+
+    void zip(List<String> paths, String archiveName, AsyncCallback async);
 }

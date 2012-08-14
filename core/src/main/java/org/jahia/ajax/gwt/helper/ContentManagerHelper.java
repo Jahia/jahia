@@ -653,11 +653,11 @@ public class ContentManagerHelper {
         }
     }
 
-    public void importContent(String parentPath, String fileKey, boolean asynchronously, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
-        importContent(parentPath, fileKey, asynchronously, false, session, uiLocale);
+    public void importContent(String parentPath, String fileKey, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
+        importContent(parentPath, fileKey, false, session, uiLocale);
     }
 
-    public void importContent(String parentPath, String fileKey, boolean asynchronously, boolean replaceContent, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
+    public void importContent(String parentPath, String fileKey, boolean replaceContent, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
         try {
             GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
             ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
@@ -666,22 +666,17 @@ public class ContentManagerHelper {
             ValidationResults results = importExport.validateImportFile(session, item.getStream(), ImportExportBaseService.detectImportContentType(item), resolveSite != null ? resolveSite.getInstalledModules() : null);
 
             if (results.isSuccessful()) {
-                if (!asynchronously) {
-                    ImportJob.importContent(parentPath, fileKey, replaceContent);
-                } else {
-                    // let's schedule an import job.
-                    JobDetail jobDetail = BackgroundJob.createJahiaJob("Import file " + FilenameUtils.getName(item.getOriginalFileName()), ImportJob.class);
-                    JobDataMap jobDataMap;
-                    jobDataMap = jobDetail.getJobDataMap();
+                // let's schedule an import job.
+                JobDetail jobDetail = BackgroundJob.createJahiaJob("Import file " + FilenameUtils.getName(item.getOriginalFileName()), ImportJob.class);
+                JobDataMap jobDataMap;
+                jobDataMap = jobDetail.getJobDataMap();
 
-                    jobDataMap.put(ImportJob.DESTINATION_PARENT_PATH, parentPath);
-                    jobDataMap.put(ImportJob.FILE_KEY, fileKey);
-                    jobDataMap.put(ImportJob.FILENAME, FilenameUtils.getName(item.getOriginalFileName()));
-                    jobDataMap.put(ImportJob.REPLACE_CONTENT,replaceContent);
+                jobDataMap.put(ImportJob.DESTINATION_PARENT_PATH, parentPath);
+                jobDataMap.put(ImportJob.FILE_KEY, fileKey);
+                jobDataMap.put(ImportJob.FILENAME, FilenameUtils.getName(item.getOriginalFileName()));
+                jobDataMap.put(ImportJob.REPLACE_CONTENT,replaceContent);
 
-                    ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
-
-                }
+                ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
             } else {
                 StringBuffer buffer = new StringBuffer();
                 for (ValidationResult result : results.getResults()) {

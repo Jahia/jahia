@@ -44,17 +44,21 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.form.FileUploadField;
+
+import java.util.List;
 
 /**
  * User: toto
@@ -92,15 +96,15 @@ public class ContentImport extends Window {
         field.setFieldLabel(Messages.get("label.import"));
         form.add(field);
 
-        final CheckBox checkbox = new CheckBox();
-        checkbox.setFieldLabel(Messages.get("label.scheduleAsBackgroundJob", "Schedule as background job"));
-        checkbox.setValue(true);
-        form.add(checkbox);
+//        final CheckBox checkbox = new CheckBox();
+//        checkbox.setFieldLabel(Messages.get("label.scheduleAsBackgroundJob", "Schedule as background job"));
+//        checkbox.setValue(true);
+//        form.add(checkbox);
 
         Button submit = new Button(Messages.get("label.ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 mask();
-                doImport(n.getPath(), field.getValue(), checkbox.getValue());
+                doImport(n.getPath(), field.getValue());
             }
         });
 
@@ -117,9 +121,9 @@ public class ContentImport extends Window {
         add(form);
     }
 
-    public void doImport(String path, Object value, Boolean asynchronously) {
+    public void doImport(String path, Object value) {
         Log.debug(path + " " + value);
-        JahiaContentManagementService.App.getInstance().importContent(path, value.toString(), asynchronously, replaceContent, new BaseAsyncCallback() {
+        JahiaContentManagementService.App.getInstance().importContent(path, value.toString(), replaceContent, new BaseAsyncCallback<List<GWTJahiaJobDetail>>() {
 
             public void onApplicationFailure(Throwable caught) {
                 com.google.gwt.user.client.Window.alert(Messages.get("label.error") + "\n" + caught.getLocalizedMessage());
@@ -127,9 +131,26 @@ public class ContentImport extends Window {
                 hide();
             }
 
-            public void onSuccess(Object result) {
+            public void onSuccess(List<GWTJahiaJobDetail> result) {
+                removeAll();
+                unmask();
+                add(new Label(Messages.get("label.import.wait","Your import will be processed by the system as a background job.")));
+                if (result.size() > 0) {
+                    add(new Label(Messages.getWithArgs("label.import.waitingprocess","There are {0} jobs to finish before this import will be processed.",new Object[] {Integer.toString(result.size())})));
+                }
+
+                ButtonBar buttons = ((ButtonBar)getBottomComponent());
+
+                Button close = new Button(Messages.get("label.close"), new SelectionListener<ButtonEvent>() {
+                    public void componentSelected(ButtonEvent event) {
+                        hide();
+                    }
+                });
+                buttons.removeAll();
+                buttons.add(close);
+
+                layout();
                 m_linker.refresh(Linker.REFRESH_ALL);
-                hide();
             }
         });
     }

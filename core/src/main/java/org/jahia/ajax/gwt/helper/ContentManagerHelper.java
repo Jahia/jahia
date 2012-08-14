@@ -1215,12 +1215,7 @@ public class ContentManagerHelper {
         }
 
         try {
-<<<<<<< .working
             SourceControlManagement scm = SourceControlManagement.getSourceControlManagement(sources);
-=======
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateManifest(moduleName, session);
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateImportFile(moduleName);
->>>>>>> .merge-right.r42558
 
             ServicesRegistry.getInstance().getJahiaTemplateManagerService().saveModule(moduleName, sources, session);
 

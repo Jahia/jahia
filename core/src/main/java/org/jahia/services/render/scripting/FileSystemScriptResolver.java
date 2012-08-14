@@ -49,7 +49,6 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
-import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDependenciesEvent;
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDeployedOnSiteEvent;
@@ -63,7 +62,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.net.SocketTimeoutException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -251,14 +249,8 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         } else if (site != null && site.getPath().startsWith("/templateSets/")) {
             JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(site.getName());
             if (aPackage != null) {
-<<<<<<< .working
                 installedModules = new HashMap<String, String>();
-                installedModules.put("templates-system", null);
                 installedModules.put(aPackage.getRootFolder(), null);
-=======
-                installedModules = new ArrayList<String>();
-                installedModules.add(aPackage.getRootFolder());
->>>>>>> .merge-right.r42573
                 for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
                     if (!installedModules.containsKey(depend.getRootFolder())) {
                         installedModules.put(depend.getRootFolder(), null);

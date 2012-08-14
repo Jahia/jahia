@@ -40,14 +40,13 @@
 
 package org.jahia.taglibs.template.include;
 
-import org.apache.camel.NoSuchBeanException;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.channels.Channel;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.bin.Studio;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -76,7 +75,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     private static final long serialVersionUID = -8968618483176483281L;
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ModuleTag.class);
+    private static Logger logger = LoggerFactory.getLogger(ModuleTag.class);
+    
+    private static AbstractFilter exclusionFilter = null;
+    
+    private static boolean exclusionFilterChecked;
 
     protected String path;
 
@@ -335,16 +338,29 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     }
 
     private boolean isExcluded(RenderContext renderContext, Resource resource) throws RepositoryException {
-        try {
-            AbstractFilter filter = (AbstractFilter) SpringContextSingleton.getInstance().getModuleContext().getBean("ChannelExclusionFilter");
-            try {
-                return filter.prepare(renderContext, resource, null) != null;
-            } catch (Exception e) {
-                logger.error("Cannot evaluate exclude filter");
-            }
-        } catch (NoSuchBeanException e) {
+        AbstractFilter filter = getExclusionFilter();
+        if (filter == null) {
+            return false;
         }
+
+        try {
+            return filter.prepare(renderContext, resource, null) != null;
+        } catch (Exception e) {
+            logger.error("Cannot evaluate exclude filter", e);
+        }
+
         return false;
+    }
+    
+    private AbstractFilter getExclusionFilter() {
+        if (!exclusionFilterChecked) {
+            exclusionFilter = SpringContextSingleton.getInstance().getModuleContext()
+                    .containsBean("ChannelExclusionFilter") ? (AbstractFilter) SpringContextSingleton
+                    .getInstance().getModuleContext().getBean("ChannelExclusionFilter")
+                    : null;
+            exclusionFilterChecked = true;
+        }
+        return exclusionFilter;
     }
 
     private List<String> contributeTypes(RenderContext renderContext, JCRNodeWrapper node) {

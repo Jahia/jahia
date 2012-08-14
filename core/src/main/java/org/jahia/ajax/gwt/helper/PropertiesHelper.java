@@ -250,6 +250,24 @@ public class PropertiesHelper {
                             objectNode.removeMixin(mixin.getName());
                         }
                     }
+                    for (ExtendedNodeType mixin : objectNode.getPrimaryNodeType().getDeclaredSupertypes()) {
+                        if (removedTypes.contains(mixin.getName())) {
+                            List<ExtendedItemDefinition> items = mixin.getItems();
+                            for (ExtendedItemDefinition item : items) {
+                                if (item.isNode()) {
+                                    if (objectNode.hasNode(item.getName())) {
+                                        currentUserSession.checkout(objectNode);
+                                        objectNode.getNode(item.getName()).remove();
+                                    }
+                                } else {
+                                    if (objectNode.hasProperty(item.getName())) {
+                                        currentUserSession.checkout(objectNode);
+                                        objectNode.getProperty(item.getName()).remove();
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 for (String type : types) {
                     if (!objectNode.isNodeType(type)) {

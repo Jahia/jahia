@@ -649,7 +649,12 @@
     </bean>
 
 
-    <!-- new edit mode buttons: publish -->
+    <bean id="Toolbar.Item.PublicationStatus" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublicationStatusActionItem"/>
+        </property>
+    </bean>
+
     <bean id="Toolbar.Item.Publish" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem"/>

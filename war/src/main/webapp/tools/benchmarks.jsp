@@ -75,8 +75,9 @@
 
 <h2>Running tests...</h2>
 <%!
-    private void runWorkspaceDBTest(JspWriter out, String readAllDataSQL, String readRowSQL, long nbRandomLoops, Connection conn) throws SQLException, IOException {
+    private void runWorkspaceDBTest(JspWriter out, String readAllDataSQL, String readRowSQL, String tableName, long nbRandomLoops, Connection conn) throws SQLException, IOException {
         Set<NodeId> idCollection = new HashSet<NodeId>();
+        out.println("<h4>Table " + tableName + "</h4>");
         long bytesRead = 0;
         long rowsRead = 0;
         long startTime = System.currentTimeMillis();
@@ -155,8 +156,8 @@
                 conn = ds.getConnection();
 
                 if (conn != null) {
-                    runWorkspaceDBTest(out, readAllEditDataSQL, readEditRowSQL, nbRandomLoops, conn);
-                    runWorkspaceDBTest(out, readAllLiveDataSQL, readLiveRowSQL, nbRandomLoops, conn);
+                    runWorkspaceDBTest(out, readAllEditDataSQL, readEditRowSQL, readEditTableName, nbRandomLoops, conn);
+                    runWorkspaceDBTest(out, readAllLiveDataSQL, readLiveRowSQL, readLiveTableName, nbRandomLoops, conn);
 
                 }
             }
@@ -247,7 +248,7 @@
             bytesRead = results.get("bytesRead");
             long nodesRead = results.get("nodesRead");
             totalTime = System.currentTimeMillis() - startTime;
-            println(out, "Total time to all JCR " + nodesRead + " nodes data (" + bytesRead + " bytes) : " + totalTime + "ms");
+            println(out, "Total time to read JCR " + nodesRead + " nodes data (" + bytesRead + " bytes) : " + totalTime + "ms");
             double jcrReadSpeed = bytesRead / (1024.0 * 1024.0) / (totalTime / 1000.0);
             println(out, "JCR read speed = " + jcrReadSpeed + "MB/sec");
 
@@ -390,7 +391,7 @@
 
     }
 
-    protected void processNode(JspWriter out, JCRNodeWrapper node, Map<String, Long> results) throws RepositoryException, IOException {
+    protected boolean processNode(JspWriter out, JCRNodeWrapper node, Map<String, Long> results) throws RepositoryException, IOException {
         long nodesRead = results.get("nodesRead");
         // first let's try to read all the properties
         PropertyIterator propertyIterator = node.getProperties();
@@ -411,6 +412,10 @@
         if (nodesRead % 1000 == 0) {
             println(out, "Processed " + nodesRead + " nodes...");
         }
+        if (nodesRead > 10000) {
+            println(out, "Reached 10000 nodes, stopping benchmark test normally.");
+            return false;
+        }
         results.put("nodesRead", nodesRead);
         NodeIterator childNodeIterator = node.getNodes();
         while (childNodeIterator.hasNext()) {
@@ -418,9 +423,12 @@
             if (childNode.getName().equals("jcr:system")) {
                 println(out, "Ignoring jcr:system node and it's child objects");
             } else {
-                processNode(out, childNode, results);
+                if (!processNode(out, childNode, results)) {
+                    break;
+                }
             }
         }
+        return true;
     }
 
     private void renderCheckbox(JspWriter out, String checkboxValue, String checkboxLabel, boolean checked) throws IOException {
@@ -466,7 +474,7 @@
         out.println("<form>");
         renderCheckbox(out, "runDBTest", "Run database benchmark", true);
         renderCheckbox(out, "runFileSystemTest", "Run file system benchmark", true);
-        renderCheckbox(out, "runJCRTest", "Run Java Content Repository benchmark", false);
+        renderCheckbox(out, "runJCRTest", "Run Java Content Repository benchmark", true);
         out.println("<input type=\"submit\" name=\"submit\" value=\"Submit\">");
         out.println("</form>");
     }

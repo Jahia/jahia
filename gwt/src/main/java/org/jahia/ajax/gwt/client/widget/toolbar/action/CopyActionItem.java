@@ -40,9 +40,11 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -68,4 +70,18 @@ public class CopyActionItem extends NodeTypeAwareBaseActionItem{
         setEnabled(lh.getMultipleSelection() != null && hasPermission(lh.getSelectionPermissions()) && lh.getMultipleSelection().size() > 0
                 && !lh.isSecondarySelection() && isNodeTypeAllowed(lh.getMultipleSelection()));
     }
+
+    @Override
+    protected boolean isNodeTypeAllowed(GWTJahiaNode selectedNode) {
+        GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(selectedNode.getNodeTypes().get(0));
+        if (nodeType != null) {
+            Boolean canUseComponentForCreate = (Boolean) nodeType.get("canUseComponentForCreate");
+            if (canUseComponentForCreate != null && !canUseComponentForCreate) {
+                return false;
+            }
+        }
+
+        return super.isNodeTypeAllowed(selectedNode);
+    }
+
 }

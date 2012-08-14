@@ -407,12 +407,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         List<String> gr = new ArrayList<String>();
         List<String> den = new ArrayList<String>();
+        List<String> rem = new ArrayList<String>();
 
         for (Map.Entry<String, String> entry : roles.entrySet()) {
             if ("GRANT".equals(entry.getValue())) {
                 gr.add(entry.getKey());
             } else if ("DENY".equals(entry.getValue())) {
                 den.add(entry.getKey());
+            } else {
+                rem.add(entry.getKey());
             }
         }
 
@@ -449,7 +452,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             final Value[] values = aceg.getProperty(Constants.J_ROLES).getValues();
             for (Value value : values) {
                 final String s = value.getString();
-                if (!gr.contains(s) && !den.contains(s)) {
+                if (!gr.contains(s) && !den.contains(s) && !rem.contains(s)) {
                     grClone.add(s);
                 }
             }
@@ -458,7 +461,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             final Value[] values = aced.getProperty(Constants.J_ROLES).getValues();
             for (Value value : values) {
                 final String s = value.getString();
-                if (!gr.contains(s) && !den.contains(s)) {
+                if (!gr.contains(s) && !den.contains(s) && !rem.contains(s)) {
                     denClone.add(s);
                 }
             }

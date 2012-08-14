@@ -917,22 +917,35 @@ public class ContentManagerHelper {
             return;
         }
         try {
-            node.revokeAllRoles();
+            Map<String, GWTJahiaNodeACE> oldPrincipals = new HashMap<String, GWTJahiaNodeACE>();
+            for (GWTJahiaNodeACE ace : oldAcl.getAce()) {
+                if (!ace.getPermissions().isEmpty()) {
+                    oldPrincipals.put(ace.getPrincipalType() + ":" + ace.getPrincipal(), ace);
+                }
+            }
             for (GWTJahiaNodeACE ace : acl.getAce()) {
                 String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
-                for (Map.Entry<String, Boolean> entry : ace.getPermissions().entrySet()) {
-                    if (!entry.getValue().equals(ace.getInheritedPermissions().get(entry.getKey()))) {
-                        if (entry.getValue().equals(Boolean.TRUE) && !Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey()))) {
-                            node.grantRoles(user, Collections.singleton(entry.getKey()));
-                        } else if (entry.getValue().equals(Boolean.FALSE) && Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey()))) {
-                            node.denyRoles(user, Collections.singleton(entry.getKey()));
+                if (!ace.getPermissions().isEmpty()) {
+                    Map<String,String> perms = new HashMap<String, String>();
+                    GWTJahiaNodeACE oldAce = oldPrincipals.remove(user);
+                    if (!ace.equals(oldAce)) {
+                        for (Map.Entry<String, Boolean> entry : ace.getPermissions().entrySet()) {
+                            if (entry.getValue().equals(Boolean.TRUE) && ( !Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey())) || acl.isBreakAllInheritance())) {
+                                perms.put(entry.getKey(), "GRANT");
+                            } else if (entry.getValue().equals(Boolean.FALSE) && (Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey())) || acl.isBreakAllInheritance())) {
+                                perms.put(entry.getKey(), "DENY");
+                            } else {
+                                perms.put(entry.getKey(), "REMOVE");
+                            }
                         }
+                        node.changeRoles(user, perms);
                     }
                 }
             }
-            if (acl.isBreakAllInheritance()) {
-                node.setAclInheritanceBreak(acl.isBreakAllInheritance());
+            for (String oldPrincipal : oldPrincipals.keySet()) {
+                node.revokeRolesForPrincipal(oldPrincipal);
             }
+            node.setAclInheritanceBreak(acl.isBreakAllInheritance());
             currentUserSession.save();
         } catch (RepositoryException e) {
             logger.error("error", e);

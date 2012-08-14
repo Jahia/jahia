@@ -52,7 +52,7 @@ public class JahiaProcessDefinitionQueryImpl extends ProcessDefinitionQueryImpl 
 
     @Override
     protected void applyParameters(Query query) {
-        super.applyParameters(query);    //To change body of overridden methods use File | Settings | File Templates.
+        super.applyParameters(query);
         query.setCacheable(true);
     }
 }

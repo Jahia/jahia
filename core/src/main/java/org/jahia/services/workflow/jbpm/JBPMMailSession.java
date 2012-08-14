@@ -50,12 +50,8 @@ import org.jahia.services.mail.MailServiceImpl;
 import org.jbpm.pvm.internal.email.spi.MailSession;
 
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMultipart;
-import java.io.IOException;
 import java.util.Collection;
-import java.util.Date;
-import java.util.Properties;
 
 /**
  * Mail session used in the jBPM processes.

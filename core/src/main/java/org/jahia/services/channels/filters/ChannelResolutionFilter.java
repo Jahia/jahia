@@ -99,6 +99,7 @@ public class ChannelResolutionFilter extends AbstractFilter {
             Channel resolvedChannel = channelService.resolveChannel(context.getRequest());
             if (resolvedChannel != null) {
                 context.setChannel(resolvedChannel);
+                context.getRequest().setAttribute("module.cache.additional.key",resolvedChannel.getIdentifier());
             } else {
                 context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));
             }

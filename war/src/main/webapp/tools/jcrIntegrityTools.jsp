@@ -1,6 +1,11 @@
+<%@ page import="org.jahia.ajax.gwt.helper.CacheHelper" %>
 <%@ page import="org.jahia.api.Constants" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
-<%@ page import="org.jahia.services.usermanager.jcr.JCRUserManagerProvider" %>
+<%@ page import="org.jahia.services.SpringContextSingleton" %>
+<%@ page import="org.jahia.services.content.JCRCallback" %>
+<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
+<%@ page import="org.jahia.services.content.JCRSessionWrapper" %>
+<%@ page import="org.jahia.services.content.JCRTemplate" %>
 <%@ page import="org.jahia.utils.RequestLoadAverage" %>
 <%@ page import="org.quartz.JobDetail" %>
 <%@ page import="org.quartz.SchedulerException" %>
@@ -13,9 +18,6 @@
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
-<%@ page import="org.jahia.services.SpringContextSingleton" %>
-<%@ page import="org.jahia.ajax.gwt.helper.CacheHelper" %>
-<%@ page import="org.jahia.services.content.*" %>
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -103,7 +105,6 @@
             printTestName(out, "JCR Integrity Check");
         }
         try {
-            // JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
             String[] workspaces = new String[]{"default", "live"};
             final Map<String, Long> results = new HashMap<String, Long>();
             results.put("bytesRead", 0L);
@@ -140,9 +141,9 @@
             bytesRead = results.get("bytesRead");
             long nodesRead = results.get("nodesRead");
             totalTime = System.currentTimeMillis() - startTime;
-            println(out, "Total time to all JCR " + nodesRead + " nodes data (" + bytesRead + " bytes) : " + totalTime + "ms");
+            println(out, "Total time to process all JCR " + nodesRead + " nodes data (" + bytesRead + " bytes) : " + totalTime + "ms");
             double jcrReadSpeed = bytesRead / (1024.0 * 1024.0) / (totalTime / 1000.0);
-            println(out, "JCR read speed = " + jcrReadSpeed + "MB/sec");
+            println(out, "JCR processing speed = " + jcrReadSpeed + "MB/sec");
 
         } catch (Throwable t) {
             println(out, "Error reading JCR ", t, false);
@@ -249,7 +250,6 @@
                 } catch (ItemNotFoundException infe) {
                     println(out, "Couldn't find referenced node with UUID " + uuid + " referenced from property " + property.getPath(), infe, true);
                     if (fix) {
-                        JCRObservationManager.setEventsDisabled(Boolean.TRUE);
                         if (mustRemoveParentNode(node)) {
                             println(out, "Fixing invalid reference by removing node " + node.getPath() + " from repository...");
                             Node parentNode = node.getParent();
@@ -328,7 +328,6 @@
                                 session.save();
                             }
                         }
-                        JCRObservationManager.setEventsDisabled(null);
                     }
                 }
                 break;

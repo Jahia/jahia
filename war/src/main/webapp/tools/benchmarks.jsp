@@ -138,9 +138,7 @@
                 	nodeId = new NodeId(byteId);
                 }
                 idCollection.add(nodeId);
-                Blob currentBlob = rst.getBlob("BUNDLE_DATA");
-                long blobLength = currentBlob.length();
-                bytesRead = readBlob(bytesRead, currentBlob);
+                bytesRead += readBlob(rst, keyTypeLongLong ? 3 : 2);
                 rowsRead++;
             }
         } finally {
@@ -173,8 +171,7 @@
                 ResultSet resultSet = randomRowReadStmt.executeQuery();
                 try {
                     while (resultSet.next()) {
-                        Blob currentBlob = resultSet.getBlob(1);
-                        bytesRead = readBlob(bytesRead, currentBlob);
+                        bytesRead += readBlob(resultSet, 1);
                         rowsRead++;
                     }
                 } finally {
@@ -331,8 +328,9 @@
         out.println("</h3>");
     }
 
-    private long readBlob(long bytesRead, Blob currentBlob) throws SQLException, IOException {
-        BufferedInputStream blobInputStream = new BufferedInputStream(currentBlob.getBinaryStream());
+    private long readBlob(ResultSet rs, int columnIndex) throws SQLException, IOException {
+        long bytesRead = 0;
+        BufferedInputStream blobInputStream = new BufferedInputStream(rs.getMetaData().getColumnType(columnIndex) == Types.BLOB ? rs.getBlob(columnIndex).getBinaryStream() : rs.getBinaryStream(columnIndex));
         try {
             while (blobInputStream.read() != -1) {
                 bytesRead++;

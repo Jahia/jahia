@@ -123,99 +123,66 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         List<String> args = new LinkedList<String>();
         for (String field : fields) {
             if ("workspace".equals(field)) {
-                args.add(resource.getWorkspace());
+                args.add(encodeString(resource.getWorkspace()));
             } else if ("language".equals(field)) {
-                args.add(resource.getLocale().toString());
+                args.add(encodeString(resource.getLocale().toString()));
             } else {
                 if ("path".equals(field)) {
                     StringBuilder s = new StringBuilder(resource.getNode().getPath());
                     if (Boolean.TRUE.equals(request.getAttribute("cache.mainResource"))) {
                         s.append(MAIN_RESOURCE_KEY);
                     }
-                    args.add(s.toString());
+                    args.add(encodeString(s.toString()));
                 } else if ("template".equals(field)) {
                     if (resource.getContextConfiguration().equals("page") && resource.getNode().getPath().equals(
                             renderContext.getMainResource().getNode().getPath())) {
-                        args.add(renderContext.getMainResource().getResolvedTemplate());
+                        args.add(encodeString(renderContext.getMainResource().getResolvedTemplate()));
                     } else {
-                        args.add(resource.getResolvedTemplate());
+                        args.add(encodeString(resource.getResolvedTemplate()));
                     }
                 } else if ("templateType".equals(field)) {
                     String templateType = resource.getTemplateType();
                     if (renderContext.isAjaxRequest()) {
                         templateType += ".ajax";
                     }
-                    args.add(templateType);
+                    args.add(encodeString(templateType));
                 } else if ("queryString".equals(field)) {
                     String[] params = (String[]) request.getAttribute("cache.requestParameters");
                     if (params != null && params.length > 0) {
-                        args.add("_qs"+Arrays.toString(params)+"_");
-/*
-                        SortedMap<String,String> qs = new TreeMap<String, String>();
-                        for (String param : params) {
-                            if (param.endsWith("*")) {
-                                param = param.substring(0,param.length()-1);
-                                for (Map.Entry o : (Iterable<? extends Map.Entry>) parameterMap.entrySet()) {
-                                    String key = (String) o.getKey();
-                                    if (key.startsWith(param)) {
-                                        qs.put(key, Arrays.toString((String[])parameterMap.get(param)));
-                                    }
-                                }
-                            } else if (parameterMap.containsKey(param)) {
-                                qs.put(param, Arrays.toString((String[])parameterMap.get(param)));
-                            }
-                        }
-                        final String queryString = qs.toString();
-                        if (request.getParameter("ec") != null) {
-                            try {
-                                if (request.getParameter("ec").equals(resource.getNode().getIdentifier())) {
-                                    args.add(queryString != null ? queryString : "");
-                                } else {
-                                    args.add("");
-                                }
-                            } catch (RepositoryException e) {
-                                logger.debug(e.getMessage(),e);
-                            }
-                        } else {
-                            args.add(queryString != null ? queryString : "");
-                        }
-                        */
+                        args.add(encodeString("_qs" + Arrays.toString(params) + "_"));
                     } else {
                         args.add("");
                     }
                 } else if ("acls".equals(field)) {
-                    args.add(appendAcls(resource, renderContext, true));
+                    args.add(encodeString(appendAcls(resource, renderContext, true)));
                 } else if ("wrapped".equals(field)) {
-                    args.add(String.valueOf(resource.hasWrapper()));
+                    args.add(encodeString(String.valueOf(resource.hasWrapper())));
                 } else if ("context".equals(field)) {
-                    args.add(String.valueOf(resource.getContextConfiguration()));
+                    args.add(encodeString(String.valueOf(resource.getContextConfiguration())));
                 } else if ("custom".equals(field)) {
-                    args.add((String) resource.getModuleParams().get("module.cache.additional.key")+request.getAttribute("module.cache.additional.key"));
+                    args.add(encodeString((String) resource.getModuleParams().get("module.cache.additional.key")) +
+                                                   encodeString((String) request.getAttribute("module.cache.additional.key")));
                 } else if ("templateNodes".equals(field)) {
                     final Template t = (Template) request.getAttribute("previousTemplate");
-                    args.add(t != null ? t.serialize() : "");
+                    args.add(encodeString(t != null ? t.serialize() : ""));
                 } else if ("resourceID".equals(field)) {
                     try {
-                        args.add(resource.getNode().getIdentifier());
+                        args.add(encodeString(resource.getNode().getIdentifier()));
                     } catch (RepositoryException e) {
                         logger.error(e.getMessage(), e);
                     }
                 } else if ("inArea".equals(field)) {
                     Object inArea = request.getAttribute("inArea");
-                    args.add(inArea != null ? inArea.toString() : "");
+                    args.add(encodeString(inArea != null ? inArea.toString() : ""));
                 } else if ("site".equals(field)) {
                     // Todo : Do we need to find another way of getting the urlresolver ?
                     URLResolver urlResolver = (URLResolver) renderContext.getRequest().getAttribute("urlResolver");
-                    args.add(urlResolver == null
-                            || urlResolver.getSiteKeyByServerName() == null ?
-                            new StringBuilder()
-                            .append(renderContext.getSite().getSiteKey())
-                            .append(":").append("virtualhost")
-                            .append(":").append(request.getParameter("jsite")).toString()
-                            : new StringBuilder()
-                            .append(renderContext.getSite().getSiteKey())
-                            .append(":").append(request.getParameter("jsite")).toString()
-                    );
+                    args.add(encodeString(urlResolver == null ||
+                                          urlResolver.getSiteKeyByServerName() == null ? new StringBuilder().append(
+                            renderContext.getSite().getSiteKey()).append(":").append("virtualhost").append(":").append(
+                            request.getParameter("jsite")).toString() : new StringBuilder().append(
+                            renderContext.getSite().getSiteKey()).append(":").append(request.getParameter(
+                            "jsite")).toString()));
                 }
             }
         }
@@ -552,7 +519,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         Map<String, String> result = new LinkedHashMap<String, String>(fields.size());
         for (int i = 0; i < values.length; i++) {
             String value = (String) values[i];
-            result.put(fields.get(i), value == null || value.equals("null") ? null : mainResourcePattern.matcher(value).replaceAll(""));
+            result.put(fields.get(i), value == null || value.equals("null") ? null : mainResourcePattern.matcher(
+                    decodeString(value)).replaceAll(""));
         }
         return result;
     }
@@ -569,7 +537,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     public String replaceField(String key, String fieldName, String newValue) throws ParseException {
         Map<String, String> args = parseAsIs(key);
-        args.put(fieldName, newValue);
+        args.put(fieldName, encodeString(newValue));
         return format.format(args.values().toArray(new String[KNOWN_FIELDS.size()]), new StringBuffer(32),
                 new FieldPosition(0)).toString();
     }
@@ -632,5 +600,13 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     public void setTemplate(JCRTemplate template) {
         this.template = template;
+    }
+
+    private String encodeString(String toBeEncoded) {
+        return toBeEncoded!=null?toBeEncoded.replaceAll("#","@@"):toBeEncoded;
+    }
+
+    private String decodeString(String toBeDecoded) {
+        return toBeDecoded !=null? toBeDecoded.replaceAll("@@","#"): toBeDecoded;
     }
 }

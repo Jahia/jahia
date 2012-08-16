@@ -70,7 +70,7 @@ public class NodeVersionHistoryJob extends BackgroundJob {
         int count = NodeVersionHistoryHelper.purgeVersionHistoryForNodes(ids);
 
         logger.info(
-                "Purged {} version history items for nodes of the site {} in {} ms",
+                "Purged {} version histories for nodes of the site {} in {} ms",
                 new String[] { String.valueOf(count), site,
                         String.valueOf(System.currentTimeMillis() - timer) });
     }

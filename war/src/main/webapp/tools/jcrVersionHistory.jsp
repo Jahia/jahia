@@ -1,3 +1,5 @@
+<%@page import="org.apache.jackrabbit.core.WorkspaceImpl"%>
+<%@page import="org.apache.jackrabbit.core.NodeImpl"%>
 <%@ page contentType="text/html; charset=UTF-8" language="java"
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -35,10 +37,12 @@ private static final int checkOrhpaned(NodeIterator it, JCRSessionWrapper sessio
         Node vhNode = it.nextNode();
         checkedCount++;
         String targetId = vhNode.hasProperty("jcr:versionableUuid") ? vhNode.getProperty("jcr:versionableUuid").getString() : null;
-        if (targetId == null) {
+        if (targetId == null || nodeExists(targetId, session)) {
             continue;
         }
-        if (!vhNode.getReferences().hasNext()) {
+        NodeImpl realNode =(NodeImpl) ((JCRNodeWrapper) vhNode).getRealNode();
+        
+        if (!((WorkspaceImpl) realNode.getSession().getWorkspace()).getItemStateManager().hasNodeReferences(realNode.getNodeId())) {
             ids.add(targetId);
         }
     }
@@ -95,7 +99,7 @@ try {
 <legend style="color: blue">Successfully executed in <strong>${took}</strong> ms</legend>
 <p>Checked <strong>${total}</strong> items. Found <strong>${orphaned}</strong> orphaned version histories.
 <c:if test="${param.action == 'orphanedDelete'}">
-<strong>${deleted}</strong> single version items (can be multiple in each version history) successfully deleted.
+<strong>${deleted}</strong> version histories successfully deleted.
 </c:if>
 </p>
 <c:if test="${maxLimitReached}">

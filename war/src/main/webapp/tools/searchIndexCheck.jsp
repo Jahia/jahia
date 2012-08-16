@@ -58,7 +58,7 @@ int hash = indexRoot.getPath().hashCode();
 <c:set var="org.jahia.searchIndexCheck.obsolete.hint" value="true" scope="request"/>
 <div style="display: none;">
     <div id="obsolete-hint">
-        <h3>Obsolete</h3>
+        <h3>Hint</h3>
         <p>Obsolete index folders will be automatically removed later by the application (at latest on the next application startup).</p> 
     </div>
 </div>

@@ -57,7 +57,7 @@
         }
 
         .warning {
-            color: #FFDD00;
+            color: brown;
         }
     </style>
 </head>
@@ -214,17 +214,21 @@
 
     private void println(JspWriter out, String message, Throwable t, boolean warning) throws IOException {
         System.out.println(message);
-        t.printStackTrace();
+        if (t != null) {
+            t.printStackTrace();
+        }
         if (warning) {
             out.println("<span class='warning'>" + message + "</span>");
         } else {
             out.println("<span class='error'>" + message + "</span>");
         }
         errorCount++;
+        if (t != null) {
         out.println("<a href=\"javascript:toggleLayer('error" + errorCount + "');\" title=\"Click here to view error details\">Show/hide details</a>");
         out.println("<div id='error" + errorCount + "' class='hiddenDetails'><pre>");
         t.printStackTrace(new PrintWriter(out));
         out.println("</pre></div>");
+        }
         out.println("<br/>");
         out.flush();
     }
@@ -248,7 +252,7 @@
                 try {
                     Node referencedNode = node.getSession().getNodeByIdentifier(uuid);
                 } catch (ItemNotFoundException infe) {
-                    println(out, "Couldn't find referenced node with UUID " + uuid + " referenced from property " + property.getPath(), infe, true);
+                    println(out, "Couldn't find referenced node with UUID " + uuid + " referenced from property " + property.getPath(), null, true);
                     if (fix) {
                         if (mustRemoveParentNode(node)) {
                             println(out, "Fixing invalid reference by removing node " + node.getPath() + " from repository...");

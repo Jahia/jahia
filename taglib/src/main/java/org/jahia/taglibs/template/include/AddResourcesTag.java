@@ -40,24 +40,24 @@
 
 package org.jahia.taglibs.template.include;
 
-import org.jahia.registries.ServicesRegistry;
-import org.slf4j.Logger;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.render.RenderContext;
-import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.utils.Patterns;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.render.RenderContext;
+import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.utils.Patterns;
+import org.slf4j.Logger;
 
 /**
  * Add some resources to the head tag of the HTML.

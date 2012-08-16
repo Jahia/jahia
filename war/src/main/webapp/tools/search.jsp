@@ -53,15 +53,12 @@
             <p style="color: blue">Start checking indexes for repository home <%= SettingsBean.getInstance().getRepositoryHome() %> (<%= org.jahia.utils.FileUtils.humanReadableByteCount(FileUtils.sizeOfDirectory(SettingsBean.getInstance().getRepositoryHome())) %>)</p>
             <jsp:include page="searchIndexCheck.jsp">
                 <jsp:param name="indexPath" value="index"/>
-                <jsp:param name="indexId" value="versions"/>
             </jsp:include>
             <jsp:include page="searchIndexCheck.jsp">
                 <jsp:param name="indexPath" value="workspaces/default/index"/>
-                <jsp:param name="indexId" value="default-workspace"/>
             </jsp:include>
             <jsp:include page="searchIndexCheck.jsp">
                 <jsp:param name="indexPath" value="workspaces/live/index"/>
-                <jsp:param name="indexId" value="live-workspace"/>
             </jsp:include>
             <%  pageContext.setAttribute("took", Long.valueOf(System.currentTimeMillis() - actionTime)); %>
             <p style="color: blue">...done in ${took} ms</p>

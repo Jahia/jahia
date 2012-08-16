@@ -66,12 +66,12 @@ public final class NodeVersionHistoryHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(NodeVersionHistoryHelper.class);
 
-    public static int purgeVersionHistoryForNode(final String nodeIdentifier) {
-        int count = 0;
+    public static boolean purgeVersionHistoryForNode(final String nodeIdentifier) {
+        boolean deleted = false;
         try {
-            count = JCRTemplate.getInstance().doExecuteWithSystemSession(
-                    new JCRCallback<Integer>() {
-                        public Integer doInJCR(JCRSessionWrapper session)
+            deleted = JCRTemplate.getInstance().doExecuteWithSystemSession(
+                    new JCRCallback<Boolean>() {
+                        public Boolean doInJCR(JCRSessionWrapper session)
                                 throws RepositoryException {
                             return purgeVersionHistoryForNode(nodeIdentifier, session);
                         }
@@ -79,13 +79,12 @@ public final class NodeVersionHistoryHelper {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
-        return count;
+        return deleted;
     }
 
-    private static int purgeVersionHistoryForNode(String nodeIdentifier,
+    private static boolean purgeVersionHistoryForNode(String nodeIdentifier,
             JCRSessionWrapper sessionWrapper) throws PathNotFoundException, RepositoryException {
         long timer = System.currentTimeMillis();
-        int count = 0;
         SessionImpl session = (SessionImpl) sessionWrapper.getProviderSession(sessionWrapper
                 .getNode("/").getProvider());
         InternalVersionManager vm = session.getInternalVersionManager();
@@ -98,43 +97,52 @@ public final class NodeVersionHistoryHelper {
             history = vm.getVersionHistoryOfNode(NodeId.valueOf(nodeIdentifier));
         } catch (ItemNotFoundException e) {
             // no history found
-            return 0;
+            return false;
         }
-
+        
         Name[] versionNames = history.getVersionNames();
 
         if (logger.isDebugEnabled()) {
             logger.debug("Found {} versions", versionNames.length);
         }
-
-        for (Name v : versionNames) {
-            if (v.getLocalName().equals("rootVersion")) {
-                continue;
-            }
-            try {
-                vm.removeVersion(session, history, v);
-                count++;
-                if (logger.isDebugEnabled()) {
-                    logger.debug("removed version {}", v.getLocalName());
+        
+        boolean deleted = true;
+        if (versionNames.length == 1 && versionNames[0].getLocalName().equals("rootVersion")) {
+            vm.removeVersion(session, history, versionNames[0]);            
+        } else {
+            for (Name v : versionNames) {
+                if (v.getLocalName().equals("rootVersion")) {
+                    continue;
                 }
-            } catch (ReferentialIntegrityException e) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Skipping still referenced version {}", v.getLocalName());
+                try {
+                    vm.removeVersion(session, history, v);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("removed version {}", v.getLocalName());
+                    }
+                } catch (ReferentialIntegrityException e) {
+                    deleted = false;
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Skipping still referenced version {}", v.getLocalName());
+                    }
                 }
             }
         }
-
+        
         if (logger.isDebugEnabled()) {
-            logger.debug(
-                    "Purged {} version history items for node {} in {} ms",
-                    new String[] { String.valueOf(count), nodeIdentifier,
-                            String.valueOf(System.currentTimeMillis() - timer) });
+            if (deleted) {
+                logger.debug("Purged version history for node {} in {} ms", nodeIdentifier,
+                        String.valueOf(System.currentTimeMillis() - timer));
+            } else {
+                logger.debug("Version history for node {} was not deleted"
+                        + " as the version items are still referenced", nodeIdentifier);
+            }
         }
 
-        return count;
+        return deleted;
     }
 
     public static int purgeVersionHistoryForNodes(final Set<String> nodeIdentifiers) {
+        logger.info("Start checking orhpaned version history for {} nodes", nodeIdentifiers.size());
         int total = 0;
         try {
             total = JCRTemplate.getInstance().doExecuteWithSystemSession(
@@ -142,8 +150,15 @@ public final class NodeVersionHistoryHelper {
                         public Integer doInJCR(JCRSessionWrapper session)
                                 throws RepositoryException {
                             int count = 0;
+                            int processed = 0;
                             for (String id : nodeIdentifiers) {
-                                count += purgeVersionHistoryForNode(id, session);
+                                processed++;
+                                count += purgeVersionHistoryForNode(id, session) ? 1 : 0;
+                                if (processed % 200 == 0) {
+                                    logger.info(
+                                            "Current status: {} nodes processed / {} version histories deleted",
+                                            processed, count);
+                                }
                             }
                             return count;
                         }
@@ -151,6 +166,9 @@ public final class NodeVersionHistoryHelper {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
+        logger.info(
+                "Done checking orhpaned version history for {} nodes. {} version histrories deleted.",
+                nodeIdentifiers.size(), total);
         return total;
     }
 

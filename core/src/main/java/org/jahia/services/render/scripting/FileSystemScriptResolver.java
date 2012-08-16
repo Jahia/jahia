@@ -54,6 +54,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDependenci
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDeployedOnSiteEvent;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
 import org.jahia.utils.Patterns;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -82,6 +83,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Thomas Draier
  */
 public class FileSystemScriptResolver implements ScriptResolver, ApplicationListener<ApplicationEvent> {
+
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FileSystemScriptResolver.class);
 
     private static final String JSP_EXTENSION = "jsp";
     private static final String PHP_EXTENSION = "php";
@@ -244,6 +247,8 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                             keys.add(depend.getRootFolder());
                         }
                     }
+                } else {
+                    logger.error("Couldn't find module directory for module '" + installedModules.get(i) + "' installed in site '"+site.getPath()+"'");
                 }
             }
         } else if (site != null && site.getPath().startsWith("/templateSets/")) {

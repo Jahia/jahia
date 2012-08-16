@@ -26,8 +26,13 @@ int hash = indexRoot.getPath().hashCode();
         pageContext.setAttribute("result", buf.toString().replace("\n", "<br/>"));
         pageContext.setAttribute("obsolete", buf.toString().contains("could not read any segments file in directory"));
         %>
-        <td width="25" align="right">
-        <span style="color: ${ok ? 'green' : (obsolete ? 'brown' : 'red')}">${ok ? 'OK' : (obsolete ? 'Obsolete' : '<strong>Problem</strong>')}</span>
+        <td width="25" align="right" style="padding-right: 5px">
+        <span style="color: ${ok ? 'green' : (obsolete ? 'brown' : 'red')}">
+            ${ok ? 'OK' : (obsolete ? 'Obsolete' : '<strong>Problem</strong>')}
+        <c:if test="${obsolete}">
+            <a class="detailsLink" title="Obsolete index hint" href="#obsolete-hint">*</a>
+        </c:if>
+        </span>
         </td>
         <td>
 <<<<<<< .working
@@ -49,3 +54,12 @@ int hash = indexRoot.getPath().hashCode();
     </tr>
 <% } %>
 </table>
+<c:if test="${empty requestScope['org.jahia.searchIndexCheck.obsolete.hint']}">
+<c:set var="org.jahia.searchIndexCheck.obsolete.hint" value="true" scope="request"/>
+<div style="display: none;">
+    <div id="obsolete-hint">
+        <h3>Obsolete</h3>
+        <p>Obsolete index folders will be automatically removed later by the application (at latest on the next application startup).</p> 
+    </div>
+</div>
+</c:if>

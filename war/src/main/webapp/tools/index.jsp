@@ -47,7 +47,7 @@
 
         <td width="50%" valign="top">
 <fieldset>
-    <legend>JCR Data and Rendering</legend>
+    <legend>JCR Data</legend>
     <ul>
         <li><a href="jcrBrowser.jsp">JCR repository browser</a></li>
         <li><a href="jcrQuery.jsp">JCR query tool</a></li>
@@ -55,6 +55,11 @@
         <li><a href="jcrGc.jsp">JCR DataStore garbage collection</a></li>
         <li><a href="jcrVersionHistory.jsp">JCR version history management</a></li>
         <li><a href="jcrIntegrityTools.jsp">JCR integrity tools</a></li>
+    </ul>
+</fieldset>
+<fieldset>
+    <legend>JCR Rendering</legend>
+    <ul>
         <li><a href="modulesBrowser.jsp">Installed modules browser</a></li>
         <li><a href="definitionsBrowser.jsp">Installed definitions browser</a></li>
         <li><a href="renderFilters.jsp">Render filters</a></li>

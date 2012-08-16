@@ -45,10 +45,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
-import org.jahia.services.search.SearchCriteriaFactory;
 import org.jahia.services.search.SearchCriteria.NodePropertyDescriptor;
+import org.jahia.services.search.SearchCriteriaFactory;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.taglibs.utility.Utils;
 
 /**
  * Exposes a descriptor for the specified node property into the page scope.

@@ -42,7 +42,8 @@ package org.jahia.services.content;
 
 import static org.jahia.api.Constants.*;
 
-import org.apache.jackrabbit.core.observation.EventImpl;
+import org.apache.jackrabbit.api.observation.JackrabbitEvent;
+import org.jahia.services.content.JCRObservationManager.EventWrapper;
 
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventListener;
@@ -98,8 +99,10 @@ public abstract class DefaultEventListener implements EventListener {
 
     protected boolean isExternal(Event event) {
         // Jackrabbit / cluster workaround
-        if (event instanceof EventImpl) {
-            return ((EventImpl)event).isExternal();
+        if (event instanceof JackrabbitEvent) {
+            return ((JackrabbitEvent) event).isExternal();
+        } else if (event instanceof EventWrapper) {
+            return ((EventWrapper) event).isExternal();
         }
         return false;
     }

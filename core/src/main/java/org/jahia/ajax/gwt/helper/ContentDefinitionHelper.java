@@ -532,6 +532,7 @@ public class ContentDefinitionHelper {
                 for (ExtendedNodeType extension : m.get(nodeType)) {
 //                        ctx.put("contextType", realType);
                     if (installedModules == null || extension.getTemplatePackage() == null ||
+                            extension.getTemplatePackage().getModuleType().equalsIgnoreCase("system") ||
                             installedModules.contains(extension.getTemplatePackage().getRootFolder())) {
                         res.add(extension);
                         foundTypes.add(extension.getName());

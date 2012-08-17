@@ -49,7 +49,6 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
-import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDependenciesEvent;
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDeployedOnSiteEvent;
@@ -63,7 +62,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.net.SocketTimeoutException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 

@@ -101,7 +101,7 @@ public class ManageServer extends AbstractAdministrationModule {
         } else if(operation.equals("process")) {
             processSettings( request, response, request.getSession() );
         }
-    } // userRequestDispatcher
+    }
 
 
 
@@ -131,7 +131,7 @@ public class ManageServer extends AbstractAdministrationModule {
         request.setAttribute("jahiaMailSettings", cfg);
 
         JahiaAdministration.doRedirect( request, response, session, JSP_PATH + "config_server.jsp" );
-    } // end displaySettings
+    }
 
 
 
@@ -171,7 +171,7 @@ public class ManageServer extends AbstractAdministrationModule {
             storeSettings(cfg, jParams, request);
         }
         displaySettings( request, response, session );
-    } // end processSettings
+    }
 
 
 
@@ -189,19 +189,5 @@ public class ManageServer extends AbstractAdministrationModule {
             HttpServletRequest request) throws IOException, ServletException {
         ServicesRegistry.getInstance().getMailService().store(cfg);
         request.setAttribute("jahiaDisplayInfo", getMessage("label.changeSaved"));
-//        try {
-//            mailSrv.stop();
-//            mailSrv.start();
-//        } catch (JahiaException e) {
-//            logger
-//                    .error(
-//                            "Unable to restart Mail Service."
-//                                    + " New mail settings will be taken into consideration after server restart",
-//                            e);
-//            request
-//                    .setAttribute(
-//                            "jahiaDisplayMessage",
-//                            getMessage("org.jahia.admin.JahiaDisplayMessage.restartJahiaAfterChange.label"));
-//        }
     }
 }

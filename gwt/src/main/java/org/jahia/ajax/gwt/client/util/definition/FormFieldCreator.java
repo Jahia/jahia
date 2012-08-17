@@ -84,7 +84,7 @@ import java.util.Map;
 public class FormFieldCreator {
 
     private static final int DUAL_LIST_ITEM_COUNT_TO_FILTER = 5;
-    
+
     public static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd.MM.yyyy HH:mm");
 
     private static final int FILTER_FIELD_HEIGHT = 22;
@@ -131,6 +131,10 @@ public class FormFieldCreator {
                     break;
                 case GWTJahiaNodeSelectorType.TEXTAREA:
                     field = new TextArea();
+                    final String height = propDefinition.getSelectorOptions().get("height");
+                    if (height != null) {
+                        field.setSize(Integer.toString(field.getWidth()), height);
+                    }
                     break;
                 case GWTJahiaNodeSelectorType.RICHTEXT:
                     field = new CKEditorField(getCKEditorConfig(propDefinition, permissions));
@@ -263,7 +267,7 @@ public class FormFieldCreator {
                     }
                     break;
             }
-            // moved here due to IE problem reported in BOUYGUES-40 
+            // moved here due to IE problem reported in BOUYGUES-40
             field.setEmptyText(emptyText); // todo: allow to set the default value
 
             if (propDefinition.isInternationalized()) {
@@ -602,7 +606,7 @@ public class FormFieldCreator {
 
     public static class CustomDualListField<D extends ModelData> extends DualListField<D> {
         private List<D> originalValue = new ArrayList<D>();
-        
+
         private StoreFilterField<D> filterField;
 
         public void setCustomOriginalValue(List<D> originalValue) {
@@ -663,7 +667,7 @@ public class FormFieldCreator {
             vp.add(fields.remove(0));
             fields.add(0, new AdapterField(vp));
         }
-        
+
         @Override
         protected void onResize(int width, int height) {
             super.onResize(width, height);

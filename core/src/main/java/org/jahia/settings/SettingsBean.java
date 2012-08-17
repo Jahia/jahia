@@ -62,6 +62,7 @@ import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.PathResolver;
@@ -83,8 +84,7 @@ import java.util.*;
 
 public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware {
 
-    private static final transient Logger logger =
-            org.slf4j.LoggerFactory.getLogger (SettingsBean.class);
+    private static final transient Logger logger = LoggerFactory.getLogger (SettingsBean.class);
     
     public static final String JAHIA_PROPERTIES_FILE_PATH = "/WEB-INF/etc/config/jahia.properties";
     
@@ -320,11 +320,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 
             considerPreferredLanguageAfterLogin = getBoolean("considerPreferredLanguageAfterLogin", false);
 
-            // mail settings...
-            mail_service_activated = getBoolean("mail_service_activated", false);
-            mail_server = getString("mail_server");
-            mail_administrator = getString("mail_administrator");
-            mail_from = getString("mail_from");
+            // mail notification settings...
             mail_maxRegroupingOfPreviousException = getInt("mail_maxRegroupingOfPreviousException", 500);
 
             // paranoia settings...
@@ -746,15 +742,19 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public String getJahiaImportsDiskPath() {
         return jahiaImportsDiskPath;
     }
+    @Deprecated
     public String getMail_administrator() {
         return mail_administrator;
     }
+    @Deprecated
     public String getMail_from() {
         return mail_from;
     }
+    @Deprecated
     public String getMail_paranoia() {
         return mail_paranoia;
     }
+    @Deprecated
     public String getMail_server() {
         return mail_server;
     }

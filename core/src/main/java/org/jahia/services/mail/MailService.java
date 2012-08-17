@@ -195,4 +195,12 @@ public abstract class MailService extends JahiaService {
     public abstract void sendMessageWithTemplate(String template, Map<String, Object> boundObjects, String toMail,
             String fromMail, String ccList, String bcclist, Locale locale, String templatePackageName)
             throws RepositoryException, ScriptException;
+
+    /**
+     * Persists the changes in mail server connection configuration.
+     * 
+     * @param cfg
+     *            the new mail settings to be stored
+     */
+    public abstract void store(final MailSettings cfg);
 }

@@ -54,21 +54,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
 import org.springframework.web.util.WebUtils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.jahia.bin.JahiaAdministration;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.JahiaData;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.mail.MailService;
 import org.jahia.services.mail.MailServiceImpl;
 import org.jahia.services.mail.MailSettings;
 import org.jahia.services.mail.MailSettingsValidationResult;
-import org.jahia.settings.SettingsBean;
-import org.jahia.utils.properties.PropertiesManager;
 import org.jahia.admin.AbstractAdministrationModule;
 
 
@@ -88,8 +82,6 @@ public class ManageServer extends AbstractAdministrationModule {
 
     private static final String CLASS_NAME  =  JahiaAdministration.CLASS_NAME;
     private static final String JSP_PATH    =  JahiaAdministration.JSP_PATH;
-
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(ManageServer.class);
 
     /**
      * This method is used like a dispatcher for user requests.
@@ -195,42 +187,21 @@ public class ManageServer extends AbstractAdministrationModule {
      */
     private void storeSettings(MailSettings cfg, ProcessingContext jParams,
             HttpServletRequest request) throws IOException, ServletException {
-        SettingsBean settings = SettingsBean.getInstance();
-
-        // set new values in the properties manager...
-        PropertiesManager properties = new PropertiesManager(JahiaContextLoaderListener.getServletContext().getRealPath(SettingsBean.JAHIA_PROPERTIES_FILE_PATH));
-        properties.setProperty("mail_service_activated", cfg.isServiceActivated() ? "true" : "false");
-        properties.setProperty("mail_server", cfg.getHost());
-        properties.setProperty("mail_administrator", cfg.getTo());
-        properties.setProperty("mail_from", cfg.getFrom());
-        properties.setProperty("mail_paranoia", cfg.getNotificationLevel());
-
-        // write in the jahia properties file...
-        properties.storeProperties();
-
-        settings.setMail_service_activated(cfg.isServiceActivated());
-        settings.setMail_server(cfg.getHost());
-        settings.setMail_administrator(cfg.getTo());
-        settings.setMail_from(cfg.getFrom());
-        settings.setMail_paranoia(cfg.getNotificationLevel());
-
-        // restart the mail service
-        MailService mailSrv = ServicesRegistry.getInstance().getMailService();
-        try {
-            mailSrv.stop();
-            mailSrv.start();
-            request.setAttribute("jahiaDisplayInfo", getMessage(
-                            "label.changeSaved"));
-        } catch (JahiaException e) {
-            logger
-                    .error(
-                            "Unable to restart Mail Service."
-                                    + " New mail settings will be taken into consideration after server restart",
-                            e);
-            request
-                    .setAttribute(
-                            "jahiaDisplayMessage",
-                            getMessage("org.jahia.admin.JahiaDisplayMessage.restartJahiaAfterChange.label"));
-        }
+        ServicesRegistry.getInstance().getMailService().store(cfg);
+        request.setAttribute("jahiaDisplayInfo", getMessage("label.changeSaved"));
+//        try {
+//            mailSrv.stop();
+//            mailSrv.start();
+//        } catch (JahiaException e) {
+//            logger
+//                    .error(
+//                            "Unable to restart Mail Service."
+//                                    + " New mail settings will be taken into consideration after server restart",
+//                            e);
+//            request
+//                    .setAttribute(
+//                            "jahiaDisplayMessage",
+//                            getMessage("org.jahia.admin.JahiaDisplayMessage.restartJahiaAfterChange.label"));
+//        }
     }
 }

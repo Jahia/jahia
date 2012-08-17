@@ -58,6 +58,8 @@ import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -85,6 +87,23 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         HttpSessionAttributeListener,
         HttpSessionBindingListener,
         ServletContextAttributeListener {
+    
+    /**
+     * This event is fired when the root application context is initialized.
+     * 
+     * @author Sergiy Shyrkov
+     */
+    public static class RootContextInitializedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 8215602249732419470L;
+
+        public RootContextInitializedEvent(Object source) {
+            super(source);
+        }
+        
+        public XmlWebApplicationContext getContext() {
+            return (XmlWebApplicationContext) getSource();
+        }
+    }
     
     private static final transient Logger logger = LoggerFactory
             .getLogger(JahiaContextLoaderListener.class);
@@ -140,8 +159,10 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
         try {
             super.contextInitialized(event);
+            WebApplicationContext rootCtx = ContextLoader.getCurrentWebApplicationContext();
+            rootCtx.publishEvent(new RootContextInitializedEvent(rootCtx));
             try {
-                ((TemplatePackageApplicationContextLoader) ContextLoader.getCurrentWebApplicationContext().getBean("TemplatePackageApplicationContextLoader")).start();
+                ((TemplatePackageApplicationContextLoader) rootCtx.getBean("TemplatePackageApplicationContextLoader")).start();
             } catch (Exception e) {
                 logger.error("Error initializing Jahia modules Spring application context. Cause: " + e.getMessage(), e);
             }

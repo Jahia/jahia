@@ -56,6 +56,8 @@ import org.jahia.exceptions.JahiaException;
  */
 public class MailSettings implements Serializable {
 
+    private static final long serialVersionUID = -3891985143146442266L;
+
     private static final FastHashMap MAIL_NOTIFICATION_LEVELS;
 
     static {
@@ -74,7 +76,7 @@ public class MailSettings implements Serializable {
 
     private String from;
 
-    private String host;
+    private String uri;
 
     private String notificationLevel;
 
@@ -89,6 +91,7 @@ public class MailSettings implements Serializable {
      */
     public MailSettings() {
         super();
+        setNotificationLevel("Disabled");
     }
 
     /**
@@ -96,8 +99,8 @@ public class MailSettings implements Serializable {
      * 
      * @param serviceEnabled
      *            is service enabled
-     * @param host
-     *            the mail host
+     * @param uri
+     *            the mail server connection URI
      * @param from
      *            sender address
      * @param to
@@ -105,11 +108,11 @@ public class MailSettings implements Serializable {
      * @param notificationLevel
      *            event notification level
      */
-    public MailSettings(boolean serviceEnabled, String host, String from,
+    public MailSettings(boolean serviceEnabled, String uri, String from,
             String to, String notificationLevel) {
         super();
         this.serviceActivated = serviceEnabled;
-        this.host = host;
+        this.uri = uri;
         this.from = from;
         this.to = to;
         setNotificationLevel(notificationLevel);
@@ -128,9 +131,11 @@ public class MailSettings implements Serializable {
      * Returns the host.
      * 
      * @return the host
+     * @deprecated use {@link #getUri()} instead
      */
+    @Deprecated
     public String getHost() {
-        return host;
+        return uri;
     }
 
     /**
@@ -158,6 +163,15 @@ public class MailSettings implements Serializable {
      */
     public String getTo() {
         return to;
+    }
+
+    /**
+     * Returns the mail server connection URI.
+     * 
+     * @return the mail server connection URI
+     */
+    public String getUri() {
+        return uri;
     }
 
     /**
@@ -203,9 +217,11 @@ public class MailSettings implements Serializable {
      * 
      * @param host
      *            the host to set
+     * @deprecated use {@link #setUri(String)} instead
      */
+    @Deprecated
     public void setHost(String host) {
-        this.host = host;
+        setUri(host);
     }
 
     /**
@@ -240,15 +256,25 @@ public class MailSettings implements Serializable {
         this.to = to;
     }
 
+    /**
+     * Sets the value of uri.
+     * 
+     * @param uri
+     *            the connection URI to set
+     */
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
 
     public String getUser() {
-        String host = getHost();
+        String uri = getUri();
         String user = null;
-        if (host.contains("@")) {
-            String authPart = StringUtils.substringBeforeLast(host, "@");
+        if (uri.contains("@")) {
+            String authPart = StringUtils.substringBeforeLast(uri, "@");
             if (authPart.contains(":")) {
                 user = StringUtils.substringBefore(authPart, ":");
             } else {
@@ -260,10 +286,10 @@ public class MailSettings implements Serializable {
     }
 
     public String getPassword() {
-        String host = getHost();
+        String uri = getUri();
         String pwd = null;
-        if (host.contains("@")) {
-            String authPart = StringUtils.substringBeforeLast(host, "@");
+        if (uri.contains("@")) {
+            String authPart = StringUtils.substringBeforeLast(uri, "@");
             if (authPart.contains(":")) {
                 pwd = StringUtils.substringAfter(authPart, ":");
             }
@@ -273,13 +299,13 @@ public class MailSettings implements Serializable {
     }
 
     public int getPort() {
-        String host = getHost();
+        String uri = getUri();
         int port = 0;
-        if (host.contains("@")) {
-            host = StringUtils.substringAfterLast(host, "@");
+        if (uri.contains("@")) {
+            uri = StringUtils.substringAfterLast(uri, "@");
         }
-        if (host.contains(":")) {
-            String portPart = StringUtils.substringAfterLast(host, ":");
+        if (uri.contains(":")) {
+            String portPart = StringUtils.substringAfterLast(uri, ":");
             port = Integer.parseInt(StringUtils.substringBefore(portPart, "["));
         }
 
@@ -287,25 +313,25 @@ public class MailSettings implements Serializable {
     }
 
     public String getSmtpHost() {
-        String host = getHost();
-        if (host.contains("@")) {
-            host = StringUtils.substringAfterLast(host, "@");
+        String uri = getUri();
+        if (uri.contains("@")) {
+            uri = StringUtils.substringAfterLast(uri, "@");
         }
-        if (host.contains(":")) {
-            host = StringUtils.substringBeforeLast(host, ":");
+        if (uri.contains(":")) {
+            uri = StringUtils.substringBeforeLast(uri, ":");
         }
 
-        return host;
+        return uri;
     }
 
     public Map<String, String> getOptions() {
-        String host = getHost();
+        String uri = getUri();
         Map<String, String> options = new HashMap<String, String>();
-        if (host.contains("@")) {
-            host = StringUtils.substringAfterLast(host, "@");
+        if (uri.contains("@")) {
+            uri = StringUtils.substringAfterLast(uri, "@");
         }
-        if (host.contains(":")) {
-            String portPart = StringUtils.substringAfterLast(host, ":");
+        if (uri.contains(":")) {
+            String portPart = StringUtils.substringAfterLast(uri, ":");
             // check if there are any custom options, e.g.
             // [mail.smtp.starttls.enable=true,mail.debug=true]
             String optionsPart = StringUtils.substringBetween(portPart, "[",

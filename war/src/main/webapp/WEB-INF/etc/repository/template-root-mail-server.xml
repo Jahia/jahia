@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content jcr:primaryType="jnt:systemFolder"
+         jcr:mixinTypes="jmix:accessControlled jmix:workflowRulesable"
+         xmlns:jcr="http://www.jcp.org/jcr/1.0"
+         xmlns:j="http://www.jahia.org/jahia/1.0"
+         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+
+    <settings jcr:primaryType="jnt:globalSettings">
+        <mail-server j:activated="false" j:notificationLevel="Disabled" jcr:primaryType="jnt:mailServerSettings" />
+    </settings>
+
+</content>

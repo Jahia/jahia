@@ -5,7 +5,7 @@ Basic Jahia REST API
  Jahia provides a REST API, mostly for rendering, but some other services are available as well such: login,
  logout, content creation & updating and searching.
  
- Note please, when using the REST API from your client-side code (browser side) in your external Web applicazion,
+ Note please, when using the REST API from your client-side code (browser side) in your external Web application,
  e.g. using jQuery library, you can run into a cross-domain restriction for Ajax requests as they are not allowed by default
  due to security concerns. In contrary, using REST API from a server side code in your external
  application does not have this restriction.

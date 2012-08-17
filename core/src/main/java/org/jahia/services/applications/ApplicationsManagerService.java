@@ -40,15 +40,6 @@
 
 package org.jahia.services.applications;
 
-import java.util.List;
-
-import javax.jcr.RepositoryException;
-import javax.portlet.PortletMode;
-import javax.portlet.WindowState;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.pluto.container.PortletWindow;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.EntryPointDefinition;
@@ -58,6 +49,14 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.usermanager.JahiaUser;
+
+import javax.jcr.RepositoryException;
+import javax.portlet.PortletMode;
+import javax.portlet.WindowState;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * This Service is used to manage the jahia application definitions.

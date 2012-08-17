@@ -960,9 +960,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                     "History task records for process instance with ID '" + processId + "' cannot be found. Cause: " +
                             e.getMessage(), e);
         }
-        if (jbpmTasks == null) {
-            return Collections.emptyList();
-        }
+
         for (HistoryTask jbpmHistoryTask : jbpmTasks) {
             final Task task = taskService.getTask(jbpmHistoryTask.getId());
             String name = "";

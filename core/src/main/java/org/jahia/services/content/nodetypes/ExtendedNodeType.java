@@ -208,12 +208,15 @@ public class ExtendedNodeType implements NodeType {
         ExtendedNodeType[] d = getDeclaredSupertypes();
         for (int i = 0; i < d.length; i++) {
             ExtendedNodeType s = d[i];
-            if (s != null) {
+            if (s != null && !s.getNameObject().equals(getNameObject())) {
                 l.add(s);
                 l.addAll(Arrays.asList(s.getSupertypes()));
                 if (!s.isMixin()) {
                     primaryFound = true;
                 }
+            }
+            if(s != null && s.getNameObject().equals(getNameObject())) {
+                logger.error("Loop detected in definition "+getName());
             }
         }
         if (!primaryFound && !Constants.NT_BASE.equals(getName()) && !isMixin) {

@@ -59,6 +59,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.templates.TemplateUtils;
@@ -72,7 +73,7 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
  */
 public class MailServiceImpl extends MailService implements CamelContextAware, DisposableBean {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(MailServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
     private ProducerTemplate template;
     private ScriptEngineUtils scriptEngineUtils;
 
@@ -175,7 +176,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
             
             sendMailEndpointUri = uri.toString();
             
-            logger.debug("Using mail endpoint: " + sendMailEndpointUri);
+            logger.debug("Using mail endpoint: {}", sendMailEndpointUri);
         }
 
         return sendMailEndpointUri;

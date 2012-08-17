@@ -76,7 +76,7 @@
                                 var="endDate"/>
                 <li class="scheduletask workflowtask unfinishedTask" date="${task.dueDate.time}">
                     <span class="date value">${endDate}</span>
-                    <span class="value"><a href="${link}">${task.displayName} - ${node.name}</a></span>
+                    <span class="value"><a href="${link}"><span class="task-${fn:replace(task.name,' ','_')}">${task.displayName}</span> - ${node.name}</a></span>
                 </li>
             </c:if>
         </c:forEach>
@@ -92,7 +92,7 @@
             <c:set var="emptyTasks" value="false"/>
             <li class="scheduletask workflowtask finishedTask" date="${task.endTime.time}">
                 <span class="date value">${endDate}</span>
-                <span class="value"><a href="${link}">${task.displayName} - ${task.displayOutcome} - ${node.name}</a></span>
+                <span class="value"><a href="${link}"><span class="task-${fn:replace(task.outcome,' ','_')}">${task.displayOutcome}</span> - ${node.name}</a></span>
             </li>
         </c:if>
     </c:forEach>

@@ -46,6 +46,7 @@ import javax.jcr.observation.*;
 import javax.jcr.observation.EventListener;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.api.observation.JackrabbitEvent;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 
@@ -420,6 +421,7 @@ public class JCRObservationManager implements ObservationManager {
             return event.getIdentifier();
         }
 
+        @SuppressWarnings("rawtypes")
         public Map getInfo() throws RepositoryException {
             return event.getInfo();
         }
@@ -434,6 +436,11 @@ public class JCRObservationManager implements ObservationManager {
 
         public List<String> getNodeTypes() {
             return nodeTypes;
+        }
+        
+        public boolean isExternal() {
+            return event instanceof JackrabbitEvent ? ((JackrabbitEvent) event).isExternal()
+                    : false;
         }
     }
 }

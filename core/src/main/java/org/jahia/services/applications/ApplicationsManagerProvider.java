@@ -40,20 +40,18 @@
 
 package org.jahia.services.applications;
 
-import java.util.List;
-
 import org.apache.pluto.container.PortletWindow;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.params.ParamBean;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 public interface ApplicationsManagerProvider {
     /**

@@ -46,7 +46,6 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.*;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
-import org.jahia.settings.SettingsBean;
 import org.jbpm.api.identity.Group;
 import org.jbpm.api.identity.User;
 import org.jbpm.pvm.internal.env.EnvironmentImpl;
@@ -111,7 +110,7 @@ public class JBPMIdentitySession implements IdentitySession {
                     JahiaUser user = service.lookupUserByKey(jahiaUser);
                     addUser(emails, userId, user);
                 } else if (userId.equals("jahiaSettingsProperty")) {
-                    emails.add(new UserImpl(userId, "", "", SettingsBean.getInstance().getMail_from()));
+                    emails.add(new UserImpl(userId, "", "", ServicesRegistry.getInstance().getMailService().getSettings().getFrom()));
                 } else {
                     emails.add(findUserById(userId));
                 }

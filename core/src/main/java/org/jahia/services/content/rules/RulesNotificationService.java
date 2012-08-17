@@ -43,7 +43,6 @@ package org.jahia.services.content.rules;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
-import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
@@ -109,7 +108,6 @@ public class RulesNotificationService {
         JCRNodeWrapper userNode = node.getNode();
         if (userNode.hasProperty("j:email") && !userNode.getProperty("j:external").getBoolean()) {
             String toMail = userNode.getProperty("j:email").getString();
-            String fromMail = SettingsBean.getInstance().getMail_from();
             String ccList = null;
             String bcclist = null;
             Locale locale;
@@ -119,7 +117,7 @@ public class RulesNotificationService {
             } catch (RepositoryException e) {
                 locale = SettingsBean.getInstance().getDefaultLocale();
             }
-            sendMail(template, userNode, toMail, fromMail, ccList, bcclist, locale, drools);
+            sendMail(template, userNode, toMail, null, ccList, bcclist, locale, drools);
 
         }
     }

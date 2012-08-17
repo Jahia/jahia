@@ -50,6 +50,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.script.*;
 
@@ -61,7 +62,15 @@ import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.bin.listeners.JahiaContextLoaderListener.RootContextInitializedEvent;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.templates.TemplateUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
@@ -71,9 +80,23 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
  * @author MAP
  * @author Serge Huber
  */
-public class MailServiceImpl extends MailService implements CamelContextAware, DisposableBean {
+public class MailServiceImpl extends MailService implements CamelContextAware, DisposableBean, ApplicationListener<ApplicationEvent> {
+    
+    /**
+     * This event is fired when the changes in mail server connection settings are detected (notification from other cluster nodes).
+     * 
+     * @author Sergiy Shyrkov
+     */
+    public static class MailSettingsChangedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 3762898577271668634L;
+
+        public MailSettingsChangedEvent(Object source) {
+            super(source);
+        }
+    }
 
     private static Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
+    
     private ProducerTemplate template;
     private ScriptEngineUtils scriptEngineUtils;
 
@@ -87,11 +110,11 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
      */
     public static MailSettingsValidationResult validateSettings(MailSettings cfg, boolean skipIfEmpty) {
         MailSettingsValidationResult result = MailSettingsValidationResult.SUCCESSFULL;
-        boolean doValidation = cfg.getNotificationSeverity() != 0 || cfg.getHost().length() > 0
+        boolean doValidation = cfg.getNotificationSeverity() != 0 || cfg.getUri().length() > 0
                 || cfg.getTo().length() > 0 || cfg.getFrom().length() > 0;
 
         if (doValidation || !skipIfEmpty) {
-            if (cfg.getHost().length() == 0) {
+            if (cfg.getUri().length() == 0) {
                 result = new MailSettingsValidationResult("host", "message.mailServer_mustSet.label");
             } else if (cfg.getNotificationSeverity() != 0 && cfg.getTo().length() == 0) {
                 result = new MailSettingsValidationResult("to", "message.mailAdmin_mustSet");
@@ -163,10 +186,10 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
     public String getEndpointUri() {
         if (sendMailEndpointUri == null) {
             StringBuilder uri = new StringBuilder();
-            if (!settings.getHost().startsWith("smtp://") && !settings.getHost().startsWith("smtps://")) {
+            if (!settings.getUri().startsWith("smtp://") && !settings.getUri().startsWith("smtps://")) {
                 uri.append("smtp://");
             }
-            uri.append(settings.getHost());
+            uri.append(settings.getUri());
             if (StringUtils.isNotEmpty(settings.getFrom())) {
                 uri.append(uri.indexOf("?") != -1 ? "&" : "?").append("from=").append(settings.getFrom());
             }
@@ -231,7 +254,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
         Map<String, Object> headers = new HashMap<String, Object>();
         headers.put("To", toList);
         if (StringUtils.isEmpty(from)) {
-            headers.put("From", settingsBean.getMail_from());
+            headers.put("From", settings.getFrom());
         } else {
             headers.put("From", from);
         }
@@ -270,25 +293,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
     }
 
     public void start() {
-        sendMailEndpointUri = null;
-        settings = new MailSettings(settingsBean.isMail_service_activated(), settingsBean.getMail_server(),
-                settingsBean.getMail_from(), settingsBean.getMail_administrator(), settingsBean.getMail_paranoia());
-
-        if (settingsBean.isMail_service_activated()) {
-            MailSettingsValidationResult result = validateSettings(settings, false);
-            if (result.isSuccess()) {
-                settings.setConfigurationValid(true);
-
-                logger.info("Started Mail Service using following settings: mailhost=[" + settings.getSmtpHost()
-                        + "] to=[" + settings.getTo() + "] from=[" + settings.getFrom() + "] notificationLevel=["
-                        + settings.getNotificationLevel() + "]");
-            } else {
-                settings.setConfigurationValid(false);
-                logger.info("Mail settings are not set or invalid. Mail Service will be disabled");
-            }
-        } else {
-            logger.info("Mail Service is disabled.");
-        }
+        // do nothing
     }
 
     public void stop() {
@@ -362,13 +367,130 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
         }
     }
 
-	public void destroy() throws Exception {
-		if (template != null) {
-			template.stop();
-		}
+    public void destroy() throws Exception {
+        if (template != null) {
+            template.stop();
+        }
     }
 
     public void setScriptEngineUtils(ScriptEngineUtils scriptEngineUtils) {
         this.scriptEngineUtils = scriptEngineUtils;
     }
+
+    protected void load() {
+        mailEndpointUri = null;
+        
+        settings = new MailSettings();
+        try {
+            // read mail settings
+            settings = JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.EDIT_WORKSPACE, new JCRCallback<MailSettings>() {
+                public MailSettings doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    MailSettings cfg = new MailSettings();
+
+                    JCRNodeWrapper mailNode = null;
+                    try {
+                        mailNode = session.getNode("/settings/mail-server");
+                        cfg.setServiceActivated(mailNode.hasProperty("j:activated")
+                                && mailNode.getProperty("j:activated").getBoolean());
+                        cfg.setUri(mailNode.hasProperty("j:uri") ? mailNode.getProperty("j:uri")
+                                .getString() : null);
+                        cfg.setFrom(mailNode.hasProperty("j:from") ? mailNode.getProperty("j:from")
+                                .getString() : null);
+                        cfg.setTo(mailNode.hasProperty("j:to") ? mailNode.getProperty("j:to")
+                                .getString() : null);
+                        cfg.setNotificationLevel(mailNode.hasProperty("j:notificationLevel") ? mailNode
+                                .getProperty("j:notificationLevel").getString() : "Disabled");
+                    } catch (PathNotFoundException e) {
+                        cfg.setServiceActivated(Boolean.valueOf(settingsBean.getPropertiesFile()
+                                .getProperty("mail_service_activated", "false")));
+                        cfg.setUri(settingsBean.getPropertiesFile()
+                                .getProperty("mail_server", null));
+                        cfg.setFrom(settingsBean.getPropertiesFile().getProperty("mail_from", null));
+                        cfg.setTo(settingsBean.getPropertiesFile().getProperty(
+                                "mail_administrator", null));
+                        cfg.setNotificationLevel(settingsBean.getPropertiesFile().getProperty(
+                                "mail_paranoia", "Disabled"));
+                        store(cfg, session);
+                    }
+
+                    return cfg;
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error("Error reading mail server settings from the repository."
+                    + " Mail server will be disabled.", e);
+        }
+
+        
+        if (settings.isServiceActivated()) {
+            MailSettingsValidationResult result = validateSettings(settings, false);
+            if (result.isSuccess()) {
+                settings.setConfigurationValid(true);
+
+                logger.info("Mail Service is using following settings: host=["
+                        + settings.getSmtpHost() + "] to=[" + settings.getTo() + "] from=["
+                        + settings.getFrom() + "] notificationLevel=["
+                        + settings.getNotificationLevel() + "]");
+            } else {
+                settings.setConfigurationValid(false);
+                logger.info("Mail settings are not set or invalid."
+                        + " Mail Service will be disabled");
+            }
+        } else {
+            logger.info("Mail Service is disabled.");
+        }
+        
+        // backward compatibility
+        settingsBean.setMail_server(settings.getUri());
+        settingsBean.setMail_administrator(settings.getTo());
+        settingsBean.setMail_from(settings.getFrom());
+        settingsBean.setMail_service_activated(settings.isServiceActivated());
+        settingsBean.setMail_paranoia(settings.getNotificationLevel());
+    }
+
+    public void store(final MailSettings cfg) {
+        try {
+            // store mail settings
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    store(cfg, session);
+                    return Boolean.TRUE;
+                }
+            });
+            load();
+        } catch (RepositoryException e) {
+            logger.error("Error storing mail server settings into the repository.", e);
+        }
+    }
+
+    protected void store(MailSettings cfg, JCRSessionWrapper session) throws RepositoryException {
+        JCRNodeWrapper mailNode = null;
+        try {
+            mailNode = session.getNode("/settings/mail-server");
+        } catch (PathNotFoundException e) {
+            if (session.nodeExists("/settings")) {
+                mailNode = session.getNode("/settings").addNode("mail-server",
+                        "jnt:mailServerSettings");
+            } else {
+                mailNode = session.getNode("/").addNode("settings", "jnt:globalSettings")
+                        .addNode("mail-server", "jnt:mailServerSettings");
+            }
+        }
+        
+        mailNode.setProperty("j:activated", cfg.isServiceActivated());
+        mailNode.setProperty("j:uri", cfg.getUri());
+        mailNode.setProperty("j:from", cfg.getFrom());
+        mailNode.setProperty("j:to", cfg.getTo());
+        mailNode.setProperty("j:notificationLevel", cfg.getNotificationLevel());
+
+        session.save();
+    }
+
+    public void onApplicationEvent(ApplicationEvent evt) {
+        if (evt instanceof RootContextInitializedEvent || evt instanceof MailSettingsChangedEvent) {
+            sendMailEndpointUri = null;
+            load();
+        }
+    }
+
 }

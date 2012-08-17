@@ -275,6 +275,20 @@
 - j:values (string) multiple
 
 //---------------------------------------------------------
+// Global settings
+//---------------------------------------------------------
+[jnt:globalSettings] > nt:base
+ - * (string)
+ + * (nt:base)
+
+[jnt:mailServerSettings] > nt:base
+ - j:activated (boolean) = false indexed=no
+ - j:uri (string) indexed=no
+ - j:from (string) indexed=no
+ - j:to (string) indexed=no
+ - j:notificationLevel (string,choicelist[resourceBundle]) = 'Disabled' indexed=no < 'Disabled','Standard','Wary','Paranoid'
+ 
+//---------------------------------------------------------
 // Users and groups
 //---------------------------------------------------------
 

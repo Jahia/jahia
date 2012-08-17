@@ -734,10 +734,10 @@
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.LayoutTabItem">
                 <property name="hideForTypes">
                     <list>
-                        <value>jnt:page</value>
+                        <value>jnt:page</value><!--
                         <value>jnt:area</value>
                         <value>jnt:absoluteArea</value>
-                        <value>jnt:levelAbsoluteArea</value>
+                        <value>jnt:levelAbsoluteArea</value>-->
                         <value>jnt:mainResourceDisplay</value>
                         <value>jnt:template</value>
                         <value>jnt:pageTemplate</value>

@@ -40,14 +40,11 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.Poller;
 import org.jahia.ajax.gwt.client.widget.job.JobListWindow;
@@ -134,7 +131,7 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
             b.setEnabled(true);
         } else {
             b.setIconStyle("x-status-busy");
-            b.setText((statuses.size() + processes.size()) + " tasks running ...");
+            b.setText((statuses.size() + processes.size()) + " " + Messages.get("label.tasksExecuting", "tasks running") + " ...");
             b.setEnabled(true);
         }
     }

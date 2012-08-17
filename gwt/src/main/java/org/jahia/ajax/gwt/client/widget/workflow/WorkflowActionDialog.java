@@ -432,7 +432,7 @@ public class WorkflowActionDialog extends LayoutContainer {
                     contentManagement.assignAndCompleteTask(task, outcome, nodeProperties, new BaseAsyncCallback() {
                         public void onSuccess(Object result) {
                             WorkInProgressActionItem.removeStatus(status);
-                            Info.display("Workflow executed", "Workflow executed");
+                            Info.display(Messages.get("label.information", "Information"), Messages.get("label.workflow.finished", "Workflow executed"));
                             linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
                             container.closeEngine();
                         }

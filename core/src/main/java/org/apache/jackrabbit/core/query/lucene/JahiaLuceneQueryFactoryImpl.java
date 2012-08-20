@@ -142,7 +142,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                 String[] infos = getIndexedNodeInfo(node, reader);
                 if (foundIds.add(infos[0])) {  // <-- Added by jahia
                     try {
-                        String[] acls = infos[1].split(" ");
+                        String[] acls = infos[1] != null ? infos[1].split(" ") : new String[0];
                         boolean canRead = true;
 
                         for (String acl : acls) {

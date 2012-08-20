@@ -130,7 +130,7 @@ padding:0;
     font-weight:bold;
 }
 .bodywrapper .scheduletasks li.finishedTask {
-    border-left:4px solid #66cc66
+    border-left:4px solid #339933
 }
 .bodywrapper .scheduletasks li.unfinishedTask {
     border-left:4px solid #cc3333
@@ -181,18 +181,10 @@ padding:0;
 	display:inline-block;
 	width:18px;
 	height:18px;
-	background: url(img/task.png) no-repeat top left;
 	margin-right:5px;
 	vertical-align:text-bottom;
 }
-.bodywrapper span.icon-task-very_low {
-	display:inline-block;
-	width:18px;
-	height:18px;
-	background: url(img/task-very_low.png) no-repeat top left;
-	margin-right:5px;
-	vertical-align:text-bottom;
-}
+
 .bodywrapper span.icon-task-low {
 	display:inline-block;
 	width:18px;
@@ -205,7 +197,6 @@ padding:0;
 	display:inline-block;
 	width:18px;
 	height:18px;
-	background: url(img/task-normal.png) no-repeat top left;
 	margin-right:5px;
 	vertical-align:text-bottom;
 }
@@ -217,14 +208,6 @@ padding:0;
 	margin-right:5px;
 	vertical-align:text-bottom;
 }
-.bodywrapper span.icon-task-very_high {
-	display:inline-block;
-	width:18px;
-	height:18px;
-	background: url(img/task-very_high.png) no-repeat top left;
-	margin-right:5px;
-	vertical-align:text-bottom;
-}
 
 .task-priority {
     background-color: #000;
@@ -232,7 +215,7 @@ padding:0;
     border-bottom-right-radius: 3px;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
-    color: #FFFFFF;
+    color: #333;
     font-size: 9.75px;
     font-weight: bold;
     padding-bottom: 1px;
@@ -243,21 +226,17 @@ padding:0;
     margin-right:0.5em;
 }
 
-.task-very_low {
-    background-color: #99cc00;
-}
+
 .task-low {
-    background-color: #669900;
+    background-color: #c8e9fe;
 }
 .task-normal {
-    background-color: #333333;
+    background-color: #fff;
 }
 .task-high {
-    background-color: #CC0033;
+    background-color: #ff0000;
 }
-.task-very_high {
-    background-color: #ff0033;
-}
+
 
 /******************************************************************************
 *  task actions list
@@ -395,16 +374,16 @@ padding:0;
 }
 
 .bodywrapper .task-status-active {
-    background-color: #0099ff;
+    background-color: #cc3333;
 }
 .bodywrapper .task-status-started {
     background-color: #ff6600;
 }
 .bodywrapper .task-status-suspended {
-    background-color: #6600ff;
+    background-color: #000;
 }
 .bodywrapper .task-status-finished {
-    background-color: #666;
+    background-color: #339933;
 }
 /******************************************************************************
 *  task style

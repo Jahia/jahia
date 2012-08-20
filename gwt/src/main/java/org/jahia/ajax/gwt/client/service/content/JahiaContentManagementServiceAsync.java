@@ -112,7 +112,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings, AsyncCallback<Boolean> async);
 
-    void createTemplateSet(String key, String baseSet, String siteType, AsyncCallback<GWTJahiaNode> asyncCallback);
+    void createTemplateSet(String key, String baseSet, String siteType, String sources, String scmUri, String scmType, AsyncCallback<GWTJahiaNode> asyncCallback);
 
     void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace, AsyncCallback async);
 
@@ -151,33 +151,6 @@ public interface JahiaContentManagementServiceAsync {
 
     void getEditConfiguration(String path, String name, AsyncCallback<GWTEditConfiguration> async);
 
-<<<<<<< .working
-    void createRSSPortletInstance(String path, String name, String url, AsyncCallback<GWTJahiaNode> async);
-
-    void createGoogleGadgetPortletInstance(String path, String name, String script, AsyncCallback<GWTJahiaNode> async);
-
-    void checkExistence(String path, AsyncCallback async);
-
-    void rename(String path, String newName, AsyncCallback<String> async);
-
-    void move(List<String> sourcePaths, String targetPath, AsyncCallback asyncCallback);
-
-    void moveAtEnd(List<String> sourcePaths, String targetPath, AsyncCallback asyncCallback);
-
-    void moveOnTopOf(List<String> sourcePaths, String targetPath, AsyncCallback asyncCallback);
-
-    void createDefaultUsersGroupACE(List<String> permissions, boolean grand, AsyncCallback<GWTJahiaNodeACE> async);
-
-    void getUsages(List<String> paths, AsyncCallback<List<GWTJahiaNodeUsage>> async);
-
-    void getNodesByCategory(GWTJahiaNode category, int offset, int limit, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
-
-    void zip(List<String> paths, String archiveName, AsyncCallback async);
-
-    void unzip(List<String> paths, AsyncCallback async);
-
-=======
->>>>>>> .merge-right.r42650
     void getExportUrl(String path, AsyncCallback<String> async);
 
     void getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues, AsyncCallback<GWTJahiaFieldInitializer> async);
@@ -253,21 +226,9 @@ public interface JahiaContentManagementServiceAsync {
 
     void getUsages(List<String> paths, AsyncCallback<List<GWTJahiaNodeUsage>> async);
 
-<<<<<<< .working
-    void createTemplateSet(String key, String baseSet, String siteType, String sources, String scmUri, String scmType, AsyncCallback<GWTJahiaNode> asyncCallback);
-=======
     void getVersions(String path, AsyncCallback<List<GWTJahiaNodeVersion>> async);
->>>>>>> .merge-right.r42650
 
-<<<<<<< .working
-    void saveModule(String moduleName, String message, AsyncCallback asyncCallback);
-
-    void updateModule(String moduleName, AsyncCallback asyncCallback);
-
-    void generateWar(String moduleName, AsyncCallback<GWTJahiaNode> asyncCallback);
-=======
     void getVersions(GWTJahiaNode node, int limit, int offset, AsyncCallback<PagingLoadResult<GWTJahiaNodeVersion>> async);
->>>>>>> .merge-right.r42650
 
     void getVisibilityInformation(String path, AsyncCallback<ModelData> asyncCallback);
 
@@ -304,11 +265,11 @@ public interface JahiaContentManagementServiceAsync {
 
     void mount(String path, String target, String root, AsyncCallback async);
 
-    void move(String sourcePath, String targetPath, AsyncCallback asyncCallback);
+    void move(List<String> sourcePaths, String targetPath, AsyncCallback asyncCallback);
 
-    void moveAtEnd(String sourcePath, String targetPath, AsyncCallback asyncCallback);
+    void moveAtEnd(List<String> sourcePaths, String targetPath, AsyncCallback asyncCallback);
 
-    void moveOnTopOf(String sourcePath, String targetPath, AsyncCallback asyncCallback);
+    void moveOnTopOf(List<String> sourcePaths, String targetPath, AsyncCallback asyncCallback);
 
     void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut, AsyncCallback async);
 
@@ -332,6 +293,8 @@ public interface JahiaContentManagementServiceAsync {
                                         AsyncCallback<Void> async);
 
     void rotateImage(String path, String target, boolean clockwise, boolean forceReplace, AsyncCallback async);
+
+    void saveModule(String moduleName, String message, AsyncCallback asyncCallback);
 
     void saveNode(GWTJahiaNode node, List<GWTJahiaNode> orderedChilden, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes, AsyncCallback async);
 
@@ -371,6 +334,8 @@ public interface JahiaContentManagementServiceAsync {
     void unpublish(List<String> uuids, AsyncCallback async);
 
     void unzip(List<String> paths, AsyncCallback async);
+
+    void updateModule(String moduleName, AsyncCallback asyncCallback);
 
     void uploadedFile(List<String[]> uploadeds, AsyncCallback async);
 

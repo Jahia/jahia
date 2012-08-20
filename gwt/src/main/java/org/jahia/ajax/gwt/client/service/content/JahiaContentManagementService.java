@@ -114,7 +114,7 @@ public interface JahiaContentManagementService extends RemoteService {
     
     boolean createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings) throws GWTJahiaServiceException;
 
-    GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType) throws GWTJahiaServiceException;
+    GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType, String source,String scmUri, String scmType) throws GWTJahiaServiceException;
 
     void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace) throws GWTJahiaServiceException;
 
@@ -228,24 +228,9 @@ public interface JahiaContentManagementService extends RemoteService {
 
     String getNodeURLByIdentifier(String servlet, String identifier, Date versionDate, String versionLabel,
                                   String workspace, String locale) throws GWTJahiaServiceException;
-
-<<<<<<< .working
-    public void move(List<String> sourcePaths, String targetPath) throws GWTJahiaServiceException;
-=======
     List<GWTJahiaNode> getNodes(List<String> path, List<String> fields) throws GWTJahiaServiceException;
->>>>>>> .merge-right.r42650
-
-<<<<<<< .working
-    public void moveAtEnd(List<String> sourcePaths, String targetPath) throws GWTJahiaServiceException;
-=======
     Map<String,List<? extends ModelData>> getNodesAndTypes(List<String> paths, List<String> fields, List<String> types) throws GWTJahiaServiceException;
->>>>>>> .merge-right.r42650
-
-<<<<<<< .working
-    public void moveOnTopOf(List<String> sourcePaths, String targetPath) throws GWTJahiaServiceException;
-=======
     PagingLoadResult<GWTJahiaNode> getNodesByCategory(GWTJahiaNode category, int offset, int limit) throws GWTJahiaServiceException;
->>>>>>> .merge-right.r42650
 
     int getNumberOfTasksForUser() throws GWTJahiaServiceException;
 
@@ -290,21 +275,9 @@ public interface JahiaContentManagementService extends RemoteService {
 
     List<GWTJahiaNodeUsage> getUsages(List<String> paths) throws GWTJahiaServiceException;
 
-<<<<<<< .working
-    GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType, String source,String scmUri, String scmType) throws GWTJahiaServiceException;
-=======
     List<GWTJahiaNodeVersion> getVersions(String path) throws GWTJahiaServiceException;
->>>>>>> .merge-right.r42650
 
-<<<<<<< .working
-    void saveModule(String moduleName, String message) throws GWTJahiaServiceException;
-
-    void updateModule(String moduleName) throws GWTJahiaServiceException;
-
-    GWTJahiaNode generateWar(String moduleName) throws GWTJahiaServiceException;
-=======
     PagingLoadResult<GWTJahiaNodeVersion> getVersions(GWTJahiaNode node, int limit, int offset) throws GWTJahiaServiceException;
->>>>>>> .merge-right.r42650
 
     ModelData getVisibilityInformation(String path) throws GWTJahiaServiceException;
 
@@ -343,11 +316,11 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void mount(String path, String target, String root) throws GWTJahiaServiceException;
 
-    void move(String sourcePath, String targetPath) throws GWTJahiaServiceException;
+    public void move(List<String> sourcePaths, String targetPath) throws GWTJahiaServiceException;
 
-    void moveAtEnd(String sourcePath, String targetPath) throws GWTJahiaServiceException;
+    public void moveAtEnd(List<String> sourcePaths, String targetPath) throws GWTJahiaServiceException;
 
-    void moveOnTopOf(String sourcePath, String targetPath) throws GWTJahiaServiceException;
+    public void moveOnTopOf(List<String> sourcePaths, String targetPath) throws GWTJahiaServiceException;
 
     void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut) throws GWTJahiaServiceException;
 
@@ -369,6 +342,8 @@ public interface JahiaContentManagementService extends RemoteService {
     void restoreNodeByIdentifierAndDate(String identifier, Date versionDate, String versionLabel, boolean allSubTree) throws GWTJahiaServiceException;
 
     void rotateImage(String path, String target, boolean clockwise, boolean forceReplace) throws GWTJahiaServiceException;
+
+    void saveModule(String moduleName, String message) throws GWTJahiaServiceException;
 
     void saveNode(GWTJahiaNode node, List<GWTJahiaNode> orderedChilden, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes) throws GWTJahiaServiceException;
 
@@ -407,6 +382,8 @@ public interface JahiaContentManagementService extends RemoteService {
     void unpublish(List<String> uuids) throws GWTJahiaServiceException;
 
     void unzip(List<String> paths) throws GWTJahiaServiceException;
+
+    void updateModule(String moduleName) throws GWTJahiaServiceException;
 
     void uploadedFile(List<String[]> uploadeds) throws GWTJahiaServiceException;
     

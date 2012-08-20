@@ -144,15 +144,18 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
         ScoreDoc[] hits = null;
         boolean retry = true;
         while (retry) {
+            boolean useOtherSearcher = false;            
             try {
                 hits = usedSearcher.search(query, maxHits).scoreDocs;
             } catch (IOException e) {
                 if (retry && usedSearcher != searcher) {
                     usedSearcher = searcher;
+                    useOtherSearcher = true;    
                 } else {
                     throw e;
                 }
-            } finally {
+            } 
+            if (!useOtherSearcher) {
                 retry = false;
             }
         }
@@ -160,7 +163,11 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
         SuggestWordQueue sugQueue = new SuggestWordQueue(numSug);
 
         // go thru more than 'maxr' matches in case the distance filter triggers
+<<<<<<< .working
         int stop = Math.min(hits.length, 10 * numSug);
+=======
+        int stop = hits == null ? 0 : Math.min(hits.length(), 10 * numSug);
+>>>>>>> .merge-right.r42741
         SuggestWord sugWord = new SuggestWord();
         for (int i = 0; i < stop; i++) {
 

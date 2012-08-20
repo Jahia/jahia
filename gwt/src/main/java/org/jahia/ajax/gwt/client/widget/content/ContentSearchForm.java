@@ -45,8 +45,6 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.StoreEvent;
-import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
@@ -54,7 +52,6 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
-import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -71,7 +68,6 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.NodeTypeTableViewFiltering;
 
 import java.util.*;
 
@@ -88,6 +84,7 @@ public class ContentSearchForm extends ContentPanel implements AbstractView.Cont
     private CalendarField startDateField;
     private CalendarField endDateField;
     private ComboBox<ModelData> timesField;
+    private SimpleComboBox<String> itemPerPage;
     private RadioGroup dateTypeField;
     private CheckBox inNameField;
     private CheckBox inTagField;
@@ -256,6 +253,19 @@ public class ContentSearchForm extends ContentPanel implements AbstractView.Cont
             timesField.setStore(times);
             timesField.setFieldLabel(Messages.get("label.timeRange","Time range"));
             fieldSet.add(timesField);
+
+            itemPerPage = new SimpleComboBox<String>(){
+                protected void onClick(ComponentEvent ce) {
+                    this.clear();
+                    super.onClick(ce);
+                }
+            };
+            itemPerPage.add(Arrays.asList("20", "50", "100", "500",Messages.get("label.all","All")));
+
+            itemPerPage.setSimpleValue("50");
+            itemPerPage.setFieldLabel(Messages.get("label.itemPerPage", "items per page"));
+            fieldSet.add(itemPerPage);
+
         }
         setWidth("100%");
         setFrame(true);
@@ -438,12 +448,21 @@ public class ContentSearchForm extends ContentPanel implements AbstractView.Cont
                     super.onLoadFailure(loadConfig, t);
                 }
             };
-            
+            // Limit max set to 100 000 items
+            int limit = ( itemPerPage != null && itemPerPage.getValue() != null) ?
+                    Messages.get("label.all","All").equals(itemPerPage.getValue().getValue())?
+                            100000 :
+                            Integer.parseInt(itemPerPage.getValue().getValue()) :
+                    50;
+
+            BasePagingLoadConfig loadConfig = new BasePagingLoadConfig(0,limit);
+            loader.load(loadConfig);
+            linker.getTopRightObject().getToolBar().setPageSize(limit);
             linker.getTopRightObject().getToolBar().bind(loader);
             linker.getTopRightObject().getToolBar().enable();
-            loader.load();
+
         } else {
-            com.google.gwt.user.client.Window.alert(Messages.get("label.queryEmpty","Query empty"));
+            com.google.gwt.user.client.Window.alert(Messages.get("label.queryEmpty", "Query empty"));
         }
     }
 

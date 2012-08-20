@@ -163,11 +163,9 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
         SuggestWordQueue sugQueue = new SuggestWordQueue(numSug);
 
         // go thru more than 'maxr' matches in case the distance filter triggers
-<<<<<<< .working
-        int stop = Math.min(hits.length, 10 * numSug);
-=======
-        int stop = hits == null ? 0 : Math.min(hits.length(), 10 * numSug);
->>>>>>> .merge-right.r42741
+
+        int stop = hits == null ? 0 : Math.min(hits.length, 10 * numSug);
+
         SuggestWord sugWord = new SuggestWord();
         for (int i = 0; i < stop; i++) {
 

@@ -42,6 +42,9 @@ package org.jahia.services.render.filter;
 
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.channels.Channel;
+import org.jahia.services.channels.ChannelService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -126,6 +129,8 @@ public class ConditionalFilterTest {
 
         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
         context.setSite(site);
+        ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
+        context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));
         Resource resource = new Resource(node.getNode("testType"), "html", null, Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
         context.getRequest().setAttribute("script", RenderService.getInstance().resolveScript(resource, context));
@@ -209,6 +214,8 @@ public class ConditionalFilterTest {
 
         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
         context.setSite(site);
+        ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
+        context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));        
         Resource resource = new Resource(node.getNode("testType"), "html", null, Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
 
@@ -294,6 +301,8 @@ public class ConditionalFilterTest {
 
         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
         context.setSite(site);
+        ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
+        context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));        
         Resource resource = new Resource(node.getNode("testType"), "html", "mine", Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
 
@@ -369,6 +378,8 @@ public class ConditionalFilterTest {
 
         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
         context.setSite(site);
+        ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
+        context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));        
         Resource resource = new Resource(node.getNode("testType"), "html", null, Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
 

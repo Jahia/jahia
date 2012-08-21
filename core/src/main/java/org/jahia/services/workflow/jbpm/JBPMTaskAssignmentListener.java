@@ -111,7 +111,7 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
 
         if (assignable instanceof TaskImpl && user != null) {
             final Locale locale = (Locale) execution.getVariable("locale");
-            JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), null, null, new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), (String) execution.getVariable("workspace"), null, new JCRCallback<Object>() {
                 @SuppressWarnings("unchecked")
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRUser jcrUser;
@@ -164,16 +164,16 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
                     task.setProperty("possibleOutcomes", outcomes.toArray(new Value[outcomes.size()]));
                     task.setProperty("state", "active");
                     task.setProperty("type", "workflow");
-                    //todo : get titles for all locales
+                    /*//todo : get titles for all locales
                     List<Locale> locales = LanguageCodeConverters.getAvailableBundleLocales(bundle, locale);
                     for (Locale aLocale : locales) {
                         try {
-                            String taskname = JahiaResourceBundle.lookupBundle(bundle, aLocale).getString(Patterns.SPACE.matcher(wfTask.getName()).replaceAll(".").trim().toLowerCase());
-                            task.getOrCreateI18N(aLocale).setProperty("jcr:title", taskname + " : " + session.getNodeByIdentifier(uuid).getDisplayableName());
-                        } catch (MissingResourceException e) {
+                            String taskname = JahiaResourceBundle.lookupBundle(bundle, aLocale).getString(Patterns.SPACE.matcher(wfTask.getName()).replaceAll(".").trim().toLowerCase());*/
+                            task.setProperty("jcr:title", "##resourceBundle("+Patterns.SPACE.matcher(wfTask.getName()).replaceAll(".").trim().toLowerCase() + ","+ bundle + ")## : " + session.getNodeByIdentifier(uuid).getDisplayableName());
+                        /*} catch (MissingResourceException e) {
                             task.setProperty("jcr:title", wfTask.getName() + " : " + session.getNodeByIdentifier(uuid).getDisplayableName());
                         }
-                    }
+                    }*/
 
                     if (execution.getVariable("jcr:title") instanceof List && ((List<WorkflowVariable>)execution.getVariable("jcr:title")).size() > 0) {
                         task.setProperty("description", ((List<WorkflowVariable>)execution.getVariable("jcr:title")).get(0).getValue());

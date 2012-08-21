@@ -308,8 +308,9 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
         ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(StringUtils.substringAfterLast(template, "."));
         ScriptContext scriptContext = new SimpleScriptContext();    	
     	
-    	//try if it is multilingual
-    	String languageMailConfTemplate = template.substring(0, template.length() - ".vm".length()) + "_" + locale.toString() + ".vm";
+    	//try if it is multilingual 
+        String suffix = StringUtils.substringAfterLast(template, ".");
+    	String languageMailConfTemplate = template.substring(0, template.length() - (suffix.length()+1)) + "_" + locale.toString() + "." + suffix;
         String templateRealPath = TemplateUtils.lookupTemplate(templatePackageName, languageMailConfTemplate);
     	if(templateRealPath == null) {
           templateRealPath = TemplateUtils.lookupTemplate(templatePackageName, template);

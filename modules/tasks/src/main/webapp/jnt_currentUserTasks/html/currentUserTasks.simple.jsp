@@ -34,78 +34,86 @@
 <c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
     <jcr:node var="user" path="${renderContext.user.localPath}"/>
 </c:if>
-
-
-<form name="myform" method="post">
-    <input type="hidden" name="jcrNodeType" value="jnt:task">
-    <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${currentNode.path}.html${ps}'/>">
-    <input type="hidden" name="state">
-</form>
-
+<template:tokenizedForm>
+    <form name="myform" method="post" action="">
+        <input type="hidden" name="jcrNodeType" value="jnt:task">
+        <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${currentNode.path}.html${ps}'/>">
+        <input type="hidden" name="state">
+    </form>
+</template:tokenizedForm>
 
 <script type="text/javascript">
-    function send(task, state) {
-        form = document.forms['myform'];
-        form.action = '<c:url value="${url.base}"/>' + task;
-        form.elements.state.value = state;
-        form.submit();
+    var ready = true;
+    function sendNewStatus(uuid, task, state, finalOutcome) {
+        if (ready) {
+            ready = false;
+            $(".taskaction-complete").addClass("taskaction-disabled");
+            $(".taskaction").addClass("taskaction-disabled");
+            $.post('<c:url value="${url.base}"/>' + task,
+                    {"jcrMethodToCall":"put", "state":state, "finalOutcome":finalOutcome, "form-token":document.forms['tokenForm_' +
+                                                                                                                      uuid].elements['form-token'].value},
+                    null, "json");
+        }
     }
+    ;
 </script>
+<template:include view="hidden.header"/>
 <div id="tasklist">
     <div id="${user.UUID}">
 
         <ul>
+            <c:forEach items="${moduleMap.currentList}" var="task" varStatus="status" begin="${moduleMap.begin}"
+                       end="${moduleMap.end}">
+                <template:tokenizedForm>
+                    <form id="tokenForm_${task.identifier}" name="tokenform_${task.identifier}" method="post"
+                          action="<c:url value='${url.base}'/>${task.path}">
+                    </form>
+                </template:tokenizedForm>
+                <li>
+                    <a href="<c:url value='${url.base}${task.path}.html'/>">${fn:escapeXml(task.displayableName)}</a>
 
-            <c:if test="${currentNode.properties['viewUserTasks'].boolean}">
-                <template:include view="hidden.load"/>
-                <c:set var="listQuery" value="${moduleMap.listQuery}"/>
-                <jcr:jqom var="tasks" qomBeanName="listQuery"/>
-
-                <c:set var="nodes" value="${tasks.nodes}"/>
-                <%--<c:set value="${jcr:getNodes(currentNode,'jnt:task')}" var="tasks"/>--%>
-
-                <c:forEach items="${nodes}" var="task"
-                           begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
-
-                    <c:set var="found" value="${fn:contains(currentNode.properties['filterOnTypes'].string, task.properties['type'])}"/>
-                    <c:if test="${empty currentNode.properties['taskTypes'].string or found}">
-
-                    <li>
-                        <a href="<c:url value='${url.base}${task.path}.html'/>>">${fn:escapeXml(task.displayName)}</a>
-
-                        <c:choose>
-                            <c:when test="${task.propertiesAsString.state == 'active'}">
-                                <span><img alt="" src="<c:url value='${url.currentModule}/images/right_16.png'/>" height="16" width="16"/></span>
+                    <c:choose>
+                        <c:when test="${task.propertiesAsString.state == 'active'}">
+                                <span><img alt="" src="<c:url value='${url.currentModule}/images/right_16.png'/>"
+                                           height="16" width="16"/></span>
                 <span>
-                    <a href="javascript:send('${task.path}','suspended')"><fmt:message
-                            key="jnt_task.suspended"/></a>&nbsp;
-                    <a href="javascript:send('${task.path}','cancelled')"><fmt:message
-                            key="jnt_task.cancel"/></a>&nbsp;
-                    <a href="javascript:send('${task.path}','finished')"><fmt:message
-                            key="jnt_task.complete"/></a>
+                    <a href="javascript:sendNewStatus('${task.identifier}','${task.path}','suspended')"><fmt:message
+                            key="jnt_task.state.suspended"/></a>&nbsp;
+                    <fmt:setBundle basename="${task.properties['taskBundle'].string}" var="taskBundle"/>
+                                        <c:if test="${not empty task.properties['possibleOutcomes']}">
+                                            <c:forEach items="${task.properties['possibleOutcomes']}" var="outcome"
+                                                       varStatus="status">
+                                                <fmt:message bundle="${taskBundle}" var="outcomeLabel"
+                                                             key="${fn:replace(task.properties['taskName'].string,' ','.')}.${fn:replace(outcome.string,' ','.')}"/>
+                                                <c:if test="${fn:startsWith(outcomeLabel, '???')}"><fmt:message
+                                                        bundle="${taskBundle}" var="outcomeLabel"
+                                                        key="${fn:replace(task.properties['taskName'].string,' ','.')}.${fn:replace(fn:toLowerCase(outcome.string),' ','.')}"/></c:if>
+                                                <a class="taskaction taskaction-start"
+                                                   href="javascript:sendNewStatus('${task.identifier}','${task.path}','finished','${outcome.string}')"
+                                                   title="${outcome.string}">${outcomeLabel}</a>
+                                            </c:forEach>
+                                        </c:if>
+                                        <c:if test="${empty task.properties['possibleOutcomes']}">
+
+                                            <a href="javascript:send('${task.path}','finished')"><fmt:message key="jnt_task.complete"/></a>
+                                        </c:if>
                 </span>
-                            </c:when>
-                            <c:when test="${task.propertiesAsString.state == 'finished'}">
-                                <img alt="" src="<c:url value='${url.currentModule}/images/tick_16.png'/>" height="16" width="16"/>
-                            </c:when>
-                            <c:when test="${task.propertiesAsString.state == 'suspended'}">
+                        </c:when>
+                        <c:when test="${task.propertiesAsString.state == 'finished'}">
+                            <img alt="" src="<c:url value='${url.currentModule}/images/tick_16.png'/>" height="16"
+                                 width="16"/>
+                        </c:when>
+                        <c:when test="${task.propertiesAsString.state == 'suspended'}">
                 <span><img alt="" src="<c:url value='${url.currentModule}/images/bubble_16.png'/>" height="16"
                            width="16"/></span>
                 <span>
-                    <a href="javascript:send('${task.path}','cancelled')"><fmt:message
-                            key="jnt_task.cancel"/></a>&nbsp;
-                    <a href="javascript:send('${task.path}','active')"><fmt:message
+                    <a href="javascript:sendNewStatus('${task.identifier}','${task.path}','active')"><fmt:message
                             key="jnt_task.continue"/></a>
                 </span>
-                            </c:when>
-                            <c:when test="${task.propertiesAsString.state == 'canceled'}">
-                                <img alt="" src="<c:url value='${url.currentModule}/images/warning_16.png'/>" height="16" width="16"/>
-                            </c:when>
-                        </c:choose>
-                    </li>
-                    </c:if>
-                </c:forEach>
-            </c:if>
+                        </c:when>
+                    </c:choose>
+                </li>
+            </c:forEach>
         </ul>
     </div>
     <div class="clear"></div>

@@ -62,6 +62,8 @@ import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheEntry;
+import org.jahia.services.channels.Channel;
+import org.jahia.services.channels.ChannelService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
@@ -182,6 +184,8 @@ public class CacheFilterTest {
         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
         context.setSite(node.getResolveSite());
         context.setServletPath("/render");
+        ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
+        context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));
         Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
         context.setWorkspace(liveSession.getWorkspace().getName());
@@ -234,6 +238,8 @@ public class CacheFilterTest {
                         ParamBean paramBean = (ParamBean)Jahia.getThreadParamBean();
                         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), session.getUser());
                         context.setSite(node.getResolveSite());
+                        ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
+                        context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));                        
                         JCRNodeWrapper pageContentNode = session
                                 .getNode("/sites/"
                                         + TESTSITE_NAME
@@ -312,6 +318,8 @@ public class CacheFilterTest {
         ParamBean paramBean = (ParamBean)Jahia.getThreadParamBean();
         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
         context.setSite(node.getResolveSite());
+        ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
+        context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));        
         context.setServletPath("/render");
         context.setWorkspace(liveSession.getWorkspace().getName());
         Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);

@@ -166,7 +166,7 @@ public class RenderChain {
                 }
             }
         } catch (Exception e) {
-            logger.error("Error while rendering the resource: " + resource);
+            logger.error("Error while rendering the resource: " + resource + " -> " + e.toString());
             for (; index>0 && renderContext.getRedirect() == null; index--) {
                 RenderFilter filter = filters.get(index-1);
                 if (filter.areConditionsMatched(renderContext, resource)) {

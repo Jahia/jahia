@@ -26,7 +26,6 @@
     <script type="text/javascript">
         function addNewTag(tagForm, uuid, separator) {
             var regExp = /\s/g;
-            var newTag = tagForm.elements['j:newTag'];
             newTag.value = newTag.value.toLowerCase();
             if (newTag.value.length > 0) {
                 var tagContainer = jQuery('#jahia-tags-' + uuid);

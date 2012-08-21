@@ -42,7 +42,6 @@ package org.jahia.services.logging;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
-import org.hamcrest.Matcher;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -159,6 +158,9 @@ public class ServiceLoggingTest {
         
         metricsLogger.setLevel(Level.OFF);
         StopWatch stopWatch = new StopWatch();
+        
+        System.gc();
+        
         stopWatch.start("Create " + TAGS_TO_CREATE + " without logs");
         for (int i = 0; i < TAGS_TO_CREATE; i++) {
             service.createTag(generateTagName(), TESTSITE_NAME);
@@ -173,6 +175,9 @@ public class ServiceLoggingTest {
         }
         
         metricsLogger.setLevel(Level.TRACE);
+        
+        System.gc();        
+        
         stopWatch.start("Create " + TAGS_TO_CREATE + " with logs");
         for (int i = 0; i < TAGS_TO_CREATE; i++) {
             service.createTag(generateTagName(), TESTSITE_NAME);
@@ -184,7 +189,7 @@ public class ServiceLoggingTest {
         
         if (withLogs > withoutLogs) {
             assertThat("Logs has more than 8% impact on peformance",
-                    ((Math.abs(withLogs - withoutLogs) / (float)withoutLogs) * 100), (Matcher<Object>) lessThan((float)8));
+                    ((Math.abs(withLogs - withoutLogs) / (float)withoutLogs) * 100), lessThan((float)8));
         }
     }
 }

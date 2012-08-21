@@ -291,6 +291,7 @@
                 <value>testStringConstraintViolationExceptionBecauseOfInvalidTypeParameter(org.apache.jackrabbit.test.api.SetPropertyAssumeTypeTest)</value>
                 <value>testRemoveItem2(org.apache.jackrabbit.test.api.SessionRemoveItemTest)</value>
                 <value>testNoSuchWorkspaceException(org.apache.jackrabbit.test.api.RepositoryLoginTest)</value>
+                <value>testNodeMoved(org.apache.jackrabbit.test.api.observation.GetIdentifierTest)</value>
                 <value>testGetSize(org.apache.jackrabbit.test.api.observation.GetRegisteredEventListenersTest)</value>
                 <value>testRemoveEventListener(org.apache.jackrabbit.test.api.observation.GetRegisteredEventListenersTest)</value>
                 <value>testAddLockToNode(org.apache.jackrabbit.test.api.observation.LockingTest)</value>

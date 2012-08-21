@@ -59,6 +59,7 @@ public class AclListener extends DefaultEventListener {
                         logger.warn("Missing roles property for acl on " + ace.getPath());
                     }
                 } catch (ItemNotFoundException e) {
+                } catch (InvalidItemStateException e) {                    
                 }
 
                 QueryManager q = session.getWorkspace().getQueryManager();

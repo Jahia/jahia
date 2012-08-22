@@ -150,11 +150,18 @@ public class ContentManagerHelper {
                     childNode.addMixin(m);
                 }
             }
+<<<<<<< .working
             properties.setProperties(childNode, props);
         } catch (Exception e) {
             logger.error("Exception", e);
             throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource(
                     "label.gwt.error.cannot.get.node", uiLocale) + e.getMessage());
+=======
+            properties.setProperties(childNode, props);
+        } catch (Exception e) {
+            logger.error("Exception", e);
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.cannot.get.node", uiLocale) + e.getMessage());
+>>>>>>> .merge-right.r42795
         }
         if (childNode == null) {
             throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed", uiLocale));

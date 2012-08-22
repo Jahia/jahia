@@ -139,7 +139,7 @@ public class ChannelResolutionAndExclusionTest {
     public void testUnsupportedChannelResolution() throws Exception {
         HttpClient client = new HttpClient();
         client.getParams().setParameter(HttpMethodParams.USER_AGENT,
-                "Mozilla/5.0 (iPad; CPU OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
+                "Mozilla/5.0 (SymbianOS/9.4; Series60/5.0 NokiaN97-1/12.0.024; Profile/MIDP-2.1 Configuration/CLDC-1.1; en-us) AppleWebKit/525 (KHTML, like Gecko) BrowserNG/7.1.12344");
         GetMethod nodeGet = new GetMethod(
                 "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" +
                         SITECONTENT_ROOT_NODE + "/home.html");

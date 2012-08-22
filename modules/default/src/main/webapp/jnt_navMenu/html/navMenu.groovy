@@ -51,6 +51,9 @@ printMenu = { node, navMenuLevel, omitFormatting ->
                        renderContext.mainResource.node.path == menuItem.properties['j:node'].node.path :
                        renderContext.mainResource.node.path == itemPath
             correctType = true
+            if(menuItem.isNodeType("jmix:navMenu")){
+                correctType = false
+            }
             if (menuItem.properties['j:displayInMenu']) {
                 correctType = false
                 menuItem.properties['j:displayInMenu'].each() {
@@ -126,8 +129,8 @@ printMenu = { node, navMenuLevel, omitFormatting ->
 
         if (empty && renderContext.editMode) {
             print "<div class=\"navbar\"><ul><li class=\" selected\"><a onclick=\"return false;\" href=\"#\">Page1</a></li><li class=\"\"><a onclick=\"return false;\" href=\"#\">Page2</a></li><li class=\"\"><a onclick=\"return false;\" href=\"#\">Page3</a></li></ul></div>"
+            empty = false;
         }
-
     }
 
     if (navMenuLevel == 1) {

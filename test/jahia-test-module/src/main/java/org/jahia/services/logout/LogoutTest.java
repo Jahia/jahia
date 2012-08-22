@@ -1,31 +1,30 @@
 package org.jahia.services.logout;
 
 import org.apache.commons.httpclient.*;
-import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
 
 import javax.jcr.PathNotFoundException;
-import java.net.URL;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -41,23 +40,46 @@ import static org.junit.Assert.assertEquals;
  */
 public class LogoutTest {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(LogoutTest.class);
+    private static final String SITE_KEY = "logoutSite";
 
     private HttpClient client;
+    
+    private static UrlRewriteService engine;
+    
+    private static JahiaSite defaultSite = null;
+    
+    private static boolean seoRulesEnabled = false;
+    private static boolean seoRemoveCmsPrefix = false;
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
-
-        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey("logoutSite");
+        engine = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService");
+        if (!engine.isSeoRulesEnabled()) {
+            engine.setSeoRulesEnabled(true);
+            seoRulesEnabled = true;
+        }
+        if (!engine.isSeoRemoveCmsPrefix()) {
+            engine.setSeoRemoveCmsPrefix(true);
+            seoRemoveCmsPrefix = true;
+        }
+        if (seoRulesEnabled || seoRemoveCmsPrefix) {
+            engine.afterPropertiesSet();
+        }      
+        
+        JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();        
+        defaultSite = service.getDefaultSite();
+        
+        JahiaSite site = service.getSiteByKey(SITE_KEY);
         if (site == null) {
-            site = TestHelper.createSite("logoutSite", "localhost", TestHelper.WEB_TEMPLATES, null, null);
+            site = TestHelper.createSite(SITE_KEY, "localhost", TestHelper.WEB_TEMPLATES, null, null);
         }
         Set<String> languages = new HashSet<String>();
         languages.add("en");
         site.setLanguages(languages);
         site.setDefaultLanguage("en");
-        JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
         service.updateSite(site);
+        service.setDefaultSite(site);
+        
         ((ParamBean) Jahia.getThreadParamBean()).getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
 
         // Add two page and publish one
@@ -68,26 +90,45 @@ public class LogoutTest {
         JCRSessionWrapper session = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH,
                 LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
         try {
-            session.getNode("/sites/logoutSite/home/pubPage");
+            session.getNode("/sites/"+SITE_KEY+"/home/pubPage");
         }
         catch (PathNotFoundException e){
-            JCRNodeWrapper n = session.getNode("/sites/logoutSite/home").addNode("pubPage","jnt:page");
-            n.setProperty("j:templateNode", session.getNode("/sites/logoutSite/templates/base/simple"));
+            JCRNodeWrapper n = session.getNode("/sites/"+SITE_KEY+"/home").addNode("pubPage","jnt:page");
+            n.setProperty("j:templateNode", session.getNode("/sites/"+SITE_KEY+"/templates/base/simple"));
             n.setProperty("jcr:title", "title0");
             session.save();
         }
         try {
-            session.getNode("/sites/logoutSite/home/privPage");
+            session.getNode("/sites/"+SITE_KEY+"/home/privPage");
         }
         catch (PathNotFoundException e){
-            JCRNodeWrapper n = session.getNode("/sites/logoutSite/home").addNode("privPage","jnt:page");
-            n.setProperty("j:templateNode", session.getNode("/sites/logoutSite/templates/base/simple"));
+            JCRNodeWrapper n = session.getNode("/sites/"+SITE_KEY+"/home").addNode("privPage","jnt:page");
+            n.setProperty("j:templateNode", session.getNode("/sites/"+SITE_KEY+"/templates/base/simple"));
             n.setProperty("jcr:title", "title1");
             session.save();
         }
-        jcrService.publishByMainId(session.getNode("/sites/logoutSite/files").getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, null);
-        jcrService.publishByMainId(session.getNode("/sites/logoutSite/home").getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, null);
-        jcrService.publishByMainId(session.getNode("/sites/logoutSite/home/pubPage").getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, null);
+        jcrService.publishByMainId(session.getNode("/sites/"+SITE_KEY+"/files").getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, null);
+        jcrService.publishByMainId(session.getNode("/sites/"+SITE_KEY+"/home").getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, null);
+        jcrService.publishByMainId(session.getNode("/sites/"+SITE_KEY+"/home/pubPage").getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, null);
+    }
+    
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
+        if (defaultSite != null) {
+            ServicesRegistry.getInstance().getJahiaSitesService().setDefaultSite(defaultSite);
+            defaultSite = null;
+        }        
+        TestHelper.deleteSite(SITE_KEY);
+        JCRSessionFactory.getInstance().closeAllSessions();
+
+        if (seoRulesEnabled || seoRemoveCmsPrefix) {
+            engine.setSeoRulesEnabled(!seoRulesEnabled);
+            engine.setSeoRemoveCmsPrefix(!seoRemoveCmsPrefix);
+            engine.afterPropertiesSet();
+            seoRulesEnabled = false;
+            seoRemoveCmsPrefix = false;
+        }                
+        engine = null;
     }
 
     @After
@@ -96,26 +137,26 @@ public class LogoutTest {
 
     @Test
     public void logoutLivePub() throws Exception{
-        String returnUrl = perform("/en/sites/logoutSite/home/pubPage.html");
-        assertEquals("Logout from live published page failed ", "/sites/logoutSite/home/pubPage.html", returnUrl);
+        String returnUrl = perform("/en/sites/"+SITE_KEY+"/home/pubPage.html");
+        assertEquals("Logout from live published page failed ", "/sites/"+SITE_KEY+"/home/pubPage.html", returnUrl);
     }
     
     @Test
     public void logoutEditPub() throws Exception {
-        String returnUrl = perform("/cms/render/default/en/sites/logoutSite/home/pubPage.html");
-        assertEquals("Logout from default published page failed ", "/sites/logoutSite/home/pubPage.html", returnUrl);
+        String returnUrl = perform("/cms/render/default/en/sites/"+SITE_KEY+"/home/pubPage.html");
+        assertEquals("Logout from default published page failed ", "/sites/"+SITE_KEY+"/home/pubPage.html", returnUrl);
     }
 
     @Test
     public void logoutEditPrivate() throws Exception {
-        String returnUrl = perform("/cms/render/default/en/sites/logoutSite/home/privPage.html");
-        assertEquals("Logout from default unPublished page failed ", "/sites/logoutSite/home.html", returnUrl);
+        String returnUrl = perform("/cms/render/default/en/sites/"+SITE_KEY+"/home/privPage.html");
+        assertEquals("Logout from default unPublished page failed ", "/sites/"+SITE_KEY+"/home.html", returnUrl);
     }
 
     @Test
     public void logoutuserDashboard() throws Exception {
         String returnUrl = perform("/en/users/root.user-home.html");
-        assertEquals("Logout from user dashboard page failed ", "/sites/logoutSite/home.html", returnUrl);
+        assertEquals("Logout from user dashboard page failed ", "/sites/"+SITE_KEY+"/home.html", returnUrl);
     }
 
     @Test
@@ -126,14 +167,14 @@ public class LogoutTest {
 
     @Test
     public void logoutFilesLive() throws Exception {
-        String returnUrl = perform("/sites/logoutSite/files");
-        assertEquals("Logout from live files failed ", "/sites/logoutSite/files.html", returnUrl);
+        String returnUrl = perform("/sites/"+SITE_KEY+"/files");
+        assertEquals("Logout from live files failed ", "/sites/"+SITE_KEY+"/files.html", returnUrl);
     }
 
     @Test
     public void logoutFilesEdit() throws Exception {
-        String returnUrl = perform("/cms/render/default/en/sites/logoutSite/files.html");
-        assertEquals("Logout from default files failed ", "/sites/logoutSite/files.html", returnUrl);
+        String returnUrl = perform("/cms/render/default/en/sites/"+SITE_KEY+"/files.html");
+        assertEquals("Logout from default files failed ", "/sites/"+SITE_KEY+"/files.html", returnUrl);
     }
 
 
@@ -152,7 +193,7 @@ public class LogoutTest {
         // the next parameter is required to properly activate the valve check.
         loginMethod.addParameter(LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1");
 
-        int statusCode = client.executeMethod(loginMethod);
+        client.executeMethod(loginMethod);
 
     }
 
@@ -166,7 +207,10 @@ public class LogoutTest {
         }
         method.setRequestHeader("Referer",baseurl + url);
         client.executeMethod(method);
-        return method.getPath();
+        return StringUtils.isEmpty(Jahia.getContextPath())
+                || !(method.getPath().startsWith(Jahia.getContextPath())) ? method
+                .getPath() : StringUtils.substringAfter(method.getPath(),
+                Jahia.getContextPath());
 
     }
 

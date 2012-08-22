@@ -41,6 +41,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.comparator.NumericStringComparator;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -130,6 +131,7 @@ public class JCRVersionService extends JahiaService {
                 }
             }
         }
+        Collections.sort(versionList,new NumericStringComparator<VersionInfo>());
         return versionList;
     }
 

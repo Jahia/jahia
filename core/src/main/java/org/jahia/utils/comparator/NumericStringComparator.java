@@ -41,6 +41,7 @@
 package org.jahia.utils.comparator;
 
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.VersionInfo;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.bin.Jahia;
 import org.jahia.services.categories.Category;
@@ -255,6 +256,16 @@ public class NumericStringComparator<T> implements Comparator<T>, Serializable {
                 s1 = res.getName();
             } catch (RepositoryException e) {
                 s1 = "error";
+            }
+        } else if (c1.getClass() == VersionInfo.class) {
+            final VersionInfo res = (VersionInfo) c1;
+            s1 = res.getLabel();
+            if(s1==null) {
+                try {
+                    s1 = res.getVersion().getName();
+                } catch (RepositoryException e) {
+                    s1 = "error";
+                }
             }
         } else
             s1 = c1.toString();

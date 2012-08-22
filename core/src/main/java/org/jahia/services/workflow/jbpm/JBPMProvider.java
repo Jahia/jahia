@@ -693,8 +693,9 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             loop.set(Boolean.TRUE);
             final String uuid = (String) taskService.getVariable(taskId, "task-" + taskId);
             if (uuid != null) {
+                String workspace = (String) taskService.getVariable(taskId, "workspace");
                 try {
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(null,workspace,new  JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             if (!session.getNodeByUUID(uuid).hasProperty("state") ||
                                     !session.getNodeByUUID(uuid).getProperty("state").getString().equals("finished")) {

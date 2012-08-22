@@ -262,7 +262,7 @@ public class MainModule extends Module {
             AbsoluteData deviceOuterData = new AbsoluteData(0, 0);
             deviceOuterData.setMargins(new Margins(0, 0, 0, 0));
             if (activeChannel.getVariantDecoratorImage(activeChannelVariantIndex) != null) {
-                deviceDecoratorContainer.add(new Image(activeChannel.getVariantDecoratorImage(activeChannelVariantIndex)), deviceOuterData);
+                deviceDecoratorContainer.add(new Image(JahiaGWTParameters.getContextPath()+activeChannel.getVariantDecoratorImage(activeChannelVariantIndex)), deviceOuterData);
             }
 
             int[] usableResolution = getUsableDeviceResolution(activeChannel, activeChannelVariantIndex);

@@ -68,7 +68,7 @@ public class ChannelsTabItem extends SidePanelTabItem {
         if (channelListStore.getCount() > 0) {
             GWTJahiaChannel channel = channelListStore.getAt(0);
             deviceCombo.setValue(channel);
-            deviceImage.setUrl(channel.getCapability("device-image"));
+            deviceImage.setUrl(JahiaGWTParameters.getContextPath()+channel.getCapability("device-image"));
         } else {
             deviceCombo.setValue(null);
             deviceCombo.disable();
@@ -166,7 +166,7 @@ public class ChannelsTabItem extends SidePanelTabItem {
             deviceNameLabel.setText(Messages.get("label.default", "Default"));
             if (activeChannel != null) {
                 if (activeChannel.getCapability("device-image") != null) {
-                    deviceImage.setUrl(activeChannel.getCapability("device-image"));
+                    deviceImage.setUrl(JahiaGWTParameters.getContextPath()+activeChannel.getCapability("device-image"));
                 }
                 deviceNameLabel.setText(activeChannel.getDisplay());
             }

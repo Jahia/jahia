@@ -1,6 +1,7 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
+import org.jahia.bin.Jahia;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
 
@@ -23,12 +24,14 @@ public class ChannelHelper {
         List<GWTJahiaChannel> gwtJahiaChannels = new ArrayList<GWTJahiaChannel>();
         for (String channelName : channels) {
             Channel channel = channelService.getChannel(channelName);
-            String imageURL = channel.getCapability("device-image");
-            if (imageURL == null) {
-                imageURL = "/engines/images/edit/devices/default-small.png";
+            if (channel.isVisible()) {
+                String imageURL = channel.getCapability("device-image");
+                if (imageURL == null) {
+                    imageURL = "/engines/images/edit/devices/default-small.png";
+                }
+                GWTJahiaChannel gwtJahiaChannel = new GWTJahiaChannel(channel.getIdentifier(), channel.getCapability("display-name"), Jahia.getContextPath()+imageURL, channel.getCapabilities());
+                gwtJahiaChannels.add(gwtJahiaChannel);
             }
-            GWTJahiaChannel gwtJahiaChannel = new GWTJahiaChannel(channel.getIdentifier(), channel.getCapability("display-name"), imageURL, channel.getCapabilities());
-            gwtJahiaChannels.add(gwtJahiaChannel);
         }
         return gwtJahiaChannels;
     }

@@ -52,7 +52,9 @@
             $.post('<c:url value="${url.base}"/>' + task,
                     {"jcrMethodToCall":"put", "state":state, "finalOutcome":finalOutcome, "form-token":document.forms['tokenForm_' +
                                                                                                                       uuid].elements['form-token'].value},
-                    null, "json");
+                    function(){
+                        location.reload();
+                    }, "json");
         }
     }
     ;

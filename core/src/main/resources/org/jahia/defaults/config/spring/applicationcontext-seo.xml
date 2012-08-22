@@ -23,6 +23,7 @@
             </list>
         </property>
         <property name="seoRulesEnabled" value="${urlRewriteSeoRulesEnabled}"/>
+        <property name="seoRemoveCmsPrefix" value="${urlRewriteRemoveCmsPrefix}"/>
         <property name="seoConfigurationResources">
             <list>
                 <value>WEB-INF/etc/config/seo-urlrewrite*.xml</value>

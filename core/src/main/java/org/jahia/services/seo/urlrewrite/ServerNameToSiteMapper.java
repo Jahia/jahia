@@ -177,7 +177,7 @@ public class ServerNameToSiteMapper {
     }
 
     public void checkCmsPrefix(HttpServletRequest request, String ctx, String input) {
-        boolean doRemove = SettingsBean.getInstance().isUrlRewriteRemoveCmsPrefix();
+        boolean doRemove = getUrlRewriteService().isSeoRemoveCmsPrefix();
         if (doRemove && input.length() > 0) {
             int end = input.indexOf('/');
             end = end == -1 ? input.indexOf('?') : end;

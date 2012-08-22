@@ -79,6 +79,9 @@ public class UrlRewriteTest {
     private static final String SECOND_LANG = "fr";
 
     private static UrlRewriteService engine;
+    
+    private static boolean seoRulesEnabled = false;
+    private static boolean seoRemoveCmsPrefix = false;    
 
     private static final String SERVER_NAME = "urlrewrite.jahia.org";
 
@@ -89,8 +92,17 @@ public class UrlRewriteTest {
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         engine = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService");
-        engine.setSeoRulesEnabled(true);
-        engine.afterPropertiesSet();
+        if (!engine.isSeoRulesEnabled()) {
+            engine.setSeoRulesEnabled(true);
+            seoRulesEnabled = true;
+        }
+        if (!engine.isSeoRemoveCmsPrefix()) {
+            engine.setSeoRemoveCmsPrefix(true);
+            seoRemoveCmsPrefix = true;
+        }
+        if (seoRulesEnabled || seoRemoveCmsPrefix) {
+            engine.afterPropertiesSet();
+        }
         JahiaSite site = TestHelper.createSite(SITE_KEY, SERVER_NAME, TestHelper.WEB_TEMPLATES, null, null);
         Set<String> languages = new HashSet<String>();
         languages.add(DEFAULT_LANG);
@@ -107,6 +119,14 @@ public class UrlRewriteTest {
     public static void oneTimeTearDown() throws Exception {
         TestHelper.deleteSite(SITE_KEY);
         JCRSessionFactory.getInstance().closeAllSessions();
+
+        if (seoRulesEnabled || seoRemoveCmsPrefix) {
+            engine.setSeoRulesEnabled(!seoRulesEnabled);
+            engine.setSeoRemoveCmsPrefix(!seoRemoveCmsPrefix);
+            engine.afterPropertiesSet();
+            seoRulesEnabled = false;
+            seoRemoveCmsPrefix = false;
+        }        
         engine = null;
     }
 

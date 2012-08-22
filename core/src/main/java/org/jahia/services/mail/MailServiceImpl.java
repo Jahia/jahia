@@ -379,7 +379,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
     }
 
     protected void load() {
-        mailEndpointUri = null;
+        sendMailEndpointUri = null;
         
         settings = new MailSettings();
         try {

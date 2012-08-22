@@ -23,7 +23,7 @@ if (!base) {
 }
 startLevelValue = startLevel ? startLevel.long : 0
 
-
+def empty = true
 def printMenu;
 printMenu = { node, navMenuLevel, omitFormatting ->
     if (navMenuLevel == 1) {
@@ -38,7 +38,7 @@ printMenu = { node, navMenuLevel, omitFormatting ->
         }
     }
 
-    empty = true
+    firstEntry = true;
 
     if (node) {
         children = JCRContentUtils.getChildrenOfType(node, "jmix:navMenuItem")
@@ -66,7 +66,8 @@ printMenu = { node, navMenuLevel, omitFormatting ->
                     Resource resource = new Resource(menuItem, "html", "menuElement", currentResource.getContextConfiguration());
                     def render = RenderService.getInstance().render(resource, renderContext)
                     if (render != "") {
-                        if (empty) {
+                        if (firstEntry) {
+                            empty = false;
                             print((navMenuLevel - startLevelValue) == 1 ? "<div class=\"navbar\">" : "<div class=\"box-inner\">")
                             print("<ul class=\"navmenu level_${navMenuLevel - startLevelValue}\">")
                             closeUl = true;
@@ -108,7 +109,7 @@ printMenu = { node, navMenuLevel, omitFormatting ->
                     }
                     if (render != "") {
                         print "</li>"
-                        empty = false;
+                        firstEntry = false;
                     }
                 } else if (hasChildren) {
 //                    print "<li>"
@@ -124,7 +125,7 @@ printMenu = { node, navMenuLevel, omitFormatting ->
         }
 
         if (empty && renderContext.editMode) {
-            print "<li class=\" selected\"><a onclick=\"return false;\" href=\"#\">Page1</a></li><li class=\"\"><a onclick=\"return false;\" href=\"#\">Page2</a></li><li class=\"\"><a onclick=\"return false;\" href=\"#\">Page3</a></li>"
+            print "<div class=\"navbar\"><ul><li class=\" selected\"><a onclick=\"return false;\" href=\"#\">Page1</a></li><li class=\"\"><a onclick=\"return false;\" href=\"#\">Page2</a></li><li class=\"\"><a onclick=\"return false;\" href=\"#\">Page3</a></li></ul></div>"
         }
 
     }

@@ -264,7 +264,9 @@ public class ComponentRegistry {
             }
 
             folder = components;
-            for (ExtendedNodeType st : nt.getSupertypes()) {
+            ExtendedNodeType[] supertypes = nt.getSupertypes();
+            for (int i = supertypes.length - 1; i >= 0; i--) {
+                ExtendedNodeType st = supertypes[i];
                 if (st.isMixin() && !st.getName().equals(JMIX_DROPPABLE_CONTENT)
                         && st.isNodeType(JMIX_DROPPABLE_CONTENT)) {
                     if (components.hasNode(st.getName())) {

@@ -20,7 +20,7 @@ Un workflow de publication a été démarré le ${date.format("short","short",$s
     <ul>
 #foreach( $node in $nodes )
     #if( $velocityCount <= 10)
-    <li>${node.getDisplayableName()}</li>
+    <li>${node.getDisplayableName()} (${node.getPath()})</li>
     #end
 #end
     </ul>

@@ -20,7 +20,7 @@ A publication workflow with one validation step has been started on ${date.forma
     <ul>
 #foreach( $node in $nodes )
     #if( $velocityCount <= 10)
-    <li>${node.getDisplayableName()}</li>
+    <li>${node.getDisplayableName()} (${node.getPath()})</li>
     #end
 #end
     </ul>

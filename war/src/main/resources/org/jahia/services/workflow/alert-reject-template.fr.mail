@@ -20,7 +20,7 @@ La publication des éléments suivants a été refusée le ${date.format("short"
     <ul>
 #foreach( $node in $nodes )
     #if( $velocityCount <= 10)
-    <li>${node.getDisplayableName()}</li>
+    <li>${node.getDisplayableName()} (${node.getPath()})</li>
     #end
 #end
     </ul>

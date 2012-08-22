@@ -281,7 +281,7 @@ public class JCRWorkspaceWrapper implements Workspace {
     }
 
     public String[] getAccessibleWorkspaceNames() throws RepositoryException {
-        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return getSession().getProviderSession(service.getProvider("/")).getWorkspace().getAccessibleWorkspaceNames();
     }
 
     public ContentHandler getImportContentHandler(String s, int i) throws PathNotFoundException, ConstraintViolationException, VersionException, LockException, AccessDeniedException, RepositoryException {

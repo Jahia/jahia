@@ -850,19 +850,21 @@ public class NavigationHelper {
 
         if (fields.contains(GWTJahiaNode.PERMISSIONS)) {
             BitSet bs = node.getPermissionsAsBitSet();
-            GWTBitSet gwtBs = new GWTBitSet(bs.size());
+            if (bs != null) {
+                GWTBitSet gwtBs = new GWTBitSet(bs.size());
 
-            for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i+1)) {
-                gwtBs.set(i);
-            }
+                for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i+1)) {
+                    gwtBs.set(i);
+                }
 
-            n.setPermissions(gwtBs);
+                n.setPermissions(gwtBs);
 
-            try {
-                boolean hasAcl = node.hasNode("j:acl") && node.getNode("j:acl").hasNodes();
-                n.setHasAcl(hasAcl);
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
+                try {
+                    boolean hasAcl = node.hasNode("j:acl") && node.getNode("j:acl").hasNodes();
+                    n.setHasAcl(hasAcl);
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
         }
 
@@ -1032,7 +1034,10 @@ public class NavigationHelper {
 
         boolean supportsPublication = false;
         try {
-            supportsPublication = node.getSession().getProviderSession(node.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED).getBoolean();
+            Value descriptorValue = node.getSession().getProviderSession(node.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
+            if (descriptorValue != null) {
+                supportsPublication = descriptorValue.getBoolean();
+            }
             n.set("supportsPublication", Boolean.valueOf(supportsPublication));
         } catch (Exception e) {
             logger.error("Cannot get repository infos",e);

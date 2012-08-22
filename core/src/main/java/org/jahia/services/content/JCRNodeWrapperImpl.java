@@ -333,7 +333,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public AccessControlManager getAccessControlManager() throws RepositoryException {
         Session providerSession = session.getProviderSession(provider);
         // this is not a Jackrabbit implementation, we will use the new JCR 2.0 API instead.
-        return providerSession.getAccessControlManager();
+        AccessControlManager accessControlManager = null;
+        try {
+            accessControlManager = providerSession.getAccessControlManager();
+        } catch (UnsupportedRepositoryOperationException uroe) {
+            logger.warn("Access control manager is not supported for node " + getPath() + ": " + uroe.getMessage());
+        }
+        return accessControlManager;
     }
 
     public Set<String> getPermissions() {
@@ -359,6 +365,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         BitSet b = null;
         try {
             AccessControlManager accessControlManager = getAccessControlManager();
+            if (accessControlManager == null) {
+                return b;
+            }
             List<Privilege> app = Arrays.asList(accessControlManager.getPrivileges(localPathInProvider));
             List<Privilege> pr = Arrays.asList(accessControlManager.getSupportedPrivileges(localPathInProvider));
             b = new BitSet(pr.size());
@@ -841,22 +850,26 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
 
-        NodeIterator ni = objectNode.getNodes();
+        try {
+            NodeIterator ni = objectNode.getNodes();
 
-        while (ni.hasNext()) {
-            Node node = ni.nextNode();
-            if (session.getLocale() == null || !node.getName().startsWith("j:translation_")) {
-                try {
-                    JCRNodeWrapper child = provider.getNodeWrapper(node, buildSubnodePath(node.getName()), this, session);
-                    list.add(child);
-                } catch (ItemNotFoundException e) {
-                    if (logger.isDebugEnabled())
-                        logger.debug(e.getMessage(), e);
-                } catch (PathNotFoundException e) {
-                    if (logger.isDebugEnabled())
-                        logger.debug(e.getMessage(), e);
+            while (ni.hasNext()) {
+                Node node = ni.nextNode();
+                if (session.getLocale() == null || !node.getName().startsWith("j:translation_")) {
+                    try {
+                        JCRNodeWrapper child = provider.getNodeWrapper(node, buildSubnodePath(node.getName()), this, session);
+                        list.add(child);
+                    } catch (ItemNotFoundException e) {
+                        if (logger.isDebugEnabled())
+                            logger.debug(e.getMessage(), e);
+                    } catch (PathNotFoundException e) {
+                        if (logger.isDebugEnabled())
+                            logger.debug(e.getMessage(), e);
+                    }
                 }
             }
+        } catch (NullPointerException npe) {
+            logger.error("NullPointerException while trying to retrieve child nodes for " + getPath(), npe);
         }
         return new NodeIteratorImpl(list.iterator(), list.size());
     }

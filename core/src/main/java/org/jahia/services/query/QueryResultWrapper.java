@@ -233,7 +233,7 @@ public class QueryResultWrapper implements QueryResult {
 
     public NodeIterator getNodes() throws RepositoryException {
         final NodeIterator ni ;
-        if (result.getSelectorNames().length == 1) {
+        if (result.getSelectorNames().length <= 1) {
             ni = result.getNodes();
 
         } else {

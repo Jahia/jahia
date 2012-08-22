@@ -81,6 +81,8 @@ class UrlRewriteEngine extends UrlRewriter {
     private URLResolverFactory urlResolverFactory;
 
     private VanityUrlService vanityUrlService;
+    
+    private boolean urlRewriteSeoRulesEnabled;
 
     public void setUrlResolverFactory(URLResolverFactory urlResolverFactory) {
         this.urlResolverFactory = urlResolverFactory;
@@ -182,7 +184,7 @@ class UrlRewriteEngine extends UrlRewriter {
                             logger.debug("Error when trying to obtain vanity url", e);
                         }
                     }
-                    if (!SettingsBean.getInstance().isUrlRewriteSeoRulesEnabled()) {
+                    if (!isUrlRewriteSeoRulesEnabled()) {
                         // Just in case the SEO is not activated, switch the servername anyway to avoid crosscontext pages
                         try {
                             // Switch to correct site for links
@@ -198,5 +200,13 @@ class UrlRewriteEngine extends UrlRewriter {
         }
 
         return super.processEncodeURL(hsResponse, hsRequest, encodeUrlHasBeenRun, outboundUrl);
+    }
+
+    public boolean isUrlRewriteSeoRulesEnabled() {
+        return urlRewriteSeoRulesEnabled;
+    }
+
+    public void setUrlRewriteSeoRulesEnabled(boolean urlRewriteSeoRulesEnabled) {
+        this.urlRewriteSeoRulesEnabled = urlRewriteSeoRulesEnabled;
     }
 }

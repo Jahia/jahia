@@ -97,6 +97,8 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     private Resource[] seoConfigurationResources;
 
     private boolean seoRulesEnabled;
+    
+    private boolean seoRemoveCmsPrefix;
 
     private ServletContext servletContext;
 
@@ -180,6 +182,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                 urlRewriteEngine = new UrlRewriteEngine(servletContext, configurationResources);
                 urlRewriteEngine.setUrlResolverFactory(urlResolverFactory);
                 urlRewriteEngine.setVanityUrlService(vanityUrlService);
+                urlRewriteEngine.setUrlRewriteSeoRulesEnabled(isSeoRulesEnabled());
             }
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
@@ -252,7 +255,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         }
         
         String prefix = StringUtils.EMPTY;
-        if (settingsBean.isUrlRewriteRemoveCmsPrefix() && input.length() > 1 && input.indexOf('/') == 0) {
+        if (isSeoRemoveCmsPrefix() && input.length() > 1 && input.indexOf('/') == 0) {
             int end = input.indexOf('/', 1);
             prefix = end != -1 ? input.substring(1, end) : input.substring(1); 
         } 
@@ -357,6 +360,9 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     public void setSeoRulesEnabled(boolean seoRulesEnabled) {
         this.seoRulesEnabled = seoRulesEnabled;
+        if (urlRewriteEngine != null) {
+            urlRewriteEngine.setUrlRewriteSeoRulesEnabled(seoRulesEnabled);
+        }
     }
 
     public void setServletContext(ServletContext servletContext) {
@@ -387,5 +393,13 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     public void setLastConfigurationResources(Resource[] postSeoConfigurationResources) {
         this.lastConfigurationResources = postSeoConfigurationResources;
+    }
+
+    public boolean isSeoRemoveCmsPrefix() {
+        return seoRemoveCmsPrefix;
+    }
+
+    public void setSeoRemoveCmsPrefix(boolean seoRemoveCmsPrefix) {
+        this.seoRemoveCmsPrefix = seoRemoveCmsPrefix;
     }
 }

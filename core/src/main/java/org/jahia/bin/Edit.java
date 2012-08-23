@@ -42,10 +42,10 @@ package org.jahia.bin;
 
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
-import org.slf4j.Logger;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
@@ -56,6 +56,7 @@ import javax.servlet.http.HttpServletResponse;
  * User: toto
  * Date: Aug 19, 2009
  * Time: 4:15:21 PM
+ *
  * @see Render
  */
 public class Edit extends Render {
@@ -68,14 +69,17 @@ public class Edit extends Render {
     protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
         RenderContext context = super.createRenderContext(req, resp, user);
         context.setEditMode(true);
+        if ("contributemode".equals(editConfiguration.getName())) {
+            context.setContributionMode(true);
+        }
         context.setEditModeConfigName(editConfiguration.getName());
 //        context.setServletPath(editConfiguration.getDefaultUrlMapping());
         return context;
     }
 
-	public static String getEditServletPath() {
-	    // TODO move this into configuration
-	    return "/cms/edit";
+    public static String getEditServletPath() {
+        // TODO move this into configuration
+        return "/cms/edit";
     }
 
     protected boolean hasAccess(JCRNodeWrapper node) {
@@ -84,7 +88,7 @@ public class Edit extends Render {
             return false;
         }
         try {
-            if(Constants.LIVE_WORKSPACE.equals(node.getSession().getWorkspace().getName())) {
+            if (Constants.LIVE_WORKSPACE.equals(node.getSession().getWorkspace().getName())) {
                 logger.error("Someone have tried to access the live repository in edit mode");
                 return false;
             }
@@ -93,6 +97,7 @@ public class Edit extends Render {
         }
         return node.hasPermission(editConfiguration.getRequiredPermission()) && super.hasAccess(node);
     }
+
     @Override
     protected boolean isDisabled() {
         return settingsBean.isDistantPublicationServerMode();

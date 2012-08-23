@@ -40,6 +40,9 @@
 
 package org.jahia.services.logging;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 import org.jahia.services.SpringContextSingleton;
@@ -52,6 +55,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.util.StopWatch;
+import org.springframework.util.StopWatch.TaskInfo;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -161,12 +165,12 @@ public class ServiceLoggingTest {
         
         System.gc();
         
-        stopWatch.start("Create " + TAGS_TO_CREATE + " without logs");
         for (int i = 0; i < TAGS_TO_CREATE; i++) {
+            stopWatch.start("Create task " + i + " without logs");            
             service.createTag(generateTagName(), TESTSITE_NAME);
+            stopWatch.stop();            
         }
-        stopWatch.stop();
-        final long withoutLogs = stopWatch.getLastTaskTimeMillis();
+        final long withoutLogs = calculateTime(stopWatch.getTaskInfo());
         
         deleteAllTags();
         
@@ -176,20 +180,37 @@ public class ServiceLoggingTest {
         
         metricsLogger.setLevel(Level.TRACE);
         
+        StopWatch logStopWatch = new StopWatch();        
         System.gc();        
         
-        stopWatch.start("Create " + TAGS_TO_CREATE + " with logs");
         for (int i = 0; i < TAGS_TO_CREATE; i++) {
+            logStopWatch.start("Create task " + i + " with logs");
             service.createTag(generateTagName(), TESTSITE_NAME);
+            logStopWatch.stop();
         }
-        stopWatch.stop();
-        final long withLogs = stopWatch.getLastTaskTimeMillis();
-        
-        logger.info(stopWatch.prettyPrint());
-        
+        final long withLogs = calculateTime(logStopWatch.getTaskInfo());
+       
         if (withLogs > withoutLogs) {
             assertThat("Logs has more than 8% impact on peformance",
                     ((Math.abs(withLogs - withoutLogs) / (float)withoutLogs) * 100), lessThan((float)8));
         }
+    }
+    
+    private long calculateTime (TaskInfo[] tasks) {
+        Arrays.sort(tasks, new Comparator<TaskInfo>() {
+            public int compare(TaskInfo o1, TaskInfo o2) {
+                return (o1.getTimeMillis() < o2.getTimeMillis()) ? -1 : ((o1
+                        .getTimeMillis() == o2.getTimeMillis()) ? 0 : 1);
+            }
+        });
+        int i = 0;
+        long time = 0;
+        for (TaskInfo taskInfo : tasks) {
+            time += taskInfo.getTimeMillis();
+            if (++i == TAGS_TO_CREATE-2) {
+                break;
+            }
+        }
+        return time;
     }
 }

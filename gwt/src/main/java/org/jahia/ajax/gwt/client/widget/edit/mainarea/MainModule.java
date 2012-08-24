@@ -294,7 +294,7 @@ public class MainModule extends Module {
     private void refresh(final String previousPath, final String previousTemplate, final boolean forceImageRefresh) {
         JahiaContentManagementService.App.getInstance()
                 .getRenderedContent(path, null, editLinker.getLocale(), template, "gwt", moduleParams, true,
-                        config.getName(), editLinker.getActiveChannelIdentifier(), new BaseAsyncCallback<GWTRenderResult>() {
+                        config.getName(), editLinker.getActiveChannelIdentifier(), editLinker.getActiveChannelVariant(), new BaseAsyncCallback<GWTRenderResult>() {
                     public void onSuccess(GWTRenderResult result) {
                         int i = scrollContainer.getVScrollPosition();
                         if (head != null) {

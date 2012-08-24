@@ -6,6 +6,7 @@ import com.phloc.css.decl.*;
 import com.phloc.css.handler.CSSHandler;
 import com.phloc.css.writer.CSSWriter;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.Jahia;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -26,30 +28,33 @@ public class CSSChannelFilter implements Filter {
     private static Logger logger = LoggerFactory.getLogger(CSSChannelFilter.class);
     private ServletContext servletContext;
 
-    private enum Modifier { EQUALS , MIN , MAX }
+    private enum Modifier {EQUALS, MIN, MAX}
 
     public void init(FilterConfig filterConfig) throws ServletException {
         servletContext = filterConfig.getServletContext();
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         String channelId = request.getParameter("channel");
         if (channelId != null) {
-            ChannelService service = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
+            String channelVariant = request.getParameter("variant");
+            ChannelService service = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean(
+                    "ChannelService");
             Channel channel = service.getChannel(channelId);
 
-            String uri  = ((HttpServletRequest)request).getRequestURI();
-            final InputStream stream = servletContext.getResourceAsStream(uri);
+            String uri = ((HttpServletRequest) request).getRequestURI();
+            final InputStream stream = servletContext.getResourceAsStream(uri.replace(Jahia.getContextPath(), ""));
 
             CascadingStyleSheet css = CSSHandler.readFromStream(new IInputStreamProvider() {
                 public InputStream getInputStream() {
                     return stream;
                 }
-            }, Charset.forName("UTF-8"),ECSSVersion.CSS30);
+            }, Charset.forName("UTF-8"), ECSSVersion.CSS30);
             if (css != null) {
                 List<CSSMediaRule> filteredOutRules = new ArrayList<CSSMediaRule>();
                 for (CSSMediaRule mediaRule : css.getAllMediaRules()) {
-                    if (!evalMediaRule(channel, mediaRule.getAllMediaQueries())) {
+                    if (!evalMediaRule(channel, mediaRule.getAllMediaQueries(), channelVariant)) {
                         filteredOutRules.add(mediaRule);
                     } else {
                         for (CSSMediaQuery mediaQuery : mediaRule.getAllMediaQueries()) {
@@ -61,7 +66,7 @@ public class CSSChannelFilter implements Filter {
                 List<CSSImportRule> filteredOutImports = new ArrayList<CSSImportRule>();
                 List<CSSImportRule> imports = css.getAllImportRules();
                 for (CSSImportRule anImport : imports) {
-                    if (!evalMediaRule(channel, anImport.getAllMediaQueries())) {
+                    if (!evalMediaRule(channel, anImport.getAllMediaQueries(), channelVariant)) {
                         filteredOutImports.add(anImport);
                     }
                 }
@@ -75,12 +80,25 @@ public class CSSChannelFilter implements Filter {
                         css.removeImportRule(filteredOutImport);
                     }
 
+                    CascadingStyleSheet sheet = new CascadingStyleSheet();
+                    final List<CSSMediaRule> allMediaRules = css.getAllMediaRules();
+                    for (CSSMediaRule rule : allMediaRules) {
+                        final List<ICSSTopLevelRule> allRules = rule.getAllRules();
+                        for (ICSSTopLevelRule icssTopLevelRule : allRules) {
+                            sheet.addRule(icssTopLevelRule);
+                        }
+
+                    }
+                    final List<CSSImportRule> allImportRules = css.getAllImportRules();
+                    for (CSSImportRule importRule : allImportRules) {
+                        sheet.addImportRule(importRule);
+                    }
                     CSSWriter w = new CSSWriter(ECSSVersion.CSS30);
-                    w.writeCSS(css, response.getWriter());
+                    w.writeCSS(sheet, response.getWriter());
                     return;
                 }
-                
-                
+
+
             } else {
                 logger.warn("Cannot parse CSS " + uri);
             }
@@ -89,10 +107,10 @@ public class CSSChannelFilter implements Filter {
         chain.doFilter(request, response);
     }
 
-    private boolean evalMediaRule(Channel channel, List<CSSMediaQuery> mediaQueries) {
+    private boolean evalMediaRule(Channel channel, List<CSSMediaQuery> mediaQueries, String channelVariant) {
         for (CSSMediaQuery mediaQuery : mediaQueries) {
             for (CSSMediaExpression mediaExpr : mediaQuery.getMediaExpressions()) {
-                if (!evalFeature(mediaExpr, channel)) {
+                if (!evalFeature(mediaExpr, channel, channelVariant)) {
                     return false;
                 }
             }
@@ -100,7 +118,7 @@ public class CSSChannelFilter implements Filter {
         return true;
     }
 
-    private boolean evalFeature(CSSMediaExpression mediaExpr, Channel channel) {
+    private boolean evalFeature(CSSMediaExpression mediaExpr, Channel channel, String channelVariant) {
         Modifier modifier = Modifier.EQUALS;
         String feature = mediaExpr.getFeature().toLowerCase();
         if (feature.startsWith("max-")) {
@@ -108,31 +126,47 @@ public class CSSChannelFilter implements Filter {
             feature = StringUtils.substringAfter(feature, "max-");
         } else if (feature.startsWith("min-")) {
             modifier = Modifier.MIN;
-            feature = StringUtils.substringAfter(feature,"min-");
+            feature = StringUtils.substringAfter(feature, "min-");
         }
-
+        int channelIndex = 0;
+        if (channelVariant != null) {
+            final List<String> variants = Arrays.asList(channel.getCapability("variants").split(","));
+            if(variants.contains(channelVariant))
+            channelIndex = variants.indexOf(channelVariant);
+        }
+        String capability = channel.getCapability("usable-resolutions");
+        capability = capability.split(",")[channelIndex];
         if (feature.equals("width")) {
             List<CSSExpressionMemberTermSimple> allSimpleMembers = mediaExpr.getValue().getAllSimpleMembers();
             if (allSimpleMembers != null && !allSimpleMembers.isEmpty()) {
-                return evalLength(modifier, channel.getCapability("resolution_width"), allSimpleMembers.get(0).getValue());
+                return evalLength(modifier, capability, allSimpleMembers.get(
+                        0).getValue(), 0, "x");
             }
         } else if (feature.equals("height")) {
             List<CSSExpressionMemberTermSimple> allSimpleMembers = mediaExpr.getValue().getAllSimpleMembers();
             if (allSimpleMembers != null && !allSimpleMembers.isEmpty()) {
-                return evalLength(modifier, channel.getCapability("resolution_height"), allSimpleMembers.get(0).getValue());
+                return evalLength(modifier, capability, allSimpleMembers.get(
+                        0).getValue(), 1, "x");
             }
         } else if (feature.equals("device-width")) {
             List<CSSExpressionMemberTermSimple> allSimpleMembers = mediaExpr.getValue().getAllSimpleMembers();
             if (allSimpleMembers != null && !allSimpleMembers.isEmpty()) {
-                return evalLength(modifier, channel.getCapability("resolution_width"), allSimpleMembers.get(0).getValue());
+                return evalLength(modifier, capability, allSimpleMembers.get(
+                        0).getValue(), 0, "x");
             }
         } else if (feature.equals("device-height")) {
             List<CSSExpressionMemberTermSimple> allSimpleMembers = mediaExpr.getValue().getAllSimpleMembers();
             if (allSimpleMembers != null && !allSimpleMembers.isEmpty()) {
-                return evalLength(modifier, channel.getCapability("resolution_height"), allSimpleMembers.get(0).getValue());
+                return evalLength(modifier, capability, allSimpleMembers.get(
+                        0).getValue(), 1, "x");
             }
         } else if (feature.equals("orientation")) {
-
+            List<CSSExpressionMemberTermSimple> allSimpleMembers = mediaExpr.getValue().getAllSimpleMembers();
+            if (allSimpleMembers != null && !allSimpleMembers.isEmpty()) {
+                final String value = allSimpleMembers.get(0).getValue();
+                return (channelVariant == null && channel.getCapability("variants").split(",")[0].equals(value)) ||
+                       value.equals(channelVariant);
+            }
         } else if (feature.equals("aspect-ratio")) {
 
         } else if (feature.equals("device-aspect-ratio")) {
@@ -151,13 +185,19 @@ public class CSSChannelFilter implements Filter {
         return true;
     }
 
-    public boolean evalLength(Modifier modifier, String realValue, String value) {
+    public boolean evalLength(Modifier modifier, String realValue, String value,
+                              int indexOfRealValueInChannel, String channelValueSeparator) {
         if (realValue == null) {
             return true;
         }
-        int rv = Integer.parseInt(realValue);
+        int rv;
+        if (channelValueSeparator != null) {
+            rv = Integer.parseInt(realValue.split(channelValueSeparator)[indexOfRealValueInChannel]);
+        } else {
+            rv = Integer.parseInt(realValue);
+        }
         if (value.endsWith("px")) {
-            value = StringUtils.substringBeforeLast(value,"px");
+            value = StringUtils.substringBeforeLast(value, "px");
             int v = Integer.parseInt(value);
             switch (modifier) {
                 case EQUALS:

@@ -99,11 +99,13 @@ public class TemplateHelper {
      * @param currentUserSession
      * @param uiLocale
      * @param channelIdentifier
+     * @param channelVariant
      */
     public GWTRenderResult getRenderedContent(String path, String template, String configuration,
                                               final Map<String, List<String>> contextParams, boolean editMode, String configName,
                                               HttpServletRequest request, HttpServletResponse response,
-                                              JCRSessionWrapper currentUserSession, Locale uiLocale, String channelIdentifier) throws GWTJahiaServiceException {
+                                              JCRSessionWrapper currentUserSession,
+                                              Locale uiLocale, String channelIdentifier, String channelVariant) throws GWTJahiaServiceException {
         GWTRenderResult result = null;
         try {
             JCRNodeWrapper node = currentUserSession.getNode(path);
@@ -191,7 +193,7 @@ public class TemplateHelper {
                 Map<String,Map<String,String>> css  = map.get("css");
                 Map<String,Map<String,String>> cssWithParam  = new HashMap<String, Map<String, String>>();
                 for (Map.Entry<String, Map<String, String>> entry : css.entrySet()) {
-                    String k = entry.getKey() + "?channel="+channelIdentifier;
+                    String k = entry.getKey() + "?channel="+channelIdentifier+(channelVariant!=null?"&variant="+channelVariant:"");
                     cssWithParam.put(k, entry.getValue());
                 }
                 map.put("css",cssWithParam);

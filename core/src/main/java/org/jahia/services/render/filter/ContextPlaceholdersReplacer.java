@@ -64,7 +64,7 @@ public class ContextPlaceholdersReplacer implements HtmlTagAttributeVisitor {
     
     private static Pattern CTX_PATTERN = Pattern.compile(CURRENT_CONTEXT_PLACEHOLDER, Pattern.LITERAL);
     private static Pattern WORKSPACE_PATTERN = Pattern.compile(WORKSPACE_PLACEHOLDER, Pattern.LITERAL);
-    private static Pattern LANG_PATTERN = Pattern.compile(LANG_PLACEHOLDER, Pattern.LITERAL);
+    public static Pattern LANG_PATTERN = Pattern.compile(LANG_PLACEHOLDER, Pattern.LITERAL);
     
     public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
         if (value != null) {

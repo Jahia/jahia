@@ -44,6 +44,7 @@ import static org.jahia.api.Constants.JAHIAMIX_REFERENCES_IN_FIELD;
 import static org.jahia.api.Constants.JAHIA_REFERENCE_IN_FIELD_PREFIX;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -499,13 +500,19 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                     String ext = matcher.group(2);
                     String uuid = refs.get(new Long(id));
                     String nodePath = null;
+                    JCRNodeWrapper node;
                     try {
-                        nodePath = session.getNodeByUUID(uuid).getPath();
+                        node = session.getNodeByUUID(uuid);
                     } catch (ItemNotFoundException infe) {
                         logger.warn("Cannot find referenced item : "+uuid);
                         return "#";
                     }
+                    nodePath = node.getPath();
                     value = originalValue.replace(path, nodePath + ext);
+                    JCRSiteNode site = node.getResolveSite();
+                    if (!site.getLanguagesAsLocales().contains(session.getLocale())) {
+                        value = ContextPlaceholdersReplacer.LANG_PATTERN.matcher(value).replaceAll(site.getDefaultLanguage());
+                    }
                     if (isCmsContext) {
                         value = CMS_CONTEXT_PLACEHOLDER_PATTERN.matcher(value).replaceAll(cmsContext);
                         value = value.replace("/"+session.getWorkspace().getName(),"/"+workspaceName);

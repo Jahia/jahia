@@ -197,10 +197,17 @@ public class SearchHelper {
      */
     public List<GWTJahiaNode> getSavedSearch(JCRSiteNode site, JCRSessionWrapper currentUserSession) {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
+        JCRNodeWrapper user;
         try {
-            String s = "select * from [nt:query]";
+            user = jcrService.getUserFolder(currentUserSession.getUser());
+        } catch (Exception e) {
+            logger.error("no user folder for site " + site.getSiteKey() + " and user " + currentUserSession.getUser().getUsername());
+            return result;
+        }
+        try {
+            String s = "select * from [nt:query] as q where isdescendantnode(q, ['" + user.getPath() + "'])";
             Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
-            return navigation.executeQuery(q, null,null,null, (site != null ? Arrays.asList(site.getSiteKey()): null));
+            return navigation.executeQuery(q, null,null,null,null);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

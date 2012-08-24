@@ -113,7 +113,7 @@ public class LayoutTabItem extends PropertiesTabItem {
                     if (engine.getNode() != null) {
                         JahiaContentManagementService
                                 .App.getInstance().getRenderedContent(engine.getNode().getPath(), null, LayoutTabItem.this.language,
-                                template, "preview", contextParams, false, null, null, new BaseAsyncCallback<GWTRenderResult>() {
+                                template, "preview", contextParams, false, null, null, null, new BaseAsyncCallback<GWTRenderResult>() {
                             public void onSuccess(GWTRenderResult result) {
                                 HTML html = new HTML(result.getResult());
 

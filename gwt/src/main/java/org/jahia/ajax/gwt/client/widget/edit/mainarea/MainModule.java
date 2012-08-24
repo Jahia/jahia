@@ -327,12 +327,50 @@ public class MainModule extends Module {
         }
     }
 
+<<<<<<< .working
     private void goToUrl(final String url, final boolean forceImageRefresh) {
         mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
         layoutChannel();
         frame.setForceImageRefresh(forceImageRefresh);
         frame.setUrl(url);
         center.layout(true);
+=======
+    private void refresh(final String previousPath, final String previousTemplate, final boolean forceImageRefresh) {
+        JahiaContentManagementService.App.getInstance()
+                .getRenderedContent(path, null, editLinker.getLocale(), template, "gwt", moduleParams, true,
+                        config.getName(), editLinker.getActiveChannelIdentifier(), editLinker.getActiveChannelVariant(), new BaseAsyncCallback<GWTRenderResult>() {
+                    public void onSuccess(GWTRenderResult result) {
+                        int i = scrollContainer.getVScrollPosition();
+                        if (head != null) {
+                            head.setText(Messages.get("label.page", "Page") + ": " + path);
+                        }
+                        nodeTypes = result.getNodeTypes();
+                        Selection.getInstance().hide();
+                        Hover.getInstance().removeAll();
+                        infoLayers.removeAll();
+
+                        display(result.getResult(), forceImageRefresh);
+
+                        scrollContainer.setVScrollPosition(i);
+                        List<String> list = new ArrayList<String>(1);
+                        list.add(path);
+                        editLinker.getMainModule().unmask();
+                        editLinker.onModuleSelection(MainModule.this);
+                        switchStaticAssets(result.getStaticAssets());
+                    }
+
+                    @Override
+                    public void onApplicationFailure(Throwable caught) {
+                        if (!previousPath.equals(path)) {
+                            path = previousPath;
+                            template = previousTemplate;
+                            editLinker.onMainSelection(previousPath, previousTemplate, null);
+                        }
+                        editLinker.getMainModule().unmask();
+                    }
+                });
+
+>>>>>>> .merge-right.r42830
     }
 
     private String getUrl(String path, String template) {

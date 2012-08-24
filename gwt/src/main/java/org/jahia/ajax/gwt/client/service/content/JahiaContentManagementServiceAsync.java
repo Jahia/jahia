@@ -203,7 +203,8 @@ public interface JahiaContentManagementServiceAsync {
      */
     void getPublicationInfo(List<String> uuids, boolean allSubTree, boolean checkForUnpublication, AsyncCallback<List<GWTJahiaPublicationInfo>> async);
 
-    void getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, List<String>> contextParams, boolean editMode, String configName, String channelIdentifier, AsyncCallback<GWTRenderResult> async);
+    void getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, List<String>> contextParams, boolean editMode, String configName,
+                            String channelIdentifier, String channelVariant, AsyncCallback<GWTRenderResult> async);
 
     void getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, AsyncCallback<List<GWTJahiaNode>> async);
 

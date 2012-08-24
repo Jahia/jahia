@@ -1044,8 +1044,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template,
-                                              String configuration,final Map<String, List<String>> contextParams, boolean editMode,
-                                              String configName, String channelIdentifier) throws GWTJahiaServiceException {
+                                              String configuration, final Map<String, List<String>> contextParams,
+                                              boolean editMode, String configName, String channelIdentifier,
+                                              String channelVariant) throws GWTJahiaServiceException {
         Locale localValue = getLocale();
         if (locale != null) {
             localValue = LanguageCodeConverters.languageCodeToLocale(locale);
@@ -1055,7 +1056,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         return this.template
                 .getRenderedContent(path, template, configuration, contextParams, editMode, configName, getRequest(),
-                        getResponse(), retrieveCurrentSession(workspace, localValue, true), getUILocale(), channelIdentifier);
+                        getResponse(), retrieveCurrentSession(workspace, localValue, true), getUILocale(), channelIdentifier,
+                        channelVariant);
     }
 
     public String getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace,

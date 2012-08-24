@@ -251,7 +251,8 @@ public interface JahiaContentManagementService extends RemoteService {
     List<GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean allSubTree,
                                                             boolean checkForUnpublication) throws GWTJahiaServiceException;
 
-    GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, List<String>> contextParams, boolean editMode, String configName, String channelIdentifier) throws GWTJahiaServiceException;
+    GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, List<String>> contextParams, boolean editMode,
+                                       String configName, String channelIdentifier, String channelVariant) throws GWTJahiaServiceException;
 
     List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex) throws GWTJahiaServiceException;
 

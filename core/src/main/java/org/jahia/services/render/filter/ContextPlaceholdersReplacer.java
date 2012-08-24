@@ -69,7 +69,7 @@ public class ContextPlaceholdersReplacer implements HtmlTagAttributeVisitor {
     public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
         if (value != null) {
             String contextPath = null;
-            if(context.isEditMode()){
+            if(context.isEditMode() && ! context.isContributionMode()){
                 contextPath = StringUtils.substringAfterLast(((EditConfiguration)SpringContextSingleton.getBean(context.getEditModeConfigName())).getDefaultUrlMapping(), "/");
             } else if(context.isContributionMode()){
                contextPath = "contribute";

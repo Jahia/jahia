@@ -74,7 +74,8 @@ import static org.junit.Assert.*;
  */
 public class ServiceLoggingTest {
     private static transient Logger logger = Logger.getLogger(ServiceLoggingTest.class);
-    private static final int TAGS_TO_CREATE = 10;
+    private static final int TAGS_TO_CREATE = 30;
+    private static final float ACCEPTABLE_DEVIATION = 8;
 
     private int counter = 0;
 
@@ -191,8 +192,15 @@ public class ServiceLoggingTest {
         final long withLogs = calculateTime(logStopWatch.getTaskInfo());
        
         if (withLogs > withoutLogs) {
+            float percentage = ((Math.abs(withLogs - withoutLogs) / (float)withoutLogs) * 100);
+            if (percentage >= ACCEPTABLE_DEVIATION) {
+                logger.warn("Without logging 80% iterations (" + withoutLogs
+                        + "ms): " + stopWatch.prettyPrint());
+                logger.warn("With logging 80% iterations (" + withLogs
+                        + "ms): " + logStopWatch.prettyPrint());            
+            }
             assertThat("Logs has more than 8% impact on peformance",
-                    ((Math.abs(withLogs - withoutLogs) / (float)withoutLogs) * 100), lessThan((float)8));
+                    percentage, lessThan(ACCEPTABLE_DEVIATION));
         }
     }
     
@@ -205,9 +213,10 @@ public class ServiceLoggingTest {
         });
         int i = 0;
         long time = 0;
+        int reducedLoop = (int)((TAGS_TO_CREATE/(float)100) * 80);
         for (TaskInfo taskInfo : tasks) {
             time += taskInfo.getTimeMillis();
-            if (++i == TAGS_TO_CREATE-2) {
+            if (++i == reducedLoop) {
                 break;
             }
         }

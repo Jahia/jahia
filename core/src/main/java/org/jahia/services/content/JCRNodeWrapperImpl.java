@@ -280,11 +280,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     // skip
                 } else if (role.hasProperty("j:nodeTypes")) {
                     Value[] values = role.getProperty("j:nodeTypes").getValues();
-                    for (Value value : values) {
-                        if (isNodeType(value.getString())) {
-                            add = true;
-                            break;
+                    if (values.length > 0) {
+                        for (Value value : values) {
+                            if (isNodeType(value.getString())) {
+                                add = true;
+                                break;
+                            }
                         }
+                    } else {
+                        add = true;
                     }
                 } else {
                     add = true;

@@ -130,7 +130,8 @@
                         <label for="task_priority"><fmt:message key="jnt_task.priority"/>:</label>
                         <select name="priority" id="task_priority" class="combo" tabindex="21">
                             <c:forEach items="${priorities}" var="priority">
-                                <option value="${priority.value.string}"> ${priority.displayName} </option>
+                                <option  <c:if test="${priority.value.string eq 'normal'}"> selected </c:if>
+                                         value="${priority.value.string}"> ${priority.displayName} </option>
                             </c:forEach>
                         </select>
                     </p>

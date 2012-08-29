@@ -47,10 +47,10 @@
                                 <button><fmt:message key="label.delete"/></button>
                                 <c:choose>
                                     <c:when test="${isImage}">
-                                        <span class="span-button" onclick="CKEDITOR.instances.editContent.insertHtml('<img src=\'${subchild.url}\'/>')"><fmt:message key="label.add" /></span>
+                                        <button onclick="CKEDITOR.instances.editContent.insertHtml('<img src=\'${subchild.url}\'/>'); return false;"><fmt:message key="label.add" /></button>
                                     </c:when>
                                     <c:otherwise>
-                                        <span class="span-button" onclick="CKEDITOR.instances.editContent.insertHtml('<a href=\'${subchild.url}\' title=\'${title}\'>${title}</a>')"><fmt:message key="label.add" /></span>
+                                        <button onclick="CKEDITOR.instances.editContent.insertHtml('<a href=\'${subchild.url}\' title=\'${title}\'>${title}</a>'); return false;"><fmt:message key="label.add" /></button>
                                     </c:otherwise>
                                 </c:choose>
                                 <script type="text/javascript">

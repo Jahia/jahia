@@ -997,6 +997,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             if (outcome != null) {
                 String key = Patterns.SPACE.matcher(task.getName()).replaceAll(".").trim().toLowerCase() + "." +
                         Patterns.SPACE.matcher(outcome).replaceAll(".").trim().toLowerCase();
+                key = task.isCompleted()?key + ".completed":key;
                 if (locale != null) {
                     String displayOutcome;
                     try {

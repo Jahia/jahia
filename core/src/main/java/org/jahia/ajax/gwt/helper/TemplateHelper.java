@@ -40,6 +40,9 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.collections.functors.NOPTransformer;
+import org.apache.commons.collections.map.LazySortedMap;
+import org.apache.commons.collections.map.TransformedSortedMap;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.bin.Render;
@@ -191,7 +194,7 @@ public class TemplateHelper {
 
             if (channelIdentifier != null && !channelIdentifier.equals("generic")) {
                 Map<String,Map<String,String>> css  = map.get("css");
-                Map<String,Map<String,String>> cssWithParam  = new HashMap<String, Map<String, String>>();
+                SortedMap<String,Map<String,String>> cssWithParam  = new TreeMap<String, Map<String, String>>();
                 for (Map.Entry<String, Map<String, String>> entry : css.entrySet()) {
                     String k = entry.getKey() + "?channel="+channelIdentifier+(channelVariant!=null?"&variant="+channelVariant:"");
                     cssWithParam.put(k, entry.getValue());

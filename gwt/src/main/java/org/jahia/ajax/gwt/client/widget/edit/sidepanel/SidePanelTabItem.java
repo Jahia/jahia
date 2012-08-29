@@ -156,11 +156,13 @@ public class SidePanelTabItem implements Serializable {
         }
 
         public void loaded() {
-            // do nothing
+            tab.unmask();
+            editLinker.loaded();
         }
 
         public void loading(String resource) {
-            // do nothing
+            tab.mask(resource, "x-mask-loading");
+            editLinker.loading(resource);
         }
 
         public void refresh(int flag) {

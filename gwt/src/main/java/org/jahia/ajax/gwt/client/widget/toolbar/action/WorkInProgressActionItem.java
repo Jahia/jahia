@@ -42,11 +42,13 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.Poller;
@@ -110,6 +112,10 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
                 if (oldJob.getGroup().equals("PublicationJob")) {
                     refresh |= Linker.REFRESH_PAGES;
                     refresh |= Linker.REFRESH_MAIN;
+                } else if (oldJob.getGroup().equals("ImportJob")) {
+                    Info.display(Messages.get("label.import.finished", "Import is finished"),
+                            Messages.getWithArgs("label.import.finished.forFile", "Import of file {0} is finished.",
+                                    new Object[] {oldJob.getFileName()}));
                 }
             }
         }

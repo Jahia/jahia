@@ -71,6 +71,6 @@ public class LockActionItem extends BaseActionItem   {
                 && singleSelection.isLockable()
                 && !lh.isLocked()
                 && PermissionsUtils.isPermitted("jcr:lockManagement", lh.getSelectionPermissions())
-                && singleSelection.canLock() && !lh.isSecondarySelection());
+                && singleSelection.canLock());
     }
 }

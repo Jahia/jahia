@@ -135,6 +135,7 @@
 				<value type="java.lang.String">alias</value>
                 <value type="java.lang.String">channel</value>
                 <value type="java.lang.String">variant</value>
+                <value type="java.lang.String">noembed</value>
             </list>
 		</property>
 		<property name="traverser"

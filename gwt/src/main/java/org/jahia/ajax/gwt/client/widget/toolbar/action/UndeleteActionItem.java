@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -63,7 +64,7 @@ import java.util.Map;
 /**
  * Action item to undelete a node by removing locks and mixins
  */
-public class UndeleteActionItem extends BaseActionItem {
+public class UndeleteActionItem extends NodeTypeAwareBaseActionItem {
     @Override
     public void onComponentSelection() {
         final LinkerSelectionContext lh = linker.getSelectionContext();
@@ -126,7 +127,7 @@ public class UndeleteActionItem extends BaseActionItem {
                 && selection.size() > 0
                 && hasPermission(lh.getSelectionPermissions())
                 && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
-                && !Boolean.FALSE.equals(ModuleHelper.getNodeType(lh.getSingleSelection().getNodeTypes().get(0)).get("canUseComponentForCreate"))
+                && isNodeTypeAllowed(selection)
                 ) {
             canUndelete = true;
             for (GWTJahiaNode gwtJahiaNode : selection) {
@@ -146,5 +147,17 @@ public class UndeleteActionItem extends BaseActionItem {
                 && !lockInfos.get(null).isEmpty()
                 && lockInfos.get(null).size() == 1
                 && lockInfos.get(null).get(0).equals("label.locked.by.deletion");
+    }
+    @Override
+    protected boolean isNodeTypeAllowed(GWTJahiaNode selectedNode) {
+        GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(selectedNode.getNodeTypes().get(0));
+        if (nodeType != null) {
+            Boolean canUseComponentForCreate = (Boolean) nodeType.get("canUseComponentForCreate");
+            if (canUseComponentForCreate != null && !canUseComponentForCreate) {
+                return false;
+            }
+        }
+
+        return super.isNodeTypeAllowed(selectedNode);
     }
 }

@@ -60,7 +60,7 @@ import java.util.List;
 * Date: Sep 25, 2009
 * Time: 6:59:03 PM
 */
-public class EditContentActionItem extends BaseActionItem {
+public class EditContentActionItem extends NodeTypeAwareBaseActionItem {
     
     private static final long serialVersionUID = 1899385924986263120L;
     
@@ -88,14 +88,9 @@ public class EditContentActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        GWTJahiaNode singleSelection;
-        if (useMainNode) {
-            singleSelection = lh.getMainNode();
-        }   else {
-            singleSelection = lh.getSingleSelection();
-        }
+        GWTJahiaNode singleSelection = lh.getSingleSelection();
         setEnabled(singleSelection != null
-                && !Boolean.FALSE.equals(ModuleHelper.getNodeType(singleSelection.getNodeTypes().get(0)).get("canUseComponentForEdit"))
+                && isNodeTypeAllowed(singleSelection)
                 && hasPermission(lh.getSelectionPermissions())
                 && (allowRootNodeEditing || !lh.isRootNode())
                 && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions()));
@@ -108,8 +103,24 @@ public class EditContentActionItem extends BaseActionItem {
     public void setUseMainNode(boolean useMainNode) {
         this.useMainNode = useMainNode;
     }
+<<<<<<< .working
 
     public void setPath(String path) {
         this.path = path;
     }
+=======
+
+    @Override
+    protected boolean isNodeTypeAllowed(GWTJahiaNode selectedNode) {
+        GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(selectedNode.getNodeTypes().get(0));
+        if (nodeType != null) {
+            Boolean canUseComponentForCreate = (Boolean) nodeType.get("canUseComponentForCreate");
+            if (canUseComponentForCreate != null && !canUseComponentForCreate) {
+                return false;
+            }
+        }
+
+        return super.isNodeTypeAllowed(selectedNode);
+    }
+>>>>>>> .merge-right.r42861
 }

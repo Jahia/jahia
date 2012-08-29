@@ -63,6 +63,6 @@ public class UnlockActionItem extends BaseActionItem {
         GWTJahiaNode singleSelection = lh.getSingleSelection();
         setEnabled(singleSelection!=null && singleSelection.isLockable() &&
                 PermissionsUtils.isPermitted("jcr:lockManagement", lh.getSelectionPermissions()) && singleSelection.getLockInfos() != null &&
-                singleSelection.canUnlock() && !lh.isSecondarySelection());
+                singleSelection.canUnlock());
     }
 }

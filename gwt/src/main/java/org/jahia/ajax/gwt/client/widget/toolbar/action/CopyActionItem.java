@@ -68,7 +68,7 @@ public class CopyActionItem extends NodeTypeAwareBaseActionItem{
     public void handleNewLinkerSelection() {
         final LinkerSelectionContext lh = linker.getSelectionContext();
         setEnabled(lh.getMultipleSelection() != null && hasPermission(lh.getSelectionPermissions()) && lh.getMultipleSelection().size() > 0
-                && !lh.isSecondarySelection() && isNodeTypeAllowed(lh.getMultipleSelection()));
+               && isNodeTypeAllowed(lh.getMultipleSelection()));
     }
 
     @Override

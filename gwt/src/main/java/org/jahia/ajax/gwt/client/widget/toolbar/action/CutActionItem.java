@@ -105,7 +105,6 @@ public class CutActionItem extends NodeTypeAwareBaseActionItem  {
                 && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
                 && !lh.isRootNode()
                 && !lh.isLocked()
-                && !lh.isSecondarySelection()
                 && !lh.getMultipleSelection()
                         .get(0)
                         .getPath()

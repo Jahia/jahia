@@ -464,6 +464,10 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
         if (pack.getModuleType() != null) {
             m.setProperty("j:siteType",pack.getModuleType());
         }
+        JCRNodeWrapper tpls = m.getNode("templates");
+        if (!tpls.hasProperty("j:rootTemplatePath") && JahiaTemplateManagerService.MODULE_TYPE_MODULE.equals(pack.getModuleType())){
+            tpls.setProperty("j:rootTemplatePath","/base");
+        }
     }
 
     private String guessModuleType(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
@@ -501,6 +505,9 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
             m.addNode("files", "jnt:folder");
             m.addNode("contents", "jnt:contentFolder");
             JCRNodeWrapper tpls = m.addNode("templates", "jnt:templatesFolder");
+            if (JahiaTemplateManagerService.MODULE_TYPE_MODULE.equals(pack.getModuleType())){
+                tpls.setProperty("j:rootTemplatePath","/base");
+            }
             tpls.addNode("files", "jnt:folder");
             tpls.addNode("contents", "jnt:contentFolder");
         } else {

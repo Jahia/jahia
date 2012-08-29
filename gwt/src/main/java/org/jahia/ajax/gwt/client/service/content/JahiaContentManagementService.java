@@ -205,8 +205,6 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public String getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace, String locale) throws GWTJahiaServiceException;
 
-    public void importContent(String parentPath, String fileKey, Boolean asynchronously) throws GWTJahiaServiceException;
-
     public Map<String,GWTJahiaWorkflowDefinition> getWorkflowDefinitions(List<String> workflowDefinitionIds) throws GWTJahiaServiceException;
 
     public void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties, List<String> comments) throws GWTJahiaServiceException;
@@ -405,7 +403,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public ModelData getVisibilityInformation(String path) throws GWTJahiaServiceException;
 
-    void importContent(String parentPath, String fileKey, Boolean asynchronously, Boolean replaceContent) throws GWTJahiaServiceException;
+    List<GWTJahiaJobDetail> importContent(String parentPath, String fileKey, Boolean replaceContent) throws GWTJahiaServiceException;
 
     // -------------------------- INNER CLASSES --------------------------
 

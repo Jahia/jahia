@@ -196,9 +196,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void getNodeURLByIdentifier(String servlet, String identifier, Date versionDate, String versionLabel, String workspace, String locale, AsyncCallback<String> async);
 
-    void importContent(String parentPath, String fileKey, Boolean asynchronously, AsyncCallback async);
-
-    void importContent(String parentPath, String fileKey, Boolean asynchronously, Boolean replaceContent, AsyncCallback async);
+    void importContent(String parentPath, String fileKey, Boolean replaceContent, AsyncCallback<List<GWTJahiaJobDetail>> async);
 
     void getWorkflowDefinitions(List<String> workflowDefinitionIds, AsyncCallback<Map<String,GWTJahiaWorkflowDefinition>> async);
 

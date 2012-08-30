@@ -197,6 +197,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private Locale defaultLocale;
 
+    private int importMaxBatch;
+
     /**
      * Default constructor.
      *
@@ -358,6 +360,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             guestGroupResourceKey = getString("guestGroupResourceKey");
             
             fileServletStatisticsEnabled = getBoolean("jahia.fileServlet.statisticsEnabled", false);
+
+            importMaxBatch = getInt("importMaxBatch", 500);
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -1045,6 +1049,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public boolean isUrlRewriteRemoveCmsPrefix() {
         return urlRewriteRemoveCmsPrefix;
+    }
+
+    public int getImportMaxBatch() {
+        return importMaxBatch;
     }
 
 }

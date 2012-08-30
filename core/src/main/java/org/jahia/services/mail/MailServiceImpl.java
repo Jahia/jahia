@@ -365,6 +365,8 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
             } finally {
                 IOUtils.closeQuietly(scriptContent);
             }
+        } else {
+            logger.warn("Cannot send mail, template [" + template + "] from module [" + templatePackageName + "] not found");
         }
     }
 

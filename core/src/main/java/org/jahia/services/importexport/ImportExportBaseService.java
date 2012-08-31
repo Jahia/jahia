@@ -42,6 +42,7 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.commons.io.FileCleaningTracker;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.lang.StringUtils;
@@ -136,6 +137,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
 	private long observerInterval = 10000;
     private static FileCleaningTracker fileCleaningTracker = new FileCleaningTracker();
+    private boolean expandImportedFilesOnDisk;
+    private String expandImportedFilesOnDiskPath;
 
     public static ImportExportBaseService getInstance() {
         if (instance == null) {
@@ -183,6 +186,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
 
 
+    }
+
+    public void setExpandImportedFilesOnDisk(boolean expandImportedFilesOnDisk) {
+        this.expandImportedFilesOnDisk = expandImportedFilesOnDisk;
+    }
+
+    public void setExpandImportedFilesOnDiskPath(String expandImportedFilesOnDiskPath) {
+        this.expandImportedFilesOnDiskPath = expandImportedFilesOnDiskPath;
     }
 
     class ImportFileObserver implements Observer {
@@ -895,6 +906,26 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         // session.save();
         ReferencesHelper.resolveCrossReferences(session, references);
         session.save(JCRObservationManager.IMPORT);
+        cleanFilesList(fileList);
+    }
+
+    private void cleanFilesList(List<String> fileList) {
+        if (expandImportedFilesOnDisk) {
+            for (String fileName : fileList) {
+                try {
+                    File toBeDeleted = new File(expandImportedFilesOnDiskPath + fileName);
+                    if (toBeDeleted.exists()) {
+                        if (toBeDeleted.isDirectory()) {
+                            FileUtils.deleteDirectory(toBeDeleted);
+                        } else {
+                            toBeDeleted.delete();
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+        }
     }
 
 
@@ -1484,6 +1515,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 zis.reallyClose();
             }
         }
+        cleanFilesList(fileList);
     }
 
     private void getFileList(File file, Map<String, Long> sizes, List<String> fileList) throws IOException {
@@ -1493,6 +1525,17 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 ZipEntry zipentry = zis.getNextEntry();
                 if (zipentry == null) break;
                 String name = zipentry.getName().replace('\\', '/');
+                if (expandImportedFilesOnDisk) {
+                    final File file1 = new File(expandImportedFilesOnDiskPath + File.separator + name);
+                    if(zipentry.isDirectory()) {
+                        file1.mkdirs();
+                    } else {
+                        file1.getParentFile().mkdirs();
+                        final FileOutputStream output = new FileOutputStream(file1);
+                        IOUtils.copyLarge(zis, output);
+                        output.close();
+                    }
+                }
                 if (name.endsWith(".xml")) {
                     BufferedReader br = new BufferedReader(new InputStreamReader(zis));
                     long i = 0;

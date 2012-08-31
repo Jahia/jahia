@@ -23,6 +23,7 @@
 <c:set var="numberOfTagsLimit"
        value="${not empty currentNode.properties['limit'] ? currentNode.properties['limit'].string : 50}"/>
 <jcr:node var="tagsRoot" path="${renderContext.site.path}/tags"/>
+<template:addCacheDependency flushOnPathMatchingRegexp="${renderContext.site.path}/tags/.*"/>
 <div class="tags">
     <h3><c:if
             test="${not empty currentNode.properties['jcr:title'] && not empty currentNode.properties['jcr:title'].string}"

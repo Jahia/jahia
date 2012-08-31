@@ -40,14 +40,16 @@
 
 package org.jahia.services.render.filter;
 
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
+import org.jahia.utils.Url;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Replaces contextual placeholders in internal links like ##mode## and ##lang## with their actual value.
@@ -58,14 +60,21 @@ import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
  */
 public class ContextPlaceholdersReplacer implements HtmlTagAttributeVisitor {
 
-    public static String CURRENT_CONTEXT_PLACEHOLDER = "{mode}";
-    public static String WORKSPACE_PLACEHOLDER = "{workspace}";
-    public static String LANG_PLACEHOLDER = "{lang}";
-    
+    public static String CURRENT_CONTEXT_PLACEHOLDER;
+    public static String WORKSPACE_PLACEHOLDER;
+    public static String LANG_PLACEHOLDER;
+
+    static {
+        CURRENT_CONTEXT_PLACEHOLDER = "{mode}";
+        WORKSPACE_PLACEHOLDER = "{workspace}";
+        LANG_PLACEHOLDER = "{lang}";
+    }
+
     private static Pattern CTX_PATTERN = Pattern.compile(CURRENT_CONTEXT_PLACEHOLDER, Pattern.LITERAL);
     private static Pattern WORKSPACE_PATTERN = Pattern.compile(WORKSPACE_PLACEHOLDER, Pattern.LITERAL);
     public static Pattern LANG_PATTERN = Pattern.compile(LANG_PLACEHOLDER, Pattern.LITERAL);
-    
+    public static Pattern SERVER_PATTERN = Pattern.compile("\\{server:([a-zA-Z_0-9\\-\\.]+)\\}");
+
     public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
         if (value != null) {
             String contextPath = null;
@@ -75,6 +84,11 @@ public class ContextPlaceholdersReplacer implements HtmlTagAttributeVisitor {
                contextPath = "contribute";
             } else{
                contextPath = "render";
+            }
+            Matcher serverMatcher = SERVER_PATTERN.matcher(value);
+            if (serverMatcher.find()) {
+                String serverName = serverMatcher.group(1);
+                value = serverMatcher.replaceFirst(Url.getServer(context.getRequest(), serverName));
             }
             value = LANG_PATTERN.matcher(
                     CTX_PATTERN.matcher(value).replaceAll(contextPath+"/"+resource.getWorkspace())).replaceAll(resource.getLocale().toString());

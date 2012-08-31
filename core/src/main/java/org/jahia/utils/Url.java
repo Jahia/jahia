@@ -161,14 +161,19 @@ public class Url {
      * @return the server URL, including scheme, host and port
      */
     public static String getServer(HttpServletRequest request) {
+        return getServer(request.getScheme(), request.getServerName(), request.getServerPort());
+    }
+
+    public static String getServer(HttpServletRequest request, String servername) {
+        return getServer(request.getScheme(), servername, request.getServerPort());
+    }
+
+    public static String getServer(String scheme, String host, int port) {
         StringBuilder url = new StringBuilder();
-        String scheme = request.getScheme();
-        String host = request.getServerName();
 
-        int port = SettingsBean.getInstance().getSiteURLPortOverride();
-
-        if (port == 0) {
-            port = request.getServerPort();
+        int portOverride = SettingsBean.getInstance().getSiteURLPortOverride();
+        if (portOverride != 0) {
+            port = portOverride;
         }
 
         url.append(scheme).append("://").append(host);

@@ -40,32 +40,35 @@
 
 package org.jahia.services.content.interceptor;
 
-import static org.jahia.api.Constants.JAHIAMIX_REFERENCES_IN_FIELD;
-import static org.jahia.api.Constants.JAHIA_REFERENCE_IN_FIELD_PREFIX;
-
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
+import org.jahia.utils.Url;
 import org.jahia.utils.WebUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
-
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.jahia.api.Constants.JAHIAMIX_REFERENCES_IN_FIELD;
+import static org.jahia.api.Constants.JAHIA_REFERENCE_IN_FIELD_PREFIX;
 
 /**
  * URL Interceptor catches internal URLs inside richtext, and transform them to store references to the pointed nodes
@@ -95,7 +98,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
     private Pattern refPattern;
 
     private HtmlTagAttributeTraverser urlTraverser;
-    
+
     private String escape(String s) {
         s = s.replace("{","\\{");
         s = s.replace("}","\\}");
@@ -313,11 +316,10 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                 public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
                     if (StringUtils.isNotEmpty(value)) {
                         try {
-                            value = replacePlaceholdersByRefs(value, refs, property.getSession().getWorkspace().getName(), property.getSession().getLocale());
+                            value = replacePlaceholdersByRefs(value, refs, property.getSession().getWorkspace().getName(), property.getSession().getLocale(), property.getParent());
                             if ("#".equals(value) && attrName.toLowerCase().equals("src") && tagName.toLowerCase().equals("img")) {
                                 value = "/missing-image.png";
                             }
-                            
                         } catch (RepositoryException e) {
                             throw new RuntimeException(e);
                         }
@@ -460,7 +462,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
     }
 
 
-    private String replacePlaceholdersByRefs(final String originalValue, final Map<Long, String> refs, final String workspaceName, Locale locale) throws RepositoryException {
+    private String replacePlaceholdersByRefs(final String originalValue, final Map<Long, String> refs, final String workspaceName, Locale locale, final JCRNodeWrapper parent) throws RepositoryException {
 
         String pathPart = originalValue;
         if (logger.isDebugEnabled()) {
@@ -513,11 +515,20 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                     if (!site.getLanguagesAsLocales().contains(session.getLocale())) {
                         value = ContextPlaceholdersReplacer.LANG_PATTERN.matcher(value).replaceAll(site.getDefaultLanguage());
                     }
+                    String serverUrl = "";
+                    if (site != null) {
+                        JCRSiteNode currentSite = parent.getResolveSite();
+                        String serverName = site.getServerName();
+                        if (currentSite != null && !currentSite.getServerName().equals(serverName)) {
+                            serverUrl = "{server:" + serverName + "}";
+                        }
+                    }
                     if (isCmsContext) {
-                        value = CMS_CONTEXT_PLACEHOLDER_PATTERN.matcher(value).replaceAll(cmsContext);
+                        value = CMS_CONTEXT_PLACEHOLDER_PATTERN.matcher(value).replaceAll(serverUrl + cmsContext);
                         value = value.replace("/"+session.getWorkspace().getName(),"/"+workspaceName);
                     } else {
-                        StringBuilder builder = new StringBuilder(dmsContext);
+                        StringBuilder builder = new StringBuilder(serverUrl);
+                        builder.append(dmsContext);
                         builder.append(workspaceName).append(nodePath).append(ext);
                         value = builder.toString();
                     }

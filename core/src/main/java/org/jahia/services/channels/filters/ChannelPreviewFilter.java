@@ -72,7 +72,6 @@ public class ChannelPreviewFilter extends AbstractFilter {
         if (channel.isGeneric()) {
             return previousOut;
         }
-
         StringBuffer out = new StringBuffer(previousOut);
         Map<String,String> capabilities = channel.getCapabilities();
         if (capabilities != null
@@ -91,7 +90,7 @@ public class ChannelPreviewFilter extends AbstractFilter {
                 }
             }
             String[] imageSize = capabilities.get("decorator-image-sizes").split(",")[variantIndex].split("x");
-            String imageUrl = renderContext.getRequest().getContextPath() + "/" + capabilities.get("decorator-images").split(",")[variantIndex];
+            String imageUrl = renderContext.getRequest().getContextPath() + capabilities.get("decorator-images").split(",")[variantIndex];
             String[] position = capabilities.get("decorator-screen-positions").split(",")[variantIndex].split("x");
             String[] dimension = capabilities.get("usable-resolutions").split(",")[variantIndex].split("x");
 
@@ -100,7 +99,7 @@ public class ChannelPreviewFilter extends AbstractFilter {
             start += "<div style=\"position:absolute; left:" + (Integer.parseInt(position[0])+8) + "px; top:" + (Integer.parseInt(position[1])+7) + "px;";
             start += " width:" +  (Integer.parseInt(dimension[0])+15) + "px; height:" + dimension[1] + "px; overflow:hidden;\">" +
                     "<div>\n" +
-                    "<iframe height=\"" + dimension[1] +"\" width=\"" + dimension[0] +"\" src=\""+ (renderContext.getRequest().getContextPath() + "/" + renderContext.getURLGenerator().getCurrent() + "?channel="+channel.getIdentifier()+"&noembed=true&variant=" + variant) +"\"" +
+                    "<iframe height=\"" + dimension[1] +"\" width=\"" + dimension[0] +"\" src=\""+ (renderContext.getRequest().getContextPath() + renderContext.getURLGenerator().getCurrent() + "?channel="+channel.getIdentifier()+"&noembed=true&variant=" + variant) +"\"" +
                     " frameborder=\"0\" />\n" +
                     "</div>\n";
             return start;

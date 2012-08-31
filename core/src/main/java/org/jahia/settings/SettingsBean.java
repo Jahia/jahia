@@ -199,6 +199,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private int importMaxBatch;
 
+    private boolean expandImportedFilesOnDisk;
+    private String expandImportedFilesOnDiskPath;
+
     /**
      * Default constructor.
      *
@@ -362,6 +365,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             fileServletStatisticsEnabled = getBoolean("jahia.fileServlet.statisticsEnabled", false);
 
             importMaxBatch = getInt("importMaxBatch", 500);
+
+            expandImportedFilesOnDisk = getBoolean("expandImportedFilesOnDisk",false);
+            expandImportedFilesOnDiskPath = getString("expandImportedFilesOnDiskPath","/tmp");
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -1055,4 +1061,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return importMaxBatch;
     }
 
+    public boolean isExpandImportedFilesOnDisk() {
+        return expandImportedFilesOnDisk;
+    }
+
+    public String getExpandImportedFilesOnDiskPath() {
+        return expandImportedFilesOnDiskPath;
+    }
 }

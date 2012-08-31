@@ -125,6 +125,8 @@
             </bean>
         </property>
         -->
+        <property name="expandImportedFilesOnDisk" value="${expandImportedFilesOnDisk:false}"/>
+        <property name="expandImportedFilesOnDiskPath" value="${expandImportedFilesOnDiskPath:/tmp}"/>
 	</bean>
 
     <bean id="org.jahia.services.templates.TemplatePackageRegistry"

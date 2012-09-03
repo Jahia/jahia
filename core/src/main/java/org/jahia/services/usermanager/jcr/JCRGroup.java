@@ -330,7 +330,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                 Node member = (Node) iterator.next();
                 if (member.isNodeType(Constants.JAHIANT_MEMBER)) {
                     if (!member.hasProperty("j:member")) {
-                        logger.warn("Missing member property, ignoring group member " + member.getName() + "...");
+                        logger.warn("Missing member property for group "+mGroupname+"(key="+mGroupKey+"), ignoring group member " + member.getName() + "...");
                         continue;
                     }
                     Property memberProperty = member.getProperty("j:member");
@@ -338,7 +338,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                     try {
                         memberNode = memberProperty.getNode();
                     } catch (ItemNotFoundException infe) {
-                        logger.warn("Couldn't find group member " + member.getName() + "(uuid=" + memberProperty.getString() + "), ignoring...");
+                        logger.warn("Couldn't find group member " + member.getName() + "(uuid=" + memberProperty.getString() + ") for group "+mGroupname+"(key="+mGroupKey+"), ignoring...");
                     }
                     if (memberNode != null) {
                         if (memberNode.isNodeType(Constants.JAHIANT_USER)) {

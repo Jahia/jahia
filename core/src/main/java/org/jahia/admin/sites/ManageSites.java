@@ -127,6 +127,9 @@ public class ManageSites extends AbstractAdministrationModule {
     private static final Map<String, Integer> RANK;
     static {
         RANK = new HashMap<String, Integer>(3);
+        RANK.put("roles.xml", 5);
+        RANK.put("roles.zip", 5);
+        RANK.put("users.zip", 10);
         RANK.put("users.xml", 10);
         RANK.put("serverPermissions.xml", 20);
         RANK.put("shared.zip", 30);

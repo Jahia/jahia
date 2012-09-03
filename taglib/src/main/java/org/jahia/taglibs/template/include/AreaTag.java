@@ -288,6 +288,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 }
                 renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
             } else {
+                renderContext.getRequest().setAttribute("previousTemplate", null);
                 renderContext.getRequest().removeAttribute("skipWrapper");
                 node = mainResource.getNode();
                 pageContext.setAttribute("org.jahia.emptyArea",Boolean.FALSE, PageContext.PAGE_SCOPE);

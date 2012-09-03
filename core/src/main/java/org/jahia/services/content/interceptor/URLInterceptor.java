@@ -462,7 +462,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
     }
 
 
-    private String replacePlaceholdersByRefs(final String originalValue, final Map<Long, String> refs, final String workspaceName, Locale locale, final JCRNodeWrapper parent) throws RepositoryException {
+    private String replacePlaceholdersByRefs(final String originalValue, final Map<Long, String> refs, final String workspaceName,final Locale locale, final JCRNodeWrapper parent) throws RepositoryException {
 
         String pathPart = originalValue;
         if (logger.isDebugEnabled()) {
@@ -488,8 +488,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
         }
 
         final String path = "/" + pathPart;
-
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspaceName, locale, new JCRCallback<String>() {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspaceName, null, new JCRCallback<String>() {
             public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 String value = originalValue;
                 try {
@@ -512,7 +511,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                     nodePath = node.getPath();
                     value = originalValue.replace(path, nodePath + ext);
                     JCRSiteNode site = node.getResolveSite();
-                    if (!site.getLanguagesAsLocales().contains(session.getLocale())) {
+                    if (!site.getLanguagesAsLocales().contains(locale)) {
                         value = ContextPlaceholdersReplacer.LANG_PATTERN.matcher(value).replaceAll(site.getDefaultLanguage());
                     }
                     String serverUrl = "";

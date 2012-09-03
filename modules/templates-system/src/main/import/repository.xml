@@ -118,57 +118,16 @@
         </files>
         <contents j:originWS="default" jcr:primaryType="jnt:contentFolder"/>
         <base j:originWS="default" j:view="system" jcr:mixinTypes="jmix:theme" jcr:primaryType="jnt:template">
-          <editContent j:applyOn="jnt:content" j:hiddenTemplate="true" j:originWS="default" j:priority="10" j:requiredMode="contribute" j:requiredPermissions="_x0023__x002f_permissions_x002f_repository-permissions_x002f_jcr:all_default_x002f_jcr:write_default" jcr:primaryType="jnt:contentTemplate">
-            <pagecontent j:originWS="default" jcr:primaryType="jnt:contentList">
-              <custom-rows-960gs customColumn="16" divID="content" j:originWS="default" jcr:primaryType="jnt:customRow">
-                  <custom-rows-960gs-col1 j:originWS="default" jcr:primaryType="jnt:contentList">
-                    <edit-content icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_edit-content.png" j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.editContent)##"/>
-                      <language-switcher j:originWS="default" jcr:primaryType="jnt:languageSwitcher" typeOfDisplay="flag"/>
-                      <mainResourceDisplay-table j:mainResourceView="contribute.table" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay"/>
-                      <tabularList j:originWS="default" jcr:primaryType="jnt:tabularList">
-                        <content j:originWS="default" jcr:primaryType="jnt:contentList">
-                          <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myContent)##"/>
-                          <mainResourceDisplay-edit j:mainResourceView="contribute.edit" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay"/>
-                          <add-content j:originWS="default" j:type="" jcr:primaryType="jnt:addContent"/>
-                          <mainResourceDisplay-subnodes j:mainResourceView="contribute.subnodes" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay"/>
-                        </content>
-                        <metadata j:originWS="default" jcr:primaryType="jnt:contentList">
-                          <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(label.metadata)##"/>
-                          <mainResourceDisplay-metadata j:mainResourceView="contribute.editmetadata" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay"/>
-                        </metadata>
-                        <tags j:originWS="default" jcr:primaryType="jnt:contentList">
-                          <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(label.tags)##"/>
-                          <tag j:originWS="default" jcr:primaryType="jnt:displayTags">
-                            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(label.tag)##"/>
-                          </tag>
-                          <addTag j:originWS="default" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:tagging">
-                            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(label.tag)##"/>
-                          </addTag>
-                        </tags>
-                        <categories j:originWS="default" jcr:primaryType="jnt:contentList">
-                          <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(label.categories)##"/>
-                          <category j:bindedComponent="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_base_x002f_editContent_x002f_custom-rows-960gs-col1_x002f_edit-content_x002f_mainResourceDisplay-table" j:originWS="default" j:view="default" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:categorizing">
-                            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(label.category)##"/>
-                          </category>
-                          <category-1 j:bindedComponent="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_base_x002f_editContent_x002f_custom-rows-960gs-col1_x002f_edit-content_x002f_mainResourceDisplay-table" j:originWS="default" j:view="addcategory" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:categorizing">
-                            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(label.category)##"/>
-                          </category-1>
-                        </categories>
-                      </tabularList>
-                    </edit-content>
-                  </custom-rows-960gs-col1>
-              </custom-rows-960gs>
-            </pagecontent>
-          </editContent>
           <viewContent j:applyOn="jnt:content" j:hiddenTemplate="true" j:originWS="default" j:priority="10" jcr:primaryType="jnt:contentTemplate">
             <pagecontent j:originWS="default" jcr:primaryType="jnt:contentList">
               <custom-rows-960gs customColumn="16" divID="content" j:originWS="default" jcr:primaryType="jnt:customRow">
                   <custom-rows-960gs-col1 j:originWS="default" jcr:primaryType="jnt:contentList">
                     <view-content icon="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_view-content.png" j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                       <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.viewContent)##"/>
-                      <language-switcher j:originWS="default" jcr:primaryType="jnt:languageSwitcher" typeOfDisplay="flag"/>
-                      <mainResourceDisplay-table j:mainResourceView="contribute.table" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay"/>
+                        <back-to-parent-page j:originWS="default" jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:backToParentPage">
+                            <j:acl j:inherit="true" jcr:primaryType="jnt:acl" />
+                        </back-to-parent-page>
+                        <language-switcher j:originWS="default" jcr:primaryType="jnt:languageSwitcher" typeOfDisplay="flag"/>
                       <mainResourceDisplay j:mainResourceView="default" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay"/>
                     </view-content>
                   </custom-rows-960gs-col1>
@@ -180,8 +139,10 @@
               <custom-rows-960gs customColumn="16" divID="content" j:originWS="default" jcr:primaryType="jnt:customRow">
                   <custom-rows-960gs-col1 j:originWS="default" jcr:primaryType="jnt:contentList">
                     <view-document j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.viewDocument)##"/>
-                      <mainResourceDisplay-table j:mainResourceView="contribute.table" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay"/>
+                        <back-to-parent-page j:originWS="default" jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:backToParentPage">
+                            <j:acl j:inherit="true" jcr:primaryType="jnt:acl" />
+                        </back-to-parent-page>
+                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.viewDocument)##"/>
                       <mainResourceDisplay j:mainResourceView="detail" j:originWS="default" jcr:primaryType="jnt:mainResourceDisplay"/>
                     </view-document>
                   </custom-rows-960gs-col1>

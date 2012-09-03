@@ -15,10 +15,10 @@
 </c:otherwise>
 </c:choose>
 <div class="backToParent">
-   <c:if test="${!empty jcr:getParentOfType(renderContext.mainResource.node, 'jnt:page')}">
-		<c:url value='${url.base}${jcr:getParentOfType(renderContext.mainResource.node, "jnt:page").path}.html' var="action"/>
+   <c:if test="${!empty jcr:findDisplayableNode(renderContext.mainResource.node.parent, renderContext)}">
+		<c:url value='${url.base}${jcr:findDisplayableNode(renderContext.mainResource.node, renderContext).path}.html' var="action"/>
     </c:if>
-    <c:if test="${empty jcr:getParentOfType(renderContext.mainResource.node, 'jnt:page')}">
+    <c:if test="${empty jcr:findDisplayableNode(renderContext.mainResource.node.parent, renderContext)}">
         <c:set var="action">javascript:history.back()</c:set>
     </c:if>
     <a class="returnLink" href="${action}" title='<fmt:message key="backToPreviousPage"/>'>${title}</a>

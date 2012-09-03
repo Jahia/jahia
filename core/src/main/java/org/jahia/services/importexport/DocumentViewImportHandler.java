@@ -46,6 +46,7 @@ import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -86,7 +87,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
     private int rootBehavior = ROOT_BEHAVIOUR_REPLACE;
 
-    private int maxBatch = 5000;
+    private int maxBatch = SettingsBean.getInstance().getImportMaxBatch();
     private int batchCount = 0;
 
     private File archive;

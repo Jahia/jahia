@@ -191,6 +191,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     
     private boolean fileServletStatisticsEnabled;
 
+    private int importMaxBatch;
+
     /**
      * Default constructor.
      *
@@ -352,6 +354,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             guestGroupResourceKey = getString("guestGroupResourceKey");
             
             fileServletStatisticsEnabled = getBoolean("jahia.fileServlet.statisticsEnabled", false);
+
+            importMaxBatch = getInt("importMaxBatch", 500);
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -983,4 +987,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public boolean isUrlRewriteUseAbsoluteUrls() {
         return urlRewriteUseAbsoluteUrls;
     }
+    public int getImportMaxBatch() {
+        return importMaxBatch;
+    }
+
 }

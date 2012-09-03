@@ -401,11 +401,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                                             mime = JCRContentUtils.getMimeType(decodedQName);
                                             if (mime != null) {
                                                 logger.warn("Legacy or invalid import detected for node " + path +
-                                                            ", mime type cannot be resolved from file node, it should come from jcr:content node. Resolved mime type using servlet context instead=" +
+                                                            ", file should be in same named path. Mime type cannot be resolved from file node, it should come from jcr:content node. Resolved mime type using servlet context instead=" +
                                                             mime + ".");
                                             } else {
                                                 logger.warn("Legacy or invalid import detected for node " + path +
-                                                            ", mime type cannot be resolved from file node, it should come from jcr:content node. Tried resolving mime type using servlet context but it isn't registered!");
+                                                            ", file should be in same named path. Mime type cannot be resolved from file node, it should come from jcr:content node. Tried resolving mime type using servlet context but it isn't registered!");
                                             }
                                         }
                                     }

@@ -46,6 +46,10 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.Field;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -71,6 +75,7 @@ import java.util.*;
 public class EditContentEngine extends AbstractContentEngine {
 
     private String contentPath;
+    private HandlerRegistration handlerRegistration;
 
     private Button ok;
     private Map<String, GWTJahiaGetPropertiesResult> langCodeGWTJahiaGetPropertiesResultMap =
@@ -89,6 +94,12 @@ public class EditContentEngine extends AbstractContentEngine {
         init(engineContainer);
         loadEngine();
 
+
+        handlerRegistration = Window.addCloseHandler(new CloseHandler<Window>() {
+            public void onClose(CloseEvent<Window> event) {
+                close();
+            }
+        });
         //setTopComponent(toolBar);
     }
 
@@ -104,6 +115,14 @@ public class EditContentEngine extends AbstractContentEngine {
             public void onSuccess(Object result) {
             }
         });
+        closeEngine();
+    }
+
+    private void closeEngine() {
+        if (handlerRegistration != null) {
+            handlerRegistration.removeHandler();
+            handlerRegistration = null;
+        }
         container.closeEngine();
     }
 
@@ -275,12 +294,12 @@ public class EditContentEngine extends AbstractContentEngine {
             public void onApplicationFailure(Throwable throwable) {
                 Log.debug("Cannot get properties", throwable);
                 Info.display(Messages.get("label.error", "Error"),throwable.getLocalizedMessage());
-                EditContentEngine.this.container.closeEngine();
+                closeEngine();
             }
 
             @Override
             public void onSessionExpired() {
-                EditContentEngine.this.container.closeEngine();
+                closeEngine();
             }
         });
 
@@ -392,7 +411,7 @@ public class EditContentEngine extends AbstractContentEngine {
                             || node.getInheritedNodeTypes().contains("jmix:visibleInPagesTree")) {
                             refresh += Linker.REFRESH_PAGES;
                         }
-                        EditContentEngine.this.container.closeEngine();
+                        closeEngine();
                         linker.refresh(refresh);
                     }
                 });

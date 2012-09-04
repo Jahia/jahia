@@ -59,7 +59,10 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.*;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.JahiaAfterInitializationService;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportService;
@@ -247,6 +250,18 @@ class TemplatePackageDeployer implements ApplicationEventPublisherAware {
                 // reload the Spring application context for modules
                 templatePackageRegistry.resetBeanModules();
                 contextLoader.reload();
+                if (SpringContextSingleton.getInstance().getModuleContext() != null) {
+                    Map map = SpringContextSingleton.getInstance().getModuleContext().getBeansOfType(
+                            JahiaAfterInitializationService.class);
+                    for (Object o : map.values()) {
+                        JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
+                        try {
+                            initializationService.initAfterAllServicesAreStarted();
+                        } catch (JahiaInitializationException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                }
             }
         }
 

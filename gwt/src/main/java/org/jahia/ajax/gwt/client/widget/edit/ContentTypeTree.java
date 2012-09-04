@@ -336,7 +336,11 @@ public class ContentTypeTree extends LayoutContainer {
     }
 
     public void fillStore(List<GWTJahiaNode> nodes) {
-        store.add(nodes, true);
+        for (GWTJahiaNode node : nodes) {
+            if (node.getChildren().size()>0) {
+                store.add(node, true);
+            }
+        }
     }
 
     public void fillStore(List<String> paths, List<String> types, boolean includeSubTypes, boolean includeNonDependentModules) {
@@ -344,7 +348,7 @@ public class ContentTypeTree extends LayoutContainer {
         JahiaContentManagementService.App.getInstance().getContentTypesAsTree(paths, types, Arrays.asList("name"), includeSubTypes,  includeNonDependentModules,
                 new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> result) {
-                        store.add(result, true);
+                        fillStore(result);
                     }
                 }
         );

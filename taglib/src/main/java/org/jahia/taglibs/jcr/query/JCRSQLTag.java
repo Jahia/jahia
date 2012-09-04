@@ -68,7 +68,7 @@ public class JCRSQLTag extends AbstractJCRTag {
     private String statement;
     private long limit;
     private long offset;
-    
+
     public int doEndTag() throws JspException {
         QueryResult result = null;
         JahiaUser userToReset = null;
@@ -76,9 +76,9 @@ public class JCRSQLTag extends AbstractJCRTag {
             if (isUseRootUser()) {
                 userToReset = JCRSessionFactory.getInstance().getCurrentUser();
                 JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
-            }    
+            }
             result = executeQuery(getJCRSession());
-            
+
         } catch (RepositoryException e) {
             throw new JspTagException(e);
         } finally {
@@ -95,7 +95,7 @@ public class JCRSQLTag extends AbstractJCRTag {
      * Executes the query.
      *
      * @return the QueryResult instance with the results of the query
-     * @throws RepositoryException in case of JCR errors 
+     * @throws RepositoryException in case of JCR errors
      * @throws InvalidQueryException in case of bad query statement
      */
     private QueryResult executeQuery(JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {
@@ -115,12 +115,12 @@ public class JCRSQLTag extends AbstractJCRTag {
         // execute query
         queryResult = q.execute();
         if (logger.isDebugEnabled()) {
-            logger.debug(getQueryLanguage() + "[" + statement + "] executed in " + (System.currentTimeMillis() - startTime) +" ms --> found [" + queryResult + "] values.");
+            logger.debug(getQueryLanguage() + " [" + statement + "] executed in " + (System.currentTimeMillis() - startTime) +" ms --> found [" + queryResult.getRows().getSize() + "] values.");
         }
 
         return queryResult;
     }
-    
+
     @Override
     protected void resetState() {
         scope = PageContext.PAGE_SCOPE;
@@ -128,7 +128,7 @@ public class JCRSQLTag extends AbstractJCRTag {
         var = null;
         limit = 0;
         offset = 0;
-        useRootUser = false; 
+        useRootUser = false;
         super.resetState();
     }
 
@@ -151,10 +151,10 @@ public class JCRSQLTag extends AbstractJCRTag {
     public void setLimit(long limit) {
         this.limit = limit;
     }
-    
+
     /**
      * Returns the type of the query language.
-     * 
+     *
      * @return the type of the query language
      */
     protected String getQueryLanguage() {

@@ -36,7 +36,7 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() 
             } catch (PathNotFoundException e) {
                 // permission not present -> skip it
             } catch (RepositoryException e) {
-                logger.errror("Unable to update permission " + mapping.getKey(), e);
+                log.errror("Unable to update permission " + mapping.getKey(), e);
             }
         }
 

@@ -77,11 +77,15 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
             }
             if (requirePermissions != null) {
                 chain.pushAttribute(renderContext.getRequest(),"cache.dynamicRolesAcls",Boolean.TRUE);
-                String[] perms = Patterns.SPACE.split(requirePermissions);
-                for (String perm : perms) {
-                    if (!node.hasPermission(perm)) {
-                        return "";
+                if (requirePermissions.indexOf(' ') != -1) {
+                    String[] perms = Patterns.SPACE.split(requirePermissions);
+                    for (String perm : perms) {
+                        if (!hasPermission(node, perm)) {
+                            return "";
+                        }
                     }
+                } else if (!hasPermission(node, requirePermissions)) {
+                    return "";
                 }
             }
         } else {
@@ -176,6 +180,21 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
             }
         }
         return invert ? "" : null;
+    }
+
+    private boolean hasPermission(JCRNodeWrapper node, String perm) {
+        if (perm.indexOf('|') == -1) {
+            return node.hasPermission(perm);
+        } else {
+            String[] perms = Patterns.PIPE.split(perm);
+            for (String p : perms) {
+                if (node.hasPermission(p)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     @Override

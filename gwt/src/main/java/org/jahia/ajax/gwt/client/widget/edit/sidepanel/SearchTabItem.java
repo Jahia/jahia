@@ -45,6 +45,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
@@ -68,6 +69,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
@@ -348,6 +350,18 @@ class SearchTabItem extends SidePanelTabItem {
         combo.setTypeAhead(true);
         combo.setTriggerAction(ComboBox.TriggerAction.ALL);
         combo.setForceSelection(true);
+        combo.getStore().setStoreSorter(new StoreSorter<GWTJahiaNodeType>(new Comparator<Object>() {
+            public int compare(Object o1, Object o2) {
+                if (o1 instanceof String && o2 instanceof String) {
+                    String s1 = (String) o1;
+                    String s2 = (String) o2;
+                    return Collator.getInstance().localeCompare(s1, s2);
+                } else if (o1 instanceof Comparable && o2 instanceof Comparable) {
+                    return ((Comparable) o1).compareTo(o2);
+                }
+                return 0;
+            }
+        }));
         JahiaContentManagementService.App.getInstance().getContentTypes(Arrays.asList("jmix:editorialContent", "jnt:portlet"), true, false, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
             public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
                 for (GWTJahiaNodeType key : result.keySet()) {

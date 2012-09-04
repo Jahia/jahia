@@ -50,8 +50,6 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 
-import java.util.Random;
-
 /**
  * User: ktlili
  * Date: Nov 25, 2009

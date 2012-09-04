@@ -47,6 +47,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.templates.TemplateUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 import java.util.Map;
@@ -63,7 +64,8 @@ import javax.servlet.RequestDispatcher;
  * Time: 7:20:38 PM
  */
 public class FileSystemView implements Comparable<FileSystemView>, View {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FileSystemView.class);
+    private static final Properties EMPTY_PROPERTIES = new Properties();
+    private static Logger logger = LoggerFactory.getLogger(FileSystemView.class);
     private String path;
     private String fileExtension;
     private String key;
@@ -91,21 +93,23 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
             this.fileExtension = path.substring(lastDotPos+1);
         }
 
-        String propName = StringUtils.substringBeforeLast(path, "." + fileExtension) + ".properties";
-        String defaultPropName = StringUtils.substringBefore(path, ".") + ".properties";
-        String thumbnail = StringUtils.substringBeforeLast(path, "." + fileExtension) + ".png";
-        String defaultThumbnail = StringUtils.substringBefore(path, ".") + ".png";
+        String pathWithoutExtension = StringUtils.substringBeforeLast(path, "." + fileExtension);
+        String propName = pathWithoutExtension + ".properties";
+        String pathBeforeDot = StringUtils.substringBefore(path, ".");
+        String defaultPropName = pathBeforeDot + ".properties";
+        String thumbnail = pathWithoutExtension + ".png";
+        String defaultThumbnail = pathBeforeDot + ".png";
         getProperties(propName, thumbnail, false);
         getProperties(defaultPropName, defaultThumbnail, true);
     }
 
     private void getProperties(String propName, String thumbnail, boolean defaultProps) {
-        Properties properties;
-        if (!propCache.containsKey(propName)) {
-            properties = new Properties();
-            propCache.put(propName, properties);
+        Properties properties = propCache.get(propName);
+        if (properties == null) {
+            properties = EMPTY_PROPERTIES;
             InputStream is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(propName);
             if (is != null) {
+                properties = new Properties();
                 try {
                     properties.load(is);
                 } catch (IOException e) {
@@ -118,11 +122,11 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
 
             if (TemplateUtils.isResourceAvailable(thumbnail)) {
                 properties.put(THUMBNAIL, Jahia.getContextPath() + thumbnail);
-
             }
-        } else {
-            properties = propCache.get(propName);
+            
+            propCache.put(propName, properties);
         }
+        
         if(defaultProps) {
             this.defaultProperties = properties;
         } else {

@@ -44,21 +44,26 @@ import org.jahia.services.content.*;
 import org.jbpm.api.Execution;
 import org.jbpm.api.listener.EventListener;
 import org.jbpm.api.listener.EventListenerExecution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.List;
 
 /**
- * 
+ *
  * User: toto
  * Date: Feb 4, 2010
  * Time: 8:04:51 PM
- * 
+ *
  */
 public class JBPMListener implements EventListener {
     /** The serialVersionUID. */
     private static final long serialVersionUID = 665473577321892992L;
-    
+
+    private static final Logger logger = LoggerFactory.getLogger(JBPMListener.class);
+
     private JBPMProvider provider;
 
     public JBPMListener(JBPMProvider provider) {
@@ -78,14 +83,27 @@ public class JBPMListener implements EventListener {
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         if (ids != null) {
                             for (String id : ids) {
-                                final JCRNodeWrapper node = session.getNodeByUUID(id);
+                                JCRNodeWrapper node = null;
+                                ItemNotFoundException previousException = null;
+                                try{
+                                    node = session.getNodeByUUID(id);
+                                } catch (ItemNotFoundException e) {
+                                    previousException = e;
+                                }
                                 if (Execution.STATE_ACTIVE_ROOT.equals(executionState)) {
+                                    if (previousException != null) {
+                                        throw new ItemNotFoundException(previousException);
+                                    }
                                     provider.getWorkflowService().addProcessId(node,
                                             provider.getKey(), executionId);
 
                                 } else if (Execution.STATE_ENDED.equals(executionState)) {
-                                    provider.getWorkflowService().removeProcessId(node,
-                                            provider.getKey(), executionId);
+                                    if (node != null) {
+                                        provider.getWorkflowService().removeProcessId(node,
+                                                provider.getKey(), executionId);
+                                    } else {
+                                        logger.warn("A workflow process may have been partially ended because this node cannot be found: " + previousException.getMessage());
+                                    }
                                 }
                             }
                         }

@@ -757,10 +757,13 @@ public class Service extends JahiaService {
 
                 boolean needPrivileged = false;
                 for (String role : roles) {
-                    JCRNodeWrapper roleNode = session.getNode("/roles/"+role);
-                    if (roleNode.hasProperty("j:privilegedAccess") && roleNode.getProperty("j:privilegedAccess").getBoolean()) {
-                        needPrivileged = true;
-                        break;
+                    try {
+                        JCRNodeWrapper roleNode = session.getNode("/roles/"+role);
+                        if (roleNode.hasProperty("j:privilegedAccess") && roleNode.getProperty("j:privilegedAccess").getBoolean()) {
+                            needPrivileged = true;
+                            break;
+                        }
+                    } catch (PathNotFoundException e) {
                     }
                 }
 

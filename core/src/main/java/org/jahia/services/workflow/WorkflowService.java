@@ -113,8 +113,8 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         }
         if(!list.contains(definition)) {
             list.add(definition);
-            workflowTypeByDefinition.put(definition,type);
         }
+        workflowTypeByDefinition.put(definition,type);
         this.workflowPermissions.put(definition, perms);
     }
 

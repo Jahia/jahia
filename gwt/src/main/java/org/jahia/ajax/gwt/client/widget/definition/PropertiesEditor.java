@@ -183,10 +183,10 @@ public class PropertiesEditor extends FormPanel {
                 continue;
             }
 
+            addItems(nodeType, nodeType.getItems(), false, fieldSetGrouping, null);
             if (viewInheritedItems) {
                 addItems(nodeType, nodeType.getInheritedItems(), false, fieldSetGrouping, null);
             }
-            addItems(nodeType, nodeType.getItems(), false, fieldSetGrouping, null);
         }
         if (mixin != null) {
             for (GWTJahiaNodeType mix : mixin) {
@@ -194,12 +194,10 @@ public class PropertiesEditor extends FormPanel {
                     continue;
                 }
 
+                addItems(mix, mix.getItems(), true, fieldSetGrouping, null);
                 if (viewInheritedItems) {
                     addItems(mix, mix.getInheritedItems(), true, fieldSetGrouping, null);
                 }
-
-                addItems(mix, mix.getItems(), true, fieldSetGrouping, null);
-
             }
         }
     }

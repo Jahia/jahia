@@ -116,6 +116,10 @@ public class ContentTabItem extends PropertiesTabItem {
             if (adapterField != null) {
                 ((FieldSet) adapterField.getParent()).insert(name, 0);
                 titleField = adapterField.getField();
+                FieldSet titleFieldSet = propertiesEditor.getFieldSetsMap().get(adapterField.getDefinition().getDeclaringNodeType());
+                propertiesEditor.remove(titleFieldSet);
+                propertiesEditor.insert(titleFieldSet, 0);
+
             } else {
                 propertiesEditor.insert(nameFieldSet, 0);
                 titleField = null;

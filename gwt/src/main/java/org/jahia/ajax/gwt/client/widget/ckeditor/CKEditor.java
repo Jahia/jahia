@@ -113,7 +113,6 @@ public class CKEditor extends Component {
     protected void onAttach() {
         // added to a gwt panel, not rendered
         if (isDetached) {
-            instanceId = getElement().getId();
             initEditor();
             isDetached = false;
         }

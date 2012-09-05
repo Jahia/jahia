@@ -609,6 +609,10 @@ public abstract class AbstractFilter implements RenderFilter {
         return priority;
     }
 
+    public boolean isDisabled() {
+        return disabled;
+    }
+
     public void handleError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e) {
         if (logger.isDebugEnabled()) {
             logger.debug("Handling exception {} in {}", e.getMessage(), resource.getNode().getPath());

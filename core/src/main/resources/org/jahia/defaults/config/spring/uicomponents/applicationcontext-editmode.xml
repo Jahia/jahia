@@ -561,14 +561,14 @@
                     </bean>
                   </property>
                 </bean>
-                <!--<bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="lastContent"/>
                     <property name="icon" value="tab-lastcontent"/>
                     <property name="tabItem">
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.LastContentBrowseTabItem">
                             <property name="search"
-                                      value="select * from [jnt:content] as content where not content.[jcr:primaryType] = 'jnt:socialActivity' order by content.['jcr:lastModified'] desc"/>
-                            <property name="limit" value="100"/>
+                                      value="select * from [jmix:editorialContent] as content where isdescendantnode(content,['$site']) order by content.['jcr:lastModified'] desc"/>
+                            <property name="limit" value="25"/>
                             <property name="cssWrapper" value="bodywrapper"/>
                         </bean>
                     </property>
@@ -605,7 +605,7 @@
                         </bean>
                     </property>
                     <property name="requiredPermission" value="latestSelector"/>
-                </bean>-->
+                </bean>
             </list>
         </property>
 

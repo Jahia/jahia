@@ -514,18 +514,26 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                     if (!site.getLanguagesAsLocales().contains(locale)) {
                         value = ContextPlaceholdersReplacer.LANG_PATTERN.matcher(value).replaceAll(site.getDefaultLanguage());
                     }
-                    String serverUrl = "";
-                    if (site != null) {
-                        JCRSiteNode currentSite = parent.getResolveSite();
-                        String serverName = site.getServerName();
-                        if (currentSite != null && !currentSite.getServerName().equals(serverName)) {
-                            serverUrl = "{server:" + serverName + "}";
-                        }
-                    }
                     if (isCmsContext) {
+                        String serverUrl = "";
+                        if (site != null) {
+                            JCRSiteNode currentSite = parent.getResolveSite();
+                            String serverName = site.getServerName();
+                            if (currentSite != null && !currentSite.getServerName().equals(serverName)) {
+                                serverUrl = "{cms-server:" + serverName + "}";
+                            }
+                        }
                         value = CMS_CONTEXT_PLACEHOLDER_PATTERN.matcher(value).replaceAll(serverUrl + cmsContext);
                         value = value.replace("/"+session.getWorkspace().getName(),"/"+workspaceName);
                     } else {
+                        String serverUrl = "";
+                        if (site != null) {
+                            JCRSiteNode currentSite = parent.getResolveSite();
+                            String serverName = site.getServerName();
+                            if (currentSite != null && !currentSite.getServerName().equals(serverName)) {
+                                serverUrl = "{dms-server:" + serverName + "}";
+                            }
+                        }
                         StringBuilder builder = new StringBuilder(serverUrl);
                         builder.append(dmsContext);
                         builder.append(workspaceName).append(nodePath).append(ext);

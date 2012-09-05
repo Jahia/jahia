@@ -73,7 +73,8 @@ public class ContextPlaceholdersReplacer implements HtmlTagAttributeVisitor {
     private static Pattern CTX_PATTERN = Pattern.compile(CURRENT_CONTEXT_PLACEHOLDER, Pattern.LITERAL);
     private static Pattern WORKSPACE_PATTERN = Pattern.compile(WORKSPACE_PLACEHOLDER, Pattern.LITERAL);
     public static Pattern LANG_PATTERN = Pattern.compile(LANG_PLACEHOLDER, Pattern.LITERAL);
-    public static Pattern SERVER_PATTERN = Pattern.compile("\\{server:([a-zA-Z_0-9\\-\\.]+)\\}");
+    public static Pattern CMS_SERVER_PATTERN = Pattern.compile("\\{cms-server:([a-zA-Z_0-9\\-\\.]+)\\}");
+    public static Pattern DMS_SERVER_PATTERN = Pattern.compile("\\{dms-server:([a-zA-Z_0-9\\-\\.]+)\\}");
 
     public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
         if (value != null) {
@@ -85,7 +86,16 @@ public class ContextPlaceholdersReplacer implements HtmlTagAttributeVisitor {
             } else{
                contextPath = "render";
             }
-            Matcher serverMatcher = SERVER_PATTERN.matcher(value);
+            Matcher serverMatcher = CMS_SERVER_PATTERN.matcher(value);
+            if (serverMatcher.find()) {
+                String serverName = serverMatcher.group(1);
+                if (context.isLiveMode() && !"localhost".equals(serverName)) {
+                    value = serverMatcher.replaceFirst("");
+                } else {
+                    value = serverMatcher.replaceFirst(Url.getServer(context.getRequest(), serverName));
+                }
+            }
+            serverMatcher = DMS_SERVER_PATTERN.matcher(value);
             if (serverMatcher.find()) {
                 String serverName = serverMatcher.group(1);
                 value = serverMatcher.replaceFirst(Url.getServer(context.getRequest(), serverName));

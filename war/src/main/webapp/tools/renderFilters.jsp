@@ -6,6 +6,7 @@
 <%@ page import="org.jahia.services.render.filter.RenderFilter" %>
 <%@ page import="org.jbpm.pvm.internal.env.SpringContext" %>
 <%@ page import="org.jahia.services.SpringContextSingleton" %>
+<%@ page import="java.util.Collections" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -13,18 +14,27 @@
 <%
     String beanName = request.getParameter("bean");
     String s= request.getParameter("switch");
-    if (beanName != null && "true".equals(s)) {
+    int p= request.getParameter("priority") == null ? 0 : Integer.parseInt(request.getParameter("priority"));
+    int pp= request.getParameter("previousPriority") == null ? 0 : Integer.parseInt(request.getParameter("previousPriority"));
 
-        AbstractFilter abstractFilter = null;
+    if (beanName != null) {
+
+        AbstractFilter abstractFilter;
         for (RenderFilter f : RenderService.getInstance().getRenderChainInstance().getFilters()) {
-            if (f.getClass().getName().equals(beanName)) {
+            if (f.getClass().getName().equals(beanName) && (p == 0 || p == f.getPriority())) {
+                System.out.print("processing bean " + beanName);
                 abstractFilter = (AbstractFilter) f;
-                break;
+                if ("true".equals(s)) {
+                    abstractFilter.setDisabled(!abstractFilter.isDisabled());
+                    System.out.print(abstractFilter.isDisabled() ? " disable" : " enable");
+                    System.out.println(" filter");
+                } else if ("priority".equals(s)) {
+                    System.out.println("change priority from " + f.getPriority() + " to " + pp);
+                    abstractFilter.setPriority(pp);
+                    RenderService.getInstance().getRenderChainInstance().doSort();
+                }
             }
-        }
 
-        if (abstractFilter != null ) {
-            abstractFilter.setDisabled(!abstractFilter.isDisabled());
         }
     }
 
@@ -52,7 +62,7 @@
         <th>Description</th>
         <th>Conditions</th>
         <th>status</th>
-        <th>action</th>
+        <th>actions</th>
     </tr>
     </thead>
     <tbody>
@@ -76,8 +86,14 @@
             </td>
             <td>${fn:escapeXml(filter.conditionsSummary)}</td>
             <td><c:if test="${!empty aFilter}">${aFilter.disabled?"<font color='red'>disable</font>":"<font color='green'>enable</font>"}</c:if></td>
-            <td><c:if test="${!empty aFilter}"><a href="renderFilters.jsp?bean=${filter.class.name}&switch=true">${aFilter.disabled?"enable":"disable"}</a></c:if></td>
+            <td>
+                <c:if test="${!empty aFilter}">
+                    <a href="renderFilters.jsp?bean=${filter.class.name}&switch=true&priority=${filter.priority}">${aFilter.disabled?"enable":"disable"}</a>
+                </c:if>
+                <a href="renderFilters.jsp?bean=${filter.class.name}&switch=priority&priority=${filter.priority}&previousPriority=${(!empty previousPriority?previousPriority:filter.priority) -1}">down</a>
+            </td>
         </tr>
+        <c:set var="previousPriority" value="${filter.priority}"/>
     </c:forEach>
     </tbody>
 </table>

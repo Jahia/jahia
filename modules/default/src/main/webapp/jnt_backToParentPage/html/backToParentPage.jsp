@@ -16,7 +16,7 @@
 </c:choose>
 <div class="backToParent">
    <c:if test="${!empty jcr:findDisplayableNode(renderContext.mainResource.node.parent, renderContext)}">
-		<c:url value='${url.base}${jcr:findDisplayableNode(renderContext.mainResource.node, renderContext).path}.html' var="action"/>
+		<c:url value='${url.base}${jcr:findDisplayableNode(renderContext.mainResource.node.parent, renderContext).path}.html' var="action"/>
     </c:if>
     <c:if test="${empty jcr:findDisplayableNode(renderContext.mainResource.node.parent, renderContext)}">
         <c:set var="action">javascript:history.back()</c:set>

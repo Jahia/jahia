@@ -31,7 +31,7 @@
                 } else if ("priority".equals(s)) {
                     System.out.println("change priority from " + f.getPriority() + " to " + pp);
                     abstractFilter.setPriority(pp);
-                    RenderService.getInstance().getRenderChainInstance().doSort();
+                    RenderService.getInstance().getRenderChainInstance().doSortFilters();
                 }
             }
 

@@ -118,7 +118,7 @@ public class RenderChain {
      */
     public void addFilters(Collection<RenderFilter> filters) {
         this.filters.addAll(filters);
-        doSort();
+        doSortFilters();
     }
 
     /**
@@ -199,7 +199,7 @@ public class RenderChain {
         return out;
     }
 
-    public void doSort(){
+    public void doSortFilters(){
         Collections.sort(this.filters);
     }
 

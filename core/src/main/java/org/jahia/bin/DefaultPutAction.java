@@ -40,10 +40,12 @@
 
 package org.jahia.bin;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -59,10 +61,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class DefaultPutAction extends Action {
     
@@ -115,8 +114,21 @@ public class DefaultPutAction extends Action {
                     }
                 }
             }
+<<<<<<< .working
 
             session.save();
+=======
+            for (String s : node.getNodeTypes()) {
+                Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
+                for (ExtendedPropertyDefinition propDef : propDefs) {
+                    if (propDef.isMandatory() && !propDef.isProtected() && (!node.hasProperty(propDef.getName()) ||
+                                                                                              StringUtils.isEmpty(node.getProperty(propDef.getName()).getString()))) {
+                        throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
+                    }
+                }
+            }
+            session.save();
+>>>>>>> .merge-right.r42953
         } catch (ConstraintViolationException e) {
             return ActionResult.BAD_REQUEST;
         }

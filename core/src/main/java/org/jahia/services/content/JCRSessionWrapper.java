@@ -487,6 +487,23 @@ public class JCRSessionWrapper implements Session {
                     }
                 }
             }
+            for (JCRNodeWrapper node : changedNodes.values()) {
+                try {
+                    for (String s : node.getNodeTypes()) {
+                        Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
+                        for (ExtendedPropertyDefinition propDef : propDefs) {
+                            if (propDef.isMandatory() &&
+                                propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
+                                propDef.getRequiredType() != PropertyType.REFERENCE &&
+                                !propDef.isProtected() && (!node.hasProperty(propDef.getName()) || StringUtils.isEmpty(node.getProperty(propDef.getName()).getString()))) {
+                                throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
+                            }
+                        }
+                    }
+                } catch (InvalidItemStateException e) {
+                    logger.warn("A new node can no longer be accessed to run validation checks", e);
+                }
+            }
         }
         newNodes.clear();
         changedNodes.clear();

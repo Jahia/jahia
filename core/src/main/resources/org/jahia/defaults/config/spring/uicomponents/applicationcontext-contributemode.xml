@@ -54,7 +54,7 @@
                                     <property name="useMainNode" value="true"/>
                                 </bean>
                             </property>
-                            <property name="titleKey" value="label.editPage"/>
+                            <property name="titleKey" value="label.edit"/>
                             <property name="icon" value="editContent"/>
                             <property name="hideWhenDisabled" value="true"/>
                         </bean>

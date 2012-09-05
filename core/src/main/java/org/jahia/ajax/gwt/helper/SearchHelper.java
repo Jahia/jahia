@@ -40,17 +40,13 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.jahia.services.content.*;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchCriteria.Term.SearchFields;
@@ -177,6 +173,12 @@ public class SearchHelper {
     public List<GWTJahiaNode> searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes,
                                         List<String> filters, List<String> fields, JCRSiteNode site, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
+            if(searchString.contains("$site") && site!=null) {
+                searchString = searchString.replace("$site", site.getPath());
+            }
+            if(searchString.contains("$systemsite") && site!=null) {
+                searchString = searchString.replace("$systemsite", JCRContentUtils.getSystemSitePath());
+            }
             Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(searchString,Query.JCR_SQL2);
             q.setLimit(limit);
             return navigation.executeQuery(q, nodeTypes, mimeTypes, filters,fields, (site != null ? Arrays.asList(site.getSiteKey()): null), false);

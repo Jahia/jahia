@@ -36,22 +36,20 @@
         <attribute>
             <description><![CDATA[
                 <p>The path of the parent node.</p>
-                <p>Jahia Content Objects can be used as Parent Node are : Jahia Page, Jahia ContainerList, Jahia Site
-                With jahia container query tags, path value should be generated using one of the
+                <p>Any Jahia Content Objects can be used as Child Node.
+                With jahia container query tags, path value can be generated using one of the
                 following ways:
                 <ul>
                 <li>1. "/" means returns containers from all virtual sites.</li>
-                <li>2. In the context of a JSP page, Jahia provides a currentPage bean and a currentSite bean in request scope so you
-                can directly refer to all pages or site to generate their paths :
-                <code>&lt;query:childNode path="${currentPage.path}"/&gt;</code>
-                Any instance object of <code>SiteBean</code>, <code>PageBean</code>, <code>ContainerListBean</code> classes have the method <code>getJCRPath():String</code>
-                for that purpose.</li>
-                <li>3. This path can be obtained through the method : getJCRPath(ProcessingContext context):String on the
-                followin classes : JahiaSite, JahiaPage; ContentPage, JahiaContainerList or ContentContainerList. This method is not
-                recommanded as it supposes to have some scriplet in your JSPs.</li>
+                <li>2. In the context of a JSP page, Jahia provides a renderContext bean in request
+                scope so you can directly refer resources like page and site paths :<br>
+                For page:<br/>
+                <code>&lt;query:childNode path="${renderContext.mainResource.node.path}"/&gt;</code><br>
+                For site: <br/>
+                <code>&lt;query:childNode path="${renderContext.site.path}"/&gt;</code><br>
+                </li>
                 </ul>
-                Note that if the Parent Node is a Jahia Page, the JahiaDBFilterCreator will create a search filter
-                instead of a DB filter.</p>]]>
+                </p>]]>
             </description>
             <name>path</name>
             <required>true</required>

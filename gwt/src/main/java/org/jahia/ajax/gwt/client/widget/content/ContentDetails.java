@@ -385,35 +385,53 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             getNode().getNodeTypes().removeAll(removedTypes);
             getNode().getNodeTypes().addAll(addedTypes);
 
-            // Ajax call to update values
-            AsyncCallback callback = new BaseAsyncCallback() {
-                public void onApplicationFailure(Throwable throwable) {
-                    String message = throwable.getMessage();
-                    if (message.contains("Invalid link")) {
-                        message = Messages.get("label.error.invalidlink", "Invalid link") + " : " + message.substring(message.indexOf(":")+1);
-                    }
-                    com.google.gwt.user.client.Window.alert(Messages.get("label.error.invalidlink", "Properties save failed") + "\n\n"
-                            + message);
-                    Log.error("failed", throwable);
+            EngineValidation e = new EngineValidation(tabs, defaultLanguageCode, changedI18NProperties);
+            EngineValidation.ValidateResult r = e.validateData();
+            if (!r.allValid) {
+    			MessageBox.alert(Messages.get("label.error", "Error"),
+    			        Messages.get("failure.invalid.constraint.label",
+    			                "There are some validation errors!"
+    			                        + " Click on the information icon next to the"
+    			                        + " highlighted fields, correct the input and save again."),
+    			        null);
+                if (r.firstErrorTab != null && !tabs.getSelectedItem().equals(r.firstErrorTab)) {
+                    tabs.setSelection(r.firstErrorTab);
                 }
-
-                public void onSuccess(Object o) {
-                    Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
-                    if (getNodes().contains(linker.getSelectionContext().getMainNode())) {
-                        linker.refresh(Linker.REFRESH_ALL);
-                    } else {
-                        linker.refreshTable();
-                    }
+                if (r.firstErrorField != null) {
+                    r.firstErrorField.focus();
                 }
-            };
-
-            if (isMultipleSelection()) {
-                JahiaContentManagementService.App.getInstance().savePropertiesAndACL(getNodes(), null, changedI18NProperties, changedProperties, removedTypes, callback);
-
+                r.firstErrorTab.layout();
             } else {
-                JahiaContentManagementService.App.getInstance()
-                        .saveNode(getNode(), orderedChildrenNodes, acl, changedI18NProperties, changedProperties,
-                                removedTypes, callback);
+                // Ajax call to update values
+                AsyncCallback callback = new BaseAsyncCallback() {
+                    public void onApplicationFailure(Throwable throwable) {
+                        String message = throwable.getMessage();
+                        if (message.contains("Invalid link")) {
+                            message = Messages.get("label.error.invalidlink", "Invalid link") + " : " + message.substring(message.indexOf(":")+1);
+                        }
+                        com.google.gwt.user.client.Window.alert(Messages.get("label.error.invalidlink", "Properties save failed") + "\n\n"
+                                + message);
+                        Log.error("failed", throwable);
+                    }
+
+                    public void onSuccess(Object o) {
+                        Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
+                        if (getNodes().contains(linker.getSelectionContext().getMainNode())) {
+                            linker.refresh(Linker.REFRESH_ALL);
+                        } else {
+                            linker.refreshTable();
+                        }
+                    }
+                };
+
+                if (isMultipleSelection()) {
+                    JahiaContentManagementService.App.getInstance().savePropertiesAndACL(getNodes(), null, changedI18NProperties, changedProperties, removedTypes, callback);
+
+                } else {
+                    JahiaContentManagementService.App.getInstance()
+                            .saveNode(getNode(), orderedChildrenNodes, acl, changedI18NProperties, changedProperties,
+                                    removedTypes, callback);
+                }
             }
         }
 

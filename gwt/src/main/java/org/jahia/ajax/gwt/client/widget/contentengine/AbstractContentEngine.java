@@ -547,85 +547,31 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected abstract void prepareAndSave(boolean closeAfterSave);
     
 	protected boolean validateData() {
-        boolean allValid = true;
-        TabItem firstErrorTab = null;
-        Field<?> firstErrorField = null;
-        GWTJahiaLanguage firstErrorLang = null;
-        for (TabItem tab : tabs.getItems()) {
-            EditEngineTabItem item = tab.getData("item");
-            if (item instanceof PropertiesTabItem) {
-                PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
-                PropertiesEditor pe = ((PropertiesTabItem) item).getPropertiesEditor();
-                if (pe != null) {
-                    for (PropertiesEditor.PropertyAdapterField adapterField : pe.getFieldsMap().values()) {
-                        Field<?> field = adapterField.getField();
-                        if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet)adapterField.getParent()).isExpanded()) {
-                            if (allValid || tab.equals(tabs.getSelectedItem())
-                                    && !tab.equals(firstErrorTab)) {
-                                firstErrorTab = tab;
-                                firstErrorField = field;
-                            }
-                            allValid = false;
-                        }
-                    }
-                    if (!allValid) {
-                        continue;
-                    }
-                }
+        EngineValidation e = new EngineValidation(tabs, getSelectedLanguage(), changedI18NProperties);
+        EngineValidation.ValidateResult r = e.validateData();
 
-                // handle multilang
-                if (propertiesTabItem.isMultiLang()) {
-                    // for now only contentTabItem  has multilang. properties
-                    if (getSelectedLanguage() != null) {
-                        final String lang = getSelectedLanguage();
-                        for (String language : changedI18NProperties.keySet()) {
-                            if (!lang.equals(language)) {
-                                PropertiesEditor lpe = propertiesTabItem.getPropertiesEditorByLang(language);
-                                if (lpe != null) {
-                                    for (PropertiesEditor.PropertyAdapterField adapterField : lpe.getFieldsMap().values()) {
-                                        Field<?> field = adapterField.getField();
-                                        if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet)adapterField.getParent()).isExpanded() && adapterField.getDefinition().isInternationalized()) {
-                                            if (allValid || tab.equals(tabs.getSelectedItem())
-                                                    && !tab.equals(firstErrorTab)) {
-                                                firstErrorTab = tab;
-                                                firstErrorField = field;
-                                            }
-                                            allValid = false;
-                                        }
-                                    }
-                                    if (!allValid) {
-                                        for (GWTJahiaLanguage gwtLang : languageSwitcher.getStore().getModels()) {
-                                            if (language.equals(gwtLang.getLanguage())) {
-                                                firstErrorLang = gwtLang;
-                                                break;
-                                            }
-                                        }
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        if (!allValid) {
+        if (!r.allValid) {
 			MessageBox.alert(Messages.get("label.error", "Error"),
 			        Messages.get("failure.invalid.constraint.label",
 			                "There are some validation errors!"
 			                        + " Click on the information icon next to the"
 			                        + " highlighted fields, correct the input and save again."),
 			        null);
-            if (firstErrorLang != null) {
-                languageSwitcher.setValue(firstErrorLang);                
+            if (r.firstErrorLang != null) {
+                for (GWTJahiaLanguage jahiaLanguage : languageSwitcher.getStore().getModels()) {
+                    if (jahiaLanguage.getLanguage().equals(r.firstErrorLang)) {
+                        languageSwitcher.setValue(jahiaLanguage);
+                        break;
+                    }
+                }
             }
-            if (firstErrorTab != null && !tabs.getSelectedItem().equals(firstErrorTab)) {
-                tabs.setSelection(firstErrorTab);
+            if (r.firstErrorTab != null && !tabs.getSelectedItem().equals(r.firstErrorTab)) {
+                tabs.setSelection(r.firstErrorTab);
             }
-            if (firstErrorField != null) {
-                firstErrorField.focus();
+            if (r.firstErrorField != null) {
+                r.firstErrorField.focus();
             }
-            firstErrorTab.layout();
+            r.firstErrorTab.layout();
             unmask();
             setButtonsEnabled(true);
             return false;

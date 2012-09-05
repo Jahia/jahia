@@ -114,6 +114,7 @@ public class JCRSessionWrapper implements Session {
     private Map<String, JCRNodeWrapper> sessionCacheByPath = new HashMap<String, JCRNodeWrapper>();
     private Map<String, JCRNodeWrapper> sessionCacheByIdentifier = new HashMap<String, JCRNodeWrapper>();
     private Map<String, JCRNodeWrapper> newNodes = new HashMap<String, JCRNodeWrapper>();
+    private Map<String, JCRNodeWrapper> changedNodes = new HashMap<String, JCRNodeWrapper>();
 
     private Map<String, String> nsToPrefix = new HashMap<String, String>();
     private Map<String, String> prefixToNs = new HashMap<String, String>();
@@ -424,9 +425,14 @@ public class JCRSessionWrapper implements Session {
         newNodes.put(node.getPath(), node);
     }
 
+    void registerChangedNode(JCRNodeWrapper node) {
+        changedNodes.put(node.getPath(), node);
+    }
+
     void unregisterNewNode(JCRNodeWrapper node) {
-        if (!newNodes.isEmpty()) {
+        if (!newNodes.isEmpty() || !changedNodes.isEmpty() ) {
             newNodes.remove(node.getPath());
+            changedNodes.remove(node.getPath());
             try {
                 if (node.hasNodes()) {
                     NodeIterator it = node.getNodes();
@@ -461,8 +467,26 @@ public class JCRSessionWrapper implements Session {
                     logger.warn("A new node can no longer be accessed to run validation checks", e);
                 }
             }
+            for (JCRNodeWrapper node : changedNodes.values()) {
+                try {
+                    for (String s : node.getNodeTypes()) {
+                        Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
+                        for (ExtendedPropertyDefinition propDef : propDefs) {
+                            if (propDef.isMandatory() &&
+                                propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
+                                propDef.getRequiredType() != PropertyType.REFERENCE &&
+                                !propDef.isProtected() && (!node.hasProperty(propDef.getName()) || StringUtils.isEmpty(node.getProperty(propDef.getName()).getString()))) {
+                                throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
+                            }
+                        }
+                    }
+                } catch (InvalidItemStateException e) {
+                    logger.warn("A new node can no longer be accessed to run validation checks", e);
+                }
+            }
         }
         newNodes.clear();
+        changedNodes.clear();
 
         JCRObservationManager.doWorkspaceWriteCall(this, operationType, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper thisSession) throws RepositoryException {
@@ -480,6 +504,7 @@ public class JCRSessionWrapper implements Session {
         }
         if (!b) {
             newNodes.clear();
+            changedNodes.clear();
             flushCaches();
         }
     }

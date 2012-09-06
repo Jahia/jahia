@@ -656,6 +656,7 @@
             <ref bean="Toolbar.Item.Paste"/>
           </list>
         </property>
+<<<<<<< .working
       </bean>
     </property>
     <property name="displaySearchInPage" value="false"/>
@@ -667,6 +668,17 @@
     <property name="searchInFile" value="false"/>
     <property name="hideLeftPanel" value="true"/>
     <property name="defaultView" value="detailed"/>
+=======
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="true"/>
+        <property name="searchInContent" value="false"/>
+        <property name="searchInFile" value="false"/>
+        <property name="hideLeftPanel" value="true"/>
+        <property name="defaultView" value="detailed"/>
+>>>>>>> .merge-right.r42961
 
     <!-- accordion -->
     <property name="repositories">
@@ -686,12 +698,27 @@
       </list>
     </property>
 
+<<<<<<< .working
     <!-- table columns-->
     <property name="tableColumns">
       <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
         <value>name,*,label.name</value>
       </list>
     </property>
+=======
+        <property name="treeColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>displayName,*,label.title</value>
+            </list>
+        </property>
+
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>displayName,*,label.name</value>
+            </list>
+        </property>
+>>>>>>> .merge-right.r42961
 
   </bean>
 

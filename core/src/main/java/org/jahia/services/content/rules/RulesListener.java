@@ -351,7 +351,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                             if (logger.isDebugEnabled()) {
                                                 logger.debug("Path " + path + " not found, might be normal if using VFS", pnfe);
                                             }
-                                            logger.warn("Couldn't access path " + path + ", ignoring it since it's not supported on some external repositories... ");
+                                            logger.warn("Couldn't access path " + path + ", ignoring it. If not an external repository need to be investigated. ");
                                         }
                                     } else if (propertyName.equals("j:published")) {
                                         JCRNodeWrapper n = eventUuid != null ? s.getNodeByIdentifier(eventUuid) : s.getNode(path);

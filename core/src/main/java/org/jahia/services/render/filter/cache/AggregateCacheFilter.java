@@ -379,8 +379,18 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(properties.getProperty("cache.mainResource", "false")));
             }
             String requestParameters = properties.getProperty("cache.requestParameters");
+            if (SettingsBean.getInstance().isDevelopmentMode()) {
+                StringBuilder stringBuilder = new StringBuilder(requestParameters != null ? requestParameters : "");
+                if (stringBuilder.length() == 0) {
+                    stringBuilder.append("cacheinfo,moduleinfo");
+                } else {
+                    stringBuilder.append(",cacheinfo,moduleinfo");
+                }
+                requestParameters = stringBuilder.toString();
+            }
             if (requestParameters != null && !"".equals(requestParameters.trim())) {
-                chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", Patterns.COMMA.split(requestParameters));
+                chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", Patterns.COMMA.split(
+                        requestParameters));
             } else {
                 chain.pushAttribute(renderContext.getRequest(), "cache.requestParameters", null);
             }

@@ -566,21 +566,10 @@ public class ConflictResolver {
 //            }
             if (targetNode.hasNode(oldName)) {
                 final JCRNodeWrapper node = targetNode.getNode(oldName);
-                addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_"+new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date()));
+                JCRPublicationService.getInstance().addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_"+Constants.DATE_FORMAT.format(new Date()));
                 node.remove();
             }
             return true;
-        }
-
-        private void addRemovedLabel(JCRNodeWrapper node, final String label) throws RepositoryException {
-            if (node.isVersioned()) {
-                node.getVersionHistory().addVersionLabel(node.getBaseVersion().getName(), label, false);
-            }
-            NodeIterator ni = node.getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
-                addRemovedLabel(child, label);
-            }
         }
 
         @Override

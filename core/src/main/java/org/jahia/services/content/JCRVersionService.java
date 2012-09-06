@@ -55,6 +55,7 @@ import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
 import javax.jcr.version.VersionManager;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -152,6 +153,15 @@ public class JCRVersionService extends JahiaService {
             String[] labels = vh.getVersionLabels();
             for (String label : labels) {
                 if (label.startsWith(vh.getSession().getWorkspace().getName()+"_removed")) {
+                    try {
+                        Date removedAt = Constants.DATE_FORMAT.parse(StringUtils.substringAfter(label, vh.getSession().getWorkspace().getName() + "_removed_at_"));
+                        if (removedAt.before(versionDate)) {
+                            return null;
+                        }
+                    } catch (ParseException e1) {
+                        logger.error("Cannot parse deletion date for label "+label ,e1);
+                        return null;
+                    }
                     Version base = vh.getVersionByLabel(label);
                     LinkedList<Version> versions = new LinkedList<Version>();
                     while (base != null) {

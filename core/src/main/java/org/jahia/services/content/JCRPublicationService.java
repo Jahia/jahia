@@ -404,6 +404,7 @@ public class JCRPublicationService extends JahiaService {
             
             for (JCRNodeWrapper nodeWrapper : toDeleteOnSource) {
                 try {
+                    addRemovedLabel(nodeWrapper, nodeWrapper.getSession().getWorkspace().getName() + "_removed_at_"+Constants.DATE_FORMAT.format(calendar.getTime()));
                     nodeWrapper.remove();
                 } catch (InvalidItemStateException e) {
                     logger.warn("Already deleted : "+nodeWrapper.getPath());
@@ -412,6 +413,7 @@ public class JCRPublicationService extends JahiaService {
             for (String s : toDelete) {
                 try {
                     JCRNodeWrapper node = destinationSession.getNodeByIdentifier(s);
+                    addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_"+Constants.DATE_FORMAT.format(calendar.getTime()));
                     node.remove();
                 } catch (ItemNotFoundException e) {
                     logger.warn("Already deleted : "+s);
@@ -451,7 +453,7 @@ public class JCRPublicationService extends JahiaService {
             }
         }
     }
-    
+
     private void cloneParents(JCRNodeWrapper node, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
         String path;
         try {
@@ -1361,6 +1363,17 @@ public class JCRPublicationService extends JahiaService {
 //        while (pi.hasNext()) {
 //            Property p = pi.nextProperty();
 //        }
+    }
+
+    protected void addRemovedLabel(JCRNodeWrapper node, final String label) throws RepositoryException {
+        if (node.isVersioned()) {
+            node.getVersionHistory().addVersionLabel(node.getBaseVersion().getName(), label, false);
+        }
+        NodeIterator ni = node.getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
+            addRemovedLabel(child, label);
+        }
     }
 
     /**

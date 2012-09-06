@@ -45,6 +45,7 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
+import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.utils.Url;
 
@@ -73,8 +74,9 @@ public class ContextPlaceholdersReplacer implements HtmlTagAttributeVisitor {
     private static Pattern CTX_PATTERN = Pattern.compile(CURRENT_CONTEXT_PLACEHOLDER, Pattern.LITERAL);
     private static Pattern WORKSPACE_PATTERN = Pattern.compile(WORKSPACE_PLACEHOLDER, Pattern.LITERAL);
     public static Pattern LANG_PATTERN = Pattern.compile(LANG_PLACEHOLDER, Pattern.LITERAL);
-    public static Pattern CMS_SERVER_PATTERN = Pattern.compile("\\{cms-server:([a-zA-Z_0-9\\-\\.]+)\\}");
-    public static Pattern DMS_SERVER_PATTERN = Pattern.compile("\\{dms-server:([a-zA-Z_0-9\\-\\.]+)\\}");
+    public static Pattern SERVER_PATTERN = Pattern.compile("\\{server:([a-zA-Z_0-9\\-\\.]+)\\}");
+
+    private UrlRewriteService urlRewriteService;
 
     public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
         if (value != null) {
@@ -86,26 +88,26 @@ public class ContextPlaceholdersReplacer implements HtmlTagAttributeVisitor {
             } else{
                contextPath = "render";
             }
-            Matcher serverMatcher = CMS_SERVER_PATTERN.matcher(value);
+            Matcher serverMatcher = SERVER_PATTERN.matcher(value);
             if (serverMatcher.find()) {
                 String serverName = serverMatcher.group(1);
-                if (context.isLiveMode() && !"localhost".equals(serverName)) {
+                    if (urlRewriteService != null && urlRewriteService.isSeoRulesEnabled() && context.isLiveMode()
+                        && !"localhost".equals(serverName)) {
                     value = serverMatcher.replaceFirst("");
                 } else {
                     value = serverMatcher.replaceFirst(Url.getServer(context.getRequest(), serverName));
                 }
             }
-            serverMatcher = DMS_SERVER_PATTERN.matcher(value);
-            if (serverMatcher.find()) {
-                String serverName = serverMatcher.group(1);
-                value = serverMatcher.replaceFirst(Url.getServer(context.getRequest(), serverName));
-            }
             value = LANG_PATTERN.matcher(
                     CTX_PATTERN.matcher(value).replaceAll(contextPath+"/"+resource.getWorkspace())).replaceAll(resource.getLocale().toString());
             value = WORKSPACE_PATTERN.matcher(value).replaceAll(resource.getWorkspace());
         }
-        
+
         return value;
     }
-    
+
+    public void setUrlRewriteService(UrlRewriteService urlRewriteService) {
+        this.urlRewriteService = urlRewriteService;
+    }
+
 }

@@ -176,6 +176,10 @@ public class ServerNameToSiteMapper {
         }
     }
 
+    public void analyzeLink(HttpServletRequest request, String ctx, String siteKey, String path) {
+        analyzeLink(request, ctx, null, siteKey, path);
+    }
+
     public void checkCmsPrefix(HttpServletRequest request, String ctx, String input) {
         boolean doRemove = getUrlRewriteService().isSeoRemoveCmsPrefix();
         if (doRemove && input.length() > 0) {

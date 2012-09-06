@@ -43,8 +43,8 @@
         <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
         <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)/?(cms/)?([a-z]{2}(_[A-Z]{2})?/)?users/.*</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)/?(cms/)?([a-z]{2}(_[A-Z]{2})?/)?sites/.*</condition>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?users/.*</condition>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?sites/.*</condition>
         <from>^/cms/([a-z]{2}(_[A-Z]{2})?/)?(.*)$</from>
         <to>/cms/$1sites/%{attribute:jahiaSiteKeyForCurrentServerName}/$3</to>
     </rule>
@@ -56,7 +56,17 @@
         <from>^/cms/(.*)$</from>
         <to last="true">/cms/render/live/$1</to>
     </rule>
-      
+
+    <rule>
+        <note>Add the key of the site if it was resolved by server name, and if URL does not start with /sites</note>
+        <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
+        <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
+        <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/files/(default|live)/sites/.*</condition>
+        <from>^/files/(.*)$</from>
+        <to last="true">/files/live/sites/%{attribute:jahiaSiteKeyForCurrentServerName}/files/$1</to>
+    </rule>
+
     <!-- Outbound rules -->
     <outbound-rule>
         <name>Perform outbound URL analysis</name>
@@ -125,4 +135,38 @@
         <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/(.*)?$</from>
         <to>$1%{attribute:jahiaSeoCmsToken}/$2</to>
     </outbound-rule>
+
+    <outbound-rule>
+        <name>Perform outbound URL analysis on files link</name>
+        <note>
+            Main analysis of the outbound URL (link in the generated HTML response) is done here.
+
+            Checks if the target site key in the processed URL is mapped to the current server name. If yes, it sets the request variable jahiaSiteKeyMatchesCurrentServerName to true.
+        </note>
+        <from>^(/[\p{Alnum}\-_]*)?/files/live/sites/([\p{Alnum}\-_]+)/(.*)$</from>
+        <run class="org.jahia.services.seo.urlrewrite.ServerNameToSiteMapper" method="analyzeLink(HttpServletRequest, String, String, String)"/>
+    </outbound-rule>
+
+    <outbound-rule>
+        <name>Handle files link to a resource of same site</name>
+        <note>
+            Removes the site key from the URL if the current server name is mapped to this site.
+        </note>
+        <condition type="attribute" name="jahiaSiteKeyMatchesCurrentServerName" operator="equal">^true$</condition>
+        <condition type="attribute" name="jahiaSeoServernameForLink" operator="equal">^$</condition>
+        <from>^(/[\p{Alnum}\-_]*)?/files/live/sites/([\p{Alnum}\-_]+)/files(/.*)$</from>
+        <to>$1/files$3</to>
+    </outbound-rule>
+
+    <outbound-rule>
+        <name>Handles files link to a resource of another site: switch hostname</name>
+        <note>
+            Removes the site key from the URL and changes the server name.
+            Removes the /live part.
+        </note>
+        <condition type="attribute" name="jahiaSeoServernameForLink" operator="notequal">^$</condition>
+        <from>^(/[\p{Alnum}\-_]*)?/files/live/sites/([\p{Alnum}\-_]+)/files(/.*)$</from>
+        <to>%{scheme}://%{attribute:jahiaSeoServernameForLink}$1/files$3</to>
+    </outbound-rule>
+
 </urlrewrite>

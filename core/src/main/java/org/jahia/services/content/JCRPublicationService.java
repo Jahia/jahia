@@ -283,32 +283,13 @@ public class JCRPublicationService extends JahiaService {
 
         final String destinationWorkspace = destinationSession.getWorkspace().getName();
 
+        JCRNodeWrapper sourceNodeParent = sourceNode.getParent();
         try {
-            sourceNode.getParent().getCorrespondingNodePath(destinationWorkspace);
+            sourceNodeParent.getCorrespondingNodePath(destinationWorkspace);
         } catch (ItemNotFoundException e) {
-            if (!destinationSession.isSystem()) {
-                final String parentPath = sourceNode.getParent().getPath();
-                JCRTemplate.getInstance().doExecute(true, sourceNode.getUser().getUsername(),
-                        sourceNode.getSession().getWorkspace().getName(), null, new JCRCallback<Object>() {
-                            public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
-                                return JCRTemplate.getInstance()
-                                        .doExecute(true, sourceNode.getUser().getUsername(), destinationWorkspace,
-                                                new JCRCallback<Object>() {
-                                                    public Object doInJCR(final JCRSessionWrapper destinationSession)
-                                                            throws RepositoryException {
-                                                        cloneParents(sourceSession.getNode(parentPath), sourceSession,
-                                                                destinationSession);
-                                                        sourceSession.save();
-                                                        destinationSession.save();
-                                                        return null;
-                                                    }
-                                                });
-                            }
-                        });
-            } else {
-                cloneParents(sourceNode.getParent(), sourceNode.getSession(), destinationSession);
-            }
+            ensureNodeInDestinationWorkspace(sourceNodeParent, destinationSession);
         }
+        
 
 //        final List<String> uuidsToPublish = publicationInfo.getAllPublishableUuids();
 
@@ -454,13 +435,44 @@ public class JCRPublicationService extends JahiaService {
         }
     }
 
+    private void ensureNodeInDestinationWorkspace(final JCRNodeWrapper node,
+            JCRSessionWrapper destinationSession) throws AccessDeniedException,
+            NoSuchWorkspaceException, RepositoryException {
+        if (!destinationSession.isSystem()) {
+            final String nodePath = node.getPath();
+            final String destinationWorkspace = destinationSession.getWorkspace().getName();
+            JCRTemplate.getInstance().doExecute(true, node.getUser().getUsername(),
+                    node.getSession().getWorkspace().getName(), null, new JCRCallback<Object>() {
+                        public Object doInJCR(final JCRSessionWrapper sourceSession)
+                                throws RepositoryException {
+                            return JCRTemplate.getInstance().doExecute(true,
+                                    node.getUser().getUsername(), destinationWorkspace,
+                                    new JCRCallback<Object>() {
+                                        public Object doInJCR(
+                                                final JCRSessionWrapper destinationSession)
+                                                throws RepositoryException {
+                                            cloneParents(sourceSession.getNode(nodePath),
+                                                    sourceSession, destinationSession);
+                                            sourceSession.save();
+                                            destinationSession.save();
+                                            return null;
+                                        }
+                                    });
+                        }
+                    });
+        } else {
+            cloneParents(node, node.getSession(), destinationSession);
+        }
+    }
+
     private void cloneParents(JCRNodeWrapper node, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
+        JCRNodeWrapper parent = node.getParent();
         String path;
         try {
-            path = node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+            path = parent.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
         } catch (ItemNotFoundException e) {
-            cloneParents(node.getParent(), sourceSession, destinationSession);
-            path = node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+            cloneParents(parent, sourceSession, destinationSession);
+            path = parent.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
             try {
                 // Check if node still does not exist in target space - if it has been cloned with parent, return
                 node.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
@@ -468,8 +480,8 @@ public class JCRPublicationService extends JahiaService {
             } catch (ItemNotFoundException ee) {
             }
         }
-        JCRNodeWrapper destinationNode = doClone(node, null, sourceSession, destinationSession);
-        if (node.getParent().isNodeType("mix:versionable")) {
+        doClone(node, null, sourceSession, destinationSession);
+        if (parent.isNodeType("mix:versionable")) {
             checkpoint(destinationSession, destinationSession.getNode(path),
                     destinationSession.getWorkspace().getVersionManager());
         }
@@ -552,22 +564,29 @@ public class JCRPublicationService extends JahiaService {
                 if (logger.isDebugEnabled()) {
                     logger.debug(
                         "Merge node : " + path + " source v=" + node.getBaseVersion().getName() + " , dest node v=" +
-                                destinationSession.getNode(destinationPath).getBaseVersion().getName());
+                                destinationNode.getBaseVersion().getName());
                 }
 
                 if (!node.getPath().equals(destinationPath)) {
                     try {
                         destinationVersionManager
                                 .checkout(StringUtils.substringBeforeLast(destinationPath, "/")); // previous parent
-                        String newParentPath = node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+                        JCRNodeWrapper nodeParent = node.getParent();
+                        String newParentPath = null;
+                        try {
+                            newParentPath = nodeParent.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+                        } catch (ItemNotFoundException e) {
+                            ensureNodeInDestinationWorkspace(nodeParent, destinationSession);
+                            newParentPath = nodeParent.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+                        }
                         destinationVersionManager.checkout(newParentPath); // new parent
-                        recurseCheckout(destinationSession.getNode(destinationPath), null,
-                                destinationVersionManager); // node and sub nodes
+                        recurseCheckout(destinationNode, null, destinationVersionManager); // node and sub nodes
 
-                        destinationSession.move(destinationPath, newParentPath + "/" + node.getName());
+                        String newDestinationPath = newParentPath + "/" + node.getName();
+                        destinationSession.move(destinationPath, newDestinationPath);
                         destinationSession.save();
 
-                        destinationPath = newParentPath + "/" + node.getName();
+                        destinationPath = newDestinationPath;
                         destinationNode = destinationSession.getNode(destinationPath);
 
                         JCRNodeWrapper destinationParent = destinationSession.getNode(newParentPath);

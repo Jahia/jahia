@@ -57,7 +57,7 @@ end
 
 rule "A workflow task has been completed"
     when
->		property : ChangedPropertyFact ( name == "state" , stringValue == "finished" , node : node, node.types contains "jnt:workflowTask" )
+>		property : ChangedPropertyFact ( name == "state" , stringValue == "finished" , node : node, node.types contains "jnt:workflowTask", operationType != "import" )
     then
 >       tasks.completeTask(node);
 end

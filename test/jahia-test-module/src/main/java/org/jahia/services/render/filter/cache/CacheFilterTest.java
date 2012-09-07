@@ -51,6 +51,7 @@ import org.jahia.services.usermanager.jcr.JCRGroup;
 import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import org.jahia.utils.Patterns;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -200,6 +201,7 @@ public class CacheFilterTest {
 
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
         CacheKeyGenerator generator = moduleCacheProvider.getKeyGenerator();
+        context.getRequest().setAttribute("cache.requestParameters", Patterns.COMMA.split("cacheinfo,moduleinfo"));
         final String key = generator.generate(resource, context);
         moduleCacheProvider.getCache().removeAll();
         

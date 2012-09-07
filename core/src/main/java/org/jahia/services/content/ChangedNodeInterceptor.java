@@ -59,7 +59,7 @@ public class ChangedNodeInterceptor extends BaseInterceptor {
                                 Value originalValue) throws ValueFormatException, VersionException, LockException,
                                                             ConstraintViolationException, RepositoryException {
         JCRSessionWrapper session = node.getSession();
-        session.registerChangedNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
+        session.registerChangedNode(node);
         return super.beforeSetValue(node, name, definition, originalValue);
     }
 
@@ -68,7 +68,7 @@ public class ChangedNodeInterceptor extends BaseInterceptor {
                                    Value[] originalValues) throws ValueFormatException, VersionException, LockException,
                                                                   ConstraintViolationException, RepositoryException {
         JCRSessionWrapper session = node.getSession();
-        session.registerChangedNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
+        session.registerChangedNode(node);
         return super.beforeSetValues(node, name, definition, originalValues);
     }
 
@@ -76,7 +76,7 @@ public class ChangedNodeInterceptor extends BaseInterceptor {
     public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition)
             throws VersionException, LockException, ConstraintViolationException, RepositoryException {
         JCRSessionWrapper session = node.getSession();
-        session.registerChangedNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
+        session.registerChangedNode(node);
         super.beforeRemove(node, name, definition);
     }
 }

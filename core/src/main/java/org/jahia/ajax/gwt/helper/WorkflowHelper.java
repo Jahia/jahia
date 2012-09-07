@@ -99,28 +99,27 @@ public class WorkflowHelper {
             Map<GWTJahiaWorkflowType, GWTJahiaWorkflow> gwtWorkflows = new HashMap<GWTJahiaWorkflowType, GWTJahiaWorkflow>();
             info.setActiveWorkflows(gwtWorkflows);
 
-            List<Workflow> actives = service.getActiveWorkflows(node,locale);
-            for (Workflow workflow : actives) {
-                GWTJahiaWorkflow gwtWf = getGWTJahiaWorkflow(workflow);
-                gwtWorkflows.put(getGWTJahiaWorkflowType(service.getWorkflowType(workflow.getWorkflowDefinition())),gwtWf);
-                for (WorkflowAction workflowAction : workflow.getAvailableActions()) {
-                    if (workflowAction instanceof WorkflowTask) {
-                        WorkflowTask workflowTask = (WorkflowTask) workflowAction;
-                        List<WorkflowParticipation> participations = workflowTask.getParticipations();
-                        if (participations != null) {
-                            for (WorkflowParticipation participation : participations) {
-                                JahiaPrincipal principal = participation.getJahiaPrincipal();
-                                if ((principal instanceof JahiaGroup && ((JahiaGroup) principal).isMember(session.getUser())) ||
-                                    (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(session.getUser().getUserKey()))) {
-                                    gwtWf.getAvailableTasks().add(getGWTJahiaWorkflowTask(workflowTask));
-                                    break;
-                                }
-                            }
-                        }
-
-                    }
-                }
-            }
+//            List<Workflow> actives = service.getActiveWorkflows(node,locale);
+//            for (Workflow workflow : actives) {
+//                GWTJahiaWorkflow gwtWf = getGWTJahiaWorkflow(workflow);
+//                gwtWorkflows.put(getGWTJahiaWorkflowType(service.getWorkflowType(workflow.getWorkflowDefinition())),gwtWf);
+//                for (WorkflowAction workflowAction : workflow.getAvailableActions()) {
+//                    if (workflowAction instanceof WorkflowTask) {
+//                        WorkflowTask workflowTask = (WorkflowTask) workflowAction;
+//                        List<WorkflowParticipation> participations = workflowTask.getParticipations();
+//                        if (participations != null) {
+//                            for (WorkflowParticipation participation : participations) {
+//                                JahiaPrincipal principal = participation.getJahiaPrincipal();
+//                                if ((principal instanceof JahiaGroup && ((JahiaGroup) principal).isMember(session.getUser())) ||
+//                                        (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(session.getUser().getUserKey()))) {
+//                                    gwtWf.getAvailableTasks().add(getGWTJahiaWorkflowTask(workflowTask));
+//                                    break;
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
 
             return info;
         } catch (RepositoryException e) {

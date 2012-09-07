@@ -190,6 +190,13 @@ public class CKEditor extends Component {
         focus=true;
     }
 
+    public void onFocus() {
+        field.onFocus();
+    }
+    public void onBlur() {
+        field.onBlur();
+    }
+
     public String getInstanceId() {
         return instanceId;
     }
@@ -220,6 +227,14 @@ public class CKEditor extends Component {
         $wnd.CKEDITOR.tools.extend(cfg, overrideOptions, true);
         var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId, cfg);
         oCKeditor.checkWCAGCompliance = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::checkWCAGCompliance(Ljava/lang/String;);
+        thisck = this;
+        oCKeditor.on('blur', function(event) {
+            thisck.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::onBlur()()
+        });
+        oCKeditor.on('focus', function(event) {
+            thisck.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::onFocus()()
+        });
+
         return true;
       }-*/;
 

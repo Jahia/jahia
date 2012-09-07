@@ -131,7 +131,7 @@ public class VersionViewer extends ContentPanel {
 
         final Label[] label = {null};
 
-        label[0] = new Label(("live".equals(workspace) ? Messages.get("label_live_version", "Live version") : Messages.get("label_staging_version", "Staging version"))+ " ");
+        label[0] = new Label(("live".equals(workspace) ? Messages.get("label.live.version", "Live version") : Messages.get("label.staging.version", "Staging version"))+ " ");
 
         // combo box that allows to select the version
         if (displayVersionSelector) {

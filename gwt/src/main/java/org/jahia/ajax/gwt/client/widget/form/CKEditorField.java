@@ -191,9 +191,12 @@ public class CKEditorField extends Field<String> {
         onLoad();
     }
 
-    @Override
-    protected void onBlur(ComponentEvent ce) {
+    public void onBlur() {
+        super.onBlur(null);
+    }
 
+    public void onFocus() {
+        super.onFocus(null);
     }
 
     @Override
@@ -305,7 +308,7 @@ public class CKEditorField extends Field<String> {
             clearInvalid();
             return true;
           } else {
-            forceInvalid(blankText);
+            markInvalid(blankText);
             return false;
           }
         }

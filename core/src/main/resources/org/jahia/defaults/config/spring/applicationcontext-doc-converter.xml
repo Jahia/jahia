@@ -8,14 +8,13 @@
     	<!-- set this to true to enable the service -->
         <property name="enabled" value="${documentConverter.enabled}"/>
         <!-- contains the name of the bean that provides configured OfficeManager instance (not the reference to the bean itself) -->
-        <property name="officeManagerBeanName" value="localOfficeManagerFactory"/>
-        <!-- 
-        <property name="officeManagerBeanName" value="remoteOfficeManagerFactory"/>
-         -->
+        <property name="officeManagerBeanName" value="${documentConverter.officeManagerFactory:localOfficeManagerFactory}"/>
     </bean>
 
     <bean name="localOfficeManagerFactory" class="org.jahia.services.transform.LocalOfficeManagerFactory" lazy-init="true">
         <property name="officeHome" value="${documentConverter.officeHome}"/>
+        <property name="portNumber" value="${documentConverter.officePort:2002}"/>
+        <property name="killExistingOfficeProcessOnWindows" value="${documentConverter.killExistingOfficeProcessOnWindows:true}"/>
     </bean>
 
     <bean name="remoteOfficeManagerFactory" class="org.jahia.services.transform.RemoteOfficeManagerFactory" lazy-init="true">

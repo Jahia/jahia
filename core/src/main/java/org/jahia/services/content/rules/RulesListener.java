@@ -304,7 +304,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                         AddedNodeFact rn = eventsMap.get(identifier);
                                         if (rn == null) {
                                             rn = new AddedNodeFact(n);
-                                            setNodeFactOperationType(rn, operationType);
+                                            rn.setOperationType(getNodeFactOperationType(operationType));
                                             eventsMap.put(identifier, rn);
                                         }
                                         list.add(rn);
@@ -338,12 +338,12 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                                     rn = eventsMap.get(identifier);
                                                     if (rn == null) {
                                                         rn = new AddedNodeFact(parent);
-                                                        setNodeFactOperationType(rn, operationType);
+                                                        rn.setOperationType(getNodeFactOperationType(operationType));
                                                         eventsMap.put(identifier, rn);
                                                     }
                                                 } else {
                                                     rn = new AddedNodeFact(parent);
-                                                    setNodeFactOperationType(rn, operationType);
+                                                    rn.setOperationType(getNodeFactOperationType(operationType));
                                                 }
                                                 list.add(new ChangedPropertyFact(rn, p));
                                             }
@@ -357,7 +357,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                         JCRNodeWrapper n = eventUuid != null ? s.getNodeByIdentifier(eventUuid) : s.getNode(path);
                                         if (n.isNodeType("jmix:observable") && !n.isNodeType("jnt:translation")) {
                                             final PublishedNodeFact e = new PublishedNodeFact(n);
-                                            setNodeFactOperationType(e,operationType);
+                                            e.setOperationType(getNodeFactOperationType(operationType));
                                             list.add(e);
                                         }
                                     }
@@ -370,14 +370,14 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                         AddedNodeFact w = eventsMap.get(identifier);
                                         if (w == null) {
                                             w = new AddedNodeFact(parent);
-                                            setNodeFactOperationType(w, operationType);
+                                            w.setOperationType(getNodeFactOperationType(operationType));
                                             eventsMap.put(identifier, w);
                                         }
 
                                         final DeletedNodeFact e = new DeletedNodeFact(w, path);
                                         e.setIdentifier(eventUuid);
                                         e.setSession(s);
-                                        setNodeFactOperationType(e,operationType);
+                                        e.setOperationType(getNodeFactOperationType(operationType));
                                         list.add(e);
                                     } catch (PathNotFoundException e) {
                                     }
@@ -393,7 +393,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                             AddedNodeFact rn = eventsMap.get(key);
                                             if (rn == null) {
                                                 rn = new AddedNodeFact(n);
-                                                setNodeFactOperationType(rn, operationType);
+                                                rn.setOperationType(getNodeFactOperationType(operationType));
                                                 eventsMap.put(key, rn);
                                             }
                                             list.add(new DeletedPropertyFact(rn, propertyName));
@@ -405,7 +405,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                     JCRNodeWrapper n = eventUuid != null ? s.getNodeByIdentifier(eventUuid) : s.getNode(path);
                                     if (n.isNodeType("jmix:observable") && !n.isNodeType("jnt:translation")) {
                                         final MovedNodeFact e = new MovedNodeFact(n,(String) event.getInfo().get("srcAbsPath"));
-                                        setNodeFactOperationType(e,operationType);
+                                        e.setOperationType(getNodeFactOperationType(operationType));
                                         list.add(e);
                                     }
                                 }
@@ -435,7 +435,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
                         try {
                             inRules.set(Boolean.TRUE);
-
+                            list.add(new OperationTypeFact(getNodeFactOperationType(operationType)));
                             executeRules(list, globals);
 
                             if (list.size() > 3) {
@@ -561,14 +561,15 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         return operationTypes;
     }
 
-    void setNodeFactOperationType(NodeFact nodeFact,int operationType) {
+    String getNodeFactOperationType(int operationType) {
         if(operationType==JCRObservationManager.IMPORT) {
-            nodeFact.setOperationType("import");
+            return("import");
         } else if(operationType==JCRObservationManager.SESSION_SAVE) {
-            nodeFact.setOperationType("session");
+            return("session");
         } else if(operationType==JCRObservationManager.WORKSPACE_CLONE) {
-            nodeFact.setOperationType("clone");
+            return("clone");
         }
+        return null;
     }
 
     public void destroy() throws Exception {

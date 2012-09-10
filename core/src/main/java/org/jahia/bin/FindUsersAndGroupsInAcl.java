@@ -140,8 +140,12 @@ public class FindUsersAndGroupsInAcl extends FindUsersAndGroups {
 
         List<Map<String, Object>> rolesForNode = JCRContentUtils.getRolesForNode(sourceNode,
                 Boolean.valueOf(getParameter(request, "includeInherited", "false")),
-                Boolean.valueOf(getParameter(request, "expandGroups", "false")),
+                true,
                 getParameter(request, "roles", null), -1, false);
+        rolesForNode.addAll(JCRContentUtils.getRolesForNode(sourceNode,
+                Boolean.valueOf(getParameter(request, "includeInherited", "false")),
+                false,
+                getParameter(request, "roles", null), -1, false));
 
         Set<Principal> result = findMatchingPrincipals(rolesForNode, queryTerm);
 

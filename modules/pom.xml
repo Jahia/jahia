@@ -185,6 +185,7 @@
                 <module>channels</module>
                 <module>contentRetrieval</module>
                 <module>default</module>
+                <module>default-skins</module>
                 <module>facets</module>
                 <module>grid</module>
                 <module>macros</module>

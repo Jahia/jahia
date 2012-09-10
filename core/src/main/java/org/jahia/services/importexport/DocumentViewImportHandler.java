@@ -40,6 +40,7 @@
 
 package org.jahia.services.importexport;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -691,10 +692,18 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private String mapAclAttributes(JCRNodeWrapper node, String aclValue) {
         Set<String> roles = new HashSet<String>();
         if (aclValue.contains("jcr:read")) {
-            roles.addAll(LegacyImportHandler.READ_ROLES);
+            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_FILES_READ_ROLES)) {
+                roles.addAll(LegacyImportHandler.READ_ROLES);
+            } else {
+                roles.addAll(LegacyImportHandler.CUSTOM_FILES_READ_ROLES);
+            }
         }
         if (aclValue.contains("jcr:write")) {
-            roles.addAll(LegacyImportHandler.WRITE_ROLES);
+            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES)) {
+                roles.addAll(LegacyImportHandler.WRITE_ROLES);
+            } else {
+                roles.addAll(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES);
+            }
         }
         String s = "";
         for (String role : roles) {

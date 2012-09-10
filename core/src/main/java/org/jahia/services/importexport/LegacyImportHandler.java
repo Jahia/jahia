@@ -126,6 +126,13 @@ public class LegacyImportHandler extends DefaultHandler {
     public static Set<String> WRITE_ROLES = new HashSet<String>(Arrays.asList("editor", "contributor"));
     public static Set<String> ADMIN_ROLES = new HashSet<String>(Arrays.asList("reviewer", "owner"));
 
+    public static Set<String> CUSTOM_CONTENT_READ_ROLES;
+    public static Set<String> CUSTOM_CONTENT_WRITE_ROLES;
+    public static Set<String> CUSTOM_CONTENT_ADMIN_ROLES;
+
+    public static Set<String> CUSTOM_FILES_READ_ROLES;
+    public static Set<String> CUSTOM_FILES_WRITE_ROLES;
+
     private String currentNode;
     private int level = 0;
 
@@ -808,20 +815,44 @@ public class LegacyImportHandler extends DefaultHandler {
                         Set<String> grantedRoles = new HashSet<String>();
                         Set<String> removedRoles = new HashSet<String>();
                         if (perm.charAt(0) == 'r') {
-                            grantedRoles.addAll(READ_ROLES);
+                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_CONTENT_READ_ROLES)) {
+                                grantedRoles.addAll(LegacyImportHandler.READ_ROLES);
+                            } else {
+                                grantedRoles.addAll(LegacyImportHandler.CUSTOM_CONTENT_READ_ROLES);
+                            }
                         } else {
-                            removedRoles.addAll(READ_ROLES);
+                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_CONTENT_READ_ROLES)) {
+                                removedRoles.addAll(LegacyImportHandler.READ_ROLES);
+                            } else {
+                                removedRoles.addAll(LegacyImportHandler.CUSTOM_CONTENT_READ_ROLES);
+                            }
                         }
                         if (perm.charAt(1) == 'w') {
-                            grantedRoles.addAll(WRITE_ROLES);
+                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_CONTENT_WRITE_ROLES)) {
+                                grantedRoles.addAll(LegacyImportHandler.WRITE_ROLES);
+                            } else {
+                                grantedRoles.addAll(LegacyImportHandler.CUSTOM_CONTENT_WRITE_ROLES);
+                            }
                         } else {
-                            removedRoles.addAll(WRITE_ROLES);
+                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_CONTENT_WRITE_ROLES)) {
+                                removedRoles.addAll(LegacyImportHandler.WRITE_ROLES);
+                            } else {
+                                removedRoles.addAll(LegacyImportHandler.CUSTOM_CONTENT_WRITE_ROLES);
+                            }
                         }
 
                         if (perm.charAt(2) == 'a') {
-                            grantedRoles.addAll(ADMIN_ROLES);
+                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_CONTENT_ADMIN_ROLES)) {
+                                grantedRoles.addAll(LegacyImportHandler.ADMIN_ROLES);
+                            } else {
+                                grantedRoles.addAll(LegacyImportHandler.CUSTOM_CONTENT_ADMIN_ROLES);
+                            }
                         } else {
-                            removedRoles.addAll(ADMIN_ROLES);
+                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_CONTENT_ADMIN_ROLES)) {
+                                removedRoles.addAll(LegacyImportHandler.ADMIN_ROLES);
+                            } else {
+                                removedRoles.addAll(LegacyImportHandler.CUSTOM_CONTENT_ADMIN_ROLES);
+                            }
                         }
 
                         String principal = ace.substring(0, colonIndex);

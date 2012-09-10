@@ -40,6 +40,7 @@
 
 package org.jahia.services.importexport;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.jahia.services.content.JCRObservationManager;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.zip.ZipEntry;
@@ -116,7 +117,7 @@ public class FilesAclImportHandler extends DefaultHandler {
 
                 if (path.startsWith("/shared") || path.startsWith("/users")) {
                     path = "/sites/" + site.getSiteKey() + "/files" + path;
-                }/* 
+                }/*
                     // DB-HOT-28
                     else if (path.startsWith("/users/")) {
                     Matcher m = Pattern.compile("/users/([^/]+)(/.*)?").matcher(path);
@@ -172,14 +173,30 @@ public class FilesAclImportHandler extends DefaultHandler {
                         Set<String> removedRoles = new HashSet<String>();
                         String perm = s.substring(beginIndex + 1);
                         if (perm.charAt(0) == 'r') {
-                            grantedRoles.addAll(LegacyImportHandler.READ_ROLES);
+                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_FILES_READ_ROLES)) {
+                                grantedRoles.addAll(LegacyImportHandler.READ_ROLES);
+                            } else {
+                                grantedRoles.addAll(LegacyImportHandler.CUSTOM_FILES_READ_ROLES);
+                            }
                         } else {
-                            removedRoles.addAll(LegacyImportHandler.READ_ROLES);
+                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_FILES_READ_ROLES)) {
+                                removedRoles.addAll(LegacyImportHandler.READ_ROLES);
+                            } else {
+                                removedRoles.addAll(LegacyImportHandler.CUSTOM_FILES_READ_ROLES);
+                            }
                         }
                         if (perm.charAt(1) == 'w') {
-                            grantedRoles.addAll(LegacyImportHandler.WRITE_ROLES);
+                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES)) {
+                                grantedRoles.addAll(LegacyImportHandler.WRITE_ROLES);
+                            } else {
+                                grantedRoles.addAll(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES);
+                            }
                         } else {
-                            removedRoles.addAll(LegacyImportHandler.WRITE_ROLES);
+                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES)) {
+                                removedRoles.addAll(LegacyImportHandler.WRITE_ROLES);
+                            } else {
+                                removedRoles.addAll(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES);
+                            }
                         }
 
                         if (!grantedRoles.isEmpty()) {

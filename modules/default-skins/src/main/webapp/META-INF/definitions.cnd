@@ -5,9 +5,3 @@
  itemtype = layout
  - j:style (string, choicelist) = 'grey' nofulltext < 'grey','blue','mushroom','orange','black','red','green','purple','yellow'
  - icon (weakreference, picker[type='image'])
-
-[jmix:customSkin] > jmix:templateMixin mixin
- extends = jmix:list
- itemtype = layout
- - j:classname (string) nofulltext
- - j:id (string) nofulltext

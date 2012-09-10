@@ -4,3 +4,9 @@
  extends = jmix:list
  itemtype = layout
  - j:skin (string, choicelist[templates='jmix:skinnable,skin']) indexed=no
+
+[jmix:customSkin] > jmix:templateMixin mixin
+ extends = jmix:list
+ itemtype = layout
+ - j:classname (string) nofulltext
+ - j:id (string) nofulltext

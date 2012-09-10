@@ -45,6 +45,8 @@
 [condition][]The {node} has not been added=not AddedNodeFact ( path == ({node}.getPath()) )
 [condition][]The {node} has not been moved=not MovedNodeFact ( path == ({node}.getPath()) )
 [condition][]The {node} is not moved=not MovedNodeFact ( originalPath == ({node}.getPath()) )
+[condition][]Not in operation {operation}=not OperationTypeFact( operationType == "{operation}")
+[condition][]In operation {operation}=OperationTypeFact( operationType == "{operation}")
 [consequence][]Append URL query-parameter "{parameterName}" with {parameterValue}=urlService.addURLQueryParameter(searchHit, "{parameterName}", {parameterValue});
 [consequence][]Add the type {type}=node.addType ( "{type}", drools );
 [consequence][]Remove the type {type}=node.removeType ( "{type}", drools );

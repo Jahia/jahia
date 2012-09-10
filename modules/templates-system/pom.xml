@@ -68,7 +68,7 @@
 		                    <Specification-Version>${project.version}</Specification-Version>
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
-                            <depends>default,grid,skins,tabularList,tags,profile,tasks,facets</depends>
+                            <depends>default,grid,skins,default-skins,tabularList,tags,profile,tasks,facets</depends>
                             <root-folder>${project.artifactId}</root-folder>
                             <module-type>templatesSet</module-type>
                         </manifestEntries>

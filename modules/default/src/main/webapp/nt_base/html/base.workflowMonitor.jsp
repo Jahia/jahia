@@ -70,9 +70,9 @@
                             <li><fmt:message key="label.workflow.user"/>: ${historyTask.user}</li>
                             <li><fmt:message key="label.workflow.duration"/>: ${historyTask.duration/1000}s</li>
                             <li><fmt:message key="label.workflow.startDate"/>: <fmt:formatDate value="${historyTask.startTime}"
-                                                            pattern="yyyy-MM-dd HH:mm:ss"/></li>
+                                                                                               type="both" dateStyle="medium" timeStyle="medium" /></li>
                             <li><fmt:message key="label.workflow.endDate"/>: <fmt:formatDate value="${historyTask.endTime}"
-                                                          pattern="yyyy-MM-dd HH:mm:ss"/></li>
+                                                                                             type="both" dateStyle="medium" timeStyle="medium" /></li>
                             <li><fmt:message key="label.workflow.outcome"/>: ${historyTask.displayOutcome}</li>
                         </ul>
                     </li>
@@ -89,9 +89,8 @@
                                                                                                  id="linktask${currentNode.identifier}-${tasks[action.name].id}"
                                                                                                  href="#task${currentNode.identifier}-${tasks[action.name].id}"><fmt:message key="label.workflow.executeTask"/></a></c:if>
                     <ul>
-                        <li><fmt:message key="label.workflow.startDate"/>: <fmt:formatDate value="${action.createTime}"
-                                                        pattern="yyyy-MM-dd HH:mm:ss"/></li>
-                        <li><fmt:message key="label.workflow.dueDate"/>: <fmt:formatDate value="${action.dueDate}" pattern="yyyy-MM-dd HH:mm:ss"/></li>
+                        <li><fmt:message key="label.workflow.startDate"/>: <fmt:formatDate value="${action.createTime}" type="both" dateStyle="medium" timeStyle="medium" /></li>
+                        <li><fmt:message key="label.workflow.dueDate"/>: <fmt:formatDate value="${action.dueDate}" type="both" dateStyle="medium" timeStyle="medium" /></li>
                     </ul>
                 </li>
             </c:if>
@@ -118,8 +117,8 @@
                 <div id="runningInfo${task.id}"
                      style="display:none;position:absolute;border:2px solid black;background-color:white">
                     <ul>
-                        <li><fmt:message key="label.workflow.startDate"/>: <fmt:formatDate value="${task.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></li>
-                        <li><fmt:message key="label.workflow.dueDate"/>: <fmt:formatDate value="${task.dueDate}" pattern="yyyy-MM-dd HH:mm:ss"/></li>
+                        <li><fmt:message key="label.workflow.startDate"/>: <fmt:formatDate value="${task.createTime}" type="both" dateStyle="medium" timeStyle="medium" /></li>
+                        <li><fmt:message key="label.workflow.dueDate"/>: <fmt:formatDate value="${task.dueDate}" type="both" dateStyle="medium" timeStyle="medium" /></li>
                     </ul>
                 </div>
             </c:forEach>
@@ -136,9 +135,9 @@
                             <li><fmt:message key="label.workflow.user"/>: ${task.value.user}</li>
                             <li><fmt:message key="label.workflow.duration"/>: ${task.value.duration/1000}s</li>
                             <li><fmt:message key="label.workflow.startDate"/>: <fmt:formatDate value="${task.value.startTime}"
-                                                          pattern="yyyy-MM-dd HH:mm:ss"/></li>
+                                                                                               type="both" dateStyle="medium" timeStyle="medium" /></li>
                             <li><fmt:message key="label.workflow.endDate"/>: <fmt:formatDate value="${task.value.endTime}"
-                                                        pattern="yyyy-MM-dd HH:mm:ss"/></li>
+                                                                                             type="both" dateStyle="medium" timeStyle="medium" /></li>
                             <li><fmt:message key="label.workflow.outcome"/>: ${task.value.displayOutcome}</li>
                         </ul>
                     </div>

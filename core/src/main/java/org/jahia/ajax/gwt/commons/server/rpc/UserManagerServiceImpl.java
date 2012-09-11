@@ -117,6 +117,9 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                 }
             });
             int size = result.size();
+            if(size < offset) {
+            	offset = 0;
+            }
             result = new ArrayList<GWTJahiaUser>(result.subList(offset, Math.min(size, offset + limit)));
             return new BasePagingLoadResult<GWTJahiaUser>(result, offset, size);
         } catch (Exception e) {

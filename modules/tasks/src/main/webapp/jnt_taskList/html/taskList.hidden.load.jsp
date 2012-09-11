@@ -53,7 +53,7 @@
                 {"jcrMethodToCall":"put", "state":state, "finalOutcome":finalOutcome, "form-token":document.forms['tokenForm_' +
                                                                                                                   uuid].elements['form-token'].value},
                 function () {
-                    $('#task_' + uuid).load(reloadurl, null, function () {
+                    $('#task_' + uuid).load(encodeURI(reloadurl), null, function () {
                         $(".taskaction-complete").removeClass("taskaction-disabled");
                         $(".taskaction").removeClass("taskaction-disabled");
                     });
@@ -67,7 +67,7 @@
                 {"jcrMethodToCall":"put", "state":"active", "assigneeUserKey":key, "form-token":document.forms['tokenForm_' +
                                                                                                                uuid].elements['form-token'].value},
                 function () {
-                    $('#task_' + uuid).load(reloadurl, null, function () {
+                    $('#task_' + uuid).load(encodeURI(reloadurl), null, function () {
                         $(".taskaction-complete").removeClass("taskaction-disabled");
                         $(".taskaction").removeClass("taskaction-disabled");
                     });

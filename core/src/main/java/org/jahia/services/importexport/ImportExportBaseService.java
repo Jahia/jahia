@@ -1401,7 +1401,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     if (zipentry == null) break;
                     String name = zipentry.getName();
                     if (name.equals(LIVE_REPOSITORY_XML)) {
-                        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList);
+                        final DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList);
 
                         documentViewImportHandler.setReferences(references);
                         documentViewImportHandler.setRootBehavior(rootBehaviour);
@@ -1420,7 +1420,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
                         liveUuids = documentViewImportHandler.getUuids();
 
-                        ServicesRegistry.getInstance().getJCRPublicationService().publish(documentViewImportHandler.getUuids(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, false, null);
+
+                        JCRObservationManager.doWithOperationType(null, JCRObservationManager.IMPORT, new JCRCallback<Object>() {
+                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                ServicesRegistry.getInstance().getJCRPublicationService().publish(documentViewImportHandler.getUuids(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, false, null);
+                                return null;
+                            }
+                        });
+
                         String label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
                         JCRVersionService.getInstance().addVersionLabel(documentViewImportHandler.getUuids(), label, Constants.LIVE_WORKSPACE);
                         break;

@@ -318,6 +318,21 @@ public class JCRObservationManager implements ObservationManager {
         return res;
     }
 
+    public static <X> X doWithOperationType(JCRSessionWrapper session, int operationType, JCRCallback<X> callback)
+            throws RepositoryException {
+        boolean x = lastOp.get() == null;
+        try {
+            if (x) {
+                lastOp.set(operationType);
+            }
+            return callback.doInJCR(session);
+        } finally {
+            currentSession.set(null);
+            if (x) {
+                lastOp.set(null);
+            }
+        }
+    }
 
     class EventConsumer {
         private JCRSessionWrapper session;

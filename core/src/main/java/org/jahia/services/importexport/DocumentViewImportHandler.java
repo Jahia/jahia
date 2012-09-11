@@ -59,6 +59,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.View;
 import org.jahia.settings.SettingsBean;
+import org.mvel.TemplateRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -144,6 +145,8 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
     private boolean expandImportedFilesOnDisk = SettingsBean.getInstance().isExpandImportedFilesOnDisk();
     private String expandImportedFilesOnDiskPath = SettingsBean.getInstance().getExpandImportedFilesOnDiskPath();
+
+    private Set<String> missingDependencies = new HashSet<String>();
 
     public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath) throws IOException {
         this(session, rootPath, null, null);
@@ -402,11 +405,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                                             mime = JCRContentUtils.getMimeType(decodedQName);
                                             if (mime != null) {
                                                 logger.warn("Legacy or invalid import detected for node " + path +
-                                                            ", file should be in same named path. Mime type cannot be resolved from file node, it should come from jcr:content node. Resolved mime type using servlet context instead=" +
-                                                            mime + ".");
+                                                        ", file should be in same named path. Mime type cannot be resolved from file node, it should come from jcr:content node. Resolved mime type using servlet context instead=" +
+                                                        mime + ".");
                                             } else {
                                                 logger.warn("Legacy or invalid import detected for node " + path +
-                                                            ", file should be in same named path. Mime type cannot be resolved from file node, it should come from jcr:content node. Tried resolving mime type using servlet context but it isn't registered!");
+                                                        ", file should be in same named path. Mime type cannot be resolved from file node, it should come from jcr:content node. Tried resolving mime type using servlet context but it isn't registered!");
                                             }
                                         }
                                     }
@@ -432,11 +435,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                                             mime = JCRContentUtils.getMimeType(decodedQName);
                                             if (mime != null) {
                                                 logger.warn("Legacy or invalid import detected for node " + path +
-                                                            ", mime type cannot be resolved from file node, it should come from jcr:content node. Resolved mime type using servlet context instead=" +
-                                                            mime + ".");
+                                                        ", mime type cannot be resolved from file node, it should come from jcr:content node. Resolved mime type using servlet context instead=" +
+                                                        mime + ".");
                                             } else {
                                                 logger.warn("Legacy or invalid import detected for node " + path +
-                                                            ", mime type cannot be resolved from file node, it should come from jcr:content node. Tried resolving mime type using servlet context but it isn't registered!");
+                                                        ", mime type cannot be resolved from file node, it should come from jcr:content node. Tried resolving mime type using servlet context but it isn't registered!");
                                             }
                                         }
                                     }
@@ -494,8 +497,13 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
     private void checkDependencies(String path, String pt, Attributes atts) throws RepositoryException {
         if (path.startsWith("/templateSets/")) {
-            ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(pt);
-
+            List<ExtendedNodeType> nodeTypes = new ArrayList<ExtendedNodeType>();
+            nodeTypes.add(NodeTypeRegistry.getInstance().getNodeType(pt));
+            if (atts.getValue(Constants.JCR_MIXINTYPES) != null) {
+                for (String mixin : atts.getValue(Constants.JCR_MIXINTYPES).split(" ")) {
+                    nodeTypes.add(NodeTypeRegistry.getInstance().getNodeType(mixin));
+                }
+            }
             JCRSiteNode currentSite = nodes.peek().getResolveSite();
             if (site == null || !currentSite.getIdentifier().equals(site.getIdentifier())) {
                 dependencies = null;
@@ -513,9 +521,14 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     }
                 }
             }
-
-            if (type.getTemplatePackage() != null && dependencies != null && !dependencies.contains(type.getTemplatePackage().getFileName())) {
-                logger.error("Missing dependency : " + path + " requires " + type.getTemplatePackage().getFileName() + getLocation());
+            for (ExtendedNodeType type : nodeTypes) {
+                if (type.getTemplatePackage() != null && dependencies != null && !dependencies.contains(type.getTemplatePackage().getFileName())) {
+                    String fileName = type.getTemplatePackage().getFileName();
+                    logger.debug("Missing dependency : " + path + " (" + type.getName() + ") requires " + fileName + getLocation());
+                    if (!missingDependencies.contains(fileName)) {
+                        missingDependencies.add(fileName);
+                    }
+                }
             }
         }
     }
@@ -853,6 +866,10 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             return " (line " + documentLocator.getLineNumber() + ", column "+documentLocator.getColumnNumber()+")";
         }
         return "";
+    }
+
+    public Set<String> getMissingDependencies() {
+        return missingDependencies;
     }
 
     public void setDocumentLocator(Locator documentLocator) {

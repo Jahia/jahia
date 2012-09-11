@@ -1211,6 +1211,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             SAXParser parser = factory.newSAXParser();
 
             parser.parse(is, h);
+            if (h instanceof DocumentViewImportHandler) {
+                DocumentViewImportHandler dh = (DocumentViewImportHandler) h;
+                if (dh.getMissingDependencies().size() > 0) {
+                    for (String s : dh.getMissingDependencies()) {
+                        logger.error("Missing dependency : " + s + " (set debug on DocumentViewImportHandler form more details)");
+                    }
+                }
+            }
         } catch (SAXParseException e) {
             logger.error("Cannot import - File is not a valid XML", e);
         } catch (Exception e) {

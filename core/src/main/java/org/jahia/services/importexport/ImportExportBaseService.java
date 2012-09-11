@@ -1215,7 +1215,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 DocumentViewImportHandler dh = (DocumentViewImportHandler) h;
                 if (dh.getMissingDependencies().size() > 0) {
                     for (String s : dh.getMissingDependencies()) {
-                        logger.error("Missing dependency : " + s + " (set debug on DocumentViewImportHandler form more details)");
+                        logger.error("Missing dependency : " + s + " (set debug on DocumentViewImportHandler for more details)");
                     }
                 }
             }

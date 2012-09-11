@@ -262,7 +262,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         if (prefix.length() > 1) {
             boolean contains = reservedUrlPrefixSet.contains(prefix);
             request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_ADD_CMS_PREFIX, !contains);
-            if (contains && !"cms".equals(prefix)) {
+            if (contains && !"cms".equals(prefix) && !"files".equals(prefix)) {
                 return false;
             }
         } else {

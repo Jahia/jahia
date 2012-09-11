@@ -86,7 +86,9 @@ public class UrlRewriteTest {
     private static final String SERVER_NAME = "urlrewrite.jahia.org";
 
     private static final String SERVLET = "/cms";
-    
+
+    private static final String FILES_SERVLET = "/files";
+
     private static final String SITE_KEY = "urlRewriteSite";
 
     @BeforeClass
@@ -186,6 +188,11 @@ public class UrlRewriteTest {
                 rewrittenLang + "/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?test=aaa");
         rewrite(SERVLET + "/render/live/" + lang + "/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb",
                 rewrittenLang + "/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb");
+
+        // files
+        rewrite(FILES_SERVLET + "/live/sites/urlRewriteSite/files/path/to/my/file.txt",
+                FILES_SERVLET + "/live/sites/urlRewriteSite/files/path/to/my/file.txt");
+
     }
 
     public void doLiveSiteServernameTest(String lang) throws Exception {
@@ -239,6 +246,11 @@ public class UrlRewriteTest {
                 rewrittenLang + "/contents/aaa/my-text.viewContent.html?test=aaa");
         rewrite(SERVLET + "/render/live/" + lang + "/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb",
                 rewrittenLang + "/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb");
+
+        // files
+        rewrite(FILES_SERVLET + "/live/sites/urlRewriteSite/files/path/to/my/file.txt",
+                FILES_SERVLET + "/path/to/my/file.txt");
+
     }
 
     protected void rewrite(String in, String expectedOut) throws IOException, ServletException,
@@ -266,7 +278,7 @@ public class UrlRewriteTest {
             restored = engine.rewriteInbound(request, response);
         }
         assertEquals("Restored (inbound) URL is wrong", expectedIn, restored != null ? request.getContextPath() + restored.getTarget()
-                : null);
+                : out);
     }
 
     @Before

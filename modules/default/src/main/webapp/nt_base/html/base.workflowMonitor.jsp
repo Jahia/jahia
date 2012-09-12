@@ -267,7 +267,13 @@
 <c:if test="${empty activeWorkflow}">
     <c:choose>
         <c:when test="${not empty workflowDefinition.formResourceName}">
-            <a class="workflowLink" href="#workflow${currentNode.identifier}-${workflowDefinition.key}"><fmt:message key="label.workflow.startWorkflow"/> </a>
+            <a class="workflowLink" id="workflowlink${currentNode.identifier}-${workflowDefinition.key}" href="#workflow${currentNode.identifier}-${workflowDefinition.key}"><fmt:message key="label.workflow.startWorkflow"/> </a>
+
+            <script type="text/javascript">
+                var startCurrentWorkflow = function() {
+                    $('#workflowlink${currentNode.identifier}-${workflowDefinition.key}').click();
+                }
+            </script>
 
             <div style="display:none;">
                 <div id="workflow${currentNode.identifier}-${workflowDefinition.key}" class="workflowformdiv popupSize">

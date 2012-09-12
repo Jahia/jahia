@@ -123,4 +123,8 @@ public class WorkflowDefinition extends WorkflowBase {
     public Set<String> getTasks() {
         return tasks;
     }
+
+    public String getWorkflowType() {
+        return WorkflowService.getInstance().getWorkflowType(this);
+    }
 }

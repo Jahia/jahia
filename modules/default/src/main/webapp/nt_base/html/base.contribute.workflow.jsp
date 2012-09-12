@@ -90,24 +90,24 @@
                             <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
                                 <c:choose>
                                     <c:when test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.CONTENTPICKER}">
-                                        <%@include file="formelements/file.jsp" %>
+                                        <%@include file="../../../../../../contribute/src/main/webapp/nt_base/html/formelements/file.jsp" %>
                                     </c:when>
                                     <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
-                                        <%@include file="formelements/select.jsp" %>
+                                        <%@include file="../../../../../../contribute/src/main/webapp/nt_base/html/formelements/select.jsp" %>
                                     </c:when>
                                     <c:otherwise>
-                                        <%@include file="formelements/reference.jsp" %>
+                                        <%@include file="../../../../../../contribute/src/main/webapp/nt_base/html/formelements/reference.jsp" %>
                                     </c:otherwise>
                                 </c:choose>
                             </c:when>
                             <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
-                                <%@include file="formelements/datepicker.jsp" %>
+                                <%@include file="../../../../../../contribute/src/main/webapp/nt_base/html/formelements/datepicker.jsp" %>
                             </c:when>
                             <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
-                                <%@include file="formelements/select.jsp" %>
+                                <%@include file="../../../../../../contribute/src/main/webapp/nt_base/html/formelements/select.jsp" %>
                             </c:when>
                             <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
-                                <%@include file="formelements/richtext.jsp" %>
+                                <%@include file="../../../../../../contribute/src/main/webapp/nt_base/html/formelements/richtext.jsp" %>
                             </c:when>
                             <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.BOOLEAN}">
                                 <label class="left"

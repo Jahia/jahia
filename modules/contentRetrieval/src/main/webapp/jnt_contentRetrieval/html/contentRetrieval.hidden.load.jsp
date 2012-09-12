@@ -71,4 +71,4 @@
 </c:choose>
 </c:set>
 <c:set target="${moduleMap}" property="subNodesView" value="${subNodesView.string}" />
-<template:addCacheDependency flushOnPathMatchingRegexp="\Q${not empty startNode and not empty startNode.node ? startNode.node.path : renderContext.site.path}\E/.*"/>
+<template:addCacheDependency flushOnPathMatchingRegexp="\Q${startNode.path}\E/.*"/>

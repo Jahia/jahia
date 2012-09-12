@@ -28,14 +28,19 @@
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 
 <workflow:activeWorkflow node="${currentNode}" var="activeWorkflows"/>
-<jsp:useBean id="activeWorkflowsMap" class="java.util.HashMap"/>
-<c:forEach items="${activeWorkflows}" var="activeWorkflow">
-    <c:set target="${activeWorkflowsMap}" property="${activeWorkflow.workflowDefinition.key}"
-           value="${activeWorkflow}"/>
+<c:forEach items="${activeWorkflows}" var="currentActiveWorkflow">
+    <c:if test="${currentActiveWorkflow.workflowDefinition.workflowType eq currentResource.moduleParams.workflowType}">
+        <c:set var="activeWorkflow" value="${currentActiveWorkflow}"/>
+        <c:set var="workflowDefinition" value="${currentActiveWorkflow.workflowDefinition}"/>
+    </c:if>
 </c:forEach>
-<workflow:workflowsForNode checkPermission="false" node="${currentNode}" var="workflowDefinitions"
-                           workflowAction="${currentResource.moduleParams.workflowType}"/>
-<c:forEach items="${workflowDefinitions}" var="workflowDefinition">
+<c:if test="${empty activeWorkflow}">
+    <workflow:workflowsForNode checkPermission="false" node="${currentNode}" var="workflowDefinitions"
+                               workflowAction="${currentResource.moduleParams.workflowType}"/>
+    <c:forEach items="${workflowDefinitions}" var="currentWorkflowDefinition">
+        <c:set var="workflowDefinition" value="${currentWorkflowDefinition}"/>
+    </c:forEach>
+</c:if>
 <workflow:tasksForNode node="${currentNode}" var="tasksForNode"/>
 <jsp:useBean id="tasks" class="java.util.HashMap"/>
 <c:forEach items="${tasksForNode}" var="task" varStatus="status">
@@ -55,10 +60,10 @@
 
 </p>
 <jsp:useBean id="historyTasks" class="java.util.HashMap"/>
-<c:if test="${not empty activeWorkflowsMap[workflowDefinition.key]}">
+<c:if test="${not empty activeWorkflow}">
     <c:if test="${currentResource.moduleParams.showHistory == 'true'}">
-        <workflow:workflowHistory var="history" workflowId="${activeWorkflowsMap[workflowDefinition.key].id}"
-                                  workflowProvider="${activeWorkflowsMap[workflowDefinition.key].provider}"/>
+        <workflow:workflowHistory var="history" workflowId="${activeWorkflow.id}"
+                                  workflowProvider="${activeWorkflow.provider}"/>
         <fmt:message key="label.workflow.history"/>:
         <ul>
             <c:forEach items="${history}" var="historyTask">
@@ -82,7 +87,7 @@
     </c:if>
     <fmt:message key="label.workflow.openTasks"/>:
     <ul>
-        <c:forEach items="${activeWorkflowsMap[workflowDefinition.key].availableActions}" var="action">
+        <c:forEach items="${activeWorkflow.availableActions}" var="action">
             <c:if test="${(empty currentResource.moduleParams.task) or (!empty currentResource.moduleParams.task and currentResource.moduleParams.task == action.name)}">
                 <li>
                         ${action.displayName} <c:if test="${not empty tasks[action.name]}"> - <a class="workflowLink"
@@ -103,10 +108,10 @@
         <div id="workflowImageDiv${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')}"
              style="position:relative;">
             <div style="height:50px;"></div>
-            <img src="<c:url value='/cms/wfImage?workflowKey=${workflowDefinition.provider}:${workflowDefinition.key}&language=${renderContext.UILocale}'/>"/>
+            <img src="<c:url value='/cms/wfImage?workflowKey=${workflowDefinition.provider}:${workflowDefinition.key}&language=${currentResource.locale}'/>"/>
             <div style="height:50px;"></div>
 
-            <c:forEach items="${activeWorkflowsMap[workflowDefinition.key].availableActions}" var="task"
+            <c:forEach items="${activeWorkflow.availableActions}" var="task"
                        varStatus="status">
                 <div id="running${task.id}" class="runningtask-div"
                      style="position:absolute;display:none;border-radius: 15px;background-color:red;opacity:0.2;"
@@ -183,7 +188,7 @@
     function animateWorkflowTask${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')}() {
         animated = true;
         $.post('<c:url value="${url.base}${functions:escapeJavaScript(currentNode.path)}.getWorkflowTasks.do"/>', {'workflowKey':'${workflowDefinition.provider}:${workflowDefinition.key}'}, function (result) {
-            <c:forEach items="${activeWorkflowsMap[workflowDefinition.key].availableActions}" var="task" varStatus="status">
+            <c:forEach items="${activeWorkflow.availableActions}" var="task" varStatus="status">
             coords = result['${task.name}'];
             $("#running${task.id}").css('left', coords[0] + "px");
             $("#running${task.id}").css('top', (parseInt(coords[1]) + 50) + "px");
@@ -229,7 +234,7 @@
 
 
 </script>
-<c:if test="${empty activeWorkflowsMap[workflowDefinition.key]}">
+<c:if test="${empty activeWorkflow}">
     <c:choose>
         <c:when test="${not empty workflowDefinition.formResourceName}">
             <a class="workflowLink" href="#workflow${currentNode.identifier}-${workflowDefinition.key}"><fmt:message key="label.workflow.startWorkflow"/> </a>
@@ -301,7 +306,6 @@
         </div>
     </div>
 
-</c:forEach>
 </c:forEach>
 <c:if test="${empty workflowDefinitions}">
     <fmt:message key="label.workflow.noWorkflowSet"/>: ${currentResource.moduleParams.workflowType}

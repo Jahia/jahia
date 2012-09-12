@@ -32,15 +32,45 @@
     <c:if test="${currentActiveWorkflow.workflowDefinition.workflowType eq currentResource.moduleParams.workflowType}">
         <c:set var="activeWorkflow" value="${currentActiveWorkflow}"/>
         <c:set var="workflowDefinition" value="${currentActiveWorkflow.workflowDefinition}"/>
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $(".workflowStartLink").hide();
+                $(".workflowExecuteLink").show();
+            });
+        </script>
     </c:if>
 </c:forEach>
 <c:if test="${empty activeWorkflow}">
-    <workflow:workflowsForNode checkPermission="false" node="${currentNode}" var="workflowDefinitions"
-                               workflowAction="${currentResource.moduleParams.workflowType}"/>
-    <c:forEach items="${workflowDefinitions}" var="currentWorkflowDefinition">
-        <c:set var="workflowDefinition" value="${currentWorkflowDefinition}"/>
-    </c:forEach>
+    <c:if test="${not currentNode.locked}">
+        <workflow:workflowsForNode checkPermission="false" node="${currentNode}" var="workflowDefinitions"
+                                   workflowAction="${currentResource.moduleParams.workflowType}"/>
+        <c:forEach items="${workflowDefinitions}" var="currentWorkflowDefinition">
+            <c:set var="workflowDefinition" value="${currentWorkflowDefinition}"/>
+        </c:forEach>
+        <c:if test="${empty workflowDefinitions}">
+            <fmt:message key="label.workflow.noWorkflowSet"/>: ${currentResource.moduleParams.workflowType}
+        </c:if>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $(".workflowStartLink").show();
+                $(".workflowExecuteLink").hide();
+            });
+        </script>
+    </c:if>
+    <c:if test="${currentNode.locked}">
+        <fmt:message key="label.workflow.locked"/>
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $(".workflowStartLink").hide();
+                $(".workflowExecuteLink").hide();
+            });
+        </script>
+    </c:if>
 </c:if>
+
+<c:if test="${not empty workflowDefinition}">
 <workflow:tasksForNode node="${currentNode}" var="tasksForNode"/>
 <jsp:useBean id="tasks" class="java.util.HashMap"/>
 <c:forEach items="${tasksForNode}" var="task" varStatus="status">
@@ -258,10 +288,6 @@
 
         <c:otherwise>
             <script type="text/javascript">
-                $(document).ready(function () {
-                    $(".workflowStartLink").show();
-                    $(".workflowExecuteLink").hide();
-                });
                 var startCurrentWorkflow = function() {
                     startWorkflow('${workflowDefinition.provider}:${workflowDefinition.key}');
                 }
@@ -307,6 +333,4 @@
     </div>
 
 </c:forEach>
-<c:if test="${empty workflowDefinitions}">
-    <fmt:message key="label.workflow.noWorkflowSet"/>: ${currentResource.moduleParams.workflowType}
 </c:if>

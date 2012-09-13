@@ -92,7 +92,7 @@ public class JBPMListener implements EventListener {
                                 }
                                 if (Execution.STATE_ACTIVE_ROOT.equals(executionState)) {
                                     if (previousException != null) {
-                                        throw new ItemNotFoundException(previousException);
+                                        throw previousException;
                                     }
                                     provider.getWorkflowService().addProcessId(node,
                                             provider.getKey(), executionId);
@@ -102,7 +102,9 @@ public class JBPMListener implements EventListener {
                                         provider.getWorkflowService().removeProcessId(node,
                                                 provider.getKey(), executionId);
                                     } else {
-                                        logger.warn("A workflow process may have been partially ended because this node cannot be found: " + previousException.getMessage());
+                                        logger.warn(
+                                                "A workflow process may have been partially ended because this node cannot be found: {}",
+                                                previousException.getMessage());
                                     }
                                 }
                             }

@@ -144,7 +144,7 @@
             <c:forEach items="${activeWorkflow.availableActions}" var="task"
                        varStatus="status">
                 <div id="running${task.id}" class="runningtask-div"
-                     style="position:absolute;display:none;border-radius: 15px;background-color:red;opacity:0.2;"
+                     style="position:absolute;display:none;border-radius: 15px;background-color:red;opacity:0.2;cursor:pointer;"
                      onmouseover="$('#runningInfo${task.id}').show()"
                      onmouseout="$('#runningInfo${task.id}').hide()"
                      onclick="$('#linktask${currentNode.identifier}-${task.id}').click()">

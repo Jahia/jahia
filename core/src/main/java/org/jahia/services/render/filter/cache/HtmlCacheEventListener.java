@@ -90,6 +90,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 String path = event.getPath();
                 if (!path.startsWith("/jcr:system")) {
                     boolean flushParent = false;
+                    boolean flushChilds = false;
                     boolean flushRoles = false;
                     if (path.contains("j:view")) {
                         flushParent = true;
@@ -117,6 +118,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                             generator.flushUsersGroupsKey(propageToOtherClusterNodes);
                         }
                         flushParent = true;
+                        flushChilds = true;
                     }
                     path = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(path, "/j:translation"), "/j:acl");
                     flushDependenciesOfPath(depCache, flushed, path, propageToOtherClusterNodes);
@@ -128,6 +130,11 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                         }
                     }
                     flushRegexpDependenciesOfPath(regexpDepCache, path, propageToOtherClusterNodes);
+
+                    if(flushChilds) {
+                        flushChildsDependenciesOfPath(depCache, path, propageToOtherClusterNodes);
+                    }
+
                     if (flushParent) {
                         path = StringUtils.substringBeforeLast(path, "/");
                         flushDependenciesOfPath(depCache, flushed, path, propageToOtherClusterNodes);
@@ -177,6 +184,19 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
             }
         }
 
+    }
+
+    private void flushChildsDependenciesOfPath(Cache depCache, String path, boolean propageToOtherClusterNodes) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Flushing dependencies for path : " + path);
+        }
+        @SuppressWarnings("unchecked")
+        List<String> keys = depCache.getKeys();
+        for (String key : keys) {
+            if(key.startsWith(path)) {
+                cacheProvider.invalidate(key, propageToOtherClusterNodes);
+            }
+        }
     }
 
     public void setCacheProvider(ModuleCacheProvider cacheProvider) {

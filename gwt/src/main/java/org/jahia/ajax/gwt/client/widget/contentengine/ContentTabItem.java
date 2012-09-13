@@ -63,7 +63,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
-import org.jahia.ajax.gwt.client.widget.content.InfoTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import java.util.Arrays;
@@ -77,7 +76,7 @@ import java.util.Map;
  * Time: 8:10:21 PM
  */
 public class ContentTabItem extends PropertiesTabItem {
-    private int maxLength = 32;
+    private int maxNameSize = 32;
 
     private transient boolean isNodeNameFieldDisplayed = false;
     private transient Field name;
@@ -218,7 +217,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 nameText = new TextField<String>();
                 nameText.setId("JahiaGxtField_systemName");
                 nameText.setWidth("250");
-                nameText.setMaxLength(maxLength);
+                nameText.setMaxLength(maxNameSize);
                 nameText.setAllowBlank(false);
                 nameText.setStyleAttribute("padding-left", "0");
 //                nameText.setValue(engine.getNodeName());
@@ -408,14 +407,18 @@ public class ContentTabItem extends PropertiesTabItem {
             }
         }
         nodeName = new String(newChars, 0, j).trim().replaceAll(" ", "-").toLowerCase();
-        if (nodeName.length() > maxLength) {
-            nodeName = nodeName.substring(0, maxLength);
+        if (nodeName.length() > maxNameSize) {
+            nodeName = nodeName.substring(0, maxNameSize);
             if (nodeName.endsWith("-") && nodeName.length() > 2) {
                 nodeName = nodeName.substring(0, nodeName.length() - 1);
             }
         }
 
         return nodeName;
+    }
+
+    public void setMaxNameSize(int maxNameSize) {
+        this.maxNameSize = maxNameSize;
     }
 
     @Override

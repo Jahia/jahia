@@ -694,6 +694,7 @@
         <property name="requiredPermission" value="viewContentTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem">
+                <property name="maxNameSize" value="${jahia.jcr.maxNameSize}"/>
                 <property name="nameNotEditableForTypes">
                     <list>
                         <value>jnt:group</value>

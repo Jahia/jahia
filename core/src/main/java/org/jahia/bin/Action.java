@@ -44,6 +44,7 @@ import java.util.*;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.cfg.Settings;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.services.content.JCRContentUtils;
@@ -56,6 +57,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -142,16 +144,16 @@ public abstract class Action {
                 nodeNameProperty = parameters.get(Render.NODE_NAME_PROPERTY).get(0);
             }
             if (parameters.get(nodeNameProperty) != null) {
-                nodeName = JCRContentUtils.generateNodeName(parameters.get(nodeNameProperty).get(0), 32);
+                nodeName = JCRContentUtils.generateNodeName(parameters.get(nodeNameProperty).get(0));
             } else {
                 nodeName = nodeType.substring(nodeType.lastIndexOf(":") + 1);
             }
             if (isNodeNameToBeNormalized) {
-                nodeName = JCRContentUtils.generateNodeName(nodeName, 255);
+                nodeName = JCRContentUtils.generateNodeName(nodeName);
             }
             nodeName = JCRContentUtils.findAvailableNodeName(node, nodeName);
         } else if (isNodeNameToBeNormalized) {
-            nodeName = JCRContentUtils.generateNodeName(nodeName, 255);
+            nodeName = JCRContentUtils.generateNodeName(nodeName);
         } else {
             nodeName = JCRContentUtils.escapeLocalNodeName(nodeName);
         }

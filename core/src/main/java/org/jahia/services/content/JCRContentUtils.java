@@ -110,6 +110,7 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -122,24 +123,23 @@ import com.ibm.icu.text.Normalizer;
 
 /**
  * Utility class for accessing and manipulation JCR properties.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class JCRContentUtils implements ServletContextAware {
-    
+
     public static final Pattern COLON_PATTERN = Patterns.COLON;
-    
-    private  static final Map<String, Boolean> iconsPresence = new ConcurrentHashMap<String, Boolean>(512,0.8f,32);
+
+    private static final Map<String, Boolean> iconsPresence = new ConcurrentHashMap<String, Boolean>(512, 0.8f, 32);
     private static JCRContentUtils instance;
 
     private static final Logger logger = LoggerFactory.getLogger(JCRContentUtils.class);
-    
+
     /**
      * Calls the datastore garbage collector and returns the number of data entries deleted.
-     * 
+     *
      * @return the number of data entries deleted
-     * @throws RepositoryException
-     *             in case of an error
+     * @throws RepositoryException in case of an error
      */
     public static int callDataStoreGarbageCollector() throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Integer>() {
@@ -158,7 +158,7 @@ public final class JCRContentUtils implements ServletContextAware {
             }
         });
     }
-    
+
     public static boolean check(String icon) {
         Boolean present = iconsPresence.get(icon);
         if (present == null) {
@@ -175,22 +175,18 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Removes all locks on the current node and optionally on its children.
-     * 
-     * @param path
-     *            the path of the node remove locks from
-     * @param processChildNodes
-     *            do we need to also remove locks in children?
-     * @param currentUserSession
-     *            current JCR session
-     * @throws RepositoryException
-     *             in case of an error
+     *
+     * @param path               the path of the node remove locks from
+     * @param processChildNodes  do we need to also remove locks in children?
+     * @param currentUserSession current JCR session
+     * @throws RepositoryException in case of an error
      */
     public static void clearAllLocks(String path, boolean processChildNodes,
-            JCRSessionWrapper currentUserSession) throws RepositoryException {
+                                     JCRSessionWrapper currentUserSession) throws RepositoryException {
         JCRNodeWrapper node = currentUserSession.getNode(path);
         node.clearAllLocks();
         if (processChildNodes) {
-            for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {
+            for (NodeIterator iterator = node.getNodes(); iterator.hasNext(); ) {
                 JCRNodeWrapper child = (JCRNodeWrapper) iterator.next();
                 clearAllLocks(child.getPath(), processChildNodes, currentUserSession);
             }
@@ -199,11 +195,9 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Creates the JCR property value, depending on the type of the corresponding value.
-     * 
-     * @param objectValue
-     *            the object value to be converted
-     * @param factory
-     *            the {@link ValueFactory} instance
+     *
+     * @param objectValue the object value to be converted
+     * @param factory     the {@link ValueFactory} instance
      * @return the JCR property value
      */
     public static Value createValue(Object objectValue, ValueFactory factory) {
@@ -243,6 +237,7 @@ public final class JCRContentUtils implements ServletContextAware {
      * Reverse operation of encodeJCRNamePrefix.
      * Note : this is not yet complete as it depends on the restrictions imposed on XML namespaces as
      * defined here http://www.w3.org/TR/REC-xml-names/
+     *
      * @param encodedPrefix
      * @return
      */
@@ -254,9 +249,8 @@ public final class JCRContentUtils implements ServletContextAware {
     /**
      * Can be used to delete the Jackrabbit indexes folders for version and workspaces to force re-indexing on the next repository startup.
      * Note please that this method can only be invoked when the repository is not started (offline).
-     * 
-     * @param repositoryHome
-     *            the repository home folder
+     *
+     * @param repositoryHome the repository home folder
      */
     public static void deleteJackrabbitIndexes(File repositoryHome) {
         if (repositoryHome == null || !repositoryHome.isDirectory()) {
@@ -276,18 +270,20 @@ public final class JCRContentUtils implements ServletContextAware {
     }
 
     /**
-     * Downloads the JCR content to a temporary file. 
-     * @param node the JCR node with the file content 
+     * Downloads the JCR content to a temporary file.
+     *
+     * @param node the JCR node with the file content
      * @return the target file descriptor
      * @throws IOException in case of an error
      */
     public static File downloadFileContent(JCRNodeWrapper node) throws IOException {
         return downloadFileContent(node, File.createTempFile("data", null));
     }
-    
+
     /**
-     * Downloads the JCR content to a specified file. 
-     * @param node the JCR node with the file content 
+     * Downloads the JCR content to a specified file.
+     *
+     * @param node       the JCR node with the file content
      * @param targetFile target file to write data into
      * @return the target file descriptor
      * @throws IOException in case of an error
@@ -306,12 +302,13 @@ public final class JCRContentUtils implements ServletContextAware {
         }
         return targetFile;
     }
-    
+
     /**
      * Encode a JCR qualified form name prefix, according to the grammar defined in section 3.2.5.2
      * of the JCR 2.0 specification http://www.day.com/specs/jcr/2.0/3_Repository_Model.html#Names
      * Note : this is not yet complete as it depends on the restrictions imposed on XML namespaces as
      * defined here http://www.w3.org/TR/REC-xml-names/
+     *
      * @param originalPrefix
      * @return
      */
@@ -329,7 +326,7 @@ public final class JCRContentUtils implements ServletContextAware {
                 buffer.append('%');
                 buffer.append(Character.toUpperCase(Character.forDigit(ch / 16, 16)));
                 buffer.append(Character.toUpperCase(Character.forDigit(ch % 16, 16)));
-            } else if (ch == '/' ||  ch == '\\' || Character.isWhitespace(ch)) {
+            } else if (ch == '/' || ch == '\\' || Character.isWhitespace(ch)) {
                 if (buffer.length() > 0) {
                     buffer.append(' ');
                 }
@@ -357,7 +354,7 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Returns the next available name for a node, appending if needed numbers.
-     * 
+     *
      * @param dest the destination node, where the new one will be created
      * @param name the name of the new node
      * @return the next available name for a node, appending if needed numbers
@@ -383,8 +380,9 @@ public final class JCRContentUtils implements ServletContextAware {
                 String newSuffix = "-" + (i++) + ext;
                 name = basename + newSuffix;
                 //name has a sizelimit of 32 chars
-                if(name.length() > 32) {
-                    name = basename.substring(0,(basename.length()<=32?basename.length():32)-newSuffix.length())+newSuffix;
+                int maxNameSize = SettingsBean.getInstance().getMaxNameSize();
+                if (name.length() > maxNameSize) {
+                    name = basename.substring(0, (basename.length() <= maxNameSize ? basename.length() : maxNameSize) - newSuffix.length()) + newSuffix;
                 }
             } catch (RepositoryException e) {
                 break;
@@ -412,14 +410,18 @@ public final class JCRContentUtils implements ServletContextAware {
         return currentNode;
     }
 
+    public static String generateNodeName(String text) {
+        return generateNodeName(text, SettingsBean.getInstance().getMaxNameSize());
+    }
+
     /**
      * Generates the JCR node name from the provided text by normalizing it,
      * converting to lower case, replacing spaces with dashes and truncating to
      * ${@code maxLength} characters.
-     * 
-     * @param text the original text to be used as a source
+     *
+     * @param text      the original text to be used as a source
      * @param maxLength the maximum length of the resulting name (it will be
-     *            truncated if needed)
+     *                  truncated if needed)
      * @return the JCR node name from the provided text by normalizing it,
      *         converting to lower case, replacing spaces with dashes and
      *         truncating to ${@code maxLength} characters
@@ -447,12 +449,10 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Returns a set of all mixin types, which can be added to the provided node.
-     * 
-     * @param node
-     *            the node to add mixin types to
+     *
+     * @param node the node to add mixin types to
      * @return a set of all mixin types, which can be added to the provided node
-     * @throws RepositoryException
-     *             in case of a repository access error
+     * @throws RepositoryException in case of a repository access error
      */
     public static Set<String> getAssignableMixins(JCRNodeWrapper node) throws RepositoryException {
         Set<String> mixins = new TreeSet<String>();
@@ -474,11 +474,9 @@ public final class JCRContentUtils implements ServletContextAware {
     /**
      * Returns a list of child nodes of the provided node, matching the specified node type (multiple node types can be specified, separated
      * by a comma).
-     * 
-     * @param node
-     *            the parent node to retrieve children from
-     * @param type
-     *            the node type to be matched by a retrieved child. Multiple node types can be specified, separated by a comma.
+     *
+     * @param node the parent node to retrieve children from
+     * @param type the node type to be matched by a retrieved child. Multiple node types can be specified, separated by a comma.
      * @return a list of child nodes of the provided node, matching the specified node type (multiple node types can be specified, separated
      *         by a comma).
      */
@@ -491,7 +489,7 @@ public final class JCRContentUtils implements ServletContextAware {
             String[] typesToCheck = Patterns.COMMA.split(type);
             List<JCRNodeWrapper> matchingChildren = new LinkedList<JCRNodeWrapper>();
             try {
-                for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {
+                for (NodeIterator iterator = node.getNodes(); iterator.hasNext(); ) {
                     Node child = iterator.nextNode();
                     for (String matchType : typesToCheck) {
                         if (child.isNodeType(matchType)) {
@@ -513,9 +511,8 @@ public final class JCRContentUtils implements ServletContextAware {
     /**
      * Returns a content object key for a node if available. Otherwise returns
      * node name.
-     * 
-     * @param node
-     *            the node to get name
+     *
+     * @param node the node to get name
      * @return a content object key for a node if available. Otherwise returns
      *         node name
      * @throws RepositoryException
@@ -524,20 +521,19 @@ public final class JCRContentUtils implements ServletContextAware {
             throws RepositoryException {
         return node.getName();
     }
-    
+
     /**
      * Returns a node path, composed using only content object keys, i.e.
-     * 
+     * <p/>
      * <code>/mySite/ContentPage_1/ContentPage_19/ContentContainerList_21/ContentContainer_13</code>
-     * 
-     * @param node
-     *            the content node to compute path for
+     *
+     * @param node the content node to compute path for
      * @return a node path, composed using only content object keys
      * @throws RepositoryException
      */
     public static String getContentObjectPath(Node node)
             throws RepositoryException {
-        
+
         StringBuilder path = new StringBuilder(64);
         path.append("/").append(getContentNodeName(node));
         Node parent = null;
@@ -558,14 +554,14 @@ public final class JCRContentUtils implements ServletContextAware {
                 parent = null;
             }
         }
-        
+
         return path.toString();
-    }    
+    }
 
     public static NodeIterator getDescendantNodes(JCRNodeWrapper node, String type) {
         try {
-            return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where isdescendantnode(sel,['"+node.getPath()+"'])",
-                                                                                  Query.JCR_SQL2).execute().getNodes();
+            return node.getSession().getWorkspace().getQueryManager().createQuery("select * from [" + type + "] as sel where isdescendantnode(sel,['" + node.getPath() + "'])",
+                    Query.JCR_SQL2).execute().getNodes();
         } catch (InvalidQueryException e) {
             logger.error("Error while retrieving nodes", e);
         } catch (RepositoryException e) {
@@ -573,12 +569,12 @@ public final class JCRContentUtils implements ServletContextAware {
         }
         return NodeIteratorImpl.EMPTY;
     }
-    
+
     /**
      * Get the node or property display name depending on the locale
      *
-     * @param item the item to get the label for
-     * @param locale current locale
+     * @param item                      the item to get the label for
+     * @param locale                    current locale
      * @param nodeTypeForSearchingLabel
      * @return the node or property display name depending on the locale
      */
@@ -592,7 +588,7 @@ public final class JCRContentUtils implements ServletContextAware {
                     PropertyDefinition propertyDefintion = property.getDefinition();
                     if (propertyDefintion != null && propertyDefintion instanceof ExtendedPropertyDefinition) {
                         ExtendedPropertyDefinition itemDef = (ExtendedPropertyDefinition) propertyDefintion;
-                        return itemDef.getLabel(locale,nodeTypeForSearchingLabel);
+                        return itemDef.getLabel(locale, nodeTypeForSearchingLabel);
                     } else {
                         logger.error("PropertyDefinition doesn't implement 'org.jahia.services.content.nodetypes.ExtendedPropertyDefinition'");
                     }
@@ -601,7 +597,7 @@ public final class JCRContentUtils implements ServletContextAware {
                 else if (item instanceof PropertyDefinition) {
                     if (item instanceof ExtendedPropertyDefinition) {
                         ExtendedPropertyDefinition itemDef = (ExtendedPropertyDefinition) item;
-                        return itemDef.getLabel(locale,nodeTypeForSearchingLabel);
+                        return itemDef.getLabel(locale, nodeTypeForSearchingLabel);
                     } else {
                         logger.error("PropertyDefinition doesn't implement 'org.jahia.services.content.nodetypes.ExtendedPropertyDefinition'");
                     }
@@ -623,7 +619,7 @@ public final class JCRContentUtils implements ServletContextAware {
             }
         }
         return null;
-    }    
+    }
 
     public static String getExpandedName(String name, NamespaceRegistry namespaceRegistry) throws RepositoryException {
         if (!name.startsWith("{")) {
@@ -634,14 +630,14 @@ public final class JCRContentUtils implements ServletContextAware {
                 name = "{}" + name;
             }
         }
-        
+
         return name;
     }
-    
+
     public static String getIcon(ExtendedNodeType type) throws RepositoryException {
         return getIcon(type, null);
     }
-    
+
     private static String getIcon(ExtendedNodeType type, String subType) throws RepositoryException {
         String icon = getIconsFolder(type) + replaceColon(type.getName()) + (StringUtils.isEmpty(subType) ? "" : "_" + subType);
         if (check(icon)) {
@@ -683,12 +679,12 @@ public final class JCRContentUtils implements ServletContextAware {
             return getIcon(primaryNodeType, getSubType(primaryNodeType, f));
         }
     }
-    
+
     private static String getSubType(ExtendedNodeType nt, JCRNodeWrapper f) {
         String subType = null;
         try {
             if (Constants.JAHIANT_VIRTUALSITE.equals(nt.getName()) && f.hasProperty(Constants.SITETYPE)) {
-                subType = f.getPropertyAsString(Constants.SITETYPE);    
+                subType = f.getPropertyAsString(Constants.SITETYPE);
             }
         } catch (RepositoryException e) {
         }
@@ -712,9 +708,8 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Returns the parsed lock type from the provided token.
-     * 
-     * @param lockTypeToken
-     *            the token to detect lock type from
+     *
+     * @param lockTypeToken the token to detect lock type from
      * @return the parsed lock type from the provided token
      */
     public static JCRNodeLockType getLockType(String lockTypeToken) {
@@ -738,9 +733,8 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Returns a set of lock types for the current node. If there are no locks found in the lock infos, returns an empty set.
-     * 
-     * @param lockInfos
-     *            the lock information of a node
+     *
+     * @param lockInfos the lock information of a node
      * @return a set of lock types for the current node. If there are no locks found in the lock infos, returns an empty set.
      */
     public static Set<JCRNodeLockType> getLockTypes(Map<String, List<String>> lockInfos) {
@@ -760,12 +754,13 @@ public final class JCRContentUtils implements ServletContextAware {
     /**
      * Returns the last part of a path, so the last name. This method supports expanded form names in the path, so the
      * last slash detection will be properly handled.
+     *
      * @param path the path to get the name from
      * @return the name of the leaf in the path.
      */
     public static String getNameFromPath(String path) {
         String[] pathNames = splitJCRPath(path);
-        return pathNames[pathNames.length-1];
+        return pathNames[pathNames.length - 1];
     }
 
     public static List<JCRNodeWrapper> getNodes(JCRNodeWrapper node, String type) {
@@ -793,13 +788,14 @@ public final class JCRContentUtils implements ServletContextAware {
      * Little utility method to retrieve or create a path, building it if necessary. For example let's say that we want
      * to get or create the path from a parentNode : messages/inbox . We can simply pass the parent node, the session
      * and the path to check, and it will either retrieve it if it exists, or create it if it doesn't.
-     *
+     * <p/>
      * Please note that this method also checks out the parent nodes.
+     *
      * @param session
-     * @param parentNode the parent node in from which we want to retrieve the relative path.
-     * @param path the path to retrieve or create. Note that this path MUST be relative
+     * @param parentNode   the parent node in from which we want to retrieve the relative path.
+     * @param path         the path to retrieve or create. Note that this path MUST be relative
      * @param pathNodeType the type to use for the intermediary nodes (and the last path too !) if they need to be
-     * created. Usually you'll want to use Constants.JAHIANT_CONTENTLIST here.
+     *                     created. Usually you'll want to use Constants.JAHIANT_CONTENTLIST here.
      * @return the leaf that is equivalent to the lowest path value.
      * @throws RepositoryException occurs if there is any problem accessing content or creating the nodes.
      */
@@ -824,6 +820,7 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * A small utility method to retrieve the parent path of a path that contains expanded form names.
+     *
      * @param path the path for which we want to retrieve the parent path.
      * @return the parent path including all names in expanded or qualified form.
      */
@@ -834,9 +831,9 @@ public final class JCRContentUtils implements ServletContextAware {
         if (path.startsWith("/")) {
             parentPath.append("/");
         }
-        for (int i=0; i < pathNames.length -1; i++) {
+        for (int i = 0; i < pathNames.length - 1; i++) {
             parentPath.append(pathNames[i]);
-            if (i < pathNames.length -2) {
+            if (i < pathNames.length - 2) {
                 parentPath.append("/");
             }
         }
@@ -844,7 +841,7 @@ public final class JCRContentUtils implements ServletContextAware {
     }
 
     public static JCRNodeWrapper getParentOfType(JCRNodeWrapper node,
-            String type) {
+                                                 String type) {
         JCRNodeWrapper matchingParent = null;
         try {
             JCRNodeWrapper parent = node.getParent();
@@ -876,7 +873,7 @@ public final class JCRContentUtils implements ServletContextAware {
         }
         return result;
     }
-    
+
     private static ExtendedPropertyDefinition getPropertyDefExtension(
             PropertyDefinition propDef) {
         try {
@@ -890,7 +887,7 @@ public final class JCRContentUtils implements ServletContextAware {
     }
 
     public static PropertyDefinition getPropertyDefinition(NodeType type,
-            String property) throws RepositoryException {
+                                                           String property) throws RepositoryException {
         PropertyDefinition foundDefintion = null;
         PropertyDefinition[] pds = type.getDeclaredPropertyDefinitions();
         for (int i = 0; i < pds.length; i++) {
@@ -905,9 +902,9 @@ public final class JCRContentUtils implements ServletContextAware {
     }
 
     public static PropertyDefinition getPropertyDefinition(String nodeType,
-            String property) throws RepositoryException {
+                                                           String property) throws RepositoryException {
         return getPropertyDefinition(NodeTypeRegistry.getInstance().getNodeType(
-                        nodeType), property);
+                nodeType), property);
     }
 
     public static int getPropertyDefSelector(ItemDefinition itemDef) {
@@ -923,7 +920,7 @@ public final class JCRContentUtils implements ServletContextAware {
      * If the node path contains site information (i.e.
      * <code>/sites/&lt;siteKey&gt;/...</code>) this method returns the site key
      * part; otherwise <code>null</code> is returned.
-     * 
+     *
      * @param jcrNodePath the JCR node path
      * @return if the node path contains site information (i.e.
      *         <code>/sites/&lt;siteKey&gt;/...</code>) this method returns the
@@ -935,19 +932,16 @@ public final class JCRContentUtils implements ServletContextAware {
     }
 
     public static String getSystemSitePath() {
-        return "/sites/" + JahiaSitesBaseService.SYSTEM_SITE_KEY;        
+        return "/sites/" + JahiaSitesBaseService.SYSTEM_SITE_KEY;
     }
 
     /**
      * Returns an object value that corresponds to the provided JCR property value depending on its type.
-     * 
-     * @param propertyValue
-     *            the JCR property value to be converted
+     *
+     * @param propertyValue the JCR property value to be converted
      * @return the object value
-     * @throws RepositoryException
-     *             in case of a conversion error
-     * @throws ValueFormatException
-     *             in case of a conversion error
+     * @throws RepositoryException  in case of a conversion error
+     * @throws ValueFormatException in case of a conversion error
      */
     public static Object getValue(Value propertyValue) throws ValueFormatException,
             RepositoryException {
@@ -974,8 +968,7 @@ public final class JCRContentUtils implements ServletContextAware {
      * Used by portlet backends to determine if a user is part of a specific permissionName on a node specified by it's
      * UUID
      *
-     *
-     * @param workspaceName the name of the workspace in which we load the node from.
+     * @param workspaceName  the name of the workspace in which we load the node from.
      * @param permissionName
      * @param nodeUUID
      * @return
@@ -986,28 +979,21 @@ public final class JCRContentUtils implements ServletContextAware {
             JCRNodeWrapper node = session.getNodeByIdentifier(nodeUUID);
             return node.hasPermission(permissionName);
         } catch (Exception e) {
-            logger.error("Error while checking permission "+ permissionName +" for node UUID " + nodeUUID, e);
+            logger.error("Error while checking permission " + permissionName + " for node UUID " + nodeUUID, e);
         }
         return false;
     }
 
     /**
      * Performs import of JCR data using provided skeleton locations. This method is used when a new virtual site or a new user is created.
-     * 
      *
-     * @param skeletonLocations
-     *            the (pattern-based) location to search for resources. Multiple locations can be provided separated by comma (or any
-     *            delimiter, defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} )
-     * @param targetPath
-     *            target JCR path to perform import into
-     * @param session
-     *            the current JCR session
-     * @throws IOException
-     *             in case of skeleton lookup error
-     * @throws InvalidSerializedDataException
-     *             import related exception
-     * @throws RepositoryException
-     *             general JCR exception
+     * @param skeletonLocations the (pattern-based) location to search for resources. Multiple locations can be provided separated by comma (or any
+     *                          delimiter, defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} )
+     * @param targetPath        target JCR path to perform import into
+     * @param session           the current JCR session
+     * @throws IOException                    in case of skeleton lookup error
+     * @throws InvalidSerializedDataException import related exception
+     * @throws RepositoryException            general JCR exception
      */
     public static void importSkeletons(String skeletonLocations, String targetPath,
                                        JCRSessionWrapper session) throws IOException, InvalidSerializedDataException,
@@ -1017,23 +1003,16 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Performs import of JCR data using provided skeleton locations. This method is used when a new virtual site or a new user is created.
-     * 
      *
-     * @param skeletonLocations
-     *            the (pattern-based) location to search for resources. Multiple locations can be provided separated by comma (or any
-     *            delimiter, defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} )
-     * @param targetPath
-     *            target JCR path to perform import into
-     * @param session
-     *            the current JCR session
+     * @param skeletonLocations  the (pattern-based) location to search for resources. Multiple locations can be provided separated by comma (or any
+     *                           delimiter, defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} )
+     * @param targetPath         target JCR path to perform import into
+     * @param session            the current JCR session
      * @param importUUIDBehavior the {@link javax.jcr.ImportUUIDBehavior} to use during import
      * @param replacements
-     * @throws IOException
-     *             in case of skeleton lookup error
-     * @throws InvalidSerializedDataException
-     *             import related exception
-     * @throws RepositoryException
-     *             general JCR exception
+     * @throws IOException                    in case of skeleton lookup error
+     * @throws InvalidSerializedDataException import related exception
+     * @throws RepositoryException            general JCR exception
      */
     public static void importSkeletons(String skeletonLocations, String targetPath,
                                        JCRSessionWrapper session, int importUUIDBehavior, Map<String, String> replacements) throws IOException, InvalidSerializedDataException,
@@ -1054,21 +1033,14 @@ public final class JCRContentUtils implements ServletContextAware {
     /**
      * Performs import of JCR data using provided skeleton locations. This method is used when a new virtual site or a new user is created.
      *
-     *
-     * @param skeletonLocations
-     *            the (pattern-based) location to search for resources. Multiple locations can be provided separated by comma (or any
-     *            delimiter, defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} )
-     * @param targetPath
-     *            target JCR path to perform import into
-     * @param session
-     *            the current JCR session
+     * @param skeletonLocations the (pattern-based) location to search for resources. Multiple locations can be provided separated by comma (or any
+     *                          delimiter, defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} )
+     * @param targetPath        target JCR path to perform import into
+     * @param session           the current JCR session
      * @param replacements
-     * @throws IOException
-     *             in case of skeleton lookup error
-     * @throws InvalidSerializedDataException
-     *             import related exception
-     * @throws RepositoryException
-     *             general JCR exception
+     * @throws IOException                    in case of skeleton lookup error
+     * @throws InvalidSerializedDataException import related exception
+     * @throws RepositoryException            general JCR exception
      */
     public static void importSkeletons(String skeletonLocations, String targetPath,
                                        JCRSessionWrapper session, Map<String, String> replacements) throws IOException, InvalidSerializedDataException,
@@ -1082,7 +1054,7 @@ public final class JCRContentUtils implements ServletContextAware {
         try {
             template = RenderService.getInstance().resolveTemplate(new org.jahia.services.render.Resource(currentNode,
                     "html", null, org.jahia.services.render.Resource.CONFIGURATION_PAGE), context);
-            return template!=null;
+            return template != null;
         } catch (Exception e) {
             return false;
         }
@@ -1090,11 +1062,9 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Checks if the specified mime type belongs to one of the specified groups (like pdf,word,openoffice, etc.).
-     * 
-     * @param mimeType
-     *            the mime type to be checked
-     * @param mimeTypeGroup
-     *            the group (or multiple groups, separated by comma) the specified mime type should belong to
+     *
+     * @param mimeType      the mime type to be checked
+     * @param mimeTypeGroup the group (or multiple groups, separated by comma) the specified mime type should belong to
      * @return if the specified mime type belongs to one of the specified groups (like pdf,word,openoffice, etc.)
      */
     public static boolean isMimeTypeGroup(String mimeType, String mimeTypeGroup) {
@@ -1103,11 +1073,9 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Checks if the specified mime type belongs to one of the specified groups (like pdf,word,openoffice, etc.).
-     * 
-     * @param mimeType
-     *            the mime type to be checked
-     * @param mimeTypeGroups
-     *            the groups the specified mime type should belong to
+     *
+     * @param mimeType       the mime type to be checked
+     * @param mimeTypeGroups the groups the specified mime type should belong to
      * @return if the specified mime type belongs to one of the specified groups (like pdf,word,openoffice, etc.)
      */
     public static boolean isMimeTypeGroup(String mimeType, String... mimeTypeGroups) {
@@ -1140,15 +1108,13 @@ public final class JCRContentUtils implements ServletContextAware {
 
         return found;
     }
-    
+
     /**
      * Returns <code>true</code> if the node is locked and cannot be edited by current user.
-     * 
-     * @param node
-     *            the node to be tested
+     *
+     * @param node the node to be tested
      * @return <code>true</code> if the node is locked and cannot be edited by current user
-     * @throws RepositoryException
-     *             in case of a JCR error
+     * @throws RepositoryException in case of a JCR error
      */
     public static boolean isLockedAndCannotBeEdited(JCRNodeWrapper node) throws RepositoryException {
         if (node == null) {
@@ -1168,7 +1134,7 @@ public final class JCRContentUtils implements ServletContextAware {
                     }
                 }
             }
-        } catch (PathNotFoundException e){
+        } catch (PathNotFoundException e) {
             logger.debug("concurrency issue lock is not present anymore");
         }
 
@@ -1177,14 +1143,11 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Returns <code>true</code> if the provided node matches one of the specified node types.
-     * 
-     * @param node
-     *            the node to be tested
-     * @param types
-     *            an array of node types to be matched.
+     *
+     * @param node  the node to be tested
+     * @param types an array of node types to be matched.
      * @return <code>true</code> if the provided node matches one of the specified node types
-     * @throws RepositoryException
-     *             in case of a JCR error
+     * @throws RepositoryException in case of a JCR error
      */
     public static boolean isNodeType(JCRNodeWrapper node, Iterable<String> types)
             throws RepositoryException {
@@ -1205,15 +1168,12 @@ public final class JCRContentUtils implements ServletContextAware {
     /**
      * Returns <code>true</code> if the provided node matches the specified node type (multiple node types can be specified, separated by a
      * comma).
-     * 
-     * @param node
-     *            the node to be tested
-     * @param type
-     *            the node type to be matched. Multiple node types can be specified, separated by a comma.
+     *
+     * @param node the node to be tested
+     * @param type the node type to be matched. Multiple node types can be specified, separated by a comma.
      * @return <code>true</code> if the provided node matches the specified node type (multiple node types can be specified, separated by a
      *         comma).
-     * @throws RepositoryException
-     *             in case of a JCR error
+     * @throws RepositoryException in case of a JCR error
      */
     public static boolean isNodeType(JCRNodeWrapper node, String type) throws RepositoryException {
         if (node == null || StringUtils.isEmpty(type)) {
@@ -1238,9 +1198,8 @@ public final class JCRContentUtils implements ServletContextAware {
     /**
      * Returns <code>true</code> if the provided UUID string does not seem like a valid Jackrabbit node UUID. In such a case it comes from a
      * different provide, like VFS.
-     * 
-     * @param uuid
-     *            the UUID string to check
+     *
+     * @param uuid the UUID string to check
      * @return code>true</code> if the provided UUID string does not seem like a valid Jackrabbit node UUID. In such a case it comes from a
      *         different provide, like VFS
      */
@@ -1255,9 +1214,8 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Validates if the specified name is a valid JCR workspace (either <code>default</code> or <code>live</code>).
-     * 
-     * @param workspace
-     *            the workspace name to check
+     *
+     * @param workspace the workspace name to check
      * @return <code>true</code> if the specified name is a valid JCR workspace (either <code>default</code> or <code>live</code>);
      *         otherwise returns <code>false</code>
      */
@@ -1267,9 +1225,8 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Validates if the specified name is a valid JCR workspace (either <code>default</code> or <code>live</code>).
-     * 
-     * @param workspace
-     *            the workspace name to check
+     *
+     * @param workspace  the workspace name to check
      * @param allowBlank set to true if the workspace name is allowed to be null or empty
      * @return <code>true</code> if the specified name is a valid JCR workspace (either <code>default</code> or <code>live</code>);
      *         otherwise returns <code>false</code>
@@ -1281,6 +1238,7 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Small utility method to help with proper namespace registration in all JCR providers.
+     *
      * @param session
      * @param prefix
      * @param uri
@@ -1303,7 +1261,7 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Returns the number of elements in the provided iterator.
-     * 
+     *
      * @param iterator the item iterator to check the size
      * @return the number of elements in the provided iterator
      */
@@ -1324,6 +1282,7 @@ public final class JCRContentUtils implements ServletContextAware {
      * Utility method to split a JCR path into names. Note that this method supports expanded name notation (using
      * URIs), such as {http://www.jcp.org/jcr/1.0}read, as it is tricky to split simply using the "/" character when
      * URIs are present.
+     *
      * @param path a relative or absolute path, with node names in qualified or expanded form
      * @return an array of String instances that contain the node names in order of the path.
      */
@@ -1339,8 +1298,8 @@ public final class JCRContentUtils implements ServletContextAware {
         do {
             StringBuffer currentName = new StringBuffer();
             if (path.indexOf('{', pathPos) == pathPos) {
-                int endingBracketPos = path.indexOf('}', pathPos+1);
-                currentName.append(path.substring(pathPos, endingBracketPos+1));
+                int endingBracketPos = path.indexOf('}', pathPos + 1);
+                currentName.append(path.substring(pathPos, endingBracketPos + 1));
                 pathPos = endingBracketPos + 1;
             }
             nextSlashPos = path.indexOf('/', pathPos);
@@ -1358,23 +1317,21 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Convert a path string to encoded path Strings in XPATH queries
-     * 
-     * @param str
-     *            Any string.
+     *
+     * @param str Any string.
      * @return A valid string path suitable for use in XPATH queries
      */
     public static String stringToJCRPathExp(String str) {
         return ISO9075.encode(Text.escapeIllegalJcrChars(str));
     }
-    
+
     /**
      * Convert a string to a JCR search expression literal, suitable for use in
      * jcr:contains() (inside XPath) or contains (SQL2). The characters - and " have
      * special meaning, and may be escaped with a backslash to obtain their
      * literal value. See JSR-283 spec v2.0, Sec. 4.6.6.19.
-     * 
-     * @param str
-     *            Any string.
+     *
+     * @param str Any string.
      * @return A valid string literal suitable for use in
      *         JCR contains clauses, including enclosing quotes.
      */
@@ -1384,13 +1341,12 @@ public final class JCRContentUtils implements ServletContextAware {
         // in one of the combinations \" or \-
         return stringToQueryLiteral(Text.escapeIllegalXpathSearchChars(str));
     }
-    
+
     /**
      * Convert a string to a literal, suitable for inclusion
      * in a query. See JSR-283 spec v2.0, Sec. 4.6.6.19.
-     * 
-     * @param str
-     *            Any string.
+     *
+     * @param str Any string.
      * @return A valid JCR query string literal, including enclosing quotes.
      */
     public static String stringToQueryLiteral(String str) {
@@ -1400,9 +1356,8 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Decode an encoded JCR local name encoded with the {@link #escapeLocalNodeName(String)} method
-     * 
-     * @param encodedLocalName
-     *            the node name to unescape
+     *
+     * @param encodedLocalName the node name to unescape
      * @return the unescaped name
      */
     public static String unescapeLocalNodeName(final String encodedLocalName) {
@@ -1411,23 +1366,22 @@ public final class JCRContentUtils implements ServletContextAware {
     }
 
     private Map<String, String> fileExtensionIcons;
-    
+
     private Map<String, List<String>> mimeTypes;
 
     private NameGenerationHelper nameGenerationHelper;
 
     private Set<String> unsupportedMarkForDeletionNodeTypes = Collections.emptySet();
-    
+
     private Pattern handleFallbackLocaleForPath;
 
     private ServletContext servletContext;
-    
+
     /**
      * Initializes an instance of this class.
-     * 
-     * @param mimeTypes
-     *            a map with mime type mappings
-     * @param fileExtensionIcons mapping between file extensions and corresponding icons 
+     *
+     * @param mimeTypes          a map with mime type mappings
+     * @param fileExtensionIcons mapping between file extensions and corresponding icons
      */
     @SuppressWarnings("unchecked")
     public JCRContentUtils(Map<String, List<String>> mimeTypes, Map<String, String> fileExtensionIcons) {
@@ -1439,25 +1393,25 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Generates the node name by using a configurable NameGenerationHelper implementation.
-     * 
+     *
      * @return a node name generated by configurable helper service
-     */    
+     */
     public String generateNodeName(JCRNodeWrapper parent, String nodeType) {
         return getNameGenerationHelper().generatNodeName(parent, nodeType);
     }
 
     /**
      * Generates the node name by using a configurable NameGenerationHelper implementation.
-     * 
+     *
      * @return a node name generated by configurable helper service
-     */    
+     */
     public String generateNodeName(JCRNodeWrapper parent, String defaultLanguage, ExtendedNodeType nodeType, String targetName) {
         return getNameGenerationHelper().generatNodeName(parent, defaultLanguage, nodeType, targetName);
     }
 
     /**
      * Returns a mapping between file extensions and corresponding icons.
-     * 
+     *
      * @return a mapping between file extensions and corresponding icons
      */
     public Map<String, String> getFileExtensionIcons() {
@@ -1467,7 +1421,7 @@ public final class JCRContentUtils implements ServletContextAware {
     /**
      * Return a map of mime types (file formats) to be available in the
      * advanced search form.
-     * 
+     *
      * @return a map of mime types (file formats) to be available in the
      *         advanced search form
      */
@@ -1482,11 +1436,11 @@ public final class JCRContentUtils implements ServletContextAware {
     public Set<String> getUnsupportedMarkForDeletionNodeTypes() {
         return unsupportedMarkForDeletionNodeTypes;
     }
-    
+
     public void setNameGenerationHelper(NameGenerationHelper nameGenerationHelper) {
         this.nameGenerationHelper = nameGenerationHelper;
     }
-    
+
     public void setUnsupportedMarkForDeletionNodeTypes(Set<String> unsupportedMarkForDeletionNodeTypes) {
         this.unsupportedMarkForDeletionNodeTypes = unsupportedMarkForDeletionNodeTypes;
     }
@@ -1500,12 +1454,12 @@ public final class JCRContentUtils implements ServletContextAware {
                 .compile(handleFallbackLocaleForPath) : null;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static List<Map<String, Object>> getRolesForNode(JCRNodeWrapper node, boolean includeInherited, boolean expandGroups, String roles, int limit,
                                                             boolean latestFirst) {
         List<Map<String, Object>> results = new LinkedList<Map<String, Object>>();
-        Map<String,List<String[]>> entries = node.getAclEntries();
-        if(latestFirst) {
+        Map<String, List<String[]>> entries = node.getAclEntries();
+        if (latestFirst) {
             entries = reverse(entries);
         }
         int siteId = -1;
@@ -1522,8 +1476,8 @@ public final class JCRContentUtils implements ServletContextAware {
                     logger.warn("User {} cannot be found. Skipping.", StringUtils.substringAfter(entryKey, "u:"));
                     continue;
                 }
-                m.put("principalType","user");
-                m.put("principal",u);
+                m.put("principalType", "user");
+                m.put("principal", u);
             } else if (entryKey.startsWith("g:")) {
                 if (siteId == -1) {
                     try {
@@ -1538,8 +1492,8 @@ public final class JCRContentUtils implements ServletContextAware {
                     logger.warn("Group {} cannot be found for site with ID={}. Skipping.", StringUtils.substringAfter(entryKey, "g:"), siteId);
                     continue;
                 }
-                m.put("principalType","group");
-                m.put("principal",g);
+                m.put("principalType", "group");
+                m.put("principal", g);
             }
 
             for (String[] details : entry.getValue()) {
@@ -1559,7 +1513,7 @@ public final class JCRContentUtils implements ServletContextAware {
                         m.put("roles", new LinkedList<String>());
                         results.add(m);
                     }
-                    ((List)m.get("roles")).add(details[2]);
+                    ((List) m.get("roles")).add(details[2]);
                 }
             }
 
@@ -1602,12 +1556,11 @@ public final class JCRContentUtils implements ServletContextAware {
         }
         return reversed;
     }
-    
+
     /**
      * Encode a string to be used in a JCR SQL2 query by "escaping" the single quotes.
-     * 
-     * @param s
-     *            the string to be encoded
+     *
+     * @param s the string to be encoded
      * @return encoded string to be used in a JCR SQL2 query
      */
     public static String sqlEncode(String s) {
@@ -1617,13 +1570,10 @@ public final class JCRContentUtils implements ServletContextAware {
     /**
      * Returns the first parent of the specified node, which has the ACL inheritance broken. If not found, null<code>null</code> is
      * returned.
-     * 
-     * @param node
-     *            the node to search parent for
-     * 
+     *
+     * @param node the node to search parent for
      * @return the first parent of the specified node, which has the ACL inheritance broken. If not found, null<code>null</code> is returned
-     * @throws RepositoryException
-     *             in case of JCR errors
+     * @throws RepositoryException in case of JCR errors
      */
     public static JCRNodeWrapper getParentWithAclInheritanceBroken(JCRNodeWrapper node)
             throws RepositoryException {
@@ -1643,13 +1593,12 @@ public final class JCRContentUtils implements ServletContextAware {
 
         return found;
     }
-    
+
     /**
      * Detects the mime-type for the specified file name, based on its extension (uses mime types, configured in the web.xml deployment
      * descriptor).
-     * 
-     * @param fileName
-     *            the name of the file to detect mime type for
+     *
+     * @param fileName the name of the file to detect mime type for
      * @return the mime-type for the specified file name, based on its extension (uses mime types, configured in the web.xml deployment
      *         descriptor)
      */
@@ -1661,11 +1610,9 @@ public final class JCRContentUtils implements ServletContextAware {
     /**
      * Detects the mime-type for the specified file name, based on its extension (uses mime types, configured in the web.xml deployment
      * descriptor). If the type cannot be detected, the provided fallback mime type is returned.
-     * 
-     * @param fileName
-     *            the name of the file to detect mime type for
-     * @param fallbackMimeType
-     *            the fallback mime-type to use if the type cannot be detected
+     *
+     * @param fileName         the name of the file to detect mime type for
+     * @param fallbackMimeType the fallback mime-type to use if the type cannot be detected
      * @return the mime-type for the specified file name, based on its extension (uses mime types, configured in the web.xml deployment
      *         descriptor). If the type cannot be detected, the provided fallback mime type is returned.
      */

@@ -1936,7 +1936,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         gwtProps.add(new GWTJahiaNodeProperty("node", props.get("node")));
         gwtProps.add(new GWTJahiaNodeProperty("schedule", props.get("schedule")));
 
-        createNode("/remotePublications", JCRContentUtils.generateNodeName(nodeName, 255),
+        createNode("/remotePublications", JCRContentUtils.generateNodeName(nodeName),
                 "jnt:remotePublication", null, null, gwtProps,
                 new HashMap<String, List<GWTJahiaNodeProperty>>());
 

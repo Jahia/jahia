@@ -495,7 +495,13 @@ public class JCRSessionWrapper implements Session {
                             if (propDef.isMandatory() &&
                                 propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
                                 propDef.getRequiredType() != PropertyType.REFERENCE &&
-                                !propDef.isProtected() && (!node.hasProperty(propDef.getName()) || StringUtils.isEmpty(node.getProperty(propDef.getName()).getString()))) {
+                                !propDef.isProtected() &&
+                                (
+                                        !node.hasProperty(propDef.getName()) ||
+                                        (!propDef.isMultiple() &&
+                                        StringUtils.isEmpty(node.getProperty(propDef.getName()).getString()))
+
+                                )) {
                                 throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
                             }
                         }

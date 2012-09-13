@@ -185,7 +185,7 @@
 
 <script>
     function startWorkflow(process) {
-        $.post("<c:url value='${url.base}${functions:escapeJavaScript(currentNode.path)}.startWorkflow.do'/>", {"process":process},
+        $.post("<c:url value='${url.base}${functions:escapePath(currentNode.path)}.startWorkflow.do'/>", {"process":process},
                 function (result) {
                     location.reload();
                 },
@@ -195,7 +195,7 @@
 
 
     function executeTask(action, outcome) {
-        $.post("<c:url value='${url.base}${functions:escapeJavaScript(currentNode.path)}.executeTask.do'/>", {"action":action, "outcome":outcome},
+        $.post("<c:url value='${url.base}${functions:escapePath(currentNode.path)}.executeTask.do'/>", {"action":action, "outcome":outcome},
                 function (result) {
                     location.reload();
                 },
@@ -279,7 +279,7 @@
                 <div id="workflow${currentNode.identifier}-${workflowDefinition.key}" class="workflowformdiv popupSize">
                         <%--<c:set var="workflowStartFormWFCallbackJS">alert("callback");</c:set>--%>
                     <c:url value="${url.current}.ajax" var="myUrl"/>
-                    <c:url value='${url.base}${functions:escapeJavaScript(currentNode.path)}.startWorkflow.do'
+                    <c:url value='${url.base}${functions:escapePath(currentNode.path)}.startWorkflow.do'
                            var="actionUrl"/>
                     <template:include view="contribute.workflow">
                         <template:param name="resourceNodeType" value="${workflowDefinition.formResourceName}"/>

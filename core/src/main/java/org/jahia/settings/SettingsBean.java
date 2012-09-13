@@ -198,6 +198,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private Locale defaultLocale;
 
     private int importMaxBatch;
+    private int maxNameSize;
 
     private boolean expandImportedFilesOnDisk;
     private String expandImportedFilesOnDiskPath;
@@ -365,6 +366,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             fileServletStatisticsEnabled = getBoolean("jahia.fileServlet.statisticsEnabled", false);
 
             importMaxBatch = getInt("importMaxBatch", 500);
+
+            maxNameSize = getInt("jahia.jcr.maxNameSize", 32);
 
             expandImportedFilesOnDisk = getBoolean("expandImportedFilesOnDisk",false);
             expandImportedFilesOnDiskPath = getString("expandImportedFilesOnDiskPath","/tmp");
@@ -1059,6 +1062,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public int getImportMaxBatch() {
         return importMaxBatch;
+    }
+
+    public int getMaxNameSize() {
+        return maxNameSize;
     }
 
     public boolean isExpandImportedFilesOnDisk() {

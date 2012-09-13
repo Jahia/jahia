@@ -432,7 +432,7 @@ public class LegacyImportHandler extends DefaultHandler {
             }
 
             if (pageKey == null) {
-                pageKey = JCRContentUtils.generateNodeName(title, 32);
+                pageKey = JCRContentUtils.generateNodeName(title);
             }
 
             // remove all unsupported characters

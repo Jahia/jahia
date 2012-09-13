@@ -65,7 +65,7 @@ public class DefaultNameGenerationHelperImpl implements NameGenerationHelper {
     
     public String generatNodeName(JCRNodeWrapper parent, String defaultLanguage, ExtendedNodeType nodeType, String targetName) {
         String defaultName = JCRContentUtils.generateNodeName(nodeType.getLabel(
-                LanguageCodeConverters.languageCodeToLocale(defaultLanguage)), 32);
+                LanguageCodeConverters.languageCodeToLocale(defaultLanguage)));
         if ((targetName != null) && (!"*".equals(targetName))) {
             // we are in the case of a strongly typed child node, so we use the specified child name instead of the
             // node type.

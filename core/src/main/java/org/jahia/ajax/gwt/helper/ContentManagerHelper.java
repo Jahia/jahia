@@ -209,7 +209,7 @@ public class ContentManagerHelper {
                 final List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
                 if (property.getName().equals("jcr:title") && propertyValues != null && propertyValues.size() > 0 &&
                         propertyValues.get(0).getString() != null) {
-                    nodeName = JCRContentUtils.generateNodeName(propertyValues.get(0).getString(), 32);
+                    nodeName = JCRContentUtils.generateNodeName(propertyValues.get(0).getString());
                 }
             } else {
                 logger.error("found a null property");
@@ -1132,7 +1132,7 @@ public class ContentManagerHelper {
     }
 
     public GWTJahiaNode createTemplateSet(String key, String baseSet,final String siteType, JCRSessionWrapper session) throws GWTJahiaServiceException {
-        String shortName = JCRContentUtils.generateNodeName(key, 50);
+        String shortName = JCRContentUtils.generateNodeName(key);
         if (baseSet == null) {
             try {
                 JCRNodeWrapper node = session.getNode("/templateSets");

@@ -33,11 +33,16 @@
         <c:if test="${not valuePresent}">${value.string}</c:if>
     </c:when>
     <c:otherwise> <%-- other types --%>
-        <c:set var="display" value="${fn:escapeXml(functions:abbreviate(functions:removeHtmlTags(value.string), 500,520,'...'))}"/>
-        <c:set var="raw" value="${fn:escapeXml(functions:abbreviate(value.string, 5000,5020,'...'))}"/>
-        <c:if test="${display != raw}">
-            <span title="${raw}">[raw]&nbsp;</span>
+        <c:if test="${property.name == 'jcr:versionableUuid'}" var="versionableUuid">
+            <a href="#source" onclick="go('uuid', '${value.string}'); return false;">${value.string}</a>
         </c:if>
-        ${display}
+        <c:if test="${not versionableUuid}">
+            <c:set var="display" value="${fn:escapeXml(functions:abbreviate(functions:removeHtmlTags(value.string), 500,520,'...'))}"/>
+            <c:set var="raw" value="${fn:escapeXml(functions:abbreviate(value.string, 5000,5020,'...'))}"/>
+            <c:if test="${display != raw}">
+                <span title="${raw}">[raw]&nbsp;</span>
+            </c:if>
+            ${display}
+        </c:if>
     </c:otherwise>
 </c:choose>

@@ -41,6 +41,7 @@
 package org.jahia.services.content.rules;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
@@ -61,8 +62,8 @@ import java.util.List;
  * Date: 20 déc. 2007
  * Time: 11:53:45
  */
-public class AddedNodeFact extends AbstractNodeFact implements Updateable, NodeFact {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(AddedNodeFact.class);
+public class AddedNodeFact extends AbstractNodeFact implements Updateable {
+    private static Logger logger = LoggerFactory.getLogger(AddedNodeFact.class);
 
     private AddedNodeFact parentNode;
     private String parentNodePath;

@@ -57,6 +57,7 @@
 <c:set var="lang" value="${functions:default(fn:escapeXml(param.lang), 'JCR-SQL2')}"/>
 <c:set var="limit" value="${functions:default(fn:escapeXml(param.limit), '20')}"/>
 <c:set var="offset" value="${functions:default(fn:escapeXml(param.offset), '0')}"/>
+<c:set var="displayLimit" value="${functions:default(fn:escapeXml(param.displayLimit), '100')}"/>
 <c:set var="showActions" value="${functions:default(fn:escapeXml(param.showActions), 'false')}"/>
 <%
 Locale currentLocale = LanguageCodeConverters.languageCodeToLocale((String) pageContext.getAttribute("locale"));
@@ -105,6 +106,15 @@ pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(L
         </select>
         &nbsp;Offset:
         <input type="text" size="2" name="offset" id="offset" value="${offset}"/>
+        Display limit:
+        <select name="displayLimit" id="displayLimit">
+            <option value="-1"${displayLimit == '-1' ? 'selected="selected"' : ''}>none</option>
+            <option value="100"${displayLimit == '100' ? 'selected="selected"' : ''}>100</option>
+            <option value="200"${displayLimit == '200' ? 'selected="selected"' : ''}>200</option>
+            <option value="500"${displayLimit == '500' ? 'selected="selected"' : ''}>500</option>
+            <option value="1000"${displayLimit == '1000' ? 'selected="selected"' : ''}>1000</option>
+            <option value="0"${displayLimit == '0' ? 'selected="selected"' : ''}>all</option>
+        </select>
         <input type="submit" value="Execute query ([Ctrl+Enter])" />
         </span>
     </form>
@@ -179,16 +189,17 @@ try {
 %>
 <c:if test="${not empty param.query}">
 <fieldset>
-    <legend>Displaying <strong>${count} results</strong> (query took ${took} ms)</legend>
+    <legend>Found ${count} results. Displaying ${displayLimit == -1 ? 'none' : (displayLimit == 0 || displayLimit > count ? 'all' : displayLimit)}. Query took ${took} ms.</legend>
     <c:if test="${showActions}">
         <div style="position: absolute; right: 20px;">
             <a href="#delete" onclick='if (!confirm("You are about to permanently delete ALL the nodes this query is matching. Continue?")) return false; go("action", "deleteAll"); return false;' title="Delete All"><img src="<c:url value='/icons/delete.png'/>" height="16" width="16" title="Delete All" border="0"/> Delete ALL</a>
         </div>
     </c:if>
+<c:if test="${displayLimit != -1}">
 <ol start="${offset + 1}">
 <c:choose>
 <c:when test="${empty rows}">
-<c:forEach var="node" items="${nodes}" varStatus="status">
+<c:forEach var="node" items="${nodes}" varStatus="status" end="${displayLimit != 0 ? displayLimit - 1 : -1}">
     <li>
         <a title="Open in JCR Browser" href="<c:url value='/tools/jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true'/>" target="_blank"><strong>${fn:escapeXml(not empty node.displayableName ? node.name : '<root>')}</strong></a> (${fn:escapeXml(node.nodeTypes)})
         <a title="Open in Repository Explorer" href="<c:url value='/engines/manager.jsp?selectedPaths=${node.path}&workspace=${workspace}'/>" target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt="open" title="Open in Repository Explorer"></a>
@@ -212,7 +223,7 @@ try {
 </c:forEach>
 </c:when>
 <c:otherwise>
-<c:forEach var="row" items="${rows}" varStatus="status">
+<c:forEach var="row" items="${rows}" varStatus="status" end="${displayLimit != 0 ? displayLimit - 1 : -1}">
     <li>
       <c:forEach var="selectorName" items="${selectorNames}" varStatus="nodestatus">
         <c:set var="node" value="${row.nodes[selectorName]}"/>
@@ -243,6 +254,10 @@ try {
 </c:otherwise>
 </c:choose>
 </ol>
+</c:if>
+<c:if test="${displayLimit == -1}">
+<br/>
+</c:if>
 </fieldset>
 </c:if>
 <%} catch (Exception e) {

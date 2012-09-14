@@ -150,18 +150,11 @@ public class ContentManagerHelper {
                     childNode.addMixin(m);
                 }
             }
-<<<<<<< .working
             properties.setProperties(childNode, props);
         } catch (Exception e) {
             logger.error("Exception", e);
             throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource(
                     "label.gwt.error.cannot.get.node", uiLocale) + e.getMessage());
-=======
-            properties.setProperties(childNode, props);
-        } catch (Exception e) {
-            logger.error("Exception", e);
-            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.cannot.get.node", uiLocale) + e.getMessage());
->>>>>>> .merge-right.r42795
         }
         if (childNode == null) {
             throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed", uiLocale));
@@ -1136,15 +1129,9 @@ public class ContentManagerHelper {
         }
     }
 
-<<<<<<< .working
     public GWTJahiaNode createTemplateSet(String key, String baseSet, final String siteType, String sources, String scmURI, String scmType, JCRSessionWrapper session) throws GWTJahiaServiceException {
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         if (key == null && scmURI != null) {
-=======
-    public GWTJahiaNode createTemplateSet(String key, String baseSet,final String siteType, JCRSessionWrapper session) throws GWTJahiaServiceException {
-        String shortName = JCRContentUtils.generateNodeName(key);
-        if (baseSet == null) {
->>>>>>> .merge-right.r43064
             try {
                 JCRNodeWrapper node = templateManagerService.checkoutModule(sources != null ? new File(sources) : null, scmURI, scmType, session);
                 return navigation.getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_SITE_FIELDS);
@@ -1159,7 +1146,7 @@ public class ContentManagerHelper {
                 logger.error(e.getMessage(), e);
             }
         } else if (baseSet == null) {
-            String shortName = JCRContentUtils.generateNodeName(key, 50);
+            String shortName = JCRContentUtils.generateNodeName(key);
             try {
                 JCRNodeWrapper node = templateManagerService.createModule(shortName, siteType, sources != null ? new File(sources) : null, scmURI, scmType, session);
                 return node != null ? navigation.getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_SITE_FIELDS) : null;
@@ -1167,7 +1154,7 @@ public class ContentManagerHelper {
                 logger.error(e.getMessage(), e);
             }
         } else {
-            String shortName = JCRContentUtils.generateNodeName(key, 50);
+            String shortName = JCRContentUtils.generateNodeName(key);
             try {
                 JCRNodeWrapper node = session.getNode("/templateSets");
                 shortName = JCRContentUtils.findAvailableNodeName(node, shortName);

@@ -29,7 +29,7 @@
     <c:set var="now" value="${workflowTaskFormTask.variables[propertyDefinition.name][0].valueAsDate}"/>
 </c:if>
 <label class="left"
-       for="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}</label>
+       for="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,currentResource.locale,type)}</label>
 <input type="hidden" name="${propertyDefinition.name}"
        id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
 <input type="text" id="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" readonly="readonly"

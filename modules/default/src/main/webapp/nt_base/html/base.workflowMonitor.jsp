@@ -27,7 +27,7 @@
 <template:addResources type="javascript" resources="jquery.fancybox.js"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 
-<workflow:activeWorkflow node="${currentNode}" var="activeWorkflows"/>
+<workflow:activeWorkflow node="${currentNode}" var="activeWorkflows" locale="${currentResource.locale}" />
 <c:forEach items="${activeWorkflows}" var="currentActiveWorkflow">
     <c:if test="${currentActiveWorkflow.workflowDefinition.workflowType eq currentResource.moduleParams.workflowType}">
         <c:set var="activeWorkflow" value="${currentActiveWorkflow}"/>
@@ -44,7 +44,7 @@
 <c:if test="${empty activeWorkflow}">
     <c:if test="${not currentNode.locked}">
         <workflow:workflowsForNode checkPermission="false" node="${currentNode}" var="workflowDefinitions"
-                                   workflowAction="${currentResource.moduleParams.workflowType}"/>
+                                   workflowAction="${currentResource.moduleParams.workflowType}" locale="${currentResource.locale}"/>
         <c:forEach items="${workflowDefinitions}" var="currentWorkflowDefinition">
             <c:set var="workflowDefinition" value="${currentWorkflowDefinition}"/>
         </c:forEach>
@@ -71,7 +71,7 @@
 </c:if>
 
 <c:if test="${not empty workflowDefinition}">
-<workflow:tasksForNode node="${currentNode}" var="tasksForNode"/>
+<workflow:tasksForNode node="${currentNode}" var="tasksForNode" locale="${currentResource.locale}"/>
 <jsp:useBean id="tasks" class="java.util.HashMap"/>
 <c:forEach items="${tasksForNode}" var="task" varStatus="status">
     <c:if test="${task.workflowDefinition == workflowDefinition}">
@@ -93,7 +93,7 @@
 <c:if test="${not empty activeWorkflow}">
     <c:if test="${currentResource.moduleParams.showHistory == 'true'}">
         <workflow:workflowHistory var="history" workflowId="${activeWorkflow.id}"
-                                  workflowProvider="${activeWorkflow.provider}"/>
+                                  workflowProvider="${activeWorkflow.provider}" locale="${currentResource.locale}"/>
         <fmt:message key="label.workflow.history"/>:
         <ul>
             <c:forEach items="${history}" var="historyTask">

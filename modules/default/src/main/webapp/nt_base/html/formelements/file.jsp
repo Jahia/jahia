@@ -22,7 +22,7 @@
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery.defer.js"/>
 <template:addResources type="css" resources="files.css"/>
-<label for="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}</label>
+<label for="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,currentResource.locale,type)}</label>
 <input type="hidden" name="${propertyDefinition.name}" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
 <fmt:message key="label.select.file" var="fileLabel"/>
 <fmt:message key="label.select.page" var="pageLabel"/>

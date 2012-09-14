@@ -52,6 +52,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 
@@ -66,12 +67,13 @@ public class TasksForNodeTag extends AbstractJahiaTag {
     private String var;
     private int scope = PageContext.PAGE_SCOPE;
     private JahiaUser user;
+    private Locale locale;
 
     @Override
     public int doEndTag() throws JspException {
         List<WorkflowTask> tasks = new ArrayList<WorkflowTask>();
         if (node != null) {
-            List<Workflow> actives = WorkflowService.getInstance().getActiveWorkflows(node, getUILocale());
+            List<Workflow> actives = WorkflowService.getInstance().getActiveWorkflows(node, locale != null ? locale : getUILocale());
             for (Workflow workflow : actives) {
                 for (WorkflowAction workflowAction : workflow.getAvailableActions()) {
                     if (workflowAction instanceof WorkflowTask) {
@@ -91,7 +93,7 @@ public class TasksForNodeTag extends AbstractJahiaTag {
                 }
             }
         } else if (user != null) {
-            tasks = WorkflowService.getInstance().getTasksForUser(user, getUILocale());
+            tasks = WorkflowService.getInstance().getTasksForUser(user, locale != null ? locale : getUILocale());
         }
 
         pageContext.setAttribute(var, tasks, scope);
@@ -115,5 +117,9 @@ public class TasksForNodeTag extends AbstractJahiaTag {
 
     public void setUser(JahiaUser user) {
         this.user = user;
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
     }
 }

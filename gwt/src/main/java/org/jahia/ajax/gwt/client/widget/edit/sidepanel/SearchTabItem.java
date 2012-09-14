@@ -48,6 +48,8 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.ScrollContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
@@ -223,13 +225,11 @@ class SearchTabItem extends SidePanelTabItem {
         searchForm.addButton(ok);
 //        searchForm.addButton(drag);
 
-        ContentPanel panel = new ContentPanel();
+        LayoutContainer panel = new LayoutContainer();
         panel.setLayout(new RowLayout(Style.Orientation.VERTICAL));
         panel.setWidth("100%");
         panel.setHeight("100%");
-        panel.setFrame(true);
-        panel.setCollapsible(false);
-        panel.setHeaderVisible(false);
+        panel.addStyleName("x-panel-mc");
         panel.add(searchForm, new RowData(1, -1, new Margins(0)));
 
 
@@ -264,7 +264,7 @@ class SearchTabItem extends SidePanelTabItem {
         gridPanel.setBorders(false);
         gridPanel.add(grid);
 
-        panel.add(gridPanel, new RowData(1, 1, new Margins(0, 0, 20, 0)));
+        panel.add(gridPanel, new RowData(1, 1, new Margins(0, 0, 0, 0)));
         tab.add(panel);
         grid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {

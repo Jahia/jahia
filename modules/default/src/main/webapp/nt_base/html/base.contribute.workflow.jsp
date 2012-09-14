@@ -26,7 +26,7 @@
                       scope="application"/>
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
                       scope="application"/>
-<utility:setBundle basename="JahiaContributeMode" useUILocale="true"/>
+<utility:setBundle basename="JahiaContributeMode" useUILocale="false"/>
 <c:set var="resourceNodeType" value="${currentResource.moduleParams.resourceNodeType}"/>
 <c:if test="${empty resourceNodeType}">
     <c:set var="resourceNodeType" value="${param.resourceNodeType}"/>
@@ -70,11 +70,11 @@
             </c:otherwise>
         </c:choose>
         <fieldset>
-            <legend>${jcr:label(type,renderContext.UILocale)}</legend>
+            <legend>${jcr:label(type,currentResource.locale)}</legend>
             <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
                 <c:if test="${propertyDefinition.name eq 'jcr:title'}">
                     <label class="left"
-                           for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}</label>
+                           for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,currentResource.locale,type)}</label>
                     <input type="text" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                            name="${propertyDefinition.name}" <c:if test="${not empty workflowTaskFormTask}">value="${workflowTaskFormTask.variables[propertyDefinition.name][0].value}"</c:if>/>
 
@@ -111,7 +111,7 @@
                             </c:when>
                             <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.BOOLEAN}">
                                 <label class="left"
-                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}</label>
+                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,currentResource.locale,type)}</label>
                                 <input type="radio" value="true" class="radio"
                                        id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                                        name="${propertyDefinition.name}" checked="true"/><fmt:message key="label.yes"/>
@@ -121,7 +121,7 @@
                             </c:when>
                             <c:otherwise>
                                 <label class="left"
-                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}</label>
+                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,currentResource.locale,type)}</label>
                                 <input type="text" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                                        name="${propertyDefinition.name}"/>
                             </c:otherwise>
@@ -133,7 +133,7 @@
                 <c:choose>
                     <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">
                         <button type="button" class="form-button" onclick="$('.form-button').attr('disabled',true);$('.form-button').addClass('disabled');$('#${jsNodeName}${scriptTypeName}').ajaxSubmit(options${jsNodeName}${scriptTypeName});"><span
-                                class="icon-contribute icon-accept"></span>Start:&nbsp;${currentResource.moduleParams.workflowStartFormWFName}
+                                class="icon-contribute icon-accept"></span><fmt:message key="label.workflow.start" />:&nbsp;${currentResource.moduleParams.workflowStartFormWFName}
                         </button>
                     </c:when>
                     <c:when test="${not empty currentResource.moduleParams.workflowTaskForm}">
@@ -147,7 +147,7 @@
                     </c:when>
                     <c:otherwise>
                         <label class="left"
-                               for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.UILocale,type)}</label>
+                               for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,currentResource.locale,type)}</label>
                         <input type="text" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                                name="${propertyDefinition.name}"/>
                     </c:otherwise>

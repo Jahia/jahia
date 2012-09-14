@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Get past tasks of a running workflow
@@ -22,10 +23,12 @@ public class WorkflowForPathTag extends AbstractJahiaTag {
 
     private String path;
 
+    private Locale locale;
+
     @Override
     public int doEndTag() throws JspException {
         WorkflowService service = WorkflowService.getInstance();
-        List<HistoryWorkflow> history = service.getHistoryWorkflowsByPath(path, getUILocale());
+        List<HistoryWorkflow> history = service.getHistoryWorkflowsByPath(path, locale != null ? locale : getUILocale());
 
         pageContext.setAttribute(var, history, scope);
         var = null;
@@ -45,5 +48,9 @@ public class WorkflowForPathTag extends AbstractJahiaTag {
 
     public void setScope(String scope) {
         this.scope = Util.getScope(scope);
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
     }
 }

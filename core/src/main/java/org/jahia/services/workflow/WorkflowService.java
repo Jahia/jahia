@@ -236,7 +236,7 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
             throws RepositoryException {
         final Set<WorkflowDefinition> workflows = new LinkedHashSet<WorkflowDefinition>();
 
-        Collection<WorkflowRule> rules = getWorkflowRulesForType(node, checkPermission, type, null);
+        Collection<WorkflowRule> rules = getWorkflowRulesForType(node, checkPermission, type, locale);
         for (WorkflowRule ruledef : rules) {
             WorkflowDefinition definition =
                     lookupProvider(ruledef.getProviderKey()).getWorkflowDefinitionByKey(ruledef.getWorkflowDefinitionKey(), locale);

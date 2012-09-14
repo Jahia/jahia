@@ -49,6 +49,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 
@@ -63,9 +64,10 @@ public class ActiveWorkflowTag extends AbstractJahiaTag {
     private JCRNodeWrapper node;
     private String var;
     private int scope = PageContext.PAGE_SCOPE;
+    private Locale locale;
 
     public int doEndTag() throws JspException {
-        List<Workflow> wfs = WorkflowService.getInstance().getActiveWorkflows(node, getUILocale());
+        List<Workflow> wfs = WorkflowService.getInstance().getActiveWorkflows(node, locale != null ? locale : getUILocale());
         pageContext.setAttribute(var, wfs, scope);
         node = null;
         var = null;
@@ -83,5 +85,9 @@ public class ActiveWorkflowTag extends AbstractJahiaTag {
 
     public void setScope(String scope) {
         this.scope = Util.getScope(scope);
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
     }
 }

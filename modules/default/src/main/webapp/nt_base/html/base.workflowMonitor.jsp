@@ -279,14 +279,12 @@
                 <div id="workflow${currentNode.identifier}-${workflowDefinition.key}" class="workflowformdiv popupSize">
                         <%--<c:set var="workflowStartFormWFCallbackJS">alert("callback");</c:set>--%>
                     <c:url value="${url.current}.ajax" var="myUrl"/>
-                    <c:url value='${url.base}${functions:escapePath(currentNode.path)}.startWorkflow.do'
-                           var="actionUrl"/>
                     <template:include view="contribute.workflow">
                         <template:param name="resourceNodeType" value="${workflowDefinition.formResourceName}"/>
                         <template:param name="workflowStartForm"
                                         value="${workflowDefinition.provider}:${workflowDefinition.key}"/>
                         <template:param name="workflowStartFormWFName" value="${workflowDefinition.displayName}"/>
-                        <template:param name="workflowStartAction" value="${actionUrl}"/>
+                        <template:param name="workflowStartAction" value="${url.base}${functions:escapePath(currentNode.path)}.startWorkflow.do"/>
                     </template:include>
                 </div>
             </div>

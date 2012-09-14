@@ -16,12 +16,22 @@
 <%@taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType" scope="application"/>
+<<<<<<< .working
 <c:set var="showProperties" value="${functions:default(fn:escapeXml(param.showProperties), 'false')}"/>
 <c:set var="showReferences" value="${functions:default(fn:escapeXml(param.showReferences), 'false')}"/>
 <c:set var="showNodes" value="${functions:default(fn:escapeXml(param.showNodes), 'true')}"/>
 <c:set var="showActions" value="${functions:default(fn:escapeXml(param.showActions), 'false')}"/>
 <c:set var="workspace" value="${functions:default(fn:escapeXml(param.workspace), 'default')}"/>
 <c:set var="nodeId" value="${not empty param.uuid ? fn:trim(fn:escapeXml(param.uuid)) : 'cafebabe-cafe-babe-cafe-babecafebabe'}"/>
+=======
+<c:set var="showProperties" value="${functions:default(param.showProperties, 'false')}"/>
+<c:set var="showReferences" value="${functions:default(param.showReferences, 'false')}"/>
+<c:set var="showNodes" value="${functions:default(param.showNodes, 'true')}"/>
+<c:set var="showActions" value="${functions:default(param.showActions, 'false')}"/>
+<c:set var="showVersions" value="${functions:default(param.showVersions, 'false')}"/>
+<c:set var="workspace" value="${functions:default(param.workspace, 'default')}"/>
+<c:set var="nodeId" value="${not empty param.uuid ? fn:trim(param.uuid) : 'cafebabe-cafe-babe-cafe-babecafebabe'}"/>
+>>>>>>> .merge-right.r43087
 <%
 JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
 JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"));
@@ -67,6 +77,7 @@ function go(id1, value1, id2, value2, id3, value3) {
         <input type="hidden" id="showReferences" name="showReferences" value="${showReferences}"/>
         <input type="hidden" id="showNodes" name="showNodes" value="${showNodes}"/>
         <input type="hidden" id="showActions" name="showActions" value="${showActions}"/>
+        <input type="hidden" id="showVersions" name="showVersions" value="${showVersions}"/>
         <input type="hidden" id="workspace" name="workspace" value="${workspace}"/>
         <input type="hidden" id="path" name="path" value=""/>
         <input type="hidden" id="uuid" name="uuid" value="${nodeId}"/>
@@ -105,7 +116,9 @@ function go(id1, value1, id2, value2, id3, value3) {
             <input id="cbNodes" type="checkbox" ${showNodes ? 'checked="checked"' : ''}
                 onchange="go('showNodes', '${!showNodes}')"/>&nbsp;<label for="cbNodes">Show child nodes</label><br/>
             <input id="cbReferences" type="checkbox" ${showReferences ? 'checked="checked"' : ''}
-                onchange="go('showReferences', '${!showReferences}')"/>&nbsp;<label for="cbReferences">Show references</label>
+                onchange="go('showReferences', '${!showReferences}')"/>&nbsp;<label for="cbReferences">Show references</label><br/>
+            <input id="cbVersions" type="checkbox" ${showVersions ? 'checked="checked"' : ''}
+                onchange="go('showVersions', '${!showVersions}')"/>&nbsp;<label for="cbVersions">Show versions</label>
         </p>
     </fieldset>
 
@@ -301,6 +314,23 @@ function go(id1, value1, id2, value2, id3, value3) {
         </ul>
     </c:if>
 
+    <p><strong>Versions:&nbsp;</strong><a href="#versions" onclick="go('showVersions', ${showVersions ? 'false' : 'true'}); return false;">${showVersions ? 'hide' : 'show'}</a></p>
+    <c:if test="${showVersions}">
+        <jcr:sql var="versionsQuery" sql="SELECT * FROM [nt:versionHistory] where localname()='${node.identifier}'" />
+        <c:set var="noVersions" value="true"/>
+        <ul>
+        <c:forEach items="${versionsQuery.nodes}" var="vh">
+            <li>
+                <a href="#reference" onclick="go('uuid', '${vh.identifier}'); return false;">${functions:length(jcr:getChildrenOfType(vh, "nt:version"))} versions found</a>
+            </li>
+            <c:remove var="noVersions"/>
+        </c:forEach>
+        <c:if test="${noVersions}">
+            <li>none</li>
+        </c:if>
+        </ul>
+    </c:if>
+    
     <p><strong>Child nodes:&nbsp;</strong><a href="#nodes" onclick="go('showNodes', ${showNodes ? 'false' : 'true'}); return false;">${showNodes ? 'hide' : 'show'}</a>
     <c:if test="${showNodes}">
         <c:set var="nodes" value="${node.nodes}"/>

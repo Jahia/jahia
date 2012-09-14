@@ -47,6 +47,9 @@
         pageContext.setAttribute("startDate", fmt.print(startDate));
         pageContext.setAttribute("endDate", fmt.print(endDate));
         pageContext.setAttribute("currentDate", fmt.print(dt));
+        pageContext.setAttribute("startDateDate", startDate.toDate());
+        pageContext.setAttribute("endDateDate", endDate.toDate());
+        pageContext.setAttribute("currentDateDate", dt.toDate());
     %>
     <c:set value="" var="todayDisplayed" scope="request"/>
     <jcr:node var="user" path="${renderContext.user.localPath}"/>
@@ -94,7 +97,7 @@
             <c:if test="${not process.completed}">
                 <workflow:workflow id="${process.processId}" provider="${process.provider}" var="active"/>
                 <c:forEach items="${active.availableActions}" var="task">
-                    <c:if test="${not empty task.dueDate}">
+                    <c:if test="${not empty task.dueDate and task.dueDate.time ge startDateDate.time and task.dueDate.time le endDateDate.time}">
                         <c:set var="emptyTasks" value="false"/>
                         <fmt:formatDate pattern="dd/MM/yyyy"
                                         value="${task.dueDate}"
@@ -111,7 +114,7 @@
             <workflow:workflowHistory var="history" workflowId="${process.processId}"
                                       workflowProvider="${process.provider}"/>
             <c:forEach items="${history}" var="task">
-                <c:if test="${not empty task.endTime}">
+                <c:if test="${not empty task.endTime and task.endTime.time ge currentDateDate.time  and task.endTime.time le endDateDate.time}">
                     <jsp:useBean id="historyData" class="java.util.LinkedHashMap"/>
                     <fmt:formatDate pattern="dd/MM/yyyy"
                                     value="${task.endTime}"

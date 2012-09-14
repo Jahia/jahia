@@ -173,6 +173,10 @@
                                     <ref bean="Toolbar.Item.ClearLock"/>
                                     <ref bean="Toolbar.Item.ClearAllLocks"/>
                                     <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.PublishAll"/>
+                                    <ref bean="Toolbar.Item.Unpublish"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.OpenInContentManager"/>
@@ -205,6 +209,9 @@
                         <ref bean="Toolbar.Item.Unlock"/>
                         <ref bean="Toolbar.Item.ClearLock"/>
                         <ref bean="Toolbar.Item.ClearAllLocks"/>
+                        <ref bean="Toolbar.Item.Publish"/>
+                        <ref bean="Toolbar.Item.PublishAll"/>
+                        <ref bean="Toolbar.Item.Unpublish"/>
                         <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
                         <ref bean="Toolbar.Item.OpenInContentManager"/>
                     </list>

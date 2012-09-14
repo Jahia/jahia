@@ -119,7 +119,6 @@
                     <fmt:formatDate pattern="dd/MM/yyyy"
                                     value="${task.endTime}"
                                     var="endDate"/>
-                    <c:set var="emptyTasks" value="false"/>
                     <li class="scheduletask workflowtask finishedTask" date="${task.endTime.time}">
                         <span class="date value">${endDate}</span>
                         <span class="value"><a href="${link}"><span

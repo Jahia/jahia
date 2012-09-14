@@ -43,7 +43,6 @@ package org.jahia.services.content.nodetypes;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.JCRContentUtils;
 import org.jahia.utils.Patterns;
 
 /**

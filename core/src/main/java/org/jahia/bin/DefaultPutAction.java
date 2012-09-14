@@ -114,21 +114,16 @@ public class DefaultPutAction extends Action {
                     }
                 }
             }
-<<<<<<< .working
-
-            session.save();
-=======
             for (String s : node.getNodeTypes()) {
                 Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
                 for (ExtendedPropertyDefinition propDef : propDefs) {
                     if (propDef.isMandatory() && !propDef.isProtected() && (!node.hasProperty(propDef.getName()) ||
-                                                                                              StringUtils.isEmpty(node.getProperty(propDef.getName()).getString()))) {
+                            StringUtils.isEmpty(node.getProperty(propDef.getName()).getString()))) {
                         throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
                     }
                 }
             }
             session.save();
->>>>>>> .merge-right.r42953
         } catch (ConstraintViolationException e) {
             return ActionResult.BAD_REQUEST;
         }

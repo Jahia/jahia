@@ -274,6 +274,7 @@
                 <ref bean="Engine.Tab.Options"/>
                 <ref bean="Engine.Tab.RequiredPermissions"/>
                 <ref bean="Engine.Tab.Usages"/>
+                <ref bean="Engine.Tab.ContributeMode"/>
             </list>
         </property>
 

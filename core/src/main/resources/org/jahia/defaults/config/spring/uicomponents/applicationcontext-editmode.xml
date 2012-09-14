@@ -568,6 +568,7 @@
                     </bean>
                   </property>
                 </bean>
+                <!--
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="lastContent"/>
                     <property name="icon" value="tab-lastcontent"/>
@@ -613,6 +614,7 @@
                     </property>
                     <property name="requiredPermission" value="latestSelector"/>
                 </bean>
+                -->
             </list>
         </property>
 

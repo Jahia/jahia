@@ -16,21 +16,12 @@
 <%@taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType" scope="application"/>
-<<<<<<< .working
 <c:set var="showProperties" value="${functions:default(fn:escapeXml(param.showProperties), 'false')}"/>
 <c:set var="showReferences" value="${functions:default(fn:escapeXml(param.showReferences), 'false')}"/>
 <c:set var="showNodes" value="${functions:default(fn:escapeXml(param.showNodes), 'true')}"/>
 <c:set var="showActions" value="${functions:default(fn:escapeXml(param.showActions), 'false')}"/>
 <c:set var="workspace" value="${functions:default(fn:escapeXml(param.workspace), 'default')}"/>
 <c:set var="nodeId" value="${not empty param.uuid ? fn:trim(fn:escapeXml(param.uuid)) : 'cafebabe-cafe-babe-cafe-babecafebabe'}"/>
-=======
-<c:set var="showProperties" value="${functions:default(param.showProperties, 'false')}"/>
-<c:set var="showReferences" value="${functions:default(param.showReferences, 'false')}"/>
-<c:set var="showNodes" value="${functions:default(param.showNodes, 'true')}"/>
-<c:set var="showActions" value="${functions:default(param.showActions, 'false')}"/>
-<c:set var="workspace" value="${functions:default(param.workspace, 'default')}"/>
-<c:set var="nodeId" value="${not empty param.uuid ? fn:trim(param.uuid) : 'cafebabe-cafe-babe-cafe-babecafebabe'}"/>
->>>>>>> .merge-right.r43087
 <%
 JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
 JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"));

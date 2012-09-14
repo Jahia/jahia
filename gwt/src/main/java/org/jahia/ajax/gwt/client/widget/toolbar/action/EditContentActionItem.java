@@ -103,12 +103,10 @@ public class EditContentActionItem extends NodeTypeAwareBaseActionItem {
     public void setUseMainNode(boolean useMainNode) {
         this.useMainNode = useMainNode;
     }
-<<<<<<< .working
 
     public void setPath(String path) {
         this.path = path;
     }
-=======
 
     @Override
     protected boolean isNodeTypeAllowed(GWTJahiaNode selectedNode) {
@@ -122,5 +120,4 @@ public class EditContentActionItem extends NodeTypeAwareBaseActionItem {
 
         return super.isNodeTypeAllowed(selectedNode);
     }
->>>>>>> .merge-right.r42861
 }

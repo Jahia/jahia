@@ -92,7 +92,7 @@ public final class NodeVersionHistoryHelper {
         public String toString() {
             return MessageFormatter.arrayFormat("{} version histories checked. {} orphans found. "
                     + "{} version items deleted. {} complete version histories deleted.",
-                    new Long[] { checked, orphaned, deletedVersionItems, deleted });
+                    new Long[] { checked, orphaned, deletedVersionItems, deleted }).getMessage();
         }
     }
 
@@ -112,19 +112,19 @@ public final class NodeVersionHistoryHelper {
         }
 
         public OutWrapper echo(String format, Object arg1) {
-            return echo(MessageFormatter.format(format, arg1));
+            return echo(MessageFormatter.format(format, arg1).getMessage());
         }
 
         public OutWrapper echo(String format, Object arg1, Object arg2) {
-            return echo(MessageFormatter.format(format, arg1, arg2));
+            return echo(MessageFormatter.format(format, arg1, arg2).getMessage());
         }
 
         public OutWrapper echo(String format, Object arg1, Object arg2, Object arg3) {
-            return echo(MessageFormatter.arrayFormat(format, new Object[] { arg1, arg2, arg3 }));
+            return echo(MessageFormatter.arrayFormat(format, new Object[] { arg1, arg2, arg3 }).getMessage());
         }
 
         public OutWrapper echo(String format, Object[] args) {
-            return echo(MessageFormatter.format(format, args));
+            return echo(MessageFormatter.format(format, args).getMessage());
         }
 
         private void out(String message) {
@@ -163,7 +163,7 @@ public final class NodeVersionHistoryHelper {
             return MessageFormatter.arrayFormat(
                     "{} version histories checked. {} version items deleted."
                             + " {} complete version histories deleted.", new Long[] { checked,
-                            deletedVersionItems, deleted });
+                            deletedVersionItems, deleted }).getMessage();
         }
     }
 

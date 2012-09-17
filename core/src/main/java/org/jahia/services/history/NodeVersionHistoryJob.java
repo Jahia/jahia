@@ -42,6 +42,7 @@ package org.jahia.services.history;
 
 import java.util.Set;
 
+import org.jahia.services.history.NodeVersionHistoryHelper.VersionHistoryCheckStatus;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -67,11 +68,12 @@ public class NodeVersionHistoryJob extends BackgroundJob {
 
         long timer = System.currentTimeMillis();
 
-        int count = NodeVersionHistoryHelper.purgeVersionHistoryForNodes(ids);
+        VersionHistoryCheckStatus status = NodeVersionHistoryHelper.purgeVersionHistoryForNodes(
+                ids);
 
         logger.info(
-                "Purged {} version histories for nodes of the site {} in {} ms",
-                new String[] { String.valueOf(count), site,
-                        String.valueOf(System.currentTimeMillis() - timer) });
+                "Purged version histories for nodes of the site {} in {} ms. Status: {}",
+                new String[] { site, String.valueOf(System.currentTimeMillis() - timer),
+                        status.toString() });
     }
 }

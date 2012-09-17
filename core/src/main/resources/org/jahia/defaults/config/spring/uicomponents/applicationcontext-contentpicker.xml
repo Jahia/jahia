@@ -4,671 +4,660 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-  <!-- filepicker -->
-  <bean id="filepicker" parent="abstractmanager">
-    <property name="nodeTypes">
-      <list>
-        <value>nt:file</value>
-      </list>
-    </property>
-    <property name="folderTypes">
-      <list>
-        <value>nt:folder</value>
-        <value>jnt:mountPoint</value>
-      </list>
-    </property>
-
-    <property name="toolbars">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list>
-            <ref bean="Toolbar.Item.NewFolder"/>
-            <ref bean="Toolbar.Item.Upload"/>
-            <ref bean="Toolbar.Item.Download"/>
-            <ref bean="Toolbar.Item.FilePreview"/>
-            <!--
-            <ref bean="Toolbar.Item.Webfolder"/>
-            -->
-            <ref bean="Toolbar.Item.Rename"/>
-            <ref bean="Toolbar.Item.Delete"/>
-            <ref bean="Toolbar.Item.Undelete"/>
-            <ref bean="Toolbar.Item.DeletePermanently"/>
-            <ref bean="Toolbar.Item.Separator"/>
-            <ref bean="Toolbar.Item.Copy"/>
-            <ref bean="Toolbar.Item.Cut"/>
-            <ref bean="Toolbar.Item.Paste"/>
-            <ref bean="Toolbar.Item.PasteReference"/>
-            <ref bean="Toolbar.Item.Separator"/>
-            <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
-            <ref bean="Toolbar.Item.Mount"/>
-            <ref bean="Toolbar.Item.Unmount"/>
-            <ref bean="Toolbar.Item.Crop"/>
-            <ref bean="Toolbar.Item.Resize"/>
-            <ref bean="Toolbar.Item.Rotate"/>
-            <ref bean="Toolbar.Item.Fill"/>
-            <ref bean="Toolbar.Item.Refresh"/>
-            <ref bean="Toolbar.Item.ListView"/>
-            <ref bean="Toolbar.Item.ThumbsView"/>
-            <ref bean="Toolbar.Item.Detailedview"/>
-          </list>
+    <!-- filepicker -->
+    <bean id="filepicker" parent="abstractmanager">
+        <property name="nodeTypes">
+            <list>
+                <value>nt:file</value>
+            </list>
         </property>
-      </bean>
-    </property>
-    <property name="contextMenu">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list>
-            <ref bean="Toolbar.Item.NewFolder"/>
-            <ref bean="Toolbar.Item.Upload"/>
-            <ref bean="Toolbar.Item.Download"/>
-            <ref bean="Toolbar.Item.FilePreview"/>
-            <ref bean="Toolbar.Item.Lock"/>
-            <ref bean="Toolbar.Item.Unlock"/>
-            <ref bean="Toolbar.Item.ClearLock"/>
-            <ref bean="Toolbar.Item.ClearAllLocks"/>
-            <ref bean="Toolbar.Item.Zip"/>
-            <ref bean="Toolbar.Item.Unzip"/>
-
-            <ref bean="Toolbar.Item.Rename"/>
-            <ref bean="Toolbar.Item.Delete"/>
-            <ref bean="Toolbar.Item.Undelete"/>
-            <ref bean="Toolbar.Item.DeletePermanently"/>
-            <ref bean="Toolbar.Item.Separator"/>
-            <ref bean="Toolbar.Item.Copy"/>
-            <ref bean="Toolbar.Item.Cut"/>
-            <ref bean="Toolbar.Item.Paste"/>
-            <ref bean="Toolbar.Item.PasteReference"/>
-            <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
-            <ref bean="Toolbar.Item.Crop"/>
-            <ref bean="Toolbar.Item.Resize"/>
-            <ref bean="Toolbar.Item.Rotate"/>
-          </list>
+        <property name="folderTypes">
+            <list>
+                <value>nt:folder</value>
+                <value>jnt:mountPoint</value>
+            </list>
         </property>
-      </bean>
-    </property>
-    <property name="displaySearchInPage" value="false"/>
-    <property name="displaySearchInContent" value="false"/>
-    <property name="displaySearchInDateMeta" value="true"/>
-    <property name="displaySearchInFile" value="false"/>
-    <property name="displaySearchInTag" value="true"/>
-    <property name="searchInContent" value="false"/>
-    <property name="searchInFile" value="true"/>
-    <property name="allowsMultipleSelection" value="false"/>
-    <!-- accordion panels-->
-    <property name="repositories">
-      <list>
-        <ref bean="repository.templateFiles"/>
-        <ref bean="repository.websitefiles"/>
-        <ref bean="repository.sitesPicker"/>
-        <ref bean="repository.myexternalfilesPicker"/>
-        <ref bean="repository.myfiles"/>
-      </list>
-    </property>
 
-    <!-- table columns-->
-    <property name="tableColumns">
-      <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-        <value>icon,40,empty</value>
-        <value>name,*,label.name</value>
-        <value>size,140,label.size</value>
-        <value>publicationInfo,40</value>
-      </list>
-    </property>
-  </bean>
-
-
-  <bean id="imagepicker" parent="abstractmanager">
-    <property name="nodeTypes">
-      <list>
-        <value>nt:file</value>
-      </list>
-    </property>
-    <property name="folderTypes">
-      <list>
-        <value>nt:folder</value>
-        <value>jnt:mountPoint</value>
-      </list>
-    </property>
-    <property name="mimeTypes">
-      <list>
-        <value>image/*</value>
-      </list>
-    </property>
-
-    <property name="toolbars">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list>
-            <ref bean="Toolbar.Item.NewFolder"/>
-            <ref bean="Toolbar.Item.Upload"/>
-            <ref bean="Toolbar.Item.Download"/>
-            <ref bean="Toolbar.Item.FilePreview"/>
-            <!--
-            <ref bean="Toolbar.Item.Webfolder"/>
-            -->
-            <ref bean="Toolbar.Item.Rename"/>
-            <ref bean="Toolbar.Item.Delete"/>
-            <ref bean="Toolbar.Item.Undelete"/>
-            <ref bean="Toolbar.Item.DeletePermanently"/>
-            <ref bean="Toolbar.Item.Separator"/>
-            <ref bean="Toolbar.Item.Copy"/>
-            <ref bean="Toolbar.Item.Cut"/>
-            <ref bean="Toolbar.Item.Paste"/>
-            <ref bean="Toolbar.Item.PasteReference"/>
-            <ref bean="Toolbar.Item.Separator"/>
-            <ref bean="Toolbar.Item.Mount"/>
-            <ref bean="Toolbar.Item.Unmount"/>
-            <ref bean="Toolbar.Item.Crop"/>
-            <ref bean="Toolbar.Item.Resize"/>
-            <ref bean="Toolbar.Item.Rotate"/>
-            <ref bean="Toolbar.Item.Fill"/>
-            <ref bean="Toolbar.Item.Refresh"/>
-            <ref bean="Toolbar.Item.ListView"/>
-            <ref bean="Toolbar.Item.ThumbsView"/>
-            <ref bean="Toolbar.Item.Detailedview"/>
-          </list>
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewFolder"/>
+                        <ref bean="Toolbar.Item.Upload"/>
+                        <ref bean="Toolbar.Item.Download"/>
+                        <ref bean="Toolbar.Item.FilePreview"/>
+                        <!--
+                        <ref bean="Toolbar.Item.Webfolder"/>
+                        -->
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
+                        <ref bean="Toolbar.Item.Mount"/>
+                        <ref bean="Toolbar.Item.Unmount"/>
+                        <ref bean="Toolbar.Item.Crop"/>
+                        <ref bean="Toolbar.Item.Resize"/>
+                        <ref bean="Toolbar.Item.Rotate"/>
+                        <ref bean="Toolbar.Item.Fill"/>
+                        <ref bean="Toolbar.Item.Refresh"/>
+                        <ref bean="Toolbar.Item.ListView"/>
+                        <ref bean="Toolbar.Item.ThumbsView"/>
+                        <ref bean="Toolbar.Item.Detailedview"/>
+                    </list>
+                </property>
+            </bean>
         </property>
-      </bean>
-    </property>
-    <property name="contextMenu">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list>
-            <ref bean="Toolbar.Item.NewFolder"/>
-            <ref bean="Toolbar.Item.Upload"/>
-            <ref bean="Toolbar.Item.Download"/>
-            <ref bean="Toolbar.Item.FilePreview"/>
-            <ref bean="Toolbar.Item.Lock"/>
-            <ref bean="Toolbar.Item.Unlock"/>
-            <ref bean="Toolbar.Item.ClearLock"/>
-            <ref bean="Toolbar.Item.ClearAllLocks"/>
-            <ref bean="Toolbar.Item.Zip"/>
-            <ref bean="Toolbar.Item.Unzip"/>
-            <ref bean="Toolbar.Item.Rename"/>
-            <ref bean="Toolbar.Item.Delete"/>
-            <ref bean="Toolbar.Item.Undelete"/>
-            <ref bean="Toolbar.Item.DeletePermanently"/>
-            <ref bean="Toolbar.Item.Copy"/>
-            <ref bean="Toolbar.Item.Cut"/>
-            <ref bean="Toolbar.Item.Paste"/>
-            <ref bean="Toolbar.Item.PasteReference"/>
-            <ref bean="Toolbar.Item.Crop"/>
-            <ref bean="Toolbar.Item.Resize"/>
-            <ref bean="Toolbar.Item.Rotate"/>
-          </list>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewFolder"/>
+                        <ref bean="Toolbar.Item.Upload"/>
+                        <ref bean="Toolbar.Item.Download"/>
+                        <ref bean="Toolbar.Item.FilePreview"/>
+                        <ref bean="Toolbar.Item.Lock"/>
+                        <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.ClearLock"/>
+                        <ref bean="Toolbar.Item.ClearAllLocks"/>
+                        <ref bean="Toolbar.Item.Zip"/>
+                        <ref bean="Toolbar.Item.Unzip"/>
+
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
+                        <ref bean="Toolbar.Item.Crop"/>
+                        <ref bean="Toolbar.Item.Resize"/>
+                        <ref bean="Toolbar.Item.Rotate"/>
+                    </list>
+                </property>
+            </bean>
         </property>
-      </bean>
-    </property>
-    <property name="displaySearchInPage" value="false"/>
-    <property name="displaySearchInContent" value="false"/>
-    <property name="displaySearchInDateMeta" value="true"/>
-    <property name="displaySearchInFile" value="false"/>
-    <property name="displaySearchInTag" value="true"/>
-    <property name="searchInContent" value="false"/>
-    <property name="searchInFile" value="true"/>
-    <property name="allowsMultipleSelection" value="false"/>
-    <property name="defaultView" value="thumbs"/>
-    <!-- accordion panels-->
-    <property name="repositories">
-      <list>
-        <ref bean="repository.templateFiles"/>
-        <ref bean="repository.websitefiles"/>
-        <ref bean="repository.sitesPicker"/>
-        <ref bean="repository.myexternalfilesPicker"/>
-        <ref bean="repository.myfiles"/>
-      </list>
-    </property>
-
-    <!-- table columns-->
-    <property name="tableColumns">
-      <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-        <value>icon,40,empty</value>
-        <value>name,*,label.name</value>
-        <value>size,140,label.size</value>
-        <value>publicationInfo,40</value>
-      </list>
-    </property>
-  </bean>
-
-  <bean id="folderpicker" parent="abstractmanager">
-    <property name="nodeTypes">
-      <list>
-        <value>nt:folder</value>
-      </list>
-    </property>
-    <property name="folderTypes">
-      <list>
-        <value>nt:folder</value>
-        <value>jnt:mountPoint</value>
-      </list>
-    </property>
-
-    <property name="toolbars">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list>
-            <ref bean="Toolbar.Item.NewFolder"/>
-            <!--
-            <ref bean="Toolbar.Item.Webfolder"/>
-            -->
-            <ref bean="Toolbar.Item.Rename"/>
-            <ref bean="Toolbar.Item.Delete"/>
-            <ref bean="Toolbar.Item.Undelete"/>
-            <ref bean="Toolbar.Item.DeletePermanently"/>
-            <ref bean="Toolbar.Item.Separator"/>
-            <ref bean="Toolbar.Item.Copy"/>
-            <ref bean="Toolbar.Item.Cut"/>
-            <ref bean="Toolbar.Item.Paste"/>
-            <ref bean="Toolbar.Item.PasteReference"/>
-            <ref bean="Toolbar.Item.Separator"/>
-            <ref bean="Toolbar.Item.Mount"/>
-            <ref bean="Toolbar.Item.Unmount"/>
-            <ref bean="Toolbar.Item.Fill"/>
-            <ref bean="Toolbar.Item.Refresh"/>
-            <ref bean="Toolbar.Item.ListView"/>
-            <ref bean="Toolbar.Item.ThumbsView"/>
-            <ref bean="Toolbar.Item.Detailedview"/>
-          </list>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="true"/>
+        <property name="searchInContent" value="false"/>
+        <property name="searchInFile" value="true"/>
+        <property name="allowsMultipleSelection" value="false"/>
+        <!-- accordion panels-->
+        <property name="repositories">
+            <list>
+                <ref bean="repository.templateFiles"/>
+                <ref bean="repository.websitefiles"/>
+                <ref bean="repository.sitesPicker"/>
+                <ref bean="repository.myexternalfilesPicker"/>
+                <ref bean="repository.myfiles"/>
+            </list>
         </property>
-      </bean>
-    </property>
-    <property name="contextMenu">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list>
-            <ref bean="Toolbar.Item.NewFolder"/>
-            <ref bean="Toolbar.Item.Separator"/>
-            <ref bean="Toolbar.Item.Lock"/>
-            <ref bean="Toolbar.Item.Unlock"/>
-            <ref bean="Toolbar.Item.ClearLock"/>
-            <ref bean="Toolbar.Item.ClearAllLocks"/>
-            <ref bean="Toolbar.Item.Zip"/>
-            <ref bean="Toolbar.Item.Unzip"/>
-            <ref bean="Toolbar.Item.Rename"/>
-            <ref bean="Toolbar.Item.Delete"/>
-            <ref bean="Toolbar.Item.Undelete"/>
-            <ref bean="Toolbar.Item.DeletePermanently"/>
-            <ref bean="Toolbar.Item.Copy"/>
-            <ref bean="Toolbar.Item.Cut"/>
-            <ref bean="Toolbar.Item.Paste"/>
-            <ref bean="Toolbar.Item.PasteReference"/>
-          </list>
+
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon,40,empty</value>
+                <value>name,*,label.name</value>
+                <value>size,140,label.size</value>
+                <value>publicationInfo,40</value>
+            </list>
         </property>
-      </bean>
-    </property>
-    <property name="displaySearchInPage" value="false"/>
-    <property name="displaySearchInContent" value="false"/>
-    <property name="displaySearchInDateMeta" value="true"/>
-    <property name="displaySearchInFile" value="false"/>
-    <property name="displaySearchInTag" value="true"/>
-    <property name="searchInContent" value="false"/>
-    <property name="searchInFile" value="true"/>
-    <property name="allowsMultipleSelection" value="false"/>
-    <!-- accordion panels-->
-    <property name="repositories">
-      <list>
-        <ref bean="repository.templateFiles"/>
-        <ref bean="repository.websitefiles"/>
-        <ref bean="repository.sitesPicker"/>
-        <ref bean="repository.myexternalfilesPicker"/>
-        <ref bean="repository.myfiles"/>
-      </list>
-    </property>
+    </bean>
 
-    <!-- table columns-->
-    <property name="tableColumns">
-      <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-        <value>icon,40,empty</value>
-        <value>name,*,label.name</value>
-      </list>
-    </property>
-  </bean>
 
-  <bean id="contentfolderpicker" parent="abstractmanager">
-    <property name="nodeTypes">
-      <list>
-        <value>jnt:contentFolder</value>
-      </list>
-    </property>
-    <property name="folderTypes">
-      <list>
-        <value>jnt:contentFolder</value>
-      </list>
-    </property>
-
-    <property name="toolbars">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list>
-            <ref bean="Toolbar.Item.Copy"/>
-            <ref bean="Toolbar.Item.Cut"/>
-            <ref bean="Toolbar.Item.Paste"/>
-            <ref bean="Toolbar.Item.PasteReference"/>
-          </list>
+    <bean id="imagepicker" parent="abstractmanager">
+        <property name="nodeTypes">
+            <list>
+                <value>nt:file</value>
+            </list>
         </property>
-      </bean>
-    </property>
-    <property name="contextMenu">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list>
-            <ref bean="Toolbar.Item.Copy"/>
-            <ref bean="Toolbar.Item.Cut"/>
-            <ref bean="Toolbar.Item.Paste"/>
-            <ref bean="Toolbar.Item.PasteReference"/>
-          </list>
+        <property name="folderTypes">
+            <list>
+                <value>nt:folder</value>
+                <value>jnt:mountPoint</value>
+            </list>
         </property>
-      </bean>
-    </property>
-    <property name="displaySearchInPage" value="false"/>
-    <property name="displaySearchInContent" value="false"/>
-    <property name="displaySearchInDateMeta" value="true"/>
-    <property name="displaySearchInFile" value="false"/>
-    <property name="displaySearchInTag" value="true"/>
-    <property name="searchInContent" value="true"/>
-    <property name="searchInFile" value="false"/>
-    <property name="allowsMultipleSelection" value="false"/>
-    <!-- accordion panels-->
-    <property name="repositories">
-      <list>
-        <ref bean="repository.site"/>
-        <ref bean="repository.sitesPicker"/>
-        <ref bean="repository.mycontent"/>
-      </list>
-    </property>
-
-    <!-- table columns-->
-    <property name="tableColumns">
-      <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-        <value>icon,40,empty</value>
-        <value>displayName,*,label.title</value>
-      </list>
-    </property>
-  </bean>
-
-  <bean id="portletpicker" parent="abstractmanager">
-    <property name="nodeTypes">
-      <list>
-        <value>jnt:portlet</value>
-      </list>
-    </property>
-    <property name="folderTypes">
-      <list>
-        <value>jnt:portletFolder</value>
-      </list>
-    </property>
-
-    <property name="toolbars">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list>
-            <ref bean="Toolbar.Item.NewPortlet"/>
-            <ref bean="Toolbar.Item.Rename"/>
-            <ref bean="Toolbar.Item.Delete"/>
-            <ref bean="Toolbar.Item.Undelete"/>
-            <ref bean="Toolbar.Item.DeletePermanently"/>
-            <ref bean="Toolbar.Item.Copy"/>
-            <ref bean="Toolbar.Item.Cut"/>
-            <ref bean="Toolbar.Item.Paste"/>
-            <ref bean="Toolbar.Item.PasteReference"/>
-            <ref bean="Toolbar.Item.Fill"/>
-            <ref bean="Toolbar.Item.ListView"/>
-            <ref bean="Toolbar.Item.ThumbsView"/>
-            <ref bean="Toolbar.Item.Detailedview"/>
-          </list>
+        <property name="mimeTypes">
+            <list>
+                <value>image/*</value>
+            </list>
         </property>
-      </bean>
-    </property>
-    <property name="contextMenu">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list>
-            <ref bean="Toolbar.Item.NewPortlet"/>
-            <ref bean="Toolbar.Item.Rename"/>
-            <ref bean="Toolbar.Item.Delete"/>
-            <ref bean="Toolbar.Item.Undelete"/>
-            <ref bean="Toolbar.Item.DeletePermanently"/>
-            <ref bean="Toolbar.Item.Copy"/>
-            <ref bean="Toolbar.Item.Cut"/>
-            <ref bean="Toolbar.Item.Paste"/>
-            <ref bean="Toolbar.Item.PasteReference"/>
-            <ref bean="Toolbar.Item.Fill"/>
-            <ref bean="Toolbar.Item.ListView"/>
-            <ref bean="Toolbar.Item.ThumbsView"/>
-            <ref bean="Toolbar.Item.Detailedview"/>
-          </list>
+
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewFolder"/>
+                        <ref bean="Toolbar.Item.Upload"/>
+                        <ref bean="Toolbar.Item.Download"/>
+                        <ref bean="Toolbar.Item.FilePreview"/>
+                        <!--
+                        <ref bean="Toolbar.Item.Webfolder"/>
+                        -->
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Mount"/>
+                        <ref bean="Toolbar.Item.Unmount"/>
+                        <ref bean="Toolbar.Item.Crop"/>
+                        <ref bean="Toolbar.Item.Resize"/>
+                        <ref bean="Toolbar.Item.Rotate"/>
+                        <ref bean="Toolbar.Item.Fill"/>
+                        <ref bean="Toolbar.Item.Refresh"/>
+                        <ref bean="Toolbar.Item.ListView"/>
+                        <ref bean="Toolbar.Item.ThumbsView"/>
+                        <ref bean="Toolbar.Item.Detailedview"/>
+                    </list>
+                </property>
+            </bean>
         </property>
-      </bean>
-    </property>
-    <property name="displaySearchInPage" value="false"/>
-    <property name="displaySearchInContent" value="false"/>
-    <property name="displaySearchInDateMeta" value="true"/>
-    <property name="displaySearchInFile" value="false"/>
-    <property name="displaySearchInTag" value="true"/>
-    <property name="searchInContent" value="false"/>
-    <property name="searchInFile" value="true"/>
-    <property name="allowsMultipleSelection" value="false"/>
-    <!-- accordion panels-->
-    <property name="repositories">
-      <list>
-        <ref bean="repository.websiteportlets"/>
-        <ref bean="repository.myportlets"/>
-      </list>
-    </property>
-
-    <!-- table columns-->
-    <property name="tableColumns">
-      <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-        <value>icon,40,empty</value>
-        <value>name,*,label.name</value>
-        <value>size,140,label.size</value>
-      </list>
-    </property>
-  </bean>
-
-
-  <!-- Page picker -->
-  <bean id="pagepicker" parent="abstractmanager">
-    <property name="nodeTypes" value="jnt:page"/>
-
-    <property name="folderTypes">
-      <list>
-        <value>jnt:page</value>
-        <value>jnt:virtualsite</value>
-      </list>
-    </property>
-
-    <property name="toolbars">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list>
-            <ref bean="Toolbar.Item.Copy"/>
-            <ref bean="Toolbar.Item.Cut"/>
-            <ref bean="Toolbar.Item.Paste"/>
-            <ref bean="Toolbar.Item.PasteReference"/>
-          </list>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewFolder"/>
+                        <ref bean="Toolbar.Item.Upload"/>
+                        <ref bean="Toolbar.Item.Download"/>
+                        <ref bean="Toolbar.Item.FilePreview"/>
+                        <ref bean="Toolbar.Item.Lock"/>
+                        <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.ClearLock"/>
+                        <ref bean="Toolbar.Item.ClearAllLocks"/>
+                        <ref bean="Toolbar.Item.Zip"/>
+                        <ref bean="Toolbar.Item.Unzip"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.Crop"/>
+                        <ref bean="Toolbar.Item.Resize"/>
+                        <ref bean="Toolbar.Item.Rotate"/>
+                    </list>
+                </property>
+            </bean>
         </property>
-      </bean>
-    </property>
-    <property name="contextMenu">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list>
-            <ref bean="Toolbar.Item.Copy"/>
-            <ref bean="Toolbar.Item.Cut"/>
-            <ref bean="Toolbar.Item.Paste"/>
-            <ref bean="Toolbar.Item.PasteReference"/>
-          </list>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="true"/>
+        <property name="searchInContent" value="false"/>
+        <property name="searchInFile" value="true"/>
+        <property name="allowsMultipleSelection" value="false"/>
+        <property name="defaultView" value="thumbs"/>
+        <!-- accordion panels-->
+        <property name="repositories">
+            <list>
+                <ref bean="repository.templateFiles"/>
+                <ref bean="repository.websitefiles"/>
+                <ref bean="repository.sitesPicker"/>
+                <ref bean="repository.myexternalfilesPicker"/>
+                <ref bean="repository.myfiles"/>
+            </list>
         </property>
-      </bean>
-    </property>
-    <property name="displaySearchInPage" value="false"/>
-    <property name="displaySearchInContent" value="false"/>
-    <property name="displaySearchInFile" value="false"/>
-    <property name="displaySearchInDateMeta" value="true"/>
-    <property name="displaySearchInTag" value="true"/>
-    <property name="searchInContent" value="true"/>
-    <property name="searchInFile" value="false"/>
-    <property name="allowsMultipleSelection" value="false"/>
-    <!-- accordion panels-->
-    <property name="repositories">
-      <list>
-        <ref bean="repository.site"/>
-      </list>
-    </property>
 
-    <property name="treeColumns">
-        <list
-            value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-            <value>displayName</value>
-        </list>
-    </property>        
-    <!-- table columns-->
-    <property name="tableColumns">
-      <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-        <value>icon,40,empty</value>
-        <value>displayName,*,label.name</value>
-        <value>publicationInfo,40</value>
-      </list>
-    </property>
-  </bean>
-
-  <!-- Editorial content picker -->
-  <bean id="editorialpicker" parent="abstractmanager">
-    <property name="nodeTypes">
-      <list>
-        <value>jnt:page</value>
-        <value>jmix:editorialContent</value>
-        <value>jnt:contentFolder</value>
-        <value>jnt:contentList</value>
-        <value>nt:folder</value>
-      </list>
-    </property>
-
-    <property name="folderTypes">
-      <list>
-        <value>jnt:page</value>
-        <value>jnt:navMenuText</value>
-        <value>jnt:virtualsite</value>
-        <value>jnt:contentList</value>
-        <value>jnt:contentFolder</value>
-        <value>nt:folder</value>
-      </list>
-    </property>
-    <!-- table columns-->
-    <property name="treeColumns">
-      <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-        <value>displayName</value>
-      </list>
-    </property>
-
-    <property name="toolbars">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list>
-            <ref bean="Toolbar.Item.Copy"/>
-            <ref bean="Toolbar.Item.Cut"/>
-            <ref bean="Toolbar.Item.Paste"/>
-            <ref bean="Toolbar.Item.PasteReference"/>
-            <ref bean="Toolbar.ItemsGroup.NodeTypeFiltering"/>
-          </list>
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon,40,empty</value>
+                <value>name,*,label.name</value>
+                <value>size,140,label.size</value>
+                <value>publicationInfo,40</value>
+            </list>
         </property>
-      </bean>
-    </property>
-    <property name="contextMenu">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list>
-            <ref bean="Toolbar.Item.Copy"/>
-            <ref bean="Toolbar.Item.Cut"/>
-            <ref bean="Toolbar.Item.Paste"/>
-            <ref bean="Toolbar.Item.PasteReference"/>
-          </list>
-        </property>
-      </bean>
-    </property>
-    <property name="displaySearchInPage" value="false"/>
-    <property name="displaySearchInContent" value="false"/>
-    <property name="displaySearchInDateMeta" value="true"/>
-    <property name="displaySearchInFile" value="false"/>
-    <property name="displaySearchInTag" value="true"/>
-    <property name="searchInContent" value="true"/>
-    <property name="searchInFile" value="true"/>
-    <property name="allowsMultipleSelection" value="false"/>
-    <!-- accordion panels-->
-    <property name="repositories">
-      <list>
-        <ref bean="repository.templateContents"/>
-        <ref bean="repository.site"/>
-        <ref bean="repository.sitesPicker"/>
-        <ref bean="repository.mycontent"/>
-      </list>
-    </property>
+    </bean>
 
-    <!-- table columns-->
-    <property name="tableColumns">
-      <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-        <value>icon,40,empty</value>
-        <value>displayName,*,label.title</value>
-        <value>primaryTypeLabel,140,label.type</value>
-        <value>publicationInfo,40</value>
-      </list>
-    </property>
-  </bean>
-
-  <bean id="editoriallinkpicker" parent="editorialpicker">
-    <property name="showOnlyNodesWithTemplates" value="true"/>
-  </bean>
-
-  <!-- categorypicker -->
-  <bean id="categorypicker" parent="abstractmanager">
-    <property name="nodeTypes" value="jnt:category"/>
-    <property name="folderTypes" value="jnt:category"/>
-    <property name="enableFileDoubleClick" value="false"/>
-    <property name="toolbars">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list>
-            <ref bean="Toolbar.Item.NewCategory"/>
-            <ref bean="Toolbar.Item.Separator"/>
-            <ref bean="Toolbar.Item.Rename"/>
-            <ref bean="Toolbar.Item.Delete"/>
-            <ref bean="Toolbar.Item.Undelete"/>
-            <ref bean="Toolbar.Item.DeletePermanently"/>
-            <ref bean="Toolbar.Item.Copy"/>
-            <ref bean="Toolbar.Item.Cut"/>
-            <ref bean="Toolbar.Item.Paste"/>
-          </list>
+    <bean id="folderpicker" parent="abstractmanager">
+        <property name="nodeTypes">
+            <list>
+                <value>nt:folder</value>
+            </list>
         </property>
-      </bean>
-    </property>
-    <property name="contextMenu">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list>
-            <ref bean="Toolbar.Item.NewCategory"/>
-            <ref bean="Toolbar.Item.Rename"/>
-            <ref bean="Toolbar.Item.Delete"/>
-            <ref bean="Toolbar.Item.Undelete"/>
-            <ref bean="Toolbar.Item.DeletePermanently"/>
-            <ref bean="Toolbar.Item.Copy"/>
-            <ref bean="Toolbar.Item.Cut"/>
-            <ref bean="Toolbar.Item.Paste"/>
-          </list>
+        <property name="folderTypes">
+            <list>
+                <value>nt:folder</value>
+                <value>jnt:mountPoint</value>
+            </list>
         </property>
-<<<<<<< .working
-      </bean>
-    </property>
-    <property name="displaySearchInPage" value="false"/>
-    <property name="displaySearchInContent" value="false"/>
-    <property name="displaySearchInDateMeta" value="true"/>
-    <property name="displaySearchInFile" value="false"/>
-    <property name="displaySearchInTag" value="true"/>
-    <property name="searchInContent" value="false"/>
-    <property name="searchInFile" value="false"/>
-    <property name="hideLeftPanel" value="true"/>
-    <property name="defaultView" value="detailed"/>
-=======
+
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewFolder"/>
+                        <!--
+                        <ref bean="Toolbar.Item.Webfolder"/>
+                        -->
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Mount"/>
+                        <ref bean="Toolbar.Item.Unmount"/>
+                        <ref bean="Toolbar.Item.Fill"/>
+                        <ref bean="Toolbar.Item.Refresh"/>
+                        <ref bean="Toolbar.Item.ListView"/>
+                        <ref bean="Toolbar.Item.ThumbsView"/>
+                        <ref bean="Toolbar.Item.Detailedview"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewFolder"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Lock"/>
+                        <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.ClearLock"/>
+                        <ref bean="Toolbar.Item.ClearAllLocks"/>
+                        <ref bean="Toolbar.Item.Zip"/>
+                        <ref bean="Toolbar.Item.Unzip"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="true"/>
+        <property name="searchInContent" value="false"/>
+        <property name="searchInFile" value="true"/>
+        <property name="allowsMultipleSelection" value="false"/>
+        <!-- accordion panels-->
+        <property name="repositories">
+            <list>
+                <ref bean="repository.templateFiles"/>
+                <ref bean="repository.websitefiles"/>
+                <ref bean="repository.sitesPicker"/>
+                <ref bean="repository.myexternalfilesPicker"/>
+                <ref bean="repository.myfiles"/>
+            </list>
+        </property>
+
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon,40,empty</value>
+                <value>name,*,label.name</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="contentfolderpicker" parent="abstractmanager">
+        <property name="nodeTypes">
+            <list>
+                <value>jnt:contentFolder</value>
+            </list>
+        </property>
+        <property name="folderTypes">
+            <list>
+                <value>jnt:contentFolder</value>
+            </list>
+        </property>
+
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="true"/>
+        <property name="searchInContent" value="true"/>
+        <property name="searchInFile" value="false"/>
+        <property name="allowsMultipleSelection" value="false"/>
+        <!-- accordion panels-->
+        <property name="repositories">
+            <list>
+                <ref bean="repository.site"/>
+                <ref bean="repository.sitesPicker"/>
+                <ref bean="repository.mycontent"/>
+            </list>
+        </property>
+
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon,40,empty</value>
+                <value>displayName,*,label.title</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="portletpicker" parent="abstractmanager">
+        <property name="nodeTypes">
+            <list>
+                <value>jnt:portlet</value>
+            </list>
+        </property>
+        <property name="folderTypes">
+            <list>
+                <value>jnt:portletFolder</value>
+            </list>
+        </property>
+
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewPortlet"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.Fill"/>
+                        <ref bean="Toolbar.Item.ListView"/>
+                        <ref bean="Toolbar.Item.ThumbsView"/>
+                        <ref bean="Toolbar.Item.Detailedview"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewPortlet"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.Fill"/>
+                        <ref bean="Toolbar.Item.ListView"/>
+                        <ref bean="Toolbar.Item.ThumbsView"/>
+                        <ref bean="Toolbar.Item.Detailedview"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="true"/>
+        <property name="searchInContent" value="false"/>
+        <property name="searchInFile" value="true"/>
+        <property name="allowsMultipleSelection" value="false"/>
+        <!-- accordion panels-->
+        <property name="repositories">
+            <list>
+                <ref bean="repository.websiteportlets"/>
+                <ref bean="repository.myportlets"/>
+            </list>
+        </property>
+
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon,40,empty</value>
+                <value>name,*,label.name</value>
+                <value>size,140,label.size</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Page picker -->
+    <bean id="pagepicker" parent="abstractmanager">
+        <property name="nodeTypes" value="jnt:page"/>
+
+        <property name="folderTypes">
+            <list>
+                <value>jnt:page</value>
+                <value>jnt:virtualsite</value>
+            </list>
+        </property>
+
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
+        <property name="displaySearchInTag" value="true"/>
+        <property name="searchInContent" value="true"/>
+        <property name="searchInFile" value="false"/>
+        <property name="allowsMultipleSelection" value="false"/>
+        <!-- accordion panels-->
+        <property name="repositories">
+            <list>
+                <ref bean="repository.site"/>
+            </list>
+        </property>
+
+        <property name="treeColumns">
+            <list
+                    value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>displayName</value>
+            </list>
+        </property>
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon,40,empty</value>
+                <value>displayName,*,label.name</value>
+                <value>publicationInfo,40</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Editorial content picker -->
+    <bean id="editorialpicker" parent="abstractmanager">
+        <property name="nodeTypes">
+            <list>
+                <value>jnt:page</value>
+                <value>jmix:editorialContent</value>
+                <value>jnt:contentFolder</value>
+                <value>jnt:contentList</value>
+                <value>nt:folder</value>
+            </list>
+        </property>
+
+        <property name="folderTypes">
+            <list>
+                <value>jnt:page</value>
+                <value>jnt:navMenuText</value>
+                <value>jnt:virtualsite</value>
+                <value>jnt:contentList</value>
+                <value>jnt:contentFolder</value>
+                <value>nt:folder</value>
+            </list>
+        </property>
+        <!-- table columns-->
+        <property name="treeColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>displayName</value>
+            </list>
+        </property>
+
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.ItemsGroup.NodeTypeFiltering"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="true"/>
+        <property name="searchInContent" value="true"/>
+        <property name="searchInFile" value="true"/>
+        <property name="allowsMultipleSelection" value="false"/>
+        <!-- accordion panels-->
+        <property name="repositories">
+            <list>
+                <ref bean="repository.templateContents"/>
+                <ref bean="repository.site"/>
+                <ref bean="repository.sitesPicker"/>
+                <ref bean="repository.mycontent"/>
+            </list>
+        </property>
+
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon,40,empty</value>
+                <value>displayName,*,label.title</value>
+                <value>primaryTypeLabel,140,label.type</value>
+                <value>publicationInfo,40</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="editoriallinkpicker" parent="editorialpicker">
+        <property name="showOnlyNodesWithTemplates" value="true"/>
+    </bean>
+
+    <!-- categorypicker -->
+    <bean id="categorypicker" parent="abstractmanager">
+        <property name="nodeTypes" value="jnt:category"/>
+        <property name="folderTypes" value="jnt:category"/>
+        <property name="enableFileDoubleClick" value="false"/>
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewCategory"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewCategory"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
         <property name="displaySearchInDateMeta" value="true"/>
@@ -678,34 +667,25 @@
         <property name="searchInFile" value="false"/>
         <property name="hideLeftPanel" value="true"/>
         <property name="defaultView" value="detailed"/>
->>>>>>> .merge-right.r42961
 
-    <!-- accordion -->
-    <property name="repositories">
-      <list>
-        <ref bean="repository.category"/>
-      </list>
-    </property>
+        <!-- accordion -->
+        <property name="repositories">
+            <list>
+                <ref bean="repository.category"/>
+            </list>
+        </property>
 
-    <!-- tabs -->
-    <property name="engineTabs">
-      <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <ref bean="Engine.Tab.Info" />
-        <ref bean="Engine.Tab.Content" />
-        <ref bean="Engine.Tab.LiveRoles"/>
-        <ref bean="Engine.Tab.EditRoles"/>
-        <ref bean="Engine.Tab.Usages" />
-      </list>
-    </property>
+        <!-- tabs -->
+        <property name="engineTabs">
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <ref bean="Engine.Tab.Info"/>
+                <ref bean="Engine.Tab.Content"/>
+                <ref bean="Engine.Tab.LiveRoles"/>
+                <ref bean="Engine.Tab.EditRoles"/>
+                <ref bean="Engine.Tab.Usages"/>
+            </list>
+        </property>
 
-<<<<<<< .working
-    <!-- table columns-->
-    <property name="tableColumns">
-      <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-        <value>name,*,label.name</value>
-      </list>
-    </property>
-=======
         <property name="treeColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>displayName,*,label.title</value>
@@ -718,130 +698,129 @@
                 <value>displayName,*,label.name</value>
             </list>
         </property>
->>>>>>> .merge-right.r42961
 
-  </bean>
+    </bean>
 
-  <!-- Page picker -->
-  <bean id="sitepicker" parent="abstractmanager">
-    <property name="nodeTypes" value="jnt:virtualsite"/>
+    <!-- Page picker -->
+    <bean id="sitepicker" parent="abstractmanager">
+        <property name="nodeTypes" value="jnt:virtualsite"/>
 
-    <property name="folderTypes">
-      <list>
-        <value>jnt:virtualsitesFolder</value>
-      </list>
-    </property>
-
-    <property name="toolbars">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list/>
+        <property name="folderTypes">
+            <list>
+                <value>jnt:virtualsitesFolder</value>
+            </list>
         </property>
-      </bean>
-    </property>
-    <property name="contextMenu">
-      <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-          <list/>
+
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list/>
+                </property>
+            </bean>
         </property>
-      </bean>
-    </property>
-    <property name="displaySearchInPage" value="false"/>
-    <property name="displaySearchInContent" value="false"/>
-    <property name="displaySearchInDateMeta" value="true"/>
-    <property name="displaySearchInFile" value="false"/>
-    <property name="displaySearchInTag" value="true"/>
-    <property name="searchInContent" value="true"/>
-    <property name="searchInFile" value="false"/>
-    <property name="allowsMultipleSelection" value="false"/>
-    <property name="hideLeftPanel" value="true"/>
-    <property name="defaultView" value="detailed"/>
-    <!-- accordion panels-->
-    <property name="repositories">
-      <list>
-        <ref bean="repository.sitesPicker"/>
-      </list>
-    </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list/>
+                </property>
+            </bean>
+        </property>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInDateMeta" value="true"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="true"/>
+        <property name="searchInContent" value="true"/>
+        <property name="searchInFile" value="false"/>
+        <property name="allowsMultipleSelection" value="false"/>
+        <property name="hideLeftPanel" value="true"/>
+        <property name="defaultView" value="detailed"/>
+        <!-- accordion panels-->
+        <property name="repositories">
+            <list>
+                <ref bean="repository.sitesPicker"/>
+            </list>
+        </property>
 
-    <!-- table columns-->
-    <property name="tableColumns">
-      <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-        <value>icon,40,empty</value>
-        <value>name,*,label.name</value>
-      </list>
-    </property>
-  </bean>
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon,40,empty</value>
+                <value>name,*,label.name</value>
+            </list>
+        </property>
+    </bean>
 
-  <!-- userpicker -->
-  <bean id="userpicker" parent="abstractmanager">
-    <property name="nodeTypes">
-      <list>
-        <value>jnt:user</value>
-      </list>
-    </property>
-    <property name="folderTypes">
-      <list>
-        <value>nt:folder</value>
-      </list>
-    </property>
+    <!-- userpicker -->
+    <bean id="userpicker" parent="abstractmanager">
+        <property name="nodeTypes">
+            <list>
+                <value>jnt:user</value>
+            </list>
+        </property>
+        <property name="folderTypes">
+            <list>
+                <value>nt:folder</value>
+            </list>
+        </property>
 
-    <property name="displaySearch" value="false"/>
-    <property name="allowsMultipleSelection" value="false"/>
-    <!-- accordion panels-->
-    <property name="repositories">
-      <list>
-        <ref bean="repository.users"/>
-      </list>
-    </property>
-    <property name="engineTabs">
-      <list/>
-    </property>
-    <!-- table columns-->
-    <property name="tableColumns">
-      <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-        <value>icon,40,empty</value>
-        <value>name,*,label.username</value>
-        <value>j:lastName,120,org.jahia.admin.lastName.label</value>
-        <value>j:firstName,120,org.jahia.admin.firstName.label</value>
-      </list>
-    </property>
-  </bean>
+        <property name="displaySearch" value="false"/>
+        <property name="allowsMultipleSelection" value="false"/>
+        <!-- accordion panels-->
+        <property name="repositories">
+            <list>
+                <ref bean="repository.users"/>
+            </list>
+        </property>
+        <property name="engineTabs">
+            <list/>
+        </property>
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon,40,empty</value>
+                <value>name,*,label.username</value>
+                <value>j:lastName,120,org.jahia.admin.lastName.label</value>
+                <value>j:firstName,120,org.jahia.admin.firstName.label</value>
+            </list>
+        </property>
+    </bean>
 
-  <!-- usergrouppicker -->
-  <bean id="usergrouppicker" parent="abstractmanager">
-    <property name="nodeTypes">
-      <list>
-        <value>jnt:group</value>
-        <value>jnt:user</value>
-      </list>
-    </property>
-    <property name="folderTypes">
-      <list>
-        <value>nt:folder</value>
-      </list>
-    </property>
+    <!-- usergrouppicker -->
+    <bean id="usergrouppicker" parent="abstractmanager">
+        <property name="nodeTypes">
+            <list>
+                <value>jnt:group</value>
+                <value>jnt:user</value>
+            </list>
+        </property>
+        <property name="folderTypes">
+            <list>
+                <value>nt:folder</value>
+            </list>
+        </property>
 
-    <property name="displaySearch" value="false"/>
-    <property name="allowsMultipleSelection" value="false"/>
-    <!-- accordion panels-->
-    <property name="repositories">
-      <list>
-        <ref bean="repository.users"/>
-        <ref bean="repository.groups"/>
-      </list>
-    </property>
-    <property name="engineTabs">
-      <list/>
-    </property>
-    <!-- table columns-->
-    <property name="tableColumns">
-      <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-        <value>icon,40,empty</value>
-        <value>name,*,label.username</value>
-        <value>j:lastName,120,org.jahia.admin.lastName.label</value>
-        <value>j:firstName,120,org.jahia.admin.firstName.label</value>
-      </list>
-    </property>
-  </bean>
+        <property name="displaySearch" value="false"/>
+        <property name="allowsMultipleSelection" value="false"/>
+        <!-- accordion panels-->
+        <property name="repositories">
+            <list>
+                <ref bean="repository.users"/>
+                <ref bean="repository.groups"/>
+            </list>
+        </property>
+        <property name="engineTabs">
+            <list/>
+        </property>
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon,40,empty</value>
+                <value>name,*,label.username</value>
+                <value>j:lastName,120,org.jahia.admin.lastName.label</value>
+                <value>j:firstName,120,org.jahia.admin.firstName.label</value>
+            </list>
+        </property>
+    </bean>
 
 </beans>

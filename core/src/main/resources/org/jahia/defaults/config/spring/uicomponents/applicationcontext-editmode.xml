@@ -568,16 +568,8 @@
                     </bean>
                   </property>
                 </bean>
-<<<<<<< .working
-<<<<<<< .working
                 <ref bean="sidePanelTab.settings"/>
                 <!--<bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-=======
-=======
-                <!--
->>>>>>> .merge-right.r43105
-                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
->>>>>>> .merge-right.r42955
                     <property name="key" value="lastContent"/>
                     <property name="icon" value="tab-lastcontent"/>
                     <property name="tabItem">
@@ -621,8 +613,7 @@
                         </bean>
                     </property>
                     <property name="requiredPermission" value="latestSelector"/>
-                </bean>
-                -->
+                </bean>-->
             </list>
         </property>
 

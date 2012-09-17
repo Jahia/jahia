@@ -11,4 +11,6 @@
             validationQuery="@VALIDATION_QUERY@" testWhileIdle="true" testOnBorrow="false" testOnReturn="false"
             timeBetweenEvictionRunsMillis="300000" minEvictableIdleTimeMillis="1800000" numTestsPerEvictionRun="5"/>
 
+    <Loader delegate="true"/>
+
 </Context>

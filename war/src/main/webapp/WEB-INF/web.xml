@@ -591,6 +591,22 @@
         <load-on-startup>999</load-on-startup>
     </servlet>
 
+    <servlet>
+        <description>AtmosphereServlet</description>
+        <servlet-name>AtmosphereServlet</servlet-name>
+        <servlet-class>org.atmosphere.cpr.AtmosphereServlet</servlet-class>
+        <init-param>
+            <param-name>org.atmosphere.useWebSocket</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>org.atmosphere.useNative</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <!-- shared thread pool across Broadcaster -->
+        <load-on-startup>800</load-on-startup>
+    </servlet>
+
     <!-- Servlet mappings -->
     <servlet-mapping>
         <servlet-name>WelcomeServlet</servlet-name>
@@ -743,6 +759,11 @@
     <servlet-mapping>
         <servlet-name>initializationCompletedServlet</servlet-name>
         <url-pattern>/initializationCompleted/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AtmosphereServlet</servlet-name>
+        <url-pattern>/atmosphere/*</url-pattern>
     </servlet-mapping>
 
     <!-- Session timeout value is set in minutes. Comment this section out

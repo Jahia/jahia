@@ -1052,10 +1052,20 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
         mandatoryLanguages.clear();
 
+        List<String> installedModules = site.getInstalledModules();
+        try {
+            // site.getInstalledModules() may return outdated data
+            installedModules = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(site.getSiteKey()).getInstalledModules();
+        } catch (JahiaException e) {
+            logger.error("Cannot get installed modules ",e);
+        }
+
         String templateSet = site.getTemplatePackageName();
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         try {
-            templateManagerService.deployModule("/templateSets/" + templateSet, "/sites/" + site.getSiteKey(), session);
+            if (!installedModules.contains(templateSet)) {
+                templateManagerService.deployModule("/templateSets/" + templateSet, "/sites/" + site.getSiteKey(), session);
+            }
         } catch (RepositoryException e) {
             logger.error("Cannot deploy module "+templateSet,e);
         }
@@ -1063,6 +1073,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         String defaultLanguage = null;
         String lowestRankLanguage = null;
         int currentRank = 0;
+
+        List<String> modules = new ArrayList<String>();
+
         for (Object key : keys) {
             String property = (String) key;
             String value = p.getProperty(property);
@@ -1106,15 +1119,18 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     value) && sitesService.getDefaultSite() == null) {
                 sitesService.setDefaultSite(site);
             } else if (firstKey.equals("installedModules")) {
-                if (!site.getInstalledModules().contains(value) && !templateSet.equals(value)) {
-                    try {
-                        templateManagerService.deployModule("/templateSets/" + value, "/sites/" + site.getSiteKey(), session);
-                    } catch (RepositoryException e) {
-                        logger.error("Cannot deploy module "+value,e);
-                    }
+                if (!installedModules.contains(value) && !templateSet.equals(value)) {
+                    modules.add("/templateSets/" +value);
                 }
             }
         }
+
+        try {
+            templateManagerService.deployModules(modules, "/sites/" + site.getSiteKey(), session);
+        } catch (RepositoryException e) {
+            logger.error("Cannot deploy module "+modules,e);
+        }
+
         @SuppressWarnings("unchecked")
         Set<String> siteLangs = ListOrderedSet.decorate(new LinkedList<String>(languages));
         if (!siteLangs.isEmpty()) {

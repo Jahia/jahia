@@ -1174,37 +1174,52 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void deployModule(final String modulePath, final String sitePath, String username)
             throws RepositoryException {
+        deployModules(Arrays.asList(modulePath), sitePath, username);
+    }
+
+    public void deployModules(final List<String> modulesPath, final String sitePath, String username)
+            throws RepositoryException {
         JCRTemplate.getInstance()
                 .doExecuteWithSystemSession(username, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        deployModule(modulePath, sitePath, session);
+                        deployModules(modulesPath, sitePath, session);
                         return null;
                     }
                 });
     }
 
     public void deployModule(final String modulePath, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
+        deployModules(Arrays.asList(modulePath), sitePath, session);
+    }
+
+    public void deployModules(final List<String> modulesPath, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
         if (!sitePath.startsWith("/sites/")) {
-            return;
-        }
-
-        HashMap<String, List<String>> references = new HashMap<String, List<String>>();
-
-        JCRNodeWrapper originalNode = null;
-        try {
-            originalNode = session.getNode(modulePath);
-        } catch (PathNotFoundException e) {
-            logger.warn("Cannot find module for path {}. Skipping deployment to site {}.",
-                    modulePath, sitePath);
             return;
         }
         final JCRNodeWrapper destinationNode = session.getNode(sitePath);
 
-        String moduleName = originalNode.getName();
+        List<JCRNodeWrapper> originalNodes = new ArrayList<JCRNodeWrapper>();
 
-        synchro(originalNode, destinationNode, session, moduleName, references);
+        HashMap<String, List<String>> references = new HashMap<String, List<String>>();
+        for (String modulePath : modulesPath) {
+            JCRNodeWrapper originalNode = null;
+            try {
+                originalNode = session.getNode(modulePath);
+                originalNodes.add(originalNode);
+            } catch (PathNotFoundException e) {
+                logger.warn("Cannot find module for path {}. Skipping deployment to site {}.",
+                        modulePath, sitePath);
+                return;
+            }
+            String moduleName = originalNode.getName();
 
-        ReferencesHelper.resolveCrossReferences(session, references);
+            synchro(originalNode, destinationNode, session, moduleName, references);
+
+            ReferencesHelper.resolveCrossReferences(session, references);
+
+            addDependencyValue(originalNode, destinationNode, "j:installedModules");
+        }
+
         session.save();
 
         synchronized (this) {
@@ -1218,13 +1233,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             JCRPublicationService.getInstance().publishByInfoList(tree, "default", "live", false, null);
         }
 
-        addDependencyValue(originalNode, destinationNode, "j:installedModules");
-
-        session.save();
         try {
             List<String> modules = siteService.getSiteByKey(destinationNode.getName()).getInstalledModules();
-            if (!modules.contains(originalNode.getName())) {
-                modules.add(originalNode.getName());
+            for (JCRNodeWrapper originalNode : originalNodes) {
+                if (!modules.contains(originalNode.getName())) {
+                    modules.add(originalNode.getName());
+                }
             }
         } catch (JahiaException e) {
             logger.error(e.getMessage(), e);

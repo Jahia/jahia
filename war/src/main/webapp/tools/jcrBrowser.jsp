@@ -8,6 +8,10 @@
 <%@page import="org.jahia.services.content.JCRSessionFactory"%>
 <%@page import="org.jahia.services.content.JCRSessionWrapper"%>
 <%@page import="org.jahia.services.usermanager.jcr.JCRUserManagerProvider"%>
+<%@ page import="javax.jcr.version.Version" %>
+<%@ page import="org.apache.commons.lang.StringUtils" %>
+<%@ page import="javax.jcr.version.VersionIterator" %>
+<%@ page import="java.util.*" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -20,8 +24,57 @@
 <c:set var="showReferences" value="${functions:default(fn:escapeXml(param.showReferences), 'false')}"/>
 <c:set var="showNodes" value="${functions:default(fn:escapeXml(param.showNodes), 'true')}"/>
 <c:set var="showActions" value="${functions:default(fn:escapeXml(param.showActions), 'false')}"/>
+<c:set var="showVersions" value="${functions:default(param.showVersions, 'false')}"/>
 <c:set var="workspace" value="${functions:default(fn:escapeXml(param.workspace), 'default')}"/>
 <c:set var="nodeId" value="${not empty param.uuid ? fn:trim(fn:escapeXml(param.uuid)) : 'cafebabe-cafe-babe-cafe-babecafebabe'}"/>
+<%!
+    private void traceVersionTree(Version v, List<StringBuffer> lines, Map<String, int[]> m, int currentLine, int col) throws Exception {
+        m.put(v.getName(), new int[]{currentLine,col});
+        while (lines.size() <= currentLine) {
+            lines.add(new StringBuffer());
+        }
+
+        String preds = "";
+        for (Version pred : v.getPredecessors()) {
+            preds += pred.getName() + ",";
+        }
+
+        String[] s = v.getContainingHistory().getVersionLabels(v);
+
+        StringBuffer stringBuffer = lines.get(currentLine);
+        String str = (stringBuffer.length()==0 ? "  " : "  -> ") + v.getName() + " "+(s.length == 0 ? "": Arrays.asList(s));
+
+        for (Version version : v.getSuccessors()) {
+            if (m.containsKey(version.getName())) {
+                int[] c = m.get(version.getName());
+                if (c[0] == 0) {
+                    col = c[1];
+                    StringBuffer l = lines.get(currentLine - 1);
+                    if (l.length() < col + 3) {
+                        l.append(StringUtils.repeat(" ", col + 3 - l.length()));
+                    }
+                    l.append("-");
+                } else {
+                    str += ("(‚-"+version.getName());
+                }
+            }
+        }
+
+        if (stringBuffer.length() < col+str.length()) {
+            stringBuffer.append(StringUtils.repeat((stringBuffer.length()==0 ? " " : "-"), col+str.length() - stringBuffer.length()));
+        }
+        stringBuffer.replace(col, col + str.length(), str);
+
+        int nextCol = stringBuffer.length();
+        int lineNumber = currentLine;
+        for (Version version : v.getSuccessors()) {
+            if (!m.containsKey(version.getName())) {
+                traceVersionTree(version, lines, m ,lineNumber, nextCol);
+                lineNumber +=2;
+            }
+        }
+    }
+%>
 <%
 JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
 JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"));
@@ -35,6 +88,15 @@ if (request.getParameter("path") != null && request.getParameter("path").length(
 }
 pageContext.setAttribute("node", node);
 pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
+    if (node.isVersioned()) {
+        VersionIterator versionIterator = jcrSession.getWorkspace().getVersionManager().getVersionHistory(node.getPath()).getAllLinearVersions();
+        pageContext.setAttribute("versionIterator", versionIterator);
+
+        Version v = jcrSession.getWorkspace().getVersionManager().getVersionHistory(node.getPath()).getRootVersion();
+        List<StringBuffer> lines = new ArrayList<StringBuffer>();
+        traceVersionTree(v, lines, new HashMap<String,int[]>(),0,0);
+        pageContext.setAttribute("versionGraph", lines);
+    }
 %>
 <head>
 <title>JCR Browser</title>
@@ -67,6 +129,7 @@ function go(id1, value1, id2, value2, id3, value3) {
         <input type="hidden" id="showReferences" name="showReferences" value="${showReferences}"/>
         <input type="hidden" id="showNodes" name="showNodes" value="${showNodes}"/>
         <input type="hidden" id="showActions" name="showActions" value="${showActions}"/>
+        <input type="hidden" id="showVersions" name="showVersions" value="${showVersions}"/>
         <input type="hidden" id="workspace" name="workspace" value="${workspace}"/>
         <input type="hidden" id="path" name="path" value=""/>
         <input type="hidden" id="uuid" name="uuid" value="${nodeId}"/>
@@ -105,7 +168,9 @@ function go(id1, value1, id2, value2, id3, value3) {
             <input id="cbNodes" type="checkbox" ${showNodes ? 'checked="checked"' : ''}
                 onchange="go('showNodes', '${!showNodes}')"/>&nbsp;<label for="cbNodes">Show child nodes</label><br/>
             <input id="cbReferences" type="checkbox" ${showReferences ? 'checked="checked"' : ''}
-                onchange="go('showReferences', '${!showReferences}')"/>&nbsp;<label for="cbReferences">Show references</label>
+                onchange="go('showReferences', '${!showReferences}')"/>&nbsp;<label for="cbReferences">Show references</label><br/>
+            <input id="cbVersions" type="checkbox" ${showVersions ? 'checked="checked"' : ''}
+                onchange="go('showVersions', '${!showVersions}')"/>&nbsp;<label for="cbVersions">Show versioning</label><br/>
         </p>
     </fieldset>
 
@@ -231,7 +296,7 @@ function go(id1, value1, id2, value2, id3, value3) {
         <strong>Path:&nbsp;</strong>${fn:escapeXml(node.path)}<br/>
         <strong>ID:&nbsp;</strong>${fn:escapeXml(node.identifier)}<br/>
         <strong>Type:&nbsp;</strong>${fn:escapeXml(node.primaryNodeTypeName)}<br/>
-        <strong>Mixins:&nbsp;</strong>[<c:forEach items="${node.mixinNodeTypes}" var="mixin" varStatus="status">${status.index > 0 ? ", " : ""}${mixin.name}<c:if test="${showActions}">&nbsp;<a href="#remove" onclick="if (confirm('You are about to remove mixin ${mixin.name} from the node. Continue?')) {go('action', 'removeMixin', 'value', '${mixin.name}');} return false;"><img src="<c:url value='/icons/delete.png'/>" height="16" width="16" title="Delete mixin" border="0" style="vertical-align: middle;"/></a></c:if></c:forEach>]
+        <strong>Mixins:&nbsp;</strong>[<c:forEach items="${node.mixinNodeTypes}" var="mixin" varStatus="status">${status.index > 0 ? ", " : ""}${mixin.name}<c:if test="${showActions}">&nbsp;<a href="#remove" onclick="if (confirm('You are about to remove mixin ${mixin.name} from the node. Continue?')) {go('action', 'removeMixin', 'value', '${mixin.name}');} return false;"><img src="<c:url value='/icons/delete.png'/>" height="16" width="16" title="Delete mixin" border="0" style="vertical-align: middle;"/></a></c:if></c:forEach>]<br/>
         <c:if test="${showActions}">
             <% pageContext.setAttribute("mixins", JCRContentUtils.getAssignableMixins(node)); %>
             <select id="mixins" name="mixins">
@@ -285,7 +350,7 @@ function go(id1, value1, id2, value2, id3, value3) {
             <li>
                 <c:if test="${not empty ref}">
                     <c:set var="refTarget" value="${ref.parent}"/>
-                    <a href="#reference" onclick="go('uuid', '${refTarget.identifier}'); return false;">${fn:escapeXml(refTarget.name)}&nbsp;(${refTarget.identifier})</a>
+                    <a href="#reference" onclick="go('uuid', '${refTarget.identifier}'); return false;">${fn:escapeXml(refTarget.name)}&nbsp;(${refTarget.identifier}) / ${ref.name}</a>
                 </c:if>
             </li>
         </c:forEach>
@@ -293,7 +358,7 @@ function go(id1, value1, id2, value2, id3, value3) {
             <li>
                 <c:if test="${not empty ref}">
                     <c:set var="refTarget" value="${ref.parent}"/>
-                    <a href="#reference" onclick="go('uuid', '${refTarget.identifier}'); return false;">${fn:escapeXml(refTarget.name)}&nbsp;(${refTarget.identifier})</a>
+                    <a href="#reference" onclick="go('uuid', '${refTarget.identifier}'); return false;">${fn:escapeXml(refTarget.name)}&nbsp;(${refTarget.identifier}) / ${ref.name} - weak</a>
                 </c:if>
             </li>
         </c:forEach>
@@ -335,6 +400,16 @@ function go(id1, value1, id2, value2, id3, value3) {
     <c:if test="${empty showNodes || not showNodes}">
         </p>
     </c:if>
+
+    <c:if test="${showVersions}">
+    <strong>Linear history:&nbsp;</strong>[<c:forEach items="${versionIterator}" var="version" varStatus="status">${status.index > 0 ? ", " : ""}<a href="#version" onclick="go('uuid', '${version.identifier}'); return false;">${version.name}</a></c:forEach>]<br>
+    <strong>Full version graph:&nbsp;</strong>
+    <pre>
+<c:forEach items="${versionGraph}" var="version" varStatus="status">${version}
+</c:forEach>
+    </pre><br>
+    </c:if>
+
 </fieldset>
 </body>
 <%} catch (javax.jcr.ItemNotFoundException e) {

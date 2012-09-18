@@ -68,8 +68,8 @@
  - j:tags (weakreference, category[autoSelectParent=false]) facetable multiple
  - j:newTag (string) hidden indexed=no
 
-[jmix:versionInfo] mixin
-- j:checkinDate (date) hidden
+// [jmix:versionInfo] mixin
+// - j:checkinDate (date) hidden
 
 [jmix:conditionalVisibility] mixin
  - j:legacyRuleSettings (string) hidden indexed=no
@@ -81,7 +81,11 @@
 
 [jnt:condition] > nt:base, jmix:observable
 
-[jmix:basemetadata] > mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable, jmix:versionInfo, jmix:description, jmix:workflow, jmix:conditionalVisibility mixin
+[jmix:unversionedBasemetadata] > mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, jmix:description, jmix:workflow, jmix:conditionalVisibility mixin
+
+[jmix:basemetadata] > jmix:unversionedBasemetadata, mix:versionable mixin
+
+[jmix:nolive] mixin
 
 [jmix:autoPublish] > jmix:observable mixin
 
@@ -93,7 +97,7 @@
 // Multi language
 //---------------------------------------------------------
 
-[jnt:translation] > nt:base, jmix:lockable, mix:language, mix:lastModified, jmix:lastPublished, mix:versionable, jmix:versionInfo, jmix:observable, jmix:workflow
+[jnt:translation] > nt:base, jmix:lockable, mix:language, mix:lastModified, jmix:lastPublished, mix:versionable, jmix:observable, jmix:workflow
   - * (undefined) multiple
   - * (undefined)
 
@@ -126,7 +130,7 @@
 // Role based access control
 //---------------------------------------------------------
 
-[jnt:role] > nt:base, mix:versionable, mix:title, jmix:autoPublish, jmix:observable
+[jnt:role] > nt:base, mix:title, jmix:autoPublish, jmix:observable
  - jcr:description (string,textarea) i18n itemtype = content
  - j:nodeTypes (string,choicelist[nodetypes=nt:base,resourceBundle]) multiple
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
@@ -136,14 +140,14 @@
  - j:roleGroup (string,choicelist[resourceBundle]) < 'live-role','edit-role'
  + * (jnt:externalPermissions)
 
+[jnt:roles] > nt:base, jmix:autoPublish, jmix:observable
+ + * (jnt:role)
+
 [jnt:externalPermissions]
  - j:path (string)
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
 
-[jnt:roles] > nt:base, mix:versionable, jmix:autoPublish, jmix:observable
- + * (jnt:role)
-
-[jnt:permission] > nt:base, mix:versionable, mix:title, jmix:autoPublish, jmix:observable
+[jnt:permission] > nt:base, mix:title, jmix:autoPublish, jmix:observable
  - j:isAbstract (boolean)
  - j:dependencies (weakreference) protected hidden multiple < jnt:permission
  + * (jnt:permission)
@@ -292,7 +296,7 @@
 // Users and groups
 //---------------------------------------------------------
 
-[jnt:usersFolder] > nt:base, jmix:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list, jmix:observable, jmix:autoPublish
+[jnt:usersFolder] > nt:base, jmix:systemNode, jmix:nodenameInfo, jmix:unversionedBasemetadata, jmix:publication, jmix:list, jmix:observable, jmix:autoPublish
  - j:usersFolderConfig (string) nofulltext
  - j:usersFolderSkeleton (string) nofulltext
  + * (jnt:user)
@@ -353,7 +357,7 @@
  + passwordHistory (jnt:passwordHistory) = jnt:passwordHistory mandatory autocreated
  + * (nt:base)
 
-[jnt:groupsFolder] > nt:base, jmix:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list, jmix:observable, jmix:autoPublish
+[jnt:groupsFolder] > nt:base, jmix:systemNode, jmix:nodenameInfo, jmix:unversionedBasemetadata, jmix:publication, jmix:list, jmix:observable, jmix:autoPublish
  - j:groupsFolderConfig (string) nofulltext
  - j:groupsFolderSkeleton (string) nofulltext
  + * (jnt:group) = jnt:group
@@ -471,13 +475,13 @@
 // Virtual sites
 //---------------------------------------------------------
 
-[jnt:virtualsitesFolder] > nt:base, jmix:systemNode, jmix:basemetadata, jmix:list
+[jnt:virtualsitesFolder] > nt:base, jmix:systemNode, jmix:unversionedBasemetadata, jmix:list
  - j:defaultSite (weakreference) < jnt:virtualsite
  - j:virtualsitesFolderConfig (string) nofulltext
  - j:virtualsitesFolderSkeleton (string) nofulltext
  + * (jnt:virtualsite)
 
-[jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:publication, jmix:autoPublish, jmix:observable, jmix:htmlSettings, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable, jmix:versionInfo, jmix:workflow
+[jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:publication, jmix:autoPublish, jmix:observable, jmix:htmlSettings, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, jmix:workflow
  - j:defaultTemplate (weakreference,choicelist[templatesNode=pageTemplate]) nofulltext
  - j:title (string) protected nofulltext primary
  - j:serverName (string) protected nofulltext
@@ -558,12 +562,12 @@
 [jmix:userProfileComponents] > jmix:droppableContent mixin
 
 // @since Jahia 6.6
-[jnt:componentFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, mix:title, jmix:list, jmix:publication
+[jnt:componentFolder] > nt:base, jmix:nodenameInfo, jmix:unversionedBasemetadata, jmix:nolive, mix:title, jmix:list
  + * (jnt:component)
  + * (jnt:componentFolder)
 
 // @since Jahia 6.6
-[jnt:component] > nt:base, jmix:nodenameInfo, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:i18n, jmix:originWS, jmix:description, mix:title, jmix:lastPublished
+[jnt:component] > nt:base, jmix:nodenameInfo, jmix:nolive, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:i18n, jmix:originWS, jmix:description, mix:title, jmix:lastPublished
  - j:moduleName (string) hidden nofulltext
 
 // @since Jahia 6.6
@@ -709,7 +713,7 @@ extends = jnt:content
  + * (jmix:droppableContent) = jmix:droppableContent version
  + * (jnt:contentFolder) = jnt:contentFolder version
 
-[jnt:templateSets] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
+[jnt:templateSets] > nt:base, jmix:nodenameInfo, jmix:unversionedBasemetadata, jmix:list
  + * (jnt:virtualsite)
 
 [jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list, jmix:publication
@@ -746,7 +750,7 @@ extends = jnt:content
 // Portlets
 //---------------------------------------------------------
 
-[jnt:portletDefinition] > nt:base, mix:referenceable, jmix:accessControlled, jmix:basemetadata
+[jnt:portletDefinition] > nt:base, mix:referenceable, jmix:accessControlled, jmix:unversionedBasemetadata
  - j:name (string) nofulltext
  - j:description (string)
  - j:isVisible (boolean) = true

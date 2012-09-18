@@ -41,6 +41,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.JahiaVersionManagerImpl;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRVersion;
@@ -545,5 +546,18 @@ public class JCRWorkspaceWrapper implements Workspace {
                 }
             });
         }
+
+        public void addPredecessor(final String absPath, final Version version) throws RepositoryException {
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_MERGE, new JCRCallback<NodeIterator>() {
+                public NodeIterator doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    VersionManager versionManager = session.getProviderSession(service.getProvider(absPath)).getWorkspace().getVersionManager();
+                    if (versionManager instanceof JahiaVersionManagerImpl) {
+                        ((JahiaVersionManagerImpl)versionManager).addPredecessor(absPath, version);
+                    }
+                    return null;
+                }
+            });
+        }
+        
     }
 }

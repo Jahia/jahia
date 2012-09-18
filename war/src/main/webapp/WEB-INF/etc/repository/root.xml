@@ -51,7 +51,7 @@
         <jBPM_1-step-unpublication j:workflow="jBPM:1-step-unpublication" jcr:primaryType="jnt:workflowRule"/>
     </j:workflowRules>
 
-    <permissions jcr:primaryType="jnt:permission" jcr:mixinTypes="mix:versionable">
+    <permissions jcr:primaryType="jnt:permission">
         <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
             <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="reader privileged"
                                 j:aceType="GRANT" jcr:primaryType="jnt:ace"/>

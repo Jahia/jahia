@@ -318,7 +318,9 @@ public class JCRWorkspaceWrapper implements Workspace {
         }
 
         public JCRVersion checkin(final String absPath) throws VersionException, UnsupportedRepositoryOperationException, InvalidItemStateException, LockException, RepositoryException {
-            logger.debug("Checkin "+absPath  +" in "+getName()+", was "+getBaseVersion(absPath).getName());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Checkin "+absPath  +" in "+getName()+", was "+getBaseVersion(absPath).getName());
+            }
             return JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKIN, new JCRCallback<JCRVersion>() {
                 public JCRVersion doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
@@ -335,14 +337,18 @@ public class JCRWorkspaceWrapper implements Workspace {
 
                         return result;
                     } finally {
-                        logger.debug(" now "+getBaseVersion(absPath).getName());
+                        if (logger.isDebugEnabled()) {
+                            logger.debug(" now "+getBaseVersion(absPath).getName());
+                        }
                     }
                 }
             });
         }
 
         public void checkout(final String absPath) throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
-            logger.debug("Checkout "+absPath +" in "+getName());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Checkout {} in {}", absPath, getName());
+            }
             JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKOUT, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper node = session.getNode(absPath,false);

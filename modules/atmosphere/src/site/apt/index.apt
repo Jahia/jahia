@@ -1,0 +1,70 @@
+How-to use atmosphere framework within Jahia
+
+ First you will have to deploy the module in your jahia. While your jahia is still shutdown, we have to modify two files
+ and create a new one.
+
+ Modify WEB-INF/web.xml to add AtmosphereServlet and mappings.
+
+------------------------
+    <servlet>
+        <description>AtmosphereServlet</description>
+        <servlet-name>AtmosphereServlet</servlet-name>
+        <servlet-class>org.atmosphere.cpr.AtmosphereServlet</servlet-class>
+        <init-param>
+            <param-name>org.atmosphere.useWebSocket</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>org.atmosphere.useNative</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <!-- For Opera support -->
+        <init-param>
+            <param-name>org.atmosphere.cpr.broadcastFilterClasses</param-name>
+            <param-value>org.atmosphere.client.JavascriptClientFilter</param-value>
+        </init-param>
+        <!-- shared thread pool across Broadcaster -->
+        <load-on-startup>800</load-on-startup>
+    </servlet>
+------------------------
+
+------------------------
+    <servlet-mapping>
+        <servlet-name>AtmosphereServlet</servlet-name>
+        <url-pattern>/atmosphere/*</url-pattern>
+    </servlet-mapping>
+------------------------
+
+ Then in your META-INF/context.xml add this in your context tag:
+
+-------------------------
+<Loader delegate="true"/>
+-------------------------
+
+ Still in this META-INF folder create a new file named atmosphere.xml with this content:
+
+-------------------------
+<atmosphere-handlers>
+	<atmosphere-handler context-root="/atmosphere/*" class-name="org.atmosphere.handler.ReflectorServletProcessor">
+		<property name="servletClass" value="com.sun.jersey.spi.container.servlet.ServletContainer"/>
+	</atmosphere-handler>
+</atmosphere-handlers>
+-------------------------
+
+ Last but not least ensure that you are using the NIO connector for your tomcat, check in tomcat_install/conf/server.xml :
+
+---------------------------
+<Connector port="8080" protocol="org.apache.coyote.http11.Http11NioProtocol"
+               connectionTimeout="20000"
+               redirectPort="8443" />
+---------------------------
+
+ Now if you start your jahia you should see new messages telling you that the Atmosphere framework is started.
+
+ To use the examples provided, install an ACME demo, then in the studio go to templates-web-blue.
+ Add the module <<Jahia Atmosphere as a dependency>>, then in the base template add a <<siteChannel>> anywhere.
+ Deploy your templates on your ACME site. From now on all your users in non edit mode should see notification on content
+ publication.
+
+ Another example is in the template events add a nodeChannel binded to mainResource.
+ Deploy your templates, now when you update one of your existing events your users will be warned.

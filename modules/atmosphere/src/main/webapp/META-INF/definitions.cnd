@@ -1,0 +1,14 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+<atmos = 'http://www.jahia.org/jahia/atmosphere/1.0'>
+
+[atmos:channel] > jnt:content, jmix:droppableContent, jmix:bindedComponent, jmix:siteComponent
+
+[atmos:publisher] > jnt:content, jmix:droppableContent, jmix:siteComponent
+- name(string)
+
+
+[atmos:absoluteChannel] > jnt:content, jmix:droppableContent, jmix:siteComponent
+- name(string)
+
+[atmos:siteChannel] > jnt:content, jmix:droppableContent, jmix:siteComponent, jmix:studioOnly

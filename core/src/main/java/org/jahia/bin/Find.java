@@ -219,7 +219,12 @@ public class Find extends BaseFindController {
             }
             if (type == PropertyType.WEAKREFERENCE || type == PropertyType.REFERENCE) {
                 if (!propertyWrapper.isMultiple()) {
+                  try{
                     jsonObject.put(name, ((JCRNodeWrapper) propertyWrapper.getNode()).getUrl());
+                  }catch(ItemNotFoundException ex) {
+                	  logger.warn("Referenced Item cannot be found (To solve it you can run the JCR Integrity Tools):", ex);
+                	  return null;
+                  }
                 }
             } else {
                 if (!propertyWrapper.isMultiple()) {
@@ -319,7 +324,7 @@ public class Find extends BaseFindController {
                     return null;
                 }
                 JSONObject serializedNode = serializeNode(currentNode, depthLimit, escapeColon, propertyMatchRegexp, alreadyIncludedPropertyValues);
-                if (serializedNode == null) {
+                if (serializedNode == null) { 
                     return null;
                 }
                 jsonObject.put("node", serializedNode);

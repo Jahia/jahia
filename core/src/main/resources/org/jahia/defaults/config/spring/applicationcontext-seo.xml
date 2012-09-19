@@ -41,7 +41,7 @@
         <property name="urlResolverFactory" ref="urlResolverFactory" />
         <property name="siteService" ref="JahiaSitesService" />
         <property name="settingsBean" ref="settingsBean" />
-        <property name="reservedUrlPrefixes" value="${seoReservedUrlPrefixes:administration,cms,error,files,gadgets,gwt,initializationCompleted,oauth,PlutoInvoker,repository,rest,rpc,social,start,tools,validateTicket,welcome,admin,css,engines,errors,favicon.ico,gwt,icons,iphone,javascript,modules,ping.jsp,resources,tools,server}"/>
+        <property name="reservedUrlPrefixes" value="${seoReservedUrlPrefixes:administration,atmosphere,cms,error,files,gadgets,gwt,initializationCompleted,oauth,PlutoInvoker,repository,rest,rpc,social,start,tools,validateTicket,welcome,admin,css,engines,errors,favicon.ico,gwt,icons,iphone,javascript,modules,ping.jsp,resources,tools,server}"/>
     </bean>
                         
     <bean class="org.jahia.services.render.filter.URLFilter">

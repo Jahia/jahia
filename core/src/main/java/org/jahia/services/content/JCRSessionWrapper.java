@@ -43,7 +43,6 @@ package org.jahia.services.content;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
-import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
@@ -478,7 +477,9 @@ public class JCRSessionWrapper implements Session {
                                         propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
                                         propDef.getRequiredType() != PropertyType.REFERENCE &&
                                         !propDef.isProtected() && !node.hasProperty(propDef.getName())) {
-                                    throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
+                                    throw new ConstraintViolationException("The field "
+                                            + propDef.getName() + " is mandatory for node type "
+                                            + s + " but is empty for the node " + node.getPath());
                                 }
                             }
                         }
@@ -486,28 +487,30 @@ public class JCRSessionWrapper implements Session {
                         logger.warn("A new node can no longer be accessed to run validation checks", e);
                     }
                 }
-            }
-            for (JCRNodeWrapper node : changedNodes.values()) {
-                try {
-                    for (String s : node.getNodeTypes()) {
-                        Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
-                        for (ExtendedPropertyDefinition propDef : propDefs) {
-                            if (propDef.isMandatory() &&
-                                propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
-                                propDef.getRequiredType() != PropertyType.REFERENCE &&
-                                !propDef.isProtected() &&
-                                (
-                                        !node.hasProperty(propDef.getName()) ||
-                                        (!propDef.isMultiple() &&
-                                        StringUtils.isEmpty(node.getProperty(propDef.getName()).getString()))
-
-                                )) {
-                                throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
+                for (JCRNodeWrapper node : changedNodes.values()) {
+                    try {
+                        for (String s : node.getNodeTypes()) {
+                            Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
+                            for (ExtendedPropertyDefinition propDef : propDefs) {
+                                if (propDef.isMandatory() &&
+                                    propDef.getRequiredType() != PropertyType.WEAKREFERENCE &&
+                                    propDef.getRequiredType() != PropertyType.REFERENCE &&
+                                    !propDef.isProtected() &&
+                                    (
+                                            !node.hasProperty(propDef.getName()) ||
+                                            (!propDef.isMultiple() &&
+                                            StringUtils.isEmpty(node.getProperty(propDef.getName()).getString()))
+    
+                                    )) {
+                                    throw new ConstraintViolationException("The field "
+                                            + propDef.getName() + " is mandatory for node type " + s
+                                            + " but is empty for the node " + node.getPath());
+                                }
                             }
                         }
+                    } catch (InvalidItemStateException e) {
+                        logger.warn("A new node can no longer be accessed to run validation checks", e);
                     }
-                } catch (InvalidItemStateException e) {
-                    logger.warn("A new node can no longer be accessed to run validation checks", e);
                 }
             }
         }

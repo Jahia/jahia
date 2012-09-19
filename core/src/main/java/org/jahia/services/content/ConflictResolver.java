@@ -169,12 +169,15 @@ public class ConflictResolver {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("error --> " + sourceNode.getPath());
-                e.printStackTrace();
+                logger.error("Error on node: " + sourceNode.getPath(), e);
             }
-            logger.debug("compare " + sourceNode.getPath() + " version : " + baseSourceVersion.getName() + " with (source) " + sourceNode.getBaseVersion().getName());
+            if (logger.isDebugEnabled()) {
+                logger.debug("compare " + sourceNode.getPath() + " version : " + baseSourceVersion.getName() + " with (source) " + sourceNode.getBaseVersion().getName());
+            }
             List<Diff> sourceDiff = compare(baseSourceVersion.getFrozenNode(), sourceNode, "");
-            logger.debug("compare " + targetNode.getPath() + " version : " + baseTargetVersion.getName() + " with (target) " + targetNode.getBaseVersion().getName());
+            if (logger.isDebugEnabled()) {
+                logger.debug("compare " + targetNode.getPath() + " version : " + baseTargetVersion.getName() + " with (target) " + targetNode.getBaseVersion().getName());
+            }
             List<Diff> targetDiff;
             if (baseTargetVersion.getName().equals(targetNode.getBaseVersion().getName())) {
                 targetDiff = new ArrayList<Diff>();

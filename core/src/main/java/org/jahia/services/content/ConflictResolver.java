@@ -259,7 +259,7 @@ public class ConflictResolver {
                     sourceNode.getSession().getNodeByUUID(s);
                     // Item has been moved
                 } catch (ItemNotFoundException e) {
-                    diffs.add(new ChildRemovedDiff(s, addPath(basePath, (String) uuids1.get(s))));
+                    diffs.add(new ChildRemovedDiff(s, addPath(basePath, (String) uuids1.get(s)), s));
                 }
             }
 
@@ -405,7 +405,7 @@ public class ConflictResolver {
         while (ni1.hasNext()) {
             Node child = (Node) ni1.next();
             try {
-                if (child.isNodeType("jmix:nolive") || child.isNodeType(Constants.MIX_VERSIONABLE)) {
+                if (child.isNodeType("jmix:nolive")) {
                     continue;
                 } else if (child.isNodeType(Constants.NT_VERSIONEDCHILD)) {
                     VersionHistory vh = (VersionHistory) node.getSession().getNodeByIdentifier(child.getProperty("jcr:childVersionHistory").getValue().getString());
@@ -584,10 +584,12 @@ public class ConflictResolver {
     class ChildRemovedDiff implements Diff {
         private String uuid;
         private String oldName;
+        private String identifier;
 
-        ChildRemovedDiff(String uuid, String oldName) {
+        ChildRemovedDiff(String uuid, String oldName, String identifier) {
             this.uuid = uuid;
             this.oldName = oldName;
+            this.identifier = identifier;
         }
 
         public boolean apply() throws RepositoryException {
@@ -596,8 +598,10 @@ public class ConflictResolver {
 //            }
             if (targetNode.hasNode(oldName)) {
                 final JCRNodeWrapper node = targetNode.getNode(oldName);
-                JCRPublicationService.getInstance().addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_" + Constants.DATE_FORMAT.format(new Date()));
-                node.remove();
+                if (node.getIdentifier().equals(identifier)) {
+                    JCRPublicationService.getInstance().addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_" + Constants.DATE_FORMAT.format(new Date()));
+                    node.remove();
+                }
             }
             return true;
         }

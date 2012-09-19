@@ -33,7 +33,7 @@
             detectedTransport = response.transport;
             if (response.transport != 'polling' && response.state != 'connected' && response.state != 'closed') {
                 $.atmosphere.log('info', ["response.responseBody: " + response.responseBody]);
-                if (response.status == 200 && response.headers.indexOf("${url.server}${url.context}/atmosphere/pubsub/absolute/${channelName}")>0) {
+                if (response.status == 200) {
                     var data = response.responseBody;
                     if (data.length > 0) {
                         $.jGrowl(data,{life:20000});
@@ -44,9 +44,9 @@
 
         $(document).ready(function() {
             $.atmosphere.unsubscribe();
-            $.atmosphere.subscribe("${url.server}${url.context}/atmosphere/pubsub/absolute/${channelName}", callbackAbsolute,
+            var subscribe = $.atmosphere.subscribe("${url.server}${url.context}/atmosphere/pubsub/absolute/${channelName}", callbackAbsolute,
                     $.atmosphere.request = { transport: "websocket" });
-            connectedAbsoluteEndpoint["${channelName}"] = $.atmosphere.response;
+            connectedAbsoluteEndpoint["${channelName}"] = subscribe;
         });
     </script>
 </c:if>

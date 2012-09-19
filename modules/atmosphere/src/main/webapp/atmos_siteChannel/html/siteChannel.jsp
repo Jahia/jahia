@@ -31,7 +31,7 @@
             detectedTransport = response.transport;
             if (response.transport != 'polling' && response.state != 'connected' && response.state != 'closed') {
                 $.atmosphere.log('info', ["siteChannel.responseBody: " + response.responseBody]);
-                if (response.status == 200 && response.headers.indexOf("${url.server}${url.context}/atmosphere/pubsub/sites/${renderContext.site.siteKey}") > 0) {
+                if (response.status == 200) {
                     var data = $.parseJSON(response.responseBody);
                     if (data) {
                         var message = $("<p>" + data.body + "</p>").hide().append($("<br/><a href='" + data.url + "'>" + data.name + "</a> "));

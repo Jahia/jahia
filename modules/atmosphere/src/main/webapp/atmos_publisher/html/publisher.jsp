@@ -26,7 +26,6 @@
 
 <script type="text/javascript">
     $("#send_message").click(function() {
-        connectedEndpoint["${channelName}"].push("${url.server}${url.context}/atmosphere/pubsub/absolute/${channelName}",
-                null, $.atmosphere.request = {data: 'message=' + $("#phrase").val()});
+        connectedAbsoluteEndpoint["${channelName}"].push({data: 'message=' + $("#phrase").val()});
     });
 </script>

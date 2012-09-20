@@ -404,15 +404,6 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
                         cfg.setNotificationLevel(mailNode.hasProperty("j:notificationLevel") ? mailNode
                                 .getProperty("j:notificationLevel").getString() : "Disabled");
                     } catch (PathNotFoundException e) {
-                        cfg.setServiceActivated(Boolean.valueOf(settingsBean.getPropertiesFile()
-                                .getProperty("mail_service_activated", "false")));
-                        cfg.setUri(settingsBean.getPropertiesFile()
-                                .getProperty("mail_server", null));
-                        cfg.setFrom(settingsBean.getPropertiesFile().getProperty("mail_from", null));
-                        cfg.setTo(settingsBean.getPropertiesFile().getProperty(
-                                "mail_administrator", null));
-                        cfg.setNotificationLevel(settingsBean.getPropertiesFile().getProperty(
-                                "mail_paranoia", "Disabled"));
                         store(cfg, session);
                     }
 

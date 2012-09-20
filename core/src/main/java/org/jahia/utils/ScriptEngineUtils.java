@@ -40,8 +40,6 @@
 
 package org.jahia.utils;
 
-import org.springframework.beans.factory.InitializingBean;
-
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -57,7 +55,7 @@ import java.util.Properties;
  * @since JAHIA 6.5
  * Created : 27/01/11
  */
-public class ScriptEngineUtils implements InitializingBean {
+public class ScriptEngineUtils {
 
     private static ScriptEngineUtils instance;
     
@@ -76,8 +74,9 @@ public class ScriptEngineUtils implements InitializingBean {
     private Map<String, ScriptEngine> scriptEngineByNameCache;
 
     private ScriptEngineManager scriptEngineManager;
-
-    public void afterPropertiesSet() throws Exception {
+    
+    public ScriptEngineUtils() {
+        super();
         scriptEngineManager = new ScriptEngineManager();
         scriptEngineByExtensionCache = new LinkedHashMap<String, ScriptEngine>(3);
         scriptEngineByNameCache = new LinkedHashMap<String, ScriptEngine>(3);

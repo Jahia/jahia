@@ -41,6 +41,7 @@
 package org.apache.jackrabbit.core.security;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.collections.map.LRUMap;
 import org.apache.jackrabbit.core.HierarchyManager;
 import org.apache.jackrabbit.core.RepositoryContext;
 import org.apache.jackrabbit.core.config.WorkspaceConfig;
@@ -55,6 +56,7 @@ import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
 import org.apache.jackrabbit.spi.commons.namespace.SessionNamespaceResolver;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -119,7 +121,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private WorkspaceConfig workspaceConfig;
 
     private Map<String, Set<Privilege>> privilegesInRole = new HashMap<String, Set<Privilege>>();
-    private Map<String, Boolean> cache = new HashMap<String, Boolean>();
+    private LRUMap pathPermissionCache = null;
     private Map<String, CompiledAcl> compiledAcls = new HashMap<String, CompiledAcl>();
     private Boolean isAdmin = null;
 
@@ -195,6 +197,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             throw new IllegalStateException("already initialized");
         }
 //        super.init(context, acProvider, wspAccessManager);
+
+        pathPermissionCache = new LRUMap(SettingsBean.getInstance().getAccessManagerPathPermissionCacheMaxSize());
         subject = context.getSubject();
         resolver = context.getNamePathResolver();
         hierMgr = context.getHierarchyManager();
@@ -385,8 +389,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         boolean res = false;
 
         String cacheKey = absPathStr + " : " + permissions;
-        if (cache.containsKey(cacheKey)) {
-            return cache.get(cacheKey);
+        if (pathPermissionCache.containsKey(cacheKey)) {
+            return (Boolean) pathPermissionCache.get(cacheKey);
         }
 
         try {
@@ -396,12 +400,12 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             String jcrPath = pr.getJCRPath(absPath);
 
             if (deniedPathes.get() != null && deniedPathes.get().contains(jcrPath)) {
-                cache.put(cacheKey, false);
+                pathPermissionCache.put(cacheKey, false);
                 return false;
             }
 
             if (isSystemPrincipal()) {
-                cache.put(cacheKey, true);
+                pathPermissionCache.put(cacheKey, true);
                 return true;
             }
 
@@ -417,7 +421,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                     i = getSecuritySession().getItem(jcrPath);
                     if (i.isNode()) {
                         if (((Node) i).isNodeType(Constants.JAHIAMIX_SYSTEMNODE)) {
-                            cache.put(cacheKey, false);
+                            pathPermissionCache.put(cacheKey, false);
                             return false;
                         }
                     }
@@ -431,7 +435,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 boolean newItem = !itemExists.booleanValue(); // Jackrabbit checks the ADD_NODE permission on non-existing nodes
                 if (newItem) {
                     // If node is new (local to the session), always grant permission
-                    cache.put(cacheKey, true);
+                    pathPermissionCache.put(cacheKey, true);
                     return true;
                 }
             }
@@ -439,7 +443,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             // Administrators are always granted
             if (jahiaPrincipal != null) {
                 if (isAdmin(jahiaPrincipal.getName(), 0)) {
-                    cache.put(cacheKey, true);
+                    pathPermissionCache.put(cacheKey, true);
                     return true;
                 }
             }
@@ -530,7 +534,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        cache.put(absPathStr + " : " + permissions, res);
+        pathPermissionCache.put(absPathStr + " : " + permissions, res);
         return res;
     }
 

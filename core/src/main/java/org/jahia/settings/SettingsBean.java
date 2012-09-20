@@ -203,6 +203,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean expandImportedFilesOnDisk;
     private String expandImportedFilesOnDiskPath;
 
+    private int accessManagerPathPermissionCacheMaxSize = 100;
+
     /**
      * Default constructor.
      *
@@ -371,6 +373,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             expandImportedFilesOnDisk = getBoolean("expandImportedFilesOnDisk",false);
             expandImportedFilesOnDiskPath = getString("expandImportedFilesOnDiskPath","/tmp");
+
+            accessManagerPathPermissionCacheMaxSize = getInt("accessManagerPathPermissionCacheMaxSize", 100);
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -1074,5 +1078,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public String getExpandImportedFilesOnDiskPath() {
         return expandImportedFilesOnDiskPath;
+    }
+
+    public int getAccessManagerPathPermissionCacheMaxSize() {
+        return accessManagerPathPermissionCacheMaxSize;
     }
 }

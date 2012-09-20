@@ -454,7 +454,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
 
                     private void recurseOnGroups(JCRSessionWrapper session, List<String> groups, String principalId) throws RepositoryException, JahiaException {
                         JCRNodeWrapper node = session.getNodeByUUID(principalId);
-                        PropertyIterator weakReferences = node.getWeakReferences();
+                        PropertyIterator weakReferences = node.getWeakReferences("j:member");
                         while (weakReferences.hasNext()) {
                             try {
                                 Property property = weakReferences.nextProperty();

@@ -2,13 +2,13 @@ package org.jahia.modules.atmosphere.service;
 
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
-import org.jahia.api.Constants;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.jcr.RepositoryException;
-import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,7 +31,7 @@ public class PublisherSubscriberService {
             jsonObject.put("body", message);
             // lookup for a parent of type page
             JCRNodeWrapper parentOfType = JCRContentUtils.getParentOfType(node, "jnt:page");
-            jsonObject.put("url", parentOfType!=null?parentOfType.getUrl():node.getUrl());
+            jsonObject.put("url", parentOfType != null ? parentOfType.getUrl() : node.getUrl());
             jsonObject.put("name", node.getDisplayableName());
             broadcast(node.getResolveSite().getSiteKey(), jsonObject.toString(), true);
         } catch (RepositoryException e) {
@@ -61,9 +61,12 @@ public class PublisherSubscriberService {
     }
 
     private void broadcast(String broadcasterID, String message, boolean createIfNull) {
-        Broadcaster broadcaster = BroadcasterFactory.getDefault().lookup(broadcasterID, createIfNull);
-        if (broadcaster != null) {
-            broadcaster.broadcast(message);
+        final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
+        if (broadcasterFactory != null) {
+            Broadcaster broadcaster = broadcasterFactory.lookup(broadcasterID, createIfNull);
+            if (broadcaster != null) {
+                broadcaster.broadcast(message);
+            }
         }
     }
 

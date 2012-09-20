@@ -40,22 +40,15 @@
 
 package org.jahia.services.publication;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 import javax.jcr.*;
 
+import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
@@ -65,6 +58,7 @@ import org.slf4j.Logger;
 import com.google.common.collect.Lists;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit test for publish / unpublish using JCR
@@ -110,7 +104,7 @@ public class PublicationTest {
     @BeforeClass
     public static void setUpClass() {
         try {
-            site = TestHelper.createSite(TESTSITE_NAME);
+            site = TestHelper.createSite(TESTSITE_NAME, new HashSet<String>(Arrays.asList("en","fr")),Collections.singleton("en"), false);
             assertNotNull(site);
 
             jcrService = ServicesRegistry.getInstance()
@@ -492,6 +486,104 @@ public class PublicationTest {
                 englishLivePage1.isNodeType("jmix:sitemap"));
     }
 
+    @Test
+    public void testPublicationMixin() throws RepositoryException {
+        TestHelper.createList(testHomeEdit, "contentList1", 4, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        String listPath = testHomeEdit.getPath() + "/contentList1/contentList1_text2";
+        englishEditSession.getNode(listPath).addMixin("jmix:publication");
+        englishEditSession.save();
+
+        jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, null);
+
+        // Let's check the existence of the node property value in the live workspace.
+        testPropertyInWorkspace(englishLiveSession, testHomeEdit.getPath() + "/contentList1/contentList1_text1", "body", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE + "1", "Property value for text node 1 was not found or invalid in english live workspace");
+
+        // Let's check the non existence of the subpage in the live workspace
+        testNodeNotInWorkspace(englishLiveSession, listPath, "Sub page should have not been published");
+
+        // Publish with all sub tree
+        jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
+        testNodeInWorkspace(englishLiveSession, listPath, "Sub page should have been published");
+    }
+
+    @Test
+    public void testMultiLanguagePublication() throws RepositoryException {
+        // Set french title
+        JCRSessionWrapper frenchEditSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, LanguageCodeConverters.languageCodeToLocale("fr"));
+        JCRNodeWrapper page = frenchEditSession.getNode(testHomeEdit.getPath());
+        page.setProperty("jcr:title", "French title");
+        frenchEditSession.save();
+
+        jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, Collections.singleton("en"), false, null);
+
+        // Let's check the existence of the node property value in the live workspace.
+        testNodeInWorkspace(englishLiveSession, testHomeEdit.getPath(), "Page should be published in english");
+
+        JCRSessionWrapper frenchLiveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, LanguageCodeConverters.languageCodeToLocale("fr"));
+
+        // Let's check the non existence of the subpage in the live workspace
+        testNodeNotInWorkspace(frenchLiveSession, testHomeEdit.getPath(), "Page should not be published in english");
+
+        jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, Collections.singleton("fr"), false, null);
+        testNodeInWorkspace(frenchLiveSession, testHomeEdit.getPath(), "Page should be published in french");
+    }
+
+    @Test
+    public void testPublicationStatus() throws RepositoryException {
+        JCRNodeWrapper list = TestHelper.createList(testHomeEdit, "contentList1", 4, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        JCRNodeWrapper editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
+
+        englishEditSession.save();
+        List<PublicationInfo> infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), null, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+
+        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
+        assertEquals("Invalid status for list", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, list.getIdentifier()));
+        assertEquals("Invalid status for content", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
+
+        // Publish content
+        jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, null);
+
+        infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), null, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+
+        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
+        assertEquals("Invalid status for list", PublicationInfo.PUBLISHED,getStatusFor(infos, list.getIdentifier()));
+        assertEquals("Invalid status for content", PublicationInfo.PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
+
+        // Change un-internationalized property
+        editTextNode1.setProperty("align", "right");
+        englishEditSession.save();
+
+        infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), null, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+
+        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
+        assertEquals("Invalid status for list", PublicationInfo.PUBLISHED,getStatusFor(infos, list.getIdentifier()));
+        assertEquals("Invalid status for content", PublicationInfo.MODIFIED,getStatusFor(infos, editTextNode1.getIdentifier()));
+    }
+
+    private int getStatusFor(List<PublicationInfo> infos, String uuid) {
+        for (PublicationInfo info : infos) {
+            int i = getStatusFor(info.getRoot(), uuid);
+            if (i > 0) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    private int getStatusFor(PublicationInfoNode info, String uuid) {
+        if (info.getUuid().equals(uuid)) {
+            return info.getStatus();
+        }
+        for (PublicationInfoNode node : info.getChildren()) {
+            int i = getStatusFor(node, uuid);
+            if (i > 0) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+
 
 //    @Test
 //    public void testCPagesWithSubPages() throws RepositoryException {
@@ -786,13 +878,10 @@ public class PublicationTest {
     }
 
     private void getCleanSession() throws RepositoryException {
-        String defaultLanguage = site.getDefaultLanguage();
         JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         sessionFactory.closeAllSessions();
-        englishEditSession = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH,
-                LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
-        englishLiveSession = sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH,
-                LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+        englishEditSession = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+        englishLiveSession = sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
     }
 
 

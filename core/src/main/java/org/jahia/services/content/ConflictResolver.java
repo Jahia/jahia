@@ -215,11 +215,12 @@ public class ConflictResolver {
         }
     }
 
-    private List<Diff> compare(JCRNodeWrapper frozenNode, JCRNodeWrapper node, String basePath) throws RepositoryException {
+    private List<Diff> compare(JCRNodeWrapper node1, JCRNodeWrapper node2, String basePath) throws RepositoryException {
+        boolean isNode1Frozen = node1.isNodeType(Constants.NT_FROZENNODE);
         List<Diff> diffs = new ArrayList<Diff>();
 
-        ListOrderedMap uuids1 = getChildEntries(frozenNode, node.getSession());
-        ListOrderedMap uuids2 = getChildEntries(node, node.getSession());
+        ListOrderedMap uuids1 = getChildEntries(node1, node2.getSession());
+        ListOrderedMap uuids2 = getChildEntries(node2, node2.getSession());
 
         if (!uuids1.values().equals(uuids2.values())) {
             for (Iterator iterator = uuids2.keySet().iterator(); iterator.hasNext(); ) {
@@ -277,7 +278,7 @@ public class ConflictResolver {
             }
         }
 
-        PropertyIterator pi1 = frozenNode.getProperties();
+        PropertyIterator pi1 = node1.getProperties();
         while (pi1.hasNext()) {
             JCRPropertyWrapper prop1 = (JCRPropertyWrapper) pi1.next();
 
@@ -287,7 +288,7 @@ public class ConflictResolver {
             } else if (ignore.contains(propName)) {
                 continue;
             }
-            if (!node.hasProperty(propName)) {
+            if (!node2.hasProperty(propName)) {
                 if (prop1.isMultiple()) {
                     Value[] values = prop1.getRealValues();
                     for (Value value : values) {
@@ -298,7 +299,7 @@ public class ConflictResolver {
                             addPath(basePath, propName), prop1.getRealValue(), null));
                 }
             } else {
-                JCRPropertyWrapper prop2 = node.getProperty(propName);
+                JCRPropertyWrapper prop2 = node2.getProperty(propName);
 
                 if (prop1.isMultiple() != prop2.isMultiple()) {
                     throw new RepositoryException();
@@ -339,7 +340,7 @@ public class ConflictResolver {
                 }
             }
         }
-        PropertyIterator pi2 = node.getProperties();
+        PropertyIterator pi2 = node2.getProperties();
 
         while (pi2.hasNext()) {
             JCRPropertyWrapper prop2 = (JCRPropertyWrapper) pi2.next();
@@ -351,7 +352,7 @@ public class ConflictResolver {
             } else if (ignore.contains(propName)) {
                 continue;
             }
-            if (!frozenNode.hasProperty(propName)) {
+            if (!node1.hasProperty(propName)) {
                 if (prop2.isMultiple()) {
                     Value[] values = prop2.getRealValues();
                     for (Value value : values) {
@@ -374,11 +375,13 @@ public class ConflictResolver {
             }
         }
 
-        NodeIterator ni = frozenNode.getNodes();
+        NodeIterator ni = node1.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper frozenSub = (JCRNodeWrapper) ni.next();
-            if (node.hasNode(frozenSub.getName()) && frozenSub.isNodeType(Constants.NT_FROZENNODE) && !node.getNode(frozenSub.getName()).isVersioned()) {
-                diffs.addAll(compare(frozenSub, node.getNode(frozenSub.getName()), addPath(basePath, frozenSub.getName())));
+            if (node2.hasNode(frozenSub.getName()) &&
+                    ((isNode1Frozen && frozenSub.isNodeType(Constants.NT_FROZENNODE)) || (!isNode1Frozen && !frozenSub.isVersioned())) &&
+                    !node2.getNode(frozenSub.getName()).isVersioned()) {
+                diffs.addAll(compare(frozenSub, node2.getNode(frozenSub.getName()), addPath(basePath, frozenSub.getName())));
             }
         }
 

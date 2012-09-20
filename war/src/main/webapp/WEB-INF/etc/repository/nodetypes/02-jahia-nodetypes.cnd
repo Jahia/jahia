@@ -225,17 +225,17 @@
 // Categories
 //---------------------------------------------------------
 
-[jnt:category] > nt:base, jmix:basemetadata, mix:title, jmix:nodenameInfo, jmix:publication, jmix:autoPublish
+[jnt:category] > nt:base, jmix:unversionedBasemetadata, mix:title, jmix:nodenameInfo, jmix:publication, jmix:autoPublish
 + * (jnt:category) version
 
 //---------------------------------------------------------
 // Tags
 //---------------------------------------------------------
 
-[jnt:tag] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:autoPublish
+[jnt:tag] > nt:base, jmix:nodenameInfo, jmix:unversionedBasemetadata, jmix:autoPublish
  - tags (weakreference) multiple hidden < jnt:tag
 
-[jnt:tagList] > nt:base, jmix:nodenameInfo, jmix:list, jmix:basemetadata, jmix:autoPublish
+[jnt:tagList] > nt:base, jmix:nodenameInfo, jmix:list, jmix:unversionedBasemetadata, jmix:autoPublish
  + * (jnt:tag) = jnt:tag
 
 //---------------------------------------------------------
@@ -331,7 +331,7 @@
 [jnt:passwordPolicy] > nt:base
  - j:policy (string) indexed=no
 
-[jnt:user] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:autoPublish
+[jnt:user] > nt:base, jmix:nodenameInfo, jmix:unversionedBasemetadata, jmix:publication, jmix:observable, jmix:autoPublish
  - j:accountLocked (boolean)=false autocreated
  - j:password (string) indexed=no
  - j:external (boolean)=false autocreated
@@ -368,7 +368,7 @@
 [jnt:members]  > nt:base
  + * (jnt:member)
 
-[jnt:group] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:autoPublish
+[jnt:group] > nt:base, jmix:nodenameInfo, jmix:unversionedBasemetadata, jmix:publication, jmix:observable, jmix:autoPublish
  - j:hidden (boolean)
  - j:external (boolean)=false autocreated
  - j:externalSource (string) nofulltext

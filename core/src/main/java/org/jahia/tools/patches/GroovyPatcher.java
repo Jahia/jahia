@@ -168,8 +168,6 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
             }
             Collections.sort(patches);
 
-            logger.info("Found {} patch(es) to be executed:\n{}", patches.size(), patches);
-
             Resource[] resources = new Resource[patches.size()];
             for (int i = 0; i < patches.size(); i++) {
                 resources[i] = new FileSystemResource(patches.get(i));

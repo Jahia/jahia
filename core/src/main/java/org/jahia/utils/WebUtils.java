@@ -101,6 +101,26 @@ public final class WebUtils {
     }
 
     /**
+     * Loads the content of the servlet context resource as text looking up the specified paths until the first resource is found.
+     * 
+     * @param lookupPaths
+     *            the resource paths to lookup (context relative)
+     * @return the text of the specified resource content or <code>null</code> if the corresponding resource does not exist
+     * @throws IOException
+     *             in case of a problem reading resource content
+     */
+    public static String lookupResourceAsString(String... lookupPaths) throws IOException {
+        String text = null;
+        for (String path : lookupPaths) {
+            text = getResourceAsString(path);
+            if (text != null) {
+                break;
+            }
+        }
+        return text;
+    }
+
+    /**
      * Sets proper response headers to cache current response for the specified number of seconds.
      * 
      * @param expiresSeconds

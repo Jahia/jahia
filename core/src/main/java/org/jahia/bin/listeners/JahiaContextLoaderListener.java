@@ -53,6 +53,7 @@ import org.jahia.services.applications.ApplicationsManagerServiceImpl;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
 import org.jahia.settings.SettingsBean;
+import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.utils.Patterns;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -156,11 +157,16 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         }
 
         writePID(servletContext);
+        
+        GroovyPatcher.executeScripts(servletContext, "contextInitializing");
 
         try {
             super.contextInitialized(event);
             WebApplicationContext rootCtx = ContextLoader.getCurrentWebApplicationContext();
             rootCtx.publishEvent(new RootContextInitializedEvent(rootCtx));
+            
+            GroovyPatcher.executeScripts(servletContext, "rootContextInitialized");
+            
             try {
                 ((TemplatePackageApplicationContextLoader) rootCtx.getBean("TemplatePackageApplicationContextLoader")).start();
             } catch (Exception e) {
@@ -178,6 +184,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
                 SpringContextSingleton.getInstance().getModuleContext().publishEvent(new ServletContextInitializedEvent(event.getServletContext()));
             }
             contextInitialized = true;
+
+            GroovyPatcher.executeScripts(servletContext, "contextInitialized");
         } finally {
             JCRSessionFactory.getInstance().closeAllSessions();
         }

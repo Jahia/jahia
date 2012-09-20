@@ -41,11 +41,8 @@
 package org.apache.jackrabbit.core.security;
 
 import org.apache.commons.lang.StringUtils;
-<<<<<<< .working
 import org.apache.jackrabbit.api.security.authorization.PrivilegeManager;
-=======
 import org.apache.commons.collections.map.LRUMap;
->>>>>>> .merge-right.r43155
 import org.apache.jackrabbit.core.HierarchyManager;
 import org.apache.jackrabbit.core.RepositoryContext;
 import org.apache.jackrabbit.core.config.WorkspaceConfig;

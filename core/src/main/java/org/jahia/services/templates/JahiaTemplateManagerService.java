@@ -1020,7 +1020,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             new File(tmplRootFolder, "resources").mkdirs();
             new File(tmplRootFolder, "css").mkdirs();
 
-            createManifest(moduleName, moduleName, tmplRootFolder, moduleType, "1.0", Arrays.asList("default"));
+            createManifest(moduleName, moduleName, tmplRootFolder, moduleType, "1.0", templatePackageRegistry.lookupByFileName(sourceModule).getDepends());
             templatePackageRegistry.register(templatePackageDeployer.getPackage(tmplRootFolder));
             logger.info("Package '" + moduleName + "' successfully created");
         }

@@ -270,7 +270,7 @@ public final class RBACUtils {
             throw new IllegalArgumentException("Illegal value for the role: " + rolePath);
         }
 
-        boolean modified = true;
+        boolean modified = false;
 
         JCRNodeWrapper permission = session.getNode(permissionPath);
         String permissionId = permission.getIdentifier();

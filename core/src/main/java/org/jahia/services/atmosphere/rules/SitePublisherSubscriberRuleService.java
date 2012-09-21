@@ -1,10 +1,9 @@
-package org.jahia.modules.atmosphere.rules;
+package org.jahia.services.atmosphere.rules;
 
 import org.drools.spi.KnowledgeHelper;
-import org.jahia.modules.atmosphere.service.PublisherSubscriberService;
+import org.jahia.services.atmosphere.service.PublisherSubscriberService;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.rules.AddedNodeFact;
 
 import javax.jcr.RepositoryException;

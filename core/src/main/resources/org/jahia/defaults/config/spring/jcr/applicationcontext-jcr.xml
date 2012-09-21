@@ -419,6 +419,10 @@
         <property name="imageService" ref="imageService"/>
     </bean>
 
+    <bean class="org.jahia.services.atmosphere.rules.SitePublisherSubscriberRuleService">
+        <property name="publisherSubscriberService" ref="sitePublisherSubscriber"/>
+    </bean>
+
     <bean id="org.jahia.services.content.rules.Service" class="org.jahia.services.content.rules.Service"
           factory-method="getInstance">
         <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>

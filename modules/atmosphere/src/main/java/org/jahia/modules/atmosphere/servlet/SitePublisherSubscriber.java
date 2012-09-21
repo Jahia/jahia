@@ -4,7 +4,7 @@ import org.atmosphere.annotation.Broadcast;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.jersey.Broadcastable;
 import org.atmosphere.jersey.SuspendResponse;
-import org.jahia.modules.atmosphere.EventsLogger;
+import org.jahia.services.atmosphere.EventsLogger;
 
 import javax.ws.rs.*;
 

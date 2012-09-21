@@ -3,19 +3,4 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean id="sitePublisherSubscriber" class="org.jahia.modules.atmosphere.service.PublisherSubscriberService">
-        <property name="jcrTemplate" ref="jcrTemplate"/>
-    </bean>
-
-    <bean class="org.jahia.services.content.rules.ModuleGlobalObject">
-        <property name="globalRulesObject">
-            <map>
-                <entry key="sitePubSubService">
-                    <bean class="org.jahia.modules.atmosphere.rules.SitePublisherSubscriberRuleService">
-                        <property name="publisherSubscriberService" ref="sitePublisherSubscriber"/>
-                    </bean>
-                </entry>
-            </map>
-        </property>
-    </bean>
 </beans>

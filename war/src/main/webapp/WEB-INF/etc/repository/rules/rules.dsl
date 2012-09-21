@@ -112,3 +112,6 @@
 [consequence][]Update the privileged users=service.updatePrivileges(node);
 [consequence][]Update dependencies for module=service.updateDependencies(node);
 [consequence][]Delete nodes of type {type} with property {property} referencing the {node}=service.deleteNodesWithReference("{type}", "{property}", {node} );
+[consequence][]Send site message {message} = sitePubSubService.sendSiteMessage(node,{message}, drools);
+[consequence][]Send message {message} to absolute {name}= sitePubSubService.sendAbsoluteMessage({name},{message}, drools);
+[consequence][]Send message {message} to {node} channel= sitePubSubService.sendNodeMessage(node,{message}, drools);

@@ -1,4 +1,4 @@
-package org.jahia.modules.atmosphere.service;
+package org.jahia.services.atmosphere.service;
 
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;

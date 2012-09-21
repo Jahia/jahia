@@ -1133,9 +1133,45 @@ public class ContentManagerHelper {
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         if (key == null && scmURI != null) {
             try {
+<<<<<<< .working
                 JCRNodeWrapper node = templateManagerService.checkoutModule(sources != null ? new File(sources) : null, scmURI, scmType, session);
                 return navigation.getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_SITE_FIELDS);
             } catch (Exception e) {
+=======
+                JCRNodeWrapper node = session.getNode("/templateSets");
+                shortName = JCRContentUtils.findAvailableNodeName(node, shortName);
+                JCRNodeWrapper templateSet = node.addNode(shortName, "jnt:virtualsite");
+                session.save();
+                templateSet.setProperty("j:siteType", siteType);
+                templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
+                templateSet.setProperty("j:title", key);
+                templateSet.setProperty("j:dependencies", new String[] {"default"});
+                session.save();
+                final String s = shortName;
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<Object>>() {
+                    public List<Object> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        String skeletons = MODULE_SKELETONS.replace("${type}", siteType);
+                        HashMap<String, String> replacements = new HashMap<String, String>();
+                        replacements.put("SITEKEY_PLACEHOLDER", s);
+                        try {
+                            JCRContentUtils.importSkeletons(skeletons, "/templateSets", session, replacements);
+                            session.save();
+                        }
+                        catch (IOException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                        return null;
+                    }
+                });
+//                if (isTemplatesSet) {
+//                    templateSet.getNode("templates/base").setProperty("j:view", shortName);
+//                }
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName, siteType, JahiaTemplateManagerService.MODULE_TYPE_TEMPLATES_SET.equals(siteType));
+                session.getNode("/templateSets/"+shortName).addNode("j:versionInfo","jnt:versionInfo").setProperty("j:version","1.0");
+                session.save();
+                return navigation.getGWTJahiaNode(templateSet, GWTJahiaNode.DEFAULT_SITE_FIELDS);
+            } catch (RepositoryException e) {
+>>>>>>> .merge-right.r43180
                 logger.error(e.getMessage(), e);
             }
         } else if (key == null && sources != null) {

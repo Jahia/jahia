@@ -194,13 +194,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                         }
                     }
                 } else {
-                    List<String> dependencies = JahiaGWTParameters.getSiteNode().get("j:dependencies");
                     for (GWTJahiaSite site : sites) {
-                        if (dependencies != null && dependencies.size() > 0) {
-                            if (!site.getInstalledModules().containsAll(dependencies)) {
-                                continue;
-                            }
-                        }
                         if (site.getInstalledModules().contains(JahiaGWTParameters.getSiteKey())) {
                             linker.loading(Messages.getWithArgs(
                                     "org.jahia.admin.site.ManageTemplates.deploymentInProgressOnSite",

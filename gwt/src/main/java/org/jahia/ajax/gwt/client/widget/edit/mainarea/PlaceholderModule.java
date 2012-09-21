@@ -173,7 +173,7 @@ public class PlaceholderModule extends Module {
             pasteButton = new HorizontalPanel();
             pasteButton.add(icon.createImage());
             if (getWidth() > 150) {
-                pasteButton.add(new Text("Paste"));
+                pasteButton.add(new Text(Messages.get("label.paste", "Paste")));
             }
             pasteButton.sinkEvents(Event.ONCLICK);
             pasteButton.addStyleName("button-placeholder");

@@ -513,6 +513,9 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     dependencies.add(site.getName());
                     for (int i = 0; i < dependencies.size(); i++) {
                         JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(dependencies.get(i));
+                        if (aPackage == null) {
+                            continue;
+                        }
                         for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
                             if (!dependencies.contains(depend.getRootFolder())) {
                                 dependencies.add(depend.getRootFolder());

@@ -240,7 +240,8 @@
                      /permissions/editMode/engineTabs/viewCategoriesTab
                      /permissions/editMode/engineTabs/viewTagsTab
                      /permissions/workflow-tasks/1-step-publication-start
-                     /permissions/workflow-tasks/1-step-unpublication-start"
+                     /permissions/workflow-tasks/1-step-unpublication-start
+                     /permissions/wysiwyg-editor-toolbar/view-basic-wysiwyg-editor"
                      j:privilegedAccess="true"/>
 
         <editor jcr:primaryType="jnt:role" j:roleGroup="edit-role"
@@ -295,7 +296,7 @@
                 /permissions/managers/tagManager
                 /permissions/jobs
                 /permissions/editMode
-                /permissions/wysiwyg-editor-toolbar/view-light-wysiwyg-editor
+                /permissions/wysiwyg-editor-toolbar/view-basic-wysiwyg-editor
                 /permissions/templates"
                 j:privilegedAccess="true"
                 />

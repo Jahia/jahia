@@ -327,10 +327,19 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             if (fakePath.equals("")) {
                 fakePath = "/";
             }
-            aclGroups.addAll(allAclsGroups.get(fakePath));
+            final Set<JahiaGroup> jahiaGroups = allAclsGroups.get(fakePath);
+            if(jahiaGroups==null) {
+                // Should never be null here so relaunch the call.
+                return getAclKeyPartForNode(renderContext, checkRootPath, nodePath, appendNodePath, principal, userName);
+            }
+            aclGroups.addAll(jahiaGroups);
             fakePath = StringUtils.substringBeforeLast(fakePath, "/");
             if (fakePath.equals("")) {
-                aclGroups.addAll(allAclsGroups.get("/"));
+                final Set<JahiaGroup> jahiaGroups1 = allAclsGroups.get("/");
+                if(jahiaGroups1==null){
+                    return getAclKeyPartForNode(renderContext, checkRootPath, nodePath, appendNodePath, principal, userName);
+                }
+                aclGroups.addAll(jahiaGroups1);
             }
         }
 

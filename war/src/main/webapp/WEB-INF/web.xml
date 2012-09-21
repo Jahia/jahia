@@ -764,6 +764,7 @@
     <servlet-mapping>
         <servlet-name>AtmosphereServlet</servlet-name>
         <url-pattern>/atmosphere/*</url-pattern>
+        <url-pattern>/gwtAtmosphere/gwtComet</url-pattern>
     </servlet-mapping>
 
     <!-- Session timeout value is set in minutes. Comment this section out

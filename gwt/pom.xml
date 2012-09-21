@@ -63,6 +63,11 @@
             <classifier>gwt22</classifier>
         </dependency>
         <dependency>
+            <groupId>org.atmosphere</groupId>
+            <artifactId>atmosphere-gwt-client</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.code.gwt-log</groupId>
             <artifactId>gwt-log</artifactId>
             <version>3.1.0</version>

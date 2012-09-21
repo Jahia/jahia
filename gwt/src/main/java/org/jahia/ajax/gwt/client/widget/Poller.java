@@ -41,17 +41,27 @@
 package org.jahia.ajax.gwt.client.widget;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import com.google.gwt.user.client.rpc.StatusCodeException;
+import org.atmosphere.gwt.client.AtmosphereClient;
+import org.atmosphere.gwt.client.AtmosphereGWTSerializer;
+import org.atmosphere.gwt.client.AtmosphereListener;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Execute recurrent calls to the server
  */
 public class Poller {
+
+    private transient AtmosphereClient client;
+    private transient MyCometListener cometListener;
+    private AtmosphereGWTSerializer serializer = GWT.create(PollerSerializer.class);
 
     private transient Timer timer;
     private static Poller instance;
@@ -65,29 +75,35 @@ public class Poller {
         return instance;
     }
 
+    String getUrl() {
+        return "http://localhost:8080/gwtAtmosphere/gwtComet";
+    }
+
     public Poller() {
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             public void execute() {
-                timer = new Timer() {
-                    public void run() {
-                        JahiaContentManagementService.App.getInstance().getPollData(new HashSet<String>(listeners.keySet()), new AsyncCallback<Map<String,Object>>() {
-                            public void onSuccess(Map<String,Object> result) {
-                                for (Map.Entry<String, ArrayList<PollListener>> entry : listeners.entrySet()) {
-                                    for (PollListener listener : entry.getValue()) {
-                                        listener.handlePollingResult(entry.getKey(), result.get(entry.getKey()));
-                                    }
-                                }
-                                schedule(5000);
-                            }
-
-                            public void onFailure(Throwable caught) {
-                                Log.error("Cannot get jobs", caught);
-                            }
-                        });
-                    }
-                };
-                timer.run();
-
+//                timer = new Timer() {
+//                    public void run() {
+//                        JahiaContentManagementService.App.getInstance().getPollData(new HashSet<String>(listeners.keySet()), new AsyncCallback<Map<String,Object>>() {
+//                            public void onSuccess(Map<String,Object> result) {
+//                                for (Map.Entry<String, ArrayList<PollListener>> entry : listeners.entrySet()) {
+//                                    for (PollListener listener : entry.getValue()) {
+//                                        listener.handlePollingResult(entry.getKey(), result.get(entry.getKey()));
+//                                    }
+//                                }
+//                                schedule(5000);
+//                            }
+//
+//                            public void onFailure(Throwable caught) {
+//                                Log.error("Cannot get jobs", caught);
+//                            }
+//                        });
+//                    }
+//                };
+//                timer.run();
+                cometListener = new MyCometListener();
+                client = new AtmosphereClient(getUrl(), serializer, cometListener);
+                client.start();
             }
         });
     }
@@ -101,5 +117,53 @@ public class Poller {
 
     public interface PollListener {
         public void handlePollingResult(String key, Object result);
+    }
+
+    private class MyCometListener implements AtmosphereListener {
+        public void onConnected(int heartbeat, int connectionID) {
+            Log.info("comet.connected [" + heartbeat + ", " + connectionID + "]");
+        }
+
+        public void onBeforeDisconnected() {
+            Log.info("comet.beforeDisconnected");
+        }
+
+        public void onDisconnected() {
+            Log.info("comet.disconneted");
+        }
+
+        public void onError(Throwable exception, boolean connected) {
+            int statuscode = -1;
+            if (exception instanceof StatusCodeException) {
+                statuscode = ((StatusCodeException) exception).getStatusCode();
+            }
+            Log.error("comet.error [connected=" + connected + "] (" + statuscode + ")", exception);
+        }
+
+        public void onHeartbeat() {
+            Log.info("comet.heartbeat [" + client.getConnectionID() + "]");
+        }
+
+        public void onRefresh() {
+            Log.info("comet.refresh [" + client.getConnectionID() + "]");
+        }
+
+        public void onAfterRefresh() {
+            Log.info("comet.refresh [" + client.getConnectionID() + "]");
+        }
+
+        public void onMessage(List<?> messages) {
+            for (Object message : messages) {
+                if (message instanceof PollingEvent) {
+                    for (Map.Entry<String, ArrayList<PollListener>> entry : listeners.entrySet()) {
+                        for (PollListener listener : entry.getValue()) {
+                            if (((PollingEvent) message).getMessages().containsKey(entry.getKey())) {
+                                listener.handlePollingResult(entry.getKey(), ((PollingEvent) message).getMessages().get(entry.getKey()));
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

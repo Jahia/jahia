@@ -1142,6 +1142,7 @@ public class ContentManagerHelper {
                 templateSet.setProperty("j:siteType", siteType);
                 templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
                 templateSet.setProperty("j:title", key);
+                templateSet.setProperty("j:dependencies", new String[] {"default"});
                 session.save();
                 final String s = shortName;
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<Object>>() {

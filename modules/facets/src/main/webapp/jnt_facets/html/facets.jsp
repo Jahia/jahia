@@ -201,7 +201,7 @@
         </c:if>
     </div>
 </c:if>
-<c:if test="${renderContext.editMode}">
+<c:if test="${editableModule}">
     <fmt:message key="facets.facetsSet"/> :
     <c:forEach items="${jcr:getNodes(currentNode, 'jnt:facet')}" var="facet">
         <template:module node="${facet}"/>

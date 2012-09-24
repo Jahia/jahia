@@ -62,7 +62,9 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -135,6 +137,7 @@ public class PlaceholderModule extends Module {
             if (nodeTypes != null && nodeTypes.length()>0) {
                 filter = Arrays.asList(nodeTypes.split(" "));
             }
+            final Set<String> displayedNodeTypes = new HashSet<String>(Arrays.asList(nodeTypesArray));
             for (final String s : nodeTypesArray) {
                 if (filter != null && !filter.contains(s)) {
                     continue;
@@ -162,7 +165,7 @@ public class PlaceholderModule extends Module {
                             if ((path != null) && !"*".equals(path) && !path.startsWith("/")) {
                                 nodeName = path;
                             }
-                            ContentActions.showContentWizard(mainModule.getEditLinker(), s, parentNode, nodeName, true);
+                            ContentActions.showContentWizard(mainModule.getEditLinker(), s, parentNode, nodeName, true, displayedNodeTypes);
                         }
                     }
                 });

@@ -130,8 +130,9 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         nodeTypeList.add(nt);
         nodeTypeList.addAll(extendedNodeTypes);
         ExtendedNodeType base = NodeTypeRegistry.getInstance().getNodeType("nt:base");
-        nodeTypeList.remove(base);
-        nodeTypeList.add(base);
+        if (nodeTypeList.remove(base)){
+            nodeTypeList.add(base);
+        }
         return nodeTypeList;
     }
 

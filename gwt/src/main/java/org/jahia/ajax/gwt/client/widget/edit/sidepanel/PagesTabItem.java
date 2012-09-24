@@ -90,6 +90,7 @@ public class PagesTabItem extends SidePanelTabItem {
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
+        refreshFlag = EditLinker.REFRESH_PAGES;
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         tab.setLayout(new FitLayout());
@@ -181,11 +182,10 @@ public class PagesTabItem extends SidePanelTabItem {
     }
 
     @Override
-    public void refresh(int flag) {
-        if ((flag & Linker.REFRESH_PAGES) != 0) {
-            pageTree.getTreeStore().removeAll();
-            pageTree.getTreeStore().getLoader().load();
-        }
+    public void refresh() {
+        pageTree.getTreeStore().removeAll();
+        pageTree.getTreeStore().getLoader().load();
+        setRefreshed();
     }
 
     public void addOpenPath(String path) {

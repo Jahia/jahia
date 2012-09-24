@@ -56,7 +56,6 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
@@ -83,6 +82,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
+        refreshFlag = EditLinker.REFRESH_FOLDERS;
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         tab.setLayout(l);
@@ -170,7 +170,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
         public AsyncCallback<Object> getCallback() {
             AsyncCallback<Object> callback = new BaseAsyncCallback<Object>() {
                 public void onSuccess(Object o) {
-                    refresh(0);
+                    refresh();
                 }
 
             };
@@ -179,11 +179,10 @@ abstract class BrowseTabItem extends SidePanelTabItem {
 
     }
 
-    @Override public void refresh(int flag) {
-        if ((flag & Linker.REFRESH_FOLDERS) != 0) {
-            factory.getStore().removeAll();
-            factory.getLoader().load();
-        }
+    @Override public void refresh() {
+        factory.getStore().removeAll();
+        factory.getLoader().load();
+        setRefreshed();
     }
 
     protected abstract boolean acceptNode(GWTJahiaNode node);

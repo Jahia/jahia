@@ -359,6 +359,9 @@ public class ManagerLinker implements Linker {
         refreshTable();
     }
 
+    public void markForManualRefresh(int flag) {
+    }
+
     public void select(Object o) {
         List<GWTJahiaNode> nodes = null;
         if (o != null) {

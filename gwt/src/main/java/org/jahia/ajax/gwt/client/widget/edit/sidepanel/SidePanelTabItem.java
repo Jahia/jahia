@@ -72,6 +72,9 @@ public class SidePanelTabItem implements Serializable {
 
     protected transient TabItem tab;
     protected transient EditLinker editLinker;
+    protected transient boolean needAutoRefresh;
+    protected transient boolean needManualRefresh;
+    protected transient int refreshFlag = 0;
 
     public SidePanelTabItem() {
     }
@@ -84,6 +87,7 @@ public class SidePanelTabItem implements Serializable {
         tab.getHeader().setToolTip(config.getTooltip());
         tab.getHeader().addStyleName("x-tab-strip-iconOnly");
         tab.setBorders(false);
+        tab.setData("tabItem", this);
         return tab;
     }
 
@@ -91,13 +95,47 @@ public class SidePanelTabItem implements Serializable {
         this.editLinker = linker;
     }
 
+    public int getRefreshFlag() {
+        return refreshFlag;
+    }
+
+    public void markForManualRefresh(int refreshFlag) {
+        if ((this.refreshFlag & refreshFlag) != 0) {
+            needManualRefresh = true;
+        }
+    }
+
+    public void markForAutoRefresh(int refreshFlag) {
+        if ((this.refreshFlag & refreshFlag) != 0) {
+            needAutoRefresh = true;
+        }
+    }
+
+    public void refresh(int refreshFlag) {
+        if ((this.refreshFlag & refreshFlag) != 0) {
+            refresh();
+        }
+    }
+
     /**
      * Refreshes the content of this tab if applicable. Does nothing by default.
      * Should be overridden in subclasses to implement the refresh.
-     * @param flag
      */
-    public void refresh(int flag) {
-        // do nothing by default
+    public void refresh() {
+        setRefreshed();
+    }
+
+    public void setRefreshed() {
+        needAutoRefresh = false;
+        needManualRefresh = false;
+    }
+
+    public boolean isNeedAutoRefresh() {
+        return needAutoRefresh;
+    }
+
+    public boolean isNeedManualRefresh() {
+        return needManualRefresh;
     }
 
     public void handleNewModuleSelection(Module selectedModule) {
@@ -167,6 +205,10 @@ public class SidePanelTabItem implements Serializable {
 
         public void refresh(int flag) {
             editLinker.refresh(flag);
+        }
+
+        public void markForManualRefresh(int flag) {
+            editLinker.markForManualRefresh(flag);
         }
 
         public void select(Object o) {

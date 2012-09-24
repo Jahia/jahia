@@ -65,7 +65,6 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -96,7 +95,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
 
     public TabItem create(final GWTSidePanelTab config) {
         super.create(config);
-
+        refreshFlag = EditLinker.REFRESH_LAST_CONTENT;
         tab.addListener(Events.Select, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
                 fillStore();
@@ -236,11 +235,9 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
     }
 
     @Override
-    public void refresh(int flag) {
-        if ((flag & Linker.REFRESH_LAST_CONTENT) != 0) {
-            fillStore();
-        }
-
+    public void refresh() {
+        fillStore();
+        setRefreshed();
     }
 
     public String getSearch() {

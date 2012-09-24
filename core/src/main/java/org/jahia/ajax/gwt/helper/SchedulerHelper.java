@@ -41,9 +41,13 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
+import org.atmosphere.cpr.Broadcaster;
+import org.atmosphere.cpr.BroadcasterFactory;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.widget.PollingEvent;
+import org.jahia.ajax.gwt.commons.server.GWTAtmosphereHandler;
 import org.jahia.services.content.PublicationJob;
 import org.jahia.services.content.rules.ActionJob;
 import org.jahia.services.content.rules.RuleJob;
@@ -52,10 +56,10 @@ import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.SchedulerException;
+import org.quartz.*;
+import org.quartz.listeners.JobListenerSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -66,7 +70,8 @@ import java.util.*;
  * 
  */
 public class SchedulerHelper {
-	
+	private Logger logger = LoggerFactory.getLogger(SchedulerHelper.class);
+
 	private static final Comparator<GWTJahiaJobDetail> JOB_COMPARATOR = new Comparator<GWTJahiaJobDetail>() {
         public int compare(GWTJahiaJobDetail o1, GWTJahiaJobDetail o2) {
             return -o1.compareTo(o2);
@@ -79,6 +84,14 @@ public class SchedulerHelper {
         this.scheduler = scheduler;
     }
 
+    public void start() {
+        try {
+            scheduler.getScheduler().addGlobalJobListener(new PollingSchedulerListener());
+        } catch (SchedulerException e) {
+            logger.error("Cannot register job listener", e);
+        }
+    }
+
     private Long getLong(JobDataMap jobDataMap, String key) {
         if (jobDataMap.get(key) == null) {
             return null;
@@ -86,7 +99,7 @@ public class SchedulerHelper {
         return Long.parseLong(jobDataMap.getString(key));
     }
 
-    private List<GWTJahiaJobDetail> convertToGWTJobs(List<JobDetail> jobDetails, Locale locale, JahiaUser jahiaUser) {
+    private List<GWTJahiaJobDetail> convertToGWTJobs(List<JobDetail> jobDetails) {
         List<GWTJahiaJobDetail> jobs = new ArrayList<GWTJahiaJobDetail>();
         for (JobDetail jobDetail : jobDetails) {
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
@@ -157,7 +170,7 @@ public class SchedulerHelper {
             GWTJahiaJobDetail job = new GWTJahiaJobDetail(jobDetail.getName(), created, user, description,
                     status, message, targetPaths,
                     jobDetail.getGroup(), jobDetail.getJobClass().getName(), beginTime, endTime, duration, jobLocale, fileName, targetNodeIdentifier, targetAction, targetWorkspace);
-            job.setLabel(JahiaResourceBundle.getJahiaInternalResource("label." + jobDetail.getGroup() + ".task", locale));
+            job.setLabelKey("label." + jobDetail.getGroup() + ".task");
             jobs.add(job);
         }
         return jobs;
@@ -166,7 +179,7 @@ public class SchedulerHelper {
     public List<GWTJahiaJobDetail> getActiveJobs(Locale locale) throws GWTJahiaServiceException {
         try {
             List<JobDetail> l = scheduler.getAllActiveJobs();
-            return convertToGWTJobs(l, locale, null);
+            return convertToGWTJobs(l);
         } catch (Exception e) {
             throw new GWTJahiaServiceException("Error retrieving active jobs", e);
         }
@@ -183,7 +196,7 @@ public class SchedulerHelper {
                     jobDetails.addAll(scheduler.getAllJobs(groupName));
                 }
             }
-            List<GWTJahiaJobDetail> gwtJobList = convertToGWTJobs(jobDetails, locale, jahiaUser);
+            List<GWTJahiaJobDetail> gwtJobList = convertToGWTJobs(jobDetails);
             // do an inverse sort.
             Collections.sort(gwtJobList, JOB_COMPARATOR);
             return gwtJobList;
@@ -216,4 +229,42 @@ public class SchedulerHelper {
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
+
+
+    class PollingSchedulerListener  extends JobListenerSupport {
+        public String getName() {
+            return "PollingSchedulerListener";
+        }
+
+        @Override
+        public void jobToBeExecuted(JobExecutionContext context) {
+            updateJobs(null);
+        }
+
+        @Override
+        public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
+            updateJobs(context.getJobDetail());
+        }
+
+        private void updateJobs(JobDetail previousJob) {
+            final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
+            if (broadcasterFactory != null) {
+                Broadcaster broadcaster = broadcasterFactory.lookup(Broadcaster.class, GWTAtmosphereHandler.GWT_BROADCASTER_ID);
+                if (broadcaster != null) {
+                    try {
+                        PollingEvent pollingEvent = new PollingEvent();
+                        pollingEvent.setType("activeJobs");
+                        pollingEvent.setActiveJobs((ArrayList<GWTJahiaJobDetail>) getActiveJobs(Locale.ENGLISH));
+                        if (previousJob != null) {
+                            pollingEvent.getActiveJobs().removeAll(convertToGWTJobs(Arrays.asList(previousJob)));
+                        }
+                        broadcaster.broadcast(pollingEvent);
+                    } catch (GWTJahiaServiceException e) {
+                        logger.error("Cannot parse jobs",e);
+                    }
+                }
+            }
+        }
+    }
+
 }

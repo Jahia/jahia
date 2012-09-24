@@ -412,6 +412,7 @@ public class EditContentEngine extends AbstractContentEngine {
                             refresh += Linker.REFRESH_PAGES;
                         }
                         closeEngine();
+                        linker.markForManualRefresh(Linker.REFRESH_PAGES);
                         linker.refresh(refresh);
                     }
                 });

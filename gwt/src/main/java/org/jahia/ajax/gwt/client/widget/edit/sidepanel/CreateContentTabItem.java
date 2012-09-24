@@ -43,7 +43,6 @@ package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeTree;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
@@ -65,12 +64,11 @@ class CreateContentTabItem extends SidePanelTabItem {
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
+        refreshFlag = EditLinker.REFRESH_COMPONENTS;
         tab.setLayout(new FitLayout());
 
         contentTypeTree = new ContentTypeTree(config.getTreeColumns());
         contentTypeTree.fillStore(paths, baseType != null ? Arrays.asList(baseType.split(" ")) : null, true, true);
-
-        refresh(Linker.REFRESH_DEFINITIONS);
 
         tab.add(contentTypeTree);
         tab.setId("JahiaGxtCreateContentTab");
@@ -96,9 +94,8 @@ class CreateContentTabItem extends SidePanelTabItem {
     }
 
     @Override
-    public void refresh(int flag) {
-        if ((flag & Linker.REFRESH_COMPONENTS) != 0) {
-            contentTypeTree.fillStore(paths, baseType != null ? Arrays.asList(baseType.split(" ")) : null, true, true);
-        }
+    public void refresh() {
+        contentTypeTree.fillStore(paths, baseType != null ? Arrays.asList(baseType.split(" ")) : null, true, true);
+        setRefreshed();
     }
 }

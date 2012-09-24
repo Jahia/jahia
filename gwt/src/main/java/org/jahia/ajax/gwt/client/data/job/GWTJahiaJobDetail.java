@@ -94,12 +94,12 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
         setTargetWorkspace(targetWorkspace);
     }
 
-    public String getLabel() {
-        return get("label");
+    public String getLabelKey() {
+        return get("labelkey");
     }
 
-    public void setLabel(String label) {
-        set("label", label);
+    public void setLabelKey(String label) {
+        set("labelkey", label);
     }
 
     public String getName() {

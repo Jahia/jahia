@@ -1,20 +1,40 @@
 package org.jahia.ajax.gwt.client.widget;
 
+import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
+
 import java.io.Serializable;
-import java.util.Map;
+import java.util.ArrayList;
 
 public class PollingEvent  implements Serializable {
-    private Map<String,Object> messages;
+    private String type;
+    private ArrayList<GWTJahiaJobDetail> activeJobs;
+    private Integer numberOfTasks;
 
     public PollingEvent() {
     }
 
-    public Map<String, Object> getMessages() {
-        return messages;
+    public String getType() {
+        return type;
     }
 
-    public void setMessages(Map<String, Object> messages) {
-        this.messages = messages;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public ArrayList<GWTJahiaJobDetail> getActiveJobs() {
+        return activeJobs;
+    }
+
+    public void setActiveJobs(ArrayList<GWTJahiaJobDetail> activeJobs) {
+        this.activeJobs = activeJobs;
+    }
+
+    public Integer getNumberOfTasks() {
+        return numberOfTasks;
+    }
+
+    public void setNumberOfTasks(Integer numberOfTasks) {
+        this.numberOfTasks = numberOfTasks;
     }
 }
 

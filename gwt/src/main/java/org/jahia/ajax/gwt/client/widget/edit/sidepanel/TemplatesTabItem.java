@@ -51,7 +51,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.Collator;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
@@ -70,6 +69,7 @@ public class TemplatesTabItem extends BrowseTabItem {
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
+        refreshFlag = EditLinker.REFRESH_PAGES;
         this.tree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaNode>() {
             @Override
             protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
@@ -124,12 +124,11 @@ public class TemplatesTabItem extends BrowseTabItem {
     }
 
     @Override
-    public void refresh(int flag) {
-        if ((flag & Linker.REFRESH_PAGES) != 0) {
-            tree.getTreeStore().removeAll();
-            tree.getTreeStore().getLoader().load();
-            listLoader.load();
-        }
+    public void refresh() {
+        tree.getTreeStore().removeAll();
+        tree.getTreeStore().getLoader().load();
+        listLoader.load();
+        setRefreshed();
     }
 
     @Override

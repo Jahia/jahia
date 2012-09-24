@@ -173,8 +173,13 @@ public class EditLinker implements Linker {
         if (sidePanel != null) {
             sidePanel.refresh(flag);
         }
-//        syncSelectionContext();
-//        toolbar.handleNewLinkerSelection();
+    }
+
+    public void markForManualRefresh(int flag) {
+//        mainModule.refresh(flag);
+        if (sidePanel != null) {
+            sidePanel.markForManualRefresh(flag);
+        }
     }
 
     public void handleNewModuleSelection() {

@@ -1,5 +1,7 @@
 package org.jahia.ajax.gwt.commons.server;
 
+import org.atmosphere.cpr.Broadcaster;
+import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.gwt.server.AtmosphereGwtHandler;
 import org.atmosphere.gwt.server.GwtAtmosphereResource;
 import org.slf4j.LoggerFactory;
@@ -16,21 +18,7 @@ public class GWTAtmosphereHandler extends AtmosphereGwtHandler {
 
     @Override
     public int doComet(GwtAtmosphereResource resource) throws ServletException, IOException {
-        resource.getBroadcaster().setID("GWT_COMET");
-        HttpSession session = resource.getAtmosphereResource().getRequest().getSession(false);
-        if (session != null) {
-            logger.info("Got session with id: " + session.getId());
-            logger.info("Time attribute: " + session.getAttribute("time"));
-        } else {
-            logger.warn("No session");
-        }
-        if (logger.isInfoEnabled()) {
-            logger.info("Url: " + resource.getAtmosphereResource().getRequest().getRequestURL()
-                    + "?" + resource.getAtmosphereResource().getRequest().getQueryString());
-        }
-        String agent = resource.getRequest().getHeader("user-agent");
-        logger.info(agent);
-        return NO_TIMEOUT;
+        return super.doComet(resource);
     }
 
     @Override

@@ -60,15 +60,15 @@ public interface Linker {
     public final static int REFRESH_FOLDERS = 8;
     public final static int REFRESH_COMPONENTS = 16;
     public final static int REFRESH_OPEN_FOLDER = 64;
-    public final static int REFRESH_MANAGER = 128;
-    public final static int REFRESH_DEFINITIONS = 256;
-    public final static int REFRESH_CHANNELS = 512;
+    public final static int REFRESH_CHANNELS = 128;
 
     public void loaded();
 
     public void loading(String resource);
 
     public void refresh(int flag);
+
+    public void markForManualRefresh(int flag);
 
     public void select(Object o);
 

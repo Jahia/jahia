@@ -106,12 +106,11 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
             for (GWTJahiaJobDetail oldJob : oldJobs) {
                 if (oldJob.getGroup().equals("PublicationJob")) {
                     refresh |= Linker.REFRESH_PAGES;
-                    refresh |= Linker.REFRESH_MAIN;
                 }
             }
         }
         if (refresh > 0) {
-            linker.refresh(refresh);
+            linker.markForManualRefresh(refresh);
         }
     }
 
@@ -127,7 +126,7 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
             b.setEnabled(true);
         } else if (processes.size() == 1) {
             b.setIconStyle("x-status-busy");
-            b.setText(processes.get(0).getLabel() + " ...");
+            b.setText(Messages.get(processes.get(0).getLabelKey()) + " ...");
             b.setEnabled(true);
         } else {
             b.setIconStyle("x-status-busy");

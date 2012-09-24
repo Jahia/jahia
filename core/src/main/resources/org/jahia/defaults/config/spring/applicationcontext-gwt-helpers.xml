@@ -109,7 +109,7 @@
         <property name="cacheProvider" ref="ModuleCacheProvider"/>
     </bean>
 
-    <bean name="SchedulerHelper" class="org.jahia.ajax.gwt.helper.SchedulerHelper">
+    <bean name="SchedulerHelper" class="org.jahia.ajax.gwt.helper.SchedulerHelper" init-method="start">
         <property name="scheduler" ref="SchedulerService"/>
     </bean>
 

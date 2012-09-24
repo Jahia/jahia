@@ -40,8 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
-import com.extjs.gxt.ui.client.event.IconButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
@@ -50,7 +49,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
@@ -71,6 +69,8 @@ public class SidePanel extends ContentPanel {
     private final List<SidePanelTabItem> tabs;
     private GWTEditConfiguration config;
     private ToolButton refreshButton;
+    private final TabPanel tabPanel;
+
     public SidePanel(GWTEditConfiguration config) {
         super(new FitLayout());
         this.head = new ToolbarHeader();
@@ -79,11 +79,21 @@ public class SidePanel extends ContentPanel {
 
         tabs = new ArrayList<SidePanelTabItem>();
 
-        TabPanel tabPanel = new TabPanel();
+        tabPanel = new TabPanel();
         tabPanel.setBorders(false);
         tabPanel.setBodyBorder(false);
         // this id is for the container, each tab has its own ID concatenated with this one
         tabPanel.setId("JahiaGxtSidePanelTabs");
+
+        tabPanel.addListener(Events.Select, new Listener<TabPanelEvent>() {
+            public void handleEvent(TabPanelEvent be) {
+                SidePanelTabItem selectedTab = ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem"));
+                if (selectedTab.isNeedAutoRefresh()) {
+                    selectedTab.refresh();
+                }
+                updateRefreshButton();
+            }
+        });
 
         for (GWTSidePanelTab tabConfig : config.getTabs()) {
             SidePanelTabItem tabItem = tabConfig.getTabItem();
@@ -101,11 +111,9 @@ public class SidePanel extends ContentPanel {
         }
         refreshButton = new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
-                refresh(EditLinker.REFRESH_ALL + Linker.REFRESH_DEFINITIONS);
+                ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).refresh();
                 DeployTemplatesActionItem.refreshAllMenus(editLinker);
-                refreshButton.removeStyleName("x-tool-refresh-red");
-                refreshButton.addStyleName("x-tool-refresh");
-                refreshButton.removeToolTip();
+                updateRefreshButton();
             }
 
         });
@@ -114,6 +122,20 @@ public class SidePanel extends ContentPanel {
 
         for (SidePanelTabItem tab : tabs) {
             tab.initWithLinker(editLinker);
+        }
+    }
+
+    private void updateRefreshButton() {
+        boolean needRefresh = ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).isNeedManualRefresh();
+        if (needRefresh && !refreshButton.getStyleName().contains("x-tool-refresh-red")) {
+            refreshButton.setToolTip(Messages.get("label.refresh.modify"));
+            refreshButton.removeStyleName("x-tool-refresh");
+            refreshButton.addStyleName("x-tool-refresh-red");
+            refreshButton.getToolTip().show();
+        } else if (!needRefresh && refreshButton.getStyleName().contains("x-tool-refresh-red")) {
+            refreshButton.removeStyleName("x-tool-refresh-red");
+            refreshButton.addStyleName("x-tool-refresh");
+            refreshButton.removeToolTip();
         }
     }
 
@@ -137,18 +159,22 @@ public class SidePanel extends ContentPanel {
         }
     }
 
-    public void refresh(int flag) {
+    public void markForManualRefresh(int flag) {
         for (SidePanelTabItem tab : tabs) {
-            tab.refresh(flag);
+            tab.markForManualRefresh(flag);
         }
-        if (!((flag & Linker.REFRESH_FOLDERS) != 0
-                || (flag & Linker.REFRESH_PAGES) != 0
-                || (flag & Linker.REFRESH_DEFINITIONS) != 0
-                || (flag & Linker.REFRESH_LAST_CONTENT) != 0)) {
-            refreshButton.setToolTip(Messages.get("label.refresh.modify"));
-            refreshButton.removeStyleName("x-tool-refresh");
-            refreshButton.addStyleName("x-tool-refresh-red");
-            refreshButton.getToolTip().show();
+        updateRefreshButton();
+    }
+
+    public void refresh(int flag) {
+        SidePanelTabItem selected = ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem"));
+        for (SidePanelTabItem tab : tabs) {
+            if (tab == selected) {
+                tab.refresh(flag);
+            } else {
+                tab.markForAutoRefresh(flag);
+            }
         }
+        updateRefreshButton();
     }
 }

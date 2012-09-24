@@ -155,10 +155,14 @@ public class Poller {
         public void onMessage(List<?> messages) {
             for (Object message : messages) {
                 if (message instanceof PollingEvent) {
+                    PollingEvent pollingEvent = (PollingEvent) message;
+
                     for (Map.Entry<String, ArrayList<PollListener>> entry : listeners.entrySet()) {
                         for (PollListener listener : entry.getValue()) {
-                            if (((PollingEvent) message).getMessages().containsKey(entry.getKey())) {
-                                listener.handlePollingResult(entry.getKey(), ((PollingEvent) message).getMessages().get(entry.getKey()));
+                            if (entry.getKey().equals("activeJobs") && pollingEvent.getType().equals("activeJobs")) {
+                                listener.handlePollingResult("activeJobs", pollingEvent.getActiveJobs());
+                            } else if (entry.getKey().equals("numberOfTasks") && pollingEvent.getType().equals("numberOfTasks")) {
+                                listener.handlePollingResult("numberOfTasks", pollingEvent.getNumberOfTasks());
                             }
                         }
                     }

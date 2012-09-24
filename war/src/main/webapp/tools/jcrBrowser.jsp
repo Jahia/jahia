@@ -274,6 +274,9 @@ function go(id1, value1, id2, value2, id3, value3) {
 
     <c:if test="${node.path != '/'}">
         <a href="#parent" onclick="go('uuid', '${node.parent.identifier}'); return false;">[..]</a>
+        <c:if test="${fn:contains(fn:substringAfter(node.path, '/'), '/')}">
+        <a href="#root" onclick="go('uuid', 'cafebabe-cafe-babe-cafe-babecafebabe'); return false;">[/]</a>
+        </c:if>
         <c:set var="breadcrumbs" value=""/>
         <c:forTokens items="${node.path}" delims="/" var="pathItem"
         varStatus="loop"><c:set var="breadcrumbs" value="${breadcrumbs}/${pathItem}"

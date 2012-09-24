@@ -41,6 +41,7 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -63,13 +64,14 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 
  *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
- *        Created : 12 nov. 2009
+ * Created : 12 nov. 2009
  */
 public class ContentTypeWindow extends Window {
     private GWTJahiaNode parentNode;
@@ -159,6 +161,10 @@ public class ContentTypeWindow extends Window {
     }
 
     public static void createContent(final Linker linker, final String name, final List<String> nodeTypes, final Map<String, GWTJahiaNodeProperty> props, final GWTJahiaNode targetNode, boolean includeSubTypes, final boolean createInParentAndMoveBefore) {
+        createContent(linker, name, nodeTypes, props, targetNode, includeSubTypes, createInParentAndMoveBefore, null);
+    }
+    
+    public static void createContent(final Linker linker, final String name, final List<String> nodeTypes, final Map<String, GWTJahiaNodeProperty> props, final GWTJahiaNode targetNode, boolean includeSubTypes, final boolean createInParentAndMoveBefore, final Set<String> displayedNodeTypes) {
         String contentPath = "$site/components/*";
         if ("studiomode".equals(linker.getConfig().getName())) {
             contentPath = "/templateSets/*";
@@ -170,13 +176,60 @@ public class ContentTypeWindow extends Window {
                             name, createInParentAndMoveBefore);
 
                 } else {
-                    new ContentTypeWindow(linker, targetNode, result, props, name, createInParentAndMoveBefore)
-                            .show();
-
+                    if (nodeTypes != null && nodeTypes.size() == 1 && displayedNodeTypes != null) {
+                        GWTJahiaNodeType targetNodeType = getTargetNodeType(nodeTypes.get(0), result, displayedNodeTypes);
+                        if (targetNodeType != null) {
+                            EngineLoader.showCreateEngine(linker, targetNode, targetNodeType, props, name, createInParentAndMoveBefore);
+                            return;
+                        }
+                    }
+                    new ContentTypeWindow(linker, targetNode, result, props, name, createInParentAndMoveBefore).show();
                 }
             }
+
+            private GWTJahiaNodeType getTargetNodeType(String nodeTypeName, List<GWTJahiaNode> result,
+                    Set<String> displayedNodeTypes) {
+                GWTJahiaNodeType targetNodeType = null;
+                for (GWTJahiaNode nd : result) {
+                    Object[] target = getTargetNodeType(nodeTypeName, nd, displayedNodeTypes);
+                    if (!((Boolean) target[0])) {
+                        return null;
+                    } else {
+                        if (targetNodeType == null && target[1] != null) {
+                            targetNodeType = (GWTJahiaNodeType) target[1];
+                        }
+                    }
+                }
+
+                return targetNodeType;
+            }
+            
+            private Object[] getTargetNodeType(String nodeTypeName, GWTJahiaNode startNode, Set<String> displayedNodeTypes) {
+                boolean sinlgeTarget = true;
+                GWTJahiaNodeType targetNodeType = null;
+                if (startNode.getChildren().size() > 0) {
+                    for (ModelData child : startNode.getChildren()) {
+                        Object[] result = getTargetNodeType(nodeTypeName, (GWTJahiaNode) child, displayedNodeTypes);
+                        if (!((Boolean) result[0])) {
+                            return result;
+                        }
+                        if (targetNodeType == null && result[1] != null) {
+                            targetNodeType = (GWTJahiaNodeType) result[1];
+                        }
+                    }
+                } else  if (!startNode.isNodeType("jnt:componentFolder")) {
+                    GWTJahiaNodeType nodeType = (GWTJahiaNodeType) startNode.get("componentNodeType");
+                    if (nodeType != null) {
+                        if (nodeTypeName.equals(nodeType.getName())) {
+                            targetNodeType  = nodeType;
+                        }
+                        if (!displayedNodeTypes.contains(nodeType.getName())) {
+                            sinlgeTarget = false;
+                        }
+                    }
+                }
+                return new Object[] {sinlgeTarget, targetNodeType};
+            }
         });
-
-
     }
 }

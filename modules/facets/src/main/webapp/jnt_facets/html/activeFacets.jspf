@@ -43,12 +43,9 @@
             </c:otherwise>
         </c:choose>
     </c:forEach>
-    <c:if test="${activeFacetStat.last}">
-    </c:if>
-    <div class="clear"></div>
-
 </c:forEach>
 <c:if test="${!empty activeFacetsVars[activeFacetMapVarName]}">
+    <div class="clear" />
     </ul>
     </div>
 </c:if>

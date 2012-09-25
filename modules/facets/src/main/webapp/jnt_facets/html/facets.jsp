@@ -69,8 +69,16 @@
             </c:if>
 
             <jcr:nodeProperty node="${facet}" name="label" var="currentFacetLabel"/>
-            <c:if test="${not empty currentFacetLabel.string and not empty facetPropertyName}">
-                <c:set target="${facetLabels}" property="${facetPropertyName}" value="${currentFacetLabel.string}"/>
+            <c:if test="${not empty facetPropertyName}">
+                <c:choose>
+                    <c:when test="${not empty currentFacetLabel.string}">
+                        <c:set target="${facetLabels}" property="${facetPropertyName}" value="${currentFacetLabel.string}"/>
+                    </c:when>
+                    <c:otherwise>
+                        <fmt:message var="translatedFacetProperty" key="${fn:replace(facetNodeTypeName,':','_')}.${fn:replace(facetPropertyName,':','_')}"/>
+                        <c:set target="${facetLabels}" property="${facetPropertyName}" value="${translatedFacetProperty}"/>
+                    </c:otherwise>
+                </c:choose>
             </c:if>
 
             <c:choose>

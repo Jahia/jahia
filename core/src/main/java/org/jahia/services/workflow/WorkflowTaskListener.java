@@ -4,4 +4,8 @@ public class WorkflowTaskListener {
     public void newTaskCreated(WorkflowTask task) {
 
     }
+
+    public void taskEnded(WorkflowTask task) {
+
+    }
 }

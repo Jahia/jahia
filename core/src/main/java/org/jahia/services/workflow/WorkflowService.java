@@ -865,6 +865,17 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         }
     }
 
+    public void notifyTaskEnded(String provider, String taskId) {
+        WorkflowTask task = providers.get(provider).getWorkflowTask(taskId, null);
+        for (WorkflowTaskListener listener : taskListeners) {
+            try {
+                listener.taskEnded(task);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void addWorkflowTaskListener(WorkflowTaskListener listener) {
         taskListeners.add(listener);
     }

@@ -40,9 +40,13 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.poller.Poller;
 import org.jahia.ajax.gwt.client.widget.poller.TaskEvent;
@@ -57,23 +61,29 @@ public class NumberOfTasksWorkflowMenuActionItem extends BaseActionItem implemen
 
     public void init(final GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
-
+        JahiaContentManagementService.App.getInstance().getNumberOfTasksForUser(new BaseAsyncCallback<Integer>() {
+            public void onSuccess(Integer result) {
+                updateLabel(result);
+            }
+        });
         Poller.getInstance().registerListener(this, TaskEvent.class);
 
     }
 
     public void handlePollingResult(TaskEvent result) {
-        Integer nb = (Integer) result.getNumberOfTasks();
+        updateLabel(result.getNumberOfTasks());
+        if (result.getNewTask() != null) {
+            Info.display(Messages.get("label.tasks.new", "You have a new task to do"), result.getNewTask().getDisplayName());
+        }
+
+    }
+
+    private void updateLabel(Integer nb) {
         if (nb == 0) {
             updateTitle(getGwtToolbarItem().getProperties().get("noTasks").getValue());
         } else {
             updateTitle(getGwtToolbarItem().getTitle() + " (" + nb + ")");
         }
-        if (result.getNewTask() != null) {
-            MessageBox.info(Messages.get("label.task.newtask", "You have a new task"),
-                    result.getNewTask().getDisplayName(), null);
-        }
-
     }
 
     /**

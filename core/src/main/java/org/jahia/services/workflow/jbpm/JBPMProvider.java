@@ -575,7 +575,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         action.setProcessId(executionService.findExecutionById(task.getExecutionId()).getProcessInstance().getId());
         if (task.getAssignee() != null) {
             action.setAssignee(
-                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(task.getAssignee()));
+                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(task.getAssignee()));
         }
         action.setId(task.getId());
         action.setOutcome(taskService.getOutcomes(task.getId()));
@@ -711,6 +711,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 }
             }
 
+            workflowService.notifyTaskEnded(getKey(), taskId);
             taskService.completeTask(taskId, outcome, args);
         } finally {
             loop.set(null);
@@ -900,10 +901,11 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     private HistoryWorkflow convertToHistoryWorkflow(HistoryProcessInstance jbpmHistoryItem, Locale locale) {
         ProcessDefinition def = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionId(jbpmHistoryItem.getProcessDefinitionId()).uniqueResult();
-        final String startUser =
-                (String) historyService.getVariable(jbpmHistoryItem.getProcessInstanceId(), "user");
-        final String nodeId =
-                (String) historyService.getVariable(jbpmHistoryItem.getProcessInstanceId(), "nodeId");
+        Set<String> variableNames = historyService.getVariableNames(jbpmHistoryItem.getProcessInstanceId());
+        final String startUser = variableNames.contains("user") ?
+                (String) historyService.getVariable(jbpmHistoryItem.getProcessInstanceId(), "user") : null;
+        final String nodeId = variableNames.contains("nodeId") ?
+                (String) historyService.getVariable(jbpmHistoryItem.getProcessInstanceId(), "nodeId") : null;
 
         String title = null;
         try {

@@ -566,7 +566,7 @@ public class WorkflowHelper {
                 GWTJahiaWorkflowHistoryProcess gwtWfHistory = getGWTJahiaHistoryProcess(historyWorkflow);
                 try {
                     JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(null,
-                            locale).getNodeByIdentifier(gwtWfHistory.getNodeId());
+                            locale).getNodeByIdentifier(task.getVariables().get("nodeId") != null ? (String) task.getVariables().get("nodeId") : gwtWfHistory.getNodeId());
                 } catch (ItemNotFoundException e) {
                     continue;
                 } catch (RepositoryException e) {
@@ -581,7 +581,16 @@ public class WorkflowHelper {
 
     class WorkflowListener extends WorkflowTaskListener {
         @Override
+        public void taskEnded(WorkflowTask task) {
+            update(task, false);
+        }
+
+        @Override
         public void newTaskCreated(WorkflowTask task) {
+            update(task, true);
+        }
+
+        private void update(WorkflowTask task, boolean newTask) {
             final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
             if (broadcasterFactory != null) {
 
@@ -598,18 +607,20 @@ public class WorkflowHelper {
                     Broadcaster broadcaster = broadcasterFactory.lookup(Broadcaster.class, GWTAtmosphereHandler.GWT_BROADCASTER_ID + user.getName());
                     if(broadcaster != null) {
                         TaskEvent taskEvent = new TaskEvent();
-                        taskEvent.setNewTask(getGWTJahiaWorkflowTask(task));
+                        if (newTask) {
+                            taskEvent.setNewTask(getGWTJahiaWorkflowTask(task));
+                        }
                         try {
                             taskEvent.setNumberOfTasks(getNumberOfTasksForUser((JahiaUser) user, Locale.ENGLISH));
+                            if (!newTask && user.equals(task.getAssignee())) {
+                                taskEvent.setNumberOfTasks(taskEvent.getNumberOfTasks() - 1);
+                            }
                         } catch (GWTJahiaServiceException e) {
-
                         }
 
                         broadcaster.broadcast(taskEvent);
                     }
                 }
-
-
             }
         }
 

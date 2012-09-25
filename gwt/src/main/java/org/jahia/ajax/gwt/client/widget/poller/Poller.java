@@ -38,7 +38,7 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.ajax.gwt.client.widget;
+package org.jahia.ajax.gwt.client.widget.poller;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -48,6 +48,7 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
 import org.atmosphere.gwt.client.AtmosphereClient;
 import org.atmosphere.gwt.client.AtmosphereGWTSerializer;
 import org.atmosphere.gwt.client.AtmosphereListener;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +67,7 @@ public class Poller {
     private transient Timer timer;
     private static Poller instance;
 
-    private Map<String, ArrayList<PollListener>> listeners = new HashMap<String, ArrayList<PollListener>>();
+    private Map<Class, ArrayList<PollListener>> listeners = new HashMap<Class, ArrayList<PollListener>>();
 
     public static Poller getInstance() {
         if (instance == null) {
@@ -76,7 +77,8 @@ public class Poller {
     }
 
     String getUrl() {
-        return "http://localhost:8080/gwtAtmosphere/gwtComet";
+        String moduleBaseURL = GWT.getModuleBaseURL();
+        return moduleBaseURL.substring(0, moduleBaseURL.indexOf("/gwt/")) + "/gwtAtmosphere/gwtComet";
     }
 
     public Poller() {
@@ -104,19 +106,20 @@ public class Poller {
                 cometListener = new MyCometListener();
                 client = new AtmosphereClient(getUrl(), serializer, cometListener);
                 client.start();
+                client.post(MainModule.getInstance().getNode());
             }
         });
     }
 
-    public void registerListener(PollListener listener, String key) {
-        if (!listeners.containsKey(key)) {
-            listeners.put(key, new ArrayList<PollListener>());
+    public void registerListener(PollListener listener, Class eventType) {
+        if (!listeners.containsKey(eventType)) {
+            listeners.put(eventType, new ArrayList<PollListener>());
         }
-        listeners.get(key).add(listener);
+        listeners.get(eventType).add(listener);
     }
 
-    public interface PollListener {
-        public void handlePollingResult(String key, Object result);
+    public interface PollListener<T> {
+        public void handlePollingResult(T result);
     }
 
     private class MyCometListener implements AtmosphereListener {
@@ -154,15 +157,13 @@ public class Poller {
 
         public void onMessage(List<?> messages) {
             for (Object message : messages) {
-                if (message instanceof PollingEvent) {
-                    PollingEvent pollingEvent = (PollingEvent) message;
+                if (message instanceof ProcessPollingEvent) {
+                    ProcessPollingEvent pollingEvent = (ProcessPollingEvent) message;
 
-                    for (Map.Entry<String, ArrayList<PollListener>> entry : listeners.entrySet()) {
-                        for (PollListener listener : entry.getValue()) {
-                            if (entry.getKey().equals("activeJobs") && pollingEvent.getType().equals("activeJobs")) {
-                                listener.handlePollingResult("activeJobs", pollingEvent.getActiveJobs());
-                            } else if (entry.getKey().equals("numberOfTasks") && pollingEvent.getType().equals("numberOfTasks")) {
-                                listener.handlePollingResult("numberOfTasks", pollingEvent.getNumberOfTasks());
+                    for (Map.Entry<Class, ArrayList<PollListener>> entry : listeners.entrySet()) {
+                        if (entry.getKey() == pollingEvent.getClass()) {
+                            for (PollListener pollListener : entry.getValue()) {
+                                pollListener.handlePollingResult(pollingEvent);
                             }
                         }
                     }

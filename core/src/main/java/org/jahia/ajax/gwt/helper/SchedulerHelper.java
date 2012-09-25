@@ -46,7 +46,7 @@ import org.atmosphere.cpr.BroadcasterFactory;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.client.widget.PollingEvent;
+import org.jahia.ajax.gwt.client.widget.poller.ProcessPollingEvent;
 import org.jahia.ajax.gwt.commons.server.GWTAtmosphereHandler;
 import org.jahia.services.content.PublicationJob;
 import org.jahia.services.content.rules.ActionJob;
@@ -252,8 +252,7 @@ public class SchedulerHelper {
                 Broadcaster broadcaster = broadcasterFactory.lookup(Broadcaster.class, GWTAtmosphereHandler.GWT_BROADCASTER_ID);
                 if (broadcaster != null) {
                     try {
-                        PollingEvent pollingEvent = new PollingEvent();
-                        pollingEvent.setType("activeJobs");
+                        ProcessPollingEvent pollingEvent = new ProcessPollingEvent();
                         pollingEvent.setActiveJobs((ArrayList<GWTJahiaJobDetail>) getActiveJobs(Locale.ENGLISH));
                         if (previousJob != null) {
                             pollingEvent.getActiveJobs().removeAll(convertToGWTJobs(Arrays.asList(previousJob)));

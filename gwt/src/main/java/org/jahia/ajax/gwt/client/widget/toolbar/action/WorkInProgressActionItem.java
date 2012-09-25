@@ -46,8 +46,9 @@ import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.Poller;
+import org.jahia.ajax.gwt.client.widget.poller.Poller;
 import org.jahia.ajax.gwt.client.widget.job.JobListWindow;
+import org.jahia.ajax.gwt.client.widget.poller.ProcessPollingEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ import java.util.List;
  * Date: Aug 30, 2010
  * Time: 8:16:07 PM
  */
-public class WorkInProgressActionItem extends BaseActionItem implements Poller.PollListener{
+public class WorkInProgressActionItem extends BaseActionItem implements Poller.PollListener<ProcessPollingEvent> {
 
     private static WorkInProgressActionItem instance;
 
@@ -72,11 +73,11 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
         instance = this;
         refreshStatus();
 
-        Poller.getInstance().registerListener(this, "activeJobs");
+        Poller.getInstance().registerListener(this, ProcessPollingEvent.class);
     }
 
-    public void handlePollingResult(String key, Object result) {
-        List<GWTJahiaJobDetail> jobs = (List<GWTJahiaJobDetail>) result;
+    public void handlePollingResult(ProcessPollingEvent result) {
+        List<GWTJahiaJobDetail> jobs = result.getActiveJobs();
         if (!processes.equals(jobs)) {
             final ArrayList<GWTJahiaJobDetail> deleted = new ArrayList<GWTJahiaJobDetail>(processes);
             deleted.removeAll(jobs);

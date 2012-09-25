@@ -40,13 +40,10 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.Poller;
-
-import java.util.List;
+import org.jahia.ajax.gwt.client.widget.poller.Poller;
+import org.jahia.ajax.gwt.client.widget.poller.TaskEvent;
 
 /**
  * 
@@ -54,17 +51,17 @@ import java.util.List;
  * Date: Jan 20, 2010
  * Time: 1:51:18 PM
  */
-public class NumberOfTasksWorkflowMenuActionItem extends BaseActionItem implements Poller.PollListener {
+public class NumberOfTasksWorkflowMenuActionItem extends BaseActionItem implements Poller.PollListener<TaskEvent> {
 
     public void init(final GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
 
-        Poller.getInstance().registerListener(this, "numberOfTasks");
+        Poller.getInstance().registerListener(this, TaskEvent.class);
 
     }
 
-    public void handlePollingResult(String key, Object result) {
-        Integer nb = (Integer) result;
+    public void handlePollingResult(TaskEvent result) {
+        Integer nb = (Integer) result.getNumberOfTasks();
         if (nb == 0) {
             updateTitle(getGwtToolbarItem().getProperties().get("noTasks").getValue());
         } else {

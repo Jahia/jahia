@@ -94,7 +94,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     private JahiaGroupManagerService groupManagerService;
     private JahiaUserManagerService userManagerService;
-    private final Map<String, Set<JahiaGroup>> aclGroups = new LinkedHashMap<String, Set<JahiaGroup>>();
+    private Map<String, Set<JahiaGroup>> aclGroups = new LinkedHashMap<String, Set<JahiaGroup>>();
+    private final Object objForSync = new Object();
     private EhCacheProvider cacheProvider;
     private Cache cache;
     private JCRTemplate template;
@@ -468,54 +469,57 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         if (!aclGroups.isEmpty()) {
             return;
         }
-        synchronized (aclGroups) {
-        if (aclGroups.isEmpty()) {
-            template.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    aclGroups.put("/", new HashSet<JahiaGroup>());
-                    aclGroups.get("/").add(groupManagerService.lookupGroup(groupManagerService.ADMINISTRATORS_GROUPNAME));
-                    Query groupQuery = session.getWorkspace().getQueryManager().createQuery(
-                            "select * from [jnt:ace] as u where u.[j:principal] like 'g%'", Query.JCR_SQL2);
-                    QueryResult groupQueryResult = groupQuery.execute();
-                    final NodeIterator nodeIterator = groupQueryResult.getNodes();
-                    while (nodeIterator.hasNext()) {
-                        JCRNodeWrapper node = (JCRNodeWrapper) nodeIterator.next();
-                        String s = StringUtils.substringAfter(node.getProperty("j:principal").getString(), ":");
-                        JahiaGroup group = groupManagerService.lookupGroup(node.getResolveSite().getID(), s);
-                        if (group == null) {
-                            group = groupManagerService.lookupGroup(s);
-                        }
-                        if (group != null) {
-                            JCRNodeWrapper parent = node.getParent().getParent();
-                            String path = parent.getPath();
-                            boolean granted = node.getProperty("j:aceType").getString().equals("GRANT");
-                            if (granted) {
-                                Set<JahiaGroup> groups;
-                                if (!aclGroups.containsKey(path)) {
-                                    groups = new LinkedHashSet<JahiaGroup>();
-                                    aclGroups.put(path, groups);
-                                } else {
-                                    groups = aclGroups.get(path);
-                                }
-                                groups.add(group);
-                                try {
-                                    path = parent.getParent().getPath();
-                                    if (!aclGroups.containsKey(path)) {
+        synchronized (objForSync) {
+            if (aclGroups.isEmpty()) {
+                template.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        Map<String, Set<JahiaGroup>> tempAclGroups = new LinkedHashMap<String, Set<JahiaGroup>>();
+                        tempAclGroups.put("/", new HashSet<JahiaGroup>());
+                        tempAclGroups.get("/").add(groupManagerService.lookupGroup(
+                                groupManagerService.ADMINISTRATORS_GROUPNAME));
+                        Query groupQuery = session.getWorkspace().getQueryManager().createQuery(
+                                "select * from [jnt:ace] as u where u.[j:principal] like 'g%'", Query.JCR_SQL2);
+                        QueryResult groupQueryResult = groupQuery.execute();
+                        final NodeIterator nodeIterator = groupQueryResult.getNodes();
+                        while (nodeIterator.hasNext()) {
+                            JCRNodeWrapper node = (JCRNodeWrapper) nodeIterator.next();
+                            String s = StringUtils.substringAfter(node.getProperty("j:principal").getString(), ":");
+                            JahiaGroup group = groupManagerService.lookupGroup(node.getResolveSite().getID(), s);
+                            if (group == null) {
+                                group = groupManagerService.lookupGroup(s);
+                            }
+                            if (group != null) {
+                                JCRNodeWrapper parent = node.getParent().getParent();
+                                String path = parent.getPath();
+                                boolean granted = node.getProperty("j:aceType").getString().equals("GRANT");
+                                if (granted) {
+                                    Set<JahiaGroup> groups;
+                                    if (!tempAclGroups.containsKey(path)) {
                                         groups = new LinkedHashSet<JahiaGroup>();
-                                        aclGroups.put(path, groups);
+                                        tempAclGroups.put(path, groups);
                                     } else {
-                                        groups = aclGroups.get(path);
+                                        groups = tempAclGroups.get(path);
                                     }
                                     groups.add(group);
-                                } catch (RepositoryException e) {
+                                    try {
+                                        path = parent.getParent().getPath();
+                                        if (!tempAclGroups.containsKey(path)) {
+                                            groups = new LinkedHashSet<JahiaGroup>();
+                                            tempAclGroups.put(path, groups);
+                                        } else {
+                                            groups = tempAclGroups.get(path);
+                                        }
+                                        groups.add(group);
+                                    } catch (RepositoryException e) {
+                                    }
                                 }
                             }
                         }
+                        aclGroups.putAll(tempAclGroups);
+                        return null;
                     }
-                    return null;
-                }
-            });
-        }
+                });
+            }
         }
     }
 
@@ -569,8 +573,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     }
 
     public void flushUsersGroupsKey(boolean propageToOtherClusterNodes) {
-        synchronized (aclGroups) {
-            aclGroups.clear();
+        synchronized (objForSync) {
+            aclGroups = new LinkedHashMap<String, Set<JahiaGroup>>();
             cache.removeAll(!propageToOtherClusterNodes);
             cache.flush();
         }

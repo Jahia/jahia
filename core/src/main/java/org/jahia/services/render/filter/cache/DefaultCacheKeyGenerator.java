@@ -515,7 +515,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                                 }
                             }
                         }
-                        aclGroups.putAll(tempAclGroups);
+                        aclGroups = tempAclGroups;
                         return null;
                     }
                 });

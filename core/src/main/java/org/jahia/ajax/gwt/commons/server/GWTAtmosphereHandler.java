@@ -2,8 +2,11 @@ package org.jahia.ajax.gwt.commons.server;
 
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
+import org.atmosphere.cpr.DefaultBroadcaster;
 import org.atmosphere.gwt.server.AtmosphereGwtHandler;
 import org.atmosphere.gwt.server.GwtAtmosphereResource;
+import org.jahia.params.ProcessingContext;
+import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
@@ -18,7 +21,24 @@ public class GWTAtmosphereHandler extends AtmosphereGwtHandler {
 
     @Override
     public int doComet(GwtAtmosphereResource resource) throws ServletException, IOException {
-        return super.doComet(resource);
+        Broadcaster broadcaster = BroadcasterFactory.getDefault().lookup(Broadcaster.class, GWT_BROADCASTER_ID);
+        if (broadcaster == null) {
+            broadcaster = BroadcasterFactory.getDefault().get(DefaultBroadcaster.class, GWT_BROADCASTER_ID);
+        }
+        resource.getAtmosphereResource().setBroadcaster(broadcaster);
+
+        JahiaUser user = (JahiaUser) resource.getSession().getAttribute(ProcessingContext.SESSION_USER);
+
+        if (user != null) {
+            Broadcaster userBroadcaster = BroadcasterFactory.getDefault().lookup(Broadcaster.class, GWT_BROADCASTER_ID + user.getName());
+            if (userBroadcaster == null) {
+                userBroadcaster = BroadcasterFactory.getDefault().get(DefaultBroadcaster.class, GWT_BROADCASTER_ID + user.getName());
+            }
+            userBroadcaster.addAtmosphereResource(resource.getAtmosphereResource());
+        }
+
+        return NO_TIMEOUT;
+
     }
 
     @Override

@@ -71,17 +71,19 @@ import java.util.*;
  *        Created : 2 févr. 2010
  */
 public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializationService {
-    private transient static Logger logger = LoggerFactory.getLogger(WorkflowService.class);
-
-
-    private Map<String, WorkflowProvider> providers = new HashMap<String, WorkflowProvider>();
-    private static WorkflowService instance;
     public static final String CANDIDATE = "candidate";
     public static final String START_ROLE = "start";
+    public static final String WORKFLOWRULES_NODE_NAME = "j:workflowRules";
+
+    private static WorkflowService instance;
+
+    private transient static Logger logger = LoggerFactory.getLogger(WorkflowService.class);
+
+    private Map<String, WorkflowProvider> providers = new HashMap<String, WorkflowProvider>();
+    private List<WorkflowTaskListener> taskListeners = new ArrayList<WorkflowTaskListener>();
     private Map<String, List<String>> workflowTypes;
     private Map<String, Map<String,String>> workflowPermissions = new HashMap<String, Map<String, String>>();
     private Map<String, String> workflowTypeByDefinition;
-    public static final String WORKFLOWRULES_NODE_NAME = "j:workflowRules";
     private JCRTemplate jcrTemplate;
 
     public static WorkflowService getInstance() {
@@ -850,6 +852,21 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
 
     public void deleteProcess(String processId, String provider) {
         providers.get(provider).deleteProcess(processId);
+    }
+
+    public void notifyNewTask(String provider, String taskId) {
+        WorkflowTask task = providers.get(provider).getWorkflowTask(taskId, null);
+        for (WorkflowTaskListener listener : taskListeners) {
+            try {
+                listener.newTaskCreated(task);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void addWorkflowTaskListener(WorkflowTaskListener listener) {
+        taskListeners.add(listener);
     }
 
     public Object postProcessBeforeInitialization(Object bean, String beanName)

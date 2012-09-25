@@ -106,7 +106,6 @@ public class Poller {
                 cometListener = new MyCometListener();
                 client = new AtmosphereClient(getUrl(), serializer, cometListener);
                 client.start();
-                client.post(MainModule.getInstance().getNode());
             }
         });
     }
@@ -157,14 +156,10 @@ public class Poller {
 
         public void onMessage(List<?> messages) {
             for (Object message : messages) {
-                if (message instanceof ProcessPollingEvent) {
-                    ProcessPollingEvent pollingEvent = (ProcessPollingEvent) message;
-
-                    for (Map.Entry<Class, ArrayList<PollListener>> entry : listeners.entrySet()) {
-                        if (entry.getKey() == pollingEvent.getClass()) {
-                            for (PollListener pollListener : entry.getValue()) {
-                                pollListener.handlePollingResult(pollingEvent);
-                            }
+                for (Map.Entry<Class, ArrayList<PollListener>> entry : listeners.entrySet()) {
+                    if (entry.getKey() == message.getClass()) {
+                        for (PollListener pollListener : entry.getValue()) {
+                            pollListener.handlePollingResult(message);
                         }
                     }
                 }

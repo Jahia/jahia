@@ -41,6 +41,9 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
+import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.Broadcaster;
+import org.atmosphere.cpr.BroadcasterFactory;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -49,7 +52,10 @@ import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryIt
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTask;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.widget.poller.TaskEvent;
 import org.jahia.ajax.gwt.client.widget.workflow.CustomWorkflow;
+import org.jahia.ajax.gwt.commons.server.GWTAtmosphereHandler;
+import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -60,11 +66,13 @@ import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.*;
 import org.quartz.SchedulerException;
+import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import java.security.Principal;
 import java.util.*;
 
 /**
@@ -81,6 +89,11 @@ public class WorkflowHelper {
     public void setService(WorkflowService service) {
         this.service = service;
     }
+
+    public void start() {
+        service.addWorkflowTaskListener(new WorkflowListener());
+    }
+
 
     public GWTJahiaWorkflowInfo getWorkflowInfo(String path, JCRSessionWrapper session, Locale locale)
             throws GWTJahiaServiceException {
@@ -565,4 +578,41 @@ public class WorkflowHelper {
         }
         return total;
     }
+
+    class WorkflowListener extends WorkflowTaskListener {
+        @Override
+        public void newTaskCreated(WorkflowTask task) {
+            final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
+            if (broadcasterFactory != null) {
+
+                Set<Principal> users = new HashSet<Principal>();
+                for (WorkflowParticipation workflowParticipation : task.getParticipations()) {
+                    JahiaPrincipal p = workflowParticipation.getJahiaPrincipal();
+                    if (p instanceof JahiaUser) {
+                        users.add(p);
+                    } else if (p instanceof JahiaGroup) {
+                        users.addAll(((JahiaGroup) p).getRecursiveUserMembers());
+                    }
+                }
+                for (Principal user : users) {
+                    Broadcaster broadcaster = broadcasterFactory.lookup(Broadcaster.class, GWTAtmosphereHandler.GWT_BROADCASTER_ID + user.getName());
+                    if(broadcaster != null) {
+                        TaskEvent taskEvent = new TaskEvent();
+                        taskEvent.setNewTask(getGWTJahiaWorkflowTask(task));
+                        try {
+                            taskEvent.setNumberOfTasks(getNumberOfTasksForUser((JahiaUser) user, Locale.ENGLISH));
+                        } catch (GWTJahiaServiceException e) {
+
+                        }
+
+                        broadcaster.broadcast(taskEvent);
+                    }
+                }
+
+
+            }
+        }
+
+    }
+
 }

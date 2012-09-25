@@ -103,6 +103,10 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
         assignable.addCandidateGroup(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(0).getGroupKey());
 
         createTask(assignable, execution, principals);
+
+        if (assignable instanceof TaskImpl) {
+            WorkflowService.getInstance().notifyNewTask("jBPM", ((TaskImpl)assignable).getId());
+        }
     }
 
     protected void createTask(final Assignable assignable, final OpenExecution execution, final List<JahiaPrincipal> candidates) throws RepositoryException {

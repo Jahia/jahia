@@ -70,7 +70,7 @@
         <property name="workflowHelper" ref="WorkflowHelper"/>
     </bean>
 
-    <bean name="WorkflowHelper" class="org.jahia.ajax.gwt.helper.WorkflowHelper">
+    <bean name="WorkflowHelper" class="org.jahia.ajax.gwt.helper.WorkflowHelper" init-method="start">
         <property name="service" ref="workflowService"/>
     </bean>
 

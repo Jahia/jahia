@@ -40,7 +40,9 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.poller.Poller;
 import org.jahia.ajax.gwt.client.widget.poller.TaskEvent;
@@ -67,6 +69,11 @@ public class NumberOfTasksWorkflowMenuActionItem extends BaseActionItem implemen
         } else {
             updateTitle(getGwtToolbarItem().getTitle() + " (" + nb + ")");
         }
+        if (result.getNewTask() != null) {
+            MessageBox.info(Messages.get("label.task.newtask", "You have a new task"),
+                    result.getNewTask().getDisplayName(), null);
+        }
+
     }
 
     /**

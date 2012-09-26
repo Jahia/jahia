@@ -3,3 +3,6 @@
 <mix = 'http://www.jcp.org/jcr/mix/1.0'>
 
 [jnt:siteSettingsManageModules] > jnt:content, mix:title, jmix:studioOnly, jmix:siteComponent
+
+[jnt:siteSettingsManageLanguages] > jnt:content, mix:title, jmix:studioOnly, jmix:siteComponent
+

@@ -9,7 +9,14 @@
                     </pagecontent>
                 </content-template>
                 <manageGroups j:hiddenTemplate="false" jcr:primaryType="jnt:pageTemplate"/>
-                <manageLanguages j:hiddenTemplate="false" jcr:primaryType="jnt:pageTemplate"/>
+                <manageLanguages j:hiddenTemplate="false" jcr:primaryType="jnt:pageTemplate">
+                    <pagecontent jcr:primaryType="jnt:contentList">
+                        <manage-languages jcr:primaryType="jnt:siteSettingsManageLanguages">
+                            <j:translation_en jcr:language="en"
+                                              jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(label.manageLanguages)##" />
+                        </manage-languages>
+                    </pagecontent>
+                </manageLanguages>
                 <HTMLSettings j:hiddenTemplate="false" jcr:primaryType="jnt:pageTemplate"/>
                 <vanityURLSetting j:hiddenTemplate="false" jcr:primaryType="jnt:pageTemplate"/>
                 <manageModules j:hiddenTemplate="false"

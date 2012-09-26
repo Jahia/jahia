@@ -110,6 +110,10 @@ public class JCRSiteNode extends JCRNodeDecorator {
         }
     }
     
+    public Set<String> getActiveLiveLanguages() {
+        return getActiveLanguages();
+    }
+
     /**
      * Returns a set of active site languages
      * 
@@ -136,12 +140,16 @@ public class JCRSiteNode extends JCRNodeDecorator {
         return activeLanguages;
     }
 
+    public List<Locale> getActiveLanguagesAsLocales() {
+        return getActiveLiveLanguagesAsLocales();
+    }
+
     /**
      * Returns an List of active site language  ( as Locale ).
      *
      * @return a List of Locale elements
      */
-    public List<Locale> getActiveLanguagesAsLocales() {
+    public List<Locale> getActiveLiveLanguagesAsLocales() {
         if (activeLanguagesAsLocales == null) {
             Set<String> languages = getActiveLanguages();
     
@@ -156,6 +164,55 @@ public class JCRSiteNode extends JCRNodeDecorator {
             activeLanguagesAsLocales = localeList;
         }
         
+        return activeLanguagesAsLocales;
+    }
+
+    /**
+     * Returns a set of active site languages
+     *
+     * @return a set of active site languages
+     */
+    @SuppressWarnings("unchecked")
+    public Set<String> getActiveEditLanguages() {
+        if (activeLanguages == null) {
+            Set<String> langs = new HashSet<String>(getLanguages()) ;
+            try {
+                if (hasProperty(SitesSettings.INACTIVE_LANGUAGES)) {
+                    Value[] values = getProperty(SitesSettings.INACTIVE_LANGUAGES).getValues();
+                    for (Value value : values) {
+                        langs.remove(value.getString());
+                    }
+                }
+                activeLanguages = UnmodifiableSet.decorate(langs);
+            } catch (RepositoryException e) {
+                logger.error("Cannot get site property",e);
+                return null;
+            }
+        }
+
+        return activeLanguages;
+    }
+
+    /**
+     * Returns an List of active site language  ( as Locale ).
+     *
+     * @return a List of Locale elements
+     */
+    public List<Locale> getActiveEditLanguagesAsLocales() {
+        if (activeLanguagesAsLocales == null) {
+            Set<String> languages = getActiveEditLanguages();
+
+            List<Locale> localeList = new ArrayList<Locale>();
+            if (languages != null) {
+                for (String language : languages) {
+                    Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(language);
+                    localeList.add(tempLocale);
+                }
+
+            }
+            activeLanguagesAsLocales = localeList;
+        }
+
         return activeLanguagesAsLocales;
     }
 

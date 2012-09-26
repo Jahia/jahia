@@ -71,11 +71,15 @@ public class NumberOfTasksWorkflowMenuActionItem extends BaseActionItem implemen
     }
 
     public void handlePollingResult(TaskEvent result) {
-        updateLabel(result.getNumberOfTasks());
+        if (result.getNumberOfTasks() != null) {
+            updateLabel(result.getNumberOfTasks());
+        }
         if (result.getNewTask() != null) {
             Info.display(Messages.get("label.tasks.new", "You have a new task to do"), result.getNewTask().getDisplayName());
         }
-
+        if (result.getEndedWorkflow() != null) {
+            Info.display(Messages.get("label.workflow.ended", "A workflow has ended"), result.getEndedWorkflow().getDisplayName());
+        }
     }
 
     private void updateLabel(Integer nb) {

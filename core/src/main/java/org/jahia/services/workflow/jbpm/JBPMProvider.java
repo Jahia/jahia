@@ -95,11 +95,12 @@ import java.util.*;
  * @since JAHIA 6.5
  *        Created : 2 févr. 2010
  */
-public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEventGeneratorInterceptor.JBPMEventListener {
+public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEventGeneratorInterceptor.JBPMEventListener, WorkflowObservationManagerAware {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMProvider.class);
     private String key;
     private CacheService cacheService;
     private WorkflowService workflowService;
+    private WorkflowObservationManager observationManager;
     private RepositoryService repositoryService;
     private ExecutionService executionService;
     private HistoryService historyService;
@@ -136,6 +137,12 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
 
     public void setWorkflowService(WorkflowService workflowService) {
         this.workflowService = workflowService;
+    }
+
+    public void setWorkflowObservationManager(WorkflowObservationManager observationManager) {
+        this.observationManager = observationManager;
+        listener.setObservationManager(observationManager);
+        JBPMTaskAssignmentListener.setObservationManager(observationManager);
     }
 
     public void setGroupManager(JahiaGroupManagerService groupManager) {
@@ -711,7 +718,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 }
             }
 
-            workflowService.notifyTaskEnded(getKey(), taskId);
+            observationManager.notifyTaskEnded(getKey(), taskId);
             taskService.completeTask(taskId, outcome, args);
         } finally {
             loop.set(null);
@@ -917,11 +924,13 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
                 def != null ? convertToWorkflowDefinition(def, locale) : null, def != null ? def.getName() : null,
                 getKey(), startUser, jbpmHistoryItem.getStartTime(), jbpmHistoryItem.getEndTime(),
                 jbpmHistoryItem.getEndActivityName(), nodeId);
-        try {
-            ResourceBundle resourceBundle = getResourceBundle(locale, def.getKey());
-            workflow.setDisplayName(resourceBundle.getString("name"));
-        } catch (Exception e) {
-            workflow.setDisplayName(workflow.getName());
+        if (locale != null) {
+            try {
+                ResourceBundle resourceBundle = getResourceBundle(locale, def.getKey());
+                workflow.setDisplayName(resourceBundle.getString("name"));
+            } catch (Exception e) {
+                workflow.setDisplayName(workflow.getName());
+            }
         }
         if (title != null) {
             workflow.setDisplayName(title);

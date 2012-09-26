@@ -52,6 +52,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.services.workflow.WorkflowDefinition;
+import org.jahia.services.workflow.WorkflowObservationManager;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowVariable;
 import org.jahia.utils.LanguageCodeConverters;
@@ -80,6 +81,17 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
 
     private static final long serialVersionUID = 4434614988996316632L;
 
+    private static JBPMProvider provider;
+    private static WorkflowObservationManager observationManager;
+
+    static void setProvider(JBPMProvider provider) {
+        JBPMTaskAssignmentListener.provider = provider;
+    }
+
+    static void setObservationManager(WorkflowObservationManager observationManager) {
+        JBPMTaskAssignmentListener.observationManager = observationManager;
+    }
+
     /**
      * sets the actorId and candidates for the given task.
      */
@@ -105,7 +117,7 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
         createTask(assignable, execution, principals);
 
         if (assignable instanceof TaskImpl) {
-            WorkflowService.getInstance().notifyNewTask("jBPM", ((TaskImpl)assignable).getId());
+            observationManager.notifyNewTask("jBPM", ((TaskImpl)assignable).getId());
         }
     }
 

@@ -2,6 +2,7 @@ package org.jahia.ajax.gwt.client.widget.poller;
 
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTask;
+import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 public class TaskEvent implements Serializable {
     private Integer numberOfTasks;
     private GWTJahiaWorkflowTask newTask;
+    private GWTJahiaWorkflowHistoryProcess endedWorkflow;
 
     public TaskEvent() {
     }
@@ -27,6 +29,14 @@ public class TaskEvent implements Serializable {
 
     public void setNewTask(GWTJahiaWorkflowTask newTask) {
         this.newTask = newTask;
+    }
+
+    public GWTJahiaWorkflowHistoryProcess getEndedWorkflow() {
+        return endedWorkflow;
+    }
+
+    public void setEndedWorkflow(GWTJahiaWorkflowHistoryProcess endedWorkflow) {
+        this.endedWorkflow = endedWorkflow;
     }
 }
 

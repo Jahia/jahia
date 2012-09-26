@@ -41,7 +41,6 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
-import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -55,18 +54,18 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.widget.poller.TaskEvent;
 import org.jahia.ajax.gwt.client.widget.workflow.CustomWorkflow;
 import org.jahia.ajax.gwt.commons.server.GWTAtmosphereHandler;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.*;
+import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.SchedulerException;
-import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
 
 import javax.jcr.ItemNotFoundException;
@@ -91,7 +90,7 @@ public class WorkflowHelper {
     }
 
     public void start() {
-        service.addWorkflowTaskListener(new WorkflowListener());
+        service.addWorkflowListener(new PollingWorkflowListener());
     }
 
 
@@ -579,7 +578,26 @@ public class WorkflowHelper {
         return total;
     }
 
-    class WorkflowListener extends WorkflowTaskListener {
+    class PollingWorkflowListener extends WorkflowListener {
+
+        @Override
+        public void workflowEnded(HistoryWorkflow workflow) {
+            JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(workflow.getUser());
+            final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
+            Broadcaster broadcaster = broadcasterFactory.lookup(Broadcaster.class, GWTAtmosphereHandler.GWT_BROADCASTER_ID + user.getName());
+            if(broadcaster != null) {
+                TaskEvent taskEvent = new TaskEvent();
+                Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(user);
+                if (preferredLocale == null) {
+                    preferredLocale = LanguageCodeConverters.languageCodeToLocale(ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getDefaultLanguage());
+                }
+                workflow = service.getHistoryWorkflow(workflow.getProcessId(), workflow.getProvider(), preferredLocale);
+                taskEvent.setEndedWorkflow(getGWTJahiaHistoryProcess(workflow));
+
+                broadcaster.broadcast(taskEvent);
+            }
+        }
+
         @Override
         public void taskEnded(WorkflowTask task) {
             update(task, false);
@@ -607,11 +625,17 @@ public class WorkflowHelper {
                     Broadcaster broadcaster = broadcasterFactory.lookup(Broadcaster.class, GWTAtmosphereHandler.GWT_BROADCASTER_ID + user.getName());
                     if(broadcaster != null) {
                         TaskEvent taskEvent = new TaskEvent();
-                        if (newTask) {
-                            taskEvent.setNewTask(getGWTJahiaWorkflowTask(task));
-                        }
                         try {
-                            taskEvent.setNumberOfTasks(getNumberOfTasksForUser((JahiaUser) user, Locale.ENGLISH));
+                            JahiaUser jahiaUser = (JahiaUser) user;
+                            Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(jahiaUser);
+                            if (preferredLocale == null) {
+                                preferredLocale = LanguageCodeConverters.languageCodeToLocale(ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getDefaultLanguage());
+                            }
+                            if (newTask) {
+                                task = service.getWorkflowTask(task.getId(), task.getProvider(), preferredLocale);
+                                taskEvent.setNewTask(getGWTJahiaWorkflowTask(task));
+                            }
+                            taskEvent.setNumberOfTasks(getNumberOfTasksForUser(jahiaUser, preferredLocale));
                             if (!newTask && user.equals(task.getAssignee())) {
                                 taskEvent.setNumberOfTasks(taskEvent.getNumberOfTasks() - 1);
                             }

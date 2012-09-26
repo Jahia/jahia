@@ -41,6 +41,7 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.jahia.services.content.*;
+import org.jahia.services.workflow.WorkflowObservationManager;
 import org.jbpm.api.Execution;
 import org.jbpm.api.listener.EventListener;
 import org.jbpm.api.listener.EventListenerExecution;
@@ -65,9 +66,14 @@ public class JBPMListener implements EventListener {
     private static final Logger logger = LoggerFactory.getLogger(JBPMListener.class);
 
     private JBPMProvider provider;
+    private WorkflowObservationManager observationManager;
 
     public JBPMListener(JBPMProvider provider) {
         this.provider = provider;
+    }
+
+    public void setObservationManager(WorkflowObservationManager observationManager) {
+        this.observationManager = observationManager;
     }
 
     public void notify(EventListenerExecution execution) throws Exception {
@@ -112,5 +118,14 @@ public class JBPMListener implements EventListener {
                         return true;
                     }
                 });
+
+        if (observationManager != null) {
+            if (Execution.STATE_ACTIVE_ROOT.equals(executionState)) {
+                observationManager.notifyWorkflowStarted(provider.getKey(), executionId);
+            } else if (Execution.STATE_ENDED.equals(executionState)) {
+                observationManager.notifyWorkflowEnded(provider.getKey(), executionId);
+            }
+        }
+
     }
 }

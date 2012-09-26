@@ -198,6 +198,7 @@
                                            value-ref="org.jahia.services.content.rules.ImageService"/>
                                     <entry key="extractionService"
                                            value-ref="org.jahia.services.content.rules.ExtractionService"/>
+                                    <entry key="sitePubSubService" value-ref="org.jahia.services.atmosphere.rules.SitePublisherSubscriberRuleService"/>
                                 </map>
                             </property>
                             <property name="filesAccepted">
@@ -227,6 +228,7 @@
                                            value-ref="org.jahia.services.content.rules.ExtractionService"/>
                                     <entry key="notificationService"
                                            value-ref="org.jahia.services.content.rules.RulesNotificationService"/>
+                                    <entry key="sitePubSubService" value-ref="org.jahia.services.atmosphere.rules.SitePublisherSubscriberRuleService"/>
                                 </map>
                             </property>
                             <property name="filesAccepted">

@@ -22,18 +22,18 @@ public class SitePublisherSubscriberRuleService {
         this.publisherSubscriberService = publisherSubscriberService;
     }
 
-    public void sendSiteMessage(AddedNodeFact nodeFact, String message, KnowledgeHelper drools) {
-        publisherSubscriberService.publishToSite(nodeFact.getNode(), message);
+    public void sendSiteMessage(AddedNodeFact nodeFact, Object[] params, KnowledgeHelper drools) {
+        publisherSubscriberService.publishToSite(nodeFact.getNode(), params[0].toString());
     }
 
-    public void sendAbsoluteMessage(String absolute, String message, KnowledgeHelper drools) {
-        publisherSubscriberService.publishToAbsoluteChannel(absolute, message);
+    public void sendAbsoluteMessage(String absolute, Object[] params, KnowledgeHelper drools) {
+        publisherSubscriberService.publishToAbsoluteChannel(absolute, params[0].toString());
     }
 
-    public void sendNodeMessage(AddedNodeFact nodeFact, String message, KnowledgeHelper drools) {
+    public void sendNodeMessage(AddedNodeFact nodeFact, Object[] params, KnowledgeHelper drools) {
         JCRNodeWrapper parentOfType = JCRContentUtils.getParentOfType(nodeFact.getNode(), "jnt:page");
         if (parentOfType != null) {
-            publisherSubscriberService.publishToNodeChannel(parentOfType, message);
+            publisherSubscriberService.publishToNodeChannel(parentOfType, params[0].toString());
         }
     }
 }

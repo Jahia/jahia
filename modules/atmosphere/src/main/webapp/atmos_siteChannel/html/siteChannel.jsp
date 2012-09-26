@@ -43,7 +43,7 @@
 
         $(document).ready(function() {
             $.atmosphere.unsubscribe();
-            $.atmosphere.subscribe("${url.server}${url.context}/atmosphere/pubsub/sites/${renderContext.site.siteKey}", callbackSite,
+            $.atmosphere.subscribe("${url.server}${url.context}/atmosphere/pubsub/sites/${renderContext.site.siteKey}__${functions:displayLocaleNameWith(renderContext.mainResourceLocale,functions:toLocale('en'))}", callbackSite,
                     $.atmosphere.request = { transport: "websocket" });
         });
     </script>

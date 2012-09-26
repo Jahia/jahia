@@ -37,22 +37,3 @@ rule "Move to split folder"
     then
         Move to split folder node
 end
-
-rule "Send a site message on editorial content creation"
-    salience 50
-    when
-        A new node is created
-            - the node has the type jmix:editorialContent
-    then
-        Send site message "Content "+node.getName()+" has been created."
-end
-
-
-rule "Send a node message on editorial content update"
-    salience 50
-    when
-        A property has been set on a node
-            - the node has the type jmix:editorialContent
-    then
-        Send message "This page has been updated." to node channel
-end

@@ -77,7 +77,7 @@ public class LanguageHelper {
             if (site != null && site.getLanguages() != null && site.getLanguages().size()>0)  {
                 final Set<String> languageSettings = site.getLanguages();
                 final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
-                final Set<String> activeLanguages = site.getActiveLanguages();
+                final Set<String> activeLanguages = site.getActiveLiveLanguages();
                 if (languageSettings != null && languageSettings.size() > 0) {
                     final TreeSet<String> orderedLangs = new TreeSet<String>();
                     orderedLangs.addAll(languageSettings);
@@ -96,7 +96,7 @@ public class LanguageHelper {
                 JCRSiteNode siteByKey = (JCRSiteNode) ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(
                         JahiaSitesBaseService.SYSTEM_SITE_KEY).getNode();
                 final Set<String>languages  = siteByKey.getLanguages();
-                final Set<String> activeLanguages = siteByKey.getActiveLanguages();
+                final Set<String> activeLanguages = siteByKey.getActiveLiveLanguages();
                 final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
                 final TreeSet<String> orderedLangs = new TreeSet<String>();
                 orderedLangs.addAll(languages);

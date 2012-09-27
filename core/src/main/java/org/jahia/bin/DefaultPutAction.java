@@ -56,6 +56,7 @@ import org.json.JSONObject;
 
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -104,7 +105,11 @@ public class DefaultPutAction extends Action {
                         continue;
                     }
                     if (propertyDefinition.isMultiple()) {
-                        node.setProperty(key, values.toArray(new String[values.size()]));
+                        if (values.size() == 1 && values.get(0).equals("jcrClearAllValues")) {
+                            node.setProperty(key, new Value[0]);
+                        } else {
+                            node.setProperty(key, values.toArray(new String[values.size()]));
+                        }
                     } else if (propertyDefinition.getRequiredType() == PropertyType.DATE) {
                         // Expecting ISO date yyyy-MM-dd'T'HH:mm:ss
                         DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(values.get(0));

@@ -28,7 +28,7 @@
     <c:otherwise>
         <div id="languages">
             <ul>
-                <c:forEach items="${renderContext.liveMode ? renderContext.site.activeLanguagesAsLocales : renderContext.site.languagesAsLocales}" var="language">
+                <c:forEach items="${renderContext.liveMode ? renderContext.site.activeLiveLanguagesAsLocales : renderContext.site.languagesAsLocales}" var="language">
                     <ui:displayLanguageSwitchLink languageCode="${language}" display="false" urlVar="switchUrl"
                                                   var="renderedLanguage"
                                                   linkKind="${currentNode.properties.typeOfDisplay.string}"/>

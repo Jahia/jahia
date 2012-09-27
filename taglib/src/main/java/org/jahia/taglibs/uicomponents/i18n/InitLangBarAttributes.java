@@ -86,7 +86,7 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
 
         final RenderContext renderContext = (RenderContext) request.getAttribute("renderContext");
         final JCRSiteNode currentSite = renderContext.getSite();
-        final Set<String> languageSettings = activeLanguagesOnly ? currentSite.getActiveLanguages() : currentSite.getLanguages();
+        final Set<String> languageSettings = activeLanguagesOnly ? currentSite.getActiveLiveLanguages() : currentSite.getLanguages();
 
         if (languageSettings.size() < 2) {
             return EVAL_PAGE;

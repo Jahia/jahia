@@ -165,3 +165,12 @@ rule "Flush group cache"
     then
         Flush group cache
 end
+
+rule "Clear site cache when updated"
+    when
+		A property has been set on a node
+			- the node has the type jnt:virtualsite
+    then
+>       service.updateSite(node);
+end
+

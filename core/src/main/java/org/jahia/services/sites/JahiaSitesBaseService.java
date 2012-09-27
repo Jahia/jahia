@@ -50,6 +50,7 @@ import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -773,6 +774,52 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         siteCacheByName.flush();
         siteCacheByID.flush();
         siteCacheByKey.flush();
+    }
+
+    public void updateSite(JCRSiteNode node) {
+        try {
+            final JahiaSite legacySite = getSiteByKey(node.getName());
+
+            legacySite.setTitle(node.getTitle());
+            legacySite.setDescr(node.getDescr());
+            legacySite.setServerName(node.getServerName());
+
+            legacySite.setLanguages(new HashSet<String>(node.getLanguages()));
+            legacySite.setInactiveLanguages(new HashSet<String>(node.getInactiveLanguages()));
+            legacySite.setInactiveLiveLanguages(new HashSet<String>(node.getInactiveLiveLanguages()));
+            legacySite.setMandatoryLanguages(new HashSet<String>(node.getMandatoryLanguages()));
+            legacySite.setDefaultLanguage(node.getDefaultLanguage());
+            legacySite.setMixLanguagesActive(node.isMixLanguagesActive());
+            legacySite.setAllowsUnlistedLanguages(node.isAllowsUnlistedLanguages());
+
+            legacySite.setInstalledModules(node.getInstalledModules());
+            legacySite.setTemplatePackageName(node.getTemplatePackageName());
+
+            if (node.getName().equals(SYSTEM_SITE_KEY)) {
+                try {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            updateWorkspacePermissions(session, "default", legacySite);
+                            updateWorkspacePermissions(session, "live", legacySite);
+                            updateTranslatorRoles(session, legacySite);
+                            session.save();
+                            return null;
+                        }
+                    });
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            } else {
+                JahiaSite systemSite = getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+                if (!systemSite.getLanguages().containsAll(legacySite.getLanguages())) {
+                    systemSite.getLanguages().addAll(legacySite.getLanguages());
+                    updateSite(systemSite);
+                }
+            }
+
+        } catch (JahiaException e) {
+
+        }
     }
 
     private void updateSite(JahiaSite site, JCRSessionWrapper session) throws RepositoryException {

@@ -34,7 +34,7 @@ public class PublisherSubscriberService {
     public void publishToSite(JCRNodeWrapper node, String message) {
         try {
             final JCRSiteNode resolveSite = node.getResolveSite();
-            final List<Locale> activeLanguagesAsLocales = resolveSite.getActiveLanguagesAsLocales();
+            final List<Locale> activeLanguagesAsLocales = resolveSite.getActiveLiveLanguagesAsLocales();
             for (Locale activeLanguagesAsLocale : activeLanguagesAsLocales) {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("body", JahiaResourceBundle.getString(null,message,
@@ -61,7 +61,7 @@ public class PublisherSubscriberService {
     public void publishToNodeChannel(JCRNodeWrapper node, String message) {
         try {
             final JCRSiteNode resolveSite = node.getResolveSite();
-            final List<Locale> activeLanguagesAsLocales = resolveSite.getActiveLanguagesAsLocales();
+            final List<Locale> activeLanguagesAsLocales = resolveSite.getActiveLiveLanguagesAsLocales();
             for (Locale activeLanguagesAsLocale : activeLanguagesAsLocales) {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("body", JahiaResourceBundle.getString(null,message,

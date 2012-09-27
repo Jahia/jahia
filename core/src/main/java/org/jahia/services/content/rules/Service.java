@@ -47,6 +47,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
+import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.utils.Url;
@@ -100,7 +101,7 @@ public class Service extends JahiaService {
     private static Service instance;
 
     private TaggingService taggingService;
-    private JahiaSitesService sitesService;
+    private JahiaSitesBaseService sitesService;
     private SchedulerService schedulerService;
     private CacheService cacheService;
     private JahiaUserManagerService userManagerService;
@@ -668,7 +669,7 @@ public class Service extends JahiaService {
         this.taggingService = taggingService;
     }
 
-    public void setSitesService(JahiaSitesService sitesService) {
+    public void setSitesService(JahiaSitesBaseService sitesService) {
         this.sitesService = sitesService;
     }
 
@@ -793,6 +794,10 @@ public class Service extends JahiaService {
     public void flushGroupCaches() {
         JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         groupService.flushCache();
+    }
+
+    public void updateSite(AddedNodeFact node) {
+        sitesService.updateSite((JCRSiteNode) node.getNode());
     }
 
     public void executeActionNow(NodeFact node, final String actionToExecute, KnowledgeHelper drools)

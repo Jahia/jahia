@@ -11,10 +11,13 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import java.util.List;
 import java.util.Locale;
+import java.util.MissingResourceException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,6 +29,7 @@ import java.util.Locale;
 public class PublisherSubscriberService {
 
     private JCRTemplate jcrTemplate;
+    private transient static Logger logger = LoggerFactory.getLogger(PublisherSubscriberService.class);
 
     public void setJcrTemplate(JCRTemplate jcrTemplate) {
         this.jcrTemplate = jcrTemplate;
@@ -37,8 +41,13 @@ public class PublisherSubscriberService {
             final List<Locale> activeLanguagesAsLocales = resolveSite.getActiveLiveLanguagesAsLocales();
             for (Locale activeLanguagesAsLocale : activeLanguagesAsLocales) {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("body", JahiaResourceBundle.getString(null,message,
-                        activeLanguagesAsLocale, resolveSite.getTemplatePackageName()));
+                try {
+                    jsonObject.put("body", JahiaResourceBundle.getString(null, message, activeLanguagesAsLocale,
+                            resolveSite.getTemplatePackageName()));
+                } catch (MissingResourceException e) {
+                    logger.warn(e.getMessage(), e);
+                    jsonObject.put("body", message + " is missing or cannot be resolved");
+                }
                 // lookup for a parent of type page
                 JCRNodeWrapper parentOfType = JCRContentUtils.getParentOfType(node, "jnt:page");
                 String path = "/cms/render";
@@ -52,9 +61,9 @@ public class PublisherSubscriberService {
                         jsonObject.toString(), true);
             }
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -64,8 +73,13 @@ public class PublisherSubscriberService {
             final List<Locale> activeLanguagesAsLocales = resolveSite.getActiveLiveLanguagesAsLocales();
             for (Locale activeLanguagesAsLocale : activeLanguagesAsLocales) {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("body", JahiaResourceBundle.getString(null,message,
-                        activeLanguagesAsLocale, resolveSite.getTemplatePackageName()));
+                try {
+                    jsonObject.put("body", JahiaResourceBundle.getString(null, message, activeLanguagesAsLocale,
+                            resolveSite.getTemplatePackageName()));
+                } catch (MissingResourceException e) {
+                    logger.warn(e.getMessage(), e);
+                    jsonObject.put("body", message + " is missing or cannot be resolved");
+                }
                 JCRNodeWrapper parentOfType = JCRContentUtils.getParentOfType(node, "jnt:page");
                 String path = "/cms/render";
                 final String url =
@@ -79,9 +93,9 @@ public class PublisherSubscriberService {
             }
 
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 

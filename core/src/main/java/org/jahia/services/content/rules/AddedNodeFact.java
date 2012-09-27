@@ -181,7 +181,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
     public AddedNodeFact getAncestor(String type) throws RepositoryException {
         AddedNodeFact ancestor = this;
         try {
-            while (!ancestor.getNode().isNodeType(Constants.JAHIANT_PAGE) && (ancestor = ancestor.getParent()) != null) {
+            while ((ancestor = ancestor.getParent()) != null) {
                 if (ancestor.getNode().isNodeType(type)) {
                     return ancestor;
                 }

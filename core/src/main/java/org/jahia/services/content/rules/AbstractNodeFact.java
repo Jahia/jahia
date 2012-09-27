@@ -17,6 +17,7 @@ public abstract class AbstractNodeFact implements NodeFact {
     protected String workspace;
 
     protected String operationType;
+    protected List<String> installedModules;
 
     public AbstractNodeFact(JCRNodeWrapper node) throws RepositoryException {
         this.node = node;
@@ -58,6 +59,18 @@ public abstract class AbstractNodeFact implements NodeFact {
 
     public void setOperationType(String operationType) {
         this.operationType = operationType;
+    }
+
+    /**
+     * returns the list of current installed modules on this site.
+     * @return
+     */
+    public List<String> getInstalledModules() {
+        return installedModules;
+    }
+
+    public void setInstalledModules(List<String> installedModules) {
+        this.installedModules = installedModules;
     }
 
     public AddedNodeFact getContent() throws RepositoryException {
@@ -119,7 +132,7 @@ public abstract class AbstractNodeFact implements NodeFact {
     public AddedNodeFact getAncestor(String type) throws RepositoryException {
         AddedNodeFact ancestor = new AddedNodeFact(node);
         try {
-            while (!ancestor.getNode().isNodeType(Constants.JAHIANT_PAGE) && (ancestor = ancestor.getParent()) != null) {
+            while ((ancestor = ancestor.getParent()) != null) {
                 if (ancestor.getNode().isNodeType(type)) {
                     return ancestor;
                 }

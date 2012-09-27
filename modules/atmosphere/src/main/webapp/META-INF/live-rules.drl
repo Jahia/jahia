@@ -24,6 +24,7 @@ rule "Send a site message on editorial content creation"
     when
         A new node is created
             - the node has the type jmix:editorialContent
+            - installed modules contains atmosphere
     then
         Send site message with parameters new Object[] { "label.atmosphere.editorial.content.creation", node.getName(), node.getPath() }
 end
@@ -34,6 +35,7 @@ rule "Send a node message on editorial content update"
     when
         A property has been set on a node
             - the node has the type jmix:editorialContent
+            - installed modules contains atmosphere
     then
         Send message to node channel with parameters new Object[] { "label.atmosphere.editorial.content.update", node.getName(), node.getPath() }
 end

@@ -43,6 +43,7 @@ package org.jahia.services.content.decorator;
 import static org.jahia.services.sites.SitesSettings.*;
 
 import org.apache.commons.collections.set.UnmodifiableSet;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -325,6 +326,32 @@ public class JCRSiteNode extends JCRNodeDecorator {
                 for (int i = 0; i < v.length; i++) {
                     Value value = v[i];
                     modules.add(value.getString());
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property", e);
+        }
+        return modules;
+    }
+
+    public List<String> getAllInstalledModules() {
+        List<String> modules = new ArrayList<String>();
+        try {
+            if (hasProperty("j:installedModules")) {
+                Value[] v = getProperty("j:installedModules").getValues();
+                for (int i = 0; i < v.length; i++) {
+                    Value value = v[i];
+                    modules.add(StringUtils.substringBefore(value.getString(), ":"));
+                }
+            }
+            if (hasProperty("j:templatesSet")) {
+                final JahiaTemplatesPackage templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByNodeName(
+                        getProperty("j:templatesSet").getString());
+                final Set<JahiaTemplatesPackage> dependencies = templatePackage.getDependencies();
+                for (JahiaTemplatesPackage dependency : dependencies) {
+                    if(!modules.contains(dependency.getFileName())) {
+                        modules.add(dependency.getFileName());
+                    }
                 }
             }
         } catch (RepositoryException e) {

@@ -326,4 +326,8 @@ public class ChangedPropertyFact implements Updateable {
     public String getOperationType() {
         return operationType;
     }
+
+    public List<String> getInstalledModules() {
+        return nodeWrapper.getInstalledModules();
+    }
 }

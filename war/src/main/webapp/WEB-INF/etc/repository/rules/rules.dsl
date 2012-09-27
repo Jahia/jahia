@@ -40,6 +40,7 @@
 [condition][]- in {workspaceName} workspace=node.workspace == "{workspaceName}"
 [condition][]- not in operation {operation}=operationType != "{operation}"
 [condition][]- in operation {operation}=operationType == "{operation}"
+[condition][]- installed modules contains {module}=installedModules contains "{module}"
 [condition][]A search result hit is present=searchHit : JCRNodeHit ( )
 [condition][]- the node is of type {type}=type == "{type}"
 [condition][]The {node} has not been added=not AddedNodeFact ( path == ({node}.getPath()) )

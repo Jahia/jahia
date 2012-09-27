@@ -43,6 +43,7 @@ package org.jahia.services.content.rules;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 import org.drools.RuleBase;
@@ -305,6 +306,12 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                         if (rn == null) {
                                             rn = new AddedNodeFact(n);
                                             rn.setOperationType(getNodeFactOperationType(operationType));
+                                            final JCRSiteNode resolveSite = n.getResolveSite();
+                                            if (resolveSite != null) {
+                                                rn.setInstalledModules(resolveSite.getAllInstalledModules());
+                                            } else {
+                                                rn.setInstalledModules(new ArrayList<String>());
+                                            }
                                             eventsMap.put(identifier, rn);
                                         }
                                         list.add(rn);
@@ -339,11 +346,23 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                                     if (rn == null) {
                                                         rn = new AddedNodeFact(parent);
                                                         rn.setOperationType(getNodeFactOperationType(operationType));
+                                                        final JCRSiteNode resolveSite = parent.getResolveSite();
+                                                        if (resolveSite != null) {
+                                                            rn.setInstalledModules(resolveSite.getAllInstalledModules());
+                                                        } else {
+                                                            rn.setInstalledModules(new ArrayList<String>());
+                                                        }
                                                         eventsMap.put(identifier, rn);
                                                     }
                                                 } else {
                                                     rn = new AddedNodeFact(parent);
                                                     rn.setOperationType(getNodeFactOperationType(operationType));
+                                                    final JCRSiteNode resolveSite = parent.getResolveSite();
+                                                    if (resolveSite != null) {
+                                                        rn.setInstalledModules(resolveSite.getAllInstalledModules());
+                                                    } else {
+                                                        rn.setInstalledModules(new ArrayList<String>());
+                                                    }
                                                 }
                                                 list.add(new ChangedPropertyFact(rn, p));
                                             }
@@ -358,6 +377,12 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                         if (n.isNodeType("jmix:observable") && !n.isNodeType("jnt:translation")) {
                                             final PublishedNodeFact e = new PublishedNodeFact(n);
                                             e.setOperationType(getNodeFactOperationType(operationType));
+                                            final JCRSiteNode resolveSite = n.getResolveSite();
+                                            if (resolveSite != null) {
+                                                e.setInstalledModules(resolveSite.getAllInstalledModules());
+                                            } else {
+                                                e.setInstalledModules(new ArrayList<String>());
+                                            }
                                             list.add(e);
                                         }
                                     }
@@ -371,6 +396,12 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                         if (w == null) {
                                             w = new AddedNodeFact(parent);
                                             w.setOperationType(getNodeFactOperationType(operationType));
+                                            final JCRSiteNode resolveSite = parent.getResolveSite();
+                                            if (resolveSite != null) {
+                                                w.setInstalledModules(resolveSite.getAllInstalledModules());
+                                            } else {
+                                                w.setInstalledModules(new ArrayList<String>());
+                                            }
                                             eventsMap.put(identifier, w);
                                         }
 
@@ -394,6 +425,12 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                             if (rn == null) {
                                                 rn = new AddedNodeFact(n);
                                                 rn.setOperationType(getNodeFactOperationType(operationType));
+                                                final JCRSiteNode resolveSite = n.getResolveSite();
+                                                if (resolveSite != null) {
+                                                    rn.setInstalledModules(resolveSite.getAllInstalledModules());
+                                                } else {
+                                                    rn.setInstalledModules(new ArrayList<String>());
+                                                }
                                                 eventsMap.put(key, rn);
                                             }
                                             list.add(new DeletedPropertyFact(rn, propertyName));
@@ -406,6 +443,12 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                     if (n.isNodeType("jmix:observable") && !n.isNodeType("jnt:translation")) {
                                         final MovedNodeFact e = new MovedNodeFact(n,(String) event.getInfo().get("srcAbsPath"));
                                         e.setOperationType(getNodeFactOperationType(operationType));
+                                        final JCRSiteNode resolveSite = n.getResolveSite();
+                                        if (resolveSite != null) {
+                                            e.setInstalledModules(resolveSite.getAllInstalledModules());
+                                        } else {
+                                            e.setInstalledModules(new ArrayList<String>());
+                                        }
                                         list.add(e);
                                     }
                                 }

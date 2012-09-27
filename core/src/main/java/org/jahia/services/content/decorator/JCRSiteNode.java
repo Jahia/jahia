@@ -373,7 +373,6 @@ public class JCRSiteNode extends JCRNodeDecorator {
         return modules;
     }
 
-<<<<<<< .working
     public List<String> getAllInstalledModules() {
         List<String> modules = new ArrayList<String>();
         try {
@@ -418,34 +417,6 @@ public class JCRSiteNode extends JCRNodeDecorator {
         return modules;
     }
 
-=======
-    public List<String> getAllInstalledModules() {
-        List<String> modules = new ArrayList<String>();
-        try {
-            if (hasProperty("j:installedModules")) {
-                Value[] v = getProperty("j:installedModules").getValues();
-                for (int i = 0; i < v.length; i++) {
-                    Value value = v[i];
-                    modules.add(StringUtils.substringBefore(value.getString(), ":"));
-                }
-            }
-            if (hasProperty("j:templatesSet")) {
-                final JahiaTemplatesPackage templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByNodeName(
-                        getProperty("j:templatesSet").getString());
-                final Set<JahiaTemplatesPackage> dependencies = templatePackage.getDependencies();
-                for (JahiaTemplatesPackage dependency : dependencies) {
-                    if(!modules.contains(dependency.getFileName())) {
-                        modules.add(dependency.getFileName());
-                    }
-                }
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property", e);
-        }
-        return modules;
-    }
-
->>>>>>> .merge-right.r43225
     /**
      * Returns the corresponding template set name of this virtual site.
      *

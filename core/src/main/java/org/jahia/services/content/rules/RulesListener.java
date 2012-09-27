@@ -306,16 +306,12 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                         if (rn == null) {
                                             rn = new AddedNodeFact(n);
                                             rn.setOperationType(getNodeFactOperationType(operationType));
-<<<<<<< .working
-                                            rn.setInstalledModules(n.getResolveSite().getAllInstalledModules());
-=======
                                             final JCRSiteNode resolveSite = n.getResolveSite();
-                                            if (resolveSite != null) {
+                                            if (resolveSite!=null) {
                                                 rn.setInstalledModules(resolveSite.getAllInstalledModules());
                                             } else {
                                                 rn.setInstalledModules(new ArrayList<String>());
                                             }
->>>>>>> .merge-right.r43225
                                             eventsMap.put(identifier, rn);
                                         }
                                         list.add(rn);
@@ -350,31 +346,23 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                                     if (rn == null) {
                                                         rn = new AddedNodeFact(parent);
                                                         rn.setOperationType(getNodeFactOperationType(operationType));
-<<<<<<< .working
-                                                        rn.setInstalledModules(parent.getResolveSite().getAllInstalledModules());
-=======
                                                         final JCRSiteNode resolveSite = parent.getResolveSite();
-                                                        if (resolveSite != null) {
+                                                        if (resolveSite!=null) {
                                                             rn.setInstalledModules(resolveSite.getAllInstalledModules());
                                                         } else {
                                                             rn.setInstalledModules(new ArrayList<String>());
                                                         }
->>>>>>> .merge-right.r43225
                                                         eventsMap.put(identifier, rn);
                                                     }
                                                 } else {
                                                     rn = new AddedNodeFact(parent);
                                                     rn.setOperationType(getNodeFactOperationType(operationType));
-<<<<<<< .working
-                                                    rn.setInstalledModules(parent.getResolveSite().getAllInstalledModules());
-=======
                                                     final JCRSiteNode resolveSite = parent.getResolveSite();
-                                                    if (resolveSite != null) {
+                                                    if (resolveSite!=null) {
                                                         rn.setInstalledModules(resolveSite.getAllInstalledModules());
                                                     } else {
                                                         rn.setInstalledModules(new ArrayList<String>());
                                                     }
->>>>>>> .merge-right.r43225
                                                 }
                                                 list.add(new ChangedPropertyFact(rn, p));
                                             }
@@ -389,16 +377,12 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                         if (n.isNodeType("jmix:observable") && !n.isNodeType("jnt:translation")) {
                                             final PublishedNodeFact e = new PublishedNodeFact(n);
                                             e.setOperationType(getNodeFactOperationType(operationType));
-<<<<<<< .working
-                                            e.setInstalledModules(n.getResolveSite().getAllInstalledModules());
-=======
                                             final JCRSiteNode resolveSite = n.getResolveSite();
-                                            if (resolveSite != null) {
+                                            if (resolveSite!=null) {
                                                 e.setInstalledModules(resolveSite.getAllInstalledModules());
                                             } else {
                                                 e.setInstalledModules(new ArrayList<String>());
                                             }
->>>>>>> .merge-right.r43225
                                             list.add(e);
                                         }
                                     }
@@ -412,16 +396,12 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                         if (w == null) {
                                             w = new AddedNodeFact(parent);
                                             w.setOperationType(getNodeFactOperationType(operationType));
-<<<<<<< .working
-                                            w.setInstalledModules(parent.getResolveSite().getAllInstalledModules());
-=======
                                             final JCRSiteNode resolveSite = parent.getResolveSite();
-                                            if (resolveSite != null) {
+                                            if (resolveSite!=null) {
                                                 w.setInstalledModules(resolveSite.getAllInstalledModules());
                                             } else {
                                                 w.setInstalledModules(new ArrayList<String>());
                                             }
->>>>>>> .merge-right.r43225
                                             eventsMap.put(identifier, w);
                                         }
 
@@ -445,16 +425,12 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                             if (rn == null) {
                                                 rn = new AddedNodeFact(n);
                                                 rn.setOperationType(getNodeFactOperationType(operationType));
-<<<<<<< .working
-                                                rn.setInstalledModules(n.getResolveSite().getAllInstalledModules());
-=======
                                                 final JCRSiteNode resolveSite = n.getResolveSite();
-                                                if (resolveSite != null) {
+                                                if (resolveSite!=null) {
                                                     rn.setInstalledModules(resolveSite.getAllInstalledModules());
                                                 } else {
                                                     rn.setInstalledModules(new ArrayList<String>());
                                                 }
->>>>>>> .merge-right.r43225
                                                 eventsMap.put(key, rn);
                                             }
                                             list.add(new DeletedPropertyFact(rn, propertyName));
@@ -467,16 +443,12 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                     if (n.isNodeType("jmix:observable") && !n.isNodeType("jnt:translation")) {
                                         final MovedNodeFact e = new MovedNodeFact(n,(String) event.getInfo().get("srcAbsPath"));
                                         e.setOperationType(getNodeFactOperationType(operationType));
-<<<<<<< .working
-                                        e.setInstalledModules(n.getResolveSite().getAllInstalledModules());
-=======
                                         final JCRSiteNode resolveSite = n.getResolveSite();
-                                        if (resolveSite != null) {
+                                        if (resolveSite!=null) {
                                             e.setInstalledModules(resolveSite.getAllInstalledModules());
                                         } else {
                                             e.setInstalledModules(new ArrayList<String>());
                                         }
->>>>>>> .merge-right.r43225
                                         list.add(e);
                                     }
                                 }

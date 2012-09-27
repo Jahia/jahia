@@ -22,6 +22,23 @@
 
     <bean name="wfImage" class="org.jahia.modules.defaultmodule.actions.WorkflowImageController"/>
 
+    <bean name="org.jahia.bin.Edit" parent="abstractRender" class="org.jahia.bin.Edit">
+        <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
+        <property name="editConfiguration" ref="editmode" />
+        <property name="workspace" value="default" />
+    </bean>
+    <bean name="org.jahia.bin.Contribute" parent="abstractRender" class="org.jahia.bin.Edit">
+        <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
+        <property name="editConfiguration" ref="contributemode" />
+        <property name="workspace" value="default" />
+    </bean>
+    <bean name="org.jahia.bin.Studio" parent="abstractRender"
+        class="org.jahia.bin.Studio">
+        <property name="sessionExpiryTime" value="60" />
+        <property name="requiredPermission" value="studioModeAccess" />
+        <property name="workspace" value="default" />
+    </bean>
+
     <bean name="rendererMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
             <map>
@@ -38,48 +55,12 @@
                         <property name="workspace" value="default"/>
                     </bean>
                 </entry>
-                <entry key="/edit/**">
-                    <bean name="org.jahia.bin.Edit" parent="abstractRender" class="org.jahia.bin.Edit">
-                        <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
-                        <property name="editConfiguration" ref="editmode"/>
-                        <property name="workspace" value="default"/>
-                    </bean>
-                </entry>
-                <entry key="/editframe/**">
-                    <bean name="org.jahia.bin.Edit" parent="abstractRender" class="org.jahia.bin.Edit">
-                        <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
-                        <property name="editConfiguration" ref="editmode"/>
-                        <property name="workspace" value="default"/>
-                    </bean>
-                </entry>
-                <entry key="/contribute/**">
-                    <bean name="org.jahia.bin.Contribute" parent="abstractRender" class="org.jahia.bin.Edit">
-                        <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
-                        <property name="editConfiguration" ref="contributemode"/>
-                        <property name="workspace" value="default"/>
-                    </bean>
-                </entry>
-                <entry key="/contributeframe/**">
-                    <bean name="org.jahia.bin.Contribute" parent="abstractRender" class="org.jahia.bin.Edit">
-                        <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
-                        <property name="editConfiguration" ref="contributemode"/>
-                        <property name="workspace" value="default"/>
-                    </bean>
-                </entry>
-                <entry key="/studio/**">
-                    <bean name="org.jahia.bin.Studio" parent="abstractRender" class="org.jahia.bin.Studio">
-                        <property name="sessionExpiryTime" value="60" />
-                        <property name="requiredPermission" value="studioModeAccess"/>
-                        <property name="workspace" value="default"/>
-                    </bean>
-                </entry>
-                <entry key="/studioframe/**">
-                    <bean name="org.jahia.bin.Studio" parent="abstractRender" class="org.jahia.bin.Studio">
-                        <property name="sessionExpiryTime" value="60" />
-                        <property name="requiredPermission" value="studioModeAccess"/>
-                        <property name="workspace" value="default"/>
-                    </bean>
-                </entry>
+                <entry key="/edit/**" value-ref="org.jahia.bin.Edit"/>
+                <entry key="/editframe/**" value-ref="org.jahia.bin.Edit"/>
+                <entry key="/contribute/**" value-ref="org.jahia.bin.Contribute"/>
+                <entry key="/contributeframe/**" value-ref="org.jahia.bin.Contribute"/>
+                <entry key="/studio/**" value-ref="org.jahia.bin.Studio"/>
+                <entry key="/studioframe/**" value-ref="org.jahia.bin.Studio"/>
                 <entry key="/find/**">
                     <bean class="org.jahia.bin.Find">
                         <property name="urlResolverFactory" ref="urlResolverFactory" />

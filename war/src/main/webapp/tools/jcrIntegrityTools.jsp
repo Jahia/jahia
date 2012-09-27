@@ -99,35 +99,50 @@
         long startTime;
         long bytesRead;
         long totalTime;
+        final boolean referencesCheck = fix || !isParameterActive(request, "option", "noReferencesCheck");
+        final boolean binaryCheck = fix || !isParameterActive(request, "option", "noBinariesCheck");
         if (fix) {
             printTestName(out, "JCR Integrity Fix");
         } else {
-            printTestName(out, "JCR Integrity Check");
+            StringBuilder exclusions = new StringBuilder();
+            if (!binaryCheck) {
+                exclusions.append("no binaries");
+            }
+            if (!referencesCheck) {
+                if (exclusions.length() > 0) {
+                    exclusions.append(", ");
+                }
+                exclusions.append("no references");
+            }
+            
+            printTestName(out, "JCR Integrity Check " + (exclusions.length() > 0 ? "(" + exclusions.toString() + ")" : ""));
         }
         try {
-            String[] workspaces = new String[]{"default", "live"};
+            String chosenWorkspace = request.getParameter("workspace");
             final Map<String, Long> results = new HashMap<String, Long>();
             results.put("bytesRead", 0L);
             results.put("nodesRead", 0L);
             bytesRead = 0;
             startTime = System.currentTimeMillis();
             for (String workspaceName : workspaces) {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspaceName, new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper sessionWrapper) throws RepositoryException {
-                        JCRNodeWrapper jahiaRootNode = sessionWrapper.getRootNode();
-                        Node jcrRootNode = jahiaRootNode.getRealNode();
-                        Session jcrSession = jcrRootNode.getSession();
+                if (chosenWorkspace == null || chosenWorkspace.isEmpty() || chosenWorkspace.equals(workspaceName)) {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspaceName, new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper sessionWrapper) throws RepositoryException {
+                            JCRNodeWrapper jahiaRootNode = sessionWrapper.getRootNode();
+                            Node jcrRootNode = jahiaRootNode.getRealNode();
+                            Session jcrSession = jcrRootNode.getSession();
 
-                        Workspace workspace = jcrSession.getWorkspace();
-                        try {
-                            println(out, "Traversing " + workspace.getName() + " workspace ...");
-                            processNode(out, jcrRootNode, results, fix);
-                        } catch (IOException e) {
-                            throw new RepositoryException("IOException while running", e);
+                            Workspace workspace = jcrSession.getWorkspace();
+                            try {
+                                println(out, "Traversing " + workspace.getName() + " workspace ...");
+                                processNode(out, jcrRootNode, results, fix, binaryCheck, referencesCheck);
+                            } catch (IOException e) {
+                                throw new RepositoryException("IOException while running", e);
+                            }
+                            return null;
                         }
-                        return null;
-                    }
-                });
+                    });
+                }
             }
             if (fix) {
                 CacheHelper cacheHelper = (CacheHelper) SpringContextSingleton.getInstance().getContext().getBean("CacheHelper");
@@ -141,10 +156,11 @@
             bytesRead = results.get("bytesRead");
             long nodesRead = results.get("nodesRead");
             totalTime = System.currentTimeMillis() - startTime;
-            println(out, "Total time to process all JCR " + nodesRead + " nodes data (" + bytesRead + " bytes) : " + totalTime + "ms");
-            double jcrReadSpeed = bytesRead / (1024.0 * 1024.0) / (totalTime / 1000.0);
-            println(out, "JCR processing speed = " + jcrReadSpeed + "MB/sec");
-
+            println(out, "Total time to process all JCR " + nodesRead + " nodes data" + (bytesRead == 0 ? "" : " (" + bytesRead + " bytes)") + " : " + totalTime + "ms");
+            if (bytesRead > 0) {
+                double jcrReadSpeed = bytesRead / (1024.0 * 1024.0) / (totalTime / 1000.0);
+                println(out, "JCR processing speed = " + jcrReadSpeed + "MB/sec");
+            }
         } catch (Throwable t) {
             println(out, "Error reading JCR ", t, false);
         } finally {
@@ -233,7 +249,7 @@
         out.flush();
     }
 
-    protected boolean processPropertyValue(JspWriter out, Node node, Property property, Value propertyValue, Map<String, Long> results, boolean fix) throws RepositoryException, IOException {
+    protected boolean processPropertyValue(JspWriter out, Node node, Property property, Value propertyValue, Map<String, Long> results, boolean fix, boolean referencesCheck, boolean binaryCheck) throws RepositoryException, IOException {
         int propertyType = propertyValue.getType();
         switch (propertyType) {
             case PropertyType.BINARY:
@@ -349,7 +365,7 @@
         return false;
     }
 
-    protected void processNode(JspWriter out, Node node, Map<String, Long> results, boolean fix) throws IOException, RepositoryException {
+    protected void processNode(JspWriter out, Node node, Map<String, Long> results, boolean fix, boolean referencesCheck, boolean binaryCheck) throws IOException, RepositoryException {
         long nodesRead = results.get("nodesRead");
         // first let's try to read all the properties
         try {
@@ -359,20 +375,22 @@
                 println(out, "Processed " + nodesRead + " nodes...");
             }
             results.put("nodesRead", nodesRead);
-            PropertyIterator propertyIterator = node.getProperties();
-            while (propertyIterator.hasNext() && !mustStop) {
-                Property property = propertyIterator.nextProperty();
-                int propertyType = property.getType();
-                if (property.isMultiple()) {
-                    Value[] values = property.getValues();
-                    for (int i = 0; i < values.length; i++) {
-                        if (!processPropertyValue(out, node, property, values[i], results, fix)) {
+            if (fix || referencesCheck || binaryCheck) {
+                PropertyIterator propertyIterator = node.getProperties();
+                while (propertyIterator.hasNext() && !mustStop) {
+                    Property property = propertyIterator.nextProperty();
+                    int propertyType = property.getType();
+                    if (property.isMultiple()) {
+                        Value[] values = property.getValues();
+                        for (int i = 0; i < values.length; i++) {
+                            if (!processPropertyValue(out, node, property, values[i], results, fix, referencesCheck, binaryCheck)) {
+                                return;
+                            }
+                        }
+                    } else {
+                        if (!processPropertyValue(out, node, property, property.getValue(), results, fix, referencesCheck, binaryCheck)) {
                             return;
                         }
-                    }
-                } else {
-                    if (!processPropertyValue(out, node, property, property.getValue(), results, fix)) {
-                        return;
                     }
                 }
             }
@@ -382,7 +400,7 @@
                 if (childNode.getName().equals("jcr:system")) {
                     println(out, "Ignoring jcr:system node and it's child objects");
                 } else {
-                    processNode(out, childNode, results, fix);
+                    processNode(out, childNode, results, fix, referencesCheck, binaryCheck);
                 }
             }
         } catch (ValueFormatException vfe) {
@@ -392,8 +410,17 @@
         }
     }
 
+    private void renderRadio(JspWriter out, String radioValue, String radioLabel, boolean checked) throws IOException {
+        out.println("<input type=\"radio\" name=\"operation\" value=\"" + radioValue
+                + "\" id=\"" + radioValue + "\""
+                + (checked ? " checked=\"checked\" " : "")
+                + "/><label for=\"" + radioValue + "\">"
+                + radioLabel
+                + "</label><br/>");
+    }    
+    
     private void renderCheckbox(JspWriter out, String checkboxValue, String checkboxLabel, boolean checked) throws IOException {
-        out.println("<input type=\"checkbox\" name=\"operation\" value=\"" + checkboxValue
+        out.println("<input type=\"checkbox\" name=\"option\" value=\"" + checkboxValue
                 + "\" id=\"" + checkboxValue + "\""
                 + (checked ? " checked=\"checked\" " : "")
                 + "/><label for=\"" + checkboxValue + "\">"
@@ -401,8 +428,17 @@
                 + "</label><br/>");
     }
 
-    private boolean isParameterActive(HttpServletRequest request, String operationName) {
-        String[] operationValues = request.getParameterValues("operation");
+    private void renderWorkspaceSelector(JspWriter out) throws IOException {
+        out.println("<label for=\"workspaceSelector\">Choose workspace:</label>" +
+            "<select id=\"workspaceSelector\" name=\"workspace\"><option value=\"\">All Workspaces</option>");
+        for (String workspace : workspaces) {    
+            out.println("<option value=\"" + workspace + "\">" + workspace + "</option>");
+        }
+        out.println("</select><br/>");
+    }    
+    
+    private boolean isParameterActive(HttpServletRequest request, String parameterName, String operationName) {
+        String[] operationValues = request.getParameterValues(parameterName);
         if (operationValues == null) {
             return false;
         }
@@ -426,19 +462,20 @@
 
     static boolean running = false;
     static boolean mustStop = false;
+    static String[] workspaces = new String[]{"default", "live"};
 %>
 <%
     if (request.getParameterMap().size() > 0) {
 
-        if (isParameterActive(request, "runJCRTest")) {
+        if (isParameterActive(request, "operation", "runJCRTest")) {
             runJCRTest(out, request, pageContext, false);
         }
 
-        if (isParameterActive(request, "fixJCR")) {
+        if (isParameterActive(request, "operation", "fixJCR")) {
             runJCRTest(out, request, pageContext, true);
         }
 
-        if (isParameterActive(request, "stop")) {
+        if (isParameterActive(request, "operation", "stop")) {
             mustStop = true;
         }
 
@@ -446,8 +483,11 @@
     } else {
         if (!running) {
             out.println("<form>");
-            renderCheckbox(out, "runJCRTest", "Run full Java Content Repository integrity check", true);
-            renderCheckbox(out, "fixJCR", "Fix full Java Content Repository integrity (also performs check). DO NOT RUN IF PLATFORM IS ACTIVE (USERS, BACKGROUND JOBS ARE RUNNING !). Also this operation WILL DELETE node with invalid references so please backup your data before running this fix !", false);
+            renderWorkspaceSelector(out);
+            renderRadio(out, "runJCRTest", "Run Java Content Repository integrity check", true);
+            renderCheckbox(out, "noReferencesCheck", "Do not check reference properties", false);
+            renderCheckbox(out, "noBinariesCheck", "Do not check binary properties", false);
+            renderRadio(out, "fixJCR", "Fix full Java Content Repository integrity (also performs check). DO NOT RUN IF PLATFORM IS ACTIVE (USERS, BACKGROUND JOBS ARE RUNNING !). Also this operation WILL DELETE node with invalid references so please backup your data before running this fix !", false);            
             out.println("<input type=\"submit\" name=\"submit\" value=\"Submit\">");
             out.println("</form>");
         } else {

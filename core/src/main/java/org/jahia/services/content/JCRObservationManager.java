@@ -294,7 +294,7 @@ public class JCRObservationManager implements ObservationManager {
         }
         return false;
     }
-
+    
     public static <X> X doWorkspaceWriteCall(JCRSessionWrapper session, int operationType, JCRCallback<X> callback)
             throws RepositoryException {
         currentSession.set(session);
@@ -332,6 +332,10 @@ public class JCRObservationManager implements ObservationManager {
                 lastOp.set(null);
             }
         }
+    }
+
+    public static Integer getCurrentOperationType() {
+        return lastOp.get();
     }
 
     class EventConsumer {

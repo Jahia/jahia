@@ -16,6 +16,11 @@
 <template:include view="hidden.header"/>
 <c:set var="isEmpty" value="true"/>
 
+<form action="${url.base}${renderContext.mainResource.node.path}.html">
+    <label for="vanityUrlSearch"><fmt:message key='label.urlmapping.filter'/></label>
+    <input id="vanityUrlSearch" name="vanityUrlSearch" value="${param['vanityUrlSearch']}" />
+</form>
+
 <table style="width: 100%;" cellpadding="0" cellspacing="0" border="1">
     <tr>
         <th><b><fmt:message key='label.urlmapping.mapping'/></b></th>

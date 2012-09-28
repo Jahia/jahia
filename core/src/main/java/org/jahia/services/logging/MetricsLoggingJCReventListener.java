@@ -42,6 +42,8 @@ package org.jahia.services.logging;
 
 import org.slf4j.Logger;
 import org.jahia.services.content.DefaultEventListener;
+import org.jahia.services.content.JCREventIterator;
+import org.jahia.services.content.JCRObservationManager;
 import org.json.JSONObject;
 
 import javax.jcr.RepositoryException;
@@ -86,6 +88,9 @@ public class MetricsLoggingJCReventListener extends DefaultEventListener {
      * @param events The event set received.
      */
     public void onEvent(EventIterator events) {
+        if (events instanceof JCREventIterator && ((JCREventIterator)events).getOperationType() == JCRObservationManager.IMPORT) {
+            return;
+        }
         while (events.hasNext()) {
             try {
                 Event event = events.nextEvent();

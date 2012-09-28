@@ -414,7 +414,14 @@ public class JCRPublicationService extends JahiaService {
             JCRObservationManager.setEventsDisabled(null);
         }
 
-        if (loggingService.isEnabled()) {
+        boolean doLogging = loggingService.isEnabled();
+        if (doLogging) {
+            Integer operationType = JCRObservationManager.getCurrentOperationType();
+            if (operationType != null && operationType == JCRObservationManager.IMPORT) {
+                doLogging = false;
+            }
+        }
+        if (doLogging) {
             // now let's output the publication information to the logging service.
             for (JCRNodeWrapper publishedNode : toPublish) {
                 String userID = sourceSession.getUserID();
@@ -1042,7 +1049,14 @@ public class JCRPublicationService extends JahiaService {
         } else {
             nodesNotUnpublished.add(node.getPath());
         }
-        if (loggingService.isEnabled()) { 
+        boolean doLogging = loggingService.isEnabled();
+        if (doLogging) {
+            Integer operationType = JCRObservationManager.getCurrentOperationType();
+            if (operationType != null && operationType == JCRObservationManager.IMPORT) {
+                doLogging = false;
+            }
+        }
+        if (doLogging) { 
             String userID = node.getSession().getUserID();
             if ((userID != null) && (userID.startsWith(JahiaLoginModule.SYSTEM))) {
                 userID = userID.substring(JahiaLoginModule.SYSTEM.length());

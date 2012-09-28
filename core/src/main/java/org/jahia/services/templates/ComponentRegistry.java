@@ -290,8 +290,10 @@ public class ComponentRegistry {
         if (folder != null) {
             if (!folder.hasNode(nt.getName())) {
                 if (comp != null) {
-                    session.move(comp.getPath(), folder.getPath() + "/" + comp.getName());
-                    comp = folder.getNode(nt.getName());
+                    String newPath = folder.getPath() + "/" + comp.getName();
+                    session.move(comp.getPath(), newPath);
+                    session.save();
+                    comp = session.getNode(newPath);
                 } else {
                     comp = folder.addNode(nt.getName(), JNT_SIMPLE_COMPONENT);
                 }

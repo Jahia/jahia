@@ -7,14 +7,21 @@ import javax.jcr.NodeIterator
 import org.jahia.services.content.JCRNodeWrapper
 import javax.jcr.query.Query
 import org.jahia.services.content.JCRObservationManager
+import org.apache.jackrabbit.core.state.ItemStateReferenceCache
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
 
 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
     public Object doInJCR(JCRSessionWrapper jcrsession) throws RepositoryException {
         JCRObservationManager.setEventsDisabled(Boolean.TRUE);
+        Logger logger = Logger.getLogger(ItemStateReferenceCache.class);
+        Level previousLevel = logger.getLevel();
+        logger.setLevel(Level.ERROR);
 
         try {
             removeVersionable(jcrsession, "jnt:component");
         } finally {
+            logger.setLevel(previousLevel);
             JCRObservationManager.setEventsDisabled(Boolean.FALSE);
         }
 

@@ -857,7 +857,7 @@ public class JCRStoreProvider {
         properties.put(JCRGroup.J_EXTERNAL_SOURCE, group.getProviderName());
         JCRGroupManagerProvider groupManager = (JCRGroupManagerProvider) SpringContextSingleton.getInstance().getContext().getBean("JCRGroupManagerProvider");
         if (groupManager.lookupExternalGroup(group.getName()) == null) {
-            groupManagerService.createGroup(0, group.getName(), properties, true);
+            groupManagerService.createGroup(null, group.getName(), properties, true);
         }
     }
 

@@ -817,28 +817,16 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
 
     private boolean isUserMemberOf(String groupname, String site) {
-        JahiaSite s = null;
         if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupname)) {
             return true;
         }
         if (JahiaGroupManagerService.USERS_GROUPNAME.equals(groupname) && site == null && !JahiaUserManagerService.GUEST_USERNAME.equals(jahiaPrincipal.getName())) {
             return true;
         }
-        int siteId = 0;
-        if (site != null) {
-            try {
-                s = sitesService.getSiteByKey(site);
-                if (s != null) {
-                    siteId = s.getID();
-                }
-            } catch (JahiaException e) {
-                logger.error("Error while retrieving site key" + site, e);
-            }
-        }
 
-        JahiaGroup group = groupService.lookupGroup(siteId, groupname);
+        JahiaGroup group = groupService.lookupGroup(site, groupname);
         if (group == null) {
-            group = groupService.lookupGroup(0, groupname);
+            group = groupService.lookupGroup(null, groupname);
         }
         return (jahiaUser != null) && (group != null) && group.isMember(jahiaUser);
     }

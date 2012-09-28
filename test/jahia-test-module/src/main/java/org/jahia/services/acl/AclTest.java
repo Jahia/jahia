@@ -136,8 +136,8 @@ public class AclTest {
         JahiaGroupManagerService groupManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         assertNotNull("JahiaGroupManagerService cannot be retrieved", groupManager);
 
-        group1 = groupManager.createGroup(site.getID(), "group1", new Properties(), false);
-        group2 = groupManager.createGroup(site.getID(), "group2", new Properties(), false);
+        group1 = groupManager.createGroup(site.getSiteKey(), "group1", new Properties(), false);
+        group2 = groupManager.createGroup(site.getSiteKey(), "group2", new Properties(), false);
 
         group1.addMember(user1);
         group1.addMember(user2);

@@ -754,7 +754,7 @@ public class PrincipalViewHelper implements Serializable {
         final Set<Principal> usersWithoutJahiaAdmin = new TreeSet<Principal>(PRINCIPAL_COMPARATOR);
         usersWithoutJahiaAdmin.addAll(users);
         final JahiaGroup jahiaAdminGroup = ServicesRegistry.getInstance().
-                getJahiaGroupManagerService().getAdministratorGroup(0);
+                getJahiaGroupManagerService().getAdministratorGroup(null);
         final Iterator<?> memberEnum = new EnumerationIterator(jahiaAdminGroup.members());
         while (memberEnum.hasNext()) {
             final Object curMemberObject = memberEnum.next();

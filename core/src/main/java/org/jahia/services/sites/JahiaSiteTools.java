@@ -81,7 +81,7 @@ public final class JahiaSiteTools {
             return null;
         }
 
-        return jgms.getAdministratorGroup (site.getID ());
+        return jgms.getAdministratorGroup (site.getSiteKey ());
     }
 
 

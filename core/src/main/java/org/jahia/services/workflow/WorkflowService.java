@@ -320,10 +320,10 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
                                         if (site == null) {
                                             site = node.getResolveSite();
                                         }
-                                        JahiaGroup group = groupService.lookupGroup(site.getID(),
+                                        JahiaGroup group = groupService.lookupGroup(site.getSiteKey(),
                                                 principalName);
                                         if (group == null) {
-                                            group = groupService.lookupGroup(0, principalName);
+                                            group = groupService.lookupGroup(null, principalName);
                                         }
                                         principals.add(group);
                                     }

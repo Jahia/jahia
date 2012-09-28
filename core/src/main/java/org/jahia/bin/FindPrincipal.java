@@ -342,7 +342,7 @@ public class FindPrincipal extends BaseFindController {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                     return;
                 }
-                Set<JahiaGroup> result = jahiaGroupManagerService.searchGroups(site.getID(), searchCriterias);
+                Set<JahiaGroup> result = jahiaGroupManagerService.searchGroups(site.getSiteKey(), searchCriterias);
                 writeGroupResults(result, request, response, propertyMatchRegExp, removeDuplicatePropValues);
             } else {
                 logger.error("Principal type value " + principalType + " is invalid, aborting searching...");

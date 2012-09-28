@@ -637,7 +637,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
             for (String aVec : vec) {
                 grpName = aVec;
                 if (grpName.startsWith(pattern)) {
-                    grp = groupManagerService.lookupGroup(0, grpName);
+                    grp = groupManagerService.lookupGroup(null, grpName);
                     if (grp != null) {
                         groupManagerService.deleteGroup(grp);
                     }
@@ -662,7 +662,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         while (updatedRoles.hasNext()) {
             role = updatedRoles.next();
             groupName = entryPointInstance.getID() + "_" + role;
-            groupManagerService.createGroup(0, groupName, null, true); // Hollis all app role groups are of site 0 !!!
+            groupManagerService.createGroup(null, groupName, null, true); // Hollis all app role groups are of site 0 !!!
         }
 
     }
@@ -684,7 +684,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         while (roles.hasNext()) {
             role = roles.next();
             groupName = new StringBuffer().append(entryPointInstance.getID()).append("_").append(role).toString();
-            JahiaGroup grp = groupManagerService.lookupGroup(0,
+            JahiaGroup grp = groupManagerService.lookupGroup(null,
                     groupName); // Hollis : All App group roles are in site 0 !!!
             if (grp != null) {
                 // delete all members

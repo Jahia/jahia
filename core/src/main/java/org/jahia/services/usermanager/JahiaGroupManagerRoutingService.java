@@ -57,6 +57,7 @@ import java.util.TreeSet;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
 
 /**
@@ -246,14 +247,6 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
         return groupNameList;
     }
 
-    public JahiaGroup getGuestGroup (final int siteID) {
-        return (JahiaGroup) routeCallAllUntilSuccess(new Command() {
-            public Object execute(JahiaGroupManagerProvider p) {
-                return p.getGuestGroup(siteID);
-            }
-        }, null);
-    }
-
     /**
      * Returns a List of JahiaGroupManagerProvider object describing the
      * available group management providers
@@ -329,14 +322,6 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
             }
         }
         return userMembership;
-    }
-
-    public JahiaGroup getUsersGroup (final int siteID) {
-        return (JahiaGroup) routeCallAllUntilSuccess(new Command() {
-            public Object execute(JahiaGroupManagerProvider p) {
-                return p.getUsersGroup(siteID);
-            }
-        }, null);
     }
 
     public boolean groupExists (final int siteID, final String name) {
@@ -586,4 +571,56 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
     public JahiaGroupManagerProvider getProvider(String name) {
         return providersTable.get(name);
     }
+
+    private int getSiteId(String siteKey) {
+        try {
+            if (siteKey != null) {
+                return ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteKey).getID();
+            }
+        } catch (Exception e) {
+        }
+        return 0;
+    }
+
+    @Override
+    public JahiaGroup createGroup(String siteKey, String name, Properties properties, boolean hidden) {
+         return createGroup(getSiteId(siteKey), name, properties, hidden);
+    }
+
+    @Override
+    public JahiaGroup getAdministratorGroup(String siteKey) {
+        return getAdministratorGroup(getSiteId(siteKey));
+    }
+
+    @Override
+    public List<String> getGroupList(String siteKey) {
+        return getGroupList(getSiteId(siteKey));
+    }
+
+    @Override
+    public List<String> getGroupnameList(String siteKey) {
+        return getGroupnameList(getSiteId(siteKey));
+    }
+
+    @Override
+    public boolean groupExists(String siteKey, String name) {
+        return groupExists(getSiteId(siteKey), name);
+    }
+
+    @Override
+    public JahiaGroup lookupGroup(String siteKey, String name) {
+        return lookupGroup(getSiteId(siteKey), name);
+    }
+
+    @Override
+    public Set<JahiaGroup> searchGroups(String siteKey, Properties searchCriterias) {
+        return searchGroups(getSiteId(siteKey), searchCriterias);
+    }
+
+    @Override
+    public Set<JahiaGroup> searchGroups(String providerKey, String siteKey, Properties searchCriterias) {
+        return searchGroups(providerKey,getSiteId(siteKey), searchCriterias);
+    }
+
+
 }

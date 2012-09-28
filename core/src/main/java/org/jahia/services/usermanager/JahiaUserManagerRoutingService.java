@@ -289,8 +289,8 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService {
     public Set searchUsers (final Properties searchCriterias) {
         Set userList = new HashSet();
 
-        List resultList = routeCallAll(new Command() {
-            public Object execute(JahiaUserManagerProvider p) {
+        List<Set<JahiaUser>> resultList = routeCallAll(new Command<Set<JahiaUser>>() {
+            public Set<JahiaUser> execute(JahiaUserManagerProvider p) {
                 return p.searchUsers(searchCriterias);
             }
         }, null);

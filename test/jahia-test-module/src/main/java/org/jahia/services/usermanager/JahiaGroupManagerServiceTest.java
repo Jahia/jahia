@@ -89,12 +89,12 @@ public class JahiaGroupManagerServiceTest {
 
     @After
     public void tearDown() throws Exception {
-        JahiaGroup group = groupManager.lookupGroup(0, "test-group1");
+        JahiaGroup group = groupManager.lookupGroup(null, "test-group1");
         if (group != null) {
             groupManager.deleteGroup(group);
         }
 
-        group = groupManager.lookupGroup(0, "test-group2");
+        group = groupManager.lookupGroup(null, "test-group2");
         if (group != null) {
             groupManager.deleteGroup(group);
         }
@@ -102,9 +102,9 @@ public class JahiaGroupManagerServiceTest {
 
     @Test
     public void testGroupDelete() {
-        JahiaGroup group1 = groupManager.createGroup(0, "test-group1", new Properties(), false);
+        JahiaGroup group1 = groupManager.createGroup(null, "test-group1", new Properties(), false);
         group1.addMember(user1);
-        JahiaGroup group2 = groupManager.createGroup(0, "test-group2", new Properties(), false);
+        JahiaGroup group2 = groupManager.createGroup(null, "test-group2", new Properties(), false);
         group2.addMember(user2);
         group2.addMember(group1);
 
@@ -120,9 +120,9 @@ public class JahiaGroupManagerServiceTest {
     @Test
     public void testGroupMembership() {
 
-        JahiaGroup group1 = groupManager.createGroup(0, "test-group1", new Properties(), false);
+        JahiaGroup group1 = groupManager.createGroup(null, "test-group1", new Properties(), false);
         group1.addMember(user1);
-        JahiaGroup group2 = groupManager.createGroup(0, "test-group2", new Properties(), false);
+        JahiaGroup group2 = groupManager.createGroup(null, "test-group2", new Properties(), false);
         group2.addMember(user2);
         group2.addMember(group1);
 
@@ -147,9 +147,9 @@ public class JahiaGroupManagerServiceTest {
     @Test
     public void testSameNameUserAndGroup() {
 
-        JahiaGroup group1 = groupManager.createGroup(0, "test-group1", new Properties(), false);
+        JahiaGroup group1 = groupManager.createGroup(null, "test-group1", new Properties(), false);
         group1.addMember(user1);
-        JahiaGroup user1Group = groupManager.createGroup(0, "test-user1", new Properties(), false);
+        JahiaGroup user1Group = groupManager.createGroup(null, "test-user1", new Properties(), false);
         group1.addMember(user1Group);
 
         group1 = groupManager.lookupGroup("test-group1:0");

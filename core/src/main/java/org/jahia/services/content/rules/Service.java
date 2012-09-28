@@ -773,12 +773,12 @@ public class Service extends JahiaService {
         });
 
         JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        final JahiaGroup priv = groupService.lookupGroup(site.getID(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
+        final JahiaGroup priv = groupService.lookupGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
         Principal p = null;
         if (principal.startsWith("u:")) {
             p = userManagerService.lookupUser(principal.substring(2));
         } else if (principal.length() > 2) {
-            p = groupService.lookupGroup(site.getID(), principal.substring(2));
+            p = groupService.lookupGroup(site.getSiteKey(), principal.substring(2));
         }
         if (p != null) {
             if (needPrivileged && !priv.isMember(p)) {

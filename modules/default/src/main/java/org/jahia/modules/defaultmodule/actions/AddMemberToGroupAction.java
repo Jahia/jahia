@@ -88,19 +88,17 @@ public class AddMemberToGroupAction extends Action {
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         String groupPath = resource.getNode().getPath();
         String[] splitGroupPath = groupPath.split("/");
-        int siteID = 0;
+        String siteKey = null;
         String groupName = null;
         // path to site group is something like /sites/siteKey/groups/groupName
         if (groupPath.startsWith("/sites")) {
-            String siteKey = splitGroupPath[2];
-            JahiaSite jahiaSite = jahiaSitesService.getSiteByKey(siteKey);
-            siteID = jahiaSite.getID();
+            siteKey = splitGroupPath[2];
             groupName = splitGroupPath[4];
         } else {
             // path to general group is /groups/groupName
             groupName = splitGroupPath[2];
         }
-        JahiaGroup targetJahiaGroup = jahiaGroupManagerService.lookupGroup(siteID, groupName);
+        JahiaGroup targetJahiaGroup = jahiaGroupManagerService.lookupGroup(siteKey, groupName);
 
         if (parameters.get("userKey") != null) {
             String userKey = parameters.get("userKey").get(0);

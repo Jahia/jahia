@@ -112,7 +112,7 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
                 assignable.addCandidateUser(((JahiaUser)principal).getUserKey());
             }
         }
-        assignable.addCandidateGroup(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(0).getGroupKey());
+        assignable.addCandidateGroup(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(null).getGroupKey());
 
         createTask(assignable, execution, principals);
 

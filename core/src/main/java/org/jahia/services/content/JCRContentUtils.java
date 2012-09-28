@@ -1462,7 +1462,7 @@ public final class JCRContentUtils implements ServletContextAware {
         if (latestFirst) {
             entries = reverse(entries);
         }
-        int siteId = -1;
+        String siteKey = null;
 
         JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
@@ -1479,17 +1479,17 @@ public final class JCRContentUtils implements ServletContextAware {
                 m.put("principalType", "user");
                 m.put("principal", u);
             } else if (entryKey.startsWith("g:")) {
-                if (siteId == -1) {
+                if (siteKey == null) {
                     try {
                         JCRSiteNode resolveSite = node.getResolveSite();
-                        siteId = resolveSite != null ? resolveSite.getID() : 0;
+                        siteKey = resolveSite != null ? resolveSite.getSiteKey() : null;
                     } catch (RepositoryException e) {
                         logger.error(e.getMessage(), e);
                     }
                 }
-                JahiaGroup g = groupService.lookupGroup(siteId, StringUtils.substringAfter(entryKey, "g:"));
+                JahiaGroup g = groupService.lookupGroup(siteKey, StringUtils.substringAfter(entryKey, "g:"));
                 if (g == null) {
-                    logger.warn("Group {} cannot be found for site with ID={}. Skipping.", StringUtils.substringAfter(entryKey, "g:"), siteId);
+                    logger.warn("Group {} cannot be found for site with ID={}. Skipping.", StringUtils.substringAfter(entryKey, "g:"), siteKey);
                     continue;
                 }
                 m.put("principalType", "group");

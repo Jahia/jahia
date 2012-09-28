@@ -610,25 +610,25 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                     site.setMixLanguagesActive(false);
 
                     // create default groups...
-                    JahiaGroup usersGroup = jgms.lookupGroup(0, JahiaGroupManagerService.USERS_GROUPNAME);
+                    JahiaGroup usersGroup = jgms.lookupGroup(null, JahiaGroupManagerService.USERS_GROUPNAME);
                     if (usersGroup == null) {
-                        usersGroup = jgms.createGroup(0, JahiaGroupManagerService.USERS_GROUPNAME, null, false);
+                        usersGroup = jgms.createGroup(null, JahiaGroupManagerService.USERS_GROUPNAME, null, false);
                     }
 
-                    JahiaGroup guestGroup = jgms.lookupGroup(0, JahiaGroupManagerService.GUEST_GROUPNAME);
+                    JahiaGroup guestGroup = jgms.lookupGroup(null, JahiaGroupManagerService.GUEST_GROUPNAME);
                     if (guestGroup == null) {
-                        guestGroup = jgms.createGroup(0, JahiaGroupManagerService.GUEST_GROUPNAME, null, false);
+                        guestGroup = jgms.createGroup(null, JahiaGroupManagerService.GUEST_GROUPNAME, null, false);
                     }
 
-                    JahiaGroup privGroup = jgms.lookupGroup(0, JahiaGroupManagerService.PRIVILEGED_GROUPNAME);
+                    JahiaGroup privGroup = jgms.lookupGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME);
                     if (privGroup == null) {
-                        privGroup = jgms.createGroup(0, JahiaGroupManagerService.PRIVILEGED_GROUPNAME, null, true);
+                        privGroup = jgms.createGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME, null, true);
                     }
 
-                    JahiaGroup adminGroup = jgms.lookupGroup(site.getID(),
+                    JahiaGroup adminGroup = jgms.lookupGroup(site.getSiteKey(),
                             JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
                     if (adminGroup == null) {
-                        adminGroup = jgms.createGroup(site.getID(), JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, null,
+                        adminGroup = jgms.createGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, null,
                                 false);
                     }
 
@@ -638,10 +638,10 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                     }
 
                     if (!siteKey.equals(SYSTEM_SITE_KEY)) {
-                        JahiaGroup sitePrivGroup = jgms.lookupGroup(site.getID(),
+                        JahiaGroup sitePrivGroup = jgms.lookupGroup(site.getSiteKey(),
                                 JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
                         if (sitePrivGroup == null) {
-                            sitePrivGroup = jgms.createGroup(site.getID(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, null,
+                            sitePrivGroup = jgms.createGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, null,
                                     false);
                         }
                         // atach site privileged group to server privileged
@@ -721,7 +721,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
      * @param site the JahiaSite bean
      */
     public synchronized void removeSite(final JahiaSite site) throws JahiaException {
-        List<String> groups = groupService.getGroupList(site.getID());
+        List<String> groups = groupService.getGroupList(site.getSiteKey());
         for (String group : groups) {
             groupService.deleteGroup(groupService.lookupGroup(JCR_KEY_PATTERN.matcher(group).replaceAll("")));
         }

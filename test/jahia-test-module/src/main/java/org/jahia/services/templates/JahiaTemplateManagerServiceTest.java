@@ -95,7 +95,7 @@ public class JahiaTemplateManagerServiceTest {
         JahiaGroupManagerService groupManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         assertNotNull("JahiaGroupManagerService cannot be retrieved", groupManager);
         if (site != null) {
-            JahiaGroup group = groupManager.lookupGroup(site.getID(), "site-privileged");
+            JahiaGroup group = groupManager.lookupGroup(site.getSiteKey(), "site-privileged");
             group.addMember(user);
         }
     }

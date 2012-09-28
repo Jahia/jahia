@@ -86,24 +86,24 @@ public class FindUsersAndGroups extends FindUser {
 
     private JahiaSitesService siteService;
 
-    protected int getSiteId(HttpServletRequest request) {
-        int siteId = getIntParameter(request, "siteId", -1);
-        if (siteId <= 0) {
-            String siteKey = getParameter(request, "siteKey");
+    protected String getSiteKey(HttpServletRequest request) {
+        String siteKey = getParameter(request, "siteKey", null);
+        if (siteKey == null) {
+            int siteId = getIntParameter(request, "siteId");
 
             try {
-                JahiaSite site = siteService.getSiteByKey(siteKey);
+                JahiaSite site = siteService.getSite(siteId);
                 if (site == null) {
-                    throw new JahiaBadRequestException("Site with key " + siteKey
+                    throw new JahiaBadRequestException("Site with id " + siteId
                             + " cannot be found");
                 }
-                siteId = site.getID();
+                siteKey = site.getSiteKey();
             } catch (JahiaException e) {
                 throw new JahiaBadRequestException(e);
             }
         }
 
-        return siteId;
+        return siteKey;
     }
 
     @Override
@@ -146,7 +146,7 @@ public class FindUsersAndGroups extends FindUser {
     protected Set<JahiaGroup> searchGroups(String queryTerm, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
 
-        int siteId = getSiteId(request);
+        String siteKey = getSiteKey(request);
 
         Properties searchCriterias = new Properties();
         for (String key : groupSearchProperties) {
@@ -157,7 +157,7 @@ public class FindUsersAndGroups extends FindUser {
             logger.debug("Performing group search using criteria: {}", searchCriterias);
         }
 
-        Set<JahiaGroup> result = groupService.searchGroups(siteId, searchCriterias);
+        Set<JahiaGroup> result = groupService.searchGroups(siteKey, searchCriterias);
 
         if (logger.isDebugEnabled()) {
             logger.debug("Found {} matching groups in {} ms", result.size(),

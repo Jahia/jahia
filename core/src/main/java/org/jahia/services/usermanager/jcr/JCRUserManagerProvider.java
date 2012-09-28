@@ -139,9 +139,8 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                             startNode = startNode.getNode(jcrUsernamePath[i]);
                         } catch (PathNotFoundException e) {
                             try {
-                                jcrSessionWrapper.getWorkspace().getVersionManager().checkout(startNode.getPath());
+                                jcrSessionWrapper.checkout(startNode);
                                 if (i == (length - 1)) {
-                                    jcrSessionWrapper.checkout(startNode);
                                     JCRNodeWrapper userNode = startNode.addNode(name, Constants.JAHIANT_USER);
                                     if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
                                         String skeletons = usersFolderNode.getProperty(

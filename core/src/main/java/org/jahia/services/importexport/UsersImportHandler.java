@@ -121,9 +121,9 @@ public class UsersImportHandler extends DefaultHandler {
                     }
                 }
                 if (name != null) {
-                    currentGroup = g.lookupGroup(site.getID(), name);
+                    currentGroup = g.lookupGroup(site.getSiteKey(), name);
                     if (currentGroup == null) {
-                        currentGroup = g.createGroup(site.getID(), name, p, false);
+                        currentGroup = g.createGroup(site.getSiteKey(), name, p, false);
                     }
                 }
             }
@@ -134,7 +134,7 @@ public class UsersImportHandler extends DefaultHandler {
             if (localName.equals("user")) {
                 p = u.lookupUser(name);
             } else if (localName.equals("group")) {
-                p = g.lookupGroup(site.getID(), name);
+                p = g.lookupGroup(site.getSiteKey(), name);
             }
             if (p != null && !currentGroup.getMembers().contains(p)) {
                 currentGroup.addMember(p);

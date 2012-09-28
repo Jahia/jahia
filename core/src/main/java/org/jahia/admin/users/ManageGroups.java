@@ -321,7 +321,7 @@ public class ManageGroups extends AbstractAdministrationModule {
                     + ": "
                     + getMessage("org.jahia.admin.users.ManageGroups.onlyCharacters.label");
             return false;
-        } else if (gMgr.groupExists(jahiaSite.getID(), groupName)) {
+        } else if (gMgr.groupExists(jahiaSite.getSiteKey(), groupName)) {
             groupMessage = getMessage("label.group");
             groupMessage += " [" + groupName + "] ";
             groupMessage += getMessage("org.jahia.admin.groupMessage.alreadyExist.label");
@@ -368,7 +368,7 @@ public class ManageGroups extends AbstractAdministrationModule {
         }
         // Consider actual selected group as the last one and store it in session.
         session.setAttribute("selectedGroup", groupToEdit);
-        JahiaGroup theGroup = (JahiaGroup) gMgr.lookupGroup(jahiaSite.getID(), groupToEdit);
+        JahiaGroup theGroup = (JahiaGroup) gMgr.lookupGroup(jahiaSite.getSiteKey(), groupToEdit);
         //predrag
         session.setAttribute("providerName", theGroup.getProviderName());
         //end predrag
@@ -435,7 +435,7 @@ public class ManageGroups extends AbstractAdministrationModule {
             throws IOException, ServletException, JahiaException {
         logger.debug("Started");
         String groupName = request.getParameter("groupName");
-        JahiaGroup grp = gMgr.lookupGroup(jahiaSite.getID(), groupName);
+        JahiaGroup grp = gMgr.lookupGroup(jahiaSite.getSiteKey(), groupName);
 
         if ("update".equals(request.getParameter("actionType"))) {
             return false;
@@ -606,7 +606,7 @@ public class ManageGroups extends AbstractAdministrationModule {
                     + ": "
                     + getMessage("org.jahia.admin.users.ManageGroups.onlyCharacters.label");
             return false;
-        } else if (gMgr.groupExists(jahiaSite.getID(), groupName)) {
+        } else if (gMgr.groupExists(jahiaSite.getSiteKey(), groupName)) {
             groupMessage = getMessage("label.group");
             groupMessage += " [" + groupName + "] ";
             groupMessage += getMessage("org.jahia.admin.groupMessage.alreadyExist.label");
@@ -618,7 +618,7 @@ public class ManageGroups extends AbstractAdministrationModule {
             groupMessage = getMessage("org.jahia.admin.groupMessage.unableCreateGroup.label");
             return false;
         } else {
-            JahiaGroup theNewGroup = gMgr.lookupGroup(jahiaSite.getID(), groupName);
+            JahiaGroup theNewGroup = gMgr.lookupGroup(jahiaSite.getSiteKey(), groupName);
             groupMessage = getMessage("label.group");
             groupMessage += " [" + groupName + "] ";
             groupMessage += getMessage("message.successfully.created");
@@ -649,7 +649,7 @@ public class ManageGroups extends AbstractAdministrationModule {
             displayGroupList(request, response, session);
         } else {
             request.setAttribute("groupName", selectedGroup);
-            JahiaGroup group = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(jahiaSite.getID(), selectedGroup);
+            JahiaGroup group = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(jahiaSite.getSiteKey(), selectedGroup);
             try {
                 if (!(group instanceof JCRGroup) || ((JCRGroup)group).getNode(JCRSessionFactory.getInstance().getCurrentUserSession()).isNodeType("jmix:systemNode")) {
                     request.setAttribute("groupReadOnly", Boolean.TRUE);
@@ -706,7 +706,7 @@ public class ManageGroups extends AbstractAdministrationModule {
         }
 
         if (groupMessage.equals("")) {
-            JahiaGroup theGroup = (JahiaGroup) gMgr.lookupGroup(jahiaSite.getID(), groupName);
+            JahiaGroup theGroup = (JahiaGroup) gMgr.lookupGroup(jahiaSite.getSiteKey(), groupName);
 
             // delete group...
             if (!gMgr.deleteGroup(theGroup)) {
@@ -737,7 +737,7 @@ public class ManageGroups extends AbstractAdministrationModule {
     private JahiaGroup createGroup(HttpSession session, String name) {
         // create the group...
         JahiaGroup theGroup = null;
-        theGroup = gMgr.createGroup(jahiaSite.getID(), name, null, false);
+        theGroup = gMgr.createGroup(jahiaSite.getSiteKey(), name, null, false);
         return theGroup;
     }
 

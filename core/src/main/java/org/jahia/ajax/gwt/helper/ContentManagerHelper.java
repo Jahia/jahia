@@ -779,7 +779,7 @@ public class ContentManagerHelper {
                 ace.setPrincipalType(principal.charAt(0));
                 ace.setPrincipal(principal.substring(2)); // we set this even if we can't lookup the principal
                 if (ace.getPrincipalType() == 'g') {
-                    JahiaGroup g = groupManagerService.lookupGroup(node.getResolveSite().getID(), ace.getPrincipal());
+                    JahiaGroup g = groupManagerService.lookupGroup(node.getResolveSite().getSiteKey(), ace.getPrincipal());
                     if (g == null) {
                         g = groupManagerService.lookupGroup(ace.getPrincipal());
                     }
@@ -846,7 +846,7 @@ public class ContentManagerHelper {
                         ace.setPrincipalType(principal.charAt(0));
                         ace.setPrincipal(principal.substring(2)); // we set this even if we can't lookup the principal
                         if (ace.getPrincipalType() == 'g') {
-                            JahiaGroup g = groupManagerService.lookupGroup(node.getResolveSite().getID(),
+                            JahiaGroup g = groupManagerService.lookupGroup(node.getResolveSite().getSiteKey(),
                                     ace.getPrincipal());
                             if (g == null) {
                                 g = groupManagerService.lookupGroup(ace.getPrincipal());

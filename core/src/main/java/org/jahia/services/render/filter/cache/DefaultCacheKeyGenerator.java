@@ -484,7 +484,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                         while (nodeIterator.hasNext()) {
                             JCRNodeWrapper node = (JCRNodeWrapper) nodeIterator.next();
                             String s = StringUtils.substringAfter(node.getProperty("j:principal").getString(), ":");
-                            JahiaGroup group = groupManagerService.lookupGroup(node.getResolveSite().getID(), s);
+                            JahiaGroup group = groupManagerService.lookupGroup(node.getResolveSite().getSiteKey(), s);
                             if (group == null) {
                                 group = groupManagerService.lookupGroup(s);
                             }

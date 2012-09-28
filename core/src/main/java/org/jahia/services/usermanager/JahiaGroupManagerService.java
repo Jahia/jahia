@@ -74,6 +74,17 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      * @return a reference on a group object on success, or if the groupname
      *         already exists or another error occured, null is returned.
      */
+    public abstract JahiaGroup createGroup(String siteKey, String name, Properties properties, boolean hidden);
+
+    /**
+     * Create a new group in the system.
+     *
+     * @param hidden
+     * @return a reference on a group object on success, or if the groupname
+     *         already exists or another error occured, null is returned.
+     * @deprecated
+     */
+    @Deprecated
     public abstract JahiaGroup createGroup(int siteID, String name, Properties properties, boolean hidden);
 
 
@@ -104,6 +115,14 @@ public abstract class JahiaGroupManagerService extends JahiaService {
     /**
      *
      */
+    public abstract JahiaGroup getAdministratorGroup (String siteKey);
+
+    //-------------------------------------------------------------------------
+    /**
+     *
+     * @deprecated
+     */
+    @Deprecated
     public abstract JahiaGroup getAdministratorGroup (int siteID);
 
     //-------------------------------------------------------------------------
@@ -128,6 +147,18 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      *
      * @return Return a List of identifier of all groups of this site.
      */
+    public abstract List<String> getGroupList (String siteKey);
+
+    /**
+     * Return a <code>List</code) of <code>String</code> representing all the
+     * groups of a site.
+     *
+     * @param int the site id
+     *
+     * @return Return a List of identifier of all groups of this site.
+     * @deprecated
+     */
+    @Deprecated
     public abstract List<String> getGroupList (int siteID);
 
     //-------------------------------------------------------------------------
@@ -148,16 +179,22 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      *
      * @return Return a List of strings containing all the group names.
      */
+    public abstract List<String> getGroupnameList (String siteKey);
+
+    /**
+     * Return a <code>List</code) of <code>String</code> representing all the
+     * group names of a site.
+     *
+     * @param int the site id
+     *
+     * @return Return a List of strings containing all the group names.
+     * @deprecated
+     */
+    @Deprecated
     public abstract List<String> getGroupnameList (int siteID);
 
 
     //-------------------------------------------------------------------------
-    /**
-     * Return an instance of the guest group
-     *
-     * @return Return the instance of the guest group. Return null on any failure.
-     */
-    public abstract JahiaGroup getGuestGroup (int siteID);
 
 
     //-------------------------------------------------------------------------
@@ -195,12 +232,26 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      * This function checks on a gived site if the groupname has already been
      * assigned to another group.
      *
-     * @param int       siteID the site id
+     * @param int       siteKey the site id
      * @param groupname String representing the unique group name.
      *
      * @return Return true if the specified username has not been assigned yet,
      *         return false on any failure.
      */
+    public abstract boolean groupExists (String siteKey, String name);
+
+    /**
+     * This function checks on a gived site if the groupname has already been
+     * assigned to another group.
+     *
+     * @param int       siteID the site id
+     * @param groupname String representing the unique group name.
+     *
+     * @return Return true if the specified username has not been assigned yet,
+     *         return false on any failure.
+     * @deprecated
+     */
+    @Deprecated
     public abstract boolean groupExists (int siteID, String name);
 
 
@@ -224,12 +275,27 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      * Try to lookup the group into the cache, if it's not in the cache, then
      * load it into the cahce from the database.
      *
-     * @param int       siteID the site id
+     * @param int       siteKey the site id
      * @param groupname Group's unique identification name.
      *
      * @return Return a reference on a the specified group name. Return null
      *         if the group doesn't exist or when any error occured.
      */
+    public abstract JahiaGroup lookupGroup (String siteKey, String name);
+
+    /**
+     * Lookup the group information from the underlaying system (DB, LDAP, ... )
+     * Try to lookup the group into the cache, if it's not in the cache, then
+     * load it into the cahce from the database.
+     *
+     * @param int       siteID the site id
+     * @param groupname Group's unique identification name.
+     *
+     * @return Return a reference on a the specified group name. Return null
+     *         if the group doesn't exist or when any error occured.
+     * @deprecated
+     */
+    @Deprecated
     public abstract JahiaGroup lookupGroup (int siteID, String name);
 
 
@@ -248,7 +314,7 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      * side value is "*" for a property then it will be tested against all the
      * properties. ie *=test* will match every property that starts with "test"
      *
-     * @param siteID          site identifier
+     * @param siteKey         site identifier
      * @param searchCriterias a Properties object that contains search criterias
      *                        in the format name,value (for example "*"="*" or "groupname"="*test*") or
      *                        null to search without criterias
@@ -256,7 +322,42 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      * @return List a List of JahiaGroup elements that correspond to those
      *         search criterias
      */
+    public abstract Set<JahiaGroup> searchGroups (String siteKey, Properties searchCriterias);
+
+    /**
+     * Find groups according to a table of name=value properties. If the left
+     * side value is "*" for a property then it will be tested against all the
+     * properties. ie *=test* will match every property that starts with "test"
+     *
+     * @param siteID          site identifier
+     * @param searchCriterias a Properties object that contains search criterias
+     *                        in the format name,value (for example "*"="*" or "groupname"="*test*") or
+     *                        null to search without criterias
+     *
+     * @return List a List of JahiaGroup elements that correspond to those
+     *         search criterias
+     * @deprecated
+     */
+    @Deprecated
     public abstract Set<JahiaGroup> searchGroups (int siteID, Properties searchCriterias);
+
+    /**
+     * Find groups according to a table of name=value properties. If the left
+     * side value is "*" for a property then it will be tested against all the
+     * properties. ie *=test* will match every property that starts with "test"
+     *
+     * @param providerKey     key of the provider in which to search, may be
+     *                        obtained by calling getProviderList()
+     * @param siteKey         site identifier
+     * @param searchCriterias a Properties object that contains search criterias
+     *                        in the format name,value (for example "*"="*" or "username"="*test*") or
+     *                        null to search without criterias
+     *
+     * @return Set a set of JahiaGroup elements that correspond to those
+     *         search criterias
+     */
+    public abstract Set<JahiaGroup> searchGroups (String providerKey, String siteKey,
+                                      Properties searchCriterias);
 
     /**
      * Find groups according to a table of name=value properties. If the left
@@ -272,7 +373,9 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      *
      * @return Set a set of JahiaGroup elements that correspond to those
      *         search criterias
+     * @deprecated
      */
+    @Deprecated
     public abstract Set<JahiaGroup> searchGroups (String providerKey, int siteID,
                                       Properties searchCriterias);
 

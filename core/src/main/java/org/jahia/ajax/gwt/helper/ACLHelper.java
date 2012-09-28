@@ -70,7 +70,7 @@ public class ACLHelper {
     }
 
     public GWTJahiaNodeACE createUsersGroupACE(List<String> permissions, boolean grand, JCRSiteNode site) {
-        JahiaGroup usersGroup = jahiaGroupManagerService.lookupGroup(site.getID(), JahiaGroupManagerService.USERS_GROUPNAME);
+        JahiaGroup usersGroup = jahiaGroupManagerService.lookupGroup(site.getSiteKey(), JahiaGroupManagerService.USERS_GROUPNAME);
         GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
         ace.setPrincipalType('g');
         ace.setPrincipal(usersGroup.getGroupname());

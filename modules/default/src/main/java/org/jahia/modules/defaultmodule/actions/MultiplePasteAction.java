@@ -49,6 +49,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+import org.jahia.settings.SettingsBean;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
@@ -79,7 +80,7 @@ public class MultiplePasteAction extends Action {
                         continue;
                     }
                     session.checkout(node);
-                    node.copy(targetNode, JCRContentUtils.findAvailableNodeName(targetNode, node.getName()), true);
+                    node.copy(targetNode, JCRContentUtils.findAvailableNodeName(targetNode, node.getName()), true, null, SettingsBean.getInstance().getImportMaxBatch());
                 }
                 session.save();
             } catch (RepositoryException e) {

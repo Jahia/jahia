@@ -40,6 +40,7 @@
 
 package org.jahia.services.content;
 
+import org.apache.commons.lang.mutable.MutableInt;
 import org.jahia.services.content.decorator.JCRFileContent;
 import org.jahia.services.content.decorator.JCRPlaceholderNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -592,6 +593,10 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     boolean copy(JCRNodeWrapper node, String name, boolean allowsExternalSharedNodes) throws RepositoryException;
 
     boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references) throws RepositoryException;
+
+    boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, List<String> ignoreNodeTypes, int maxBatch) throws RepositoryException;
+
+    boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes, int maxBatch, MutableInt batch) throws RepositoryException;
 
     void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references) throws RepositoryException;
 

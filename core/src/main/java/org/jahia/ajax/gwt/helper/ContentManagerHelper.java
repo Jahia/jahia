@@ -73,6 +73,7 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -523,7 +524,7 @@ public class ContentManagerHelper {
                     }
                 }
             }
-            node.copy(targetNode, name, true);
+            node.copy(targetNode, name, true, null, SettingsBean.getInstance().getImportMaxBatch());
         }
         return targetNode.getNode(name);
     }

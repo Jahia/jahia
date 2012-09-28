@@ -47,6 +47,7 @@ import net.htmlparser.jericho.TextExtractor;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.jackrabbit.commons.iterator.PropertyIteratorAdapter;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.NodeImpl;
@@ -2305,7 +2306,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes) throws RepositoryException {
         Map<String, List<String>> references = new HashMap<String, List<String>>();
-        boolean copy = copy(dest, name, allowsExternalSharedNodes, references);
+        boolean copy = copy(dest, name, allowsExternalSharedNodes, references, null, 0, new MutableInt(0));
         ReferencesHelper.resolveCrossReferences(getSession(), references);
         return copy;
     }
@@ -2314,6 +2315,23 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references) throws RepositoryException {
+        return copy(dest,name,allowsExternalSharedNodes,references,null,0,new MutableInt(0));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, List<String> ignoreNodeTypes, int maxBatch) throws RepositoryException {
+        Map<String, List<String>> references = new HashMap<String, List<String>>();
+        boolean copy = copy(dest,name,allowsExternalSharedNodes,references,ignoreNodeTypes,maxBatch,new MutableInt(0));
+        ReferencesHelper.resolveCrossReferences(getSession(), references);
+        return copy;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes, int maxBatch, MutableInt batchCount) throws RepositoryException {
         JCRNodeWrapper copy = null;
         try {
             copy = (JCRNodeWrapper) session
@@ -2321,6 +2339,25 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             getSession().checkout(copy);
         } catch (PathNotFoundException ex) {
             // node does not exist
+        }
+
+        if (ignoreNodeTypes != null) {
+            for (String nodeType : ignoreNodeTypes) {
+                if (isNodeType(nodeType)) {
+                    return false;
+                }
+            }
+        }
+
+        batchCount.increment();
+        if (maxBatch > 0 && batchCount.intValue() > maxBatch) {
+            try {
+                session.save();
+                batchCount.setValue(0);
+            } catch (ConstraintViolationException e) {
+                // save on the next node when next node is needed (like content node for files)
+                batchCount.setValue(maxBatch -1);
+            }
         }
 
         final Map<String, String> uuidMapping = getSession().getUuidMapping();
@@ -2363,10 +2400,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 } else if (allowsExternalSharedNodes) {
                     copy.clone(source, source.getName());
                 } else {
-                    source.copy(copy, source.getName(), allowsExternalSharedNodes, references);
+                    source.copy(copy, source.getName(), allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batchCount);
                 }
             } else if (!source.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
-                source.copy(copy, source.getName(), allowsExternalSharedNodes, references);
+                source.copy(copy, source.getName(), allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batchCount);
             }
         }
 

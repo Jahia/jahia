@@ -6,3 +6,5 @@
 
 [jnt:siteSettingsManageLanguages] > jnt:content, mix:title, jmix:studioOnly, jmix:siteComponent
 
+[jnt:siteSettingsVanityUrlsList] > jnt:content, mix:title, jmix:studioOnly, jmix:siteComponent, jmix:list
+

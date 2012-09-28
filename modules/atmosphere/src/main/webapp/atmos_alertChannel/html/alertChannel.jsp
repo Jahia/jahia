@@ -16,7 +16,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<c:if test="${not renderContext.editMode}">
+<c:if test="${renderContext.editMode or renderContext.contributionMode}">
     <template:addResources type="css" resources="jquery.jgrowl.css"/>
     <template:addResources type="javascript" resources="jquery.min.js,jquery.atmosphere.js,jquery.jgrowl.js"/>
 
@@ -36,7 +36,7 @@
                 if (response.status == 200) {
                     var data = response.responseBody;
                     if (data.length > 0) {
-                        $.jGrowl(data,{life:20000});
+                        $.jGrowl(data,{sticky:true});
                     }
                 }
             }
@@ -44,7 +44,7 @@
 
         $(document).ready(function() {
             $.atmosphere.unsubscribe();
-            var subscribe = $.atmosphere.subscribe("${url.server}${url.context}/atmosphere/pubsub/absolute/${channelName}", callbackAbsolute,
+            var subscribe = $.atmosphere.subscribe("${url.server}${url.context}/atmosphere/pubsub/alert/${channelName}", callbackAbsolute,
                     $.atmosphere.request = { transport: "websocket" });
             connectedAbsoluteEndpoint["${channelName}"] = subscribe;
         });

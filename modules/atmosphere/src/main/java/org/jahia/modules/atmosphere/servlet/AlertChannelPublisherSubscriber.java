@@ -15,8 +15,8 @@ import javax.ws.rs.*;
  * Time: 9:33 AM
  * To change this template use File | Settings | File Templates.
  */
-@Path("/pubsub/absolute/{channel}")
-public class AbsoluteChannelPublisherSubscriber {
+@Path("/pubsub/alert/{channel}")
+public class AlertChannelPublisherSubscriber {
 
     private @PathParam("channel")
     Broadcaster topic;

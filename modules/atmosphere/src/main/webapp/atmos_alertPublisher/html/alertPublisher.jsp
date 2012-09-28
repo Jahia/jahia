@@ -16,16 +16,18 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<c:set var="channelName" value="${currentNode.properties['name'].string}"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.atmosphere.js"/>
+<c:if test="${renderContext.editMode}">
+    <c:set var="channelName" value="${currentNode.properties['name'].string}"/>
+    <template:addResources type="javascript" resources="jquery.min.js,jquery.atmosphere.js"/>
 
-<div id='sendMessage'>
-    <input id='phrase' type='text'/>
-    <input id="send_message" class='button' name='Publish' value='Publish Message to ${channelName}' type="submit"/>
-</div>
+    <div id='sendMessage'>
+        <input id='phrase' type='text'/>
+        <input id="send_message" class='button' name='Publish' value='Publish Message to ${channelName}' type="submit"/>
+    </div>
 
-<script type="text/javascript">
-    $("#send_message").click(function() {
-        connectedAbsoluteEndpoint["${channelName}"].push({data: 'message=' + $("#phrase").val()});
-    });
-</script>
+    <script type="text/javascript">
+        $("#send_message").click(function () {
+            connectedAbsoluteEndpoint["${channelName}"].push({data:'message=' + $("#phrase").val()});
+        });
+    </script>
+</c:if>

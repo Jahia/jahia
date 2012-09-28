@@ -4,11 +4,11 @@
 
 [atmos:channel] > jnt:content, jmix:droppableContent, jmix:bindedComponent, jmix:siteComponent
 
-[atmos:publisher] > jnt:content, jmix:droppableContent, jmix:siteComponent
+[atmos:alertPublisher] > jnt:content, jmix:droppableContent, jmix:siteComponent
 - name(string)
 
 
-[atmos:absoluteChannel] > jnt:content, jmix:droppableContent, jmix:siteComponent
+[atmos:alertChannel] > jnt:content, jmix:droppableContent, jmix:siteComponent
 - name(string)
 
 [atmos:siteChannel] > jnt:content, jmix:droppableContent, jmix:siteComponent, jmix:studioOnly

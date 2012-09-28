@@ -257,5 +257,5 @@
         </property>
     </bean>
     
-    <bean class="org.jahia.tools.patches.GroovyPatcher"/>
+    <bean id="groovyPatcher" class="org.jahia.tools.patches.GroovyPatcher"/>
 </beans>

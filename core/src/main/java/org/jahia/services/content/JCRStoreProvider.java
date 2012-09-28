@@ -66,6 +66,7 @@ import org.jahia.services.usermanager.jcr.JCRGroup;
 import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.settings.SettingsBean;
+import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,6 +151,8 @@ public class JCRStoreProvider {
     private final Object syncRepoInit = new Object();
 
     private long sessionKeepAliveCheckInterval = 5000L;
+
+    private GroovyPatcher groovyPatcher;
 
     public String getKey() {
         return key;
@@ -314,6 +317,14 @@ public class JCRStoreProvider {
         this.sessionKeepAliveCheckInterval = sessionKeepAliveCheckInterval;
     }
 
+    public GroovyPatcher getGroovyPatcher() {
+        return groovyPatcher;
+    }
+
+    public void setGroovyPatcher(GroovyPatcher groovyPatcher) {
+        this.groovyPatcher = groovyPatcher;
+    }
+
     public void start() throws JahiaInitializationException {
         try {
             String tmpAuthenticationType = authenticationType;
@@ -338,6 +349,7 @@ public class JCRStoreProvider {
             }
 
             authenticationType = tmpAuthenticationType;
+            groovyPatcher.executeScripts("jcrStoreProviderStarted");
         } catch (Exception e) {
             logger.error("Repository init error", e);
             throw new JahiaInitializationException("Repository init error", e);

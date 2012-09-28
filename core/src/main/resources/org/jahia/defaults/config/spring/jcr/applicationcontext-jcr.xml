@@ -17,6 +17,7 @@
         <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="publicationService" ref="jcrPublicationService"/>
         <property name="sessionKeepAliveCheckInterval" value="${jahia.jcr.observers.sessionKeepAliveCheckInterval:5000}" />
+        <property name="groovyPatcher" ref="groovyPatcher" />
     </bean>
 
     <bean id="DefaulJCRStoreProvider" class="org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider"

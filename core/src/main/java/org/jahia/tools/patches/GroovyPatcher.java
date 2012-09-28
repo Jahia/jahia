@@ -75,6 +75,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.web.context.ServletContextAware;
 
 /**
  * Simple patch service that monitors specified folder (by default <code>WEB-INF/var/patches/groovy/</code>) for Groovy scripts, executes
@@ -82,7 +83,7 @@ import org.springframework.core.io.Resource;
  * 
  * @author Sergiy Shyrkov
  */
-public class GroovyPatcher implements JahiaAfterInitializationService, DisposableBean {
+public class GroovyPatcher implements JahiaAfterInitializationService, DisposableBean, ServletContextAware {
 
     private static final Logger logger = LoggerFactory.getLogger(GroovyPatcher.class);
 
@@ -98,6 +99,7 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
             return 0;
         }
     };
+    private ServletContext servletContext;
 
     public static void executeScripts(Resource[] scripts) {
         long timer = System.currentTimeMillis();
@@ -177,6 +179,10 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
         } catch (Exception e) {
             logger.error("Error executing patches", e);
         }
+    }
+
+    public void executeScripts(String lifecyclePhase) {
+        executeScripts(servletContext, lifecyclePhase);
     }
 
     protected static ScriptEngine getEngine() throws ScriptException {
@@ -285,4 +291,7 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
         this.patchesLookup = patchesLookup;
     }
 
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
 }

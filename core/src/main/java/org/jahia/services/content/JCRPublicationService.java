@@ -965,9 +965,6 @@ public class JCRPublicationService extends JahiaService {
         } else {
             nodesNotUnpublished.add(node.getPath());
         }
-<<<<<<< .working
-        if (loggingService.isEnabled()) {
-=======
         boolean doLogging = loggingService.isEnabled();
         if (doLogging) {
             Integer operationType = JCRObservationManager.getCurrentOperationType();
@@ -975,8 +972,7 @@ public class JCRPublicationService extends JahiaService {
                 doLogging = false;
             }
         }
-        if (doLogging) { 
->>>>>>> .merge-right.r43247
+        if (doLogging) {
             String userID = node.getSession().getUserID();
             if ((userID != null) && (userID.startsWith(JahiaLoginModule.SYSTEM))) {
                 userID = userID.substring(JahiaLoginModule.SYSTEM.length());

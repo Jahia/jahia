@@ -1460,7 +1460,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             if (rootTemplatePath.startsWith("/")) {
                 rootTemplatePath = rootTemplatePath.substring(1);
             }
-            templatesDestinationNode = templatesDestinationNode.getNode(rootTemplatePath);
+            if (!rootTemplatePath.equals("")) {
+                templatesDestinationNode = templatesDestinationNode.getNode(rootTemplatePath);
+            }
             templatesDestinationNode.getSession().checkout(templatesDestinationNode);
         }
 

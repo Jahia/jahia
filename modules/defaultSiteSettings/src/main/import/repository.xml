@@ -31,19 +31,19 @@
             </contents>
             <portlets jcr:primaryType="jnt:portletFolder" />
             <settings jcr:primaryType="jnt:settingsFolder">
-                <manageGroups changefreq="monthly" j:templateNode="/templateSets/defaultSiteSettings/templates/manageGroups" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
+                <manageGroups changefreq="monthly" j:templateNode="/templateSets/defaultSiteSettings/templates/siteSettingsBase/manageGroups" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
                     <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Manage Groups"/>
                 </manageGroups>
-                <manageLanguages changefreq="monthly" j:templateNode="/templateSets/defaultSiteSettings/templates/manageLanguages" jcr:mixinTypes="jmix:siteSetting jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
+                <manageLanguages changefreq="monthly" j:templateNode="/templateSets/defaultSiteSettings/templates/siteSettingsBase/manageLanguages" jcr:mixinTypes="jmix:siteSetting jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
                     <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Manage Languages"/>
                 </manageLanguages>
-                <HTMLSettings changefreq="monthly" j:templateNode="/templateSets/defaultSiteSettings/templates/HTMLSettings" jcr:mixinTypes="jmix:siteSetting jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
+                <HTMLSettings changefreq="monthly" j:templateNode="/templateSets/defaultSiteSettings/templates/siteSettingsBase/HTMLSettings" jcr:mixinTypes="jmix:siteSetting jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
                     <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="HTML Settings"/>
                 </HTMLSettings>
-                <vanityURLSetting changefreq="monthly" j:templateNode="/templateSets/defaultSiteSettings/templates/vanityURLSetting" jcr:mixinTypes="jmix:siteSetting jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
+                <vanityURLSetting changefreq="monthly" j:templateNode="/templateSets/defaultSiteSettings/templates/siteSettingsBase/vanityURLSetting" jcr:mixinTypes="jmix:siteSetting jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
                     <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Vanity URL Settings"/>
                 </vanityURLSetting>
-                <manageModules changefreq="monthly" j:templateNode="/templateSets/defaultSiteSettings/templates/manageModules" jcr:mixinTypes="jmix:siteSetting jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
+                <manageModules changefreq="monthly" j:templateNode="/templateSets/defaultSiteSettings/templates/siteSettingsBase/manageModules" jcr:mixinTypes="jmix:siteSetting jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
                     <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Manage Modules"/>
                 </manageModules>
             </settings>

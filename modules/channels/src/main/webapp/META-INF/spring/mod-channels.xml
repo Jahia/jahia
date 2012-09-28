@@ -86,11 +86,11 @@
                             <entry key="variants" value="portrait,landscape"/>
                             <entry key="variants-displayNames" value="Portrait,Landscape"/>
                             <entry key="device-image" value="/modules/channels/images/devices/android-small.png"/>
-                            <entry key="usable-resolutions" value="412x651,651x412"/>
+                            <entry key="usable-resolutions" value="412x651,683x383"/>
                             <entry key="decorator-images"
                                    value="/modules/channels/images/devices/android-portrait.png,/modules/channels/images/devices/android-landscape.png"/>
-                            <entry key="decorator-image-sizes" value="508x986,508x986"/>
-                            <entry key="decorator-screen-positions" value="50x181,50x181"/>
+                            <entry key="decorator-image-sizes" value="508x986,986x508"/>
+                            <entry key="decorator-screen-positions" value="50x181,148x75"/>
                             <entry key="resolution_width" value="320"/>
                             <entry key="resolution_height" value="480"/>
                             <entry key="userAgentPattern" value=".*Android.*"/>
@@ -107,11 +107,11 @@
                             <entry key="variants" value="portrait,landscape"/>
                             <entry key="variants-displayNames" value="Portrait,Landscape"/>
                             <entry key="device-image" value="/modules/channels/images/devices/bbstorm-small.png"/>
-                            <entry key="usable-resolutions" value="317x312,312x317"/>
+                            <entry key="usable-resolutions" value="317x312,370x288"/>
                             <entry key="decorator-images"
                                    value="/modules/channels/images/devices/bbstorm-portrait.png,/modules/channels/images/devices/bbstorm-landscape.png"/>
-                            <entry key="decorator-image-sizes" value="386x672,386x672"/>
-                            <entry key="decorator-screen-positions" value="35x190,190x35"/>
+                            <entry key="decorator-image-sizes" value="386x672,672x386"/>
+                            <entry key="decorator-screen-positions" value="35x190,131x63"/>
                             <entry key="resolution_width" value="320"/>
                             <entry key="resolution_height" value="480"/>
                             <entry key="userAgentPattern" value=".*BBStorm.*"/>

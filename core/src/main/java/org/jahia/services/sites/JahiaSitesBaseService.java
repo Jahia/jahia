@@ -779,44 +779,44 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     public void updateSite(JCRSiteNode node) {
         try {
             final JahiaSite legacySite = getSiteByKey(node.getName());
+            if (legacySite != null) {
+                legacySite.setTitle(node.getTitle());
+                legacySite.setDescr(node.getDescr());
+                legacySite.setServerName(node.getServerName());
 
-            legacySite.setTitle(node.getTitle());
-            legacySite.setDescr(node.getDescr());
-            legacySite.setServerName(node.getServerName());
+                legacySite.setLanguages(new HashSet<String>(node.getLanguages()));
+                legacySite.setInactiveLanguages(new HashSet<String>(node.getInactiveLanguages()));
+                legacySite.setInactiveLiveLanguages(new HashSet<String>(node.getInactiveLiveLanguages()));
+                legacySite.setMandatoryLanguages(new HashSet<String>(node.getMandatoryLanguages()));
+                legacySite.setDefaultLanguage(node.getDefaultLanguage());
+                legacySite.setMixLanguagesActive(node.isMixLanguagesActive());
+                legacySite.setAllowsUnlistedLanguages(node.isAllowsUnlistedLanguages());
 
-            legacySite.setLanguages(new HashSet<String>(node.getLanguages()));
-            legacySite.setInactiveLanguages(new HashSet<String>(node.getInactiveLanguages()));
-            legacySite.setInactiveLiveLanguages(new HashSet<String>(node.getInactiveLiveLanguages()));
-            legacySite.setMandatoryLanguages(new HashSet<String>(node.getMandatoryLanguages()));
-            legacySite.setDefaultLanguage(node.getDefaultLanguage());
-            legacySite.setMixLanguagesActive(node.isMixLanguagesActive());
-            legacySite.setAllowsUnlistedLanguages(node.isAllowsUnlistedLanguages());
+                legacySite.setInstalledModules(node.getInstalledModules());
+                legacySite.setTemplatePackageName(node.getTemplatePackageName());
 
-            legacySite.setInstalledModules(node.getInstalledModules());
-            legacySite.setTemplatePackageName(node.getTemplatePackageName());
-
-            if (node.getName().equals(SYSTEM_SITE_KEY)) {
-                try {
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            updateWorkspacePermissions(session, "default", legacySite);
-                            updateWorkspacePermissions(session, "live", legacySite);
-                            updateTranslatorRoles(session, legacySite);
-                            session.save();
-                            return null;
-                        }
-                    });
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            } else {
-                JahiaSite systemSite = getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
-                if (!systemSite.getLanguages().containsAll(legacySite.getLanguages())) {
-                    systemSite.getLanguages().addAll(legacySite.getLanguages());
-                    updateSite(systemSite);
+                if (node.getName().equals(SYSTEM_SITE_KEY)) {
+                    try {
+                        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                updateWorkspacePermissions(session, "default", legacySite);
+                                updateWorkspacePermissions(session, "live", legacySite);
+                                updateTranslatorRoles(session, legacySite);
+                                session.save();
+                                return null;
+                            }
+                        });
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                } else {
+                    JahiaSite systemSite = getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+                    if (!systemSite.getLanguages().containsAll(legacySite.getLanguages())) {
+                        systemSite.getLanguages().addAll(legacySite.getLanguages());
+                        updateSite(systemSite);
+                    }
                 }
             }
-
         } catch (JahiaException e) {
 
         }

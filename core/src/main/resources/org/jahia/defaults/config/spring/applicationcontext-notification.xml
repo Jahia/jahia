@@ -102,19 +102,6 @@
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
     </bean>
 
-    <bean name="notificationMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-        <property name="urlMap">
-            <map>
-                <entry key="/notification/**">
-                    <bean class="org.jahia.bin.Notifications">
-                        <property name="mailService" ref="MailService"/>
-                        <property name="requiredPermission" value="adminEmailSettings"/>
-                    </bean>
-                </entry>
-            </map>
-        </property>
-    </bean>
-
     <bean id="subscriptionService" class="org.jahia.services.notification.SubscriptionService">
         <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>

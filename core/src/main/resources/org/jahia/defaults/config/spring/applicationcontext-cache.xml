@@ -76,19 +76,6 @@ when we flush this entry we will flush the whole cache
         <property name="dependenciesLimit" value="1000"/>
     </bean>
 
-    <bean name="cacheMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-        <property name="urlMap">
-            <map>
-                <entry key="/cache/**">
-					<bean class="org.jahia.bin.CacheController">
-						<property name="cacheService" ref="JahiaCacheService"/>
-                        <property name="requiredPermission" value="adminCache"/>
-					</bean>
-                </entry>
-            </map>
-        </property>
-    </bean>
-
     <bean id="abstractFlushCacheOnNodeBackgroundAction" class="org.jahia.services.content.rules.FlushCacheOnNodeBackgroundAction" abstract="true">
         <property name="cacheProvider" ref="ModuleCacheProvider"/>
     </bean>

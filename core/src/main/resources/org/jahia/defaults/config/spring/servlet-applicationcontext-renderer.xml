@@ -138,6 +138,27 @@
                 <entry key="/storeHistory">
                     <bean class="org.jahia.bin.StoreHistory"/>
                 </entry>
+                <entry key="/cache/**">
+                    <bean class="org.jahia.bin.CacheController">
+                        <property name="cacheService" ref="JahiaCacheService"/>
+                        <property name="requiredPermission" value="adminCache"/>
+                    </bean>
+                </entry>
+                <entry key="/convert" value-ref="DocumentConverterController"/>
+                <entry key="/convert/**" value-ref="DocumentConverterController"/>
+                <entry key="/notification/**">
+                    <bean class="org.jahia.bin.Notifications">
+                        <property name="mailService" ref="MailService"/>
+                        <property name="requiredPermission" value="adminEmailSettings"/>
+                    </bean>
+                </entry>
+                <entry key="/text-extract">
+                    <bean class="org.jahia.bin.TextExtractor">
+                        <property name="settingsBean" ref="settingsBean"/>
+                        <property name="textExtractionService" ref="org.jahia.services.textextraction.TextExtractionService"/>
+                        <property name="view" value="/tools/textExtractor.jsp"/>
+                    </bean>
+                </entry>
             </map>
         </property>
     </bean>

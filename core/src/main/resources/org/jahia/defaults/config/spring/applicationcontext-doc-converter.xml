@@ -28,13 +28,4 @@
         <property name="requireAuthenticatedUser" value="true" />
     </bean>
 
-    <bean name="converterMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-        <property name="urlMap">
-            <map>
-                <entry key="/convert" value-ref="DocumentConverterController"/>
-                <entry key="/convert/**" value-ref="DocumentConverterController"/>
-            </map>
-        </property>
-    </bean>
-
 </beans>

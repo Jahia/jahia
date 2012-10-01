@@ -13,20 +13,6 @@
         <property name="maxExtractedCharacters" value="100000"/>
     </bean>
 
-    <bean name="textExtractorMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-        <property name="urlMap">
-            <map>
-                <entry key="/text-extract">
-                    <bean class="org.jahia.bin.TextExtractor">
-                        <property name="settingsBean" ref="settingsBean"/>
-                        <property name="textExtractionService" ref="org.jahia.services.textextraction.TextExtractionService"/>
-                        <property name="view" value="/tools/textExtractor.jsp"/>
-                    </bean>
-                </entry>
-            </map>
-        </property>
-    </bean>
-    
     <bean id="org.jahia.services.content.rules.ExtractionService" class="org.jahia.services.content.rules.ExtractionService" factory-method="getInstance">
         <property name="jcrTemplate" ref="jcrTemplate"/>
         <property name="textExtractionService" ref="org.jahia.services.textextraction.TextExtractionService"/>

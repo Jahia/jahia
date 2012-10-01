@@ -7,6 +7,7 @@ import org.atmosphere.jersey.SuspendResponse;
 import org.jahia.services.atmosphere.EventsLogger;
 
 import javax.ws.rs.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,7 +27,9 @@ public class SitePublisherSubscriber {
         return new SuspendResponse.SuspendResponseBuilder<String>()
                 .broadcaster(topic)
                 .outputComments(true)
+                .entity("")
                 .addListener(new EventsLogger())
+                .resumeOnBroadcast(true)
                 .build();
     }
 

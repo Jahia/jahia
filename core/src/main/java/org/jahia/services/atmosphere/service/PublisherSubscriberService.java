@@ -58,7 +58,7 @@ public class PublisherSubscriberService {
                 jsonObject.put("url", url);
                 jsonObject.put("name", node.getDisplayableName());
                 broadcast(resolveSite.getSiteKey() + "__" + activeLanguagesAsLocale.getDisplayName(Locale.ENGLISH),
-                        jsonObject.toString(), true);
+                        jsonObject.toString(), false);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

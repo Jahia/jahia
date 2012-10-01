@@ -36,12 +36,25 @@ import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.Response;
 import org.atmosphere.cpr.HeaderConfig;
+import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
-import org.junit.Test;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.*;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.test.TestHelper;
+import org.junit.*;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.ValueFactory;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.*;
 
@@ -97,6 +110,125 @@ public class AtmosphereTest {
             fail(e.getMessage());
         }
 
+        c.close();
+    }
+
+
+    private static JahiaSite site;
+    private static JCRPublicationService jcrService;
+
+    private final static String TESTSITE_NAME = "jcrAtmosphereTest";
+    private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
+    private final static String INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE = "English text";
+
+    private JCRSessionWrapper englishEditSession;
+    private JCRSessionWrapper englishLiveSession;
+
+    private JCRNodeWrapper testHomeEdit;
+
+    private void getCleanSession() throws RepositoryException {
+        JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
+        sessionFactory.closeAllSessions();
+        englishEditSession = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+        englishLiveSession = sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
+    }
+
+    @BeforeClass
+    public static void setUpClass() {
+        try {
+            site = TestHelper.createSite(TESTSITE_NAME, new HashSet<String>(Arrays.asList("en", "fr")),
+                    Collections.singleton("en"), false);
+            assertNotNull(site);
+
+            jcrService = ServicesRegistry.getInstance()
+                    .getJCRPublicationService();
+
+        } catch (Exception ex) {
+            logger.warn("Exception during test setUp", ex);
+        }
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        try {
+            TestHelper.deleteSite(TESTSITE_NAME);
+        } catch (Exception ex) {
+            logger.warn("Exception during test tearDown", ex);
+        }
+        JCRSessionFactory.getInstance().closeAllSessions();
+    }
+
+    @Before
+    public void setUp() {
+        try {
+            getCleanSession();
+            JCRNodeWrapper englishEditSiteHomeNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home");
+            testHomeEdit = englishEditSiteHomeNode.addNode("test"+System.currentTimeMillis(), "jnt:page");
+            testHomeEdit.setProperty("jcr:title", "Test page");
+            englishEditSession.save();
+            jcrService.publishByMainId(testHomeEdit.getIdentifier());
+        } catch (RepositoryException e) {
+            fail("Cannot get session");
+        }
+    }
+
+    @After
+    public void tearDown() {
+        try {
+            getCleanSession();
+            englishEditSession.getNodeByIdentifier(testHomeEdit.getIdentifier()).remove();
+            englishEditSession.save();
+            englishLiveSession.getNodeByIdentifier(testHomeEdit.getIdentifier()).remove();
+            englishLiveSession.save();
+        } catch (RepositoryException e) {
+            fail("Cannot remove nodes");
+        }
+    }
+
+    @Test
+    public void testNodePublish() throws RepositoryException {
+        TestHelper.createList(testHomeEdit, "contentList1", 4, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        final Value[] values = testHomeEdit.getResolveSite().getProperty("j:installedModules").getValues();
+        Value[] values1 = new Value[values.length+1];
+        System.arraycopy(values,0,values1,0,values.length);
+        values1[values.length] = JCRValueFactoryImpl.getInstance().createValue("atmosphere:6.7.0.0-SNAPSHOT");
+        testHomeEdit.getResolveSite().setProperty("j:installedModules",values1);
+        englishEditSession.save();
+        final CountDownLatch latch = new CountDownLatch(1);
+        AsyncHttpClient c = new AsyncHttpClient();
+        try {
+
+            //Suspend
+            final AtomicReference<Response> response = new AtomicReference<Response>();
+            c.prepareGet("http://localhost:8080"+ Jahia.getContextPath()+"/atmosphere/pubsub/sites/jcrAtmosphereTest__English").execute(new AsyncCompletionHandler<Response>() {
+
+                @Override
+                public Response onCompleted(Response r) throws Exception {
+                    try {
+                        response.set(r);
+                        return r;
+                    } finally {
+                        latch.countDown();
+                    }
+                }
+            });
+
+            Thread.sleep(2500);
+
+            jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, null);
+            try {
+                latch.await(20, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                fail(e.getMessage());
+            }
+            Response r = response.get();
+            assertNotNull(r);
+            assertEquals(r.getStatusCode(), 200);
+            assertTrue(r.getResponseBody().contains("\"name\":\"contentList1_text0\""));
+        } catch (Exception e) {
+            logger.error("test failed", e);
+            fail(e.getMessage());
+        }
         c.close();
     }
 }

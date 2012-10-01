@@ -53,7 +53,7 @@ import static org.junit.Assert.*;
  */
 public class AtmosphereTest {
     private transient static org.slf4j.Logger logger = LoggerFactory.getLogger(AtmosphereTest.class);
-    private String urlTarget = "http://localhost:8080/jahia/atmosphere/pubsub/alert/testChannel";
+    private String urlTarget = "http://localhost:8080/atmosphere/pubsub/alert/testChannel";
 
     @Test
     public void testHeaderBroadcasterCache() throws IllegalAccessException, ClassNotFoundException, InstantiationException {

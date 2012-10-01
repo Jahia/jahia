@@ -11,7 +11,7 @@
 		</property>
 	</bean>
 	
-    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <bean name="gwtUrlHandlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="mappings">
             <value>
                 /**/contentManager.gwt=contentManagerServiceController

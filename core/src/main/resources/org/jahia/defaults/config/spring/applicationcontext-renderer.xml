@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spring="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring-2.0-M1.xsd">
 
     <bean class="org.jahia.services.render.RenderService$RenderServiceBeanPostProcessor"/>
 
-	<bean id="RenderService" class="org.jahia.services.render.RenderService" factory-method="getInstance">
+    <bean id="org.jahia.services.render.scripting.RequestDispatcherScriptFactory" class="org.jahia.services.render.scripting.RequestDispatcherScriptFactory"/>
+
+    <bean id="org.jahia.services.render.scripting.JSR223ScriptFactory" class="org.jahia.services.render.scripting.JSR223ScriptFactory"/>
+
+    <bean id="org.jahia.services.render.webflow.WebflowDispatcherScriptFactory" class="org.jahia.services.render.webflow.WebflowDispatcherScriptFactory"/>
+
+    <bean id="RenderService" class="org.jahia.services.render.RenderService" factory-method="getInstance">
 		<property name="templateManagerService" ref="JahiaTemplateManagerService" />
         <property name="scriptResolvers">
 			<list>
@@ -19,8 +25,20 @@
 							<value>php</value>
 							<value>vm</value>
 							<value>fm</value>
+							<value>flow</value>
 						</list>
 					</property>
+                    <property name="scriptFactoryMap">
+                        <map>
+                            <entry key="jsp" value-ref="org.jahia.services.render.scripting.RequestDispatcherScriptFactory"/>
+                            <entry key="groovy" value-ref="org.jahia.services.render.scripting.JSR223ScriptFactory"/>
+                            <entry key="js" value-ref="org.jahia.services.render.scripting.JSR223ScriptFactory"/>
+                            <entry key="php" value-ref="org.jahia.services.render.scripting.RequestDispatcherScriptFactory"/>
+                            <entry key="vm" value-ref="org.jahia.services.render.scripting.JSR223ScriptFactory"/>
+                            <entry key="fm" value-ref="org.jahia.services.render.scripting.JSR223ScriptFactory"/>
+                            <entry key="flow" value-ref="org.jahia.services.render.webflow.WebflowDispatcherScriptFactory"/>
+                        </map>
+                    </property>
                     <property name="templateManagerService" ref="JahiaTemplateManagerService" />
 				</bean>
 			</list>

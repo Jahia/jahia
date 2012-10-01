@@ -67,6 +67,8 @@ public class StringResponseWrapper extends HttpServletResponseWrapper {
 
     private boolean isWriterUsed;
 
+    private String redirect;
+
     private ServletOutputStream sos = new ServletOutputStream() {
         @Override
         public void write(byte[] b) throws IOException {
@@ -142,5 +144,14 @@ public class StringResponseWrapper extends HttpServletResponseWrapper {
     @Override
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getRedirect() {
+        return redirect;
+    }
+
+    @Override
+    public void sendRedirect(String location) throws IOException {
+        this.redirect = location;
     }
 }

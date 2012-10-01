@@ -706,7 +706,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 previewDate.setTime(new Date(new Long(req.getParameter(PREVIEW_DATE))));
                 jcrSessionFactory.setCurrentPreviewDate(previewDate);
             }
-            if (method.equals(METHOD_GET)) {
+            if (method.equals(METHOD_GET) || isWebflowRequest(req)) {
                 if (!StringUtils.isEmpty(urlResolver.getRedirectUrl())) {
                     Map<String, List<String>> parameters = new HashMap<String, List<String>>();
                     parameters.put(NEW_NODE_OUTPUT_FORMAT, LIST_WITH_EMPTY_STRING);
@@ -812,6 +812,21 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
         }
         return null;
+    }
+
+    private boolean isWebflowRequest(HttpServletRequest req) {
+        boolean webflowRequest = false;
+        if (req.getMethod().equals(METHOD_POST)) {
+            Enumeration parameterNames = req.getParameterNames();
+            while (parameterNames.hasMoreElements()) {
+                String s = (String) parameterNames.nextElement();
+                if (s.startsWith("webflow-execution")) {
+                    webflowRequest = true;
+                    break;
+                }
+            }
+        }
+        return webflowRequest;
     }
 
     protected boolean isDisabled() {

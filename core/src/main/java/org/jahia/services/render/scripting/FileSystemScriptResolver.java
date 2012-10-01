@@ -54,8 +54,8 @@ import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDependenci
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDeployedOnSiteEvent;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.settings.SettingsBean;
-import org.slf4j.Logger;
 import org.jahia.utils.Patterns;
+import org.slf4j.Logger;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
@@ -86,9 +86,9 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(FileSystemScriptResolver.class);
 
-    private static final String JSP_EXTENSION = "jsp";
-    private static final String PHP_EXTENSION = "php";
     private List<String> scriptExtensionsOrdering;
+
+    private Map<String,ScriptFactory> scriptFactoryMap;
 
     private static Map<String, SortedSet<View>> viewSetCache = new ConcurrentHashMap<String, SortedSet<View>>();
     
@@ -100,6 +100,14 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
 
     public void setScriptExtensionsOrdering(List<String> scriptExtensionsOrdering) {
         this.scriptExtensionsOrdering = scriptExtensionsOrdering;
+    }
+
+    public Map<String, ScriptFactory> getScriptFactoryMap() {
+        return scriptFactoryMap;
+    }
+
+    public void setScriptFactoryMap(Map<String, ScriptFactory> scriptFactoryMap) {
+        this.scriptFactoryMap = scriptFactoryMap;
     }
 
     protected View resolveView(Resource resource, RenderContext renderContext) throws RepositoryException {
@@ -177,17 +185,15 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     public Script resolveScript(Resource resource, RenderContext renderContext) throws TemplateNotFoundException {
         try {
             ArrayList<String> searchLocations = new ArrayList<String>();
-            View resolvedTemplate = resolveView(resource, renderContext);
-            if (resolvedTemplate == null) {
+            View resolvedView = resolveView(resource, renderContext);
+            if (resolvedView == null) {
                 throw new TemplateNotFoundException("Unable to find the template for resource " + resource + " by looking in " + searchLocations);
             }
 
-            // @todo remove this hardcoding of script instantiation and make it Spring-configured.
-            if (JSP_EXTENSION.equals(resolvedTemplate.getFileExtension()) || PHP_EXTENSION.equals(resolvedTemplate.getFileExtension())) {
-                return new RequestDispatcherScript(resolvedTemplate);
-            } else {
-                return new JSR223Script(resolvedTemplate);
+            if (scriptFactoryMap.containsKey(resolvedView.getFileExtension())) {
+                return scriptFactoryMap.get(resolvedView.getFileExtension()).createScript(resolvedView);
             }
+            return null;
         } catch (RepositoryException e) {
             throw new TemplateNotFoundException(e);
         }
@@ -308,7 +314,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                 }
             })));
             for (File file : files) {
-                if (!file.isDirectory() && scriptExtensionsOrdering.contains(StringUtils.substringAfterLast(file.getName(),"."))) {
+                if (scriptFactoryMap.containsKey(StringUtils.substringAfterLast(file.getName(),"."))) {
                     String filename = file.getName();
                     String pref = nt.getName().contains(":") ? StringUtils.substringAfter(nt.getName(),":") : nt.getName();
                     if (filename.startsWith(pref+".")) {

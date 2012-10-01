@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:webflow="http://www.springframework.org/schema/webflow-config"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/webflow-config http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.3.xsd">
+
+    <webflow:flow-builder-services id="jahiaFlowBuilderServices" development="true" />
+
+    <webflow:flow-registry id="jahiaFlowRegistry" base-path="/modules" flow-builder-services="jahiaFlowBuilderServices">
+        <webflow:flow-location-pattern value="/**/*.flow/**/*.xml" />
+    </webflow:flow-registry>
+
+    <webflow:flow-executor id="jahiaFlowExecutor" flow-registry="jahiaFlowRegistry" />
+
+    <bean id="jahiaFlowUrlHandler" class="org.jahia.services.render.webflow.JahiaFlowUrlHandler"/>
+
+    <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping">
+        <property name="flowUrlHandler" ref="jahiaFlowUrlHandler"/>
+        <property name="flowRegistry" ref="jahiaFlowRegistry" />
+        <property name="order" value="0" />
+    </bean>
+
+    <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerAdapter">
+        <property name="flowUrlHandler" ref="jahiaFlowUrlHandler"/>
+        <property name="flowExecutor" ref="jahiaFlowExecutor" />
+    </bean>
+</beans>

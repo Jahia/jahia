@@ -64,7 +64,7 @@ public class RequestDispatcherScript implements Script {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestDispatcherScript.class);
 
-    private static void dumpRequestAttributes(HttpServletRequest request) {
+    protected static void dumpRequestAttributes(HttpServletRequest request) {
         // Let's enumerate request attribute to see what we are exposing.
         @SuppressWarnings("rawtypes")
         Enumeration attributeNamesEnum = request.getAttributeNames();

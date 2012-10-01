@@ -615,6 +615,19 @@
         <load-on-startup>800</load-on-startup>
     </servlet>
 
+    <servlet>
+        <servlet-name>FlowDispatcherServlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath*:org/jahia/defaults/config/**/servlet-applicationcontext-webflow*.xml,WEB-INF/etc/spring/servlet-applicationcontext-webflow*.xml</param-value>
+        </init-param>
+        <init-param>
+            <param-name>publishEvents</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </servlet>
+    
     <!-- Servlet mappings -->
     <servlet-mapping>
         <servlet-name>WelcomeServlet</servlet-name>
@@ -775,6 +788,11 @@
         <url-pattern>/gwtAtmosphere/gwtComet</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>FlowDispatcherServlet</servlet-name>
+        <url-pattern>/flow/*</url-pattern>
+    </servlet-mapping>
+    
     <!-- Session timeout value is set in minutes. Comment this section out
          in order to set the timeout time back to the server's value  -->
     <!--

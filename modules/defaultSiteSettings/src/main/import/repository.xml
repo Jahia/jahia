@@ -13,7 +13,22 @@
                             </manage-languages>
                         </pagecontent>
                     </manageLanguages>
-                    <HTMLSettings j:hiddenTemplate="false" jcr:primaryType="jnt:pageTemplate"/>
+                    <wcagCompliance j:hiddenTemplate="false" jcr:primaryType="jnt:pageTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <wcag-compliance jcr:primaryType="jnt:siteSettingsWcagCompliance">
+                                <j:translation_en jcr:language="en"
+                                    jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(label.htmlSettings.wcagCompliance)##" />
+                            </wcag-compliance>
+                        </pagecontent>
+                    </wcagCompliance>
+                    <htmlFiltering j:hiddenTemplate="false" jcr:primaryType="jnt:pageTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <html-filtering jcr:primaryType="jnt:siteSettingsHtmlFiltering">
+                                <j:translation_en jcr:language="en"
+                                    jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(label.htmlFiltering)##" />
+                            </html-filtering>
+                        </pagecontent>
+                    </htmlFiltering>
                     <vanityURLSetting j:hiddenTemplate="false" jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <pager displayNbOfItemsPerPage="true" displayNbOfItemsPerPageValues="5,10,25,50,100" displayPager="true" j:bindedComponent="/templateSets/defaultSiteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist" jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:pager" nbOfPages="10" pageSize="10"/>
@@ -23,8 +38,7 @@
                             <pager-1 displayNbOfItemsPerPage="true" displayNbOfItemsPerPageValues="5,10,25,50,100" displayPager="true" j:bindedComponent="/templateSets/defaultSiteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist" jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:pager" nbOfPages="10" pageSize="10"/>
                         </pagecontent>
                     </vanityURLSetting>
-                    <manageModules j:hiddenTemplate="false"
-                                   jcr:primaryType="jnt:pageTemplate">
+                    <manageModules j:hiddenTemplate="false" jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <manage-modules jcr:primaryType="jnt:siteSettingsManageModules">
                                 <j:translation_en jcr:language="en"
@@ -45,9 +59,12 @@
                 <manageLanguages changefreq="monthly" j:templateNode="/templateSets/defaultSiteSettings/templates/siteSettingsBase/manageLanguages" jcr:mixinTypes="jmix:siteSetting jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
                     <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Manage Languages"/>
                 </manageLanguages>
-                <HTMLSettings changefreq="monthly" j:templateNode="/templateSets/defaultSiteSettings/templates/siteSettingsBase/HTMLSettings" jcr:mixinTypes="jmix:siteSetting jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
-                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="HTML Settings"/>
-                </HTMLSettings>
+                <wcagCompliance changefreq="monthly" j:templateNode="/templateSets/defaultSiteSettings/templates/siteSettingsBase/wcagCompliance" jcr:mixinTypes="jmix:siteSetting jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
+                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(label.htmlSettings.wcagCompliance)##"/>
+                </wcagCompliance>
+                <htmlFiltering changefreq="monthly" j:templateNode="/templateSets/defaultSiteSettings/templates/siteSettingsBase/htmlFiltering" jcr:mixinTypes="jmix:siteSetting jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
+                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(label.htmlFiltering)##"/>
+                </htmlFiltering>
                 <vanityURLSetting changefreq="monthly" j:templateNode="/templateSets/defaultSiteSettings/templates/siteSettingsBase/vanityURLSetting" jcr:mixinTypes="jmix:siteSetting jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
                     <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Vanity URL Settings"/>
                 </vanityURLSetting>

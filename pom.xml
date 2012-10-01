@@ -39,6 +39,7 @@
 
         <pluto.version>2.0.2</pluto.version>
         <spring.version>3.0.5.RELEASE</spring.version>
+        <springwebflow-version>2.3.0.RELEASE</springwebflow-version>
         <jackrabbit.version>2.4.2-rev1346887-patch9</jackrabbit.version>
         <lucene.version>3.0.3</lucene.version>
         <jbpm.version>4.4</jbpm.version>

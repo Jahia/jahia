@@ -16,7 +16,7 @@
 
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="managesites.js"/>
-<template:addResources type="javascript" resources="jquery.form.js"/>
+<template:addResources type="javascript" resources="jquery.form.min.js"/>
 
 <script type="text/javascript">
 
@@ -122,9 +122,9 @@
 %>
 
 
-<form id="updateSiteForm" action="${url.base}${renderContext.mainResource.node.resolveSite.path}" method="post">
+<form id="updateSiteForm" action="<c:url value='${url.base}${renderContext.mainResource.node.resolveSite.path}'/>" method="post">
     <input type="hidden" name="jcrMethodToCall" value="put"/>
-    <input type="hidden" name="jcrRedirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+    <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
     <table style="width: 100%;" cellpadding="0" cellspacing="0" border="1">
         <thead>
         <tr>

@@ -268,7 +268,6 @@ public final class NodeVersionHistoryHelper {
                     out.echo("Start deleting version history for {} nodes", orphans.size());
                     try {
                         long nb = purgeVersionHistoryForNodes(orphans, session, status);
-                        status.deleted += nb;
                         out.echo("deleted {} version histories", nb);
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);

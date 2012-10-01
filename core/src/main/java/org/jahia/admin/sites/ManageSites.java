@@ -73,8 +73,11 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRObservationManager;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.NoCloseZipInputStream;
@@ -2046,13 +2049,13 @@ public class ManageSites extends AbstractAdministrationModule {
         return modules;
     }
 
-    private void processFileImport(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+    private void processFileImport(HttpServletRequest request, HttpServletResponse response, final HttpSession session)
             throws IOException, ServletException {
         @SuppressWarnings("unchecked")
         List<Map<Object, Object>> importsInfos = (List<Map<Object, Object>>) session.getAttribute("importsInfos");
         Map<Object, Object> siteKeyMapping = new HashMap<Object, Object>();
         boolean stillBad = false;
-        JahiaSitesService jahiaSitesService = ServicesRegistry.getInstance().getJahiaSitesService();
+        final JahiaSitesService jahiaSitesService = ServicesRegistry.getInstance().getJahiaSitesService();
         for (Map<Object, Object> infos : importsInfos) {
             File file = (File) infos.get("importFile");
             infos.put("sitekey", StringUtils.left(request.getParameter(file.getName() + "siteKey") == null ? null :
@@ -2142,8 +2145,8 @@ public class ManageSites extends AbstractAdministrationModule {
             }
 
             try {
-                for (Map<Object, Object> infos : importsInfos) {
-                    File file = (File) infos.get("importFile");
+                for (final Map<Object, Object> infos : importsInfos) {
+                    final File file = (File) infos.get("importFile");
                     if (request.getParameter(file.getName() + "selected") != null) {
                         if (infos.get("type").equals("files")) {
                             try {
@@ -2180,20 +2183,41 @@ public class ManageSites extends AbstractAdministrationModule {
                                     legacyDefinitionsFilePath = null;
                                 }
                             }
-                            Locale defaultLocale = determineDefaultLocale(jParams, infos);
+                            final Locale defaultLocale = determineDefaultLocale(jParams, infos);
                             try {
-                                JahiaSite site = jahiaSitesService
-                                        .addSite(jParams.getUser(), (String) infos.get("sitetitle"),
-                                                (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
-                                                defaultLocale, tpl, null, "fileImport", file,
-                                                (String) infos.get("importFileName"), false, false, (String) infos.get("originatingJahiaRelease"),legacyImportFilePath,legacyDefinitionsFilePath);
-                                session.setAttribute(ProcessingContext.SESSION_SITE, site);
-                                jParams.setSite(site);
-                                jParams.setSiteID(site.getID());
-                                jParams.setSiteKey(site.getSiteKey());
-                                jParams.setCurrentLocale(defaultLocale);
-
-
+                                try {
+                                    final String finalTpl = tpl; 
+                                    final String finalLegacyImportFilePath = legacyImportFilePath;
+                                    final String finalLegacyDefinitionsFilePath = legacyDefinitionsFilePath;
+                                    
+                                    JCRObservationManager.doWithOperationType(null, JCRObservationManager.IMPORT, new JCRCallback<Object>() {
+                                        public Object doInJCR(JCRSessionWrapper jcrSession) throws RepositoryException {
+                                            try {
+                                                JahiaSite site = jahiaSitesService
+                                                        .addSite(jParams.getUser(), (String) infos.get("sitetitle"),
+                                                                (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
+                                                                defaultLocale, finalTpl, null, "fileImport", file,
+                                                                (String) infos.get("importFileName"), false, false, (String) infos.get("originatingJahiaRelease"),finalLegacyImportFilePath,finalLegacyDefinitionsFilePath);
+                                                session.setAttribute(ProcessingContext.SESSION_SITE, site);
+                                                jParams.setSite(site);
+                                                jParams.setSiteID(site.getID());
+                                                jParams.setSiteKey(site.getSiteKey());
+                                                jParams.setCurrentLocale(defaultLocale);
+                                            } catch (JahiaException e) {
+                                                throw new RepositoryException(e);
+                                            } catch (IOException e) {
+                                                throw new RepositoryException(e);
+                                            }
+                                            
+                                            return null;
+                                        }
+                                    });
+                                } catch (RepositoryException e) {
+                                    if (e.getCause() != null
+                                            && (e.getCause() instanceof JahiaException || e.getCause() instanceof IOException)) {
+                                        throw (Exception) e.getCause();
+                                    }
+                                }
                             } catch (Exception e) {
                                 logger.error("Cannot create site " + infos.get("sitetitle"), e);
                             }

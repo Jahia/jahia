@@ -36,6 +36,7 @@ import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.Response;
 import org.atmosphere.cpr.HeaderConfig;
+import org.jahia.bin.Jahia;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +54,7 @@ import static org.junit.Assert.*;
  */
 public class AtmosphereTest {
     private transient static org.slf4j.Logger logger = LoggerFactory.getLogger(AtmosphereTest.class);
-    private String urlTarget = "http://localhost:8080/atmosphere/pubsub/alert/testChannel";
+    private String urlTarget = "http://localhost:8080"+ Jahia.getContextPath()+"/atmosphere/pubsub/alert/testChannel";
 
     @Test
     public void testHeaderBroadcasterCache() throws IllegalAccessException, ClassNotFoundException, InstantiationException {

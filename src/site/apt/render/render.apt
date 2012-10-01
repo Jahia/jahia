@@ -13,7 +13,7 @@ Rendering
 * Templates
 
  A node needs to be associated to a template to be displayed in a full HTML page. A template will define which element
- to display and where to display them, gathering difference component views in one single HTML page.ca ser
+ to display and where to display them, gathering difference component views in one single HTML page.
 
  Templates are created with the Studio. <Page templates> are specially created for pages, and <Content templates> are
  created for all other type of content. The content templates are associated to a node type.

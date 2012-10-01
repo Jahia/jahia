@@ -1,0 +1,87 @@
+Render controllers and modes
+
+* Render controllers
+
+  The render controller is main entry point to display a page in Jahia. Depending on the type of rendering the user wants -
+  live, preview, edit or any other rendering - he selects a controller configuration by typing its name in the URL. The
+  controller configuration is called a rendering mode.
+
+The URL of a page, before rewriting, usually looks like :
+
++-----------
+http://servername/cms/<rendering-mode>/[<workspace>/]<language>/<path>[.<template>].<template-type>
++-----------
+
+  Full description of the possible URLs with rewriting can be found in {{{../url/url.html}URL rewriting}}
+
+  The <<<rendering-mode>>> part points to a spring controller configuration.
+  The <<<workspace>>> is either live or default, and can be forced by the rendering mode - and can then be omitted.
+
+* Controller implementation and rendering modes configuration
+
+  All controllers are based on the class <<<org.jahia.bin.Render>>>, or a subclass. The controller configuration can define
+  the following parameters :
+
+  * <<<requiredPermission>>> : The permission required to use this configuration, checked against the requested node
+
+  * <<<workspace>>> : The workspace in which the node will be fetched. If no workspace is defined, the user will have to
+    specify it in the URL.
+
+  You can also define which actions will be used for default post and put actions, by setting the values of
+  <<<defaultPostAction>>> and <<<defaultPutAction>>>
+
+  For edit and contribute, the <<<org.jahia.bin.Edit>>> class is used, which defines an additional parameter - the edit mode
+  configuration (<<<editConfiguration>>>). The configuration refers to a spring bean of class
+  <<<org.jahia.services.uicomponents.bean.editmode.EditConfiguration>>>,
+  described in {{{../uicomponents/uicomponents.html}UiComponents}}
+
+  Studio mode also uses a specific implementation of the controller.
+
+  Modes are defined in the <<<servlet-applicationcontext-renderer.xml>>> file. Jahia core defines multiple modes in this file :
+
+  * <<<render>>> - normal render mode
+
+  * <<<live>>> - live mode
+
+  * <<<preview>>> - preview mode
+
+  * <<<edit>>> - full editing mode
+
+  * <<<contribute>>> - simplified editing mode
+
+  * <<<studio>>> - content studio mode
+
+  In addition to the proper mode configuration, the mode can alter the rendering chain by acting on the following :
+
+  * the list of rendering filters that will apply (by using the <<<applyOnModes>>> attribute on the render filter)
+
+  * the templates and components that will be available in this mode (by using the <<<j:requiredMode>>> property)
+
+  The mode is also always available as a property of the RenderContext object.
+
+* Custom mode configuration
+
+  It is also possible to define a new mode in a module, by adding a new
+  <<<org.springframework.web.servlet.handler.SimpleUrlHandlerMapping>>>
+  object in the main spring context. This mapping just defines the mode name (the url mapping) and its actual configuration.
+
+  For example, a <<<mymode>>> mode, using the standard render servlet, but forcing on the default workspace, and adding a
+  required permission <<<requiredPermission>>>, can be defined with :
+
++----------------
+<bean name="wiseMappings" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <property name="urlMap">
+        <map>
+            <entry key="/mymode/**">
+                <bean name="org.jahia.bin.Render" parent="abstractRender">
+                    <property name="workspace" value="default"/>
+                    <property name="requiredPermission" value="mypermission"/>
+                </bean>
+            </entry>
+        </map>
+    </property>
+</bean>
++----------------
+
+  This module can then also add filters and templates that will only apply to this mode.
+

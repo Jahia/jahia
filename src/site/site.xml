@@ -32,6 +32,7 @@
         </menu>
         <menu name="Rendering" inherit="top">
             <item name="Rendering" href="render/render.html"/>
+            <item name="Rendering modes" href="render/modes.html"/>
             <item name="Rendering filters" href="jahia-modules/renderingFilter.html"/>
             <item name="Caches" href="cache/cache.html"/>
             <item name="Activate information about script usage" href="jahia-modules/scriptinfo.html"/>

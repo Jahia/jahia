@@ -63,20 +63,23 @@ URL Rewriting
   The following is a "full" URL of a resource in Jahia, omitting the protocol, port and context path:
   
 +-----------------------
-/cms/<rendering-mode>/<workspace>/<language>/<path>[.<template>].<template-type>
+/cms/<rendering-mode>/[<workspace>/]<language>/<path>[.<template>].<template-type>
 +-----------------------
 
   Where possible values for <<<\<rendering-mode\>>>> are:
   
-  * <<<render>>> - preview mode
+  * <<<render>>> - normal render mode
   
   * <<<contribute>>> - simplified editing mode
   
   * <<<edit>>> - full editing mode
   
   * <<<studio>>> - content studio mode
-  
+
   []
+
+  Or any other mode defined, as described in {{{../render/modes.html}Render controllers and modes}}
+
 
   and <<<\<workspace\>>>> can be one of:
   

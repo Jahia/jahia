@@ -1,6 +1,7 @@
 package org.jahia.modules.atmosphere.servlet;
 
 import org.atmosphere.annotation.Broadcast;
+import org.atmosphere.annotation.Suspend;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.jersey.Broadcastable;
 import org.atmosphere.jersey.SuspendResponse;
@@ -16,23 +17,21 @@ import javax.ws.rs.*;
  * To change this template use File | Settings | File Templates.
  */
 @Path("/pubsub/alert/{channel}")
+@Produces("text/plain;charset=UTF-8")
 public class AlertChannelPublisherSubscriber {
 
     private @PathParam("channel")
     Broadcaster topic;
 
     @GET
-    public SuspendResponse<String> subscribe() {
-        return new SuspendResponse.SuspendResponseBuilder<String>()
-                .broadcaster(topic)
-                .outputComments(true)
-                .addListener(new EventsLogger())
-                .build();
+    @Suspend(resumeOnBroadcast = true, outputComments = false)
+    public Broadcastable subscribe() {
+        return new Broadcastable(topic);
     }
 
     @POST
     @Broadcast
     public Broadcastable publish(@FormParam("message") String message) {
-        return new Broadcastable(message, "", topic);
+        return new Broadcastable(message+"\n", "", topic);
     }
 }

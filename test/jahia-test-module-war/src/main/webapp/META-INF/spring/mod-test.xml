@@ -25,6 +25,7 @@
                 <value>org.jahia.bin.RenderTest</value>
                 <value>org.jahia.services.acl.AclTest</value>
                 <value>org.jahia.services.applications.ApplicationsManagerServiceTest</value>
+                <value>org.jahia.services.atmosphere.AtmosphereTest</value>
                 <value>org.jahia.services.categories.CategoryTest</value>
                 <value>org.jahia.services.content.AutoSplittingTest</value>
                 <value>org.jahia.services.content.ContentTest</value>

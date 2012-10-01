@@ -247,6 +247,11 @@
             <artifactId>hadoop-core</artifactId>
             <version>0.19.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.ning</groupId>
+            <artifactId>async-http-client</artifactId>
+            <version>1.7.6</version>
+        </dependency>
         <!-- End of Nutch and its dependencies -->
     </dependencies>
     <build>

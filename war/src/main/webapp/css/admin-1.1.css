@@ -855,6 +855,7 @@ li.section a:hover {
     min-height: auto;
     color: #333333;
     padding: 5px 10px 5px 26px;
+    white-space: nowrap;
 }
 .dex-PushButton a.noIcon {
     padding: 5px 10px;

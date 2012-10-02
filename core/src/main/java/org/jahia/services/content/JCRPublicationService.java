@@ -1101,8 +1101,9 @@ public class JCRPublicationService extends JahiaService {
 
             info.setSubtreeProcessed(allsubtree);
             infosMap.put(uuid, info);
-
+        
             if (node.hasProperty("j:deletedChildren")) {
+<<<<<<< .working
 <<<<<<< .working
                 JCRPropertyWrapper p = node.getProperty("j:deletedChildren");
                 Value[] values = p.getValues();
@@ -1129,10 +1130,20 @@ public class JCRPublicationService extends JahiaService {
                         } catch (ItemNotFoundException e) {
                             logger.debug("Cannot find deleted subnode of "+node.getPath() + " : " + value.getString()+", we keep the reference until next publication to be sure to erase it from the live workspace.");
                         }
+=======
+                JCRPropertyWrapper p = node.getProperty("j:deletedChildren");
+                Value[] values = p.getValues();
+                for (Value value : values) {
+                    try {
+                        JCRNodeWrapper deletedNode = destinationSession.getNodeByUUID(value.getString());
+                        PublicationInfoNode deletedInfo = new PublicationInfoNode(deletedNode.getIdentifier(), deletedNode.getPath());
+                        deletedInfo.setStatus(PublicationInfo.DELETED);
+                        info.addChild(deletedInfo);
+                    } catch (ItemNotFoundException e) {
+                        logger.debug("Cannot find deleted subnode of "+node.getPath() + " : " + value.getString()+", we keep the reference until next publication to be sure to erase it from the live workspace.");
+>>>>>>> .merge-right.r43275
 >>>>>>> .merge-right.r43272
                     }
-                }catch (PathNotFoundException e) {
-                    logger.warn("property j:deletedChildren has been found on node " + node.getPath() + " but was not here");
                 }
             }
 

@@ -45,7 +45,6 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.render.URLGenerator;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,19 +84,10 @@ public class JCRNodeIconTag extends AbstractJCRTag {
 
     public int doStartTag() throws JspException {
         try {
-            String icon = null;
-            // Keep the behavior of the tag, remove "/context/modules" from the return of the tag
-            URLGenerator url =
-                    (URLGenerator) pageContext.getAttribute("url", PageContext.REQUEST_SCOPE);
             if (node != null) {
-                icon = JCRContentUtils.getIcon(node);
+                pageContext.setAttribute(var, JCRContentUtils.getIcon(node), scope);
             } else if (type != null) {
-                icon =  JCRContentUtils.getIcon(type instanceof ExtendedNodeType ? (ExtendedNodeType) type : NodeTypeRegistry.getInstance().getNodeType(String.valueOf(type)));
-            }
-            if (icon != null) {
-                String prefix = url.getContext() + url.getTemplatesPath();
-                icon = icon.contains(prefix)?icon.substring(prefix.length()):icon;
-                pageContext.setAttribute(var, icon, scope);
+                pageContext.setAttribute(var, JCRContentUtils.getIcon(type instanceof ExtendedNodeType ? (ExtendedNodeType) type : NodeTypeRegistry.getInstance().getNodeType(String.valueOf(type))), scope);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

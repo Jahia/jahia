@@ -626,6 +626,10 @@
             <param-name>publishEvents</param-name>
             <param-value>false</param-value>
         </init-param>
+        <init-param>
+            <param-name>cleanupAfterInclude</param-name>
+            <param-value>false</param-value>
+        </init-param>
     </servlet>
     
     <!-- Servlet mappings -->

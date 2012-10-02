@@ -223,7 +223,7 @@ public class ContentDefinitionHelper {
         }
         gwt.setSuperTypes(supertypesNames);
         try {
-            gwt.setIcon(JCRContentUtils.getIcon(nodeType));
+            gwt.setIcon(JCRContentUtils.getIconWithContext(nodeType));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

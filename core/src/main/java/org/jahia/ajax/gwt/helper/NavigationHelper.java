@@ -1007,7 +1007,7 @@ public class NavigationHelper {
         // icons
         if (fields.contains(GWTJahiaNode.ICON)) {
             try {
-                n.setIcon(JCRContentUtils.getIcon(node));
+                n.setIcon(JCRContentUtils.getIconWithContext(node, true));
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }

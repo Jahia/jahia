@@ -375,10 +375,10 @@
                       <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h3&gt;##resourceBundle(system.browseFiles)##&lt;/h3&gt; "/>
                     </rich-text-1>
                     <ajax-mode-dispatcher-live jcr:mixinTypes="jmix:requiredPermissions" j:originWS="default" jcr:primaryType="jnt:modeDispatcher" mode="live" j:contextNodePath="/sites" j:invertCondition="true" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default" >
-                      <list-of-all-sites contribute="false" edit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10" typeOfContent="files"/>
+                      <list-of-all-sites contribute="true" edit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="false" numberOfSitesPerPage="10" typeOfContent="files"/>
                     </ajax-mode-dispatcher-live>
                     <ajax-mode-dispatcher-preview jcr:mixinTypes="jmix:requiredPermissions" j:originWS="default" jcr:primaryType="jnt:modeDispatcher" mode="preview" j:contextNodePath="/sites" j:invertCondition="false" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default">
-                      <list-of-all-sites contribute="false" edit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10" typeOfContent="files"/>
+                      <list-of-all-sites contribute="true" edit="false" j:originWS="default" jcr:primaryType="jnt:listSites" live="false" numberOfSitesPerPage="10" typeOfContent="files"/>
                     </ajax-mode-dispatcher-preview>
                   </content-list-1>
                   <content-list-2 j:originWS="default" jcr:primaryType="jnt:contentList">

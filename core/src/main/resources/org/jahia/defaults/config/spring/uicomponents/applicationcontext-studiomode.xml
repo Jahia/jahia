@@ -581,7 +581,6 @@
                                 <list>
                                     <value>jmix:navMenuItem</value>
                                     <value>jmix:visibleInPagesTree</value>
-                                    <value>jnt:settingsFolder</value>
                                 </list>
                             </property>
                         </bean>

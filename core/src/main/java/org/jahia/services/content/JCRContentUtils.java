@@ -97,6 +97,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRComponentNode;
+import org.jahia.services.content.decorator.JCRFileNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -635,7 +636,7 @@ public final class JCRContentUtils implements ServletContextAware {
     }
 
     public static String getIcon(ExtendedNodeType type) throws RepositoryException {
-        return getIcon(type, null);
+        return Jahia.getContextPath() + "/modules/" + getIcon(type, null);
     }
 
     private static String getIcon(ExtendedNodeType type, String subType) throws RepositoryException {
@@ -660,10 +661,14 @@ public final class JCRContentUtils implements ServletContextAware {
     public static String getIcon(JCRNodeWrapper f) throws RepositoryException {
         ExtendedNodeType primaryNodeType = f.getPrimaryNodeType();
         String folder = getIconsFolder(primaryNodeType);
+        String prefix = Jahia.getContextPath() + "/modules/";
+        if (f.isNodeType("jmix:hasIcon") && f.hasProperty("j:icon")) {
+            return ((JCRFileNode) f.getProperty("j:icon").getNode()).getUrl();
+        }
         if (f.isFile()) {
-            return folder + "jnt_file_" + FileUtils.getFileIcon(f.getName());
+            return prefix + folder + "jnt_file_" + FileUtils.getFileIcon(f.getName());
         } else if (f.isPortlet()) {
-            return folder + "jnt_portlet";
+            return prefix + folder + "jnt_portlet";
         } else if (f instanceof JCRComponentNode) {
             String type = f.getName();
             ExtendedNodeType nt = primaryNodeType;
@@ -674,9 +679,9 @@ public final class JCRContentUtils implements ServletContextAware {
 
                 }
             }
-            return getIcon(nt, getSubType(nt, f));
+            return prefix + getIcon(nt, getSubType(nt, f));
         } else {
-            return getIcon(primaryNodeType, getSubType(primaryNodeType, f));
+            return prefix + getIcon(primaryNodeType, getSubType(primaryNodeType, f));
         }
     }
 

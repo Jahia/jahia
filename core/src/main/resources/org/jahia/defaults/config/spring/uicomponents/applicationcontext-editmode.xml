@@ -644,14 +644,23 @@
     <!-- side tabs-->
 
     <bean id="sidePanelTab.settings" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-        <property name="key" value="settings"/>
+        <property name="key" value="label.settings"/>
         <property name="icon" value="settings"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsTabItem">
-                <property name="serverSettingMixin" value="jmix:serverSetting"/>
-                <property name="siteSettingMixin" value="jmix:siteSetting"/>
-                <property name="folderTypes" value="jmix:setting"/>
-                <property name="paths" value="$site/settings"/>
+                <property name="settingsPanelList">
+                    <list>
+                        <bean id="siteSettings" class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsPanel">
+                            <property name="paths" value="$site/templates/siteSettingsBase/*"/>
+                            <property name="label" value="org.jahia.admin.siteSettings.label"/>
+                            <property name="requiredPermission" value="administrationAccess"/>
+                        </bean>
+                        <bean id="adminSettings" class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsPanel">
+                            <property name="label" value="label.serverSettings"/>
+                            <property name="requiredPermission" value="administrationAccess"/>
+                        </bean>
+                    </list>
+                </property>
             </bean>
         </property>
         <property name="requiredPermission" value="administrationAccess"/>

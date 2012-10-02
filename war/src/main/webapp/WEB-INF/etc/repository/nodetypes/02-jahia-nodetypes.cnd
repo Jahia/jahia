@@ -249,20 +249,6 @@
 - constantValue (string)
 
 //---------------------------------------------------------
-// Settings
-//---------------------------------------------------------
-
-
-[jnt:settingsFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, mix:title
-+ * (jnt:page)
-
-[jmix:setting] mixin
-- redirect (string)
-
-[jmix:siteSetting] > jmix:setting mixin
-[jmix:serverSetting] > jmix:setting mixin
-
-//---------------------------------------------------------
 // Preferences
 //---------------------------------------------------------
 
@@ -397,7 +383,7 @@
  itemtype = layout
  - j:templateNode (weakreference,choicelist[templatesNode]) mandatory < jnt:template
 
-[jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:requiredPermissions, jmix:renderable, jmix:observable
+[jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:requiredPermissions, jmix:renderable, jmix:observable, jmix:hasIcon
  - j:hiddenTemplate (boolean)
  - j:moduleTemplate (string) hidden nofulltext
  - j:sourceTemplate (weakreference) hidden nofulltext
@@ -590,6 +576,11 @@
 
 // @since Jahia 6.6
 [jmix:hiddenNode] mixin
+
+// @since Jahia 6.7
+[jmix:hasIcon] mixin
+ - j:icon (weakreference,picker[type='image']) < jmix:image
+
 
 //---------------------------------------------------------
 // References and links

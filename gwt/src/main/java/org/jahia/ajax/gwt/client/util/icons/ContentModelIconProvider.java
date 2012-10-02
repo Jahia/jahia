@@ -108,10 +108,16 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
         return new AbstractImagePrototype() {
 
             public String getUrl() {
-                return JahiaGWTParameters.getContextPath() + "/modules/" + icon +
+                String url = icon;
+                String prefix = ".png";
+                if (icon.contains(".")) {
+                    url = icon.substring(0, icon.indexOf("."));
+                    prefix = icon.substring(icon.indexOf("."));
+                }
+                return  url +
                         /*( isOpened ? "_opened" : "" ) +*/
                         ( large ? "_large" : "" ) +
-                        ".png";
+                        prefix;
             }
 
             @Override

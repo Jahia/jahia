@@ -15,8 +15,8 @@ import javax.ws.rs.*;
  * Time: 9:33 AM
  * To change this template use File | Settings | File Templates.
  */
-@Path("/pubsub/channel/{channel}")
-public class ChannelPublisherSubscriber {
+@Path("/nodes/{channel}")
+public class ChannelSubscriber {
 
     private @PathParam("channel")
     Broadcaster topic;
@@ -28,11 +28,5 @@ public class ChannelPublisherSubscriber {
                 .outputComments(true)
                 .addListener(new EventsLogger())
                 .build();
-    }
-
-    @POST
-    @Broadcast
-    public Broadcastable publish(@FormParam("message") String message) {
-        return new Broadcastable(message, "", topic);
     }
 }

@@ -10,13 +10,13 @@ import org.jahia.services.atmosphere.EventsLogger;
 import javax.ws.rs.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: rincevent
+ * This class declares a publisher subscriber alert channel
+ * User: cedric.mailleux@jahia.com
  * Date: 22/11/11
  * Time: 9:33 AM
  * To change this template use File | Settings | File Templates.
  */
-@Path("/pubsub/alert/{channel}")
+@Path("/alert/{channel}")
 @Produces("text/plain;charset=UTF-8")
 public class AlertChannelPublisherSubscriber {
 

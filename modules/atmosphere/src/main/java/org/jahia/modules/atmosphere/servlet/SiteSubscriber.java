@@ -16,8 +16,8 @@ import java.util.concurrent.TimeUnit;
  * Time: 9:33 AM
  * To change this template use File | Settings | File Templates.
  */
-@Path("/pubsub/sites/{site}")
-public class SitePublisherSubscriber {
+@Path("/sites/{site}")
+public class SiteSubscriber {
 
     private @PathParam("site")
     Broadcaster topic;
@@ -33,9 +33,4 @@ public class SitePublisherSubscriber {
                 .build();
     }
 
-    @POST
-    @Broadcast
-    public Broadcastable publish(@FormParam("message") String message) {
-        return new Broadcastable(message, "", topic);
-    }
 }

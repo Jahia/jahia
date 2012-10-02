@@ -44,7 +44,7 @@
 
         $(document).ready(function() {
             $.atmosphere.unsubscribe();
-            var subscribe = $.atmosphere.subscribe("${url.server}${url.context}/atmosphere/pubsub/alert/${channelName}", callbackAbsolute,
+            var subscribe = $.atmosphere.subscribe("${url.server}${url.context}/atmosphere/alert/${channelName}", callbackAbsolute,
                     $.atmosphere.request = { transport: "websocket" });
             connectedAbsoluteEndpoint["${channelName}"] = subscribe;
         });

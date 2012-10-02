@@ -1,70 +1,120 @@
 How-to use atmosphere framework within Jahia
 
- First you will have to deploy the module in your jahia. While your jahia is still shutdown, we have to modify two files
- and create a new one.
+ In atmosphere you declare broadcasters that will broadcast messages to all networks connected to them.
 
- Modify WEB-INF/web.xml to add AtmosphereServlet and mappings.
+ There is two side for each atmosphere module you will code, first the server part that will broadcast messages, and the
+ client side that will subscribe to those broadcasts.
 
-------------------------
-    <servlet>
-        <description>AtmosphereServlet</description>
-        <servlet-name>AtmosphereServlet</servlet-name>
-        <servlet-class>org.atmosphere.cpr.AtmosphereServlet</servlet-class>
-        <init-param>
-            <param-name>org.atmosphere.useWebSocket</param-name>
-            <param-value>true</param-value>
-        </init-param>
-        <init-param>
-            <param-name>org.atmosphere.useNative</param-name>
-            <param-value>true</param-value>
-        </init-param>
-        <!-- For Opera support -->
-        <init-param>
-            <param-name>org.atmosphere.cpr.broadcastFilterClasses</param-name>
-            <param-value>org.atmosphere.client.JavascriptClientFilter</param-value>
-        </init-param>
-        <!-- shared thread pool across Broadcaster -->
-        <load-on-startup>800</load-on-startup>
-    </servlet>
-------------------------
+ For more information about {{{https://github.com/Atmosphere/atmosphere/wiki}Atmosphere Framework}}
 
-------------------------
-    <servlet-mapping>
-        <servlet-name>AtmosphereServlet</servlet-name>
-        <url-pattern>/atmosphere/*</url-pattern>
-    </servlet-mapping>
-------------------------
+* Server Side
 
- Then in your META-INF/context.xml add this in your context tag:
+  Using atmosphere and javax RESTful annotations you can easily declare a broadcaster in your module.
 
--------------------------
-<Loader delegate="true"/>
--------------------------
++-------------------------
+ @Path("/alert/{channel}")
+ @Produces("text/plain;charset=UTF-8")
+ public class AlertChannelPublisherSubscriber {
 
- Still in this META-INF folder create a new file named atmosphere.xml with this content:
+      private @PathParam("channel")
+      Broadcaster topic;
 
--------------------------
-<atmosphere-handlers>
-	<atmosphere-handler context-root="/atmosphere/*" class-name="org.atmosphere.handler.ReflectorServletProcessor">
-		<property name="servletClass" value="com.sun.jersey.spi.container.servlet.ServletContainer"/>
-	</atmosphere-handler>
-</atmosphere-handlers>
--------------------------
+      @GET
+      @Suspend(resumeOnBroadcast = true, outputComments = false)
+      public Broadcastable subscribe() {
+          return new Broadcastable(topic);
+      }
 
- Last but not least ensure that you are using the NIO connector for your tomcat, check in tomcat_install/conf/server.xml :
+      @POST
+      @Broadcast
+      public Broadcastable publish(@FormParam("message") String message) {
+          return new Broadcastable(message+"\n", "", topic);
+      }
+ }
++-------------------------
 
----------------------------
-<Connector port="8080" protocol="org.apache.coyote.http11.Http11NioProtocol"
-               connectionTimeout="20000"
-               redirectPort="8443" />
----------------------------
+ No need to declare anything in spring or other config files. Now you can connect to this broadcaster with a client, like the
+ jquery atmosphere client.
 
- Now if you start your jahia you should see new messages telling you that the Atmosphere framework is started.
+ Using the annotations you can define how your broadcaster will behave, you can define sub paths with different configuration for the same broadcaster.
 
- To use the examples provided, install an ACME demo, then in the studio go to templates-web-blue.
- Add the module <<Jahia Atmosphere as a dependency>>, then in the base template add a <<siteChannel>> anywhere.
- Deploy your templates on your ACME site. From now on all your users in non edit mode should see notification on content
- publication.
+* Client side
 
- Another example is in the template events add a nodeChannel binded to mainResource.
- Deploy your templates, now when you update one of your existing events your users will be warned.
+ Using the jquery atmosphere client to subscribe/publish to a broadcaster
+
++-------------------------
+<template:addResources type="javascript" resources="jquery.min.js,jquery.atmosphere.js,jquery.jgrowl.js"/>
+
+    <c:set var="channelName" value="${currentNode.properties['name'].string}"/>
+    <script type="text/javascript">
+        var connectedAbsoluteEndpoint = new Array();
+
+        function callbackAbsolute(response) {
+            // Websocket events.
+            $.atmosphere.log('info', ["response.state: " + response.state]);
+            $.atmosphere.log('info', ["response.transport: " + response.transport]);
+            $.atmosphere.log('info', ["response.status: " + response.status]);
+
+            detectedTransport = response.transport;
+            if (response.transport != 'polling' && response.state != 'connected' && response.state != 'closed') {
+                $.atmosphere.log('info', ["response.responseBody: " + response.responseBody]);
+                if (response.status == 200) {
+                    var data = response.responseBody;
+                    if (data.length > 0) {
+                        $.jGrowl(data,{sticky:true});
+                    }
+                }
+            }
+        }
+
+        $(document).ready(function() {
+            $.atmosphere.unsubscribe();
+            var subscribe = $.atmosphere.subscribe("${url.server}${url.context}/atmosphere/alert/${channelName}", callbackAbsolute,
+                    $.atmosphere.request = { transport: "websocket" });
+            connectedAbsoluteEndpoint["${channelName}"] = subscribe;
+        });
+    </script>
++-------------------------
+
+ $.atmosphere.subscribe is the way to subscribe to a broadcaster, this method returns a subscriber object that you need
+  to kept reference of if you want to publish messages to this broadcaster.
+
+  Here we will see how to reuse this subscriber object to publish a message to everyone listening to this broadcast.
+
++--------------------------
+  <c:set var="channelName" value="${currentNode.properties['name'].string}"/>
+      <template:addResources type="javascript" resources="jquery.min.js,jquery.atmosphere.js"/>
+
+      <div id='sendMessage'>
+          <input id='phrase' type='text'/>
+          <input id="send_message" class='button' name='Publish' value='Publish Message to ${channelName}' type="submit"/>
+      </div>
+
+      <script type="text/javascript">
+          $("#send_message").click(function () {
+              connectedAbsoluteEndpoint["${channelName}"].push({data:'message=' + $("#phrase").val()});
+          });
+      </script>
++--------------------------
+
+  Here we use the object we have previously saved when subscribing to our broadcaster <connectedAbsoluteEndpoint["${channelName}"]>
+  and call the method push using the param name we have defined in our annotations for the message <@FormParam("message")>
+
+* Server side broadcasting
+
+ Using atmopshere broadcasterFactory you can easily lookup for a broadcaster by its id (name). Then sent a message to all
+ listeners.
+
++----------------------------
+ private void broadcast(String broadcasterID, String message, boolean createIfNull) {
+        final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
+        if (broadcasterFactory != null) {
+            Broadcaster broadcaster = broadcasterFactory.lookup(broadcasterID, createIfNull);
+            if (broadcaster != null) {
+                broadcaster.broadcast(message);
+            }
+        }
+    }
++----------------------------
+
+ For example in the components provided by Jahia we sent json messages that can be displayed by jgrowl as popup messages.

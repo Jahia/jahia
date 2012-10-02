@@ -67,7 +67,7 @@ import static org.junit.Assert.*;
  */
 public class AtmosphereTest {
     private transient static org.slf4j.Logger logger = LoggerFactory.getLogger(AtmosphereTest.class);
-    private String urlTarget = "http://localhost:8080"+ Jahia.getContextPath()+"/atmosphere/pubsub/alert/testChannel";
+    private String urlTarget = "http://localhost:8080"+ Jahia.getContextPath()+"/atmosphere/alert/testChannel";
 
     @Test
     public void testHeaderBroadcasterCache() throws IllegalAccessException, ClassNotFoundException, InstantiationException {
@@ -200,7 +200,7 @@ public class AtmosphereTest {
 
             //Suspend
             final AtomicReference<Response> response = new AtomicReference<Response>();
-            c.prepareGet("http://localhost:8080"+ Jahia.getContextPath()+"/atmosphere/pubsub/sites/jcrAtmosphereTest__English").execute(new AsyncCompletionHandler<Response>() {
+            c.prepareGet("http://localhost:8080"+ Jahia.getContextPath()+"/atmosphere/sites/jcrAtmosphereTest__English").execute(new AsyncCompletionHandler<Response>() {
 
                 @Override
                 public Response onCompleted(Response r) throws Exception {

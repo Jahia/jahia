@@ -314,7 +314,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                 }
             })));
             for (File file : files) {
-                if (scriptFactoryMap.containsKey(StringUtils.substringAfterLast(file.getName(),"."))) {
+                if (scriptFactoryMap.containsKey(StringUtils.substringAfterLast(file.getName(), "."))) {
                     String filename = file.getName();
                     String pref = nt.getName().contains(":") ? StringUtils.substringAfter(nt.getName(),":") : nt.getName();
                     if (filename.startsWith(pref+".")) {
@@ -325,7 +325,9 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                             key = "default";
                         }
                         if (!views.containsKey(key)) {
-                            views.put(key, new FileSystemView(SettingsBean.getInstance().getTemplatesContext() + path + "/" + file.getName(), key, tplPackage, version, filename));
+                            FileSystemView view = new FileSystemView(SettingsBean.getInstance().getTemplatesContext() + path + "/" + file.getName(), key, tplPackage, version, filename);
+                            views.put(key, view);
+                            scriptFactoryMap.get(StringUtils.substringAfterLast(file.getName(), ".")).initView(view);
                         }
                     }
                 }

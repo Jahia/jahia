@@ -6,4 +6,7 @@ public class JSR223ScriptFactory implements ScriptFactory {
     public Script createScript(View view) {
         return new JSR223Script(view);
     }
+
+    public void initView(View view) {
+    }
 }

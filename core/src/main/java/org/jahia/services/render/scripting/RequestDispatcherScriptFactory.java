@@ -6,4 +6,7 @@ public class RequestDispatcherScriptFactory implements ScriptFactory {
     public Script createScript(View view) {
         return new RequestDispatcherScript(view);
     }
+
+    public void initView(View view) {
+    }
 }

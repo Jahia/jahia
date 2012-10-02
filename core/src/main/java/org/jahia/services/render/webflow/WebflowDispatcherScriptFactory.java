@@ -9,4 +9,9 @@ public class WebflowDispatcherScriptFactory implements ScriptFactory {
     public Script createScript(View view) {
         return new WebflowDispatcherScript(view);
     }
+
+    public void initView(View view) {
+//        view.getProperties().put("cache.requestParameters", "webflow-execution-*");
+        view.getProperties().put("cache.expiration", "0");
+    }
 }

@@ -5,4 +5,6 @@ import org.jahia.services.render.View;
 public interface ScriptFactory {
 
     public Script createScript(View view);
+
+    public void initView(View view);
 }

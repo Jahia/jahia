@@ -624,7 +624,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         final Locale finalLocale = locale;
                         final String finalTpl = tpl;
                         try {
-                            JCRObservationManager.doWithOperationType(null, JCRObservationManager.IMPORT, new JCRCallback<Object>() {
+                            JCRObservationManager.doWithOperationType(session, JCRObservationManager.IMPORT, new JCRCallback<Object>() {
                                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                     try {
                                         JahiaSite site = sitesService.addSite(JCRSessionFactory.getInstance().getCurrentUser(), infos.getProperty("sitetitle"), infos.getProperty(

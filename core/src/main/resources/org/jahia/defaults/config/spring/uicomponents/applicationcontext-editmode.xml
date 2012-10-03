@@ -651,7 +651,7 @@
                 <property name="settingsPanelList">
                     <list>
                         <bean id="siteSettings" class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsPanel">
-                            <property name="paths" value="$site/templates/siteSettingsBase/*"/>
+                            <property name="paths" value="$systemsite/templates/siteSettingsBase/*"/>
                             <property name="label" value="org.jahia.admin.siteSettings.label"/>
                             <property name="requiredPermission" value="administrationAccess"/>
                         </bean>

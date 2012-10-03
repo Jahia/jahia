@@ -70,6 +70,7 @@
                             <package-name>${project.name}</package-name>
                             <depends>Default Jahia Templates</depends>
                             <root-folder>${project.artifactId}</root-folder>
+                            <deploy-on-site>systemsite</deploy-on-site>
                             <module-type>module</module-type>
                         </manifestEntries>
                     </archive>

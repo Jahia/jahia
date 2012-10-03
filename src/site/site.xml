@@ -38,6 +38,7 @@
             <item name="Activate information about script usage" href="jahia-modules/scriptinfo.html"/>
             <item name="Contribution Mode" href="jahia-modules/contribute.html"/>
             <item name="Channels" href="channels/channels.html"/>
+            <item name="Rendering using Spring Web Flow" href="render/flow.html"/>
         </menu>
         <menu name="Modules Development" inherit="top">
             <item name="Modules" href="modules/modules.html" collapse="true">

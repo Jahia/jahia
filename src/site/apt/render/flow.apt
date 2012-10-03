@@ -1,0 +1,36 @@
+Rendering using webflow
+
+  Spring Web Flow is an extension of the Spring MVC framework, that helps the integrator to implement a complex user flow,
+  with sequences, and actions calling custom code or external services.
+  Full documentation on webflow can be found on {{{http://www.springsource.org/spring-web-flow}Spring Web Flow web site}}.
+
+* Web Flow integration
+
+  Jahia now integrates Spring Web Flow as a script rendering system. If a components needs a complex rendering, requiring
+  a customizable user flow, he can use a complete web flow instead of a single JSP view.
+
+  A flow is recognized by the system a standard view type, and is handled like any JSP, groovy or php view script.
+  The full rendering stack and filters is called as for a standard view script, but the calls
+  is delegated to the Web Flow controller instead of directly dispatching to the JSP.
+
+* Using a flow
+
+  In order to define a new flow as a view, you have to create a folder that will contain all files required for the flow
+  - flow definition and associated views. The folder name need to have the extension <<<.flow>>> to be recognized as a
+  possible view for the component. It should then follow the following scheme : <<<name of the component + name of the view + .flow>>>
+
+  For example, for a component of type <<<jnt:form>>>, you can create a folder : <<<form.screen-split.flow>>> under the
+  html folder. A new view <<<screen-split>>> will be available in edit and studio for this component.
+
+  The folder need to contain one <<<flow.xml>>> file, describing the flow itself. The flow can contains any view-state,
+  action-state and transitions between them. Variables can be used to integrate custom classes.
+
+  Any request attribute set by Jahia, like currentNode or currentResource, can be accessed inside the flow by using
+  the externalContext.requestMap in an expression. For instance, you can call the method <<<mymethod>>> on the variable
+  <<<myobject>>> by using the following expression :
+
++-------------
+        <evaluate expression="myobject.mymethod(externalContext.requestMap.currentNode)"
+                  result="flowScope.result" />
++-------------
+

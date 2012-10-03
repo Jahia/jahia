@@ -6,7 +6,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
-<c:set var="site" value="${currentNode.resolveSite}"/>
+<c:set var="site" value="${renderContext.mainResource.node.resolveSite}"/>
 <c:if test="${not empty param['vanityUrlSearch']}">
     <query:definition var="listQuery" statement="select * from [jnt:vanityUrl] as vanity where vanity.[j:url] like '%${param['vanityUrlSearch']}%' and ISDESCENDANTNODE(vanity,'${functions:sqlencode(site.path)}') order by vanity.[j:url]" scope="request"/>
 </c:if>

@@ -79,7 +79,7 @@ function updateSiteHtmlFiltering(btn) {
 }
 </script>
 </template:addResources>
-<c:set var="site" value="${currentNode.resolveSite}"/>
+<c:set var="site" value="${renderContext.mainResource.node.resolveSite}"/>
 <c:set var="siteKey" value="${site.name}"/>
 <c:set var="propFilteringActivated" value="${site.properties['j:doTagFiltering']}"/>
 <c:set var="propFilteredTags" value="${site.properties['j:filteredTags']}"/>

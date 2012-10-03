@@ -10,7 +10,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<c:set var="site" value="${currentNode.resolveSite}"/>
+<c:set var="site" value="${renderContext.mainResource.node.resolveSite}"/>
 <c:set var="siteKey" value="${site.name}"/>
 <c:set var="installedModules" value="${site.installedModules}"/>
 <c:set var="templatePackageName" value="${site.templatePackageName}"/>

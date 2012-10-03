@@ -349,7 +349,9 @@ public class JCRStoreProvider {
             }
 
             authenticationType = tmpAuthenticationType;
-            groovyPatcher.executeScripts("jcrStoreProviderStarted");
+            if (groovyPatcher != null) {
+                groovyPatcher.executeScripts("jcrStoreProviderStarted");
+            }
         } catch (Exception e) {
             logger.error("Repository init error", e);
             throw new JahiaInitializationException("Repository init error", e);

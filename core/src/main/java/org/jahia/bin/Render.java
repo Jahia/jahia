@@ -144,7 +144,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private MetricsLoggingService loggingService;
     private JahiaTemplateManagerService templateService;
     private Action defaultPostAction;
-    private Action defaultPutAction;    
+    private Action defaultPutAction;
     private Action defaultDeleteAction = new DefaultDeleteAction();
 
     protected SettingsBean settingsBean;
@@ -479,7 +479,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                 }
 
                                 name = JCRContentUtils.escapeLocalNodeName(FilenameUtils.getName(name));
-                                
+
                                 JCRNodeWrapper fileNode = targetDirectory.hasNode(name) ?
                                         targetDirectory.getNode(name) : null;
                                 if (fileNode != null && isVersionActivated) {
@@ -836,80 +836,39 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private void doAction(HttpServletRequest req, HttpServletResponse resp, URLResolver urlResolver,
                           RenderContext renderContext, Resource resource, Action action,
                           Map<String, List<String>> parameters) throws Exception {
+        final String requestWith = req.getHeader("x-requested-with");
+        boolean isAjaxRequest =
+                req.getHeader("accept").contains("application/json") && requestWith != null &&
+                        requestWith.equals("XMLHttpRequest");
 
-        String token = parameters.get("form-token")!=null?parameters.get("form-token").get(0):null;
-        if (token != null) {
-            final String requestWith = req.getHeader("x-requested-with");
-            boolean isAjaxRequest =
-                    req.getHeader("accept").contains("application/json") && requestWith != null &&
-                            requestWith.equals("XMLHttpRequest");
+        int tokenResult = TokenChecker.checkToken(req, resp, parameters);
 
-            @SuppressWarnings("unchecked")
-            Map<String, Map<String, List<String>>> toks = (Map<String, Map<String, List<String>>>) req.getSession().getAttribute("form-tokens");
-            if (toks != null && toks.containsKey(token)) {
-                Map<String, List<String>> m = toks.remove(token);
-                if (m == null) {
-                    Map<String, String[]> formDatas = new HashMap<String, String[]>();
-                    Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
-                    for (Map.Entry<String, List<String>> params : set) {
-                        formDatas.put(params.getKey(), params.getValue().toArray(new String[params.getValue().size()]));
-                    }
-                    String errorMessage = JahiaResourceBundle.getJahiaInternalResource("failure.captcha", urlResolver.getLocale(), "Your captcha is invalid");
-                    if (!isAjaxRequest) {
-                        req.getSession().setAttribute("formDatas", formDatas);
-                        req.getSession().setAttribute("formError", errorMessage);
-                        performRedirect(urlResolver.getRedirectUrl(), urlResolver.getPath(), req, resp, parameters, true);
-                    } else {
-                        resp.setContentType("application/json; charset=UTF-8");
-                        Map<String,String> res = new HashMap<String,String>();
-                        res.put("status", errorMessage);
-                        new JSONObject(res).write(resp.getWriter());
-                    }
-                    return;
+        switch (tokenResult) {
+            case TokenChecker.NO_TOKEN:
+                break;
+            case TokenChecker.INVALID_TOKEN:
+            case TokenChecker.INVALID_CAPTCHA:
+                Map<String, String[]> formDatas = new HashMap<String, String[]>();
+                Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
+                for (Map.Entry<String, List<String>> params : set) {
+                    formDatas.put(params.getKey(), params.getValue().toArray(new String[params.getValue().size()]));
                 }
-                Map<String, List<String>> values = new HashMap<String, List<String>>(m);
-
-                // Validate form token
-                List<String> stringList1 = values.remove("form-action");
-                String formAction = stringList1.isEmpty()?null:stringList1.get(0);
-                String characterEncoding = SettingsBean.getInstance().getCharacterEncoding();
-                if (formAction == null ||
-                        (!URLDecoder.decode(req.getRequestURI(), characterEncoding).equals(URLDecoder.decode(formAction, characterEncoding)) &&
-                        !URLDecoder.decode(resp.encodeURL(req.getRequestURI()), characterEncoding).equals(URLDecoder.decode(formAction, characterEncoding)))
-                        ) {
-                    throw new AccessDeniedException();
+                String errorMessage = JahiaResourceBundle.getJahiaInternalResource("failure.captcha", urlResolver.getLocale(), "Your captcha is invalid");
+                if (!isAjaxRequest) {
+                    req.getSession().setAttribute("formDatas", formDatas);
+                    req.getSession().setAttribute("formError", errorMessage);
+                    performRedirect(renderContext.getMainResource().getNode().getPath(), urlResolver.getPath(), req, resp, parameters,
+                            true);
+                } else {
+                    resp.setContentType("application/json; charset=UTF-8");
+                    Map<String,String> res = new HashMap<String,String>();
+                    res.put("status", errorMessage);
+                    new JSONObject(res).write(resp.getWriter());
                 }
-                if (!req.getMethod().equalsIgnoreCase(values.remove("form-method").get(0))) {
-                    throw new AccessDeniedException();
-                }
-                for (Map.Entry<String, List<String>> entry : values.entrySet()) {
-                    List<String> stringList = entry.getValue();
-                    List<String> parameterValues = parameters.get(entry.getKey());
-                    if (parameterValues == null || !CollectionUtils.isEqualCollection(stringList, parameterValues)) {
-                        if (entry.getKey().equals(CAPTCHA)) {
-                            Map<String, String[]> formDatas = new HashMap<String, String[]>();
-                            Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
-                            for (Map.Entry<String, List<String>> params : set) {
-                                formDatas.put(params.getKey(), params.getValue().toArray(new String[params.getValue().size()]));
-                            }
-                            String errorMessage = JahiaResourceBundle.getJahiaInternalResource("failure.captcha", urlResolver.getLocale(), "Your captcha is invalid");
-                            if (!isAjaxRequest) {
-                                req.getSession().setAttribute("formDatas", formDatas);
-                                req.getSession().setAttribute("formError", errorMessage);
-                                performRedirect(renderContext.getMainResource().getNode().getPath(), urlResolver.getPath(), req, resp, parameters,
-                                        true);
-                            } else {
-                                resp.setContentType("application/json; charset=UTF-8");
-                                Map<String,String> res = new HashMap<String,String>();
-                                res.put("status", errorMessage);
-                                new JSONObject(res).write(resp.getWriter());
-                            }
-                            return;
-                        }
-                        throw new AccessDeniedException();
-                    }
-                }
-
+                return;
+            case TokenChecker.INVALID_HIDDEN_FIELDS:
+                throw new AccessDeniedException();
+            case TokenChecker.VALID_TOKEN:
                 final Action originalAction = action;
                 action = new SystemAction() {
                     @Override
@@ -917,7 +876,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         return originalAction.doExecute(req, renderContext, resource, systemSession, parameters, urlResolver);
                     }
                 };
-            }
         }
 
         if (!(action instanceof SystemAction)) {
@@ -945,8 +903,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             if (result.getResultCode() < 300) {
                 resp.setStatus(result.getResultCode());
                 addCookie(req,resp);
-                if (result.getJson() != null && 
-                        ("json".equals(parameters.get(RETURN_CONTENTTYPE) != null ? parameters.get(RETURN_CONTENTTYPE).get(0) : "") 
+                if (result.getJson() != null &&
+                        ("json".equals(parameters.get(RETURN_CONTENTTYPE) != null ? parameters.get(RETURN_CONTENTTYPE).get(0) : "")
                                 || req.getHeader("accept") != null && req.getHeader("accept").contains("application/json"))) {
                     try {
                         String contentType = parameters.get(RETURN_CONTENTTYPE_OVERRIDE) != null ? StringUtils.defaultIfEmpty(parameters.get(RETURN_CONTENTTYPE_OVERRIDE).get(0), null) : null;
@@ -1027,10 +985,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public void setDefaultPostAction(Action defaultPostActionResult) {
         this.defaultPostAction = defaultPostActionResult;
     }
-    
+
     public void setDefaultPutAction(Action defaultPutActionResult) {
         this.defaultPutAction = defaultPutActionResult;
-    }    
+    }
 
     public static Set<String> getReservedParameters() {
         return reservedParameters;

@@ -128,11 +128,11 @@
     <table style="width: 100%;" cellpadding="0" cellspacing="0" border="1">
         <thead>
         <tr>
-            <th>Language</th>
-            <th>Default language</th>
-            <th>Mandatory</th>
-            <th>Active (Edit)</th>
-            <th>Active (Live)</th>
+            <th><fmt:message key="siteSettings.label.language"/></th>
+            <th><fmt:message key="siteSettings.label.language.default"/></th>
+            <th><fmt:message key="siteSettings.label.language.mandatory"/></th>
+            <th><fmt:message key="siteSettings.label.language.active.edit"/></th>
+            <th><fmt:message key="siteSettings.label.language.active.live"/></th>
         </tr>
         </thead>
         <tbody>

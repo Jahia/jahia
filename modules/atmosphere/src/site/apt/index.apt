@@ -33,10 +33,37 @@ How-to use atmosphere framework within Jahia
  }
 +-------------------------
 
- No need to declare anything in spring or other config files. Now you can connect to this broadcaster with a client, like the
- jquery atmosphere client.
+ Using the annotations you can define how your broadcaster will behave, you can define sub paths with different
+ configuration for the same broadcaster.
 
- Using the annotations you can define how your broadcaster will behave, you can define sub paths with different configuration for the same broadcaster.
+ <<Line 1>> @Path : The Path annotation is used to tell Jersey to map all the request "/" to this resource. That means a
+ request to http://127.0.0.1:8080/ will be delivered to that resource (or that class will be executed).
+
+ <<Line 2>> @Produces : Defines the media type(s) that the methods of a resource class or MessageBodyWriter can produce.
+
+ <<Line 5>> @PathParam : Binds the value of a URI template parameter or a path segment containing the template parameter
+ to a resource method parameter, resource class field, or resource class bean property.
+
+ <<Line 8>>  @GET : Indicates that the annotated method responds to HTTP GET requests
+
+ <<Line 9>>  @Suspend : The Atmosphere @Suspend annotation is used to tell the framework to suspend the connection, or,
+ in other word, to not commit the response and let the connection open for write operation. Suspending a connection with
+ HTTP means leaving not writing back anything where with WebSocket it means execute the handshake operation and let the
+ connection open. Here we are telling Atmosphere to suspend the connection indefinitely (no times out). The connection
+ life cycle will be transparently handled by Atmosphere
+
+ <<Line 14>> @POST : Indicates that the annotated method responds to HTTP POST requests
+
+ <<Line 15>> @Broadcast : The @Broadcast is used to tell the framework to broadcast events to the set of suspended
+ connections. The writeEntity = false attribute is used here to tell the framework to not write anything back to the
+ client, and instead let the broadcast operation to do it. The broadcast operation will be handled by a Broadcaster.
+
+ No need to declare anything in spring or other config files. Now you can connect to this broadcaster with a client, like the
+ jquery atmosphere client. See
+ {{{https://github.com/Atmosphere/atmosphere/wiki/Getting-Started-with-The-Atmosphere-Framework-and-WebSocket}
+  Getting Started with The Atmosphere Framework}} and
+ {{{http://docs.oracle.com/javaee/6/api/javax/ws/rs/package-summary.html}High-level interfaces and annotations used to
+ create RESTful service resources}} for more details
 
 * Client side
 

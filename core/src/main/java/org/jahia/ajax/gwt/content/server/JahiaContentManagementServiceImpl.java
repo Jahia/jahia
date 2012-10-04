@@ -779,9 +779,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         final JCRSessionWrapper session = retrieveCurrentSession();
         GWTJahiaNode res = contentManager.createNode(parentPath, name, nodeType, mixin, props, session, getUILocale());
+        List<String> fields = Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PERMISSIONS, GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
         GWTJahiaNode node;
         try {
-            node = navigation.getGWTJahiaNode(session.getNodeByUUID(res.getUUID()));
+            node = navigation.getGWTJahiaNode(session.getNodeByUUID(res.getUUID()),fields);
 
             if (acl != null && (!acl.getAce().isEmpty() || acl.isBreakAllInheritance())) {
                 contentManager.setACL(res.getPath(), acl, session);

@@ -171,26 +171,27 @@ public class ContentManagerHelper {
         try {
             jcrSessionWrapper = currentUserSession;
             parentNode = jcrSessionWrapper.getNode(parentPath);
+            String nodeName = JCRContentUtils.escapeLocalNodeName(name);
+
+            if (nodeName == null) {
+                nodeName = findAvailableName(parentNode, nodeType.substring(nodeType.lastIndexOf(":") + 1)
+                );
+            } else {
+                nodeName = findAvailableName(parentNode, nodeName);
+            }
+
+            if (checkExistence(parentPath + "/" + nodeName, currentUserSession, uiLocale)) {
+                throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.already.exists.with.name", uiLocale), nodeName));
+            }
+
+            JCRNodeWrapper childNode = addNode(parentNode, nodeName, nodeType, mixin, props, uiLocale);
+            List<String> fields = Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PERMISSIONS, GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
+            return navigation.getGWTJahiaNode(jcrSessionWrapper.getNode(childNode.getPath()),fields);
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(
                     new StringBuilder(parentPath).append(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
         }
-        String nodeName = JCRContentUtils.escapeLocalNodeName(name);
-
-        if (nodeName == null) {
-            nodeName = findAvailableName(parentNode, nodeType.substring(nodeType.lastIndexOf(":") + 1)
-            );
-        } else {
-            nodeName = findAvailableName(parentNode, nodeName);
-        }
-
-        if (checkExistence(parentPath + "/" + nodeName, currentUserSession, uiLocale)) {
-            throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.already.exists.with.name", uiLocale), nodeName));
-        }
-
-        JCRNodeWrapper childNode = addNode(parentNode, nodeName, nodeType, mixin, props, uiLocale);
-        return navigation.getGWTJahiaNode(childNode);
     }
 
     public String generateNameFromTitle(List<GWTJahiaNodeProperty> props) {
@@ -1005,7 +1006,7 @@ public class ContentManagerHelper {
                     missedPaths.add(new StringBuilder(node.getName()).append(": write access denied").toString());
                 } else {
                     if (node.getLockedLocales().contains(currentUserSession.getLocale()) ||
-                        (!node.hasI18N(currentUserSession.getLocale()) && node.isLocked())) {
+                            (!node.hasI18N(currentUserSession.getLocale()) && node.isLocked())) {
                         if (!toLock) {
                             try {
                                 node.unlock();

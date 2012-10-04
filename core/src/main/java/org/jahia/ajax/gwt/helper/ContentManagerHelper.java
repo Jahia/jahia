@@ -190,11 +190,6 @@ public class ContentManagerHelper {
         }
 
         JCRNodeWrapper childNode = addNode(parentNode, nodeName, nodeType, mixin, props, uiLocale);
-        try {
-            childNode.getSession().save();
-        } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.occur.when.trying.to.save.the.node", uiLocale), childNode.getPath()));
-        }
         return navigation.getGWTJahiaNode(childNode);
     }
 
@@ -1407,7 +1402,11 @@ public class ContentManagerHelper {
                     properties.setProperties(jcrCondition, props);
                 }
             }
-            session.save();
+            try {
+                session.save();
+            } catch (RepositoryException e) {
+                throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.occur.when.trying.to.save.the.node", uiLocale), node.getPath() + " (saveVisibilityConditions)"));
+            }
             for (GWTJahiaNode condition : conditions) {
                 if (condition.get("node-removed") != null) {
                     JCRNodeWrapper jcrCondition = session.getNode(condition.getPath());

@@ -583,7 +583,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, Set<String> removedTypes)
             throws GWTJahiaServiceException {
-        properties.saveProperties(nodes, newProps, removedTypes, getRemoteJahiaUser(), retrieveCurrentSession(), getUILocale());
+        JCRSessionWrapper s = retrieveCurrentSession();
+        properties.saveProperties(nodes, newProps, removedTypes, getRemoteJahiaUser(), s, getUILocale());
+        try {
+            retrieveCurrentSession().save();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed.cause",getUILocale()) + e.getMessage());
+        }
+
+
     }
 
     /**
@@ -630,6 +639,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 contentManager.setACL(node.getPath(), acl, retrieveCurrentSession());
             }
         }
+        try {
+            retrieveCurrentSession().save();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed.cause",getUILocale()) + e.getMessage());
+        }
+
 
     }
 
@@ -721,6 +737,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             workflow.updateWorkflowRules(node,
                     (Set<GWTJahiaWorkflowDefinition>) node.get("activeWorkflows"), jcrSessionWrapper);
         }
+        try {
+            jcrSessionWrapper.save();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed.cause",getUILocale()) + e.getMessage());
+        }
     }
 
     /**
@@ -755,18 +777,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 }
             }
         }
-
-        GWTJahiaNode res = contentManager.createNode(parentPath, name, nodeType, mixin, props, retrieveCurrentSession(null), getUILocale());
+        final JCRSessionWrapper session = retrieveCurrentSession();
+        GWTJahiaNode res = contentManager.createNode(parentPath, name, nodeType, mixin, props, session, getUILocale());
         GWTJahiaNode node;
-        final JCRSessionWrapper jcrSessionWrapper = retrieveCurrentSession();
         try {
-            node = navigation.getGWTJahiaNode(jcrSessionWrapper.getNodeByUUID(res.getUUID()));
+            node = navigation.getGWTJahiaNode(session.getNodeByUUID(res.getUUID()));
 
             if (acl != null && (!acl.getAce().isEmpty() || acl.isBreakAllInheritance())) {
-                contentManager.setACL(res.getPath(), acl, jcrSessionWrapper);
+                contentManager.setACL(res.getPath(), acl, session);
             }
-
-            jcrSessionWrapper.save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed.cause", getUILocale()), e.getMessage()));
@@ -785,7 +804,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
         }
         try {
-            jcrSessionWrapper.save();
+            session.save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed.cause",getUILocale()) + e.getMessage());

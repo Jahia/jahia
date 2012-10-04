@@ -276,7 +276,6 @@ public class PropertiesHelper {
                     }
                 }
                 setProperties(objectNode, newProps);
-                objectNode.saveSession();
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.could.not.save.node", uiLocale), objectNode.getName(), e.getMessage()));

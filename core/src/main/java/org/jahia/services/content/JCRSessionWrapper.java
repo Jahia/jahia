@@ -454,7 +454,7 @@ public class JCRSessionWrapper implements Session {
                 if (node instanceof JCRNodeDecorator) {
                     Set<ConstraintViolation<JCRNodeWrapper>> constraintViolations = sessionFactory.getValidatorFactoryBean().validate(node);
                     for (ConstraintViolation<JCRNodeWrapper> constraintViolation : constraintViolations) {
-                        throw new ConstraintViolationException(constraintViolation.getMessage());
+                        throw new ConstraintViolationException(constraintViolation.getPropertyPath() + " " + constraintViolation.getMessage());
                     }
                 }
             }
@@ -462,7 +462,7 @@ public class JCRSessionWrapper implements Session {
                 if (node instanceof JCRNodeDecorator) {
                     Set<ConstraintViolation<JCRNodeWrapper>> constraintViolations = sessionFactory.getValidatorFactoryBean().validate(node);
                     for (ConstraintViolation<JCRNodeWrapper> constraintViolation : constraintViolations) {
-                        throw new ConstraintViolationException(constraintViolation.getMessage());
+                        throw new ConstraintViolationException(constraintViolation.getPropertyPath() + " "  + constraintViolation.getMessage());
                     }
                 }
             }

@@ -587,7 +587,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         properties.saveProperties(nodes, newProps, removedTypes, getRemoteJahiaUser(), s, getUILocale());
         try {
             retrieveCurrentSession().save();
-        } catch (RepositoryException e) {
+        }
+        catch (javax.jcr.nodetype.ConstraintViolationException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+        catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed.cause",getUILocale()) + e.getMessage());
         }
@@ -641,7 +645,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         try {
             retrieveCurrentSession().save();
-        } catch (RepositoryException e) {
+        }
+        catch (javax.jcr.nodetype.ConstraintViolationException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+        catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed.cause",getUILocale()) + e.getMessage());
         }
@@ -739,7 +747,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         try {
             jcrSessionWrapper.save();
-        } catch (RepositoryException e) {
+        }
+        catch (javax.jcr.nodetype.ConstraintViolationException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+        catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed.cause",getUILocale()) + e.getMessage());
         }
@@ -806,7 +818,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         try {
             session.save();
-        } catch (RepositoryException e) {
+        }
+        catch (javax.jcr.nodetype.ConstraintViolationException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+        catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed.cause",getUILocale()) + e.getMessage());
         }
@@ -844,7 +860,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         try {
             retrieveCurrentSession().save();
-        } catch (RepositoryException e) {
+        }
+        catch (javax.jcr.nodetype.ConstraintViolationException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+        catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed.cause",getUILocale()) + e.getMessage());
         }
@@ -1271,7 +1291,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             seo.saveUrlMappings(node, updatedLocales, mappings, retrieveCurrentSession());
         } catch (ConstraintViolationException e) {
             // TODO handle it and display correct messages for the user
-            logger.error(e.getMessage(), e);
+            //logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

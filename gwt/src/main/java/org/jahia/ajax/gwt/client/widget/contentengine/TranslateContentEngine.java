@@ -203,7 +203,7 @@ public class TranslateContentEngine extends Window {
                     if (message.contains("Invalid link")) {
                         message = Messages.get("label.error.invalidlink", "Invalid link") + " : " + message.substring(message.indexOf(":")+1);
                     }
-                    com.google.gwt.user.client.Window.alert(Messages.get("label.error.invalidlink", "Properties save failed") + "\n\n"
+                    com.google.gwt.user.client.Window.alert(Messages.get("failure.properties.save", "Properties save failed") + "\n\n"
                             + message);
                     Log.error("failed", throwable);
                 }

@@ -402,19 +402,26 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 //        final String xsl = (String) params.get(XSL_PATH);
         if (params.containsKey(INCLUDE_LIVE_EXPORT)) {
             final JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live");
-            JCRNodeWrapper liveRootNode = liveSession.getNodeByIdentifier(rootNode.getIdentifier());
-            for (JCRNodeWrapper node : nodes) {
-                try {
-                    liveSortedNodes.add(liveSession.getNodeByIdentifier(node.getIdentifier()));
-                } catch (ItemNotFoundException e) {
+            JCRNodeWrapper liveRootNode = null;
+            try {
+                liveRootNode = liveSession.getNodeByIdentifier(rootNode.getIdentifier());
+            } catch (RepositoryException e) {
+            }
+            if (liveRootNode != null) {
+                for (JCRNodeWrapper node : nodes) {
+                    try {
+                        liveSortedNodes.add(liveSession.getNodeByIdentifier(node.getIdentifier()));
+                    } catch (ItemNotFoundException e) {
+                    }
+                }
+                if (!liveSortedNodes.isEmpty()) {
+                    zout.putNextEntry(new ZipEntry(LIVE_REPOSITORY_XML));
+
+                    exportNodes(liveRootNode, liveSortedNodes, zout, typesToIgnore, externalReferences, params);
+                    zout.closeEntry();
+                    exportNodesBinary(liveRootNode, liveSortedNodes, zout, typesToIgnore, "/live-content");
                 }
             }
-
-            zout.putNextEntry(new ZipEntry(LIVE_REPOSITORY_XML));
-
-            exportNodes(liveRootNode, liveSortedNodes, zout, typesToIgnore, externalReferences, params);
-            zout.closeEntry();
-            exportNodesBinary(liveRootNode, liveSortedNodes, zout, typesToIgnore, "/live-content");
         }
         TreeSet<JCRNodeWrapper> sortedNodes = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
             public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {

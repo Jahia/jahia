@@ -553,7 +553,7 @@
  + * (jnt:componentFolder)
 
 // @since Jahia 6.6
-[jnt:component] > nt:base, jmix:nodenameInfo, jmix:nolive, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:i18n, jmix:originWS, jmix:description, mix:title, jmix:lastPublished
+[jnt:component] > nt:base, jmix:nodenameInfo, jmix:nolive, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:i18n, jmix:originWS, jmix:description, mix:title
  - j:moduleName (string) hidden nofulltext
 
 // @since Jahia 6.6
@@ -748,7 +748,7 @@ extends = jnt:content
  - j:type (string) nofulltext
  - j:context (string) nofulltext
 
-[jnt:portletDefinitions] > nt:hierarchyNode, jmix:basemetadata
+[jnt:portletDefinitions] > nt:hierarchyNode, jmix:unversionedBasemetadata
  + * (jnt:portletDefinition)
 
 [jnt:portlet] > nt:base, jmix:nodenameInfo, jmix:thumbnail, jmix:basemetadata, mix:title, jmix:publication

@@ -404,9 +404,9 @@
                 }
             }
         } catch (ValueFormatException vfe) {
-            println(out, "ValueFormatException while processing node" + node.getPath(), vfe, false);
+            println(out, "ValueFormatException while processing node " + node.getPath(), vfe, false);
         } catch (RepositoryException re) {
-            println(out, "RepositoryException while processing node" + node.getPath(), re, false);
+            println(out, "RepositoryException while processing node " + node.getPath(), re, false);
         }
     }
 
@@ -487,7 +487,7 @@
             renderRadio(out, "runJCRTest", "Run Java Content Repository integrity check", true);
             renderCheckbox(out, "noReferencesCheck", "Do not check reference properties", false);
             renderCheckbox(out, "noBinariesCheck", "Do not check binary properties", false);
-            renderRadio(out, "fixJCR", "Fix full Java Content Repository integrity (also performs check). DO NOT RUN IF PLATFORM IS ACTIVE (USERS, BACKGROUND JOBS ARE RUNNING !). Also this operation WILL DELETE node with invalid references so please backup your data before running this fix !", false);            
+            renderRadio(out, "fixJCR", "Fix full Java Content Repository integrity (also performs check). DO NOT RUN IF PLATFORM IS ACTIVE (USERS, BACKGROUND JOBS ARE RUNNING !). Also this operation WILL DELETE node with invalid references so please backup your data before running this fix!", false);            
             out.println("<input type=\"submit\" name=\"submit\" value=\"Submit\">");
             out.println("</form>");
         } else {

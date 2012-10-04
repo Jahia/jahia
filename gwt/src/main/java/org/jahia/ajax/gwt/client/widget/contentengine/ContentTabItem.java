@@ -56,6 +56,7 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
@@ -88,8 +89,15 @@ public class ContentTabItem extends PropertiesTabItem {
 
     private List<String> nameNotEditableForTypes;
 
+    private transient CheckBoxGroup invalidLanguagesCheckBoxGroup;
+    private transient FieldSet invalidLanguagesFieldSet;
+
     public Field<String> getName() {
         return nameText;
+    }
+
+    public CheckBoxGroup getInvalidLanguagesCheckBoxGroup() {
+        return invalidLanguagesCheckBoxGroup;
     }
 
     @Override
@@ -195,6 +203,9 @@ public class ContentTabItem extends PropertiesTabItem {
                 nameText.setEnabled(false);
             }
 
+        }
+        if(invalidLanguagesFieldSet!=null) {
+            propertiesEditor.insert(invalidLanguagesFieldSet,0);
         }
         tab.layout();
     }
@@ -355,6 +366,27 @@ public class ContentTabItem extends PropertiesTabItem {
                 fieldSet.add(g,fd);
                 propertiesEditor.add(fieldSet);
             }
+        }
+        //Invalid Languages selection
+        final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
+        if(siteLanguages.size()>1) {
+        invalidLanguagesCheckBoxGroup = new CheckBoxGroup();
+        invalidLanguagesCheckBoxGroup.setFieldLabel(Messages.get("label.valid.languages"));
+        for (GWTJahiaLanguage siteLanguage : siteLanguages) {
+            if(siteLanguage.isActive()) {
+                CheckBox checkBox = new CheckBox();
+                checkBox.setBoxLabel(siteLanguage.getDisplayName());
+                checkBox.setValueAttribute(siteLanguage.getLanguage());
+                if(selectedNode==null || !selectedNode.getInvalidLanguages().contains(siteLanguage.getLanguage()))                   {
+                    checkBox.setValue(true);
+                }
+                invalidLanguagesCheckBoxGroup.add(checkBox);
+            }
+        }
+        invalidLanguagesFieldSet = new FieldSet();
+        invalidLanguagesFieldSet.setHeading(Messages.get("label.valid.languages", "Valid display languages"));
+        invalidLanguagesFieldSet.setLayout(fl);
+        invalidLanguagesFieldSet.add(invalidLanguagesCheckBoxGroup,fd);
         }
         super.attachPropertiesEditor(engine, tab);
     }

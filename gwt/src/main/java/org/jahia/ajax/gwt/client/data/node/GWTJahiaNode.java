@@ -139,6 +139,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private Map<String, GWTJahiaWorkflowInfo> workflowInfos;
     private Map<String, List<GWTJahiaPublicationInfo>> fullPublicationInfos;
     private boolean wcagCompliance;
+    private List<String> invalidLanguages;
 
     public GWTJahiaNode() {
     }
@@ -641,5 +642,13 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public boolean canMarkForDeletion() {
         return (Boolean) get("canMarkForDeletion");
-    } 
+    }
+
+    public List<String> getInvalidLanguages() {
+        return invalidLanguages;
+    }
+
+    public void setInvalidLanguages(List<String> invalidLanguages) {
+        this.invalidLanguages = invalidLanguages;
+    }
 }

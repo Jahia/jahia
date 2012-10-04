@@ -1289,6 +1289,8 @@ public class NavigationHelper {
             logger.error(e.getMessage(), e);
         }
 
+        // Invalid Languages
+        n.setInvalidLanguages(new ArrayList<String>());
         return n;
     }
 

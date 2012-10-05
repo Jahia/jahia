@@ -35,6 +35,9 @@ public class ChannelExclusionFilter extends AbstractFilter {
                     if (inList && includeOrExclude.equals("exclude")) {
                         return "";
                     }
+                    if (inList && includeOrExclude.equals("include")) {
+                        return null;
+                    }
                 }
             }
             if (includeOrExclude.equals("include")) {

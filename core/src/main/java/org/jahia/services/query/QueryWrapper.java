@@ -116,21 +116,23 @@ class QueryWrapper implements Query {
         for (JCRStoreProvider jcrStoreProvider : providers) {
             QueryManager qm = jcrStoreProvider.getQueryManager(session);
             if (qm != null) {
-                Query query = qm.createQuery(statement, language);
-                if (jcrStoreProvider.isDefault()) {
-                    if (Query.JCR_SQL2.equals(language)) {
-                        query = QueryServiceImpl.getInstance().modifyAndOptimizeQuery(
-                                (QueryObjectModel) query, qm.getQOMFactory(), session);
-                    }
-                    if (query instanceof JahiaQueryObjectModelImpl) {
-                        JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) query)
-                                .getLuceneQueryFactory();
+                if (Arrays.asList(qm.getSupportedQueryLanguages()).contains(language)) {
+                    Query query = qm.createQuery(statement, language);
+                    if (jcrStoreProvider.isDefault()) {
+                        if (Query.JCR_SQL2.equals(language)) {
+                            query = QueryServiceImpl.getInstance().modifyAndOptimizeQuery(
+                                    (QueryObjectModel) query, qm.getQOMFactory(), session);
+                        }
+                        if (query instanceof JahiaQueryObjectModelImpl) {
+                            JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) query)
+                                    .getLuceneQueryFactory();
                         
-                        lqf.setProvider(jcrStoreProvider);
-                        lqf.setJcrSession(session);
+                            lqf.setProvider(jcrStoreProvider);
+                            lqf.setJcrSession(session);
+                        }
                     }
+                    queries.put(jcrStoreProvider, query);
                 }
-                queries.put(jcrStoreProvider, query);
             }
         }
     }

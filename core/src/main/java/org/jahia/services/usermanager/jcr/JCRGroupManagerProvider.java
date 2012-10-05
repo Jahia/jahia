@@ -350,10 +350,10 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                                     "] as group WHERE group.[" + JCRGroup.J_EXTERNAL +
                                     "] = 'false'");
                             if (siteID <= 0) {
-                                query.append(" AND ISCHILDNODE(g, '/groups')");
+                                query.append(" AND ISCHILDNODE(group, '/groups')");
                             } else {
                                 String siteName = sitesService.getSite(siteID).getSiteKey();
-                                query.append(" AND ISCHILDNODE(g, '/sites/" + siteName + "/groups')");
+                                query.append(" AND ISCHILDNODE(group, '/sites/" + siteName + "/groups')");
                             }
                             query.append(" ORDER BY group.[j:nodename]");
 
@@ -362,7 +362,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             RowIterator rows = qr.getRows();
                             while (rows.hasNext()) {
                                 Row groupsFolderNode = rows.nextRow();
-                                String groupName = groupsFolderNode.getValue("j:nodename").getString() + ":" + siteID;
+                                String groupName = groupsFolderNode.getValue("j:nodename").getString();
                                 if (!groups.contains(groupName)) {
                                     groups.add(groupName);
                                 }

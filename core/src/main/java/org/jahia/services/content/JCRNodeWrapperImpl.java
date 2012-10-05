@@ -3604,6 +3604,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     if (objectNode.hasProperty("j:published") && !objectNode.getProperty("j:published").getBoolean()) {
                         return false;
                     } else if (hasI18N(jcrSessionWrapper.getLocale(), false)) {
+                        if(objectNode.hasProperty("j:invalidLanguages")) {
+                            final Value[] values = objectNode.getProperty("j:invalidLanguages").getValues();
+                            for (Value value : values) {
+                                if(value.getString().equals(jcrSessionWrapper.getLocale().toString())){
+                                    return false;
+                                }
+                            }
+                        }
                         JCRSiteNode siteNode = getResolveSite();
                         if (!siteNode.isMixLanguagesActive()) {
                             Node i18n = getI18N(jcrSessionWrapper.getLocale(), false);

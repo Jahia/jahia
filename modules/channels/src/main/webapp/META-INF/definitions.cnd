@@ -9,4 +9,4 @@
  extends = jnt:content, jnt:area
  itemtype = channels
  - j:channelSelection (string,choicelist[channels]) multiple
- - j:channelIncludeOrExclude (string,choicelist) = exclude autocreated < 'exclude','include'
+ - j:channelIncludeOrExclude (string,choicelist[resourceBundle]) = exclude autocreated < 'exclude','include'

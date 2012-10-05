@@ -52,6 +52,7 @@ import javax.jcr.version.Version;
 import java.util.Comparator;
 import java.text.Collator;
 import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * This class allows sorting of string by their Numeric values also so A1,A10,A2 are sorted like A1,A2,A10
@@ -63,6 +64,12 @@ import java.io.Serializable;
 public class NumericStringComparator<T> implements Comparator<T>, Serializable {
 
     private static final long serialVersionUID = 5685606235122904838L;
+
+    private Locale locale;
+
+    public NumericStringComparator(Locale locale) {
+        this.locale = locale;
+    }
 
     /**
      * Compare between two objects, sort by their value
@@ -92,7 +99,7 @@ public class NumericStringComparator<T> implements Comparator<T>, Serializable {
                 (idx2 == -1) ||
                 (!s1.substring(0, idx1).equals(s2.substring(0, idx2)))) {
             // System.out.println("Shortcutted. ");
-            return Collator.getInstance(JCRSessionFactory.getInstance().getCurrentLocale()).compare(s1, s2);
+            return Collator.getInstance(locale).compare(s1, s2);
         }
 
         // find the last digit

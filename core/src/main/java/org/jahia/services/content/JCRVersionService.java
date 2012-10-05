@@ -132,7 +132,7 @@ public class JCRVersionService extends JahiaService {
                 }
             }
         }
-        Collections.sort(versionList,new NumericStringComparator<VersionInfo>());
+        Collections.sort(versionList,new NumericStringComparator<VersionInfo>(((JCRSessionWrapper) versionHistory.getSession()).getLocale()));
         return versionList;
     }
 

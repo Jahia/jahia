@@ -222,7 +222,7 @@ public class RenderTest {
         List<VersionInfo> liveVersionInfos = jcrVersionService.getVersionInfos(liveSession, subPagePublishedNode);
         Collections.sort(liveVersionInfos,new Comparator<VersionInfo>() {
             public int compare(VersionInfo o1, VersionInfo o2) {
-                NumericStringComparator<String> numericStringComparator = new NumericStringComparator<String>();
+                NumericStringComparator<String> numericStringComparator = new NumericStringComparator<String>(Locale.ENGLISH);
                 return numericStringComparator.compare(o1.getLabel(), o2.getLabel());
             }
         });

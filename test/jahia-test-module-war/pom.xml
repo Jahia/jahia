@@ -44,7 +44,7 @@
     <parent>
         <artifactId>jahia-test-parent</artifactId>
         <groupId>org.jahia.test</groupId>
-        <version>6.6.0.2-SNAPSHOT</version>
+        <version>6.6.1.0</version>
     </parent>
     <artifactId>jahia-test-module-war</artifactId>
     <name>Jahia Test Module War Package</name>
@@ -143,7 +143,7 @@
         <dependency>
             <groupId>org.jahia.test</groupId>
             <artifactId>jahia-test-module</artifactId>
-            <version>6.6.0.2-SNAPSHOT</version>
+            <version>6.6.1.0</version>
         </dependency>
     	<dependency>
     		<groupId>org.apache.ant</groupId>
@@ -302,8 +302,8 @@
     </build>
 
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-0-X-BRANCH/jahia-test-parent/jahia-test-module-war</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-0-X-BRANCH/jahia-test-parent/jahia-test-module-war</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-0-X-BRANCH/jahia-test-parent/jahia-test-module-war</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_0/jahia-test-parent/jahia-test-module-war</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_0/jahia-test-parent/jahia-test-module-war</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_1_0/jahia-test-parent/jahia-test-module-war</url>
   </scm>
 </project>

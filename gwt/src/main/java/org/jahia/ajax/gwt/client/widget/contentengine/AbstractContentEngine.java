@@ -582,5 +582,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
 	protected abstract void setButtonsEnabled(boolean doEnable);
 
-
+    public ComboBox<GWTJahiaLanguage> getLanguageSwitcher() {
+        return languageSwitcher;
+    }
 }

@@ -41,10 +41,8 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FieldEvent;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -369,24 +367,42 @@ public class ContentTabItem extends PropertiesTabItem {
         }
         //Invalid Languages selection
         final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
-        if(siteLanguages.size()>1) {
-        invalidLanguagesCheckBoxGroup = new CheckBoxGroup();
-        invalidLanguagesCheckBoxGroup.setFieldLabel(Messages.get("label.valid.languages"));
-        for (GWTJahiaLanguage siteLanguage : siteLanguages) {
-            if(siteLanguage.isActive()) {
-                CheckBox checkBox = new CheckBox();
-                checkBox.setBoxLabel(siteLanguage.getDisplayName());
-                checkBox.setValueAttribute(siteLanguage.getLanguage());
-                if(selectedNode==null || !selectedNode.getInvalidLanguages().contains(siteLanguage.getLanguage()))                   {
-                    checkBox.setValue(true);
+        if (siteLanguages.size() > 1 && engine.getNodeTypes().get(0).getSuperTypes().contains("jmix:i18n")) {
+            invalidLanguagesCheckBoxGroup = new CheckBoxGroup();
+            invalidLanguagesCheckBoxGroup.setFieldLabel(Messages.get("label.valid.languages"));
+            for (GWTJahiaLanguage siteLanguage : siteLanguages) {
+                if (siteLanguage.isActive()) {
+                    CheckBox checkBox = new CheckBox();
+                    checkBox.setBoxLabel(siteLanguage.getDisplayName());
+                    checkBox.setValueAttribute(siteLanguage.getLanguage());
+                    checkBox.addListener(Events.Change, new Listener<ComponentEvent>() {
+                        public void handleEvent(ComponentEvent componentEvent) {
+                            CheckBox checkBox1 = (CheckBox) componentEvent.getSource();
+                            final ComboBox<GWTJahiaLanguage> languageSwitcher = ((AbstractContentEngine) engine).getLanguageSwitcher();
+                            if(languageSwitcher!=null) {
+                                final ListStore<GWTJahiaLanguage> store = languageSwitcher.getStore();
+                                if(store!=null)
+                                store.findModel("language", checkBox1.getValueAttribute()).setActive(checkBox1.getValue());
+                                languageSwitcher.getView().refresh();
+                            }
+                        }
+                    });
+                    if (selectedNode == null || !selectedNode.getInvalidLanguages().contains(
+                            siteLanguage.getLanguage())) {
+                        checkBox.setValue(true);
+                    } else if( engine instanceof AbstractContentEngine) {
+                        AbstractContentEngine contentEngine = (AbstractContentEngine) engine;
+                        final GWTJahiaLanguage model = contentEngine.getLanguageSwitcher().getStore().findModel(
+                                "language",siteLanguage.getLanguage());
+                        model.setActive(false);
+                    }
+                    invalidLanguagesCheckBoxGroup.add(checkBox);
                 }
-                invalidLanguagesCheckBoxGroup.add(checkBox);
             }
-        }
-        invalidLanguagesFieldSet = new FieldSet();
-        invalidLanguagesFieldSet.setHeading(Messages.get("label.valid.languages", "Valid display languages"));
-        invalidLanguagesFieldSet.setLayout(fl);
-        invalidLanguagesFieldSet.add(invalidLanguagesCheckBoxGroup,fd);
+            invalidLanguagesFieldSet = new FieldSet();
+            invalidLanguagesFieldSet.setHeading(Messages.get("label.valid.languages", "Valid display languages"));
+            invalidLanguagesFieldSet.setLayout(fl);
+            invalidLanguagesFieldSet.add(invalidLanguagesCheckBoxGroup, fd);
         }
         super.attachPropertiesEditor(engine, tab);
     }

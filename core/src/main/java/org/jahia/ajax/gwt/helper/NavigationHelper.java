@@ -1289,8 +1289,21 @@ public class NavigationHelper {
             logger.error(e.getMessage(), e);
         }
 
-        // Invalid Languages
-        n.setInvalidLanguages(new ArrayList<String>());
+        try {
+            // Invalid Languages
+            if(node.hasProperty("j:invalidLanguages")) {
+                final Value[] values = node.getProperty("j:invalidLanguages").getValues();
+                List<String> invalidLanguages = new ArrayList<String>(values.length);
+                for (Value value : values) {
+                    invalidLanguages.add(value.getString());
+                }
+                n.setInvalidLanguages(invalidLanguages);
+            } else {
+                n.setInvalidLanguages(new ArrayList<String>());
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
         return n;
     }
 

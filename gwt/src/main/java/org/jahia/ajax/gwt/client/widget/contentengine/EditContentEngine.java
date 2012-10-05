@@ -45,15 +45,19 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
@@ -362,6 +366,38 @@ public class EditContentEngine extends AbstractContentEngine {
                     }
                     nodeName = name.getValue();
                     node.setName(nodeName);
+                }
+                final CheckBoxGroup checkBoxGroup = ((ContentTabItem) item).getInvalidLanguagesCheckBoxGroup();
+                if (checkBoxGroup!=null) {
+                    final List<CheckBox> values = checkBoxGroup.getValues();
+                    final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
+                    if ((!node.getInvalidLanguages().isEmpty() && values.size() != node.getInvalidLanguages().size()) || values.size() != siteLanguages.size()) {
+                        List<String> strings = new ArrayList<String>(siteLanguages.size());
+                        for (GWTJahiaLanguage siteLanguage : siteLanguages) {
+                            strings.add(siteLanguage.getLanguage());
+                        }
+                        GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
+                        gwtJahiaNodeProperty.setName("j:invalidLanguages");
+                        gwtJahiaNodeProperty.setMultiple(true);
+                        for (CheckBox value : values) {
+                            if (value.getValue()) {
+                                strings.remove(value.getValueAttribute());
+                            }
+                        }
+                        if(strings.size()>0) {
+                            for (String string : strings) {
+                                gwtJahiaNodeProperty.setValue(new GWTJahiaNodePropertyValue(string));
+                            }
+                        }
+                        final List<GWTJahiaNodePropertyValue> gwtJahiaNodePropertyValues = gwtJahiaNodeProperty.getValues();
+                        if (gwtJahiaNodePropertyValues!=null && gwtJahiaNodePropertyValues.size() > 0) {
+                            changedProperties.add(gwtJahiaNodeProperty);
+                            addedTypes.add("jmix:i18n");
+                        } else {
+                            gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
+                            changedProperties.add(gwtJahiaNodeProperty);
+                        }
+                    }
                 }
             }
 

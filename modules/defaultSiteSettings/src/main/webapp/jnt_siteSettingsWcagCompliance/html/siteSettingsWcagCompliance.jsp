@@ -36,7 +36,7 @@ function updateSiteWcagCompliance(btn) {
 <c:set var="complianceCheckActivated" value="${not empty propActivated ? propActivated.boolean : ''}"/>
 
 <h2>${fn:escapeXml(currentNode.displayableName)} - ${fn:escapeXml(site.displayableName)}</h2>
-<p><fmt:message key="label.htmlFiltering.wcagCompliance.description"/>:</p>
+<p><fmt:message key="label.htmlSettings.wcagCompliance.description"/>:</p>
 
 <form id="updateSiteForm" action="<c:url value='${url.base}${renderContext.mainResource.node.resolveSite.path}'/>" method="post">
     <input type="hidden" name="jcrMethodToCall" value="put"/>

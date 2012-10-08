@@ -900,12 +900,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         }
         ActionResult result = action.doExecute(req, renderContext, resource, session, parameters, urlResolver);
         if (result != null) {
-            if (result.getResultCode() < 300) {
+            boolean returnJSON = "json".equals(parameters.get(RETURN_CONTENTTYPE) != null ? parameters.get(RETURN_CONTENTTYPE).get(0) : "")
+                    || req.getHeader("accept") != null && req.getHeader("accept").contains("application/json");
+            if (result.getResultCode() < 300 || returnJSON) {
                 resp.setStatus(result.getResultCode());
                 addCookie(req,resp);
-                if (result.getJson() != null &&
-                        ("json".equals(parameters.get(RETURN_CONTENTTYPE) != null ? parameters.get(RETURN_CONTENTTYPE).get(0) : "")
-                                || req.getHeader("accept") != null && req.getHeader("accept").contains("application/json"))) {
+                if (result.getJson() != null && returnJSON) {
                     try {
                         String contentType = parameters.get(RETURN_CONTENTTYPE_OVERRIDE) != null ? StringUtils.defaultIfEmpty(parameters.get(RETURN_CONTENTTYPE_OVERRIDE).get(0), null) : null;
                         if (contentType == null) {

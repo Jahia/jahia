@@ -175,7 +175,9 @@ public class DefaultPostAction extends Action {
 
                 session.save();
             } catch (ConstraintViolationException e) {
-                return new ActionResult(HttpServletResponse.SC_BAD_REQUEST);
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("validationError", e.getMessage());
+                return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, jsonObject);
             }
 
             final String nodeId = newNode.getIdentifier();

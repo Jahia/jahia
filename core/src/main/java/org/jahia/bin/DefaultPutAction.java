@@ -130,7 +130,9 @@ public class DefaultPutAction extends Action {
             }
             session.save();
         } catch (ConstraintViolationException e) {
-            return ActionResult.BAD_REQUEST;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("validationError", e.getMessage());
+            return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, jsonObject);
         }
         if (req.getParameter(Render.AUTO_CHECKIN) != null && req.getParameter(Render.AUTO_CHECKIN).length() > 0) {
             session.getWorkspace().getVersionManager().checkpoint(node.getPath());

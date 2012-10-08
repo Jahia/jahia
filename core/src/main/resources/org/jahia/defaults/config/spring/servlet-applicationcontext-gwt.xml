@@ -77,4 +77,6 @@
     <bean name="gwtSubscriptionService" class="org.jahia.ajax.gwt.subscription.server.SubscriptionServiceImpl" scope="prototype">
     	<property name="subscriptionService" ref="subscriptionService"/>
     </bean>
+
+    <bean id="localeResolver" class="org.jahia.services.multilang.UILocaleResolver" />
 </beans>

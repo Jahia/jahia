@@ -163,4 +163,5 @@
         </property>
     </bean>
 
+    <bean id="localeResolver" class="org.jahia.services.multilang.UILocaleResolver" />
 </beans>

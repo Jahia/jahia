@@ -400,7 +400,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 }
             }
             invalidLanguagesFieldSet = new FieldSet();
-            invalidLanguagesFieldSet.setHeading(Messages.get("label.valid.languages", "Valid display languages"));
+            invalidLanguagesFieldSet.setHeading(Messages.get("label.validLanguages", "Valid display languages"));
             invalidLanguagesFieldSet.setLayout(fl);
             invalidLanguagesFieldSet.add(invalidLanguagesCheckBoxGroup, fd);
         }

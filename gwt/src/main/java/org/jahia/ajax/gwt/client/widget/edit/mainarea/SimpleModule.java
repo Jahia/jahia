@@ -46,7 +46,6 @@ import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
@@ -151,14 +150,21 @@ public class SimpleModule extends Module {
             this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"), Messages.get("info_sharednode", "This is a shared node")));
         }
 
+        HTML overlayLabel = null;
         if (node.getNodeTypes().contains("jmix:markedForDeletionRoot")) {
-            setStyleAttribute("position","relative");
+            overlayLabel = new HTML(Messages.get("label.deleted", "Deleted"));
+        } else if (node.getInvalidLanguages() != null && node.getInvalidLanguages().contains(getMainModule().getEditLinker().getLocale())) {
+            overlayLabel = new HTML(Messages.get("label.validLanguages.overlay",
+                    "Not visible content"));
+        }
 
-            HTML deleted = new HTML(Messages.get("label.deleted", "Deleted"));
-            insert(deleted,0);
-            deleted.addStyleName("deleted-overlay");
-            deleted.setHeight(Integer.toString(html.getOffsetHeight())+"px");
-            deleted.setWidth(Integer.toString(html.getOffsetWidth())+"px");
+        if (overlayLabel != null) {
+            setStyleAttribute("position", "relative");
+
+            insert(overlayLabel, 0);
+            overlayLabel.addStyleName("deleted-overlay");
+            overlayLabel.setHeight(Integer.toString(html.getOffsetHeight()) + "px");
+            overlayLabel.setWidth(Integer.toString(html.getOffsetWidth()) + "px");
 
             DOM.setStyleAttribute(html.getElement(), "opacity", "0.4");
 

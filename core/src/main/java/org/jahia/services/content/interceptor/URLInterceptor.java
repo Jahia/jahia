@@ -305,7 +305,13 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
                 if (name.equals(ref.getProperty("j:fieldName").getString())) {
-                    refs.put(Long.valueOf(StringUtils.substringAfterLast(ref.getName(), "_")), ref.getProperty("j:reference").getString());
+                    try {
+                        refs.put(Long.valueOf(StringUtils.substringAfterLast(ref.getName(), "_")), ref.getProperty("j:reference").getString());
+                    } catch (PathNotFoundException e) {
+                        logger.warn(
+                                "Unable to get j:reference field on the node {}. Skipping reference.",
+                                ref.getPath());
+                    }
                 }
             }
         }
@@ -501,7 +507,13 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                     String ext = matcher.group(2);
                     String uuid = refs.get(new Long(id));
                     String nodePath = null;
-                    JCRNodeWrapper node;
+                    JCRNodeWrapper node = null;
+                    if (uuid == null) {
+                                logger.warn(
+                                        "Cannot find referencing node UUID (link value: {}) for node {}",
+                                        path, parent.getPath());
+                        return "#";
+                    }
                     try {
                         node = session.getNodeByUUID(uuid);
                     } catch (ItemNotFoundException infe) {

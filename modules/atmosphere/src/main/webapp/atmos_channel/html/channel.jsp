@@ -45,7 +45,7 @@
 
         $(document).ready(function() {
             $.atmosphere.unsubscribe();
-            $.atmosphere.subscribe("${url.server}${url.context}/atmosphere/nodes/${linked.identifier}__${functions:displayLocaleNameWith(renderContext.mainResourceLocale,functions:toLocale('en'))}", callbackNodeChannel,
+            $.atmosphere.subscribe("${url.server}${url.context}/atmosphere/nodes/${linked.identifier}-${renderContext.mainResourceLocale}", callbackNodeChannel,
                     $.atmosphere.request = { transport: "websocket" });
         });
     </script>

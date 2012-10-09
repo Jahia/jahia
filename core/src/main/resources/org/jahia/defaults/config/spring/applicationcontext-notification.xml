@@ -108,7 +108,5 @@
 
     <bean id="scriptEngineUtils" class="org.jahia.utils.ScriptEngineUtils" factory-method="getInstance"/>
 
-    <bean id="sitePublisherSubscriber" class="org.jahia.services.atmosphere.service.PublisherSubscriberService">
-        <property name="jcrTemplate" ref="jcrTemplate"/>
-    </bean>
+    <bean id="sitePublisherSubscriber" class="org.jahia.services.atmosphere.service.PublisherSubscriberService"/>
 </beans>

@@ -254,6 +254,9 @@ public class JahiaGWTParameters {
         return (List<GWTJahiaLanguage>) getSiteNode().get(GWTJahiaNode.SITE_LANGUAGES);
     }
 
+    public static List<String> getSiteMandatoryLanguages() {
+        return (List<String>) getSiteNode().get(GWTJahiaNode.SITE_MANDATORY_LANGUAGES);
+    }
 
     public static String getSitesLocation() {
         return sitesLocation;

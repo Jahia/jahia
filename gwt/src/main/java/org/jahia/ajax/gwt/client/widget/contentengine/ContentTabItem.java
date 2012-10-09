@@ -368,6 +368,7 @@ public class ContentTabItem extends PropertiesTabItem {
         //Invalid Languages selection
         final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
         if (siteLanguages.size() > 1 && engine.getNodeTypes().get(0).getSuperTypes().contains("jmix:i18n")) {
+            final List<String> siteMandatoryLanguages = JahiaGWTParameters.getSiteMandatoryLanguages();
             invalidLanguagesCheckBoxGroup = new CheckBoxGroup();
             invalidLanguagesCheckBoxGroup.setFieldLabel(Messages.get("label.valid.languages"));
             for (GWTJahiaLanguage siteLanguage : siteLanguages) {
@@ -387,6 +388,11 @@ public class ContentTabItem extends PropertiesTabItem {
                             }
                         }
                     });
+
+                    if(siteMandatoryLanguages.contains(siteLanguage.getLanguage())) {
+                        checkBox.setEnabled(false);
+                    }
+
                     if (selectedNode == null || !selectedNode.getInvalidLanguages().contains(
                             siteLanguage.getLanguage())) {
                         checkBox.setValue(true);

@@ -97,6 +97,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String IS_VISIBLE = "isVisible";
     public static final String LOCKS_INFO = "locksInfo";
     public static final String SUBNODES_CONSTRAINTS_INFO = "locksInfo";
+    public static final String SITE_MANDATORY_LANGUAGES = "siteMandatoryLanguages";
 
     public static final List<String> DEFAULT_FIELDS =
             Arrays.asList(ICON, TAGS, CHILDREN_INFO, "j:view", "j:width", "j:height", PERMISSIONS, LOCKS_INFO, PUBLICATION_INFO, SUBNODES_CONSTRAINTS_INFO);

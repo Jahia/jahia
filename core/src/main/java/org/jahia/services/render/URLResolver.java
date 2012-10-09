@@ -218,7 +218,7 @@ public class URLResolver {
         String lastPart = StringUtils.substringAfterLast(path, "/");
         int indexOfHTMLSuffix = lastPart.indexOf(".html");
         if (isServletAllowingUrlMapping() && indexOfHTMLSuffix > 0
-                && lastPart.indexOf(".") == indexOfHTMLSuffix && lastPart.endsWith(".html")) {
+                && lastPart.endsWith(".html")) {
             mappable = true;
         }
     }
@@ -607,7 +607,11 @@ public class URLResolver {
         boolean mapped = mappable;
         if (mapped) {
             try {
-                JCRNodeWrapper node = getNode();
+                Resource resource = getResource();
+                if (!resource.getTemplate().equals("default")) {
+                    return false;
+                }
+                JCRNodeWrapper node = resource.getNode();
                 if (node != null && !node.isNodeType(VanityUrlManager.JAHIAMIX_VANITYURLMAPPED)) {
                     mapped = false;
                 }

@@ -803,20 +803,26 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed.cause", getUILocale()), e.getMessage()));
         }
-
-        // save shared properties
-        if (langCodeProperties != null && !langCodeProperties.isEmpty()) {
-            List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
-            nodes.add(node);
-            Iterator<String> langCode = langCodeProperties.keySet().iterator();
-            // save properties per lang
-            while (langCode.hasNext()) {
-                String currentLangCode = langCode.next();
-                List<GWTJahiaNodeProperty> properties = langCodeProperties.get(currentLangCode);
-                saveProperties(nodes, properties, null, currentLangCode);
-            }
-        }
         try {
+            // save shared properties
+
+            // Fix to be able to save in multiple languages
+            session.save();
+
+            if (langCodeProperties != null && !langCodeProperties.isEmpty()) {
+                List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+                nodes.add(node);
+                Iterator<String> langCode = langCodeProperties.keySet().iterator();
+                // save properties per lang
+                while (langCode.hasNext()) {
+                    String currentLangCode = langCode.next();
+                    List<GWTJahiaNodeProperty> properties = langCodeProperties.get(currentLangCode);
+                    this.properties.saveProperties(nodes, properties, null, getRemoteJahiaUser(),
+                            retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(currentLangCode)),
+                            getUILocale());
+                    retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(currentLangCode)).save();
+                }
+            }
             session.save();
         }
         catch (javax.jcr.nodetype.ConstraintViolationException e) {

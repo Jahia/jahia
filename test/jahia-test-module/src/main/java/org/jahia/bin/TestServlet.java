@@ -94,6 +94,8 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
     
     protected void handleGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
 
+        httpServletRequest.getSession().setAttribute(ProcessingContext.SESSION_LOCALE, Locale.ENGLISH);
+
         final ProcessingContextFactory pcf = (ProcessingContextFactory) SpringContextSingleton.
                 getInstance().getContext().getBean(ProcessingContextFactory.class.getName());
         ProcessingContext ctx = null;

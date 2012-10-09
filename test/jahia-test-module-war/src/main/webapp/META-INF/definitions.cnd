@@ -123,3 +123,11 @@
 - test:simpleNode (weakreference)
 - test:multipleNode (weakreference) multiple
 - test:multipleI18NNode (weakreference) multiple i18n
+
+[test:validatedNode] > nt:base, jmix:droppableContent
+- test:notNull (string)
+- test:sizeBetween6And20 (string)
+- test:email (string)
+- test:futureDate (date)
+- test:greaterThan2 (long)
+

@@ -363,4 +363,13 @@
         </property>
 
     </bean>
+
+    <bean class="org.jahia.services.content.decorator.JCRNodeDecoratorDefinition">
+        <property name="decorators">
+            <map>
+                <entry key="test:validatedNode" value="org.jahia.services.validation.TestValidatedNodeDecorator"/>
+            </map>
+        </property>
+    </bean>
+
 </beans>

@@ -52,6 +52,8 @@ import org.junit.*;
 import com.google.common.collect.Sets;
 
 import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -137,6 +139,51 @@ public class MultiLanguageTest extends TestCase {
             logger.info("This exception was expected as English text node should not be available in live workspace when mixed language is not activated.",e);
         }
 
+    }
+
+    @Test
+    public void testLanguageInvalidity() throws Exception {
+        JCRPublicationService jcrService = ServicesRegistry.getInstance()
+                .getJCRPublicationService();
+
+        String defaultLanguage = site.getDefaultLanguage();
+
+        JCRSessionWrapper englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+        JCRSessionWrapper englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+        JCRNodeWrapper stageRootNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE);
+        englishLiveSession.getNode(SITECONTENT_ROOT_NODE);
+        JCRNodeWrapper stageNode = (JCRNodeWrapper) stageRootNode.getNode("home");
+
+        JCRNodeWrapper textNode1 = stageNode.addNode("textInvalidLanguage", "jnt:text");
+        textNode1.setProperty("text", "English text");
+
+        englishEditSession.save();
+
+        jcrService.publishByMainId(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, Sets.newHashSet(Locale.ENGLISH.toString(), Locale.FRENCH.toString()),
+                false, null);
+
+        JCRNodeWrapper englishLiveSessionNode = englishLiveSession.getNode(textNode1.getPath());
+        String string = englishLiveSessionNode.getProperty("text").getValue().getString();
+        assertEquals(string,"English text");
+
+        textNode1.setProperty("j:invalidLanguages", new String[]{"en"});
+
+        englishEditSession.save();
+
+        jcrService.publishByMainId(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, Sets.newHashSet(Locale.ENGLISH.toString(), Locale.FRENCH.toString()),
+                false, null);
+
+        try {
+            englishLiveSession.logout();
+            englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+            englishLiveSessionNode = englishLiveSession.getNode(textNode1.getPath());
+            string = englishLiveSessionNode.getProperty("text").getValue().getString();
+            assertFalse(string.equals("English text"));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        } catch (IllegalStateException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     @After

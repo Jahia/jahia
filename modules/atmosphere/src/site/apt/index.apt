@@ -1,11 +1,11 @@
 How-to use atmosphere framework within Jahia
 
- In atmosphere you declare broadcasters that will broadcast messages to all networks connected to them.
+ In Atmosphere you declare broadcasters that will broadcast messages to all networks connected to them.
 
- There is two side for each atmosphere module you will code, first the server part that will broadcast messages, and the
+ There are two sides for each atmosphere module you will code, first the server part that will broadcast messages, and the
  client side that will subscribe to those broadcasts.
 
- For more information about {{{https://github.com/Atmosphere/atmosphere/wiki}Atmosphere Framework}}
+ For more information see {{{https://github.com/Atmosphere/atmosphere/wiki}Atmosphere Framework}}
 
 * Server Side
 
@@ -59,7 +59,7 @@ How-to use atmosphere framework within Jahia
  client, and instead let the broadcast operation to do it. The broadcast operation will be handled by a Broadcaster.
 
  No need to declare anything in spring or other config files. Now you can connect to this broadcaster with a client, like the
- jquery atmosphere client. See
+ jQuery Atmosphere client. See
  {{{https://github.com/Atmosphere/atmosphere/wiki/Getting-Started-with-The-Atmosphere-Framework-and-WebSocket}
   Getting Started with The Atmosphere Framework}} and
  {{{http://docs.oracle.com/javaee/6/api/javax/ws/rs/package-summary.html}High-level interfaces and annotations used to
@@ -104,7 +104,7 @@ How-to use atmosphere framework within Jahia
 +-------------------------
 
  $.atmosphere.subscribe is the way to subscribe to a broadcaster, this method returns a subscriber object that you need
-  to kept reference of if you want to publish messages to this broadcaster.
+  to keep reference of if you want to publish messages to this broadcaster.
 
   Here we will see how to reuse this subscriber object to publish a message to everyone listening to this broadcast.
 

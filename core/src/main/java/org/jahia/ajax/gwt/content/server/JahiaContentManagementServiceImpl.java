@@ -587,13 +587,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         properties.saveProperties(nodes, newProps, removedTypes, getRemoteJahiaUser(), s, getUILocale());
         try {
             retrieveCurrentSession().save();
-        }
-        catch (javax.jcr.nodetype.ConstraintViolationException e) {
+        } catch (javax.jcr.nodetype.ConstraintViolationException e) {
             throw new GWTJahiaServiceException(e.getMessage());
-        }
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed.cause",getUILocale()) + e.getMessage());
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed.cause", getUILocale()) + e.getMessage());
         }
 
 
@@ -610,8 +608,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     private void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, Set<String> removedTypes, String locale)
             throws GWTJahiaServiceException {
+        JCRSessionWrapper session = retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(locale));
         properties.saveProperties(nodes, newProps, removedTypes, getRemoteJahiaUser(),
-                retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(locale)), getUILocale());
+                session, getUILocale());
+        try {
+            session.save();
+        } catch (javax.jcr.nodetype.ConstraintViolationException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+        catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed.cause",getUILocale()) + e.getMessage());
+        }
     }
 
     /**
@@ -804,23 +812,24 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.node.creation.failed.cause", getUILocale()), e.getMessage()));
         }
         try {
-            // save shared properties
-
-            // Fix to be able to save in multiple languages
-            session.save();
-
             if (langCodeProperties != null && !langCodeProperties.isEmpty()) {
                 List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
                 nodes.add(node);
-                Iterator<String> langCode = langCodeProperties.keySet().iterator();
+                ArrayList<String> locales = new ArrayList<String>(langCodeProperties.keySet());
+                locales.remove(session.getLocale().toString());
+                locales.add(0,session.getLocale().toString());
+                Iterator<String> langCode = locales.iterator();
                 // save properties per lang
                 while (langCode.hasNext()) {
                     String currentLangCode = langCode.next();
                     List<GWTJahiaNodeProperty> properties = langCodeProperties.get(currentLangCode);
-                    this.properties.saveProperties(nodes, properties, null, getRemoteJahiaUser(),
-                            retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(currentLangCode)),
-                            getUILocale());
-                    retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(currentLangCode)).save();
+                    JCRSessionWrapper langSession = retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(currentLangCode));
+                    if (properties != null) {
+                        this.properties.saveProperties(nodes, properties, null, getRemoteJahiaUser(),
+                                langSession,
+                                getUILocale());
+                    }
+                    langSession.save();
                 }
             }
             session.save();
